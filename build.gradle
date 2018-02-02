@@ -1,0 +1,107 @@
+buildscript {
+    
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        
+
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+    ext {
+        appName = "Pixurvival"
+        gdxVersion = '1.9.8'
+        roboVMVersion = '2.3.1'
+        box2DLightsVersion = '1.4'
+        ashleyVersion = '1.7.0'
+        aiVersion = '1.8.0'
+        lombokVersion = '1.16.20'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+    
+}
+
+project(":core") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+    }
+}
+
+project(":client") {
+    apply plugin: "java"
+
+
+    dependencies {
+    	compile project(":core")
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+project(":server") {
+    apply plugin: "java"
+
+
+    dependencies {
+    	compile project(":core")
+    }
+}
+
+project(":gdx-desktop") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":gdx-core")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        
+    }
+}
+
+/*project(":gdx-html") {
+    apply plugin: "gwt"
+    apply plugin: "war"
+
+
+    dependencies {
+        compile project(":gdx-core")
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        
+    }
+}*/
+
+project(":gdx-core") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
