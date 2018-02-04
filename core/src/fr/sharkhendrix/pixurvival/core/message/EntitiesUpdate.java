@@ -1,4 +1,4 @@
-package fr.sharkhendrix.pixurvival.core.network.message;
+package fr.sharkhendrix.pixurvival.core.message;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -33,7 +33,7 @@ public class EntitiesUpdate {
 			output.writeLong(object.updateId);
 			output.writeLong(object.worldId);
 			output.writeInt(object.lastOutput.position());
-			output.writeBytes(object.bytes);
+			output.writeBytes(object.bytes, 0, object.lastOutput.position());
 		}
 
 		@Override
@@ -41,11 +41,18 @@ public class EntitiesUpdate {
 			long updateId = input.readLong();
 			long worldId = input.readLong();
 			World world = World.getWorld(worldId);
+			if (world == null) {
+				int length = input.readInt();
+				input.setPosition(input.position() + length);
+				return null;
+			}
 			synchronized (world) {
-				if (world == null || world.getEntitiesUpdate().updateId >= updateId) {
-					return null;
-				}
 				EntitiesUpdate entitiesUpdate = world.getEntitiesUpdate();
+				if (entitiesUpdate.updateId >= updateId) {
+					int length = input.readInt();
+					input.setPosition(input.position() + length);
+					return entitiesUpdate;
+				}
 				entitiesUpdate.updateId = updateId;
 				entitiesUpdate.length = input.readInt();
 				input.readBytes(entitiesUpdate.bytes, 0, entitiesUpdate.length);

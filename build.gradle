@@ -64,6 +64,7 @@ project(":server") {
 
     dependencies {
     	compile project(":core")
+    	compileOnly "org.projectlombok:lombok:$lombokVersion"
     }
 }
 
@@ -98,7 +99,9 @@ project(":gdx-core") {
 
 
     dependencies {
+    	compile project(":client")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
     }
 }
 

@@ -1,5 +1,6 @@
 package fr.sharkhendrix.pixurvival.core;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -8,8 +9,8 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
 import fr.sharkhendrix.pixurvival.core.map.TiledMap;
-import fr.sharkhendrix.pixurvival.core.network.message.CreateWorld;
-import fr.sharkhendrix.pixurvival.core.network.message.EntitiesUpdate;
+import fr.sharkhendrix.pixurvival.core.message.CreateWorld;
+import fr.sharkhendrix.pixurvival.core.message.EntitiesUpdate;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class World {
 	private static Map<Long, World> worlds = new HashMap<>();
 
 	private Type type;
-	private Time time;
+	private Time time = new Time();
 	private TiledMap map;
 	private EntityPool entityPool = new EntityPool(this);
 	private Random random = new Random();
@@ -66,6 +67,10 @@ public class World {
 		return world;
 	}
 
+	public static Collection<World> getWorlds() {
+		return worlds.values();
+	}
+
 	public boolean isClient() {
 		return type.isClient();
 	}
@@ -74,16 +79,19 @@ public class World {
 		return type.isServer();
 	}
 
-	public synchronized void update(double deltaTimeMillis) {
-		if (entitiesUpdate.getUpdateId() > previousUpdateId) {
-			applyUpdate(entitiesUpdate.getInput());
+	public void update(double deltaTimeMillis) {
+		if (type != Type.SERVER && entitiesUpdate.getUpdateId() > previousUpdateId) {
+			entityPool.applyUpdate(entitiesUpdate.getInput());
+			previousUpdateId = entitiesUpdate.getUpdateId();
 		}
 		time.update(deltaTimeMillis);
 		entityPool.update();
 		actionTimerManager.update();
 	}
 
-	public void writeUpdate(Output output) {
+	public void writeEntitiesUpdate() {
+		entitiesUpdate.setUpdateId(++previousUpdateId);
+		Output output = entitiesUpdate.getOutput();
 		entityPool.writeUpdate(output);
 	}
 

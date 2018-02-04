@@ -3,6 +3,7 @@ package fr.sharkhendrix.pixurvival.core;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import fr.sharkhendrix.pixurvival.core.message.PlayerActionRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,16 @@ public class PlayerEntity extends AliveEntity {
 
 	private String name;
 
+	public void apply(PlayerActionRequest actionRequest) {
+		setMovingAngle(actionRequest.getDirection().getAngle());
+		setForward(actionRequest.isForward());
+	}
+
+	@Override
+	public void update() {
+		super.update();
+	}
+
 	@Override
 	public double getMaxHealth() {
 		return 100;
@@ -19,7 +30,7 @@ public class PlayerEntity extends AliveEntity {
 
 	@Override
 	public double getSpeedPotential() {
-		return 2;
+		return 4;
 	}
 
 	@Override

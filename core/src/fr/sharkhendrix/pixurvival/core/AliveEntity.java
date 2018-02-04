@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public abstract class AliveEntity extends Entity implements Damageable {
 
-	private double health;
+	private double health = getMaxHealth();
 	private double movingAngle;
 	private boolean forward;
 
@@ -34,7 +34,7 @@ public abstract class AliveEntity extends Entity implements Damageable {
 		if (forward) {
 			double ds = getSpeedPotential() * getWorld().getTime().getDeltaTime();
 			double dx = Math.cos(movingAngle) * ds;
-			double dy = Math.cos(movingAngle) * ds;
+			double dy = Math.sin(movingAngle) * ds;
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 				getPosition().x = (int) (1 + getPosition().x - getBoundingRadius())
 						- (dx > 0 ? getBoundingRadius() * 2 : 0);

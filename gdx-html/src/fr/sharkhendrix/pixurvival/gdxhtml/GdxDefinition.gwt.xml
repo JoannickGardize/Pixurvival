@@ -6,5 +6,5 @@
 	<inherits name='PixurvivalGame' />
 	<entry-point class='fr.sharkhendrix.pixurvival.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
-	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
+	<set-configuration-property name="gdx.assetpath" value="../gdx-core/assets" />
 </module>

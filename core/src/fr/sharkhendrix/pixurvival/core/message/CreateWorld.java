@@ -1,4 +1,4 @@
-package fr.sharkhendrix.pixurvival.core.network.message;
+package fr.sharkhendrix.pixurvival.core.message;
 
 import lombok.Data;
 

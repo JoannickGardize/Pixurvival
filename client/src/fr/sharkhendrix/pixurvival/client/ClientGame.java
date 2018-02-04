@@ -9,9 +9,10 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 
 import fr.sharkhendrix.pixurvival.core.World;
-import fr.sharkhendrix.pixurvival.core.network.message.KryoInitializer;
-import fr.sharkhendrix.pixurvival.core.network.message.LoginResponse;
-import fr.sharkhendrix.pixurvival.core.network.message.PlayerActionRequest;
+import fr.sharkhendrix.pixurvival.core.message.KryoInitializer;
+import fr.sharkhendrix.pixurvival.core.message.LoginRequest;
+import fr.sharkhendrix.pixurvival.core.message.LoginResponse;
+import fr.sharkhendrix.pixurvival.core.message.PlayerActionRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class ClientGame {
 
 	private Client client = new Client();
 	private ClientListener clientListener;
-	private List<GameListener> listeners = new ArrayList<>();
+	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter @Setter(AccessLevel.PACKAGE) long myPlayerId;
 
@@ -31,15 +32,15 @@ public class ClientGame {
 		KryoInitializer.apply(client.getKryo());
 	}
 
-	public void addListener(GameListener listener) {
+	public void addListener(ClientGameListener listener) {
 		listeners.add(listener);
 	}
 
-	void notify(Consumer<GameListener> action) {
+	void notify(Consumer<ClientGameListener> action) {
 		listeners.forEach(action);
 	}
 
-	public void connectToServer(String address, int port) {
+	public void connectToServer(String address, int port, String playerName) {
 		try {
 			if (client.isConnected()) {
 				client.stop();
@@ -47,7 +48,7 @@ public class ClientGame {
 				client.start();
 			}
 			client.connect(5000, address, port, port);
-
+			client.sendTCP(new LoginRequest(playerName));
 		} catch (IOException e) {
 			Log.error("Error when trying to connect to server.", e);
 			listeners.forEach(l -> l.loginResponse(LoginResponse.INTERNAL_ERROR));
@@ -58,12 +59,12 @@ public class ClientGame {
 		client.sendUDP(request);
 	}
 
-	public void updateWorld(double deltaTimeMillis) {
+	public void update(double deltaTimeMillis) {
 		if (world != null) {
-			synchronized (world) {
-				clientListener.applyReceivedObjects();
-				world.update(deltaTimeMillis);
-			}
+			clientListener.consumeReceivedObjects();
+			world.update(deltaTimeMillis);
+		} else {
+			clientListener.consumeReceivedObjects();
 		}
 	}
 }

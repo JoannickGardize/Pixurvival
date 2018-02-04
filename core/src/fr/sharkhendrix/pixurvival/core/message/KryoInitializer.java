@@ -1,4 +1,4 @@
-package fr.sharkhendrix.pixurvival.core.network.message;
+package fr.sharkhendrix.pixurvival.core.message;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
@@ -27,7 +27,7 @@ public class KryoInitializer {
 		try {
 			Class<?>[] internalClasses = clazz.getClasses();
 			for (Class<?> internalClass : internalClasses) {
-				if (internalClass.getSimpleName() == "Serializer"
+				if (internalClass.getSimpleName().equals("Serializer")
 						&& internalClass.getSuperclass() == Serializer.class) {
 					kryo.register(clazz, ((Class<? extends Serializer<?>>) internalClass).newInstance());
 					return;

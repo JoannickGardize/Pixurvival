@@ -1,4 +1,4 @@
-package fr.sharkhendrix.pixurvival.core.network.message;
+package fr.sharkhendrix.pixurvival.core.message;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -13,7 +13,7 @@ public enum Direction {
 	NORTH_EAST(Math.PI / 4.0),
 	NORTH(Math.PI / 2.0),
 	NORTH_WEST(Math.PI * 3.0 / 4.0),
-	WEST(Math.PI / 2.0),
+	WEST(Math.PI),
 	SOUTH_WEST(-Math.PI * 3.0 / 4.0),
 	SOUTH(-Math.PI / 2.0),
 	SOUTH_EAST(-Math.PI / 4.0);

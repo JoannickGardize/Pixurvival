@@ -10,9 +10,9 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 
 import fr.sharkhendrix.pixurvival.core.World;
-import fr.sharkhendrix.pixurvival.core.network.message.EntitiesUpdate;
-import fr.sharkhendrix.pixurvival.core.network.message.LoginResponse;
-import fr.sharkhendrix.pixurvival.core.network.message.StartGame;
+import fr.sharkhendrix.pixurvival.core.message.EntitiesUpdate;
+import fr.sharkhendrix.pixurvival.core.message.LoginResponse;
+import fr.sharkhendrix.pixurvival.core.message.StartGame;
 
 class ClientListener extends Listener {
 
@@ -29,6 +29,7 @@ class ClientListener extends Listener {
 			StartGame startGame = (StartGame) s;
 			game.setMyPlayerId(startGame.getMyPlayerId());
 			game.setWorld(World.createClientWorld(startGame.getCreateWorld()));
+			game.notify(l -> l.startGame());
 		});
 	}
 
@@ -39,19 +40,23 @@ class ClientListener extends Listener {
 
 	@Override
 	public void received(Connection connection, Object object) {
-		if (object != null && !(object instanceof EntitiesUpdate)) {
-			receivedObjects.add(object);
+		synchronized (receivedObjects) {
+			if (object != null && !(object instanceof EntitiesUpdate)) {
+				receivedObjects.add(object);
+			}
 		}
 	}
 
-	public void applyReceivedObjects() {
-		for (Object object : receivedObjects) {
-			@SuppressWarnings("unchecked")
-			Consumer<Object> action = (Consumer<Object>) messageActions.get(object.getClass());
-			if (action != null) {
-				action.accept(object);
+	public void consumeReceivedObjects() {
+		synchronized (receivedObjects) {
+			for (Object object : receivedObjects) {
+				@SuppressWarnings("unchecked")
+				Consumer<Object> action = (Consumer<Object>) messageActions.get(object.getClass());
+				if (action != null) {
+					action.accept(object);
+				}
 			}
+			receivedObjects.clear();
 		}
-		receivedObjects.clear();
 	}
 }

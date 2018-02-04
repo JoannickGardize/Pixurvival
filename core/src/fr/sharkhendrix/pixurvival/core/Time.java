@@ -1,6 +1,6 @@
 package fr.sharkhendrix.pixurvival.core;
 
-import fr.sharkhendrix.pixurvival.core.network.message.TimeRequest;
+import fr.sharkhendrix.pixurvival.core.message.TimeRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,10 @@
-package fr.sharkhendrix.pixurvival.core.network.message;
+package fr.sharkhendrix.pixurvival.core.message;
 
 public enum LoginResponse {
 	OK,
 	INTERNAL_ERROR,
 	NAME_USED,
 	GAME_ALREADY_STARTED,
-	BANNED;
+	BANNED,
+	ALREADY_LOGGED;
 }
