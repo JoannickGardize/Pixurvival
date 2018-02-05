@@ -9,8 +9,6 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        
-
     }
 }
 
@@ -43,14 +41,14 @@ project(":core") {
 
 
     dependencies {
-        compileOnly "org.projectlombok:lombok:$lombokVersion"
     	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	testCompile 'junit:junit:4.12'
     }
 }
 
 project(":client") {
     apply plugin: "java"
-
 
     dependencies {
     	compile project(":core")
@@ -61,7 +59,6 @@ project(":client") {
 project(":server") {
     apply plugin: "java"
 
-
     dependencies {
     	compile project(":core")
     	compileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -70,7 +67,6 @@ project(":server") {
 
 project(":gdx-desktop") {
     apply plugin: "java"
-
 
     dependencies {
         compile project(":gdx-core")
