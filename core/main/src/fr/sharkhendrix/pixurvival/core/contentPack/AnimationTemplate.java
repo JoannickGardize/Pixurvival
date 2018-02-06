@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import fr.sharkhendrix.pixurvival.core.util.ListViewOfMap;
@@ -13,11 +14,11 @@ import lombok.Getter;
 public class AnimationTemplate {
 
 	@Getter
-	@XmlElement
+	@XmlAttribute(name = "name")
 	private String name;
 
 	@Getter
-	@XmlElement
+	@XmlAttribute(name = "frameDuration")
 	private double frameDuration;
 
 	private Map<String, Animation> animations = new HashMap<>();
