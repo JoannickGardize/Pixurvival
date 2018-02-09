@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-
 import fr.sharkhendrix.pixurvival.core.map.TiledMap;
 import fr.sharkhendrix.pixurvival.core.message.CreateWorld;
 import fr.sharkhendrix.pixurvival.core.message.EntitiesUpdate;
@@ -81,7 +78,8 @@ public class World {
 
 	public void update(double deltaTimeMillis) {
 		if (type != Type.SERVER && entitiesUpdate.getUpdateId() > previousUpdateId) {
-			entityPool.applyUpdate(entitiesUpdate.getInput());
+
+			entityPool.applyUpdate(entitiesUpdate.getByteBuffer());
 			previousUpdateId = entitiesUpdate.getUpdateId();
 		}
 		time.update(deltaTimeMillis);
@@ -91,11 +89,6 @@ public class World {
 
 	public void writeEntitiesUpdate() {
 		entitiesUpdate.setUpdateId(++previousUpdateId);
-		Output output = entitiesUpdate.getOutput();
-		entityPool.writeUpdate(output);
-	}
-
-	public void applyUpdate(Input input) {
-		entityPool.applyUpdate(input);
+		entityPool.writeUpdate(entitiesUpdate.getByteBuffer());
 	}
 }

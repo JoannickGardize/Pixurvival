@@ -1,8 +1,8 @@
 package fr.sharkhendrix.pixurvival.core.contentPack;
 
-public class ContentPackReadException extends Exception {
+public class ContentPackReadException extends ContentPackException {
 
-	private static final long serialVersionUID = 8210060960511026694L;
+	private static final long serialVersionUID = 1L;
 
 	public ContentPackReadException(String message) {
 		super(message);

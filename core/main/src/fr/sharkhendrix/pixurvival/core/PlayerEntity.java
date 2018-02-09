@@ -1,7 +1,6 @@
 package fr.sharkhendrix.pixurvival.core;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import java.nio.ByteBuffer;
 
 import fr.sharkhendrix.pixurvival.core.message.PlayerActionRequest;
 import lombok.Getter;
@@ -49,20 +48,20 @@ public class PlayerEntity extends AliveEntity {
 	}
 
 	@Override
-	public void writeUpdate(Output output) {
-		output.writeDouble(getPosition().x);
-		output.writeDouble(getPosition().y);
-		output.writeDouble(getHealth());
-		output.writeDouble(getMovingAngle());
-		output.writeBoolean(isForward());
+	public void writeUpdate(ByteBuffer buffer) {
+		buffer.putDouble(getPosition().x);
+		buffer.putDouble(getPosition().y);
+		buffer.putDouble(getHealth());
+		buffer.putDouble(getMovingAngle());
+		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 	}
 
 	@Override
-	public void applyUpdate(Input input) {
-		getPosition().set(input.readDouble(), input.readDouble());
-		setHealth(input.readDouble());
-		setMovingAngle(input.readDouble());
-		setForward(input.readBoolean());
+	public void applyUpdate(ByteBuffer buffer) {
+		getPosition().set(buffer.getDouble(), buffer.getDouble());
+		setHealth(buffer.getDouble());
+		setMovingAngle(buffer.getDouble());
+		setForward(buffer.get() == 1 ? true : false);
 	}
 
 }

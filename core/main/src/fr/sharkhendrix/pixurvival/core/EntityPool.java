@@ -1,13 +1,11 @@
 package fr.sharkhendrix.pixurvival.core;
 
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
-
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 /**
  * This class contains all entities of a given {@link World}, packed by group
@@ -60,31 +58,33 @@ public class EntityPool {
 		entities.values().forEach(m -> m.values().forEach(action));
 	}
 
-	public void writeUpdate(Output output) {
-		output.writeByte((byte) entities.size());
+	public void writeUpdate(ByteBuffer byteBuffer) {
+		byteBuffer.position(0);
+		byteBuffer.put((byte) entities.size());
 		for (Entry<EntityGroup, Map<Long, Entity>> groupEntry : entities.entrySet()) {
-			output.writeByte(groupEntry.getKey().getId());
+			byteBuffer.put(groupEntry.getKey().getId());
 			Map<Long, Entity> entityMap = groupEntry.getValue();
-			output.writeInt(entityMap.size());
+			byteBuffer.putInt(entityMap.size());
 			for (Entity e : entityMap.values()) {
-				output.writeLong(e.getId());
-				output.writeByte(EntityRegistry.getIdOf(e.getClass()));
-				e.writeUpdate(output);
+				byteBuffer.putLong(e.getId());
+				byteBuffer.put(EntityRegistry.getIdOf(e.getClass()));
+				e.writeUpdate(byteBuffer);
 			}
 		}
 
 	}
 
-	public void applyUpdate(Input input) {
-		byte groupCount = input.readByte();
+	public void applyUpdate(ByteBuffer byteBuffer) {
+		byteBuffer.position(0);
+		byte groupCount = byteBuffer.get();
 		for (int i = 0; i < groupCount; i++) {
-			EntityGroup group = EntityGroup.values()[input.readByte()];
+			EntityGroup group = EntityGroup.values()[byteBuffer.get()];
 			Map<Long, Entity> groupMap = entities.get(group);
 			groupMap.values().forEach(e -> e.setAlive(false));
-			int groupSize = input.readInt();
+			int groupSize = byteBuffer.getInt();
 			for (int j = 0; j < groupSize; j++) {
-				long entityId = input.readLong();
-				byte classId = input.readByte();
+				long entityId = byteBuffer.getLong();
+				byte classId = byteBuffer.get();
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
 					e = EntityRegistry.newEntity(classId);
@@ -92,7 +92,7 @@ public class EntityPool {
 					add(e);
 				}
 				e.setAlive(true);
-				e.applyUpdate(input);
+				e.applyUpdate(byteBuffer);
 			}
 		}
 	}

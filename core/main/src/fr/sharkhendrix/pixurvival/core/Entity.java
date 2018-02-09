@@ -1,7 +1,6 @@
 package fr.sharkhendrix.pixurvival.core;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import java.nio.ByteBuffer;
 
 import fr.sharkhendrix.pixurvival.core.util.Vector2;
 import lombok.AccessLevel;
@@ -22,8 +21,8 @@ public abstract class Entity {
 
 	public abstract double getBoundingRadius();
 
-	public abstract void writeUpdate(Output output);
+	public abstract void writeUpdate(ByteBuffer buffer);
 
-	public abstract void applyUpdate(Input input);
+	public abstract void applyUpdate(ByteBuffer buffer);
 
 }

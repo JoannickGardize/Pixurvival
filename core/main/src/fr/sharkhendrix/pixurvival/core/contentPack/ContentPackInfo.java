@@ -1,20 +1,23 @@
 package fr.sharkhendrix.pixurvival.core.contentPack;
 
-import java.util.UUID;
-
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class ContentPackInfo {
+@Setter(AccessLevel.PACKAGE)
+@XmlRootElement(name = "contentPackInfo")
+public class ContentPackInfo extends ContentPackIdentifier {
 
-	@XmlElement(name = "name")
-	private String name;
-	@XmlElement(name = "uniqueIdentifier")
-	private UUID uniqueIdentifier;
+	public static final String XML_FILE_NAME = "contentPackInfo.xml";
+
 	@XmlElement(name = "author")
 	private String author;
 	@XmlElement(name = "description")
 	private String description;
+	@XmlElement(name = "dependencies")
+	private Dependencies dependencies = new Dependencies();
 }

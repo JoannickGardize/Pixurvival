@@ -8,6 +8,8 @@ import java.util.zip.ZipFile;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -27,6 +29,13 @@ public class ContentPack {
 
 			JAXBContext context = JAXBContext.newInstance(AnimationTemplates.class, Sprites.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
+			unmarshaller.setEventHandler(new ValidationEventHandler() {
+
+				@Override
+				public boolean handleEvent(ValidationEvent event) {
+					return !(event.getLinkedException().getCause() instanceof ContentPackReadException);
+				}
+			});
 
 			AnimationTemplates animationTemplates = (AnimationTemplates) readXmlFile(unmarshaller, zipFile,
 					"animationTemplates.xml");
@@ -48,8 +57,6 @@ public class ContentPack {
 	}
 
 	public static void main(String[] args) throws ContentPackReadException {
-		File test = new File("bidule");
-		test.mkdir();
-		ContentPack.read(new File("vanilla.zip"));
+		ContentPacksContext c = new ContentPacksContext(new File("contentPacks"));
 	}
 }

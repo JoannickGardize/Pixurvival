@@ -1,5 +1,7 @@
 package fr.sharkhendrix.pixurvival.core.message;
 
+import java.nio.ByteBuffer;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -14,17 +16,7 @@ public class EntitiesUpdate {
 	private @Setter long updateId = -1;
 	private @Setter long worldId;
 	private @Setter int length;
-	private byte[] bytes = new byte[4096];
-	private Output lastOutput;
-
-	public Input getInput() {
-		return new Input(bytes, 0, length);
-	}
-
-	public Output getOutput() {
-		lastOutput = new Output(bytes);
-		return lastOutput;
-	}
+	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EntitiesUpdate> {
 
@@ -32,8 +24,8 @@ public class EntitiesUpdate {
 		public void write(Kryo kryo, Output output, EntitiesUpdate object) {
 			output.writeLong(object.updateId);
 			output.writeLong(object.worldId);
-			output.writeInt(object.lastOutput.position());
-			output.writeBytes(object.bytes, 0, object.lastOutput.position());
+			output.writeInt(object.byteBuffer.position());
+			output.writeBytes(object.byteBuffer.array(), 0, object.byteBuffer.position());
 		}
 
 		@Override
@@ -55,7 +47,7 @@ public class EntitiesUpdate {
 				}
 				entitiesUpdate.updateId = updateId;
 				entitiesUpdate.length = input.readInt();
-				input.readBytes(entitiesUpdate.bytes, 0, entitiesUpdate.length);
+				input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
 				return entitiesUpdate;
 			}
 		}
