@@ -8,12 +8,13 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.contentPack.ContentPackDenpendencyException;
+import com.pixurvival.core.contentPack.ContentPackFileInfo;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.contentPack.Version;
+
 public class ContentPackTest {
-
-	@Test
-	public void test() {
-
-	}
 
 	@Test
 	public void dependencySuccess() throws ContentPackDenpendencyException, URISyntaxException {
@@ -54,7 +55,7 @@ public class ContentPackTest {
 	}
 
 	@Test
-	public void dependencyMissig() throws ContentPackDenpendencyException, URISyntaxException {
+	public void dependencyMissing() throws ContentPackDenpendencyException, URISyntaxException {
 		ContentPacksContext context = new ContentPacksContext(
 				new File(getClass().getClassLoader().getResource("dependencySuccess").toURI()));
 		ContentPackIdentifier identifier = new ContentPackIdentifier("Z", new Version(0, 1),
@@ -84,6 +85,10 @@ public class ContentPackTest {
 			exceptionThrown = true;
 		}
 		Assert.assertTrue(exceptionThrown);
+	}
+
+	@Test
+	public void loadPackNoDependencies() {
 
 	}
 }
