@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ElementReference {
 
-	@XmlAttribute(name = "pack")
+	@XmlAttribute(name = "packRef")
 	private String packRef;
 
 	@XmlValue

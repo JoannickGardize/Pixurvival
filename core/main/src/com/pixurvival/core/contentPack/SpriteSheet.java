@@ -13,9 +13,10 @@ public class SpriteSheet extends NamedElement {
 	private int width;
 	@XmlAttribute(name = "height")
 	private int height;
-	@XmlElement(name = "fileName")
-	private String fileName;
+	@XmlElement(name = "image")
+	@XmlJavaTypeAdapter(ImageReferenceAdapter.class)
+	private ZipContentReference image;
 	@XmlElement(name = "animationTemplate")
-	@XmlJavaTypeAdapter(NamedElementRefAdapter.AnimationTemplateRefAdapter.class)
+	@XmlJavaTypeAdapter(RefAdapter.AnimationTemplateRefAdapter.class)
 	private AnimationTemplate animationTemplate;
 }

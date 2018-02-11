@@ -66,13 +66,15 @@ public class ContentPacksContext {
 
 		JAXBContext context;
 		try {
-			NamedElementRefContext refContext = new NamedElementRefContext();
+			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			unmarshaller.setEventHandler(e -> !(e.getLinkedException().getCause() instanceof ContentPackReadException));
+			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
+					&& e.getLinkedException().getCause() instanceof ContentPackReadException));
 			refContext.setAdapters(unmarshaller);
 			ContentPack lastContentPack = null;
 			for (ContentPackFileInfo info : dependencyList) {
+				refContext.setCurrentInfo(info);
 				lastContentPack = ContentPack.load(refContext, unmarshaller, info.getFile());
 			}
 			return lastContentPack;

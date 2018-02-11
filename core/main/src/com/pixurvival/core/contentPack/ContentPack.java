@@ -20,16 +20,14 @@ public class ContentPack {
 	private @NonNull File file;
 	private Sprites sprites;
 
-	static ContentPack load(NamedElementRefContext refContext, Unmarshaller unmarshaller, File file)
+	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, File file)
 			throws ContentPackReadException {
-		try {
-			ContentPack contentPack = new ContentPack(file);
-			ZipFile zipFile = new ZipFile(file);
-			ContentPackInfo info = (ContentPackInfo) readXmlFile(unmarshaller, zipFile, "contentPackInfo.xml");
-			refContext.setCurrentDependencies(info.getDependencies());
+		ContentPack contentPack = new ContentPack(file);
+		try (ZipFile zipFile = new ZipFile(file)) {
+
 			AnimationTemplates animationTemplates = (AnimationTemplates) readXmlFile(unmarshaller, zipFile,
 					"animationTemplates.xml");
-			refContext.addElementSet(info, AnimationTemplate.class, animationTemplates);
+			refContext.addElementSet(AnimationTemplate.class, animationTemplates);
 			contentPack.sprites = (Sprites) readXmlFile(unmarshaller, zipFile, "sprites.xml");
 			refContext.removeCurrentSets();
 			return contentPack;

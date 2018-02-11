@@ -9,11 +9,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class NamedElementRefAdapter<T extends NamedElement> extends XmlAdapter<ElementReference, T> {
+public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementReference, T> {
 
 	private Map<ContentPackIdentifier, NamedElementSet<T>> allSets = new HashMap<>();
 
-	private @NonNull NamedElementRefContext context;
+	private @NonNull RefContext context;
 
 	public void addSet(ContentPackIdentifier identifier, NamedElementSet<T> set) {
 		allSets.put(identifier, set);
@@ -29,14 +29,14 @@ public class NamedElementRefAdapter<T extends NamedElement> extends XmlAdapter<E
 
 	@Override
 	public T unmarshal(ElementReference v) throws Exception {
-		if (context.getCurrentDependencies() == null) {
+		if (context.getCurrentInfo() == null) {
 			throw new ContentPackReadException("Missing dependency context");
 		}
-		NamedElementSet<T> set;
+		NamedElementSet<T> set = null;
 		if (v.getPackRef() == null) {
 			set = allSets.get(null);
-		} else {
-			set = allSets.get(context.getCurrentDependencies().byRef(v.getPackRef()));
+		} else if (context.getCurrentInfo().getDependencies() != null) {
+			set = allSets.get(context.getCurrentInfo().getDependencies().byRef(v.getPackRef()));
 		}
 		if (set == null) {
 			throw new ContentPackReadException("Unknown content pack reference : " + v.getPackRef());
@@ -50,13 +50,13 @@ public class NamedElementRefAdapter<T extends NamedElement> extends XmlAdapter<E
 
 	@Override
 	public ElementReference marshal(T v) throws Exception {
-		// TODO récupérer la référence
+		// TODO rÃ©cupÃ©rer la rÃ©fÃ©rence
 		return new ElementReference(null, v.getName());
 	}
 
-	public static class AnimationTemplateRefAdapter extends NamedElementRefAdapter<AnimationTemplate> {
+	public static class AnimationTemplateRefAdapter extends RefAdapter<AnimationTemplate> {
 
-		public AnimationTemplateRefAdapter(NamedElementRefContext context) {
+		public AnimationTemplateRefAdapter(RefContext context) {
 			super(context);
 		}
 
