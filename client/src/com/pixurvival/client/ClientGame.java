@@ -2,16 +2,20 @@ package com.pixurvival.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.RequestContentPacks;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,11 +28,11 @@ public class ClientGame {
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter @Setter(AccessLevel.PACKAGE) long myPlayerId;
+	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
+	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 
 	public ClientGame() {
-		clientListener = new ClientListener(this);
-		client.addListener(clientListener);
-		client.start();
+		Log.set(Log.LEVEL_DEBUG);
 		KryoInitializer.apply(client.getKryo());
 	}
 
@@ -45,8 +49,10 @@ public class ClientGame {
 			if (client.isConnected()) {
 				client.stop();
 				client.close();
-				client.start();
 			}
+			clientListener = new ClientListener(this);
+			client.addListener(clientListener);
+			client.start();
 			client.connect(5000, address, port, port);
 			client.sendTCP(new LoginRequest(playerName));
 		} catch (IOException e) {
@@ -55,8 +61,18 @@ public class ClientGame {
 		}
 	}
 
+	public void startLocalGame() {
+		// TODO local game
+	}
+
 	public void sendAction(PlayerActionRequest request) {
-		client.sendUDP(request);
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+			} else {
+				// TODO local game
+			}
+		}
 	}
 
 	public void update(double deltaTimeMillis) {
@@ -65,6 +81,20 @@ public class ClientGame {
 			world.update(deltaTimeMillis);
 		} else {
 			clientListener.consumeReceivedObjects();
+		}
+	}
+
+	public void checkMissingPacks(ContentPackIdentifier[] identifiers) {
+		Collection<ContentPackIdentifier> list = contentPacksContext.list();
+		List<ContentPackIdentifier> missingPacks = new ArrayList<>();
+		for (ContentPackIdentifier identifier : identifiers) {
+			if (!list.contains(identifier)) {
+				missingPacks.add(identifier);
+			}
+		}
+		if (!missingPacks.isEmpty()) {
+			client.sendTCP(
+					new RequestContentPacks(missingPacks.toArray(new ContentPackIdentifier[missingPacks.size()])));
 		}
 	}
 }

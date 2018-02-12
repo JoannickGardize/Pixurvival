@@ -3,6 +3,8 @@ package com.pixurvival.core.contentPack;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,12 @@ public class ContentPacksContext {
 	private Map<ContentPackIdentifier, ContentPackFileInfo> infos = new HashMap<>();
 
 	public ContentPacksContext(File workingDirectory) {
+		if (!workingDirectory.exists()) {
+			if (!workingDirectory.mkdir()) {
+				throw new IllegalArgumentException(
+						"Cannot create contentPackContext working directory : " + workingDirectory.getPath());
+			}
+		}
 		if (!workingDirectory.isDirectory()) {
 			throw new IllegalArgumentException(workingDirectory.getPath() + " is not a directory.");
 		}
@@ -30,6 +38,14 @@ public class ContentPacksContext {
 
 	public ContentPacksContext(String workingDirectory) {
 		this(new File(workingDirectory));
+	}
+
+	public Collection<ContentPackIdentifier> list() {
+		return Collections.unmodifiableCollection(infos.keySet());
+	}
+
+	public File fileOf(ContentPackIdentifier identifier) {
+		return infos.get(identifier).getFile();
 	}
 
 	public void refreshList() {
@@ -75,7 +91,7 @@ public class ContentPacksContext {
 			ContentPack lastContentPack = null;
 			for (ContentPackFileInfo info : dependencyList) {
 				refContext.setCurrentInfo(info);
-				lastContentPack = ContentPack.load(refContext, unmarshaller, info.getFile());
+				lastContentPack = ContentPack.load(refContext, unmarshaller, info);
 			}
 			return lastContentPack;
 		} catch (JAXBException e) {

@@ -17,13 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ContentPack {
 
-	private @NonNull File file;
+	private @NonNull ContentPackFileInfo info;
 	private Sprites sprites;
 
-	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, File file)
+	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
-		ContentPack contentPack = new ContentPack(file);
-		try (ZipFile zipFile = new ZipFile(file)) {
+		ContentPack contentPack = new ContentPack(info);
+		try (ZipFile zipFile = new ZipFile(info.getFile())) {
 
 			AnimationTemplates animationTemplates = (AnimationTemplates) readXmlFile(unmarshaller, zipFile,
 					"animationTemplates.xml");

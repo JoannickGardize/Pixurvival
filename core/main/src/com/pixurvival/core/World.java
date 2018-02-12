@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.EntitiesUpdate;
@@ -40,11 +43,13 @@ public class World {
 	private long id;
 	private long previousUpdateId = -1;
 	private EntitiesUpdate entitiesUpdate = new EntitiesUpdate();
+	private ContentPack contentPack;
 
-	private World(long id, Type type, TiledMap map) {
+	private World(long id, Type type, TiledMap map, ContentPack contentPack) {
 		this.id = id;
 		this.type = type;
 		this.map = map;
+		this.contentPack = contentPack;
 		entitiesUpdate.setWorldId(id);
 	}
 
@@ -52,15 +57,23 @@ public class World {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld) {
+	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext)
+			throws ContentPackException {
 		TiledMap map = new TiledMap(createWorld.getMapHeight(), createWorld.getMapWidth());
-		World world = new World(createWorld.getId(), Type.CLIENT, map);
+		World world = new World(createWorld.getId(), Type.CLIENT, map,
+				contentPacksContext.load(createWorld.getContentPackIdentifier()));
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
-	public static World createServerWorld(TiledMap map) {
-		World world = new World(nextId++, Type.SERVER, map);
+	public static World createServerWorld(ContentPack contentPack, TiledMap map) {
+		World world = new World(nextId++, Type.SERVER, map, contentPack);
+		worlds.put(world.getId(), world);
+		return world;
+	}
+
+	public static World createLocalWorld(ContentPack contentPack, TiledMap map) {
+		World world = new World(nextId++, Type.LOCAL, map, contentPack);
 		worlds.put(world.getId(), world);
 		return world;
 	}

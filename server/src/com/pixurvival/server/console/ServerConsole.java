@@ -3,6 +3,7 @@ package com.pixurvival.server.console;
 import java.io.IOException;
 import java.util.Scanner;
 
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGame;
 import com.pixurvival.server.ServerGameListener;
@@ -39,6 +40,11 @@ public class ServerConsole implements Runnable, ServerGameListener {
 				break;
 			case "start":
 				game.startTestGame();
+				break;
+			case "ls-pack":
+				for (ContentPackIdentifier identifier : game.getContentPacksContext().list()) {
+					System.out.println(identifier);
+				}
 				break;
 			case "exit":
 				game.stopServer();

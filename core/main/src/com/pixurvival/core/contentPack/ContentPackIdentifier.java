@@ -24,6 +24,21 @@ public class ContentPackIdentifier {
 	@XmlElement(name = "uniqueIdentifier", required = true)
 	private UUID uniqueIdentifier;
 
+	public ContentPackIdentifier(ContentPackIdentifier other) {
+		name = other.name;
+		version = other.version;
+		uniqueIdentifier = other.uniqueIdentifier;
+	}
+
+	public String buildFileName() {
+		String legalName = name.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+		String versionString = version.toString();
+		String uuidString = uniqueIdentifier.toString();
+		StringBuilder sb = new StringBuilder(legalName.length() + versionString.length() + uuidString.length() + 6);
+		sb.append(legalName).append("_").append(versionString).append("_").append(uuidString).append(".zip");
+		return sb.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,5 +75,4 @@ public class ContentPackIdentifier {
 			return false;
 		return true;
 	}
-
 }

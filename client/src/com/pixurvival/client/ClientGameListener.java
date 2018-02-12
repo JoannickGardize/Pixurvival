@@ -7,4 +7,6 @@ public interface ClientGameListener {
 	void loginResponse(LoginResponse response);
 
 	void startGame();
+
+	void error(Throwable e);
 }

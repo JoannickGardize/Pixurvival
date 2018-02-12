@@ -12,13 +12,16 @@ import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.RequestContentPacks;
 
 class ServerListener extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new HashMap<>();
+	private ServerGame game;
 
 	public ServerListener(ServerGame game) {
+		this.game = game;
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {
@@ -36,6 +39,10 @@ class ServerListener extends Listener {
 				entity.apply((PlayerActionRequest) m.getObject());
 			}
 		});
+		messageActions.put(RequestContentPacks.class, m -> {
+			PlayerConnection connection = m.getConnection();
+			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
+		});
 	}
 
 	public void consumeReceivedObjects() {
@@ -52,7 +59,6 @@ class ServerListener extends Listener {
 
 	@Override
 	public void connected(Connection connection) {
-
 	}
 
 	@Override

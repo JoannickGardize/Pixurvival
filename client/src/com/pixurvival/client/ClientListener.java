@@ -8,9 +8,13 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.EntitiesUpdate;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.StartGame;
 
 class ClientListener extends Listener {
@@ -26,9 +30,19 @@ class ClientListener extends Listener {
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
 		messageActions.put(StartGame.class, s -> {
 			StartGame startGame = (StartGame) s;
-			game.setMyPlayerId(startGame.getMyPlayerId());
-			game.setWorld(World.createClientWorld(startGame.getCreateWorld()));
-			game.notify(l -> l.startGame());
+			try {
+				game.setWorld(World.createClientWorld(startGame.getCreateWorld(), game.getContentPacksContext()));
+				game.setMyPlayerId(startGame.getMyPlayerId());
+				game.notify(l -> l.startGame());
+			} catch (ContentPackException e) {
+				Log.error("Error occured when loading contentPack.", e);
+				game.notify(l -> l.error(e));
+			}
+		});
+		messageActions.put(ContentPackPart.class,
+				p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
+		messageActions.put(RequestContentPacks.class, r -> {
+			game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
 		});
 	}
 
@@ -40,6 +54,7 @@ class ClientListener extends Listener {
 	@Override
 	public void received(Connection connection, Object object) {
 		synchronized (receivedObjects) {
+			Log.debug(object.toString());
 			if (object != null && !(object instanceof EntitiesUpdate)) {
 				receivedObjects.add(object);
 			}
