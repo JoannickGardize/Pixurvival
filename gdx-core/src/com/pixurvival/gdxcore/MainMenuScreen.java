@@ -20,18 +20,11 @@ public class MainMenuScreen implements Screen {
 		this.game = game;
 		Table table = new Table();
 		table.setFillParent(true);
-		Skin skin = new Skin(Gdx.files.internal("kenney-pixel/skin/skin.json"));
 
+		Skin skin = game.getAssetManager().get(Assets.SKIN, Skin.class);
 		TextButton singleplayerButton = new TextButton(game.getString("menu.main.singleplayer"), skin);
 		TextButton multiplayerButton = new TextButton(game.getString("menu.main.multiplayer"), skin);
 		TextButton exitButton = new TextButton(game.getString("menu.main.exit"), skin);
-
-		exitButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
-			}
-		});
 
 		table.add(singleplayerButton).prefWidth(400).prefHeight(50).padBottom(10);
 		table.row();
@@ -40,6 +33,20 @@ public class MainMenuScreen implements Screen {
 		table.add(exitButton).prefWidth(400).prefHeight(50);
 
 		stage.addActor(table);
+
+		multiplayerButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(MultiplayerMenuScreen.class);
+			}
+		});
+
+		exitButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
 	}
 
 	@Override

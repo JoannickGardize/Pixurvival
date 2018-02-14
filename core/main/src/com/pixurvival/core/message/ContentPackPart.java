@@ -16,5 +16,6 @@ public class ContentPackPart {
 	private ContentPackIdentifier identifier;
 	private int partNumber;
 	private int numberOfPart;
+	private int length;
 	private byte[] data;
 }

@@ -27,7 +27,7 @@ public class ContentPackDownloadManager {
 				writingMap.put(contentPackPart.getIdentifier(), output);
 			}
 			Log.debug("Write");
-			output.write(contentPackPart.getData());
+			output.write(contentPackPart.getData(), 0, contentPackPart.getLength());
 			if (contentPackPart.getPartNumber() == contentPackPart.getNumberOfPart() - 1) {
 				Log.debug("end write file");
 				output.flush();

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -82,20 +81,18 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 					}
 					try (InputStream stream = new BufferedInputStream(new FileInputStream(file))) {
 
-						List<ContentPackPart> parts = new ArrayList<>();
 						int byteRead;
-						do {
+						int numberOfPart = (int) Math.ceil((double) file.length() / ContentPackPart.MAX_PART_LENGTH);
+						for (int i = 0; i < numberOfPart; i++) {
 							ContentPackPart part = new ContentPackPart();
 							part.setIdentifier(identifier);
-							part.setPartNumber(parts.size());
+							part.setPartNumber(i);
+							part.setNumberOfPart(numberOfPart);
 							part.setData(new byte[ContentPackPart.MAX_PART_LENGTH]);
 							byteRead = stream.read(part.getData());
-							parts.add(part);
-						} while (byteRead == ContentPackPart.MAX_PART_LENGTH);
-						parts.forEach(p -> {
-							p.setNumberOfPart(parts.size());
-							requestEntry.getConnection().sendTCP(p);
-						});
+							part.setLength(byteRead);
+							requestEntry.getConnection().sendTCP(part);
+						}
 					} catch (IOException e) {
 						Log.error("Error when trying to send content pack.", e);
 					}
