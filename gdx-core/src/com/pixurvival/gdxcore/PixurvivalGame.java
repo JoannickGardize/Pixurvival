@@ -17,12 +17,12 @@ import lombok.Getter;
 public class PixurvivalGame extends Game {
 
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
-	private ClientGame clientGame;
+	private @Getter ClientGame client;
 	private @Getter AssetManager assetManager;
 
 	@Override
 	public void create() {
-		clientGame = new ClientGame();
+		client = new ClientGame();
 		assetManager = new AssetManager();
 		assetManager.load(Assets.I18N_BUNDLE, I18NBundle.class);
 		assetManager.load(Assets.SKIN, Skin.class);

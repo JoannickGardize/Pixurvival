@@ -36,8 +36,8 @@ public class MultiplayerMenuScreen implements Screen {
 		table.row();
 
 		table.add(new Label(game.getString("menu.multiplayer.playerName"), skin)).right();
-		TextField nameButton = new TextField("Bob", skin);
-		table.add(nameButton);
+		TextField nameField = new TextField("Bob", skin);
+		table.add(nameField);
 		table.row();
 
 		Table buttonTable = new Table();
@@ -50,6 +50,14 @@ public class MultiplayerMenuScreen implements Screen {
 		table.add(buttonTable).colspan(5);
 
 		stage.addActor(table);
+
+		connectButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.getClient().connectToServer(ipField.getText(), Integer.valueOf(portField.getText()),
+						nameField.getText());
+			}
+		});
 
 		backButton.addListener(new ClickListener() {
 			@Override
