@@ -20,17 +20,18 @@ public class MainMenuScreen implements Screen {
 		this.game = game;
 		Table table = new Table();
 		table.setFillParent(true);
+		table.defaults().prefWidth(400).prefHeight(50).pad(5, 0, 5, 0);
 
 		Skin skin = game.getAssetManager().get(Assets.SKIN, Skin.class);
 		TextButton singleplayerButton = new TextButton(game.getString("menu.main.singleplayer"), skin);
 		TextButton multiplayerButton = new TextButton(game.getString("menu.main.multiplayer"), skin);
 		TextButton exitButton = new TextButton(game.getString("menu.main.exit"), skin);
 
-		table.add(singleplayerButton).prefWidth(400).prefHeight(50).padBottom(10);
+		table.add(singleplayerButton);
 		table.row();
-		table.add(multiplayerButton).prefWidth(400).prefHeight(50).padBottom(10);
+		table.add(multiplayerButton);
 		table.row();
-		table.add(exitButton).prefWidth(400).prefHeight(50);
+		table.add(exitButton);
 
 		stage.addActor(table);
 
