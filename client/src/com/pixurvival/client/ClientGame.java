@@ -1,6 +1,5 @@
 package com.pixurvival.client;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,7 +54,7 @@ public class ClientGame {
 			client.start();
 			client.connect(5000, address, port, port);
 			client.sendTCP(new LoginRequest(playerName));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Log.error("Error when trying to connect to server.", e);
 			listeners.forEach(l -> l.loginResponse(LoginResponse.INTERNAL_ERROR));
 		}

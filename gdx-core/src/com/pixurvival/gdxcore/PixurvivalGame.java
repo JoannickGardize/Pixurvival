@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
+import com.pixurvival.gdxcore.menu.MainMenuScreen;
 
 import lombok.Getter;
 
@@ -19,6 +20,7 @@ public class PixurvivalGame extends Game {
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
 	private @Getter ClientGame client;
 	private @Getter AssetManager assetManager;
+	private @Getter KeyMapping KeyMapping;
 
 	@Override
 	public void create() {

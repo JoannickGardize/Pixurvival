@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore;
+package com.pixurvival.gdxcore.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -10,21 +10,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.gdxcore.Assets;
+import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class MultiplayerMenuScreen implements Screen {
 
 	private Stage stage = new Stage(new ScreenViewport());
 	private PixurvivalGame game;
-	private Window connectionWindow;
-	private Label connectionInfoLabel;
+	private ConnectionMessageWindow connectionMessageWindow;
 
 	public MultiplayerMenuScreen(PixurvivalGame game) {
 		this.game = game;
 		Skin skin = game.getAssetManager().get(Assets.SKIN, Skin.class);
-
 		Table table = new Table();
 		table.setFillParent(true);
 		table.defaults().pad(5);
@@ -52,31 +51,17 @@ public class MultiplayerMenuScreen implements Screen {
 
 		table.add(buttonTable).colspan(2);
 
-		connectionWindow = new Window(game.getString("menu.multiplayer.connectWindow.title"), skin);
-		connectionWindow.setModal(true);
-		// connectionWindow.setVisible(false);
-		connectionWindow.setMovable(false);
-		connectionWindow.setResizable(false);
-
-		connectionInfoLabel = new Label("Wesh wehs dsf sf fs dgfd g fdgh dh dgfh gfhg fh gf hg fh g", skin);
-		connectionInfoLabel.setWrap(true);
-
-		// Table connectionWindowTable = new Table();
-		// connectionWindowTable.setFillParent(true);
-		// connectionWindow.add(connectionWindowTable);
-		connectionWindow.add(connectionInfoLabel).expand().top().width(connectionWindow.getWidth());
-		connectionWindow.row();
-		connectionWindow.add(new TextButton("yo", skin));
+		connectionMessageWindow = new ConnectionMessageWindow(game);
 
 		stage.addActor(table);
-		stage.addActor(connectionWindow);
+		stage.addActor(connectionMessageWindow);
 
 		connectButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.getClient().connectToServer(ipField.getText(), Integer.valueOf(portField.getText()),
-						nameField.getText());
-				connectionWindow.setVisible(true);
+				connectionMessageWindow.showWaitingMessage();
+				new Thread(() -> game.getClient().connectToServer(ipField.getText(),
+						Integer.valueOf(portField.getText()), nameField.getText())).start();
 			}
 		});
 
@@ -104,9 +89,7 @@ public class MultiplayerMenuScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		connectionWindow.setPosition(stage.getViewport().getWorldWidth() / 2 - connectionWindow.getWidth() / 2,
-				stage.getViewport().getWorldHeight() / 2 - connectionWindow.getHeight() / 2);
-		connectionWindow.getCell(connectionInfoLabel).width(connectionWindow.getWidth() - 20);
+		connectionMessageWindow.update(stage.getViewport());
 	}
 
 	@Override
