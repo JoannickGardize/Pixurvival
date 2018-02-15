@@ -79,6 +79,7 @@ public class MultiplayerMenuScreen implements Screen {
 				connectionWindow.setVisible(true);
 			}
 		});
+
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
