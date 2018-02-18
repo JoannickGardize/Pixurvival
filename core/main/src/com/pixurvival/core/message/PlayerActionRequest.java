@@ -4,15 +4,22 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class PlayerActionRequest {
 
 	private Direction direction;
 	private boolean forward;
+
+	public void set(PlayerActionRequest other) {
+		direction = other.direction;
+		forward = other.forward;
+	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerActionRequest> {
 

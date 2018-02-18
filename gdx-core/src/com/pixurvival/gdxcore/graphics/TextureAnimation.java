@@ -1,16 +1,26 @@
 package com.pixurvival.gdxcore.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.pixurvival.core.contentPack.Animation;
+import com.pixurvival.core.contentPack.Frame;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 public class TextureAnimation {
 
 	private Texture[] textures;
 	@Getter
-	private float frameDuration;
+	private double frameDuration;
+
+	public TextureAnimation(TextureSheet textureSheet, Animation animation, double frameDuration) {
+		this.frameDuration = frameDuration;
+		Frame[] frames = animation.getFrames();
+		textures = new Texture[frames.length];
+		for (int i = 0; i < frames.length; i++) {
+			textures[i] = textureSheet.get(frames[i].getX(), frames[i].getY());
+		}
+
+	}
 
 	public Texture getTexture(int index) {
 		return textures[index];

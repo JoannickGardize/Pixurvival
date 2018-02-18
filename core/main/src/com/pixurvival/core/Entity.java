@@ -15,6 +15,7 @@ public abstract class Entity {
 	private @Setter(AccessLevel.PACKAGE) World world;
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
+	private @Setter Object customData;
 
 	public abstract void update();
 

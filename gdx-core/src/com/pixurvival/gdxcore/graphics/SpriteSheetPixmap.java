@@ -1,7 +1,7 @@
 package com.pixurvival.gdxcore.graphics;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.pixurvival.core.contentPack.ContentPackReadException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,10 +37,21 @@ public class SpriteSheetPixmap extends Pixmap {
 	private int spriteWidth;
 	private int spriteHeight;
 
-	public SpriteSheetPixmap(FileHandle file, int spriteWidth, int spriteHeight) {
-		super(file);
+	public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) throws ContentPackReadException {
+		super(data, 0, data.length);
 		this.spriteWidth = spriteWidth;
 		this.spriteHeight = spriteHeight;
+		if (getWidth() % spriteWidth != 0 || getHeight() % spriteHeight != 0) {
+			throw new ContentPackReadException("Illegal width/height for sprite sheet.");
+		}
+	}
+
+	public int getTileCountX() {
+		return getWidth() / spriteWidth;
+	}
+
+	public int getTileCountY() {
+		return getHeight() / spriteHeight;
 	}
 
 	public Region getRegion(int xIndex, int yIndex) {

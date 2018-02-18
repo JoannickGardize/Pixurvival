@@ -21,4 +21,5 @@ public class EntitiesActor extends Actor {
 			batch.draw(texture, (float) e.getPosition().x - 0.5f, (float) e.getPosition().y, 1, 1);
 		});
 	}
+
 }

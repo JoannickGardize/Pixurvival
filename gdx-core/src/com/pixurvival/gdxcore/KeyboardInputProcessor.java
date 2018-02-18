@@ -1,6 +1,9 @@
 package com.pixurvival.gdxcore;
 
-import com.badlogic.gdx.InputProcessor;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.badlogic.gdx.InputAdapter;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.message.PlayerActionRequest;
 
@@ -8,63 +11,71 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class KeyboardInputProcessor implements InputProcessor {
+public class KeyboardInputProcessor extends InputAdapter {
 
 	private @NonNull KeyMapping keyMapping;
 	private PlayerActionRequest playerAction = new PlayerActionRequest();
 	private PlayerActionRequest previousPlayerAction = new PlayerActionRequest();
+	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
 
 	public KeyboardInputProcessor() {
 		playerAction.setDirection(Direction.SOUTH);
 		playerAction.setForward(false);
+		for (KeyAction action : KeyAction.values()) {
+			pressedKeys.put(action, false);
+		}
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
-
-		return false;
+		KeyAction keyAction = keyMapping.getAction(keycode);
+		if (keyAction != null) {
+			pressedKeys.put(keyAction, true);
+		}
+		return true;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
-		return false;
+		KeyAction keyAction = keyMapping.getAction(keycode);
+		if (keyAction != null) {
+			pressedKeys.put(keyAction, false);
+		}
+		return true;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public boolean update() {
+		boolean left = pressedKeys.get(KeyAction.MOVE_LEFT);
+		boolean up = pressedKeys.get(KeyAction.MOVE_UP);
+		boolean right = pressedKeys.get(KeyAction.MOVE_RIGHT);
+		boolean down = pressedKeys.get(KeyAction.MOVE_DOWN);
 
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		playerAction.setForward(true);
+		if (right && up) {
+			playerAction.setDirection(Direction.NORTH_EAST);
+		} else if (up && left) {
+			playerAction.setDirection(Direction.NORTH_WEST);
+		} else if (left && down) {
+			playerAction.setDirection(Direction.SOUTH_WEST);
+		} else if (down && right) {
+			playerAction.setDirection(Direction.SOUTH_EAST);
+		} else if (right) {
+			playerAction.setDirection(Direction.EAST);
+		} else if (up) {
+			playerAction.setDirection(Direction.NORTH);
+		} else if (left) {
+			playerAction.setDirection(Direction.WEST);
+		} else if (down) {
+			playerAction.setDirection(Direction.SOUTH);
+		} else {
+			playerAction.setForward(false);
+		}
 
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
-		return false;
+		if (playerAction.equals(previousPlayerAction)) {
+			return false;
+		} else {
+			previousPlayerAction.set(playerAction);
+			return true;
+		}
 	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

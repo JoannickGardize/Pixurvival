@@ -1,8 +1,10 @@
 package com.pixurvival.core;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -18,6 +20,7 @@ public class EntityPool {
 	private World world;
 	private Map<EntityGroup, Map<Long, Entity>> entities = new HashMap<>();
 	private long nextId = 0;
+	private List<EntityPoolListener> listeners = new ArrayList<>();
 
 	public EntityPool(World world) {
 		this.world = world;
@@ -26,23 +29,30 @@ public class EntityPool {
 		}
 	}
 
+	public void addListener(EntityPoolListener l) {
+		listeners.add(l);
+	}
+
 	public void add(Entity e) {
 		e.setWorld(world);
 		if (world.isServer()) {
 			e.setId(nextId++);
 		}
 		entities.get(e.getGroup()).put(e.getId(), e);
-	}
-
-	public void remove(Entity e) {
-		entities.get(e.getGroup()).remove(e.getId());
+		listeners.forEach(l -> l.entityAdded(e));
 	}
 
 	public void update() {
 		for (Map<Long, Entity> groupMap : entities.values()) {
 			Collection<Entity> groupCollection = groupMap.values();
-			groupCollection.removeIf(e -> !e.isAlive());
-			groupCollection.forEach(e -> e.update());
+			groupCollection.removeIf(e -> {
+				if (!e.isAlive()) {
+					listeners.forEach(l -> l.entityRemoved(e));
+					return true;
+				}
+				return false;
+			});
+			groupCollection.forEach(Entity::update);
 		}
 	}
 
