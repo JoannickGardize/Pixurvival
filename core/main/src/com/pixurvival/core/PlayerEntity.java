@@ -54,6 +54,7 @@ public class PlayerEntity extends AliveEntity {
 		buffer.putDouble(getPosition().y);
 		buffer.putDouble(getHealth());
 		buffer.putDouble(getMovingAngle());
+		buffer.putDouble(getAimingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 	}
 
@@ -62,6 +63,7 @@ public class PlayerEntity extends AliveEntity {
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		setHealth(buffer.getDouble());
 		setMovingAngle(buffer.getDouble());
+		setAimingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1 ? true : false);
 	}
 

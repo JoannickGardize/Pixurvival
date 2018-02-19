@@ -114,8 +114,8 @@ public class ContentPackTest {
 		Assert.assertEquals("characterAnimation3", animationTemplate.getName());
 		Assert.assertEquals(0.3, animationTemplate.getFrameDuration(), Double.MIN_VALUE);
 		Assert.assertEquals(8, animationTemplate.getAnimations().size());
-		Animation animation = animationTemplate.getAnimations().get("standLeft");
-		Assert.assertEquals("standLeft", animation.getName());
+		Animation animation = animationTemplate.getAnimations().get(ActionAnimation.STAND_LEFT);
+		Assert.assertEquals(ActionAnimation.STAND_LEFT, animation.getAction());
 		Assert.assertEquals(1, animation.getFrames().length);
 		Assert.assertEquals(0, animation.getFrames()[0].getX());
 		Assert.assertEquals(2, animation.getFrames()[0].getY());

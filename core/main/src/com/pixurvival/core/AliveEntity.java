@@ -9,6 +9,7 @@ public abstract class AliveEntity extends Entity implements Damageable {
 
 	private double health = getMaxHealth();
 	private double movingAngle;
+	private double aimingAngle;
 	private boolean forward;
 
 	@Override

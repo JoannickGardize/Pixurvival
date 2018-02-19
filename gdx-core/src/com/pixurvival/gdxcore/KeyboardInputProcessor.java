@@ -44,6 +44,9 @@ public class KeyboardInputProcessor extends InputAdapter {
 		return true;
 	}
 
+	/**
+	 * @return true if playerActionRequest has changed
+	 */
 	public boolean update() {
 		boolean left = pressedKeys.get(KeyAction.MOVE_LEFT);
 		boolean up = pressedKeys.get(KeyAction.MOVE_UP);

@@ -14,7 +14,7 @@ import com.pixurvival.core.message.PlayerActionRequest;
 public class OldPixurvivalGame extends Game implements ClientGameListener {
 
 	private ClientGame game;
-	private WorldStage worldStage;
+	// private WorldStage worldStage;
 	private PlayerActionRequest actionRequest = new PlayerActionRequest();
 	private double frameDurationMillis = 1000.0 / 30;
 	private int maxUpdatePerFrame = 5;
@@ -22,7 +22,7 @@ public class OldPixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void create() {
-		worldStage = new WorldStage();
+		// worldStage = new WorldStage();
 		game = new ClientGame();
 		game.addListener(this);
 		game.connectToServer("localhost", 7777, "Bob");
@@ -38,19 +38,19 @@ public class OldPixurvivalGame extends Game implements ClientGameListener {
 		}
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		worldStage.getCamera().position.set(250, 250, 0);
-		worldStage.draw();
+		// worldStage.getCamera().position.set(250, 250, 0);
+		// worldStage.draw();
 	}
 
 	@Override
 	public void dispose() {
-		worldStage.dispose();
+		// worldStage.dispose();
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		worldStage.getViewport().update(width, height);
+		// worldStage.getViewport().update(width, height);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class OldPixurvivalGame extends Game implements ClientGameListener {
 	public void startGame() {
 		// TODO remove BOUCHON
 		game.getWorld().getMap().getTiles().setAll(Tile.GRASS);
-		worldStage.setWorld(game.getWorld());
+		// worldStage.setWorld(game.getWorld());
 	}
 
 	private void processInputs() {

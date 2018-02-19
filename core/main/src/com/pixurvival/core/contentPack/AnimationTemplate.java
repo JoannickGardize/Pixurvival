@@ -18,14 +18,14 @@ public class AnimationTemplate extends NamedElement {
 	@XmlAttribute(name = "frameDuration")
 	private double frameDuration;
 
-	private Map<String, Animation> animations = new HashMap<>();
+	private Map<ActionAnimation, Animation> animations = new HashMap<>();
 
-	public Map<String, Animation> getAnimations() {
+	public Map<ActionAnimation, Animation> getAnimations() {
 		return Collections.unmodifiableMap(animations);
 	}
 
 	@XmlElement(name = "animation")
 	public List<Animation> getAnimationsListView() {
-		return new ListViewOfMap<String, Animation>(animations, Animation::getName);
+		return new ListViewOfMap<ActionAnimation, Animation>(animations, Animation::getAction);
 	}
 }
