@@ -1,8 +1,11 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.contentPack.ActionAnimation;
+import com.pixurvival.core.message.Direction;
 import com.pixurvival.gdxcore.graphics.TextureAnimation;
 import com.pixurvival.gdxcore.graphics.TextureAnimationSet;
 
@@ -16,15 +19,14 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 
 	@Override
 	public void draw(Batch batch, PlayerEntity e) {
-		float timer = getAndUpdateTimer(e);
-		int index = (int) (timer / textureAnimation.getFrameDuration());
-		while (index >= textureAnimation.size()) {
-			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
-		}
-		data.setTimer(timer);
+		TextureAnimation textureAnimation = getAnimation(e);
+		int index = getIndexAndUpdateTimer(e, textureAnimation);
+		Texture texture = textureAnimation.getTexture(index);
+		batch.draw(texture, (float) (e.getPosition().x - textureAnimationSet.getXOffset()),
+				(float) (e.getPosition().y - textureAnimationSet.getYOffset()));
 	}
 
-	private float getAndUpdateTimer(PlayerEntity e) {
+	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {
 		Object o = e.getCustomData();
 		if (o == null) {
 			o = new AnimationData();
@@ -33,10 +35,19 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		AnimationData data = (AnimationData) o;
 		float timer = data.getTimer();
 		timer += Gdx.graphics.getDeltaTime();
-		return timer;
+		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
+			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
+		}
+		data.setTimer(timer);
+		return (int) (timer / textureAnimation.getFrameDuration());
 	}
 
 	private TextureAnimation getAnimation(PlayerEntity e) {
-		if()
+		Direction aimingDirection = Direction.closestCardinal(e.getAimingAngle());
+		if (e.isForward()) {
+			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));
+		} else {
+			return textureAnimationSet.get(ActionAnimation.getStandFromDirection(aimingDirection));
+		}
 	}
 }

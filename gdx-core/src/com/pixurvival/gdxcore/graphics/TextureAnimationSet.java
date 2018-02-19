@@ -3,22 +3,26 @@ package com.pixurvival.gdxcore.graphics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
 
-import com.badlogic.gdx.graphics.Pixmap;
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ActionAnimation;
 import com.pixurvival.core.contentPack.Animation;
 import com.pixurvival.core.contentPack.AnimationTemplate;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.contentPack.SpriteSheet;
-import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
+
+import lombok.Getter;
 
 public class TextureAnimationSet {
 
 	private Map<ActionAnimation, TextureAnimation> map = new HashMap<>();
+	private @Getter float xOffset;
+	private @Getter float yOffset;
 
-	public TextureAnimationSet(SpriteSheet spriteSheet, Function<Region, Pixmap> transform)
-			throws ContentPackReadException {
+	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
+		float truePixelWidth = 1f / transform.getPixelWidth() * World.PIXEL_PER_UNIT;
+		xOffset = truePixelWidth + (float) spriteSheet.getWidth() / World.PIXEL_PER_UNIT / 2f;
+		yOffset = truePixelWidth;
 		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(spriteSheet.getImage().read(), spriteSheet.getWidth(),
 				spriteSheet.getHeight());
 		TextureSheet textureSheet = new TextureSheet(sheetPixmap, transform);

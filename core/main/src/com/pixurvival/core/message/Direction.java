@@ -31,6 +31,26 @@ public enum Direction {
 		this.angle = angle;
 	}
 
+	/**
+	 * Return the closest cardinal direction of the given angle.
+	 * 
+	 * @param angle
+	 *            The normalized angle, in radians ( ]-Pi;Pi] )
+	 * @return The closest cardinal direction (North, East, south, West). North
+	 *         and South has priority for ambiguous angles (e.g. Pi/4).
+	 */
+	public static Direction closestCardinal(double angle) {
+		if (angle < Math.PI / 4 && angle > -Math.PI / 4) {
+			return EAST;
+		} else if (angle > 3.0 / 4.0 * Math.PI || angle < -3.0 / 4.0 * Math.PI) {
+			return WEST;
+		} else if (angle > 0) {
+			return NORTH;
+		} else {
+			return SOUTH;
+		}
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Direction> {
 
 		@Override

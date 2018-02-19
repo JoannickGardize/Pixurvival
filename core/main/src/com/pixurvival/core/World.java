@@ -20,6 +20,9 @@ import lombok.Getter;
 @EqualsAndHashCode(of = "id")
 public class World {
 
+	public static final int PIXEL_PER_UNIT = 8;
+	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
+
 	@Getter
 	@AllArgsConstructor
 	public static enum Type {
