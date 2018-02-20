@@ -18,8 +18,8 @@ import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.map.Tile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
-import com.pixurvival.core.message.StartGame;
 
 import lombok.Getter;
 
@@ -82,7 +82,7 @@ public class ServerGame {
 			playerEntity.getPosition().set(250, 250);
 			world.getEntityPool().add(playerEntity);
 			playerConnection.setPlayerEntity(playerEntity);
-			playerConnection.sendTCP(new StartGame(createWorld, playerEntity.getId()));
+			playerConnection.sendTCP(new InitializeGame(createWorld, playerEntity.getId()));
 		});
 	}
 

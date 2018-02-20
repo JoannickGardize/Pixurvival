@@ -7,18 +7,15 @@ import com.badlogic.gdx.InputAdapter;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.message.PlayerActionRequest;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class KeyboardInputProcessor extends InputAdapter {
 
-	private @NonNull KeyMapping keyMapping;
+	private KeyMapping keyMapping;
 	private PlayerActionRequest playerAction = new PlayerActionRequest();
 	private PlayerActionRequest previousPlayerAction = new PlayerActionRequest();
 	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
 
-	public KeyboardInputProcessor() {
+	public KeyboardInputProcessor(KeyMapping keyMapping) {
+		this.keyMapping = keyMapping;
 		playerAction.setDirection(Direction.SOUTH);
 		playerAction.setForward(false);
 		for (KeyAction action : KeyAction.values()) {

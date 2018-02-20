@@ -25,7 +25,7 @@ public class KryoInitializer {
 		register(kryo, LoginResponse.class);
 		register(kryo, EntitiesUpdate.class);
 		register(kryo, CreateWorld.class);
-		register(kryo, StartGame.class);
+		register(kryo, InitializeGame.class);
 		register(kryo, byte[].class);
 		register(kryo, Version.class);
 		kryo.register(UUID.class, new UUIDSerializer());
@@ -33,6 +33,7 @@ public class KryoInitializer {
 		register(kryo, ContentPackIdentifier[].class);
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
+		register(kryo, ClientReady.class);
 	}
 
 	@SuppressWarnings("unchecked")

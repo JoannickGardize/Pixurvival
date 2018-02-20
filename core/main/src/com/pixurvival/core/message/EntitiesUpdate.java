@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class EntitiesUpdate {
 			if (world == null) {
 				int length = input.readInt();
 				input.setPosition(input.position() + length);
+				Log.error("EntitiesUpdate received for an unknown world : " + worldId);
 				return null;
 			}
 			synchronized (world) {

@@ -18,4 +18,8 @@ public class ContentPackTextureAnimations {
 			map.put(entries.getKey(), new TextureAnimationSet(entries.getValue(), transform));
 		}
 	}
+
+	public TextureAnimationSet get(String name) {
+		return map.get(name);
+	}
 }

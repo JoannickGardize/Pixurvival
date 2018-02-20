@@ -12,7 +12,9 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
+import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.gdxcore.graphics.ContentPackTextureAnimations;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 
 import lombok.Getter;
@@ -37,7 +39,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	public void setScreen(Class<? extends Screen> screenClass) {
-		Screen screen = screens.get(screens);
+		Screen screen = screens.get(screenClass);
 		if (screen == null) {
 			try {
 				screen = screenClass.getConstructor(PixurvivalGame.class).newInstance(this);
@@ -68,8 +70,16 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void startGame() {
-		// TODO Auto-generated method stub
-
+		WorldScreen worldScreen = new WorldScreen();
+		ContentPackTextureAnimations contentPackTextureAnimations = new ContentPackTextureAnimations();
+		try {
+			contentPackTextureAnimations.load(client.getWorld().getContentPack(), 10);
+		} catch (ContentPackReadException e) {
+			e.printStackTrace();
+		}
+		worldScreen.setWorld(client.getWorld(), contentPackTextureAnimations, client.getMyPlayerId());
+		setScreen(worldScreen);
+		client.notifyReady();
 	}
 
 	@Override

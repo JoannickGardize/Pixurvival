@@ -10,6 +10,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.message.ClientReady;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -95,5 +96,9 @@ public class ClientGame {
 			client.sendTCP(
 					new RequestContentPacks(missingPacks.toArray(new ContentPackIdentifier[missingPacks.size()])));
 		}
+	}
+
+	public void notifyReady() {
+		client.sendTCP(new ClientReady());
 	}
 }

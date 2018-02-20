@@ -15,7 +15,7 @@ import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.EntitiesUpdate;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RequestContentPacks;
-import com.pixurvival.core.message.StartGame;
+import com.pixurvival.core.message.InitializeGame;
 
 class ClientListener extends Listener {
 
@@ -28,8 +28,8 @@ class ClientListener extends Listener {
 	public ClientListener(ClientGame game) {
 		this.game = game;
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
-		messageActions.put(StartGame.class, s -> {
-			StartGame startGame = (StartGame) s;
+		messageActions.put(InitializeGame.class, s -> {
+			InitializeGame startGame = (InitializeGame) s;
 			try {
 				game.setWorld(World.createClientWorld(startGame.getCreateWorld(), game.getContentPacksContext()));
 				game.setMyPlayerId(startGame.getMyPlayerId());

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StartGame {
+public class InitializeGame {
 
 	private CreateWorld createWorld;
 	private long myPlayerId;

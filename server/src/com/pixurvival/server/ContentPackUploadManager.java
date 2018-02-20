@@ -102,5 +102,4 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 			e.printStackTrace();
 		}
 	}
-
 }
