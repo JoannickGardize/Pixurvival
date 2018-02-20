@@ -8,6 +8,7 @@ import java.util.Random;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.map.Tile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.EntitiesUpdate;
@@ -63,6 +64,8 @@ public class World {
 	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext)
 			throws ContentPackException {
 		TiledMap map = new TiledMap(createWorld.getMapHeight(), createWorld.getMapWidth());
+		// TODO synchronization map
+		map.getTiles().setAll(Tile.GRASS);
 		World world = new World(createWorld.getId(), Type.CLIENT, map,
 				contentPacksContext.load(createWorld.getContentPackIdentifier()));
 		worlds.put(world.getId(), world);

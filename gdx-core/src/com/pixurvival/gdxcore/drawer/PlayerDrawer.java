@@ -20,10 +20,12 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 	@Override
 	public void draw(Batch batch, PlayerEntity e) {
 		TextureAnimation textureAnimation = getAnimation(e);
+
 		int index = getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
 		batch.draw(texture, (float) (e.getPosition().x - textureAnimationSet.getXOffset()),
-				(float) (e.getPosition().y - textureAnimationSet.getYOffset()));
+				(float) (e.getPosition().y - textureAnimationSet.getYOffset()), textureAnimationSet.getWidth(),
+				textureAnimationSet.getHeight());
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {

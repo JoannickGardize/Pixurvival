@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
@@ -25,6 +27,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private @Getter ClientGame client;
 	private @Getter AssetManager assetManager;
 	private @Getter KeyMapping KeyMapping;
+	private double frameDurationMillis = 1000.0 / 30;
+	private double frameCounter;
 
 	@Override
 	public void create() {
@@ -36,6 +40,18 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		// TODO barre de chargement
 		assetManager.finishLoading();
 		setScreen(MainMenuScreen.class);
+	}
+
+	@Override
+	public void render() {
+		frameCounter += Gdx.graphics.getDeltaTime() * 1000;
+		while (frameCounter >= frameDurationMillis) {
+			client.update(frameDurationMillis);
+			frameCounter -= frameDurationMillis;
+		}
+		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		super.render();
 	}
 
 	public void setScreen(Class<? extends Screen> screenClass) {
@@ -70,7 +86,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void startGame() {
-		WorldScreen worldScreen = new WorldScreen();
+		WorldScreen worldScreen = new WorldScreen(this);
 		ContentPackTextureAnimations contentPackTextureAnimations = new ContentPackTextureAnimations();
 		try {
 			contentPackTextureAnimations.load(client.getWorld().getContentPack(), 10);

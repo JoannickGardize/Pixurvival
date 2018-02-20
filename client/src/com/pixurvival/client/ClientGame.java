@@ -32,8 +32,10 @@ public class ClientGame {
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 
 	public ClientGame() {
-		Log.set(Log.LEVEL_DEBUG);
+		//Log.set(Log.LEVEL_DEBUG);
 		KryoInitializer.apply(client.getKryo());
+		clientListener = new ClientListener(this);
+		client.addListener(clientListener);
 	}
 
 	public void addListener(ClientGameListener listener) {
@@ -50,8 +52,6 @@ public class ClientGame {
 				client.stop();
 				client.close();
 			}
-			clientListener = new ClientListener(this);
-			client.addListener(clientListener);
 			client.start();
 			client.connect(5000, address, port, port);
 			client.sendTCP(new LoginRequest(playerName));

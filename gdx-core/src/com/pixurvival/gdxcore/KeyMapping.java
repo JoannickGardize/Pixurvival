@@ -11,10 +11,10 @@ public class KeyMapping {
 	private Map<Integer, KeyAction> actionByKey = new HashMap<>();
 
 	public KeyMapping() {
-		bind(KeyAction.MOVE_DOWN, Keys.S);
-		bind(KeyAction.MOVE_LEFT, Keys.Q);
-		bind(KeyAction.MOVE_RIGHT, Keys.D);
-		bind(KeyAction.MOVE_UP, Keys.Z);
+		bind(KeyAction.MOVE_DOWN, Keys.DOWN);
+		bind(KeyAction.MOVE_LEFT, Keys.LEFT);
+		bind(KeyAction.MOVE_RIGHT, Keys.RIGHT);
+		bind(KeyAction.MOVE_UP, Keys.UP);
 	}
 
 	public int getKey(KeyAction action) {

@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
 
 import lombok.Getter;
@@ -20,7 +21,9 @@ public class TextureSheet {
 		textures = new Texture[sizeX * sizeY];
 		for (int x = 0; x < sizeX; x++) {
 			for (int y = 0; y < sizeY; y++) {
-				textures[x + y * sizeX] = new Texture(transform.apply(spriteSheetPixmap.getRegion(x, y)));
+				Texture texture = new Texture(transform.apply(spriteSheetPixmap.getRegion(x, y)), true);
+				texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				textures[x + y * sizeX] = texture;
 			}
 		}
 	}

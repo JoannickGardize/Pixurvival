@@ -7,10 +7,12 @@ import com.badlogic.gdx.InputAdapter;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.message.PlayerActionRequest;
 
+import lombok.Getter;
+
 public class KeyboardInputProcessor extends InputAdapter {
 
 	private KeyMapping keyMapping;
-	private PlayerActionRequest playerAction = new PlayerActionRequest();
+	private @Getter PlayerActionRequest playerAction = new PlayerActionRequest();
 	private PlayerActionRequest previousPlayerAction = new PlayerActionRequest();
 	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
 
@@ -27,6 +29,7 @@ public class KeyboardInputProcessor extends InputAdapter {
 	public boolean keyDown(int keycode) {
 		KeyAction keyAction = keyMapping.getAction(keycode);
 		if (keyAction != null) {
+			System.out.println("chouocuchou");
 			pressedKeys.put(keyAction, true);
 		}
 		return true;

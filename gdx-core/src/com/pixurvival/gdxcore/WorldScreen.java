@@ -10,11 +10,15 @@ import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.graphics.ContentPackTextureAnimations;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 20;
+	public static final int VIEWPORT_WORLD_WIDTH = 15;
 
+	private @NonNull PixurvivalGame game;
 	@Getter
 	private World world;
 	private Stage stage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
@@ -35,6 +39,10 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		if (keyboardInputProcessor.update()) {
+			game.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
+		}
+
 		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
 		if (myPlayer != null) {
 			stage.getCamera().position.x = (float) myPlayer.getPosition().x;
