@@ -2,6 +2,8 @@ package com.pixurvival.core.contentPack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -19,6 +21,7 @@ public class ContentPack {
 
 	private @NonNull ContentPackFileInfo info;
 	private Sprites sprites;
+	private List<Tiles> tiles = new ArrayList<>();
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
@@ -29,7 +32,10 @@ public class ContentPack {
 					"animationTemplates.xml");
 			refContext.addElementSet(AnimationTemplate.class, animationTemplates);
 			contentPack.sprites = (Sprites) readXmlFile(unmarshaller, zipFile, "sprites.xml");
+			Tiles tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");
+			refContext.addElementSet(Tile.class, tiles);
 			refContext.removeCurrentSets();
+			refContext.getAdapter(Tile.class).allSets();
 			return contentPack;
 		} catch (Exception e) {
 			throw new ContentPackReadException(e);

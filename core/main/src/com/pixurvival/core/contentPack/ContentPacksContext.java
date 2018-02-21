@@ -83,7 +83,8 @@ public class ContentPacksContext {
 		JAXBContext context;
 		try {
 			RefContext refContext = new RefContext();
-			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class);
+			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
+					Tiles.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));

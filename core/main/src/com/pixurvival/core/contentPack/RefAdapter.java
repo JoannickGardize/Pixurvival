@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +26,10 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 
 	public void removeCurrentSet() {
 		allSets.remove(null);
+	}
+
+	public Collection<NamedElementSet<T>> allSets() {
+		return allSets.values();
 	}
 
 	@Override
@@ -57,6 +62,14 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 	public static class AnimationTemplateRefAdapter extends RefAdapter<AnimationTemplate> {
 
 		public AnimationTemplateRefAdapter(RefContext context) {
+			super(context);
+		}
+
+	}
+
+	public static class TileRefAdapter extends RefAdapter<Tile> {
+
+		public TileRefAdapter(RefContext context) {
 			super(context);
 		}
 

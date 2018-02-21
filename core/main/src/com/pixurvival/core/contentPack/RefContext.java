@@ -18,6 +18,12 @@ public class RefContext {
 
 	public RefContext() {
 		adapters.put(AnimationTemplate.class, new RefAdapter.AnimationTemplateRefAdapter(this));
+		adapters.put(Tile.class, new RefAdapter.TileRefAdapter(this));
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends NamedElement> RefAdapter<T> getAdapter(Class<T> type) {
+		return (RefAdapter<T>) adapters.get(type);
 	}
 
 	public void setAdapters(Unmarshaller unmarshaller) {
