@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tiles>
+	<tile name="grass">
+		<frame x="0" y="0" />
+	</tile>
+	<tile name="sand">
+		<frame x="1" y="0" />
+	</tile>
+	<tile name="rock">
+		<frame x="0" y="1" />
+		<velocityFactor>0.8</velocityFactor>
+	</tile>
+	<tile name="montain" solid="true">
+		<frame x="1" y="1" />
+	</tile>
+	<tile name="water" frameDuration="0.2">
+		<frame x="2" y="0" />
+		<frame x="3" y="0" />
+		<frame x="4" y="0" />
+		<frame x="5" y="0" />
+		<velocityFactor>0.3</velocityFactor>
+	</tile>
+	<tile name="deepWater" solid="true" frameDuration="0.2">
+		<frame x="2" y="1" />
+		<frame x="3" y="1" />
+		<frame x="4" y="1" />
+		<frame x="5" y="1" />
+	</tile>
+</tiles>

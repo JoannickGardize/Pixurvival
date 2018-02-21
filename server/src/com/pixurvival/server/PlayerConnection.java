@@ -12,5 +12,5 @@ public class PlayerConnection extends Connection {
 
 	private boolean logged = false;
 	private PlayerEntity playerEntity = null;
-	private boolean ready = false;
+	private boolean gameReady = false;
 }

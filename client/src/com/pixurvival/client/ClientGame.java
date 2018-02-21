@@ -8,9 +8,11 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
-import com.pixurvival.core.message.ClientReady;
+import com.pixurvival.core.message.GameReady;
+import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -30,9 +32,10 @@ public class ClientGame {
 	private @Getter @Setter(AccessLevel.PACKAGE) long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
+	private @Setter(AccessLevel.PACKAGE) InitializeGame initGame;
 
 	public ClientGame() {
-		//Log.set(Log.LEVEL_DEBUG);
+		// Log.set(Log.LEVEL_DEBUG);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
 		client.addListener(clientListener);
@@ -76,11 +79,12 @@ public class ClientGame {
 	}
 
 	public void update(double deltaTimeMillis) {
+		clientListener.consumeReceivedObjects();
 		if (world != null) {
-			clientListener.consumeReceivedObjects();
 			world.update(deltaTimeMillis);
-		} else {
-			clientListener.consumeReceivedObjects();
+		}
+		if (initGame != null && contentPackDownloadManager.isReady()) {
+			initializeGame();
 		}
 	}
 
@@ -96,9 +100,22 @@ public class ClientGame {
 			client.sendTCP(
 					new RequestContentPacks(missingPacks.toArray(new ContentPackIdentifier[missingPacks.size()])));
 		}
+		contentPackDownloadManager.setMissingList(missingPacks);
 	}
 
 	public void notifyReady() {
-		client.sendTCP(new ClientReady());
+		client.sendTCP(new GameReady());
+	}
+
+	private void initializeGame() {
+		try {
+			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext()));
+			setMyPlayerId(initGame.getMyPlayerId());
+			notify(l -> l.initializeGame());
+		} catch (ContentPackException e) {
+			Log.error("Error occured when loading contentPack.", e);
+			notify(l -> l.error(e));
+		}
+		initGame = null;
 	}
 }

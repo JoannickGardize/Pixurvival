@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.gdxcore.graphics.ContentPackTextureAnimations;
@@ -49,7 +50,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			client.update(frameDurationMillis);
 			frameCounter -= frameDurationMillis;
 		}
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		super.render();
 	}
@@ -85,12 +86,17 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	@Override
-	public void startGame() {
+	public void initializeGame() {
 		WorldScreen worldScreen = new WorldScreen(this);
 		ContentPackTextureAnimations contentPackTextureAnimations = new ContentPackTextureAnimations();
 		try {
-			contentPackTextureAnimations.load(client.getWorld().getContentPack(), 10);
+			int screenWidth = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			int pixelWidth = Math
+					.round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH * World.PIXEL_PER_UNIT));
+			Log.info("Loading texture with optimal pixel width : " + pixelWidth);
+			contentPackTextureAnimations.load(client.getWorld().getContentPack(), pixelWidth);
 		} catch (ContentPackReadException e) {
+			Log.error("Error when loading contentPack.", e);
 			e.printStackTrace();
 		}
 		worldScreen.setWorld(client.getWorld(), contentPackTextureAnimations, client.getMyPlayerId());

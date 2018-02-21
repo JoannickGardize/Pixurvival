@@ -29,7 +29,6 @@ public class KeyboardInputProcessor extends InputAdapter {
 	public boolean keyDown(int keycode) {
 		KeyAction keyAction = keyMapping.getAction(keycode);
 		if (keyAction != null) {
-			System.out.println("chouocuchou");
 			pressedKeys.put(keyAction, true);
 		}
 		return true;

@@ -33,7 +33,7 @@ public class KryoInitializer {
 		register(kryo, ContentPackIdentifier[].class);
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
-		register(kryo, ClientReady.class);
+		register(kryo, GameReady.class);
 	}
 
 	@SuppressWarnings("unchecked")

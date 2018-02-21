@@ -33,23 +33,22 @@ public class TiledMap {
 	}
 
 	public boolean collide(double x, double y, double width) {
-		// int tileX = (int) x;
-		// if (tileX == x) {
-		// tileX++;
-		// }
-		// int startY = (int) y;
-		// if (startY == y) {
-		// startY++;
-		// }
-		// for (; tileX < x + width; tileX++) {
-		// for (int tileY = startY; tileY < y + width; tileY++) {
-		// if (tileX < 0 || tileY < 0 || tileX >= tiles.getWidth() || tileY >=
-		// tiles.getHeight()
-		// || tiles.get(tileX, tileY).isSolid()) {
-		// return true;
-		// }
-		// }
-		// }
+		int tileX = (int) x;
+		if (tileX == x) {
+			tileX++;
+		}
+		int startY = (int) y;
+		if (startY == y) {
+			startY++;
+		}
+		for (; tileX < x + width; tileX++) {
+			for (int tileY = startY; tileY < y + width; tileY++) {
+				if (tileX < 0 || tileY < 0 || tileX >= tiles.getWidth() || tileY >= tiles.getHeight()
+						|| tiles.get(tileX, tileY).isSolid()) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 }

@@ -23,7 +23,7 @@ public class ServerEngineThread extends EngineThread {
 				w.writeEntitiesUpdate();
 			});
 			game.foreachPlayers(p -> {
-				if (p.isReady() && p.getPlayerEntity() != null) {
+				if (p.isGameReady() && p.getPlayerEntity() != null) {
 					p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
 				}
 			});

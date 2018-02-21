@@ -11,7 +11,7 @@ public class ClientGameAdapter implements ClientGameListener {
 	}
 
 	@Override
-	public void startGame() {
+	public void initializeGame() {
 		// TODO Auto-generated method stub
 
 	}

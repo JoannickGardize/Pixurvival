@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.PlayerEntity;
-import com.pixurvival.core.message.ClientReady;
+import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -42,8 +42,8 @@ class ServerListener extends Listener {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
 		});
-		messageActions.put(ClientReady.class, m -> {
-			m.getConnection().setReady(true);
+		messageActions.put(GameReady.class, m -> {
+			m.getConnection().setGameReady(true);
 		});
 	}
 

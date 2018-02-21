@@ -9,13 +9,11 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.EntitiesUpdate;
+import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RequestContentPacks;
-import com.pixurvival.core.message.InitializeGame;
 
 class ClientListener extends Listener {
 
@@ -29,15 +27,7 @@ class ClientListener extends Listener {
 		this.game = game;
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
 		messageActions.put(InitializeGame.class, s -> {
-			InitializeGame startGame = (InitializeGame) s;
-			try {
-				game.setWorld(World.createClientWorld(startGame.getCreateWorld(), game.getContentPacksContext()));
-				game.setMyPlayerId(startGame.getMyPlayerId());
-				game.notify(l -> l.startGame());
-			} catch (ContentPackException e) {
-				Log.error("Error occured when loading contentPack.", e);
-				game.notify(l -> l.error(e));
-			}
+			game.setInitGame((InitializeGame) s);
 		});
 		messageActions.put(ContentPackPart.class,
 				p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));

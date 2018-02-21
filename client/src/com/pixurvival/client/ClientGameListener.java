@@ -6,7 +6,7 @@ public interface ClientGameListener {
 
 	void loginResponse(LoginResponse response);
 
-	void startGame();
+	void initializeGame();
 
 	void error(Throwable e);
 }

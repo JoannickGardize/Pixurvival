@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.esotericsoftware.minlog.Log;
@@ -14,6 +16,7 @@ import com.pixurvival.core.message.ContentPackPart;
 
 public class ContentPackDownloadManager {
 
+	private List<ContentPackIdentifier> missingList = new ArrayList<>();
 	private Map<ContentPackIdentifier, OutputStream> writingMap = new HashMap<>();
 
 	public void accept(ContentPackPart contentPackPart) {
@@ -33,6 +36,7 @@ public class ContentPackDownloadManager {
 				output.flush();
 				output.close();
 				writingMap.remove(contentPackPart.getIdentifier());
+				missingList.remove(contentPackPart.getIdentifier());
 			}
 		} catch (IOException e) {
 			Log.error("Error when writing content pack file.", e);
@@ -44,5 +48,13 @@ public class ContentPackDownloadManager {
 			}
 			writingMap.remove(contentPackPart.getIdentifier());
 		}
+	}
+
+	public boolean isReady() {
+		return missingList.isEmpty() && writingMap.isEmpty();
+	}
+
+	public void setMissingList(List<ContentPackIdentifier> list) {
+		missingList.addAll(list);
 	}
 }

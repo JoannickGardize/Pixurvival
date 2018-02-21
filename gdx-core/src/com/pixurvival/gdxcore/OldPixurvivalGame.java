@@ -60,7 +60,7 @@ public class OldPixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	@Override
-	public void startGame() {
+	public void initializeGame() {
 		// TODO remove BOUCHON
 		game.getWorld().getMap().getTiles().setAll(Tile.GRASS);
 		// worldStage.setWorld(game.getWorld());

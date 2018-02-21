@@ -45,7 +45,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 	}
 
 	private TextureAnimation getAnimation(PlayerEntity e) {
-		Direction aimingDirection = Direction.closestCardinal(e.getAimingAngle());
+		Direction aimingDirection = Direction.closestCardinal(e.getMovingAngle());
 		if (e.isForward()) {
 			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));
 		} else {
