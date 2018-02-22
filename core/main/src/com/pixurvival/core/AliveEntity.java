@@ -39,7 +39,6 @@ public abstract class AliveEntity extends Entity implements Damageable {
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 				getPosition().x = (int) (1 + getPosition().x - getBoundingRadius())
 						- (dx > 0 ? getBoundingRadius() * 2 : 0);
-
 			} else {
 				getPosition().x += dx;
 			}
