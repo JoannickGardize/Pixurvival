@@ -119,5 +119,9 @@ public class ContentPackTest {
 		Assert.assertEquals(1, animation.getFrames().length);
 		Assert.assertEquals(0, animation.getFrames()[0].getX());
 		Assert.assertEquals(2, animation.getFrames()[0].getY());
+		Assert.assertEquals(6, pack.getTiles().all().size());
+		Assert.assertEquals(false, pack.getTiles().get("grass").isSolid());
+		Assert.assertEquals(new Float(1), pack.getTiles().get("grass").getVelocityFactor());
+		Assert.assertEquals(4, pack.getTiles().get("water").getFrames().length);
 	}
 }

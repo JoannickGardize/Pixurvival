@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
-import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -62,7 +61,7 @@ public class OldPixurvivalGame extends Game implements ClientGameListener {
 	@Override
 	public void initializeGame() {
 		// TODO remove BOUCHON
-		game.getWorld().getMap().getTiles().setAll(MapTile.GRASS);
+		// game.getWorld().getMap().getTiles().setAll(MapTile.GRASS);
 		// worldStage.setWorld(game.getWorld());
 	}
 

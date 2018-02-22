@@ -14,7 +14,6 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
@@ -69,8 +68,8 @@ public class ServerGame {
 	}
 
 	public void startTestGame() {
-		TiledMap tiledMap = new TiledMap(500, 500);
-		tiledMap.getTiles().setAll(MapTile.GRASS);
+		TiledMap tiledMap = new TiledMap(selectedContentPack.getTilesById(), 500, 500);
+		tiledMap.setAll(selectedContentPack.getTiles().get("grass"));
 		World world = World.createServerWorld(selectedContentPack, tiledMap);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());

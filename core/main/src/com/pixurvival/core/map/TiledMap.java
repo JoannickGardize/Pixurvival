@@ -34,7 +34,7 @@ public class TiledMap {
 	}
 
 	public void setAll(Tile tile) {
-		map.setAll(tile.getId());
+		map.fill(tile.getId());
 	}
 
 	public boolean collide(Entity e) {
