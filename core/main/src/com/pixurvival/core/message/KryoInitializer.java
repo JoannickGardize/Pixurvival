@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.util.ByteArray2D;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -34,6 +35,8 @@ public class KryoInitializer {
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
 		register(kryo, GameReady.class);
+		register(kryo, ByteArray2D.class);
+		register(kryo, MapPart.class);
 	}
 
 	@SuppressWarnings("unchecked")

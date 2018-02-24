@@ -7,7 +7,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
-import com.pixurvival.gdxcore.graphics.ContentPackTextureAnimations;
+import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.graphics.ContentPackTextures;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 15;
+	public static final int VIEWPORT_WORLD_WIDTH = 30;
 
 	private @NonNull PixurvivalGame game;
 	@Getter
@@ -25,11 +26,12 @@ public class WorldScreen implements Screen {
 	private KeyboardInputProcessor keyboardInputProcessor = new KeyboardInputProcessor(new KeyMapping());
 	private long myPlayerId;
 
-	public void setWorld(World world, ContentPackTextureAnimations contentPackTextureAnimations, long myPlayerId) {
+	public void setWorld(World world, ContentPackTextures contentPackTextures, long myPlayerId) {
 		this.myPlayerId = myPlayerId;
 		this.world = world;
 		stage.clear();
-		stage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextureAnimations));
+		stage.addActor(new MapActor(world.getMap(), contentPackTextures));
+		stage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextures));
 	}
 
 	@Override
@@ -45,8 +47,12 @@ public class WorldScreen implements Screen {
 
 		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
 		if (myPlayer != null) {
-			stage.getCamera().position.x = (float) myPlayer.getPosition().x;
-			stage.getCamera().position.y = (float) myPlayer.getPosition().y;
+			Object oData = myPlayer.getCustomData();
+			if (oData != null) {
+				DrawData data = (DrawData) oData;
+				stage.getCamera().position.x = (float) data.getDrawPosition().x;
+				stage.getCamera().position.y = (float) data.getDrawPosition().y;
+			}
 		}
 		stage.act();
 		stage.draw();

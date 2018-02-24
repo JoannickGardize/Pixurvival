@@ -7,12 +7,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import lombok.Getter;
+
 @XmlRootElement(name = "tiles")
 public class Tiles extends NamedElementSet<Tile> {
 
 	@XmlAttribute(name = "image")
 	@XmlJavaTypeAdapter(ImageReferenceAdapter.class)
-	private ZipContentReference image;
+	private @Getter ZipContentReference image;
 
 	@Override
 	@XmlElement(name = "tile")

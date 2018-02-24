@@ -11,6 +11,7 @@ import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.EntitiesUpdate;
+import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -60,12 +61,11 @@ public class World {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext)
-			throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext,
+			ByteArray2D buildingMap) throws ContentPackException {
 		ContentPack pack = contentPacksContext.load(createWorld.getContentPackIdentifier());
-		TiledMap map = new TiledMap(pack.getTilesById(), createWorld.getMapHeight(), createWorld.getMapWidth());
+		TiledMap map = new TiledMap(pack.getTilesById(), buildingMap);
 		// TODO synchronization map
-		map.setAll(pack.getTiles().get("grass"));
 		World world = new World(createWorld.getId(), Type.CLIENT, map, pack);
 		worlds.put(world.getId(), world);
 		return world;

@@ -9,19 +9,36 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.contentPack.Tile;
 import com.pixurvival.core.util.ByteArray2D;
 
+import lombok.Getter;
+
 public class TiledMap {
 
-	private ByteArray2D map;
+	private @Getter ByteArray2D data;
 	private List<MapTile> tiles = new ArrayList<>();
+	private MapTile outsideTile;
 	private Map<TilePosition, MapTile> specialTiles = new HashMap<>();
 
 	public TiledMap(List<Tile> tileTypes, int width, int height) {
+		tileTypes.forEach(t -> {
+			EmptyTile et = new EmptyTile(t);
+			tiles.add(et);
+			if (t.getName().equals("deepWater")) {
+				outsideTile = et;
+			}
+		});
+		data = new ByteArray2D(width, height);
+	}
+
+	public TiledMap(List<Tile> tileTypes, ByteArray2D buildingMap) {
 		tileTypes.forEach(t -> tiles.add(new EmptyTile(t)));
-		map = new ByteArray2D(width, height);
+		data = buildingMap;
 	}
 
 	public MapTile tileAt(int x, int y) {
-		byte id = map.get(x, y);
+		if (x < 0 || y < 0 || x >= data.getWidth() || y >= data.getHeight()) {
+			return outsideTile;
+		}
+		byte id = data.get(x, y);
 		if (id == Tile.SPECIAL_TILE) {
 			return specialTiles.get(new TilePosition(x, y));
 		} else {
@@ -30,11 +47,11 @@ public class TiledMap {
 	}
 
 	public void setTileAt(int x, int y, Tile tile) {
-		map.set(x, y, tile.getId());
+		data.set(x, y, tile.getId());
 	}
 
 	public void setAll(Tile tile) {
-		map.fill(tile.getId());
+		data.fill(tile.getId());
 	}
 
 	public boolean collide(Entity e) {
@@ -58,8 +75,7 @@ public class TiledMap {
 		}
 		for (; tileX < x + width; tileX++) {
 			for (int tileY = startY; tileY < y + width; tileY++) {
-				if (tileX < 0 || tileY < 0 || tileX >= map.getWidth() || tileY >= map.getHeight()
-						|| tileAt(tileX, tileY).isSolid()) {
+				if (tileAt(tileX, tileY).isSolid()) {
 					return true;
 				}
 			}

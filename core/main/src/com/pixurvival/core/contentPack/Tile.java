@@ -20,8 +20,6 @@ public class Tile extends NamedElement {
 	private @Setter(AccessLevel.PACKAGE) byte id;
 	@XmlAttribute(name = "solid")
 	private boolean solid = false;
-	@XmlAttribute(name = "frameDuration")
-	private float frameDuration;
 	@XmlElement(name = "velocityFactor")
 	@XmlJavaTypeAdapter(VelocityFactorAdapter.class)
 	private Float velocityFactor = 1f;

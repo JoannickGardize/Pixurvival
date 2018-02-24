@@ -22,7 +22,7 @@ public class TextureAnimationSet {
 	private @Getter float height;
 
 	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
-		double truePixelWidth = 1f / (transform.getPixelWidth() * World.PIXEL_PER_UNIT);
+		double truePixelWidth = 1.0 / (transform.getPixelWidth() * World.PIXEL_PER_UNIT);
 		width = (float) ((double) spriteSheet.getWidth() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
 		height = (float) ((double) spriteSheet.getHeight() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
 		xOffset = (float) (truePixelWidth + width / 2);

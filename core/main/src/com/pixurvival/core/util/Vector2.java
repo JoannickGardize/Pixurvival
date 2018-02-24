@@ -62,6 +62,12 @@ public class Vector2 {
 		return x * x + y * y;
 	}
 
+	public double distanceSquared(Vector2 v) {
+		double dx = x - v.x;
+		double dy = y - v.y;
+		return dx * dx + dy * dy;
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Vector2> {
 
 		@Override

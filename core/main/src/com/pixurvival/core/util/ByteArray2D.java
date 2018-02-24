@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @EqualsAndHashCode
+@NoArgsConstructor
 public class ByteArray2D {
 	@Getter
 	private int width;

@@ -30,7 +30,7 @@ public class PlayerEntity extends AliveEntity {
 
 	@Override
 	public double getSpeedPotential() {
-		return 4;
+		return 10;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class PlayerEntity extends AliveEntity {
 
 	@Override
 	public double getBoundingRadius() {
-		return 1;
+		return 0.5;
 	}
 
 	@Override

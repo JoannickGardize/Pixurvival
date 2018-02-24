@@ -15,9 +15,12 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
+import com.pixurvival.core.message.MapPart;
+import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.Getter;
 
@@ -68,21 +71,35 @@ public class ServerGame {
 	}
 
 	public void startTestGame() {
-		TiledMap tiledMap = new TiledMap(selectedContentPack.getTilesById(), 500, 500);
-		tiledMap.setAll(selectedContentPack.getTiles().get("grass"));
+		MapBuilder mapGenerator = new MapBuilder(selectedContentPack.getMapGenerator());
+		TiledMap tiledMap = mapGenerator.generate(selectedContentPack.getTilesById());
 		World world = World.createServerWorld(selectedContentPack, tiledMap);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
-		createWorld.setMapWidth(500);
-		createWorld.setMapHeight(500);
+		createWorld.setMapWidth(tiledMap.getData().getWidth());
+		createWorld.setMapHeight(tiledMap.getData().getHeight());
+		int partCountX = (int) Math.ceil(tiledMap.getData().getWidth() / 64);
+		int partCountY = (int) Math.ceil(tiledMap.getData().getHeight() / 64);
+		createWorld.setPartCount(partCountX * partCountY);
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
-			playerEntity.getPosition().set(250, 250);
+			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
 			world.getEntityPool().add(playerEntity);
 			playerConnection.setPlayerEntity(playerEntity);
 			playerConnection.sendTCP(new InitializeGame(createWorld, playerEntity.getId()));
 		});
+		for (int x = 0; x < partCountX; x++) {
+			for (int y = 0; y < partCountY; y++) {
+				int width = x < partCountX - 1 ? 64 : tiledMap.getData().getWidth() - x * 64;
+				int height = y < partCountY - 1 ? 64 : tiledMap.getData().getHeight() - y * 64;
+				ByteArray2D data = tiledMap.getData().getRect(x * 64, y * 64, width, height);
+				MapPart part = new MapPart(x * 64, y * 64, data);
+				foreachPlayers(playerConnection -> {
+					playerConnection.sendTCP(part);
+				});
+			}
+		}
 	}
 
 	void notify(Consumer<ServerGameListener> action) {

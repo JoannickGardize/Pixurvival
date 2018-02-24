@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.contentPack.ActionAnimation;
 import com.pixurvival.core.message.Direction;
+import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.graphics.TextureAnimation;
 import com.pixurvival.gdxcore.graphics.TextureAnimationSet;
 
@@ -23,18 +24,20 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 
 		int index = getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		batch.draw(texture, (float) (e.getPosition().x - textureAnimationSet.getXOffset()),
-				(float) (e.getPosition().y - textureAnimationSet.getYOffset()), textureAnimationSet.getWidth(),
+		updateDrawPosition(e);
+		DrawData data = (DrawData) e.getCustomData();
+		batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getXOffset()),
+				(float) (data.getDrawPosition().y - textureAnimationSet.getYOffset()), textureAnimationSet.getWidth(),
 				textureAnimationSet.getHeight());
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {
 		Object o = e.getCustomData();
 		if (o == null) {
-			o = new AnimationData();
+			o = new DrawData();
 			e.setCustomData(o);
 		}
-		AnimationData data = (AnimationData) o;
+		DrawData data = (DrawData) o;
 		float timer = data.getTimer();
 		timer += Gdx.graphics.getDeltaTime();
 		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
@@ -50,6 +53,20 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));
 		} else {
 			return textureAnimationSet.get(ActionAnimation.getStandFromDirection(aimingDirection));
+		}
+	}
+
+	private void updateDrawPosition(PlayerEntity e) {
+		DrawData data = (DrawData) e.getCustomData();
+		Vector2 drawPos = data.getDrawPosition();
+		if (drawPos.distanceSquared(e.getPosition()) > 5 * 5) {
+			drawPos.set(e.getPosition());
+		} else {
+			float timeForward = Gdx.graphics.getDeltaTime();
+			if (timeForward > 0.1f) {
+				timeForward = 0.1f;
+			}
+			drawPos.add(new Vector2(e.getPosition()).sub(drawPos).mul(timeForward / 0.1f));
 		}
 	}
 }

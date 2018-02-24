@@ -78,13 +78,14 @@ public class ContentPacksContext {
 	}
 
 	public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
+		refreshList();
 		List<ContentPackFileInfo> dependencyList = resolveDependencies(identifier);
 
 		JAXBContext context;
 		try {
 			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
-					Tiles.class);
+					Tiles.class, MapGenerator.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));

@@ -23,6 +23,7 @@ public class ContentPack {
 	private @NonNull ContentPackFileInfo info;
 	private Sprites sprites;
 	private Tiles tiles;
+	private MapGenerator mapGenerator;
 	private List<Tile> tilesById = new ArrayList<>();
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
@@ -36,6 +37,7 @@ public class ContentPack {
 			contentPack.sprites = (Sprites) readXmlFile(unmarshaller, zipFile, "sprites.xml");
 			contentPack.tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");
 			refContext.addElementSet(Tile.class, contentPack.tiles);
+			contentPack.mapGenerator = (MapGenerator) readXmlFile(unmarshaller, zipFile, "mapGenerator.xml");
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {
@@ -67,6 +69,5 @@ public class ContentPack {
 		ContentPacksContext c = new ContentPacksContext(new File("contentPacks"));
 		c.load(new ContentPackIdentifier("Vanilla", new Version("0.1"),
 				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b")));
-		System.out.println("ok");
 	}
 }

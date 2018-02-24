@@ -10,5 +10,6 @@ public class CreateWorld {
 	private long id;
 	private int mapWidth;
 	private int mapHeight;
+	private int partCount;
 	private ContentPackIdentifier contentPackIdentifier;
 }

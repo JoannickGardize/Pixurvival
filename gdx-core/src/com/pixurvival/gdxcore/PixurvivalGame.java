@@ -17,7 +17,7 @@ import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.gdxcore.graphics.ContentPackTextureAnimations;
+import com.pixurvival.gdxcore.graphics.ContentPackTextures;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 
 import lombok.Getter;
@@ -88,18 +88,18 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	@Override
 	public void initializeGame() {
 		WorldScreen worldScreen = new WorldScreen(this);
-		ContentPackTextureAnimations contentPackTextureAnimations = new ContentPackTextureAnimations();
+		ContentPackTextures contentPackTextures = new ContentPackTextures();
 		try {
 			int screenWidth = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			int pixelWidth = Math
 					.round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH * World.PIXEL_PER_UNIT));
 			Log.info("Loading texture with optimal pixel width : " + pixelWidth);
-			contentPackTextureAnimations.load(client.getWorld().getContentPack(), pixelWidth);
+			contentPackTextures.load(client.getWorld().getContentPack(), pixelWidth);
 		} catch (ContentPackReadException e) {
 			Log.error("Error when loading contentPack.", e);
 			e.printStackTrace();
 		}
-		worldScreen.setWorld(client.getWorld(), contentPackTextureAnimations, client.getMyPlayerId());
+		worldScreen.setWorld(client.getWorld(), contentPackTextures, client.getMyPlayerId());
 		setScreen(worldScreen);
 		client.notifyReady();
 	}

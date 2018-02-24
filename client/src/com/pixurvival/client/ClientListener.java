@@ -13,6 +13,7 @@ import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.EntitiesUpdate;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.MapPart;
 import com.pixurvival.core.message.RequestContentPacks;
 
 class ClientListener extends Listener {
@@ -33,6 +34,9 @@ class ClientListener extends Listener {
 				p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
 		messageActions.put(RequestContentPacks.class, r -> {
 			game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
+		});
+		messageActions.put(MapPart.class, p -> {
+			game.acceptMapPart((MapPart) p);
 		});
 	}
 
