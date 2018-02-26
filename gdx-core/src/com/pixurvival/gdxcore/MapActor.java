@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,8 +28,9 @@ public class MapActor extends Actor {
 			animationNumber++;
 		}
 		Vector3 camPos = getStage().getCamera().position;
-		float width = getStage().getViewport().getWorldWidth();
-		float height = getStage().getViewport().getWorldHeight();
+		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
+		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
+		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
 		int startX = (int) (camPos.x - width / 2);
 		int startY = (int) (camPos.y - height / 2);
 		int endX = (int) (startX + width);

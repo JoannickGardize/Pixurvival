@@ -1,8 +1,12 @@
 package com.pixurvival.gdxcore;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
@@ -22,21 +26,29 @@ public class WorldScreen implements Screen {
 	private @NonNull PixurvivalGame game;
 	@Getter
 	private World world;
-	private Stage stage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
-	private KeyboardInputProcessor keyboardInputProcessor = new KeyboardInputProcessor(new KeyMapping());
+	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
+	private Stage hudStage = new Stage(new ExtendViewport(16, 9));
+	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private long myPlayerId;
 
 	public void setWorld(World world, ContentPackTextures contentPackTextures, long myPlayerId) {
 		this.myPlayerId = myPlayerId;
 		this.world = world;
-		stage.clear();
-		stage.addActor(new MapActor(world.getMap(), contentPackTextures));
-		stage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextures));
+		worldStage.clear();
+		worldStage.addActor(new MapActor(world.getMap(), contentPackTextures));
+		worldStage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextures));
+		hudStage.clear();
+		Table table = new Table();
+		table.add(new MiniMapActor(world, contentPackTextures)).width(4).height(4).pad(1);
+		hudStage.addActor(table);
 	}
 
 	@Override
 	public void show() {
-		Gdx.input.setInputProcessor(keyboardInputProcessor);
+		InputMultiplexer im = new InputMultiplexer();
+		im.addProcessor(keyboardInputProcessor);
+		im.addProcessor(new CameraControlProcessor((OrthographicCamera) worldStage.getCamera()));
+		Gdx.input.setInputProcessor(im);
 	}
 
 	@Override
@@ -50,17 +62,22 @@ public class WorldScreen implements Screen {
 			Object oData = myPlayer.getCustomData();
 			if (oData != null) {
 				DrawData data = (DrawData) oData;
-				stage.getCamera().position.x = (float) data.getDrawPosition().x;
-				stage.getCamera().position.y = (float) data.getDrawPosition().y;
+				worldStage.getCamera().position.x = (float) data.getDrawPosition().x;
+				worldStage.getCamera().position.y = (float) data.getDrawPosition().y;
 			}
 		}
-		stage.act();
-		stage.draw();
+		worldStage.getViewport().apply();
+		worldStage.act();
+		worldStage.draw();
+		hudStage.getViewport().apply();
+		hudStage.act();
+		hudStage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height);
+		worldStage.getViewport().update(width, height);
+		hudStage.getViewport().update(width, height);
 	}
 
 	@Override

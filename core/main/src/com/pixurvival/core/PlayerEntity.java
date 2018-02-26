@@ -45,7 +45,7 @@ public class PlayerEntity extends AliveEntity {
 
 	@Override
 	public double getBoundingRadius() {
-		return 0.5;
+		return 0.42;
 	}
 
 	@Override

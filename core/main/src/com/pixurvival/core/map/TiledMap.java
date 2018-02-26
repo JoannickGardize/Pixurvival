@@ -55,26 +55,17 @@ public class TiledMap {
 	}
 
 	public boolean collide(Entity e) {
-		double radius = e.getBoundingRadius();
-		return collide(e.getPosition().x - radius, e.getPosition().y - radius, radius * 2);
+		return collide(e.getPosition().x, e.getPosition().y, e.getBoundingRadius());
 	}
 
 	public boolean collide(Entity e, double dx, double dy) {
-		double radius = e.getBoundingRadius();
-		return collide(e.getPosition().x - radius + dx, e.getPosition().y - radius + dy, radius * 2);
+		return collide(e.getPosition().x + dx, e.getPosition().y + dy, e.getBoundingRadius());
 	}
 
-	public boolean collide(double x, double y, double width) {
-		int tileX = (int) x;
-		if (tileX == x) {
-			tileX++;
-		}
-		int startY = (int) y;
-		if (startY == y) {
-			startY++;
-		}
-		for (; tileX < x + width; tileX++) {
-			for (int tileY = startY; tileY < y + width; tileY++) {
+	public boolean collide(double x, double y, double radius) {
+
+		for (int tileX = (int) (x - radius); tileX < x + radius; tileX++) {
+			for (int tileY = (int) (y - radius); tileY < y + radius; tileY++) {
 				if (tileAt(tileX, tileY).isSolid()) {
 					return true;
 				}

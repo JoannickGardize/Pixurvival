@@ -37,6 +37,13 @@ public class MainMenuScreen implements Screen {
 
 		stage.addActor(table);
 
+		singleplayerButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.getClient().startLocalGame();
+			}
+		});
+
 		multiplayerButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

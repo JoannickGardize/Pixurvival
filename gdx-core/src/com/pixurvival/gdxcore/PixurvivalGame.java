@@ -101,7 +101,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		}
 		worldScreen.setWorld(client.getWorld(), contentPackTextures, client.getMyPlayerId());
 		setScreen(worldScreen);
-		client.notifyReady();
+		if (client.getWorld().getType() == World.Type.CLIENT) {
+			client.notifyReady();
+		}
 	}
 
 	@Override

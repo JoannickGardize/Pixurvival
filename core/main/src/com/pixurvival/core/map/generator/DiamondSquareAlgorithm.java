@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import javax.imageio.ImageIO;
 
@@ -15,14 +15,14 @@ import com.pixurvival.core.util.FloatArray2D;
 
 import lombok.Setter;
 
-public class DiamondSquareAlgorithm implements Consumer<FloatArray2D> {
+public class DiamondSquareAlgorithm implements UnaryOperator<FloatArray2D> {
 
 	private Random random = new Random();
 
 	private @Setter float noiseFactor = 3;
 
 	@Override
-	public void accept(FloatArray2D t) {
+	public FloatArray2D apply(FloatArray2D t) {
 		if (t.getWidth() != t.getHeight() || ((t.getWidth() - 1) & (t.getWidth() - 2)) != 0 || t.getWidth() < 3) {
 			throw new IllegalArgumentException("the FloatArray2D must be a square with a width of 2^n + 1.");
 		}
@@ -70,6 +70,7 @@ public class DiamondSquareAlgorithm implements Consumer<FloatArray2D> {
 			}
 			i = id;
 		}
+		return t;
 	}
 
 	private float bound(float value) {
@@ -96,7 +97,7 @@ public class DiamondSquareAlgorithm implements Consumer<FloatArray2D> {
 		array.setVLine(0, 0);
 		array.setVLine(width - 1, 0);
 		array.set(width / 2, width / 2, 0.6f);
-		new DiamondSquareAlgorithm().accept(array);
+		new DiamondSquareAlgorithm().apply(array);
 
 		NavigableMap<Float, Integer> rangeMap = new TreeMap<>();
 		rangeMap.put(0.25f, Color.BLACK.getRGB());

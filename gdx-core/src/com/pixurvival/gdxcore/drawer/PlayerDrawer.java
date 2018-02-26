@@ -26,8 +26,8 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		Texture texture = textureAnimation.getTexture(index);
 		updateDrawPosition(e);
 		DrawData data = (DrawData) e.getCustomData();
-		batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getXOffset()),
-				(float) (data.getDrawPosition().y - textureAnimationSet.getYOffset()), textureAnimationSet.getWidth(),
+		batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
+				(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
 				textureAnimationSet.getHeight());
 	}
 

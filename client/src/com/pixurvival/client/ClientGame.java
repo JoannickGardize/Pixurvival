@@ -3,15 +3,22 @@ package com.pixurvival.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EntityGroup;
+import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
@@ -39,11 +46,13 @@ public class ClientGame {
 	private int mapPartCount;
 	private List<MapPart> mapParts = new ArrayList<>();
 	private ByteArray2D buildingMap;
+	private ContentPack localGamePack;
 
 	public ClientGame() {
 		// Log.set(Log.LEVEL_DEBUG);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
+		// TODO enlever lag simulation
 		client.addListener(new Listener.LagListener(40, 70, clientListener));
 	}
 
@@ -79,7 +88,22 @@ public class ClientGame {
 	}
 
 	public void startLocalGame() {
-		// TODO local game
+		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("0.1"),
+				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b"));
+		try {
+			localGamePack = contentPacksContext.load(id);
+			MapBuilder mapGenerator = new MapBuilder(localGamePack.getMapGenerator());
+			TiledMap tiledMap = mapGenerator.generate(localGamePack.getTilesById());
+			World world = World.createLocalWorld(localGamePack, tiledMap);
+			this.world = world;
+			PlayerEntity playerEntity = new PlayerEntity();
+			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
+			world.getEntityPool().add(playerEntity);
+			myPlayerId = playerEntity.getId();
+			notify(l -> l.initializeGame());
+		} catch (ContentPackException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void sendAction(PlayerActionRequest request) {
@@ -87,7 +111,7 @@ public class ClientGame {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
 			} else {
-				// TODO local game
+				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
 			}
 		}
 	}

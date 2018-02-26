@@ -30,13 +30,14 @@ public class MapBuilder {
 		heightMap.setVLine(0, 0);
 		heightMap.setVLine(mapSize - 1, 0);
 		heightMap.set(mapSize / 2, mapSize / 2, 0.6f);
-		diamondSquareAlgorithm.accept(heightMap);
+		diamondSquareAlgorithm.apply(heightMap);
 		ByteArray2D array = new ByteArray2D(mapSize, mapSize);
 		for (int x = 0; x < mapSize; x++) {
 			for (int y = 0; y < mapSize; y++) {
 				array.set(x, y, levelMap.ceilingEntry(heightMap.get(x, y)).getValue().getId());
 			}
 		}
+		array = new Smoother(2, tileTypes.size()).apply(array);
 		return new TiledMap(tileTypes, array);
 	}
 }

@@ -36,11 +36,22 @@ public abstract class AliveEntity extends Entity implements Damageable {
 			double ds = getSpeedPotential() * getWorld().getTime().getDeltaTime();
 			double dx = Math.cos(movingAngle) * ds;
 			double dy = Math.sin(movingAngle) * ds;
-			if (!(isSolid() && getWorld().getMap().collide(this, dx, 0))) {
+			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
+				if (dx > 0) {
+					getPosition().x = (((long) getPosition().x) + 1) - getBoundingRadius();
+				} else {
+					getPosition().x = ((long) getPosition().x) + getBoundingRadius();
+				}
+			} else {
 				getPosition().x += dx;
 			}
-			if (!(isSolid() && getWorld().getMap().collide(this, 0, dy))) {
-
+			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
+				if (dy > 0) {
+					getPosition().y = (((long) getPosition().y) + 1) - getBoundingRadius();
+				} else {
+					getPosition().y = ((long) getPosition().y) + getBoundingRadius();
+				}
+			} else {
 				getPosition().y += dy;
 			}
 		}

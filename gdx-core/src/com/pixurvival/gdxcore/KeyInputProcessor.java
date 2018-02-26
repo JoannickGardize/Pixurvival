@@ -9,14 +9,14 @@ import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.Getter;
 
-public class KeyboardInputProcessor extends InputAdapter {
+public class KeyInputProcessor extends InputAdapter {
 
 	private KeyMapping keyMapping;
 	private @Getter PlayerActionRequest playerAction = new PlayerActionRequest();
 	private PlayerActionRequest previousPlayerAction = new PlayerActionRequest();
 	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
 
-	public KeyboardInputProcessor(KeyMapping keyMapping) {
+	public KeyInputProcessor(KeyMapping keyMapping) {
 		this.keyMapping = keyMapping;
 		playerAction.setDirection(Direction.SOUTH);
 		playerAction.setForward(false);
