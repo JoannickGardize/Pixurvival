@@ -19,18 +19,12 @@ public class TiledMap {
 	private Map<TilePosition, MapTile> specialTiles = new HashMap<>();
 
 	public TiledMap(List<Tile> tileTypes, int width, int height) {
-		tileTypes.forEach(t -> {
-			EmptyTile et = new EmptyTile(t);
-			tiles.add(et);
-			if (t.getName().equals("deepWater")) {
-				outsideTile = et;
-			}
-		});
+		createMapTiles(tileTypes);
 		data = new ByteArray2D(width, height);
 	}
 
 	public TiledMap(List<Tile> tileTypes, ByteArray2D buildingMap) {
-		tileTypes.forEach(t -> tiles.add(new EmptyTile(t)));
+		createMapTiles(tileTypes);
 		data = buildingMap;
 	}
 
@@ -72,5 +66,15 @@ public class TiledMap {
 			}
 		}
 		return false;
+	}
+
+	private void createMapTiles(List<Tile> tileTypes) {
+		tileTypes.forEach(t -> {
+			EmptyTile et = new EmptyTile(t);
+			tiles.add(et);
+			if (t.getName().equals("deepWater")) {
+				outsideTile = et;
+			}
+		});
 	}
 }

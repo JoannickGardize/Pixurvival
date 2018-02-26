@@ -72,20 +72,19 @@ public class ContentPackTextures {
 	}
 
 	private int getAverageColor(Region region) {
-		// float redSum = 0;
-		// float greenSum = 0;
-		// float blueSum = 0;
-		// for (int x = 0; x < region.getWidth(); x++) {
-		// for (int y = 0; y < region.getHeight(); y++) {
-		// Color color = new Color(region.getPixel(x, y));
-		// redSum += color.r;
-		// greenSum += color.g;
-		// blueSum += color.b;
-		// }
-		// }
-		// float pixelCount = region.getWidth() * region.getHeight();
-		// return new Color(redSum / pixelCount, greenSum / pixelCount, blueSum
-		// / pixelCount, 1).toIntBits();
-		return Color.rgba8888(new Color(region.getPixel(0, 0)));
+		float redSum = 0;
+		float greenSum = 0;
+		float blueSum = 0;
+		for (int x = 0; x < region.getWidth(); x++) {
+			for (int y = 0; y < region.getHeight(); y++) {
+				Color color = new Color(region.getPixel(x, y));
+				redSum += color.r;
+				greenSum += color.g;
+				blueSum += color.b;
+			}
+		}
+		float pixelCount = region.getWidth() * region.getHeight();
+		return Color.rgba8888(new Color(redSum / pixelCount, greenSum / pixelCount, blueSum / pixelCount, 1));
+		// return Color.rgba8888(new Color(region.getPixel(0, 0)));
 	}
 }

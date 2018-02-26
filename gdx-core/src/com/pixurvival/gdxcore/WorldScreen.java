@@ -30,6 +30,7 @@ public class WorldScreen implements Screen {
 	private Stage hudStage = new Stage(new ExtendViewport(16, 9));
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private long myPlayerId;
+	private Table table;
 
 	public void setWorld(World world, ContentPackTextures contentPackTextures, long myPlayerId) {
 		this.myPlayerId = myPlayerId;
@@ -38,8 +39,11 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap(), contentPackTextures));
 		worldStage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextures));
 		hudStage.clear();
-		Table table = new Table();
-		table.add(new MiniMapActor(world, contentPackTextures)).width(4).height(4).pad(1);
+		hudStage.setDebugAll(true);
+		table = new Table();
+		table.setWidth(16);
+		table.setHeight(9);
+		table.add(new MiniMapActor(world, contentPackTextures)).expand().top().left().width(4).height(4).pad(0.0f);
 		hudStage.addActor(table);
 	}
 
@@ -77,7 +81,9 @@ public class WorldScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		worldStage.getViewport().update(width, height);
-		hudStage.getViewport().update(width, height);
+		hudStage.getViewport().update(width, height, true);
+		table.setWidth(hudStage.getViewport().getWorldWidth());
+		table.setHeight(hudStage.getViewport().getWorldHeight());
 	}
 
 	@Override
