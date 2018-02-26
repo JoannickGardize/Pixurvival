@@ -35,6 +35,7 @@ public class ContentPack {
 					"animationTemplates.xml");
 			refContext.addElementSet(AnimationTemplate.class, animationTemplates);
 			contentPack.sprites = (Sprites) readXmlFile(unmarshaller, zipFile, "sprites.xml");
+			refContext.addElementSet(SpriteSheet.class, contentPack.sprites);
 			contentPack.tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");
 			refContext.addElementSet(Tile.class, contentPack.tiles);
 			contentPack.mapGenerator = (MapGenerator) readXmlFile(unmarshaller, zipFile, "mapGenerator.xml");

@@ -3,7 +3,6 @@ package com.pixurvival.gdxcore;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -21,14 +20,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 30;
+	public static final int VIEWPORT_WORLD_WIDTH = 20;
 
 	private @NonNull PixurvivalGame game;
 	@Getter
 	private World world;
 	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
-	private Stage hudStage = new Stage(new ExtendViewport(16, 9));
+	private Stage hudStage = new Stage(new ExtendViewport(1600, 900));
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
+	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private long myPlayerId;
 	private Table table;
 
@@ -41,9 +41,9 @@ public class WorldScreen implements Screen {
 		hudStage.clear();
 		hudStage.setDebugAll(true);
 		table = new Table();
-		table.setWidth(16);
-		table.setHeight(9);
-		table.add(new MiniMapActor(world, contentPackTextures)).expand().top().left().width(4).height(4).pad(0.0f);
+		table.setWidth(1600);
+		table.setHeight(900);
+		table.add(new MiniMapActor(world, contentPackTextures)).expand().top().left().width(200).height(200).pad(50);
 		hudStage.addActor(table);
 	}
 
@@ -51,7 +51,7 @@ public class WorldScreen implements Screen {
 	public void show() {
 		InputMultiplexer im = new InputMultiplexer();
 		im.addProcessor(keyboardInputProcessor);
-		im.addProcessor(new CameraControlProcessor((OrthographicCamera) worldStage.getCamera()));
+		im.addProcessor(cameraControlProcessor);
 		Gdx.input.setInputProcessor(im);
 	}
 
@@ -68,6 +68,7 @@ public class WorldScreen implements Screen {
 				DrawData data = (DrawData) oData;
 				worldStage.getCamera().position.x = (float) data.getDrawPosition().x;
 				worldStage.getCamera().position.y = (float) data.getDrawPosition().y;
+				cameraControlProcessor.updateCameraPosition(data.getDrawPosition());
 			}
 		}
 		worldStage.getViewport().apply();

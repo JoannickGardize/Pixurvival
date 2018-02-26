@@ -23,6 +23,7 @@ public class World {
 
 	public static final int PIXEL_PER_UNIT = 8;
 	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
+	public static final double PLAYER_VIEW_DISTANCE = 35;
 
 	@Getter
 	@AllArgsConstructor

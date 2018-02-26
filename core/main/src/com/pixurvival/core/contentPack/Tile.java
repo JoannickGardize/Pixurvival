@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+
 public class Tile extends NamedElement {
 
 	public static final byte SPECIAL_TILE = -1;

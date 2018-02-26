@@ -74,4 +74,12 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 		}
 
 	}
+
+	public static class SpriteSheetRefAdapter extends RefAdapter<SpriteSheet> {
+
+		public SpriteSheetRefAdapter(RefContext context) {
+			super(context);
+		}
+
+	}
 }

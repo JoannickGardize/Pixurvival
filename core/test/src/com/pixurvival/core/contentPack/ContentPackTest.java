@@ -104,8 +104,8 @@ public class ContentPackTest {
 
 	private void testContentPack(File file, ContentPack pack) {
 		Sprites sprites = pack.getSprites();
-		Assert.assertEquals(1, sprites.getSpriteSheets().size());
-		SpriteSheet spriteSheet = sprites.getSpriteSheets().get("character");
+		Assert.assertEquals(1, sprites.all().size());
+		SpriteSheet spriteSheet = sprites.all().get("character");
 		Assert.assertEquals("character", spriteSheet.getName());
 		Assert.assertEquals(7, spriteSheet.getWidth());
 		Assert.assertEquals(9, spriteSheet.getHeight());

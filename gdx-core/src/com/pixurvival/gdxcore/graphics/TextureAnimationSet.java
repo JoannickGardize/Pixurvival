@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ActionAnimation;
 import com.pixurvival.core.contentPack.Animation;
@@ -11,7 +12,9 @@ import com.pixurvival.core.contentPack.AnimationTemplate;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.contentPack.SpriteSheet;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 public class TextureAnimationSet {
 
@@ -20,6 +23,7 @@ public class TextureAnimationSet {
 	private @Getter float yOffset;
 	private @Getter float width;
 	private @Getter float height;
+	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
 	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * World.PIXEL_PER_UNIT);

@@ -19,6 +19,7 @@ public class RefContext {
 	public RefContext() {
 		adapters.put(AnimationTemplate.class, new RefAdapter.AnimationTemplateRefAdapter(this));
 		adapters.put(Tile.class, new RefAdapter.TileRefAdapter(this));
+		adapters.put(SpriteSheet.class, new RefAdapter.SpriteSheetRefAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")
