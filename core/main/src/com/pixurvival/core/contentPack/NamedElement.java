@@ -9,4 +9,5 @@ public abstract class NamedElement {
 	@Getter
 	@XmlAttribute(name = "name", required = true)
 	private String name;
+
 }

@@ -49,7 +49,7 @@ public class ClientGame {
 	private ContentPack localGamePack;
 
 	public ClientGame() {
-		// Log.set(Log.LEVEL_DEBUG);
+		Log.set(Log.LEVEL_DEBUG);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
 		// TODO enlever lag simulation
@@ -92,8 +92,8 @@ public class ClientGame {
 				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b"));
 		try {
 			localGamePack = contentPacksContext.load(id);
-			MapBuilder mapGenerator = new MapBuilder(localGamePack.getMapGenerator());
-			TiledMap tiledMap = mapGenerator.generate(localGamePack.getTilesById());
+			MapBuilder mapGenerator = new MapBuilder(localGamePack.getMapGenerator(), localGamePack.getTilesById());
+			TiledMap tiledMap = mapGenerator.generate();
 			World world = World.createLocalWorld(localGamePack, tiledMap);
 			this.world = world;
 			PlayerEntity playerEntity = new PlayerEntity();

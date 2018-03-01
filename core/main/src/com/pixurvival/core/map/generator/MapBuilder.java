@@ -1,8 +1,11 @@
 package com.pixurvival.core.map.generator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import com.pixurvival.core.contentPack.MapGenerator;
 import com.pixurvival.core.contentPack.Tile;
@@ -13,31 +16,35 @@ import com.pixurvival.core.util.FloatArray2D;
 public class MapBuilder {
 
 	private NavigableMap<Float, Tile> levelMap = new TreeMap<>();
-	private DiamondSquareAlgorithm diamondSquareAlgorithm = new DiamondSquareAlgorithm();
+	private List<UnaryOperator<FloatArray2D>> heightmapProcessors = new ArrayList<>();
+	private List<Consumer<TiledMap>> postProcessors = new ArrayList<>();
 	private int mapSize;
+	private List<Tile> tileTypes;
 
-	public MapBuilder(MapGenerator map) {
-		diamondSquareAlgorithm.setNoiseFactor(map.getNoiseFactor());
-		mapSize = map.getSize();
-		map.foreachLayers(l -> levelMap.put(l.getLevel(), l.getTile()));
+	public MapBuilder(MapGenerator mapGenerator, List<Tile> tileTypes) {
+		this.tileTypes = tileTypes;
+		DiamondSquareAlgorithm algorithm = new DiamondSquareAlgorithm();
+		algorithm.setNoiseFactor(mapGenerator.getNoiseFactor());
+		heightmapProcessors.add(new IslandBase());
+		heightmapProcessors.add(algorithm);
+		postProcessors.add(new Smoother(2, tileTypes.size()));
+		mapSize = mapGenerator.getSize();
+		mapGenerator.foreachLayers(l -> levelMap.put(l.getLevel(), l.getTile()));
 	}
 
-	public TiledMap generate(List<Tile> tileTypes) {
-		FloatArray2D heightMap = new FloatArray2D(mapSize, mapSize);
-		heightMap.fill(-1);
-		heightMap.setHLine(0, 0);
-		heightMap.setHLine(mapSize - 1, 0);
-		heightMap.setVLine(0, 0);
-		heightMap.setVLine(mapSize - 1, 0);
-		heightMap.set(mapSize / 2, mapSize / 2, 0.6f);
-		diamondSquareAlgorithm.apply(heightMap);
+	public TiledMap generate() {
+		FloatArray2D heightmap = new FloatArray2D(mapSize, mapSize);
+		for (UnaryOperator<FloatArray2D> processor : heightmapProcessors) {
+			heightmap = processor.apply(heightmap);
+		}
 		ByteArray2D array = new ByteArray2D(mapSize, mapSize);
 		for (int x = 0; x < mapSize; x++) {
 			for (int y = 0; y < mapSize; y++) {
-				array.set(x, y, levelMap.ceilingEntry(heightMap.get(x, y)).getValue().getId());
+				array.set(x, y, levelMap.ceilingEntry(heightmap.get(x, y)).getValue().getId());
 			}
 		}
-		array = new Smoother(2, tileTypes.size()).apply(array);
-		return new TiledMap(tileTypes, array);
+		TiledMap map = new TiledMap(tileTypes, array);
+		postProcessors.forEach(p -> p.accept(map));
+		return map;
 	}
 }

@@ -10,10 +10,11 @@ import com.pixurvival.core.contentPack.Tile;
 import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class TiledMap {
 
-	private @Getter ByteArray2D data;
+	private @Getter @Setter ByteArray2D data;
 	private List<MapTile> tiles = new ArrayList<>();
 	private MapTile outsideTile;
 	private Map<TilePosition, MapTile> specialTiles = new HashMap<>();

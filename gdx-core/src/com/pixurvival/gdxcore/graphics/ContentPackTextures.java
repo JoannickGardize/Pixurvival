@@ -18,7 +18,10 @@ import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.contentPack.Frame;
 import com.pixurvival.core.contentPack.SpriteSheet;
 import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.ZipContentReference;
 import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
+
+import lombok.AllArgsConstructor;
 
 public class ContentPackTextures {
 
@@ -86,25 +89,37 @@ public class ContentPackTextures {
 		return texture;
 	}
 
+	@AllArgsConstructor
+	private class ImageEntry {
+		SpriteSheetPixmap spriteSheetPixmap;
+		Texture texture;
+	}
+
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackReadException {
 		List<Tile> tilesbyId = pack.getTilesById();
 		tileMapTextures = new TextureRegion[tilesbyId.size()][];
 		tileAvgColors = new int[tilesbyId.size()];
-		SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getTiles().getImage().read(),
-				World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
-		Texture texture = new Texture(spriteSheetPixmap);
-		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		Map<ZipContentReference, ImageEntry> images = new HashMap<>();
 		for (int i = 0; i < tilesbyId.size(); i++) {
 			Tile tile = tilesbyId.get(i);
+			ImageEntry image = images.get(tile.getImage());
+			if (image == null) {
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(tile.getImage().read(),
+						World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
+				Texture texture = new Texture(spriteSheetPixmap);
+				texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+				image = new ImageEntry(spriteSheetPixmap, texture);
+				images.put(tile.getImage(), image);
+			}
 			Frame[] frames = tile.getFrames();
 			TextureRegion[] textures = new TextureRegion[frames.length];
 			for (int j = 0; j < frames.length; j++) {
 				Frame frame = frames[j];
-				textures[j] = new TextureRegion(texture, frame.getX() * World.PIXEL_PER_UNIT,
+				textures[j] = new TextureRegion(image.texture, frame.getX() * World.PIXEL_PER_UNIT,
 						frame.getY() * World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
 			}
 			tileMapTextures[i] = textures;
-			tileAvgColors[i] = getAverageColor(spriteSheetPixmap.getRegion(frames[0].getX(), frames[0].getY()));
+			tileAvgColors[i] = getAverageColor(image.spriteSheetPixmap.getRegion(frames[0].getX(), frames[0].getY()));
 		}
 	}
 

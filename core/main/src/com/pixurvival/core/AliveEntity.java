@@ -33,7 +33,8 @@ public abstract class AliveEntity extends Entity implements Damageable {
 
 		// Update position
 		if (forward) {
-			double ds = getSpeedPotential() * getWorld().getTime().getDeltaTime();
+			double ds = getSpeedPotential() * getWorld().getMap().tileAt((int) getPosition().x, (int) getPosition().y)
+					.getTile().getVelocityFactor() * getWorld().getTime().getDeltaTime();
 			double dx = Math.cos(movingAngle) * ds;
 			double dy = Math.sin(movingAngle) * ds;
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {

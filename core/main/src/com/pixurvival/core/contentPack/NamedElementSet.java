@@ -22,4 +22,8 @@ public class NamedElementSet<T extends NamedElement> {
 	public List<T> getListView() {
 		return new ListViewOfMap<String, T>(elements, NamedElement::getName);
 	}
+
+	public void finalizeElements() {
+
+	}
 }

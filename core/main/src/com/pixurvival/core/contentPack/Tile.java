@@ -26,6 +26,7 @@ public class Tile extends NamedElement {
 	private Float velocityFactor = 1f;
 	@XmlElement(name = "frame")
 	private Frame[] frames;
+	private @Setter(AccessLevel.PACKAGE) ZipContentReference image;
 
 	@Getter
 	@NoArgsConstructor

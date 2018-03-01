@@ -1,14 +1,13 @@
 package com.pixurvival.core.item;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import com.pixurvival.core.contentPack.Frame;
+import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public class Item {
-
-	@XmlAttribute(required = true)
-	private String name;
-	@XmlAttribute(required = true)
-	private int weight;
+@Setter
+public class Item extends NamedElement {
+	private Frame frame;
 }

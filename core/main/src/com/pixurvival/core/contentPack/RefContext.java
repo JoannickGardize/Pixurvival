@@ -34,6 +34,7 @@ public class RefContext {
 
 	@SuppressWarnings("unchecked")
 	public <T extends NamedElement> void addElementSet(Class<T> type, NamedElementSet<T> set) {
+		set.finalizeElements();
 		((RefAdapter<T>) adapters.get(type)).addSet(currentInfo, set);
 		((RefAdapter<T>) adapters.get(type)).setCurrentSet(set);
 	}
@@ -41,4 +42,9 @@ public class RefContext {
 	public <T extends NamedElement> void removeCurrentSets() {
 		adapters.values().forEach(a -> a.removeCurrentSet());
 	}
+
+	// public <T extends NamedElement> Map<String, T> allElements(Class<T> type) {
+	// Map<String, T> result = new HashMap<>();
+	// adapters.get(type).
+	// }
 }

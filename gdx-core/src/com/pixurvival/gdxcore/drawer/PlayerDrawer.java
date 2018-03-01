@@ -30,9 +30,16 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 				(float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
 				(float) (data.getDrawPosition().y - e.getBoundingRadius() - textureAnimationSet.getWidth() / 4),
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
-		batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
-				(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
-				textureAnimationSet.getHeight());
+		if (e.getWorld().getMap().tileAt((int) data.getDrawPosition().x, (int) data.getDrawPosition().y).getTile()
+				.getVelocityFactor() < 1) {
+			batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
+					(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
+					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
+		} else {
+			batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
+					(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
+					textureAnimationSet.getHeight());
+		}
 
 	}
 

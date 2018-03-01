@@ -21,4 +21,9 @@ public class Tiles extends NamedElementSet<Tile> {
 	public List<Tile> getListView() {
 		return super.getListView();
 	}
+
+	@Override
+	public void finalizeElements() {
+		all().values().forEach(t -> t.setImage(image));
+	}
 }
