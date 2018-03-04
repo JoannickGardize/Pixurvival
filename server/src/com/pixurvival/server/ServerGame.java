@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -36,7 +35,7 @@ public class ServerGame {
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 
 	public ServerGame() {
-		Log.set(Log.LEVEL_DEBUG);
+		// Log.set(Log.LEVEL_DEBUG);
 		contentPackUploadManager.start();
 		server.addListener(serverListener);
 		addListener(contentPackUploadManager);
@@ -98,12 +97,6 @@ public class ServerGame {
 				ByteArray2D data = tiledMap.getData().getRect(x * 64, y * 64, width, height);
 				MapPart part = new MapPart(x * 64, y * 64, data);
 				foreachPlayers(playerConnection -> {
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					playerConnection.sendTCP(part);
 				});
 			}

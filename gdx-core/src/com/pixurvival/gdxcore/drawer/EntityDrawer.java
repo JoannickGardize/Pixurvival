@@ -5,5 +5,7 @@ import com.pixurvival.core.Entity;
 
 public interface EntityDrawer<E extends Entity> {
 
+	void update(E e);
+
 	void draw(Batch batch, E e);
 }

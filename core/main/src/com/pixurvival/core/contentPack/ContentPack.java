@@ -12,6 +12,8 @@ import java.util.zip.ZipFile;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.item.Item;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +25,10 @@ public class ContentPack {
 	private @NonNull ContentPackFileInfo info;
 	private Sprites sprites;
 	private Tiles tiles;
+	private Items items;
 	private MapGenerator mapGenerator;
 	private List<Tile> tilesById = new ArrayList<>();
+	private List<Item> itemsById = new ArrayList<>();
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
@@ -39,6 +43,8 @@ public class ContentPack {
 			contentPack.tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");
 			refContext.addElementSet(Tile.class, contentPack.tiles);
 			contentPack.mapGenerator = (MapGenerator) readXmlFile(unmarshaller, zipFile, "mapGenerator.xml");
+			contentPack.items = (Items) readXmlFile(unmarshaller, zipFile, "items.xml");
+			refContext.addElementSet(Item.class, contentPack.items);
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {
@@ -49,6 +55,17 @@ public class ContentPack {
 						public void accept(Tile t) {
 							t.setId(tileId++);
 							contentPack.tilesById.add(t);
+						}
+					});
+			refContext.getAdapter(Item.class).allSets().stream().flatMap(e -> e.all().values().stream())
+					.forEach(new Consumer<Item>() {
+
+						private short nextId = 0;
+
+						@Override
+						public void accept(Item i) {
+							i.setId(nextId++);
+							contentPack.itemsById.add(i);
 						}
 					});
 			return contentPack;

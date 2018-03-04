@@ -12,7 +12,8 @@ public enum ItemType {
 	EQUIPABLE,
 	EDIBLE,
 	MELEE_WEAPON,
-	RANGED_WEAPON;
+	RANGED_WEAPON,
+	STRUCTURE;
 
 	public static ItemType fromValue(String v) {
 		return ItemType.valueOf(BeanUtils.camelToUpperCase(v));

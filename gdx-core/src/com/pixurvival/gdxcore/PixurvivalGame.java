@@ -1,6 +1,5 @@
 package com.pixurvival.gdxcore;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,20 +23,62 @@ import lombok.Getter;
 
 public class PixurvivalGame extends Game implements ClientGameListener {
 
+	public static final String I18N_BUNDLE = "i18n/Bundle";
+	public static final String SKIN = "kenney-pixel/skin/skin.json";
+
+	public static Skin getSkin() {
+		return instance.assetManager.get(SKIN, Skin.class);
+	}
+
+	public static ClientGame getClient() {
+		return instance.client;
+	}
+
+	public static void setScreen(Class<? extends Screen> screenClass) {
+		instance.setScreenInternal(screenClass);
+	}
+
+	public static float getInterpolationTime() {
+		return instance.interpolationTime;
+	}
+
+	public static String getString(String key) {
+		return instance.assetManager.get(I18N_BUNDLE, I18NBundle.class).get(key);
+	}
+
+	public static ContentPackTextures getContentPackTextures() {
+		return instance.contentPackTextures;
+	}
+
+	public static World getWorld() {
+		return instance.client.getWorld();
+	}
+
+	private static PixurvivalGame instance = null;
+
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
-	private @Getter ClientGame client;
-	private @Getter AssetManager assetManager;
+	private ClientGame client;
+	private AssetManager assetManager;
 	private @Getter KeyMapping KeyMapping;
 	private double frameDurationMillis = 1000.0 / 30;
 	private double frameCounter;
+	private float interpolationTime = 0;
+	private ContentPackTextures contentPackTextures;
+
+	public PixurvivalGame() {
+		if (instance != null) {
+			throw new IllegalStateException("Cannot instantiate multiple instances of the game !");
+		}
+		instance = this;
+	}
 
 	@Override
 	public void create() {
 		client = new ClientGame();
 		client.addListener(this);
 		assetManager = new AssetManager();
-		assetManager.load(Assets.I18N_BUNDLE, I18NBundle.class);
-		assetManager.load(Assets.SKIN, Skin.class);
+		assetManager.load(I18N_BUNDLE, I18NBundle.class);
+		assetManager.load(SKIN, Skin.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
 		setScreen(MainMenuScreen.class);
@@ -45,32 +86,29 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void render() {
-		frameCounter += Gdx.graphics.getDeltaTime() * 1000;
+		frameCounter += Gdx.graphics.getRawDeltaTime() * 1000;
+		interpolationTime += Gdx.graphics.getRawDeltaTime();
 		while (frameCounter >= frameDurationMillis) {
 			client.update(frameDurationMillis);
 			frameCounter -= frameDurationMillis;
+			interpolationTime = 0;
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		super.render();
 	}
 
-	public void setScreen(Class<? extends Screen> screenClass) {
+	private void setScreenInternal(Class<? extends Screen> screenClass) {
 		Screen screen = screens.get(screenClass);
 		if (screen == null) {
 			try {
-				screen = screenClass.getConstructor(PixurvivalGame.class).newInstance(this);
+				screen = screenClass.newInstance();
 				screens.put(screenClass, screen);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
 				Log.error("Error when trying to instantiate new Screen", e);
 			}
 		}
 		setScreen(screen);
-	}
-
-	public String getString(String key) {
-		return assetManager.get(Assets.I18N_BUNDLE, I18NBundle.class).get(key);
 	}
 
 	@Override
@@ -87,12 +125,15 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void initializeGame() {
-		WorldScreen worldScreen = new WorldScreen(this);
-		ContentPackTextures contentPackTextures = new ContentPackTextures();
+		WorldScreen worldScreen = new WorldScreen();
+		contentPackTextures = new ContentPackTextures();
 		try {
 			int screenWidth = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			int pixelWidth = Math
-					.round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH * World.PIXEL_PER_UNIT));
+			// int pixelWidth = Math
+			// .round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH *
+			// World.PIXEL_PER_UNIT));
+			// Seems better :
+			int pixelWidth = 3;
 			Log.info("Loading texture with optimal pixel width : " + pixelWidth);
 			contentPackTextures.load(client.getWorld().getContentPack(), pixelWidth);
 		} catch (ContentPackReadException e) {

@@ -11,34 +11,46 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vector2 {
+public class Vector2 implements BaseVector2 {
 	public double x = 0;
 	public double y = 0;
 
-	public Vector2(Vector2 v) {
-		x = v.x;
-		y = v.y;
+	public Vector2(BaseVector2 v) {
+		x = v.getX();
+		y = v.getY();
 	}
 
-	public void set(Vector2 v) {
-		x = v.x;
-		y = v.y;
+	public Vector2 copy() {
+		return new Vector2(x, y);
 	}
 
-	public void set(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	public Vector2 add(Vector2 v) {
-		x += v.x;
-		y += v.y;
+	public Vector2 set(BaseVector2 v) {
+		x = v.getX();
+		y = v.getY();
 		return this;
 	}
 
-	public Vector2 sub(Vector2 v) {
-		x -= v.x;
-		y -= v.y;
+	public Vector2 set(double x, double y) {
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+
+	public Vector2 setFromEuclidean(double length, double direction) {
+		x = Math.cos(direction) * length;
+		y = Math.sin(direction) * length;
+		return this;
+	}
+
+	public Vector2 add(BaseVector2 v) {
+		x += v.getX();
+		y += v.getY();
+		return this;
+	}
+
+	public Vector2 sub(BaseVector2 v) {
+		x -= v.getX();
+		y -= v.getY();
 		return this;
 	}
 
@@ -62,9 +74,17 @@ public class Vector2 {
 		return x * x + y * y;
 	}
 
-	public double distanceSquared(Vector2 v) {
-		double dx = x - v.x;
-		double dy = y - v.y;
+	public double angle() {
+		return Math.atan2(y, x);
+	}
+
+	public double angleTo(Vector2 other) {
+		return Math.atan2(other.y - y, other.x - x);
+	}
+
+	public double distanceSquared(BaseVector2 v) {
+		double dx = x - v.getX();
+		double dy = y - v.getY();
 		return dx * dx + dy * dy;
 	}
 

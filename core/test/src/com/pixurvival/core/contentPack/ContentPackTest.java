@@ -8,6 +8,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.MeleeWeaponItem;
+
 public class ContentPackTest {
 
 	@Test
@@ -123,5 +126,8 @@ public class ContentPackTest {
 		Assert.assertEquals(false, pack.getTiles().get("grass").isSolid());
 		Assert.assertEquals(new Float(1), pack.getTiles().get("grass").getVelocityFactor());
 		Assert.assertEquals(4, pack.getTiles().get("water").getFrames().length);
+		Items items = pack.getItems();
+		Assert.assertEquals(Item.class, items.get("wood").getClass());
+		Assert.assertEquals(MeleeWeaponItem.class, items.get("wood_sword").getClass());
 	}
 }

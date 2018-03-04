@@ -9,20 +9,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.client.ClientGameAdapter;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.gdxcore.Assets;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class ConnectionMessageWindow extends Window {
 
-	private PixurvivalGame game;
 	private Label connectionInfoLabel;
 	private TextButton okButton;
 
-	public ConnectionMessageWindow(PixurvivalGame game) {
-		super(game.getString("menu.multiplayer.connectWindow.title"),
-				game.getAssetManager().get(Assets.SKIN, Skin.class));
-		this.game = game;
-		Skin skin = game.getAssetManager().get(Assets.SKIN, Skin.class);
+	public ConnectionMessageWindow() {
+		super(PixurvivalGame.getString("menu.multiplayer.connectWindow.title"), PixurvivalGame.getSkin());
+		Skin skin = PixurvivalGame.getSkin();
 
 		setModal(true);
 		setVisible(false);
@@ -31,7 +27,7 @@ public class ConnectionMessageWindow extends Window {
 
 		connectionInfoLabel = new Label("", skin);
 		connectionInfoLabel.setWrap(true);
-		okButton = new TextButton(game.getString("menu.multiplayer.connectWindow.ok"), skin);
+		okButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.connectWindow.ok"), skin);
 		okButton.setVisible(false);
 
 		add(connectionInfoLabel).expand().top();
@@ -45,7 +41,7 @@ public class ConnectionMessageWindow extends Window {
 			}
 		});
 
-		game.getClient().addListener(new ClientGameAdapter() {
+		PixurvivalGame.getClient().addListener(new ClientGameAdapter() {
 			@Override
 			public void loginResponse(LoginResponse response) {
 				connectionInfoLabel.setText(response.name());
@@ -57,7 +53,7 @@ public class ConnectionMessageWindow extends Window {
 	public void showWaitingMessage() {
 		setVisible(true);
 		okButton.setVisible(false);
-		connectionInfoLabel.setText(game.getString("menu.multiplayer.connectWindow.connecting"));
+		connectionInfoLabel.setText(PixurvivalGame.getString("menu.multiplayer.connectWindow.connecting"));
 	}
 
 	public void update(Viewport viewport) {

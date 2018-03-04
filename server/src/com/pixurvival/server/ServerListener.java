@@ -14,6 +14,8 @@ import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
+import com.pixurvival.core.message.TimeRequest;
+import com.pixurvival.core.message.TimeResponse;
 
 class ServerListener extends Listener {
 
@@ -44,6 +46,10 @@ class ServerListener extends Listener {
 		});
 		messageActions.put(GameReady.class, m -> {
 			m.getConnection().setGameReady(true);
+		});
+		messageActions.put(TimeRequest.class, m -> {
+			m.getConnection().sendUDP(
+					new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis()));
 		});
 	}
 

@@ -9,6 +9,9 @@ import lombok.Setter;
 @Getter
 public class Time {
 
+	public static final double timeOffsetAlpha = 0.6;
+	public static final double timeOffsetAlpha2 = 1.0 - timeOffsetAlpha;
+
 	private long timeMillis = 0;
 	private @Getter(AccessLevel.NONE) long localTimeMillis = 0;
 	/**
@@ -17,6 +20,7 @@ public class Time {
 	 * {@link TimeRequest}.
 	 */
 	private @Setter long timeOffsetMillis = 0;
+	private double timeOffset;
 	private double deltaTime = 0;
 	private double deltaTimeMillis = 0;
 	private double decimalAccumulator = 0;
@@ -33,5 +37,14 @@ public class Time {
 		localTimeMillis += integerPart;
 
 		timeMillis = localTimeMillis + timeOffsetMillis;
+	}
+
+	public void updateOffset(long newOffset) {
+		if (timeOffsetMillis == 0) {
+			timeOffsetMillis = newOffset;
+		} else {
+			timeOffsetMillis = Math.round(timeOffsetMillis * timeOffsetAlpha + newOffset * timeOffsetAlpha2);
+		}
+		timeOffset = timeOffsetMillis / 1000.0;
 	}
 }

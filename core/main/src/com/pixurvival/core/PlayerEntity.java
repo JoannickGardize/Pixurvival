@@ -2,16 +2,22 @@ package com.pixurvival.core;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class PlayerEntity extends AliveEntity {
+public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private String name;
+
+	private Inventory inventory = new Inventory(32);
+
+	private @Setter ItemStack heldItemStack;
 
 	public void apply(PlayerActionRequest actionRequest) {
 		setMovingAngle(actionRequest.getDirection().getAngle());
@@ -66,5 +72,4 @@ public class PlayerEntity extends AliveEntity {
 		setAimingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1 ? true : false);
 	}
-
 }

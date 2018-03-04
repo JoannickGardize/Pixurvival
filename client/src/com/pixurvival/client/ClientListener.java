@@ -15,6 +15,7 @@ import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.MapPart;
 import com.pixurvival.core.message.RequestContentPacks;
+import com.pixurvival.core.message.TimeResponse;
 
 class ClientListener extends Listener {
 
@@ -37,6 +38,11 @@ class ClientListener extends Listener {
 		});
 		messageActions.put(MapPart.class, p -> {
 			game.acceptMapPart((MapPart) p);
+		});
+		messageActions.put(TimeResponse.class, o -> {
+			TimeResponse t = (TimeResponse) o;
+			long time = (System.currentTimeMillis() - t.getRequesterTime()) / 2;
+			game.updatePing(time);
 		});
 	}
 

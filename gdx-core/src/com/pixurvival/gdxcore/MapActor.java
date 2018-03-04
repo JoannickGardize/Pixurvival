@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.gdxcore.graphics.ContentPackTextures;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -15,14 +14,13 @@ import lombok.RequiredArgsConstructor;
 public class MapActor extends Actor {
 
 	private @NonNull TiledMap map;
-	private @NonNull ContentPackTextures contentPackTextures;
 
 	private float animationCounter;
 	private long animationNumber;
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		animationCounter += Gdx.graphics.getDeltaTime() * 5;
+		animationCounter += Gdx.graphics.getRawDeltaTime() * 5;
 		if (animationCounter >= 1) {
 			animationCounter -= 1;
 			animationNumber++;
@@ -37,8 +35,8 @@ public class MapActor extends Actor {
 		int endY = (int) (startY + height);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				batch.draw(contentPackTextures.getTile(map.tileAt(x, y).getTile().getId(), animationNumber), x, y, 1,
-						1);
+				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTile().getId(),
+						animationNumber), x, y, 1, 1);
 			}
 		}
 	}

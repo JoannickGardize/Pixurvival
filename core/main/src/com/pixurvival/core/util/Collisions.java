@@ -1,10 +1,5 @@
 package com.pixurvival.core.util;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
-import com.pixurvival.core.item.Items;
-
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -47,12 +42,5 @@ public class Collisions {
 				return new Vector2(s1.x + u * dx, s1.y + u * dy);
 			}
 		}
-	}
-
-	public static void main(String[] args) throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(Items.class);
-		Items items = (Items) context.createUnmarshaller()
-				.unmarshal(Collisions.class.getClassLoader().getResourceAsStream("items.xml"));
-		System.out.println(items.get("truc"));
 	}
 }

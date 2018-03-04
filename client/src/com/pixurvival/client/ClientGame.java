@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.World;
@@ -47,13 +48,15 @@ public class ClientGame {
 	private List<MapPart> mapParts = new ArrayList<>();
 	private ByteArray2D buildingMap;
 	private ContentPack localGamePack;
+	// private double timeRequestFrequencyMillis = 200;
+	// private double timeRequestTimer = 0;
 
 	public ClientGame() {
-		Log.set(Log.LEVEL_DEBUG);
+		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
 		// TODO enlever lag simulation
-		client.addListener(new Listener.LagListener(40, 70, clientListener));
+		client.addListener(new Listener.LagListener(100, 150, clientListener));
 	}
 
 	public void addListener(ClientGameListener listener) {
@@ -110,6 +113,15 @@ public class ClientGame {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
+				Entity e = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
+				if (e != null) {
+					// ApplyPlayerActionAction action = new
+					// ApplyPlayerActionAction((PlayerEntity) e, request);
+					// world.getActionTimerManager().add(new ActionTimer(action,
+					// world.getTime().getTimeMillis() +
+					// world.getTime().getTimeOffsetMillis()));
+					((PlayerEntity) e).apply(request);
+				}
 			} else {
 				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
 			}
@@ -120,6 +132,11 @@ public class ClientGame {
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
 			world.update(deltaTimeMillis);
+			// timeRequestTimer += deltaTimeMillis;
+			// if (timeRequestTimer >= timeRequestFrequencyMillis) {
+			// timeRequestTimer -= timeRequestFrequencyMillis;
+			// client.sendUDP(new TimeRequest(System.currentTimeMillis()));
+			// }
 		}
 		if (initGame != null) {
 			if (buildingMap != null && !mapParts.isEmpty()) {
@@ -150,6 +167,12 @@ public class ClientGame {
 
 	public void acceptMapPart(MapPart part) {
 		mapParts.add(part);
+	}
+
+	public void updatePing(long timeMillis) {
+		if (world != null) {
+			world.getTime().updateOffset(timeMillis);
+		}
 	}
 
 	public void notifyReady() {

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class EntityRegistry {
+public class EntityClassRegistry {
 
 	private static Map<Byte, Supplier<Entity>> entityProducers = new HashMap<>();
 	private static Map<Class<? extends Entity>, Byte> entityIds = new HashMap<>();

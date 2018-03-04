@@ -6,15 +6,22 @@ import com.esotericsoftware.kryo.io.Output;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class PlayerActionRequest {
 
 	private Direction direction;
 	private boolean forward;
+
+	public PlayerActionRequest(PlayerActionRequest other) {
+		direction = other.direction;
+		forward = other.forward;
+	}
 
 	public void set(PlayerActionRequest other) {
 		direction = other.direction;

@@ -21,7 +21,7 @@ public class TextureSheet {
 		textures = new Texture[sizeX * sizeY];
 		for (int x = 0; x < sizeX; x++) {
 			for (int y = 0; y < sizeY; y++) {
-				Texture texture = new Texture(transform.apply(spriteSheetPixmap.getRegion(x, y)), true);
+				Texture texture = new Texture(transform.apply(spriteSheetPixmap.getRegion(x, y)));
 				texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				textures[x + y * sizeX] = texture;
 			}

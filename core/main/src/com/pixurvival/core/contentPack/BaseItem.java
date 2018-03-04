@@ -9,8 +9,11 @@ import lombok.Getter;
 public class BaseItem extends NamedElement {
 
 	@XmlAttribute(name = "type")
-	private ItemType type;
+	private ItemType type = ItemType.RESOURCE;
 
-	@XmlElement(name = "frame")
+	@XmlAttribute(name = "stackSize")
+	private int stackSize = 50;
+
+	@XmlElement(name = "frame", required = true)
 	private Frame frame;
 }

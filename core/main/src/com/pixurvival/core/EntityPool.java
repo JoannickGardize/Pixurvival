@@ -77,7 +77,7 @@ public class EntityPool {
 			byteBuffer.putInt(entityMap.size());
 			for (Entity e : entityMap.values()) {
 				byteBuffer.putLong(e.getId());
-				byteBuffer.put(EntityRegistry.getIdOf(e.getClass()));
+				byteBuffer.put(EntityClassRegistry.getIdOf(e.getClass()));
 				e.writeUpdate(byteBuffer);
 			}
 		}
@@ -97,7 +97,7 @@ public class EntityPool {
 				byte classId = byteBuffer.get();
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
-					e = EntityRegistry.newEntity(classId);
+					e = EntityClassRegistry.newEntity(classId);
 					e.setId(entityId);
 					add(e);
 				}

@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class ServerEngineThread extends EngineThread {
 
 	private @NonNull ServerGame game;
-	private double sendUpdateIntervalMillis = 100;
+	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
 
 	@Override

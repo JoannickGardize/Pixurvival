@@ -23,7 +23,7 @@ public class World {
 
 	public static final int PIXEL_PER_UNIT = 8;
 	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
-	public static final double PLAYER_VIEW_DISTANCE = 35;
+	public static final double PLAYER_VIEW_DISTANCE = 45;
 
 	@Getter
 	@AllArgsConstructor
@@ -38,6 +38,7 @@ public class World {
 
 	private static long nextId = 0;
 	private static Map<Long, World> worlds = new HashMap<>();
+	private @Getter static ContentPack currentContentPack;
 
 	private Type type;
 	private Time time = new Time();
@@ -65,8 +66,8 @@ public class World {
 	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext,
 			ByteArray2D buildingMap) throws ContentPackException {
 		ContentPack pack = contentPacksContext.load(createWorld.getContentPackIdentifier());
+		World.currentContentPack = pack;
 		TiledMap map = new TiledMap(pack.getTilesById(), buildingMap);
-		// TODO synchronization map
 		World world = new World(createWorld.getId(), Type.CLIENT, map, pack);
 		worlds.put(world.getId(), world);
 		return world;
@@ -103,8 +104,8 @@ public class World {
 			previousUpdateId = entitiesUpdate.getUpdateId();
 		}
 		time.update(deltaTimeMillis);
-		entityPool.update();
 		actionTimerManager.update();
+		entityPool.update();
 	}
 
 	public void writeEntitiesUpdate() {

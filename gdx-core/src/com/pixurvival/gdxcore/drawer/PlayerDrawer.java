@@ -7,6 +7,7 @@ import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.contentPack.ActionAnimation;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.graphics.TextureAnimation;
 import com.pixurvival.gdxcore.graphics.TextureAnimationSet;
 
@@ -19,28 +20,30 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 	private @NonNull TextureAnimationSet textureAnimationSet;
 
 	@Override
+	public void update(PlayerEntity e) {
+		updateDrawPosition(e);
+	}
+
+	@Override
 	public void draw(Batch batch, PlayerEntity e) {
 		TextureAnimation textureAnimation = getAnimation(e);
-
 		int index = getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		updateDrawPosition(e);
 		DrawData data = (DrawData) e.getCustomData();
-		batch.draw(textureAnimationSet.getShadow(),
-				(float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
-				(float) (data.getDrawPosition().y - e.getBoundingRadius() - textureAnimationSet.getWidth() / 4),
+		Vector2 drawPosition = data.getDrawPosition();
+		batch.draw(textureAnimationSet.getShadow(), (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
+				(float) (drawPosition.y - e.getBoundingRadius() - textureAnimationSet.getWidth() / 4),
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
-		if (e.getWorld().getMap().tileAt((int) data.getDrawPosition().x, (int) data.getDrawPosition().y).getTile()
+		if (e.getWorld().getMap().tileAt((int) drawPosition.x, (int) drawPosition.y).getTile()
 				.getVelocityFactor() < 1) {
-			batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
-					(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
+			batch.draw(texture, (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
+					(float) (drawPosition.y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
 					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
 		} else {
-			batch.draw(texture, (float) (data.getDrawPosition().x - textureAnimationSet.getWidth() / 2),
-					(float) (data.getDrawPosition().y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
+			batch.draw(texture, (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
+					(float) (drawPosition.y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
 					textureAnimationSet.getHeight());
 		}
-
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {
@@ -49,9 +52,10 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 			o = new DrawData();
 			e.setCustomData(o);
 		}
+
 		DrawData data = (DrawData) o;
 		float timer = data.getTimer();
-		timer += Gdx.graphics.getDeltaTime();
+		timer += Gdx.graphics.getRawDeltaTime();
 		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
 			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
 		}
@@ -69,16 +73,24 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 	}
 
 	private void updateDrawPosition(PlayerEntity e) {
-		DrawData data = (DrawData) e.getCustomData();
+		Object o = e.getCustomData();
+		if (o == null) {
+			o = new DrawData();
+			e.setCustomData(o);
+		}
+		DrawData data = (DrawData) o;
 		Vector2 drawPos = data.getDrawPosition();
-		if (drawPos.distanceSquared(e.getPosition()) > 5 * 5) {
-			drawPos.set(e.getPosition());
+		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
+		double distance = drawPos.distanceSquared(position);
+		double deltaSpeed = e.getSpeed() * Gdx.graphics.getRawDeltaTime();
+		if (distance > 5 * 5 || distance <= deltaSpeed * deltaSpeed) {
+			drawPos.set(position);
 		} else {
-			float timeForward = Gdx.graphics.getDeltaTime();
-			if (timeForward > 0.1f) {
-				timeForward = 0.1f;
-			}
-			drawPos.add(new Vector2(e.getPosition()).sub(drawPos).mul(timeForward / 0.1f));
+			double speed = e.getSpeed() + (distance / (5 * 5)) * (e.getSpeed() * 2);
+			double angle = drawPos.angleTo(position);
+			// reuse of position instance
+			drawPos.add(position.setFromEuclidean(speed * Gdx.graphics.getRawDeltaTime(), angle));
 		}
 	}
+
 }

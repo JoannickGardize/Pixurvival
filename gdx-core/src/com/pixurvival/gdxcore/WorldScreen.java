@@ -12,17 +12,16 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.graphics.ContentPackTextures;
+import com.pixurvival.gdxcore.ui.InventoryUI;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 20;
+	public static final int VIEWPORT_WORLD_WIDTH = 25;
 
-	private @NonNull PixurvivalGame game;
 	@Getter
 	private World world;
 	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
@@ -36,43 +35,43 @@ public class WorldScreen implements Screen {
 		this.myPlayerId = myPlayerId;
 		this.world = world;
 		worldStage.clear();
-		worldStage.addActor(new MapActor(world.getMap(), contentPackTextures));
-		worldStage.addActor(new EntitiesActor(world.getEntityPool(), contentPackTextures));
+		worldStage.addActor(new MapActor(world.getMap()));
+		worldStage.addActor(new EntitiesActor(world.getEntityPool()));
 		hudStage.clear();
-		hudStage.setDebugAll(true);
 		table = new Table();
 		table.setWidth(1600);
 		table.setHeight(900);
 		table.add(new MiniMapActor(world, contentPackTextures)).expand().top().left().width(200).height(200).pad(50);
 		hudStage.addActor(table);
+		hudStage.addActor(new InventoryUI());
 	}
 
 	@Override
 	public void show() {
 		InputMultiplexer im = new InputMultiplexer();
+		im.addProcessor(hudStage);
 		im.addProcessor(keyboardInputProcessor);
 		im.addProcessor(cameraControlProcessor);
 		Gdx.input.setInputProcessor(im);
+
 	}
 
 	@Override
 	public void render(float delta) {
 		if (keyboardInputProcessor.update()) {
-			game.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
+			PixurvivalGame.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
 		}
 
+		worldStage.getViewport().apply();
+		worldStage.act();
 		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
 		if (myPlayer != null) {
 			Object oData = myPlayer.getCustomData();
 			if (oData != null) {
 				DrawData data = (DrawData) oData;
-				worldStage.getCamera().position.x = (float) data.getDrawPosition().x;
-				worldStage.getCamera().position.y = (float) data.getDrawPosition().y;
 				cameraControlProcessor.updateCameraPosition(data.getDrawPosition());
 			}
 		}
-		worldStage.getViewport().apply();
-		worldStage.act();
 		worldStage.draw();
 		hudStage.getViewport().apply();
 		hudStage.act();

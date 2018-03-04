@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.item.Item;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +22,7 @@ public class RefContext {
 		adapters.put(AnimationTemplate.class, new RefAdapter.AnimationTemplateRefAdapter(this));
 		adapters.put(Tile.class, new RefAdapter.TileRefAdapter(this));
 		adapters.put(SpriteSheet.class, new RefAdapter.SpriteSheetRefAdapter(this));
+		adapters.put(Item.class, new RefAdapter.ItemRefAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -43,7 +46,8 @@ public class RefContext {
 		adapters.values().forEach(a -> a.removeCurrentSet());
 	}
 
-	// public <T extends NamedElement> Map<String, T> allElements(Class<T> type) {
+	// public <T extends NamedElement> Map<String, T> allElements(Class<T> type)
+	// {
 	// Map<String, T> result = new HashMap<>();
 	// adapters.get(type).
 	// }

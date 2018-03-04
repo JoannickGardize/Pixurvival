@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapGenerator name="default" size="2049" noiseFactor="3">
+	<layer level="0.25">
+		<tile>deepWater</tile>
+	</layer>
+	<layer level="0.3">
+		<tile>water</tile>
+	</layer>
+	<layer level="0.35">
+		<tile>sand</tile>
+	</layer>
+	<layer level="0.8">
+		<tile>grass</tile>
+	</layer>
+	<layer level="0.9">
+		<tile>rock</tile>
+	</layer>
+	<layer level="1">
+		<tile>mountain</tile>
+	</layer>
+</mapGenerator>

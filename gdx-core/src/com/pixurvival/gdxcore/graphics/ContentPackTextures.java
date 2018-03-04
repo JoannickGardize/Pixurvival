@@ -19,6 +19,7 @@ import com.pixurvival.core.contentPack.Frame;
 import com.pixurvival.core.contentPack.SpriteSheet;
 import com.pixurvival.core.contentPack.Tile;
 import com.pixurvival.core.contentPack.ZipContentReference;
+import com.pixurvival.core.item.Item;
 import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
 
 import lombok.AllArgsConstructor;
@@ -28,12 +29,20 @@ public class ContentPackTextures {
 	private Map<String, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
 	private TextureRegion[][] tileMapTextures;
+	private Texture[] itemTextures;
 	private int[] tileAvgColors;
+
+	@AllArgsConstructor
+	private class ImageEntry {
+		SpriteSheetPixmap spriteSheetPixmap;
+		Texture texture;
+	}
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackReadException {
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
 		loadTileMapTextures(pack);
+		loadItemTextures(pack, pixelWidth);
 	}
 
 	public TextureAnimationSet getAnimationSet(String name) {
@@ -47,6 +56,10 @@ public class ContentPackTextures {
 
 	public int getTileColor(int id) {
 		return tileAvgColors[id];
+	}
+
+	public Texture getItem(int id) {
+		return itemTextures[id];
 	}
 
 	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackReadException {
@@ -87,12 +100,6 @@ public class ContentPackTextures {
 		texture = new Texture(pixmap);
 		textureShadows.put(shadowWidth, texture);
 		return texture;
-	}
-
-	@AllArgsConstructor
-	private class ImageEntry {
-		SpriteSheetPixmap spriteSheetPixmap;
-		Texture texture;
 	}
 
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackReadException {
@@ -137,6 +144,23 @@ public class ContentPackTextures {
 		}
 		float pixelCount = region.getWidth() * region.getHeight();
 		return Color.rgba8888(new Color(redSum / pixelCount, greenSum / pixelCount, blueSum / pixelCount, 1));
-		// return Color.rgba8888(new Color(region.getPixel(0, 0)));
+	}
+
+	private void loadItemTextures(ContentPack pack, int pixelWidth) throws ContentPackReadException {
+		List<Item> itemsById = pack.getItemsById();
+		itemTextures = new Texture[itemsById.size()];
+		Map<ZipContentReference, TextureSheet> images = new HashMap<>();
+
+		for (int i = 0; i < itemsById.size(); i++) {
+			Item item = itemsById.get(i);
+			TextureSheet textureSheet = images.get(item.getImage());
+			if (textureSheet == null) {
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(item.getImage().read(),
+						World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
+				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
+				images.put(item.getImage(), textureSheet);
+			}
+			itemTextures[i] = textureSheet.get(item.getFrame().getX(), item.getFrame().getY());
+		}
 	}
 }

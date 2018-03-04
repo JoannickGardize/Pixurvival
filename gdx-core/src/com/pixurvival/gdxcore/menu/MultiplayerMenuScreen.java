@@ -12,46 +12,43 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.pixurvival.gdxcore.Assets;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class MultiplayerMenuScreen implements Screen {
 
 	private Stage stage = new Stage(new ScreenViewport());
-	private PixurvivalGame game;
 	private ConnectionMessageWindow connectionMessageWindow;
 
-	public MultiplayerMenuScreen(PixurvivalGame game) {
-		this.game = game;
-		Skin skin = game.getAssetManager().get(Assets.SKIN, Skin.class);
+	public MultiplayerMenuScreen() {
+		Skin skin = PixurvivalGame.getSkin();
 		Table table = new Table();
 		table.setFillParent(true);
 		table.defaults().pad(5);
-		table.add(new Label(game.getString("menu.multiplayer.serverAddress"), skin)).right();
+		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.serverAddress"), skin)).right();
 		TextField ipField = new TextField("127.0.0.1", skin);
 		table.add(ipField);
 		table.row();
 
-		table.add(new Label(game.getString("menu.multiplayer.serverPort"), skin)).right();
+		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.serverPort"), skin)).right();
 		TextField portField = new TextField("7777", skin);
 		table.add(portField);
 		table.row();
 
-		table.add(new Label(game.getString("menu.multiplayer.playerName"), skin)).right();
+		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.playerName"), skin)).right();
 		TextField nameField = new TextField("Bob", skin);
 		table.add(nameField);
 		table.row();
 
 		Table buttonTable = new Table();
 		buttonTable.defaults().pad(0, 5, 0, 5).prefWidth(100);
-		TextButton backButton = new TextButton(game.getString("menu.multiplayer.back"), skin);
+		TextButton backButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.back"), skin);
 		buttonTable.add(backButton).center();
-		TextButton connectButton = new TextButton(game.getString("menu.multiplayer.connect"), skin);
+		TextButton connectButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.connect"), skin);
 		buttonTable.add(connectButton).center();
 
 		table.add(buttonTable).colspan(2);
 
-		connectionMessageWindow = new ConnectionMessageWindow(game);
+		connectionMessageWindow = new ConnectionMessageWindow();
 
 		stage.addActor(table);
 		stage.addActor(connectionMessageWindow);
@@ -60,7 +57,7 @@ public class MultiplayerMenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				connectionMessageWindow.showWaitingMessage();
-				new Thread(() -> game.getClient().connectToServer(ipField.getText(),
+				new Thread(() -> PixurvivalGame.getClient().connectToServer(ipField.getText(),
 						Integer.valueOf(portField.getText()), nameField.getText())).start();
 			}
 		});
@@ -68,7 +65,7 @@ public class MultiplayerMenuScreen implements Screen {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(MainMenuScreen.class);
+				PixurvivalGame.setScreen(MainMenuScreen.class);
 			}
 		});
 	}
