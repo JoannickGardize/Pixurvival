@@ -44,9 +44,9 @@ public class InventoryTest {
 		inventory.setSlot(1, new ItemStack(itemA, 5));
 		inventory.setSlot(2, new ItemStack(itemC, 4));
 		inventory.setSlot(3, new ItemStack(itemA, 5));
-		ItemStack itemStack = inventory.take(itemA, 7);
+		ItemStack itemStack = inventory.smartTake(itemA, 7);
 		Assert.assertEquals(new ItemStack(itemA, 7), itemStack);
-		itemStack = inventory.take(itemB, 2);
+		itemStack = inventory.smartTake(itemB, 2);
 		Assert.assertNull(itemStack);
 		Assert.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(0));
 		Assert.assertEquals(new ItemStack(itemA, 3), inventory.getSlot(1));

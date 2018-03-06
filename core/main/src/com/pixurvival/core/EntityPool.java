@@ -39,6 +39,7 @@ public class EntityPool {
 			e.setId(nextId++);
 		}
 		entities.get(e.getGroup()).put(e.getId(), e);
+		e.initialize();
 		listeners.forEach(l -> l.entityAdded(e));
 	}
 

@@ -6,9 +6,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.message.InventoryActionRequest;
+import com.pixurvival.core.message.InventoryActionRequest.Type;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class InventorySlot extends Button {
@@ -20,6 +24,14 @@ public class InventorySlot extends Button {
 		super(PixurvivalGame.getSkin());
 		this.inventory = inventory;
 		this.slotIndex = slotIndex;
+
+		this.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				PixurvivalGame.getClient()
+						.sendAction(new InventoryActionRequest(Type.CURSOR_MY_INVENTORY, (short) slotIndex));
+			}
+		});
 	}
 
 	@Override

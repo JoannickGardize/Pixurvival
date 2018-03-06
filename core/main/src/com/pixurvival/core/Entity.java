@@ -17,6 +17,8 @@ public abstract class Entity {
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
 
+	public abstract void initialize();
+
 	public abstract void update();
 
 	public abstract EntityGroup getGroup();

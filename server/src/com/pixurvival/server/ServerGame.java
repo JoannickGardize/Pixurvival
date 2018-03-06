@@ -3,6 +3,7 @@ package com.pixurvival.server;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -14,6 +15,7 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.CreateWorld;
@@ -85,10 +87,20 @@ public class ServerGame {
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
+			Random random = new Random();
 			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
 			world.getEntityPool().add(playerEntity);
+			for (int i = 0; i < 10; i++) {
+				playerEntity.getInventory().setSlot(i,
+						new ItemStack(
+								selectedContentPack.getItemsById()
+										.get(random.nextInt(selectedContentPack.getItemsById().size())),
+								random.nextInt(10)));
+			}
 			playerConnection.setPlayerEntity(playerEntity);
-			playerConnection.sendTCP(new InitializeGame(createWorld, playerEntity.getId()));
+			playerEntity.getInventory().addListener(playerConnection);
+			playerConnection
+					.sendTCP(new InitializeGame(createWorld, playerEntity.getId(), playerEntity.getInventory()));
 		});
 		for (int x = 0; x < partCountX; x++) {
 			for (int y = 0; y < partCountY; y++) {

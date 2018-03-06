@@ -18,10 +18,12 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
+import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -40,7 +42,7 @@ public class ClientGame {
 	private ClientListener clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
-	private @Getter @Setter(AccessLevel.PACKAGE) long myPlayerId;
+	private @Getter long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 	private InitializeGame initGame;
@@ -48,6 +50,7 @@ public class ClientGame {
 	private List<MapPart> mapParts = new ArrayList<>();
 	private ByteArray2D buildingMap;
 	private ContentPack localGamePack;
+	private @Getter Inventory myInventory;
 	// private double timeRequestFrequencyMillis = 200;
 	// private double timeRequestTimer = 0;
 
@@ -103,6 +106,7 @@ public class ClientGame {
 			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
 			world.getEntityPool().add(playerEntity);
 			myPlayerId = playerEntity.getId();
+			myInventory = playerEntity.getInventory();
 			notify(l -> l.initializeGame());
 		} catch (ContentPackException e) {
 			e.printStackTrace();
@@ -122,6 +126,16 @@ public class ClientGame {
 					// world.getTime().getTimeOffsetMillis()));
 					((PlayerEntity) e).apply(request);
 				}
+			} else {
+				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
+			}
+		}
+	}
+
+	public void sendAction(InventoryActionRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendTCP(request);
 			} else {
 				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
 			}
@@ -182,7 +196,8 @@ public class ClientGame {
 	private void initializeGame() {
 		try {
 			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext(), buildingMap));
-			setMyPlayerId(initGame.getMyPlayerId());
+			myPlayerId = initGame.getMyPlayerId();
+			myInventory = initGame.getInventory();
 			notify(l -> l.initializeGame());
 		} catch (ContentPackException e) {
 			Log.error("Error occured when loading contentPack.", e);

@@ -25,6 +25,10 @@ public class ServerEngineThread extends EngineThread {
 			game.foreachPlayers(p -> {
 				if (p.isGameReady() && p.getPlayerEntity() != null) {
 					p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
+					if (p.isInventoryChanged()) {
+						p.setInventoryChanged(false);
+						p.sendTCP(p.getPlayerEntity().getInventory());
+					}
 				}
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {

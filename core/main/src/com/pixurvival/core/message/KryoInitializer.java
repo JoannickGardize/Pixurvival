@@ -41,7 +41,7 @@ public class KryoInitializer {
 		register(kryo, MapPart.class);
 		register(kryo, ItemStack.class);
 		register(kryo, Inventory.class);
-		register(kryo, EntityInventoryUpdate.class);
+		register(kryo, InventoryActionRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

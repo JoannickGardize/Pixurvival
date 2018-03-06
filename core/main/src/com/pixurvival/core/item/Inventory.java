@@ -1,5 +1,7 @@
 package com.pixurvival.core.item;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -10,9 +12,18 @@ import com.esotericsoftware.minlog.Log;
 public class Inventory {
 
 	private ItemStack[] slots;
+	private List<InventoryListener> listeners = new ArrayList<>();
 
 	public Inventory(int size) {
 		slots = new ItemStack[size];
+	}
+
+	public void set(Inventory other) {
+		slots = other.slots;
+	}
+
+	public void addListener(InventoryListener listener) {
+		listeners.add(listener);
 	}
 
 	public int getSize() {
@@ -20,7 +31,10 @@ public class Inventory {
 	}
 
 	public void setSlot(int index, ItemStack itemStack) {
-		slots[index] = itemStack;
+		if (!ItemStack.equals(itemStack, slots[index])) {
+			slots[index] = itemStack;
+			notifySlotChanged(index);
+		}
 	}
 
 	public ItemStack getSlot(int index) {
@@ -28,9 +42,13 @@ public class Inventory {
 	}
 
 	public ItemStack take(int index) {
-		ItemStack removed = slots[index];
-		slots[index] = null;
-		return removed;
+		if (slots[index] != null) {
+			ItemStack removed = slots[index];
+			slots[index] = null;
+			notifySlotChanged(index);
+			return removed;
+		}
+		return null;
 	}
 
 	public boolean contains(Item item, int quantity) {
@@ -49,18 +67,16 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is
-	 * not available nothing happen. The items are taken in priority from the
-	 * end.
+	 * Try to take the given item with the given quantity. If the quantity is not
+	 * available nothing happen. The items are taken in priority from the end.
 	 * 
 	 * @param item
 	 *            The item to take.
 	 * @param quantity
 	 *            the quantity of the item to take.
-	 * @return The ItemStack containing the item and the quantity required, or
-	 *         null of not available
+	 * @return The ItemStack taken, or null if not available.
 	 */
-	public ItemStack take(Item item, int quantity) {
+	public ItemStack smartTake(Item item, int quantity) {
 		if (!contains(item, quantity)) {
 			return null;
 		}
@@ -73,6 +89,7 @@ public class Inventory {
 				if (slot.getQuantity() == 0) {
 					slots[i] = null;
 				}
+				notifySlotChanged(i);
 				if (remainingQuantity == 0) {
 					return new ItemStack(item, quantity);
 				}
@@ -83,13 +100,13 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to add the maximum quantity of the given ItemStack to this inventory,
-	 * it will be stacked with similar items if possible. It can be spited into
+	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
+	 * will be stacked with similar items if possible. It can be spited into
 	 * different slots if necessary.
 	 * 
 	 * @param itemStack
-	 *            The ItemStack to add. If the ItemStack cannot be fully added,
-	 *            the quantity of the itemStack is updated.
+	 *            The ItemStack to add. If the ItemStack cannot be fully added, the
+	 *            quantity of the itemStack is updated.
 	 * @return True if all the ItemStack is added, false otherwise.
 	 */
 	public boolean smartAdd(ItemStack itemStack) {
@@ -98,6 +115,7 @@ public class Inventory {
 			ItemStack slot = slots[i];
 			if (slot != null && slot.getItem() == item) {
 				itemStack.setQuantity(slot.addQuantity(itemStack.getQuantity()));
+				notifySlotChanged(i);
 				if (itemStack.getQuantity() == 0) {
 					return true;
 				}
@@ -130,15 +148,21 @@ public class Inventory {
 		return -1;
 	}
 
+	public boolean isValidIndex(int index) {
+		return index >= 0 && index < slots.length;
+	}
+
+	public void notifySlotChanged(int index) {
+		listeners.forEach(l -> l.slotChanged(this, index));
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Inventory> {
 
 		@Override
 		public void write(Kryo kryo, Output output, Inventory object) {
 			output.writeShort(object.slots.length);
 			for (ItemStack itemStack : object.slots) {
-				if (itemStack == null) {
-					kryo.writeObjectOrNull(output, object, ItemStack.class);
-				}
+				kryo.writeObjectOrNull(output, itemStack, ItemStack.class);
 			}
 		}
 

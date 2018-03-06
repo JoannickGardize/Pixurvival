@@ -128,7 +128,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		WorldScreen worldScreen = new WorldScreen();
 		contentPackTextures = new ContentPackTextures();
 		try {
-			int screenWidth = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
+			// Gdx.graphics.getHeight());
 			// int pixelWidth = Math
 			// .round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH *
 			// World.PIXEL_PER_UNIT));

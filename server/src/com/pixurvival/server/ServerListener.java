@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.PlayerEntity;
 import com.pixurvival.core.message.GameReady;
+import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -38,6 +39,13 @@ class ServerListener extends Listener {
 			PlayerEntity entity = connection.getPlayerEntity();
 			if (entity != null) {
 				entity.apply((PlayerActionRequest) m.getObject());
+			}
+		});
+		messageActions.put(InventoryActionRequest.class, m -> {
+			PlayerConnection connection = m.getConnection();
+			PlayerEntity entity = connection.getPlayerEntity();
+			if (entity != null) {
+				entity.apply((InventoryActionRequest) m.getObject());
 			}
 		});
 		messageActions.put(RequestContentPacks.class, m -> {
