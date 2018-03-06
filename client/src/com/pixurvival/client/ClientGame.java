@@ -3,6 +3,7 @@ package com.pixurvival.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -19,6 +20,7 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.GameReady;
@@ -70,6 +72,15 @@ public class ClientGame {
 		listeners.forEach(action);
 	}
 
+	public PlayerEntity getMyPlayer() {
+		Entity e = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
+		if (e != null) {
+			return (PlayerEntity) e;
+		} else {
+			return null;
+		}
+	}
+
 	public void connectToServer(String address, int port, String playerName) {
 		try {
 			if (client.isConnected()) {
@@ -91,6 +102,7 @@ public class ClientGame {
 		buildingMap = new ByteArray2D(initGame.getCreateWorld().getMapWidth(),
 				initGame.getCreateWorld().getMapHeight());
 		buildingMap.fill((byte) 1);
+		myInventory = initGame.getInventory();
 	}
 
 	public void startLocalGame() {
@@ -105,6 +117,13 @@ public class ClientGame {
 			PlayerEntity playerEntity = new PlayerEntity();
 			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
 			world.getEntityPool().add(playerEntity);
+			Random random = new Random();
+			for (int i = 0; i < 20; i++) {
+				playerEntity.getInventory().setSlot(i,
+						new ItemStack(
+								localGamePack.getItemsById().get(random.nextInt(localGamePack.getItemsById().size())),
+								random.nextInt(10) + 1));
+			}
 			myPlayerId = playerEntity.getId();
 			myInventory = playerEntity.getInventory();
 			notify(l -> l.initializeGame());
@@ -135,7 +154,7 @@ public class ClientGame {
 	public void sendAction(InventoryActionRequest request) {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
-				client.sendTCP(request);
+				client.sendUDP(request);
 			} else {
 				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
 			}

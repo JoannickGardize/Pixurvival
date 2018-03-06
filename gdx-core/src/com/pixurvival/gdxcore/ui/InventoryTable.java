@@ -16,7 +16,7 @@ public class InventoryTable extends Table {
 		if (inventory.getSize() % rowLength > 0) {
 			rowCount++;
 		}
-		defaults().fill().expand().pad(2).size(30);
+		defaults().fill().expand().size(30);
 		for (int i = 0; i < rowCount; i++) {
 			for (int j = 0; j < rowLength; j++) {
 				add(new InventorySlot(inventory, i * rowLength + j));

@@ -27,7 +27,7 @@ public class ServerEngineThread extends EngineThread {
 					p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
 					if (p.isInventoryChanged()) {
 						p.setInventoryChanged(false);
-						p.sendTCP(p.getPlayerEntity().getInventory());
+						p.sendUDP(p.getPlayerEntity().getInventory());
 					}
 				}
 			});

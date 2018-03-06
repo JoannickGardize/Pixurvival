@@ -95,7 +95,7 @@ public class ServerGame {
 						new ItemStack(
 								selectedContentPack.getItemsById()
 										.get(random.nextInt(selectedContentPack.getItemsById().size())),
-								random.nextInt(10)));
+								random.nextInt(10) + 1));
 			}
 			playerConnection.setPlayerEntity(playerEntity);
 			playerEntity.getInventory().addListener(playerConnection);

@@ -31,18 +31,17 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		Texture texture = textureAnimation.getTexture(index);
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		batch.draw(textureAnimationSet.getShadow(), (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
-				(float) (drawPosition.y - e.getBoundingRadius() - textureAnimationSet.getWidth() / 4),
+		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
+		float y = (float) (drawPosition.y - e.getBoundingRadius()) + textureAnimationSet.getYOffset();
+		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
+
 		if (e.getWorld().getMap().tileAt((int) drawPosition.x, (int) drawPosition.y).getTile()
 				.getVelocityFactor() < 1) {
-			batch.draw(texture, (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
-					(float) (drawPosition.y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
-					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
+			batch.draw(texture, x, y, textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7),
+					0, 0.7f, 1, 0);
 		} else {
-			batch.draw(texture, (float) (drawPosition.x - textureAnimationSet.getWidth() / 2),
-					(float) (drawPosition.y - e.getBoundingRadius()), textureAnimationSet.getWidth(),
-					textureAnimationSet.getHeight());
+			batch.draw(texture, x, y, textureAnimationSet.getWidth(), textureAnimationSet.getHeight());
 		}
 	}
 

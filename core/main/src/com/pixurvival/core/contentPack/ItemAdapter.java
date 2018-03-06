@@ -33,6 +33,7 @@ public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 			break;
 		}
 		item.setFrame(baseItem.getFrame());
+		item.setMaxStackSize(baseItem.getStackSize());
 		return item;
 	}
 

@@ -46,7 +46,6 @@ class ClientListener extends Listener {
 			game.updatePing(time);
 		});
 		messageActions.put(Inventory.class, i -> {
-			System.out.println("hcic");
 			game.getMyInventory().set((Inventory) i);
 		});
 	}

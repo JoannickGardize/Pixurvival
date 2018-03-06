@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore;
+package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;

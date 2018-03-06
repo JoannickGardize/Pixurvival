@@ -19,7 +19,6 @@ import lombok.Setter;
 public class TextureAnimationSet {
 
 	private Map<ActionAnimation, TextureAnimation> map = new HashMap<>();
-	private @Getter float xOffset;
 	private @Getter float yOffset;
 	private @Getter float width;
 	private @Getter float height;
@@ -29,8 +28,7 @@ public class TextureAnimationSet {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * World.PIXEL_PER_UNIT);
 		width = (float) ((double) spriteSheet.getWidth() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
 		height = (float) ((double) spriteSheet.getHeight() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
-		xOffset = (float) (truePixelWidth + width / 2);
-		yOffset = (float) truePixelWidth;
+		yOffset = (float) -truePixelWidth;
 
 		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(spriteSheet.getImage().read(), spriteSheet.getWidth(),
 				spriteSheet.getHeight());
