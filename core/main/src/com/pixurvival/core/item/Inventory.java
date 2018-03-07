@@ -11,7 +11,7 @@ import com.esotericsoftware.minlog.Log;
 
 public class Inventory {
 
-	private ItemStack[] slots;
+	protected ItemStack[] slots;
 	private List<InventoryListener> listeners = new ArrayList<>();
 
 	public Inventory(int size) {
@@ -175,6 +175,5 @@ public class Inventory {
 			}
 			return inventory;
 		}
-
 	}
 }

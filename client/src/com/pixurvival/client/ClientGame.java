@@ -13,13 +13,13 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.PlayerInventory;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.MapBuilder;
@@ -52,7 +52,7 @@ public class ClientGame {
 	private List<MapPart> mapParts = new ArrayList<>();
 	private ByteArray2D buildingMap;
 	private ContentPack localGamePack;
-	private @Getter Inventory myInventory;
+	private @Getter PlayerInventory myInventory;
 	// private double timeRequestFrequencyMillis = 200;
 	// private double timeRequestTimer = 0;
 

@@ -1,6 +1,6 @@
 package com.pixurvival.core.message;
 
-import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.PlayerInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +15,5 @@ public class InitializeGame {
 
 	private CreateWorld createWorld;
 	private long myPlayerId;
-	private Inventory inventory;
+	private PlayerInventory inventory;
 }

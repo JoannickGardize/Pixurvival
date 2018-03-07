@@ -21,8 +21,6 @@ import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
-import com.pixurvival.core.message.MapPart;
-import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.Getter;
 
@@ -102,17 +100,11 @@ public class ServerGame {
 			playerConnection
 					.sendTCP(new InitializeGame(createWorld, playerEntity.getId(), playerEntity.getInventory()));
 		});
-		for (int x = 0; x < partCountX; x++) {
-			for (int y = 0; y < partCountY; y++) {
-				int width = x < partCountX - 1 ? 64 : tiledMap.getData().getWidth() - x * 64;
-				int height = y < partCountY - 1 ? 64 : tiledMap.getData().getHeight() - y * 64;
-				ByteArray2D data = tiledMap.getData().getRect(x * 64, y * 64, width, height);
-				MapPart part = new MapPart(x * 64, y * 64, data);
-				foreachPlayers(playerConnection -> {
-					playerConnection.sendTCP(part);
-				});
-			}
-		}
+
+		foreachPlayers(playerConnection -> {
+			playerConnection.addListener(new MapSender(tiledMap));
+		});
+
 	}
 
 	void notify(Consumer<ServerGameListener> action) {

@@ -1,7 +1,7 @@
 package com.pixurvival.core.contentPack;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class AnimationTemplate extends NamedElement {
 	@XmlAttribute(name = "frameDuration")
 	private double frameDuration;
 
-	private Map<ActionAnimation, Animation> animations = new HashMap<>();
+	private Map<ActionAnimation, Animation> animations = new EnumMap<>(ActionAnimation.class);
 
 	public Map<ActionAnimation, Animation> getAnimations() {
 		return Collections.unmodifiableMap(animations);

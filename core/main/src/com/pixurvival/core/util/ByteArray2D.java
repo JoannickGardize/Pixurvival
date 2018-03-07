@@ -13,6 +13,7 @@ public class ByteArray2D {
 	private int width;
 	@Getter
 	private int height;
+	@Getter
 	private byte[] data;
 
 	public ByteArray2D(int width, int height) {
@@ -35,17 +36,16 @@ public class ByteArray2D {
 	}
 
 	/**
-	 * Fill this Array 2D with the given Array 2D. This method is super
-	 * efficient, using {@link System#arraycopy(Object, int, Object, int, int)}
-	 * for each rows.
+	 * Fill this Array 2D with the given Array 2D. This method is super efficient,
+	 * using {@link System#arraycopy(Object, int, Object, int, int)} for each rows.
 	 * 
 	 * @param x
 	 *            The start X position where the rectangle will be copied.
 	 * @param y
 	 *            The start Y position where the rectangle will be copied.
 	 * @param rect
-	 *            The rectangle to copy. It will be fully copied using its width
-	 *            and height.
+	 *            The rectangle to copy. It will be fully copied using its width and
+	 *            height.
 	 */
 	public void setRect(int x, int y, ByteArray2D rect) {
 		for (int dy = 0; dy < rect.height; dy++) {

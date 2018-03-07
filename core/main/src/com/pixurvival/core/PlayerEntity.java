@@ -2,24 +2,22 @@ package com.pixurvival.core;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.item.Inventory;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private String name;
 
-	private Inventory inventory;
+	private PlayerInventory inventory;
 
 	private boolean extendedUpdateRequired = false;
-	private @Setter ItemStack heldItemStack;
 
 	public void apply(PlayerActionRequest actionRequest) {
 		setMovingAngle(actionRequest.getDirection().getAngle());
@@ -27,25 +25,42 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	}
 
 	public void apply(InventoryActionRequest actionRequest) {
+		if (!inventory.isValidIndex(actionRequest.getSlotIndex())) {
+			Log.warn("Warning : invalid slot index : " + actionRequest.getSlotIndex());
+			return;
+		}
 		switch (actionRequest.getType()) {
-		case CURSOR_MY_INVENTORY:
-			if (inventory.isValidIndex(actionRequest.getSlotIndex())) {
-				ItemStack currentContent = inventory.getSlot(actionRequest.getSlotIndex());
-				if (heldItemStack != null && currentContent != null
-						&& heldItemStack.getItem() == currentContent.getItem()) {
-					int quantity = currentContent.getQuantity();
-					heldItemStack.setQuantity(currentContent.addQuantity(heldItemStack.getQuantity()));
-					if (quantity != currentContent.getQuantity()) {
-						inventory.notifySlotChanged(actionRequest.getSlotIndex());
-					}
+		case NORMAL_CLICK_MY_INVENTORY:
+			performNormalInventoryAction(actionRequest.getSlotIndex());
+			break;
+		case SPECIAL_CLICK_MY_INVENTORY:
+			ItemStack currentContent = inventory.getSlot(actionRequest.getSlotIndex());
+			ItemStack heldItemStack = inventory.getHeldItemStack();
+			if (heldItemStack != null && currentContent != null
+					&& heldItemStack.getItem() == currentContent.getItem()) {
+				if (currentContent.addQuantity(1) == 0) {
+					heldItemStack.removeQuantity(1);
+					inventory.notifySlotChanged(actionRequest.getSlotIndex());
 					if (heldItemStack.getQuantity() == 0) {
-						heldItemStack = null;
+						inventory.setHeldItemStack(null);
 					}
-				} else {
-					inventory.setSlot(actionRequest.getSlotIndex(), heldItemStack);
-					heldItemStack = currentContent;
 				}
-				extendedUpdateRequired = true;
+			} else if (heldItemStack != null && currentContent == null) {
+				heldItemStack.removeQuantity(1);
+				inventory.setSlot(actionRequest.getSlotIndex(), new ItemStack(heldItemStack.getItem()));
+				if (heldItemStack.getQuantity() == 0) {
+					inventory.setHeldItemStack(null);
+				}
+			} else if (heldItemStack == null && currentContent != null) {
+				int halfQuantity = currentContent.getQuantity() / 2 + (currentContent.getQuantity() % 2 == 0 ? 0 : 1);
+				halfQuantity = currentContent.removeQuantity(halfQuantity);
+				inventory.setHeldItemStack(new ItemStack(currentContent.getItem(), halfQuantity));
+				if (currentContent.getQuantity() == 0) {
+					inventory.setSlot(actionRequest.getSlotIndex(), null);
+				}
+				inventory.notifySlotChanged(actionRequest.getSlotIndex());
+			} else {
+				performNormalInventoryAction(actionRequest.getSlotIndex());
 			}
 			break;
 		}
@@ -54,7 +69,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	@Override
 	public void initialize() {
 		if (getWorld().isServer()) {
-			inventory = new Inventory(getInventorySize());
+			inventory = new PlayerInventory(getInventorySize());
 		}
 	}
 
@@ -103,17 +118,11 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 
 		// extended part
-		if (extendedUpdateRequired) {
-			buffer.put((byte) 1);
-			if (heldItemStack == null) {
-				buffer.putShort((short) -1);
-			} else {
-				buffer.putShort(heldItemStack.getItem().getId());
-				buffer.putShort((short) heldItemStack.getQuantity());
-			}
-		} else {
-			buffer.put((byte) 0);
-		}
+		// if (extendedUpdateRequired) {
+		// buffer.put((byte) 1);
+		// } else {
+		// buffer.put((byte) 0);
+		// }
 	}
 
 	@Override
@@ -126,14 +135,26 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		setForward(buffer.get() == 1 ? true : false);
 
 		// extended part
-		if (buffer.get() == 1) {
-			short itemId = buffer.getShort();
-			if (itemId == -1) {
-				heldItemStack = null;
-			} else {
-				heldItemStack = new ItemStack(getWorld().getContentPack().getItemsById().get(itemId),
-						buffer.getShort());
+		// if (buffer.get() == 1) {
+		// }
+	}
+
+	private void performNormalInventoryAction(int slotIndex) {
+		ItemStack currentContent = inventory.getSlot(slotIndex);
+		ItemStack heldItemStack = inventory.getHeldItemStack();
+		if (heldItemStack != null && currentContent != null && heldItemStack.getItem() == currentContent.getItem()) {
+			int quantity = currentContent.getQuantity();
+			heldItemStack.setQuantity(currentContent.addQuantity(heldItemStack.getQuantity()));
+			if (quantity != currentContent.getQuantity()) {
+				inventory.notifySlotChanged(slotIndex);
 			}
+			if (heldItemStack.getQuantity() == 0) {
+				inventory.setHeldItemStack(null);
+			}
+		} else {
+			inventory.setSlot(slotIndex, heldItemStack);
+			inventory.setHeldItemStack(currentContent);
 		}
+		extendedUpdateRequired = true;
 	}
 }

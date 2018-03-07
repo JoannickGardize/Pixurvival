@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<structures>
+	<structure name="tree" type="harvestable">
+		<harvestingTime>4</harvestingTime>
+	</structure>
+</structures>

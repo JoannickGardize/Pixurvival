@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
@@ -41,6 +42,7 @@ public class KryoInitializer {
 		register(kryo, MapPart.class);
 		register(kryo, ItemStack.class);
 		register(kryo, Inventory.class);
+		register(kryo, PlayerInventory.class);
 		register(kryo, InventoryActionRequest.class);
 	}
 

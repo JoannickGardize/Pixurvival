@@ -16,7 +16,8 @@ public class InventoryActionRequest {
 
 	@Getter
 	public static enum Type {
-		CURSOR_MY_INVENTORY;
+		NORMAL_CLICK_MY_INVENTORY,
+		SPECIAL_CLICK_MY_INVENTORY;
 	}
 
 	private Type type;

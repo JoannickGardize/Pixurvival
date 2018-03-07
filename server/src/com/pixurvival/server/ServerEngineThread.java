@@ -1,5 +1,6 @@
 package com.pixurvival.server;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.World;
 
@@ -33,6 +34,7 @@ public class ServerEngineThread extends EngineThread {
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
 				sendUpdateTimer = 0;
+				Log.warn("sendUpdateTimer has been reset.");
 			} else {
 				sendUpdateTimer -= sendUpdateIntervalMillis;
 			}

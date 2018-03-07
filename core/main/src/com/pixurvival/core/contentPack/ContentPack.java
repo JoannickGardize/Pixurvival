@@ -1,10 +1,8 @@
 package com.pixurvival.core.contentPack;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -81,11 +79,5 @@ public class ContentPack {
 			throw new ContentPackReadException("Missing file " + name);
 		}
 		return unmarshaller.unmarshal(zipFile.getInputStream(entry));
-	}
-
-	public static void main(String[] args) throws ContentPackException {
-		ContentPacksContext c = new ContentPacksContext(new File("contentPacks"));
-		c.load(new ContentPackIdentifier("Vanilla", new Version("0.1"),
-				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b")));
 	}
 }

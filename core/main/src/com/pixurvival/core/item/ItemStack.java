@@ -6,15 +6,18 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@ToString
+@EqualsAndHashCode
 public class ItemStack {
 
-	private @Setter(AccessLevel.NONE) Item item;
-	private int quantity;
+	private Item item;
+	private @Setter int quantity;
 
 	public ItemStack(Item item) {
 		this.item = item;

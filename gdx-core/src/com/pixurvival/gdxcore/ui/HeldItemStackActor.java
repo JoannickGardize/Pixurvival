@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.PlayerInventory;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class HeldItemStackActor extends Actor {
@@ -20,14 +20,13 @@ public class HeldItemStackActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer != null) {
-			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-			setPosition(mousePos.x - getWidth() / 2, mousePos.y - getHeight() / 2);
-			itemStackDrawer.setItemStack(myPlayer.getHeldItemStack());
-			itemStackDrawer.draw(batch);
-		} else {
-			itemStackDrawer.setItemStack(null);
+		PlayerInventory inventory = PixurvivalGame.getClient().getMyInventory();
+		if (inventory == null) {
+			return;
 		}
+		Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+		setPosition(mousePos.x - getWidth() / 2, mousePos.y - getHeight() / 2);
+		itemStackDrawer.setItemStack(inventory.getHeldItemStack());
+		itemStackDrawer.draw(batch);
 	}
 }
