@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.sprite;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.pixurvival.core.contentPack.ActionAnimation.ActionAnimationAdapter;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation.ActionAnimationAdapter;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.BeanUtils;
 
@@ -19,7 +19,9 @@ public enum ActionAnimation {
 	STAND_RIGHT,
 	STAND_UP,
 	STAND_LEFT,
-	STAND_DOWN;
+	STAND_DOWN,
+	NONE,
+	HARVESTED;
 
 	private static Map<Direction, ActionAnimation> moveByDirection = new HashMap<>();
 	private static Map<Direction, ActionAnimation> standByDirection = new HashMap<>();
@@ -59,6 +61,5 @@ public enum ActionAnimation {
 		public String marshal(ActionAnimation v) throws Exception {
 			return BeanUtils.upperToCamelCase(v.name());
 		}
-
 	}
 }

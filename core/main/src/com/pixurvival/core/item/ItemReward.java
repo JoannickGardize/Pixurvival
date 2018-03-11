@@ -4,40 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public class ItemReward {
+import com.pixurvival.core.contentPack.NamedElement;
 
-	@Getter
-	@AllArgsConstructor
-	public static class Entry {
-		private Item item;
-		private int quantity;
-		private double probability;
-	}
+public class ItemReward extends NamedElement {
 
-	private Entry[] entries;
+	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(() -> new ArrayList<>());
 
-	public ItemReward(Entry... entries) {
-		this.entries = entries;
-	}
+	@XmlElement(name = "item")
+	@XmlJavaTypeAdapter(ItemRewardEntry.XmlEntryAdapter.class)
+	private ItemRewardEntry[] entries;
 
-	public int entryCount() {
-		return entries.length;
-	}
-
-	public Entry getEntry(int index) {
-		return entries[index];
-	}
-
-	public List<ItemStack> produce(Random random) {
-		List<ItemStack> result = new ArrayList<>();
-		for (Entry entry : entries) {
+	public ItemStack[] produce(Random random) {
+		List<ItemStack> result = tmpLists.get();
+		result.clear();
+		for (ItemRewardEntry entry : entries) {
 			if (random.nextDouble() <= entry.getProbability()) {
-				result.add(new ItemStack(entry.getItem(), entry.getQuantity()));
+				result.add(entry.getItemStack().copy());
 			}
 		}
-		return result;
+		return result.toArray(new ItemStack[result.size()]);
 	}
 }

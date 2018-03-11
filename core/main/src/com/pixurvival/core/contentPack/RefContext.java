@@ -5,7 +5,13 @@ import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.item.ItemRewardEntry;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +29,8 @@ public class RefContext {
 		adapters.put(Tile.class, new RefAdapter.TileRefAdapter(this));
 		adapters.put(SpriteSheet.class, new RefAdapter.SpriteSheetRefAdapter(this));
 		adapters.put(Item.class, new RefAdapter.ItemRefAdapter(this));
+		adapters.put(ItemReward.class, new RefAdapter.ItemRewardRefAdapter(this));
+		adapters.put(Structure.class, new RefAdapter.StructureRefAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -33,6 +41,7 @@ public class RefContext {
 	public void setAdapters(Unmarshaller unmarshaller) {
 		adapters.values().forEach(a -> unmarshaller.setAdapter(a));
 		unmarshaller.setAdapter(new ImageReferenceAdapter(this));
+		unmarshaller.setAdapter(new ItemRewardEntry.XmlEntryAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -46,9 +55,12 @@ public class RefContext {
 		adapters.values().forEach(a -> a.removeCurrentSet());
 	}
 
-	// public <T extends NamedElement> Map<String, T> allElements(Class<T> type)
-	// {
-	// Map<String, T> result = new HashMap<>();
-	// adapters.get(type).
-	// }
+	@SuppressWarnings("unchecked")
+	public <T extends NamedElement> T get(Class<T> type, ElementReference reference) {
+		try {
+			return (T) adapters.get(type).unmarshal(reference);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 }

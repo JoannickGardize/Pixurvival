@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapGenerators>
+	<mapGenerator name="default" size="2049">
+		<heightmaps>
+			<heightmap name="height" noiseFactor="3" />
+			<heightmap name="humidity" noiseFactor="6" />
+		</heightmaps>
+		<tileGenerators smoothing="2">
+			<tileGenerator>
+				<heightmapCondition name="height" min="0" max="0.25" />
+				<tile>deepWater</tile>
+			</tileGenerator>
+			<tileGenerator>
+				<heightmapCondition name="height" min="0.25" max="0.3" />
+				<tile>water</tile>
+			</tileGenerator>
+			<tileGenerator>
+				<heightmapCondition name="height" min="0.3" max="0.35" />
+				<tile>sand</tile>
+			</tileGenerator>
+			<tileGenerator>
+				<heightmapCondition name="height" min="0.35" max="0.8" />
+				<tile>grass</tile>
+			</tileGenerator>
+			<tileGenerator>
+				<heightmapCondition name="height" min="0.8" max="0.9" />
+				<tile>rock</tile>
+			</tileGenerator>
+			<tileGenerator>
+				<heightmapCondition name="height" min="0.9" max="1" />
+				<tile>mountain</tile>
+			</tileGenerator>
+		</tileGenerators>
+		<structureGenerators>
+			<!-- Dense Forest -->
+			<structureGenerator>
+				<heightmapCondition name="height" min="0.36" max="0.79" />
+				<heightmapCondition name="humidity" min="0.7" max="1" />
+				<density>0.4</density>
+				<margin>1</margin>
+				<structure probability="0.8">tree</structure>
+				<structure probability="0.2">cottonBush</structure>
+			</structureGenerator>
+			<!-- Light Forest -->
+			<structureGenerator>
+				<heightmapCondition name="height" min="0.36" max="0.79" />
+				<heightmapCondition name="humidity" min="0.3" max="0.7" />
+				<density>0.07</density>
+				<margin>2</margin>
+				<structure probability="0.6">tree</structure>
+				<structure probability="0.4">cottonBush</structure>
+			</structureGenerator>
+			<!-- Rocks -->
+			<structureGenerator>
+				<heightmapCondition name="height" min="0.81" max="0.89" />
+				<density>0.04</density>
+				<margin>1</margin>
+				<structure>rock</structure>
+			</structureGenerator>
+		</structureGenerators>
+	</mapGenerator>
+</mapGenerators>

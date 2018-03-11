@@ -1,7 +1,10 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.item;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+
+import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.sprite.Frame;
 
 import lombok.Getter;
 

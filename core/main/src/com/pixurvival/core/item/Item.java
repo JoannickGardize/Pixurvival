@@ -1,8 +1,8 @@
 package com.pixurvival.core.item;
 
-import com.pixurvival.core.contentPack.Frame;
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.ZipContentReference;
+import com.pixurvival.core.contentPack.sprite.Frame;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -6,11 +6,11 @@ import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.ActionAnimation;
-import com.pixurvival.core.contentPack.Animation;
-import com.pixurvival.core.contentPack.AnimationTemplate;
 import com.pixurvival.core.contentPack.ContentPackReadException;
-import com.pixurvival.core.contentPack.SpriteSheet;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.contentPack.sprite.Animation;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
 import lombok.AccessLevel;
 import lombok.Getter;

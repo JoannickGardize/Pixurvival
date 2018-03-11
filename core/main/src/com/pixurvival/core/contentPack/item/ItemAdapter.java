@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.item;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 

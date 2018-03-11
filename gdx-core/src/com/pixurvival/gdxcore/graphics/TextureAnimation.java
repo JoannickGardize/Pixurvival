@@ -1,8 +1,8 @@
 package com.pixurvival.gdxcore.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.pixurvival.core.contentPack.Animation;
-import com.pixurvival.core.contentPack.Frame;
+import com.pixurvival.core.contentPack.sprite.Animation;
+import com.pixurvival.core.contentPack.sprite.Frame;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.sprite;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.util.ListViewOfMap;
 
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class AnimationTemplate extends NamedElement {
 
 	@Getter
 	@XmlAttribute(name = "frameDuration")
-	private double frameDuration;
+	private double frameDuration = 1;
 
 	private Map<ActionAnimation, Animation> animations = new EnumMap<>(ActionAnimation.class);
 

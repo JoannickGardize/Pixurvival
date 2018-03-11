@@ -1,9 +1,9 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.item;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.pixurvival.core.contentPack.ItemType.ItemTypeAdapter;
+import com.pixurvival.core.contentPack.item.ItemType.ItemTypeAdapter;
 import com.pixurvival.core.util.BeanUtils;
 
 @XmlJavaTypeAdapter(ItemTypeAdapter.class)

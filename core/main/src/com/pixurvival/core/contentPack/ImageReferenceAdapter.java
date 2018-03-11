@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 
 @AllArgsConstructor
-class ImageReferenceAdapter extends XmlAdapter<String, ZipContentReference> {
+public class ImageReferenceAdapter extends XmlAdapter<String, ZipContentReference> {
 
 	private @NonNull RefContext context;
 

@@ -3,12 +3,23 @@ package com.pixurvival.core.contentPack;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.contentPack.item.Items;
+import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.Structures;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.contentPack.sprite.Animation;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.sprite.Sprites;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemRewards;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.MeleeWeaponItem;
 
 public class ContentPackTest {
@@ -107,7 +118,7 @@ public class ContentPackTest {
 
 	private void testContentPack(File file, ContentPack pack) {
 		Sprites sprites = pack.getSprites();
-		Assert.assertEquals(1, sprites.all().size());
+		Assert.assertEquals(2, sprites.all().size());
 		SpriteSheet spriteSheet = sprites.all().get("character");
 		Assert.assertEquals("character", spriteSheet.getName());
 		Assert.assertEquals(7, spriteSheet.getWidth());
@@ -115,7 +126,7 @@ public class ContentPackTest {
 		Assert.assertEquals(new ZipContentReference(file, "images/character.png"), spriteSheet.getImage());
 		AnimationTemplate animationTemplate = spriteSheet.getAnimationTemplate();
 		Assert.assertEquals("characterAnimation3", animationTemplate.getName());
-		Assert.assertEquals(0.3, animationTemplate.getFrameDuration(), Double.MIN_VALUE);
+		Assert.assertEquals(0.2, animationTemplate.getFrameDuration(), Double.MIN_VALUE);
 		Assert.assertEquals(8, animationTemplate.getAnimations().size());
 		Animation animation = animationTemplate.getAnimations().get(ActionAnimation.STAND_LEFT);
 		Assert.assertEquals(ActionAnimation.STAND_LEFT, animation.getAction());
@@ -129,5 +140,13 @@ public class ContentPackTest {
 		Items items = pack.getItems();
 		Assert.assertEquals(Item.class, items.get("wood").getClass());
 		Assert.assertEquals(MeleeWeaponItem.class, items.get("wood_sword").getClass());
+		ItemRewards itemRewards = pack.getItemRewards();
+		ItemStack[] reward = itemRewards.get("tree").produce(new Random());
+		Assert.assertEquals(1, reward.length);
+		Assert.assertEquals(new ItemStack(items.get("wood"), 2), reward[0]);
+		Structures structures = pack.getStructures();
+		Structure tree = structures.get("tree");
+		Assert.assertEquals(4, tree.getHarvestingTime());
+		Assert.assertSame(itemRewards.get("tree"), tree.getItemReward());
 	}
 }

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <structures>
-	<structure name="tree" type="harvestable">
+	<structure name="tree" type="harvestable" solid="true">
+		<spriteSheet>tree</spriteSheet>
 		<harvestingTime>4</harvestingTime>
+		<respawnTime min="100" max="150" />
+		<itemReward>tree</itemReward>
 	</structure>
 </structures>

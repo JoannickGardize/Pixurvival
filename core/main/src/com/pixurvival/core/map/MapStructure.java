@@ -3,7 +3,7 @@ package com.pixurvival.core.map;
 import lombok.Getter;
 
 @Getter
-public abstract class Structure {
+public abstract class MapStructure {
 
 	private int x;
 	private int y;

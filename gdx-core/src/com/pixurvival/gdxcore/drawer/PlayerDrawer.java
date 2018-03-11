@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.PlayerEntity;
-import com.pixurvival.core.contentPack.ActionAnimation;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
@@ -36,7 +36,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
 
-		if (e.getWorld().getMap().tileAt((int) drawPosition.x, (int) drawPosition.y).getTile()
+		if (e.getWorld().getMap().tileAt((int) drawPosition.x, (int) drawPosition.y).getTileDefinition()
 				.getVelocityFactor() < 1) {
 			batch.draw(texture, x, y, textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7),
 					0, 0.7f, 1, 0);

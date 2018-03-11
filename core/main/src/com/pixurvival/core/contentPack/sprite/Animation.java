@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.sprite;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

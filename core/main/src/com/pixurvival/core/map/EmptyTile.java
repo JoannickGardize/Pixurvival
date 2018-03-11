@@ -1,6 +1,6 @@
 package com.pixurvival.core.map;
 
-import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.map.Tile;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,10 +11,10 @@ import lombok.NonNull;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class EmptyTile implements MapTile {
 
-	private @NonNull Tile tile;
+	private @NonNull Tile tileDefinition;
 
 	@Override
 	public boolean isSolid() {
-		return tile.isSolid();
+		return tileDefinition.isSolid();
 	}
 }

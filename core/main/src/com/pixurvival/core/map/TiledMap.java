@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pixurvival.core.Entity;
-import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.Getter;

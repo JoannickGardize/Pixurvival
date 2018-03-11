@@ -6,6 +6,12 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemReward;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -64,7 +70,6 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 		public AnimationTemplateRefAdapter(RefContext context) {
 			super(context);
 		}
-
 	}
 
 	public static class TileRefAdapter extends RefAdapter<Tile> {
@@ -72,7 +77,6 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 		public TileRefAdapter(RefContext context) {
 			super(context);
 		}
-
 	}
 
 	public static class SpriteSheetRefAdapter extends RefAdapter<SpriteSheet> {
@@ -80,14 +84,26 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 		public SpriteSheetRefAdapter(RefContext context) {
 			super(context);
 		}
-
 	}
 
-	public static class ItemRefAdapter extends RefAdapter<SpriteSheet> {
+	public static class ItemRefAdapter extends RefAdapter<Item> {
 
 		public ItemRefAdapter(RefContext context) {
 			super(context);
 		}
+	}
 
+	public static class ItemRewardRefAdapter extends RefAdapter<ItemReward> {
+
+		public ItemRewardRefAdapter(RefContext context) {
+			super(context);
+		}
+	}
+
+	public static class StructureRefAdapter extends RefAdapter<ItemReward> {
+
+		public StructureRefAdapter(RefContext context) {
+			super(context);
+		}
 	}
 }

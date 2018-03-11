@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackReadException;
-import com.pixurvival.core.contentPack.Frame;
-import com.pixurvival.core.contentPack.SpriteSheet;
-import com.pixurvival.core.contentPack.Tile;
 import com.pixurvival.core.contentPack.ZipContentReference;
+import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.Frame;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
 

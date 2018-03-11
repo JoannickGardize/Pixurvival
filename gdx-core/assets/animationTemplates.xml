@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<animationTemplates>
+	<animationTemplate name="characterAnimation3"
+		frameDuration="0.2">
+		<animation action="standDown">
+			<frame x="0" y="0" />
+		</animation>
+		<animation action="standUp">
+			<frame x="0" y="1" />
+		</animation>
+		<animation action="standLeft">
+			<frame x="0" y="2" />
+		</animation>
+		<animation action="standRight">
+			<frame x="0" y="3" />
+		</animation>
+		<animation action="moveDown">
+			<frame x="0" y="0" />
+			<frame x="1" y="0" />
+			<frame x="0" y="0" />
+			<frame x="2" y="0" />
+		</animation>
+		<animation action="moveUp">
+			<frame x="0" y="1" />
+			<frame x="1" y="1" />
+			<frame x="0" y="1" />
+			<frame x="2" y="1" />
+		</animation>
+		<animation action="moveLeft">
+			<frame x="0" y="2" />
+			<frame x="1" y="2" />
+			<frame x="0" y="2" />
+			<frame x="2" y="2" />
+		</animation>
+		<animation action="moveRight">
+			<frame x="0" y="3" />
+			<frame x="1" y="3" />
+			<frame x="0" y="3" />
+			<frame x="2" y="3" />
+		</animation>
+	</animationTemplate>
+
+	<animationTemplate name="structure">
+		<animation action="none">
+			<frame x="0" y="0" />
+		</animation>
+		<animation action="harvested">
+			<frame x="1" y="0" />
+		</animation>
+	</animationTemplate>
+</animationTemplates>

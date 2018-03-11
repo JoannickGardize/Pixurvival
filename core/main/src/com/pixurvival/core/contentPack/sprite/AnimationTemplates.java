@@ -1,9 +1,11 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.sprite;
 
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.pixurvival.core.contentPack.NamedElementSet;
 
 @XmlRootElement(name = "animationTemplates")
 public class AnimationTemplates extends NamedElementSet<AnimationTemplate> {

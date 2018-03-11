@@ -35,7 +35,7 @@ public class MapActor extends Actor {
 		int endY = (int) (startY + height);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTile().getId(),
+				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(),
 						animationNumber), x, y, 1, 1);
 			}
 		}

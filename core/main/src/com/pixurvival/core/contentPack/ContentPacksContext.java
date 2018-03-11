@@ -16,6 +16,13 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.item.Items;
+import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.Structures;
+import com.pixurvival.core.contentPack.map.Tiles;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
+import com.pixurvival.core.contentPack.sprite.Sprites;
+import com.pixurvival.core.item.ItemRewards;
 
 public class ContentPacksContext {
 
@@ -85,7 +92,7 @@ public class ContentPacksContext {
 		try {
 			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
-					Tiles.class, MapGenerator.class, Items.class);
+					Tiles.class, MapGenerator.class, Items.class, ItemRewards.class, Structures.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));
@@ -104,13 +111,13 @@ public class ContentPacksContext {
 	/**
 	 * Resolve the dependencies of the given {@link ContentPackIdentifier}. The
 	 * returned list is used to load the content pack when calling
-	 * {@link #load(ContentPackIdentifier)}. The first element never has
-	 * dependency, and the last element is always the given content pack.
+	 * {@link #load(ContentPackIdentifier)}. The first element never has dependency,
+	 * and the last element is always the given content pack.
 	 * 
 	 * @param identifier
 	 *            The content pack to load.
-	 * @return List of the dependencies, ordered by a satisfying content pack
-	 *         load order.
+	 * @return List of the dependencies, ordered by a satisfying content pack load
+	 *         order.
 	 * @throws ContentPackDenpendencyException
 	 *             If a dependency is missing in the working directory of this
 	 *             instance, or if a cycle is detected in the dependency graph.

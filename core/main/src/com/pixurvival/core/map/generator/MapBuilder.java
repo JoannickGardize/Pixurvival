@@ -7,8 +7,8 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import com.pixurvival.core.contentPack.MapGenerator;
-import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.util.ByteArray2D;
 import com.pixurvival.core.util.FloatArray2D;

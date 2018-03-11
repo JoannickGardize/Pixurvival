@@ -38,7 +38,7 @@ public abstract class AliveEntity extends Entity implements Damageable {
 		// Update position
 		if (forward) {
 			speed = getSpeedPotential() * getWorld().getMap().tileAt((int) getPosition().x, (int) getPosition().y)
-					.getTile().getVelocityFactor();
+					.getTileDefinition().getVelocityFactor();
 			velocity.x = Math.cos(movingAngle) * speed;
 			velocity.y = Math.sin(movingAngle) * speed;
 			double dx = velocity.x * getWorld().getTime().getDeltaTime();

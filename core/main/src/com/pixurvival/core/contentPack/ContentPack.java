@@ -10,7 +10,19 @@ import java.util.zip.ZipFile;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.item.Items;
+import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.Structures;
+import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.map.Tiles;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.sprite.Sprites;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.item.ItemRewards;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,6 +36,8 @@ public class ContentPack {
 	private Sprites sprites;
 	private Tiles tiles;
 	private Items items;
+	private ItemRewards itemRewards;
+	private Structures structures;
 	private MapGenerator mapGenerator;
 	private List<Tile> tilesById = new ArrayList<>();
 	private List<Item> itemsById = new ArrayList<>();
@@ -43,6 +57,10 @@ public class ContentPack {
 			contentPack.mapGenerator = (MapGenerator) readXmlFile(unmarshaller, zipFile, "mapGenerator.xml");
 			contentPack.items = (Items) readXmlFile(unmarshaller, zipFile, "items.xml");
 			refContext.addElementSet(Item.class, contentPack.items);
+			contentPack.itemRewards = (ItemRewards) readXmlFile(unmarshaller, zipFile, "itemRewards.xml");
+			refContext.addElementSet(ItemReward.class, contentPack.itemRewards);
+			contentPack.structures = (Structures) readXmlFile(unmarshaller, zipFile, "structures.xml");
+			refContext.addElementSet(Structure.class, contentPack.structures);
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {

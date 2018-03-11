@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class HarvestableStructure extends Structure {
+public abstract class HarvestableStructure extends MapStructure {
 
 	private @Setter boolean harvested;
 

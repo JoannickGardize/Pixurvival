@@ -1,6 +1,6 @@
 package com.pixurvival.core.map;
 
-import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.map.Tile;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +10,12 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class TileAndStructure implements MapTile {
 
-	private @NonNull Tile tile;
-	private @NonNull Structure structure;
+	private @NonNull Tile tileDefinition;
+	private @NonNull MapStructure structure;
 
 	@Override
 	public boolean isSolid() {
-		return tile.isSolid() || structure.isSolid();
+		return tileDefinition.isSolid() || structure.isSolid();
 	}
 
 }

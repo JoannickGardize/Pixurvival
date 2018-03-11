@@ -1,12 +1,12 @@
 package com.pixurvival.core.map;
 
-import com.pixurvival.core.contentPack.Tile;
+import com.pixurvival.core.contentPack.map.Tile;
 
 public interface MapTile {
 
-	Tile getTile();
+	Tile getTileDefinition();
 
-	default Structure getStructure() {
+	default MapStructure getStructure() {
 		return null;
 	}
 

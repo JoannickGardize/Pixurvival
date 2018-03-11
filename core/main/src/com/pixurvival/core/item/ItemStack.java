@@ -34,6 +34,10 @@ public class ItemStack {
 		quantity = other.quantity;
 	}
 
+	public ItemStack copy() {
+		return new ItemStack(this);
+	}
+
 	public static boolean equals(ItemStack itemStack1, ItemStack itemStack2) {
 		if (itemStack1 != null) {
 			return itemStack1.equals(itemStack2);
