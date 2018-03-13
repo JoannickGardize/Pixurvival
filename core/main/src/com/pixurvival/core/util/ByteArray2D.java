@@ -14,25 +14,25 @@ public class ByteArray2D {
 	@Getter
 	private int height;
 	@Getter
-	private byte[] data;
+	private byte[] array;
 
 	public ByteArray2D(int width, int height) {
 		this.width = width;
 		this.height = height;
 
-		data = new byte[width * height];
+		array = new byte[width * height];
 	}
 
 	public byte get(int x, int y) {
-		return data[x + y * width];
+		return array[x + y * width];
 	}
 
 	public void set(int x, int y, byte element) {
-		data[x + y * width] = element;
+		array[x + y * width] = element;
 	}
 
 	public void fill(byte element) {
-		Arrays.fill(data, element);
+		Arrays.fill(array, element);
 	}
 
 	/**
@@ -49,14 +49,14 @@ public class ByteArray2D {
 	 */
 	public void setRect(int x, int y, ByteArray2D rect) {
 		for (int dy = 0; dy < rect.height; dy++) {
-			System.arraycopy(rect.data, dy * rect.width, data, x + (dy + y) * width, rect.width);
+			System.arraycopy(rect.array, dy * rect.width, array, x + (dy + y) * width, rect.width);
 		}
 	}
 
 	public ByteArray2D getRect(int x, int y, int width, int height) {
 		ByteArray2D rect = new ByteArray2D(width, height);
 		for (int dy = 0; dy < height; dy++) {
-			System.arraycopy(data, x + (dy + y) * this.width, rect.data, dy * width, width);
+			System.arraycopy(array, x + (dy + y) * this.width, rect.array, dy * width, width);
 		}
 		return rect;
 	}

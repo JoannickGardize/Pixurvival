@@ -8,10 +8,11 @@ import java.util.Random;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.EntitiesUpdate;
-import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,7 @@ public class World {
 	public static final int PIXEL_PER_UNIT = 8;
 	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
 	public static final double PLAYER_VIEW_DISTANCE = 45;
+	public static final int PLAYER_CHUNK_VIEW_DISTANCE = (int) Math.ceil(PLAYER_VIEW_DISTANCE / Chunk.CHUNK_SIZE);
 
 	@Getter
 	@AllArgsConstructor
@@ -50,37 +52,38 @@ public class World {
 	private long previousUpdateId = -1;
 	private EntitiesUpdate entitiesUpdate = new EntitiesUpdate();
 	private ContentPack contentPack;
+	private ChunkSupplier chunkSupplier;
 
-	private World(long id, Type type, TiledMap map, ContentPack contentPack) {
+	private World(long id, Type type, ContentPack contentPack) {
 		this.id = id;
 		this.type = type;
-		this.map = map;
 		this.contentPack = contentPack;
 		entitiesUpdate.setWorldId(id);
+		map = new TiledMap(this);
+		chunkSupplier = new ChunkSupplier(contentPack.getMapGenerator());
 	}
 
 	public static World getWorld(long id) {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext,
-			ByteArray2D buildingMap) throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext)
+			throws ContentPackException {
 		ContentPack pack = contentPacksContext.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
-		TiledMap map = new TiledMap(pack.getTilesById(), buildingMap);
-		World world = new World(createWorld.getId(), Type.CLIENT, map, pack);
+		World world = new World(createWorld.getId(), Type.CLIENT, pack);
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
-	public static World createServerWorld(ContentPack contentPack, TiledMap map) {
-		World world = new World(nextId++, Type.SERVER, map, contentPack);
+	public static World createServerWorld(ContentPack contentPack) {
+		World world = new World(nextId++, Type.SERVER, contentPack);
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
-	public static World createLocalWorld(ContentPack contentPack, TiledMap map) {
-		World world = new World(nextId++, Type.LOCAL, map, contentPack);
+	public static World createLocalWorld(ContentPack contentPack) {
+		World world = new World(nextId++, Type.LOCAL, contentPack);
 		worlds.put(world.getId(), world);
 		return world;
 	}
@@ -106,6 +109,7 @@ public class World {
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();
 		entityPool.update();
+		map.update();
 	}
 
 	public void writeEntitiesUpdate() {

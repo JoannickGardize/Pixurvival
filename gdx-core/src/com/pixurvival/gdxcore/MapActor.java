@@ -29,10 +29,10 @@ public class MapActor extends Actor {
 		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
 		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
 		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
-		int startX = (int) (camPos.x - width / 2);
-		int startY = (int) (camPos.y - height / 2);
-		int endX = (int) (startX + width);
-		int endY = (int) (startY + height);
+		int startX = (int) Math.floor(camPos.x - width / 2);
+		int startY = (int) Math.floor(camPos.y - height / 2);
+		int endX = (int) Math.floor(startX + width);
+		int endY = (int) Math.floor(startY + height);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(),

@@ -1,4 +1,4 @@
-package com.pixurvival.core.util;
+package com.pixurvival.core.map.generator;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

@@ -37,17 +37,17 @@ public abstract class AliveEntity extends Entity implements Damageable {
 
 		// Update position
 		if (forward) {
-			speed = getSpeedPotential() * getWorld().getMap().tileAt((int) getPosition().x, (int) getPosition().y)
-					.getTileDefinition().getVelocityFactor();
+			speed = getSpeedPotential()
+					* getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 			velocity.x = Math.cos(movingAngle) * speed;
 			velocity.y = Math.sin(movingAngle) * speed;
 			double dx = velocity.x * getWorld().getTime().getDeltaTime();
 			double dy = velocity.y * getWorld().getTime().getDeltaTime();
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 				if (velocity.x > 0) {
-					getPosition().x = (((long) getPosition().x) + 1) - getBoundingRadius();
+					getPosition().x = Math.floor(getPosition().x) + 1 - getBoundingRadius();
 				} else {
-					getPosition().x = ((long) getPosition().x) + getBoundingRadius();
+					getPosition().x = Math.floor(getPosition().x) + getBoundingRadius();
 				}
 				velocity.x = 0;
 			} else {
@@ -55,9 +55,9 @@ public abstract class AliveEntity extends Entity implements Damageable {
 			}
 			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 				if (velocity.y > 0) {
-					getPosition().y = (((long) getPosition().y) + 1) - getBoundingRadius();
+					getPosition().y = Math.floor(getPosition().y) + 1 - getBoundingRadius();
 				} else {
-					getPosition().y = ((long) getPosition().y) + getBoundingRadius();
+					getPosition().y = Math.floor(getPosition().y) + getBoundingRadius();
 				}
 				velocity.y = 0;
 			} else {

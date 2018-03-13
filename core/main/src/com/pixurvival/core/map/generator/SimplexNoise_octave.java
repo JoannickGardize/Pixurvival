@@ -1,4 +1,4 @@
-package com.pixurvival.core.util;
+package com.pixurvival.core.map.generator;
 
 import java.util.Random;
 
@@ -460,31 +460,6 @@ public class SimplexNoise_octave { // Simplex noise in 2D, 3D and 4D
 			this.z = z;
 			this.w = w;
 		}
-
-	}
-
-	public static void main(String args[]) {
-		SimplexNoise simplexNoise = new SimplexNoise(500, 0.6, 5000);
-
-		double xStart = 0;
-		double XEnd = 100;
-		double yStart = 0;
-		double yEnd = 100;
-
-		int xResolution = 500;
-		int yResolution = 500;
-
-		double[][] result = new double[xResolution][yResolution];
-
-		for (int i = 0; i < xResolution; i++) {
-			for (int j = 0; j < yResolution; j++) {
-				int x = (int) (xStart + i * ((XEnd - xStart) / xResolution));
-				int y = (int) (yStart + j * ((yEnd - yStart) / yResolution));
-				result[i][j] = 0.5 * (1 + simplexNoise.getNoise(x, y));
-			}
-		}
-
-		ImageWriter.greyWriteImage(result);
 
 	}
 

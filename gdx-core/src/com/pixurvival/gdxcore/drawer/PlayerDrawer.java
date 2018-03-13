@@ -36,8 +36,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
 
-		if (e.getWorld().getMap().tileAt((int) drawPosition.x, (int) drawPosition.y).getTileDefinition()
-				.getVelocityFactor() < 1) {
+		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
 			batch.draw(texture, x, y, textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7),
 					0, 0.7f, 1, 0);
 		} else {

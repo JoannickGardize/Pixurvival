@@ -21,8 +21,6 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.InventoryActionRequest;
@@ -110,12 +108,11 @@ public class ClientGame {
 				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b"));
 		try {
 			localGamePack = contentPacksContext.load(id);
-			MapBuilder mapGenerator = new MapBuilder(localGamePack.getMapGenerator(), localGamePack.getTilesById());
-			TiledMap tiledMap = mapGenerator.generate();
-			World world = World.createLocalWorld(localGamePack, tiledMap);
+			World world = World.createLocalWorld(localGamePack);
 			this.world = world;
 			PlayerEntity playerEntity = new PlayerEntity();
-			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
+			// TODO
+			playerEntity.getPosition().set(3, 3);
 			world.getEntityPool().add(playerEntity);
 			Random random = new Random();
 			for (int i = 0; i < 20; i++) {
@@ -214,7 +211,7 @@ public class ClientGame {
 
 	private void initializeGame() {
 		try {
-			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext(), buildingMap));
+			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext()));
 			myPlayerId = initGame.getMyPlayerId();
 			myInventory = initGame.getInventory();
 			notify(l -> l.initializeGame());

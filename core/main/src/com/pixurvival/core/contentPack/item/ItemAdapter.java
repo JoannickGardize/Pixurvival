@@ -7,6 +7,7 @@ import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.MeleeWeaponItem;
 import com.pixurvival.core.item.RangedWeaponItem;
+import com.pixurvival.core.item.StructureItem;
 
 public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 
@@ -29,6 +30,8 @@ public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 		case RESOURCE:
 			item = new Item(baseItem.getName());
 			break;
+		case STRUCTURE:
+			item = new StructureItem(baseItem.getName());
 		default:
 			break;
 		}

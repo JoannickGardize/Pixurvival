@@ -8,8 +8,8 @@
 		<image>tree.png</image>
 		<animationTemplate>structure</animationTemplate>
 	</spriteSheet>
-	<spriteSheet name="cottonBush" width="14" height="10">
-		<image>cottonBush.png</image>
+	<spriteSheet name="cottonBush" width="13" height="10">
+		<image>cotton_bush.png</image>
 		<animationTemplate>structure</animationTemplate>
 	</spriteSheet>
 	<spriteSheet name="rock" width="17" height="12">

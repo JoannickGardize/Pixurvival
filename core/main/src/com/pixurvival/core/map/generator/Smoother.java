@@ -27,7 +27,7 @@ public class Smoother implements Consumer<TiledMap> {
 
 	@Override
 	public void accept(TiledMap tiledMap) {
-		current = tiledMap.getData();
+		// current = tiledMap();
 		int width = current.getWidth();
 		int height = current.getHeight();
 		tmp = new ByteArray2D(width, height);
@@ -43,7 +43,7 @@ public class Smoother implements Consumer<TiledMap> {
 			current = tmp;
 			tmp = tmpSwap;
 		}
-		tiledMap.setData(current);
+		// tiledMap.setData(current);
 	}
 
 	private byte smooth(ByteArray2D t, int x, int y, float[] valueWeights) {

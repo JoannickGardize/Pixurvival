@@ -1,24 +1,24 @@
-package com.pixurvival.core.util;
+package com.pixurvival.core.map.generator;
 
 import java.util.Random;
 
+import com.pixurvival.core.util.MathUtils;
+
 public class SimplexNoise {
 
-	SimplexNoise_octave[] octaves;
-	double[] frequencys;
-	double[] amplitudes;
+	private SimplexNoise_octave[] octaves;
+	private double[] frequencys;
+	private double[] amplitudes;
 
-	int largestFeature;
-	double persistence;
-	int seed;
+	private int largestFeature;
+	private double persistence;
+	private int seed;
+	private double scale;
 
-	public SimplexNoise(int largestFeature, double persistence, int seed) {
-		this.largestFeature = largestFeature;
+	public SimplexNoise(int numberOfOctaves, double persistence, double scale, int seed) {
 		this.persistence = persistence;
 		this.seed = seed;
-
-		// recieves a number (eg 128) and calculates what power of 2 it is (eg 2^7)
-		int numberOfOctaves = (int) Math.ceil(Math.log10(largestFeature) / Math.log10(2));
+		this.scale = scale;
 
 		octaves = new SimplexNoise_octave[numberOfOctaves];
 		frequencys = new double[numberOfOctaves];
@@ -30,24 +30,25 @@ public class SimplexNoise {
 			octaves[i] = new SimplexNoise_octave(rnd.nextInt());
 
 			frequencys[i] = Math.pow(2, i);
-			amplitudes[i] = Math.pow(persistence, octaves.length - i);
+			amplitudes[i] = Math.pow(persistence, numberOfOctaves - i);
 
 		}
 
 	}
 
-	public double getNoise(int x, int y) {
+	public double getNoise(double x, double y) {
 
 		double result = 0;
 
+		double sx = x / scale;
+		double sy = y / scale;
 		for (int i = 0; i < octaves.length; i++) {
 			// double frequency = Math.pow(2,i);
 			// double amplitude = Math.pow(persistence,octaves.length-i);
-
-			result = result + octaves[i].noise(x / frequencys[i], y / frequencys[i]) * amplitudes[i];
+			result = result + octaves[i].noise(sx / frequencys[i], sy / frequencys[i]) * amplitudes[i];
 		}
 
-		return result;
+		return MathUtils.clamp(0.5 + result / 2, 0, 0.99999);
 
 	}
 
@@ -62,7 +63,7 @@ public class SimplexNoise {
 			result = result + octaves[i].noise(x / frequency, y / frequency, z / frequency) * amplitude;
 		}
 
-		return result;
+		return MathUtils.clamp(0.5 + result / 2, 0, 0.99999);
 
 	}
 }
