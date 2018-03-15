@@ -14,7 +14,7 @@ public class ItemReward extends NamedElement {
 	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(() -> new ArrayList<>());
 
 	@XmlElement(name = "item")
-	@XmlJavaTypeAdapter(ItemRewardEntry.XmlEntryAdapter.class)
+	@XmlJavaTypeAdapter(ItemRewardEntry.Adapter.class)
 	private ItemRewardEntry[] entries;
 
 	public ItemStack[] produce(Random random) {

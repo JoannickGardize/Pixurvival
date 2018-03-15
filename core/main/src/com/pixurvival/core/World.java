@@ -60,7 +60,7 @@ public class World {
 		this.contentPack = contentPack;
 		entitiesUpdate.setWorldId(id);
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(contentPack.getMapGenerator());
+		chunkSupplier = new ChunkSupplier(contentPack.getTilesById(), contentPack.getMapGenerator());
 	}
 
 	public static World getWorld(long id) {

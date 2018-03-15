@@ -5,10 +5,12 @@ import java.nio.ByteBuffer;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.map.Position;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends AliveEntity implements InventoryHolder {
@@ -18,6 +20,8 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	private PlayerInventory inventory;
 
 	private boolean extendedUpdateRequired = false;
+	@Setter
+	private Position chunkPosition;
 
 	public void apply(PlayerActionRequest actionRequest) {
 		setMovingAngle(actionRequest.getDirection().getAngle());

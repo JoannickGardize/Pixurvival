@@ -9,10 +9,14 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.CompressedChunk;
+import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
@@ -22,6 +26,7 @@ class ServerListener extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new HashMap<>();
+	private List<CompressedChunk> chunksToSend = new ArrayList<>();
 
 	public ServerListener(ServerGame game) {
 		messageActions.put(LoginRequest.class, m -> {
@@ -58,6 +63,20 @@ class ServerListener extends Listener {
 		messageActions.put(TimeRequest.class, m -> {
 			m.getConnection().sendUDP(
 					new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis()));
+		});
+		messageActions.put(MissingChunk[].class, m -> {
+			PlayerEntity p = m.getConnection().getPlayerEntity();
+			chunksToSend.clear();
+			TiledMap map = p.getWorld().getMap();
+			for (MissingChunk missingChunk : (MissingChunk[]) m.getObject()) {
+				Chunk chunk = map.chunkAt(missingChunk);
+				if (chunk != null) {
+					chunksToSend.add(chunk.getCompressed());
+				}
+			}
+			if (!chunksToSend.isEmpty()) {
+				m.getConnection().sendUDP(chunksToSend.toArray(new CompressedChunk[chunksToSend.size()]));
+			}
 		});
 	}
 

@@ -30,7 +30,7 @@ public class ItemRewardEntry {
 	}
 
 	@AllArgsConstructor
-	public static class XmlEntryAdapter extends XmlAdapter<XmlEntry, ItemRewardEntry> {
+	public static class Adapter extends XmlAdapter<XmlEntry, ItemRewardEntry> {
 
 		private RefContext refContext;
 

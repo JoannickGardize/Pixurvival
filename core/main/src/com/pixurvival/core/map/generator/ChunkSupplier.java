@@ -12,17 +12,24 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.EmptyTile;
 import com.pixurvival.core.map.MapTile;
 
+import lombok.Getter;
+
 public class ChunkSupplier {
 
 	private NavigableMap<Double, MapTile> levelMap = new TreeMap<>();
-	private SimplexNoise heightNoise = new SimplexNoise(5, 0.7, 50, new Random().nextInt());
-	private int mapSize;
-	private List<Tile> tileTypes;
-	private List<MapTile> tiles = new ArrayList<>();
+	private SimplexNoise heightNoise;
+	private SimplexNoise moistureNoise;
+	@Getter
+	private List<MapTile> mapTilesById = new ArrayList<>();
 
-	public ChunkSupplier(MapGenerator mapGenerator) {
-		mapSize = mapGenerator.getSize();
-		mapGenerator.foreachLayers(l -> levelMap.put((double) l.getLevel(), new EmptyTile(l.getTile())));
+	public ChunkSupplier(List<Tile> tilesById, MapGenerator mapGenerator) {
+		Random random = new Random();
+		heightNoise = new SimplexNoise(5, 0.7, 50, random.nextLong());
+		moistureNoise = new SimplexNoise(2, 0.7, 40, random.nextLong());
+		tilesById.forEach(t -> mapTilesById.add(new EmptyTile(t)));
+		mapGenerator.foreachLayers(l -> {
+			levelMap.put((double) l.getLevel(), mapTilesById.get(l.getTile().getId()));
+		});
 	}
 
 	public Chunk get(int x, int y) {
@@ -32,6 +39,11 @@ public class ChunkSupplier {
 				chunk.set(cx, cy,
 						levelMap.ceilingEntry(heightNoise.getNoise(chunk.getOffsetX() + cx, chunk.getOffsetY() + cy))
 								.getValue());
+			}
+		}
+		for (int cx = 0; cx < Chunk.CHUNK_SIZE; cx++) {
+			for (int cy = 0; cy < Chunk.CHUNK_SIZE; cy++) {
+
 			}
 		}
 		return chunk;

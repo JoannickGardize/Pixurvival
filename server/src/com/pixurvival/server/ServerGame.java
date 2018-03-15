@@ -16,8 +16,6 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.map.generator.MapBuilder;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
@@ -71,22 +69,13 @@ public class ServerGame {
 	}
 
 	public void startTestGame() {
-		MapBuilder mapGenerator = new MapBuilder(selectedContentPack.getMapGenerator(),
-				selectedContentPack.getTilesById());
-		TiledMap tiledMap = mapGenerator.generate();
-		World world = World.createServerWorld(selectedContentPack, tiledMap);
+		World world = World.createServerWorld(selectedContentPack);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
-		createWorld.setMapWidth(tiledMap.getData().getWidth());
-		createWorld.setMapHeight(tiledMap.getData().getHeight());
-		int partCountX = (int) Math.ceil(tiledMap.getData().getWidth() / 64);
-		int partCountY = (int) Math.ceil(tiledMap.getData().getHeight() / 64);
-		createWorld.setPartCount(partCountX * partCountY);
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
 			Random random = new Random();
-			playerEntity.getPosition().set(tiledMap.getData().getWidth() / 2, tiledMap.getData().getHeight() / 2);
 			world.getEntityPool().add(playerEntity);
 			for (int i = 0; i < 10; i++) {
 				playerEntity.getInventory().setSlot(i,
@@ -100,11 +89,6 @@ public class ServerGame {
 			playerConnection
 					.sendTCP(new InitializeGame(createWorld, playerEntity.getId(), playerEntity.getInventory()));
 		});
-
-		foreachPlayers(playerConnection -> {
-			playerConnection.addListener(new MapSender(tiledMap));
-		});
-
 	}
 
 	void notify(Consumer<ServerGameListener> action) {

@@ -27,10 +27,9 @@ import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.MapPart;
+import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
-import com.pixurvival.core.util.ByteArray2D;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,10 +44,6 @@ public class ClientGame {
 	private @Getter long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
-	private InitializeGame initGame;
-	private int mapPartCount;
-	private List<MapPart> mapParts = new ArrayList<>();
-	private ByteArray2D buildingMap;
 	private ContentPack localGamePack;
 	private @Getter PlayerInventory myInventory;
 	// private double timeRequestFrequencyMillis = 200;
@@ -95,11 +90,7 @@ public class ClientGame {
 	}
 
 	public void setInitGame(InitializeGame initGame) {
-		this.initGame = initGame;
-		mapPartCount = 0;
-		buildingMap = new ByteArray2D(initGame.getCreateWorld().getMapWidth(),
-				initGame.getCreateWorld().getMapHeight());
-		buildingMap.fill((byte) 1);
+		initializeGame(initGame);
 		myInventory = initGame.getInventory();
 	}
 
@@ -167,15 +158,11 @@ public class ClientGame {
 			// timeRequestTimer -= timeRequestFrequencyMillis;
 			// client.sendUDP(new TimeRequest(System.currentTimeMillis()));
 			// }
-		}
-		if (initGame != null) {
-			if (buildingMap != null && !mapParts.isEmpty()) {
-				mapParts.forEach(p -> buildingMap.setRect(p.getX(), p.getY(), p.getData()));
-				mapPartCount += mapParts.size();
-				mapParts.clear();
-			}
-			if (contentPackDownloadManager.isReady() && mapPartCount >= initGame.getCreateWorld().getPartCount()) {
-				initializeGame();
+			if (world.getType() == World.Type.CLIENT) {
+				MissingChunk[] missingChunks = world.getMap().pollMissingChunks();
+				if (missingChunks != null) {
+					client.sendUDP(missingChunks);
+				}
 			}
 		}
 	}
@@ -195,10 +182,6 @@ public class ClientGame {
 		contentPackDownloadManager.setMissingList(missingPacks);
 	}
 
-	public void acceptMapPart(MapPart part) {
-		mapParts.add(part);
-	}
-
 	public void updatePing(long timeMillis) {
 		if (world != null) {
 			world.getTime().updateOffset(timeMillis);
@@ -209,7 +192,7 @@ public class ClientGame {
 		client.sendTCP(new GameReady());
 	}
 
-	private void initializeGame() {
+	private void initializeGame(InitializeGame initGame) {
 		try {
 			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext()));
 			myPlayerId = initGame.getMyPlayerId();

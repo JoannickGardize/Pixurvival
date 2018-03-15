@@ -1,5 +1,7 @@
 package com.pixurvival.core;
 
+import com.esotericsoftware.minlog.Log;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,6 +32,7 @@ public abstract class EngineThread extends Thread {
 			lastUpdate = now;
 			if (timeToConsume > maxUpdatePerFrame * frameDurationMillis) {
 				timeToConsume = maxUpdatePerFrame * frameDurationMillis;
+				Log.warn("Warning, skipped time.");
 			}
 			while (timeToConsume > halfFrameDuration) {
 				update(frameDurationMillis);

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.xml.bind.Unmarshaller;
 
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -41,7 +42,8 @@ public class RefContext {
 	public void setAdapters(Unmarshaller unmarshaller) {
 		adapters.values().forEach(a -> unmarshaller.setAdapter(a));
 		unmarshaller.setAdapter(new ImageReferenceAdapter(this));
-		unmarshaller.setAdapter(new ItemRewardEntry.XmlEntryAdapter(this));
+		unmarshaller.setAdapter(new ItemRewardEntry.Adapter(this));
+		unmarshaller.setAdapter(new StructureGeneratorEntry.Adapter(this));
 	}
 
 	@SuppressWarnings("unchecked")

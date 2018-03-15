@@ -10,11 +10,12 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.PlayerInventory;
+import com.pixurvival.core.World;
+import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.EntitiesUpdate;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.MapPart;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeResponse;
 
@@ -37,9 +38,6 @@ class ClientListener extends Listener {
 		messageActions.put(RequestContentPacks.class, r -> {
 			game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
 		});
-		messageActions.put(MapPart.class, p -> {
-			game.acceptMapPart((MapPart) p);
-		});
 		messageActions.put(TimeResponse.class, o -> {
 			TimeResponse t = (TimeResponse) o;
 			long time = (System.currentTimeMillis() - t.getRequesterTime()) / 2;
@@ -47,6 +45,14 @@ class ClientListener extends Listener {
 		});
 		messageActions.put(PlayerInventory.class, i -> {
 			game.getMyInventory().set((PlayerInventory) i);
+		});
+		messageActions.put(CompressedChunk[].class, c -> {
+			World world = game.getWorld();
+			if (world != null) {
+				for (CompressedChunk compressed : (CompressedChunk[]) c) {
+					world.getMap().setChunk(compressed);
+				}
+			}
 		});
 	}
 

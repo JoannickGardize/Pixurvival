@@ -48,6 +48,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		Object o = e.getCustomData();
 		if (o == null) {
 			o = new DrawData();
+			((DrawData) o).getDrawPosition().set(e.getPosition());
 			e.setCustomData(o);
 		}
 
@@ -74,6 +75,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		Object o = e.getCustomData();
 		if (o == null) {
 			o = new DrawData();
+			((DrawData) o).getDrawPosition().set(e.getPosition());
 			e.setCustomData(o);
 		}
 		DrawData data = (DrawData) o;

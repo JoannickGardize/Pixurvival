@@ -11,6 +11,7 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.util.ByteArray2D;
 import com.pixurvival.core.util.Vector2;
 
@@ -44,6 +45,10 @@ public class KryoInitializer {
 		register(kryo, Inventory.class);
 		register(kryo, PlayerInventory.class);
 		register(kryo, InventoryActionRequest.class);
+		register(kryo, MissingChunk.class);
+		register(kryo, MissingChunk[].class);
+		register(kryo, CompressedChunk.class);
+		register(kryo, CompressedChunk[].class);
 	}
 
 	@SuppressWarnings("unchecked")
