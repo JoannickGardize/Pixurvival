@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class Entity {
+public abstract class Entity implements Collidable {
 
 	private @Setter long id;
 	private @Setter(AccessLevel.PACKAGE) World world;
@@ -28,5 +28,25 @@ public abstract class Entity {
 	public abstract void writeUpdate(ByteBuffer buffer);
 
 	public abstract void applyUpdate(ByteBuffer buffer);
+
+	@Override
+	public double getX() {
+		return position.getX();
+	}
+
+	@Override
+	public double getY() {
+		return position.getY();
+	}
+
+	@Override
+	public double getHalfWidth() {
+		return getBoundingRadius();
+	}
+
+	@Override
+	public double getHalfHeight() {
+		return getBoundingRadius();
+	}
 
 }

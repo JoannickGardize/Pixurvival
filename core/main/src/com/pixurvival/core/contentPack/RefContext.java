@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -32,6 +33,7 @@ public class RefContext {
 		adapters.put(Item.class, new RefAdapter.ItemRefAdapter(this));
 		adapters.put(ItemReward.class, new RefAdapter.ItemRewardRefAdapter(this));
 		adapters.put(Structure.class, new RefAdapter.StructureRefAdapter(this));
+		adapters.put(MapGenerator.class, new RefAdapter.MapGeneratorRefAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")

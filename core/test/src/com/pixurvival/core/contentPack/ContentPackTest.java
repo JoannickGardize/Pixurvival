@@ -10,8 +10,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.pixurvival.core.contentPack.item.Items;
+import com.pixurvival.core.contentPack.map.Heightmap;
+import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.StructureGenerator;
 import com.pixurvival.core.contentPack.map.Structures;
+import com.pixurvival.core.contentPack.map.TileGenerator;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
@@ -118,7 +122,7 @@ public class ContentPackTest {
 
 	private void testContentPack(File file, ContentPack pack) {
 		Sprites sprites = pack.getSprites();
-		Assert.assertEquals(2, sprites.all().size());
+		Assert.assertEquals(4, sprites.all().size());
 		SpriteSheet spriteSheet = sprites.all().get("character");
 		Assert.assertEquals("character", spriteSheet.getName());
 		Assert.assertEquals(7, spriteSheet.getWidth());
@@ -148,5 +152,18 @@ public class ContentPackTest {
 		Structure tree = structures.get("tree");
 		Assert.assertEquals(4, tree.getHarvestingTime());
 		Assert.assertSame(itemRewards.get("tree"), tree.getItemReward());
+		MapGenerator mapGenerator = pack.getMapGenerators().get("default");
+		Heightmap heightmap = mapGenerator.getHeightmaps()[0];
+		Assert.assertEquals("height", heightmap.getName());
+		Assert.assertEquals(5, heightmap.getOctave());
+		Assert.assertEquals(0.7, heightmap.getPersistence(), Double.MIN_VALUE);
+		Assert.assertEquals(50, heightmap.getScale(), Double.MIN_VALUE);
+		TileGenerator tileGenerator = mapGenerator.getTileGenerators()[0];
+		Assert.assertSame(heightmap, tileGenerator.getHeightmapConditions()[0].getHeightmap());
+		Assert.assertSame(pack.getTiles().get("deepWater"), tileGenerator.getTile());
+		StructureGenerator structureGenerator = mapGenerator.getStructureGenerators()[0];
+		Assert.assertSame(pack.getStructures().get("tree"),
+				structureGenerator.getStructureGeneratorEntries()[0].getStructure());
+		Assert.assertEquals(0.4, structureGenerator.getDensity(), Double.MIN_VALUE);
 	}
 }

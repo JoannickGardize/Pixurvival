@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.pixurvival.core.contentPack.item.Items;
 import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.MapGenerators;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structures;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -38,9 +39,10 @@ public class ContentPack {
 	private Items items;
 	private ItemRewards itemRewards;
 	private Structures structures;
-	private MapGenerator mapGenerator;
+	private MapGenerators mapGenerators;
 	private List<Tile> tilesById = new ArrayList<>();
 	private List<Item> itemsById = new ArrayList<>();
+	private List<Structure> structuresById = new ArrayList<>();
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
@@ -54,13 +56,14 @@ public class ContentPack {
 			refContext.addElementSet(SpriteSheet.class, contentPack.sprites);
 			contentPack.tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");
 			refContext.addElementSet(Tile.class, contentPack.tiles);
-			contentPack.mapGenerator = (MapGenerator) readXmlFile(unmarshaller, zipFile, "mapGenerator.xml");
 			contentPack.items = (Items) readXmlFile(unmarshaller, zipFile, "items.xml");
 			refContext.addElementSet(Item.class, contentPack.items);
 			contentPack.itemRewards = (ItemRewards) readXmlFile(unmarshaller, zipFile, "itemRewards.xml");
 			refContext.addElementSet(ItemReward.class, contentPack.itemRewards);
 			contentPack.structures = (Structures) readXmlFile(unmarshaller, zipFile, "structures.xml");
 			refContext.addElementSet(Structure.class, contentPack.structures);
+			contentPack.mapGenerators = (MapGenerators) readXmlFile(unmarshaller, zipFile, "mapGenerators.xml");
+			refContext.addElementSet(MapGenerator.class, contentPack.mapGenerators);
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {
@@ -82,6 +85,17 @@ public class ContentPack {
 						public void accept(Item i) {
 							i.setId(nextId++);
 							contentPack.itemsById.add(i);
+						}
+					});
+			refContext.getAdapter(Structure.class).allSets().stream().flatMap(e -> e.all().values().stream())
+					.forEach(new Consumer<Structure>() {
+
+						private byte nextId = 0;
+
+						@Override
+						public void accept(Structure t) {
+							t.setId(nextId++);
+							contentPack.structuresById.add(t);
 						}
 					});
 			return contentPack;

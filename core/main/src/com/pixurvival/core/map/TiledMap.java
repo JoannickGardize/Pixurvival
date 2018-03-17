@@ -49,8 +49,10 @@ public class TiledMap {
 	}
 
 	public void setChunk(CompressedChunk compressed) {
-		Chunk chunk = compressed.buildChunk(world.getChunkSupplier().getMapTilesById());
+		Chunk chunk = compressed.buildChunk(world.getChunkSupplier().getMapTilesById(),
+				world.getContentPack().getStructuresById());
 		chunks.put(chunk.getPosition(), chunk);
+
 	}
 
 	public Chunk chunkAt(Position position) {

@@ -15,7 +15,7 @@ public class TileAndStructure implements MapTile {
 
 	@Override
 	public boolean isSolid() {
-		return tileDefinition.isSolid() || structure.isSolid();
+		return tileDefinition.isSolid() || structure.getDefinition().isSolid();
 	}
 
 }

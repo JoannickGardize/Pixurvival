@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 25;
+	public static final int VIEWPORT_WORLD_WIDTH = 30;
 
 	@Getter
 	private World world;
@@ -36,7 +36,7 @@ public class WorldScreen implements Screen {
 		this.world = world;
 		worldStage.clear();
 		worldStage.addActor(new MapActor(world.getMap()));
-		worldStage.addActor(new EntitiesActor(world.getEntityPool()));
+		worldStage.addActor(new EntitiesActor());
 		hudStage.clear();
 		InventoryUI inventoryUI = new InventoryUI();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();

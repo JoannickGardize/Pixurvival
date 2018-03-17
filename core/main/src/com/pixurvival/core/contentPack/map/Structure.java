@@ -9,15 +9,16 @@ import com.pixurvival.core.contentPack.DoubleInterval;
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.RefAdapter;
 import com.pixurvival.core.contentPack.StructureType;
-import com.pixurvival.core.contentPack.RefAdapter.ItemRewardRefAdapter;
-import com.pixurvival.core.contentPack.RefAdapter.SpriteSheetRefAdapter;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemReward;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Structure extends NamedElement {
+
+	private @Setter byte id;
 
 	@XmlAttribute(name = "type")
 	private StructureType type;

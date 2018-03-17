@@ -7,6 +7,7 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.contentPack.map.Structure;
 
 import lombok.AllArgsConstructor;
 
@@ -34,7 +35,6 @@ public class CompressedChunk {
 				if (currentTile != null) {
 					buffer.put(currentLength);
 					buffer.put(currentTile.getTileDefinition().getId());
-					// TODO TILE AND STRUCTURE
 				}
 				currentLength = 1;
 				currentTile = tile;
@@ -42,26 +42,34 @@ public class CompressedChunk {
 				currentLength++;
 			}
 		}
-		if (currentLength != 0) {
-			buffer.put(currentLength);
-			buffer.put(currentTile.getTileDefinition().getId());
-			currentLength = 0;
+		buffer.put(currentLength);
+		buffer.put(currentTile.getTileDefinition().getId());
+		buffer.putShort((short) chunk.getStructures().size());
+		for (MapStructure structure : chunk.getStructures()) {
+			buffer.put(structure.getDefinition().getId());
+			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
+			buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
 		}
 		data = Arrays.copyOf(buffer.array(), buffer.position());
 	}
 
-	public Chunk buildChunk(List<MapTile> tiles) {
+	public Chunk buildChunk(MapTile[] tiles, List<Structure> structures) {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int x = buffer.getInt();
 		int y = buffer.getInt();
 		Chunk chunk = new Chunk(x, y);
 		MapTile[] data = chunk.getTiles();
 		int dataPosition = 0;
-		while (buffer.position() < buffer.capacity()) {
+		while (dataPosition < Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE) {
 			byte length = buffer.get();
-			MapTile tile = tiles.get(buffer.get());
+			MapTile tile = tiles[buffer.get()];
 			Arrays.fill(data, dataPosition, dataPosition + length, tile);
 			dataPosition += length;
+		}
+		int structureCount = buffer.getShort();
+		for (int i = 0; i < structureCount; i++) {
+			chunk.addStructure(structures.get(buffer.get()), buffer.get() + chunk.getOffsetX(),
+					buffer.get() + chunk.getOffsetY());
 		}
 		chunk.setCompressed(this);
 		return chunk;

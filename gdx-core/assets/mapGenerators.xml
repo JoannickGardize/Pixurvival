@@ -5,7 +5,8 @@
 			<heightmap name="height" octave="5" persistence="0.7" scale="50" />
 			<heightmap name="moisture" octave="2" persistence="0.7" scale="40" />
 		</heightmaps>
-		<tileGenerators smoothing="2">
+		<defaultTile>deepWater</defaultTile>
+		<tileGenerators>
 			<tileGenerator>
 				<heightmapCondition name="height" min="0" max="0.25" />
 				<tile>deepWater</tile>
@@ -33,15 +34,14 @@
 		</tileGenerators>
 		<structureGenerators>
 			<!-- Dense Forest -->
-			<structureGenerator>
+			<structureGenerator density="0.4">
 				<heightmapCondition name="height" min="0.36" max="0.79" />
 				<heightmapCondition name="moisture" min="0.7" max="1" />
-				<density>0.4</density>
 				<structure probability="0.8">tree</structure>
 				<structure probability="0.2">cottonBush</structure>
 			</structureGenerator>
 			<!-- Light Forest -->
-			<structureGenerator>
+			<structureGenerator density="0.07">
 				<heightmapCondition name="height" min="0.36" max="0.79" />
 				<heightmapCondition name="moisture" min="0.4" max="0.7" />
 				<density>0.07</density>
@@ -49,10 +49,9 @@
 				<structure probability="0.4">cottonBush</structure>
 			</structureGenerator>
 			<!-- Rocks -->
-			<structureGenerator>
+			<structureGenerator density = "0.04">
 				<heightmapCondition name="height" min="0.81" max="0.89" />
 				<heightmapCondition name="moisture" min="0" max="0.3" />
-				<density>0.04</density>
 				<structure>rock</structure>
 			</structureGenerator>
 		</structureGenerators>

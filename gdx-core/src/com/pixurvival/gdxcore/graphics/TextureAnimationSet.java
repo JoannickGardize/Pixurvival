@@ -1,6 +1,6 @@
 package com.pixurvival.gdxcore.graphics;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -18,7 +18,7 @@ import lombok.Setter;
 
 public class TextureAnimationSet {
 
-	private Map<ActionAnimation, TextureAnimation> map = new HashMap<>();
+	private Map<ActionAnimation, TextureAnimation> map = new EnumMap<>(ActionAnimation.class);
 	private @Getter float yOffset;
 	private @Getter float width;
 	private @Getter float height;
