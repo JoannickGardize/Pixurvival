@@ -1,8 +1,9 @@
-package com.pixurvival.core;
+package com.pixurvival.core.aliveEntity;
 
 import java.nio.ByteBuffer;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.Position;
@@ -89,7 +90,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	@Override
 	public double getSpeedPotential() {
-		return 10;
+		return 10 * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override
@@ -116,10 +117,10 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		// normal part
 		buffer.putDouble(getPosition().x);
 		buffer.putDouble(getPosition().y);
-		buffer.putDouble(getHealth());
 		buffer.putDouble(getMovingAngle());
-		buffer.putDouble(getAimingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
+		buffer.putDouble(getHealth());
+		buffer.putDouble(getAimingAngle());
 
 		// extended part
 		// if (extendedUpdateRequired) {
@@ -133,10 +134,10 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	public void applyUpdate(ByteBuffer buffer) {
 		// normal part
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
-		setHealth(buffer.getDouble());
 		setMovingAngle(buffer.getDouble());
-		setAimingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1 ? true : false);
+		setHealth(buffer.getDouble());
+		setAimingAngle(buffer.getDouble());
 
 		// extended part
 		// if (buffer.get() == 1) {

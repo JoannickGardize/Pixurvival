@@ -34,7 +34,7 @@ public class Structure extends NamedElement {
 	private Dimensions dimensions = new Dimensions(1, 1);
 
 	@XmlElement(name = "harvestingTime")
-	private int harvestingTime;
+	private double harvestingTime;
 
 	@XmlElement(name = "respawnTime")
 	private DoubleInterval respawnTime;

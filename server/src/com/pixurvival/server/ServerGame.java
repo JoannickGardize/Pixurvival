@@ -8,8 +8,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.ItemStackEntity;
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -73,6 +74,10 @@ public class ServerGame {
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
+		ItemStackEntity itemStackEntity = new ItemStackEntity(
+				new ItemStack(selectedContentPack.getItems().get("apple")));
+		itemStackEntity.getPosition().set(10, 10);
+		world.getEntityPool().add(itemStackEntity);
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
 			Random random = new Random();

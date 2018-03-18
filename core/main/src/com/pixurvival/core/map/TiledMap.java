@@ -7,8 +7,9 @@ import java.util.Map;
 
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.util.Vector2;
 
@@ -17,6 +18,7 @@ public class TiledMap {
 	private Position tmpPosition = new Position();
 	private Position tmpPosition2 = new Position();
 	private List<MissingChunk> tmpMissingChunks = new ArrayList<>();
+	private List<TiledMapListener> listeners = new ArrayList<>();
 
 	private World world;
 
@@ -33,14 +35,16 @@ public class TiledMap {
 		});
 	}
 
+	public void addListener(TiledMapListener listener) {
+		listeners.add(listener);
+	}
+
 	public MapTile tileAt(Vector2 position) {
 		return tileAt((int) Math.floor(position.x), (int) Math.floor(position.y));
 	}
 
 	public MapTile tileAt(int x, int y) {
-		tmpPosition.set((int) Math.floor((double) x / Chunk.CHUNK_SIZE),
-				(int) Math.floor((double) y / Chunk.CHUNK_SIZE));
-		Chunk chunk = chunks.get(tmpPosition);
+		Chunk chunk = chunkAt(x, y);
 		if (chunk == null) {
 			return outsideTile;
 		} else {
@@ -51,8 +55,17 @@ public class TiledMap {
 	public void setChunk(CompressedChunk compressed) {
 		Chunk chunk = compressed.buildChunk(world.getChunkSupplier().getMapTilesById(),
 				world.getContentPack().getStructuresById());
-		chunks.put(chunk.getPosition(), chunk);
+		addChunk(chunk);
+	}
 
+	public void addChunk(Chunk chunk) {
+		chunks.put(chunk.getPosition(), chunk);
+		listeners.forEach(l -> l.chunkAdded(chunk));
+	}
+
+	public Chunk chunkAt(double x, double y) {
+		tmpPosition.set((int) Math.floor(x / GameConstants.CHUNK_SIZE), (int) Math.floor(y / GameConstants.CHUNK_SIZE));
+		return chunks.get(tmpPosition);
 	}
 
 	public Chunk chunkAt(Position position) {
@@ -60,7 +73,7 @@ public class TiledMap {
 	}
 
 	private void chunkPosition(Vector2 pos, Position position) {
-		position.set((int) Math.floor(pos.getX() / Chunk.CHUNK_SIZE), (int) Math.floor(pos.getY() / Chunk.CHUNK_SIZE));
+		position.set((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE), (int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
 	}
 
 	public void update() {
@@ -76,15 +89,15 @@ public class TiledMap {
 			}
 			if (chunkChanged) {
 				tmpMissingChunks.clear();
-				for (int x = tmpPosition.getX() - World.PLAYER_CHUNK_VIEW_DISTANCE; x <= tmpPosition.getX()
-						+ World.PLAYER_CHUNK_VIEW_DISTANCE; x++) {
-					for (int y = tmpPosition.getY() - World.PLAYER_CHUNK_VIEW_DISTANCE; y <= tmpPosition.getY()
-							+ World.PLAYER_CHUNK_VIEW_DISTANCE; y++) {
+				for (int x = tmpPosition.getX() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x <= tmpPosition.getX()
+						+ GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x++) {
+					for (int y = tmpPosition.getY() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y <= tmpPosition.getY()
+							+ GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y++) {
 						tmpPosition2.set(x, y);
 						if (chunks.get(tmpPosition2) == null) {
 							if (world.isServer()) {
 								Chunk chunk = world.getChunkSupplier().get(x, y);
-								chunks.put(chunk.getPosition(), chunk);
+								addChunk(chunk);
 							} else {
 								tmpMissingChunks.add(new MissingChunk(tmpPosition2.getX(), tmpPosition2.getY()));
 							}

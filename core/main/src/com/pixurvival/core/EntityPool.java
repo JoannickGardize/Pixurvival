@@ -3,6 +3,7 @@ package com.pixurvival.core;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
  */
 public class EntityPool {
 	private World world;
-	private Map<EntityGroup, Map<Long, Entity>> entities = new HashMap<>();
+	private Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
 

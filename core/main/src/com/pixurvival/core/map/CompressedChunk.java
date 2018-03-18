@@ -7,6 +7,7 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 
 import lombok.AllArgsConstructor;
@@ -60,7 +61,7 @@ public class CompressedChunk {
 		Chunk chunk = new Chunk(x, y);
 		MapTile[] data = chunk.getTiles();
 		int dataPosition = 0;
-		while (dataPosition < Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE) {
+		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
 			byte length = buffer.get();
 			MapTile tile = tiles[buffer.get()];
 			Arrays.fill(data, dataPosition, dataPosition + length, tile);

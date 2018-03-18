@@ -17,9 +17,45 @@ public abstract class Entity implements Collidable {
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
 
+	private double speed;
+	private @Setter double movingAngle;
+	private @Setter boolean forward;
+	private Vector2 velocity = new Vector2();
+
 	public abstract void initialize();
 
-	public abstract void update();
+	public void update() {
+		// Update position
+		if (forward) {
+			speed = getSpeedPotential();
+			velocity.x = Math.cos(movingAngle) * speed;
+			velocity.y = Math.sin(movingAngle) * speed;
+			double dx = velocity.x * getWorld().getTime().getDeltaTime();
+			double dy = velocity.y * getWorld().getTime().getDeltaTime();
+			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
+				if (velocity.x > 0) {
+					getPosition().x = Math.floor(getPosition().x) + 1 - getBoundingRadius();
+				} else {
+					getPosition().x = Math.floor(getPosition().x) + getBoundingRadius();
+				}
+				velocity.x = 0;
+			} else {
+				getPosition().x += dx;
+			}
+			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
+				if (velocity.y > 0) {
+					getPosition().y = Math.floor(getPosition().y) + 1 - getBoundingRadius();
+				} else {
+					getPosition().y = Math.floor(getPosition().y) + getBoundingRadius();
+				}
+				velocity.y = 0;
+			} else {
+				getPosition().y += dy;
+			}
+		} else {
+			velocity.set(0, 0);
+		}
+	}
 
 	public abstract EntityGroup getGroup();
 
@@ -28,6 +64,10 @@ public abstract class Entity implements Collidable {
 	public abstract void writeUpdate(ByteBuffer buffer);
 
 	public abstract void applyUpdate(ByteBuffer buffer);
+
+	public abstract double getSpeedPotential();
+
+	public abstract boolean isSolid();
 
 	@Override
 	public double getX() {
@@ -49,4 +89,16 @@ public abstract class Entity implements Collidable {
 		return getBoundingRadius();
 	}
 
+	public double distanceSquared(Entity other) {
+		return position.distanceSquared(other.position);
+	}
+
+	public double angleTo(Entity other) {
+		return position.angleTo(other.position);
+	}
+
+	public boolean collide(Entity other) {
+		double radius = getBoundingRadius() + other.getBoundingRadius() + getSpeed();
+		return position.distanceSquared(other.position) <= radius * radius;
+	}
 }

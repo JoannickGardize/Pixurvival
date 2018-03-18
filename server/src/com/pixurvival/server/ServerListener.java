@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.map.TiledMap;

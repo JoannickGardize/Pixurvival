@@ -4,14 +4,13 @@ import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
 
 import lombok.Getter;
 
 public class Chunk {
-
-	public static final int CHUNK_SIZE = 32;
 
 	@Getter
 	private MapTile[] tiles;
@@ -30,14 +29,14 @@ public class Chunk {
 
 	public Chunk(int x, int y) {
 		this.position = new Position(x, y);
-		offsetX = position.getX() * CHUNK_SIZE;
-		offsetY = position.getY() * CHUNK_SIZE;
-		tiles = new MapTile[CHUNK_SIZE * CHUNK_SIZE];
+		offsetX = position.getX() * GameConstants.CHUNK_SIZE;
+		offsetY = position.getY() * GameConstants.CHUNK_SIZE;
+		tiles = new MapTile[GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE];
 	}
 
 	public MapTile tileAtLocal(int x, int y) {
 		try {
-			return tiles[y * CHUNK_SIZE + x];
+			return tiles[y * GameConstants.CHUNK_SIZE + x];
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw e;
 		}
@@ -48,7 +47,7 @@ public class Chunk {
 	}
 
 	public void set(int x, int y, MapTile tile) {
-		tiles[y * CHUNK_SIZE + x] = tile;
+		tiles[y * GameConstants.CHUNK_SIZE + x] = tile;
 	}
 
 	public void addStructure(Structure structure, int x, int y) {

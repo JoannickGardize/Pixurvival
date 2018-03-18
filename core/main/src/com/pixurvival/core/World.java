@@ -8,7 +8,6 @@ import java.util.Random;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
@@ -21,11 +20,6 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode(of = "id")
 public class World {
-
-	public static final int PIXEL_PER_UNIT = 8;
-	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
-	public static final double PLAYER_VIEW_DISTANCE = 45;
-	public static final int PLAYER_CHUNK_VIEW_DISTANCE = (int) Math.ceil(PLAYER_VIEW_DISTANCE / Chunk.CHUNK_SIZE);
 
 	@Getter
 	@AllArgsConstructor

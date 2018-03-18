@@ -12,9 +12,10 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.PlayerEntity;
-import com.pixurvival.core.PlayerInventory;
+import com.pixurvival.core.ItemStackEntity;
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -103,7 +104,7 @@ public class ClientGame {
 			this.world = world;
 			PlayerEntity playerEntity = new PlayerEntity();
 			// TODO
-			playerEntity.getPosition().set(3, 3);
+			playerEntity.getPosition().set(0, 0);
 			world.getEntityPool().add(playerEntity);
 			Random random = new Random();
 			for (int i = 0; i < 20; i++) {
@@ -114,6 +115,11 @@ public class ClientGame {
 			}
 			myPlayerId = playerEntity.getId();
 			myInventory = playerEntity.getInventory();
+
+			ItemStackEntity itemStackEntity = new ItemStackEntity(new ItemStack(localGamePack.getItems().get("apple")));
+			itemStackEntity.getPosition().set(10, 10);
+			world.getEntityPool().add(itemStackEntity);
+
 			notify(l -> l.initializeGame());
 		} catch (ContentPackException e) {
 			e.printStackTrace();

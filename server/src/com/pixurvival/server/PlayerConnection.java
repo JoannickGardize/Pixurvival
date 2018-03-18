@@ -1,7 +1,7 @@
 package com.pixurvival.server;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
 

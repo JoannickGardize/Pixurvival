@@ -30,7 +30,7 @@ public class MapStructureDrawer implements EntityDrawer<MapStructure> {
 	public void draw(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = animationSets[e.getDefinition().getId()];
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
-		float y = (float) (e.getY() - e.getHalfHeight()) + animationSet.getYOffset();
+		float y = (float) (e.getY() /*- e.getHalfHeight()*/) + animationSet.getYOffset();
 		batch.draw(animationSet.getShadow(), x, y - animationSet.getWidth() / 6, animationSet.getWidth(),
 				animationSet.getWidth() / 2);
 		batch.draw(animationSet.get(ActionAnimation.NONE).getTexture(0), x, y, animationSet.getWidth(),

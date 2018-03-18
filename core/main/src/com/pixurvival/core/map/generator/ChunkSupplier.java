@@ -3,6 +3,7 @@ package com.pixurvival.core.map.generator;
 import java.util.List;
 import java.util.Random;
 
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -39,11 +40,11 @@ public class ChunkSupplier {
 	}
 
 	private void buildTiles(Chunk chunk) {
-		for (int cx = 0; cx < Chunk.CHUNK_SIZE; cx++) {
-			for (int cy = 0; cy < Chunk.CHUNK_SIZE; cy++) {
+		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
+			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
 				chunk.set(cx, cy,
-						mapTilesById[mapGenerator.getTileAt(chunk.getPosition().getX() * Chunk.CHUNK_SIZE + cx,
-								chunk.getPosition().getY() * Chunk.CHUNK_SIZE + cy).getId()]);
+						mapTilesById[mapGenerator.getTileAt(chunk.getPosition().getX() * GameConstants.CHUNK_SIZE + cx,
+								chunk.getPosition().getY() * GameConstants.CHUNK_SIZE + cy).getId()]);
 			}
 		}
 	}
@@ -52,16 +53,16 @@ public class ChunkSupplier {
 		int x = chunk.getPosition().getX();
 		int y = chunk.getPosition().getY();
 		Random chunkRandom = new Random((seed << 32) ^ (x << 16) ^ y);
-		for (int cx = 0; cx < Chunk.CHUNK_SIZE; cx++) {
-			for (int cy = 0; cy < Chunk.CHUNK_SIZE; cy++) {
+		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
+			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
 				if (chunk.tileAtLocal(cx, cy) instanceof EmptyTile) {
-					Structure structure = mapGenerator.getStructureAt(x * Chunk.CHUNK_SIZE + cx,
-							y * Chunk.CHUNK_SIZE + cy, chunkRandom);
-					if (structure != null && cx <= Chunk.CHUNK_SIZE - structure.getDimensions().getWidth()
-							&& cy <= Chunk.CHUNK_SIZE - structure.getDimensions().getHeight()
+					Structure structure = mapGenerator.getStructureAt(x * GameConstants.CHUNK_SIZE + cx,
+							y * GameConstants.CHUNK_SIZE + cy, chunkRandom);
+					if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth()
+							&& cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
 							&& !hasStructure(chunk, cx, cy, structure.getDimensions().getWidth(),
 									structure.getDimensions().getHeight())) {
-						chunk.addStructure(structure, x * Chunk.CHUNK_SIZE + cx, y * Chunk.CHUNK_SIZE + cy);
+						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy);
 					}
 				}
 			}

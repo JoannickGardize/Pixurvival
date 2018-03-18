@@ -6,7 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.PlayerInventory;
+import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;

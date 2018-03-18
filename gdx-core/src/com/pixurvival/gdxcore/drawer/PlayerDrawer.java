@@ -3,7 +3,7 @@ package com.pixurvival.gdxcore.drawer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.Vector2;
@@ -32,7 +32,7 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
-		float y = (float) (drawPosition.y - e.getBoundingRadius()) + textureAnimationSet.getYOffset();
+		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/) + textureAnimationSet.getYOffset();
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
 

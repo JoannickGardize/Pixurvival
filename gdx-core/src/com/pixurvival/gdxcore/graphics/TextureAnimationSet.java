@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.pixurvival.core.World;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Animation;
@@ -25,9 +25,9 @@ public class TextureAnimationSet {
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
 	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
-		double truePixelWidth = 1.0 / (transform.getPixelWidth() * World.PIXEL_PER_UNIT);
-		width = (float) ((double) spriteSheet.getWidth() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
-		height = (float) ((double) spriteSheet.getHeight() / World.PIXEL_PER_UNIT + truePixelWidth * 2);
+		double truePixelWidth = 1.0 / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
+		width = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2);
+		height = (float) ((double) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2);
 		yOffset = (float) -truePixelWidth;
 
 		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(spriteSheet.getImage().read(), spriteSheet.getWidth(),

@@ -1,7 +1,7 @@
 package com.pixurvival.client;
 
 import com.pixurvival.core.Action;
-import com.pixurvival.core.PlayerEntity;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.AllArgsConstructor;

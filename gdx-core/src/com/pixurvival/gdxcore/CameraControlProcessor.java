@@ -6,7 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.pixurvival.core.World;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.NonNull;
@@ -59,8 +59,8 @@ public class CameraControlProcessor extends InputAdapter {
 		// }
 		double xFactor = MathUtils.clamp((screenViewportX - w) / (w * 0.8), -1, 1);
 		double yFactor = MathUtils.clamp((screenViewportY - h) / (h * 0.8), -1, 1);
-		double worldDiffX = (World.PLAYER_VIEW_DISTANCE - viewport.getWorldWidth()) / 2.0;
-		double worldDiffY = (World.PLAYER_VIEW_DISTANCE - viewport.getWorldHeight()) / 2.0;
+		double worldDiffX = (GameConstants.PLAYER_VIEW_DISTANCE - viewport.getWorldWidth()) / 2.0;
+		double worldDiffY = (GameConstants.PLAYER_VIEW_DISTANCE - viewport.getWorldHeight()) / 2.0;
 		relativeCameraPosition.set(worldDiffX * xFactor, worldDiffY * yFactor);
 	}
 }

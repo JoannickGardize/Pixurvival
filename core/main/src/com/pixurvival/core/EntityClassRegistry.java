@@ -4,21 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.pixurvival.core.aliveEntity.PlayerEntity;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class EntityClassRegistry {
 
-	private static Map<Byte, Supplier<Entity>> entityProducers = new HashMap<>();
+	@SuppressWarnings("unchecked")
+	private static Supplier<Entity>[] entityProducers = new Supplier[2];
 	private static Map<Class<? extends Entity>, Byte> entityIds = new HashMap<>();
 
 	static {
-		entityProducers.put((byte) 0, () -> new PlayerEntity());
+		entityProducers[0] = () -> new PlayerEntity();
 		entityIds.put(PlayerEntity.class, (byte) 0);
+
+		entityProducers[1] = () -> new ItemStackEntity();
+		entityIds.put(ItemStackEntity.class, (byte) 1);
 	}
 
 	public static Entity newEntity(byte id) {
-		Supplier<Entity> supplier = entityProducers.get(id);
+		Supplier<Entity> supplier = entityProducers[id];
 		if (supplier == null) {
 			return null;
 		} else {

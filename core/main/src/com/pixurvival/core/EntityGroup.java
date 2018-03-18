@@ -7,7 +7,8 @@ import com.esotericsoftware.kryo.io.Output;
 import lombok.Getter;
 
 public enum EntityGroup {
-	PLAYER;
+	PLAYER,
+	ITEM_STACK;
 
 	static {
 		for (byte i = 0; i < EntityGroup.values().length; i++) {

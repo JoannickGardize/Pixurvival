@@ -40,7 +40,7 @@ public class WorldScreen implements Screen {
 		hudStage.clear();
 		InventoryUI inventoryUI = new InventoryUI();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
-		hudStage.addActor(new MiniMapUI());
+		hudStage.addActor(new MiniMapUI(myPlayerId));
 		hudStage.addActor(inventoryUI);
 		hudStage.addActor(heldItemStackActor);
 	}
@@ -59,7 +59,6 @@ public class WorldScreen implements Screen {
 		if (keyboardInputProcessor.update()) {
 			PixurvivalGame.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
 		}
-
 		worldStage.getViewport().apply();
 		worldStage.act();
 		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);

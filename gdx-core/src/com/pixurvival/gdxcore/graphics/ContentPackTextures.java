@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.pixurvival.core.World;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.contentPack.ZipContentReference;
@@ -23,6 +23,7 @@ import com.pixurvival.core.item.Item;
 import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 public class ContentPackTextures {
 
@@ -31,6 +32,7 @@ public class ContentPackTextures {
 	private TextureRegion[][] tileMapTextures;
 	private Texture[] itemTextures;
 	private int[] tileAvgColors;
+	private @Getter double truePixelWidth;
 
 	@AllArgsConstructor
 	private class ImageEntry {
@@ -39,6 +41,7 @@ public class ContentPackTextures {
 	}
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackReadException {
+		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
 		loadTileMapTextures(pack);
@@ -72,7 +75,7 @@ public class ContentPackTextures {
 		}
 	}
 
-	private Texture getShadow(int shadowWidth) {
+	public Texture getShadow(int shadowWidth) {
 		Texture texture = textureShadows.get(shadowWidth);
 		if (texture != null) {
 			return texture;
@@ -112,7 +115,7 @@ public class ContentPackTextures {
 			ImageEntry image = images.get(tile.getImage());
 			if (image == null) {
 				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(tile.getImage().read(),
-						World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
+						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				Texture texture = new Texture(spriteSheetPixmap);
 				texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 				image = new ImageEntry(spriteSheetPixmap, texture);
@@ -122,8 +125,9 @@ public class ContentPackTextures {
 			TextureRegion[] textures = new TextureRegion[frames.length];
 			for (int j = 0; j < frames.length; j++) {
 				Frame frame = frames[j];
-				textures[j] = new TextureRegion(image.texture, frame.getX() * World.PIXEL_PER_UNIT,
-						frame.getY() * World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
+				textures[j] = new TextureRegion(image.texture, frame.getX() * GameConstants.PIXEL_PER_UNIT,
+						frame.getY() * GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT,
+						GameConstants.PIXEL_PER_UNIT);
 			}
 			tileMapTextures[i] = textures;
 			tileAvgColors[i] = getAverageColor(image.spriteSheetPixmap.getRegion(frames[0].getX(), frames[0].getY()));
@@ -156,7 +160,7 @@ public class ContentPackTextures {
 			TextureSheet textureSheet = images.get(item.getImage());
 			if (textureSheet == null) {
 				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(item.getImage().read(),
-						World.PIXEL_PER_UNIT, World.PIXEL_PER_UNIT);
+						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
 				images.put(item.getImage(), textureSheet);
 			}
