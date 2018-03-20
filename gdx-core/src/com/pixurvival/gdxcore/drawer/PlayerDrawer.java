@@ -8,8 +8,8 @@ import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.graphics.TextureAnimation;
-import com.pixurvival.gdxcore.graphics.TextureAnimationSet;
+import com.pixurvival.gdxcore.textures.TextureAnimation;
+import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +32,16 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
-		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/) + textureAnimationSet.getYOffset();
+		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
 				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
 
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
-			batch.draw(texture, x, y, textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7),
-					0, 0.7f, 1, 0);
+			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
+					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
 		} else {
-			batch.draw(texture, x, y, textureAnimationSet.getWidth(), textureAnimationSet.getHeight());
+			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
+					textureAnimationSet.getHeight());
 		}
 	}
 

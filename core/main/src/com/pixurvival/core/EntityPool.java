@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.aliveEntity.PlayerEntity;
+
 /**
  * This class contains all entities of a given {@link World}, packed by group
  * defined in enum {@link EntityGroup}.
@@ -22,6 +24,7 @@ public class EntityPool {
 	private Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
+	private List<Entity> tmpEntityList = new ArrayList<>();
 
 	public EntityPool(World world) {
 		this.world = world;
@@ -70,14 +73,21 @@ public class EntityPool {
 		entities.values().forEach(m -> m.values().forEach(action));
 	}
 
-	public void writeUpdate(ByteBuffer byteBuffer) {
+	public void writeUpdate(PlayerEntity player, ByteBuffer byteBuffer) {
 		byteBuffer.position(0);
 		byteBuffer.put((byte) entities.size());
 		for (Entry<EntityGroup, Map<Long, Entity>> groupEntry : entities.entrySet()) {
 			byteBuffer.put(groupEntry.getKey().getId());
 			Map<Long, Entity> entityMap = groupEntry.getValue();
-			byteBuffer.putInt(entityMap.size());
+			tmpEntityList.clear();
 			for (Entity e : entityMap.values()) {
+				if (player.distanceSquared(e) <= GameConstants.PLAYER_ENTITY_VIEW_DISTANCE
+						* GameConstants.PLAYER_ENTITY_VIEW_DISTANCE) {
+					tmpEntityList.add(e);
+				}
+			}
+			byteBuffer.putInt(tmpEntityList.size());
+			for (Entity e : tmpEntityList) {
 				byteBuffer.putLong(e.getId());
 				byteBuffer.put(EntityClassRegistry.getIdOf(e.getClass()));
 				e.writeUpdate(byteBuffer);

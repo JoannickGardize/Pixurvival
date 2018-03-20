@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
@@ -107,8 +108,11 @@ public class World {
 		map.update();
 	}
 
-	public void writeEntitiesUpdate() {
+	public void incrementUpdateId() {
 		entitiesUpdate.setUpdateId(++previousUpdateId);
-		entityPool.writeUpdate(entitiesUpdate.getByteBuffer());
+	}
+
+	public void writeEntitiesUpdateFor(PlayerEntity player) {
+		entityPool.writeUpdate(player, entitiesUpdate.getByteBuffer());
 	}
 }

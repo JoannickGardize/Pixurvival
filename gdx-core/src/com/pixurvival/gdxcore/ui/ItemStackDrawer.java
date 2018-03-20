@@ -26,7 +26,7 @@ public class ItemStackDrawer {
 
 	public void draw(Batch batch) {
 		if (itemStack != null) {
-			Texture texture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId());
+			Texture texture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId()).getTexture();
 			batch.draw(texture, actor.getX() + padding, actor.getY() + padding, actor.getOriginX(), actor.getOriginY(),
 					actor.getWidth() - padding * 2, actor.getHeight() - padding * 2, actor.getScaleX(),
 					actor.getScaleY(), actor.getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false,

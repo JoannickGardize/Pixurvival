@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore.graphics;
+package com.pixurvival.gdxcore.textures;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
+import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class ContentPackTextures {
 	private Map<String, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
 	private TextureRegion[][] tileMapTextures;
-	private Texture[] itemTextures;
+	private ItemTexture[] itemTextures;
 	private int[] tileAvgColors;
 	private @Getter double truePixelWidth;
 
@@ -61,7 +61,7 @@ public class ContentPackTextures {
 		return tileAvgColors[id];
 	}
 
-	public Texture getItem(int id) {
+	public ItemTexture getItem(int id) {
 		return itemTextures[id];
 	}
 
@@ -152,7 +152,7 @@ public class ContentPackTextures {
 
 	private void loadItemTextures(ContentPack pack, int pixelWidth) throws ContentPackReadException {
 		List<Item> itemsById = pack.getItemsById();
-		itemTextures = new Texture[itemsById.size()];
+		itemTextures = new ItemTexture[itemsById.size()];
 		Map<ZipContentReference, TextureSheet> images = new HashMap<>();
 
 		for (int i = 0; i < itemsById.size(); i++) {
@@ -161,10 +161,15 @@ public class ContentPackTextures {
 			if (textureSheet == null) {
 				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(item.getImage().read(),
 						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
+				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth), true);
 				images.put(item.getImage(), textureSheet);
 			}
-			itemTextures[i] = textureSheet.get(item.getFrame().getX(), item.getFrame().getY());
+			ItemTexture itemTexture = new ItemTexture();
+			itemTexture.setTexture(textureSheet.get(item.getFrame().getX(), item.getFrame().getY()));
+			TextureMetrics metric = textureSheet.getMetrics(item.getFrame().getX(), item.getFrame().getY());
+			itemTexture.setMetrics(metric);
+			itemTexture.setShadow(getShadow(metric.getWidth()));
+			itemTextures[i] = itemTexture;
 		}
 	}
 }

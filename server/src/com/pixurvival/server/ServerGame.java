@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.pixurvival.core.ItemStackEntity;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -16,6 +15,7 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.contentPack.item.ItemStackEntity;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;

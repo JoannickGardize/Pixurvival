@@ -1,9 +1,9 @@
-package com.pixurvival.gdxcore.graphics;
+package com.pixurvival.gdxcore.textures;
 
 import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.pixurvival.gdxcore.graphics.SpriteSheetPixmap.Region;
+import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
 import lombok.Getter;
 import lombok.Setter;

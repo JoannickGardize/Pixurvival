@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vector2 implements BaseVector2 {
+public class Vector2 {
 	public double x = 0;
 	public double y = 0;
 
-	public Vector2(BaseVector2 v) {
+	public Vector2(Vector2 v) {
 		x = v.getX();
 		y = v.getY();
 	}
@@ -24,7 +24,7 @@ public class Vector2 implements BaseVector2 {
 		return new Vector2(x, y);
 	}
 
-	public Vector2 set(BaseVector2 v) {
+	public Vector2 set(Vector2 v) {
 		x = v.getX();
 		y = v.getY();
 		return this;
@@ -36,19 +36,23 @@ public class Vector2 implements BaseVector2 {
 		return this;
 	}
 
+	public static Vector2 fromEuclidean(double length, double direction) {
+		return new Vector2(Math.cos(direction) * length, Math.sin(direction) * length);
+	}
+
 	public Vector2 setFromEuclidean(double length, double direction) {
 		x = Math.cos(direction) * length;
 		y = Math.sin(direction) * length;
 		return this;
 	}
 
-	public Vector2 add(BaseVector2 v) {
+	public Vector2 add(Vector2 v) {
 		x += v.getX();
 		y += v.getY();
 		return this;
 	}
 
-	public Vector2 sub(BaseVector2 v) {
+	public Vector2 sub(Vector2 v) {
 		x -= v.getX();
 		y -= v.getY();
 		return this;
@@ -82,7 +86,7 @@ public class Vector2 implements BaseVector2 {
 		return Math.atan2(other.y - y, other.x - x);
 	}
 
-	public double distanceSquared(BaseVector2 v) {
+	public double distanceSquared(Vector2 v) {
 		double dx = x - v.getX();
 		double dy = y - v.getY();
 		return dx * dx + dy * dy;

@@ -8,7 +8,8 @@ public class GameConstants {
 
 	// Calculated
 
+	public static final double PLAYER_ENTITY_VIEW_DISTANCE = Math.sqrt(2) * PLAYER_VIEW_DISTANCE;
 	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
-	public static final int PLAYER_CHUNK_VIEW_DISTANCE = (int) Math.ceil(PLAYER_VIEW_DISTANCE / CHUNK_SIZE);
+	public static final int PLAYER_CHUNK_VIEW_DISTANCE = (int) Math.ceil(PLAYER_ENTITY_VIEW_DISTANCE / CHUNK_SIZE);
 
 }

@@ -2,6 +2,8 @@ package com.pixurvival.core;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.AccessLevel;
@@ -97,8 +99,16 @@ public abstract class Entity implements Collidable {
 		return position.angleTo(other.position);
 	}
 
+	public double angleTo(MapStructure structure) {
+		return position.angleTo(new Vector2(structure.getX(), structure.getY()));
+	}
+
 	public boolean collide(Entity other) {
-		double radius = getBoundingRadius() + other.getBoundingRadius() + getSpeed();
-		return position.distanceSquared(other.position) <= radius * radius;
+		return Collisions.circleCircle(position, getBoundingRadius(), other.position, other.getBoundingRadius());
+	}
+
+	public boolean collideDynamic(Entity other) {
+		return Collisions.dynamicCircleCircle(position, getBoundingRadius(),
+				velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
 	}
 }

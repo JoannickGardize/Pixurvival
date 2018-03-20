@@ -16,8 +16,8 @@ import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackReadException;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.gdxcore.graphics.ContentPackTextures;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
+import com.pixurvival.gdxcore.textures.ContentPackTextures;
 
 import lombok.Getter;
 

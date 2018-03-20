@@ -10,7 +10,7 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.drawer.DrawData;
-import com.pixurvival.gdxcore.graphics.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;

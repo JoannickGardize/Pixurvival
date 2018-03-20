@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore.graphics;
+package com.pixurvival.gdxcore.textures;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.contentPack.sprite.Animation;

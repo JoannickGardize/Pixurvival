@@ -20,7 +20,6 @@ public class ActionTimerManager {
 		do {
 			ActionTimer actionTimer = actionTimerQueue.peek();
 			if (actionTimer != null && world.getTime().getTimeMillis() >= actionTimer.getActionTimeMillis()) {
-				System.out.println("ACTION");
 				actionConsumed = true;
 				actionTimer.getAction().perform();
 				actionTimerQueue.poll();

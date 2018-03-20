@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore.graphics;
+package com.pixurvival.gdxcore.textures;
 
 import java.util.EnumMap;
 import java.util.Map;
