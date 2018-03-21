@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation.ActionAnimationAdapter;
-import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.BeanUtils;
 
 @XmlJavaTypeAdapter(ActionAnimationAdapter.class)
