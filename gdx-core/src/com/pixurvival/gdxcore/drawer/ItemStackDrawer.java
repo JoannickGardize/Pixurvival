@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.Entity;
-import com.pixurvival.core.contentPack.item.ItemStackEntity;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;

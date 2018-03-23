@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.contentPack.item.ItemStackEntity;
+import com.pixurvival.core.item.ItemStackEntity;
 
 import lombok.experimental.UtilityClass;
 

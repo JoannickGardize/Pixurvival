@@ -71,6 +71,7 @@ public class ContentPackTextures {
 		for (Entry<String, SpriteSheet> entries : pack.getSprites().all().entrySet()) {
 			TextureAnimationSet set = new TextureAnimationSet(entries.getValue(), transform);
 			set.setShadow(getShadow(entries.getValue().getWidth()));
+			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
 			animationSet.put(entries.getKey(), set);
 		}
 	}
@@ -161,7 +162,7 @@ public class ContentPackTextures {
 			if (textureSheet == null) {
 				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(item.getImage().read(),
 						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth), true);
+				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
 				images.put(item.getImage(), textureSheet);
 			}
 			ItemTexture itemTexture = new ItemTexture();

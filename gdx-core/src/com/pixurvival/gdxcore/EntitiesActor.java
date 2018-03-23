@@ -13,7 +13,7 @@ import com.pixurvival.core.Collidable;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.contentPack.item.ItemStackEntity;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;

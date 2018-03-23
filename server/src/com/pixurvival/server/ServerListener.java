@@ -13,6 +13,7 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.GameReady;
+import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -51,6 +52,13 @@ class ServerListener extends Listener {
 			PlayerEntity entity = connection.getPlayerEntity();
 			if (entity != null) {
 				entity.apply((InventoryActionRequest) m.getObject());
+			}
+		});
+		messageActions.put(InteractStructureRequest.class, m -> {
+			PlayerConnection connection = m.getConnection();
+			PlayerEntity entity = connection.getPlayerEntity();
+			if (entity != null) {
+				entity.apply((InteractStructureRequest) m.getObject());
 			}
 		});
 		messageActions.put(RequestContentPacks.class, m -> {

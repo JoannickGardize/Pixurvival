@@ -15,8 +15,8 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.contentPack.item.ItemStackEntity;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
@@ -28,7 +28,7 @@ public class ServerGame {
 	private KryoServer server = new KryoServer();
 	private ServerListener serverListener = new ServerListener(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
-	private ServerEngineThread thread = new ServerEngineThread(this);
+	private ServerEngineThread engineThread = new ServerEngineThread(this);
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 	private @Getter ContentPack selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
@@ -61,7 +61,7 @@ public class ServerGame {
 	public void startServer(int port) throws IOException {
 		server.start();
 		server.bind(port, port);
-		thread.start();
+		engineThread.start();
 	}
 
 	public void stopServer() {
@@ -71,6 +71,7 @@ public class ServerGame {
 
 	public void startTestGame() {
 		World world = World.createServerWorld(selectedContentPack);
+		WorldSession worldSession = new WorldSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
@@ -79,6 +80,7 @@ public class ServerGame {
 		itemStackEntity.getPosition().set(10, 10);
 		world.getEntityPool().add(itemStackEntity);
 		foreachPlayers(playerConnection -> {
+			worldSession.getPlayers().add(playerConnection);
 			PlayerEntity playerEntity = new PlayerEntity();
 			Random random = new Random();
 			world.getEntityPool().add(playerEntity);
@@ -94,6 +96,7 @@ public class ServerGame {
 			playerConnection
 					.sendTCP(new InitializeGame(createWorld, playerEntity.getId(), playerEntity.getInventory()));
 		});
+		engineThread.add(worldSession);
 	}
 
 	void notify(Consumer<ServerGameListener> action) {

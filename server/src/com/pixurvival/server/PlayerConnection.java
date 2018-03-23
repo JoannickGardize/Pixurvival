@@ -15,7 +15,7 @@ public class PlayerConnection extends Connection implements InventoryListener {
 	private boolean logged = false;
 	private PlayerEntity playerEntity = null;
 	private boolean gameReady = false;
-	private boolean inventoryChanged;
+	private boolean inventoryChanged = false;
 
 	@Override
 	public void slotChanged(Inventory inventory, int slotIndex) {

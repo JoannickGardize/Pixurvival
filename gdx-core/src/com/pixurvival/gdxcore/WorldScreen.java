@@ -51,6 +51,7 @@ public class WorldScreen implements Screen {
 		im.addProcessor(hudStage);
 		im.addProcessor(keyboardInputProcessor);
 		im.addProcessor(cameraControlProcessor);
+		im.addProcessor(new WorldMouseProcessor(worldStage));
 		Gdx.input.setInputProcessor(im);
 	}
 

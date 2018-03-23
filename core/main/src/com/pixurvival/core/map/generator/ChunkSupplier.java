@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -11,18 +12,22 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.EmptyTile;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
+import com.pixurvival.core.map.TiledMap;
 
 import lombok.Getter;
 
 public class ChunkSupplier {
 
+	private TiledMap map;
 	private MapGenerator mapGenerator;
 	private long seed;
 
 	@Getter
 	private MapTile[] mapTilesById;
 
-	public ChunkSupplier(List<Tile> tilesById, MapGenerator mapGenerator, long seed) {
+	public ChunkSupplier(World world, MapGenerator mapGenerator, long seed) {
+		map = world.getMap();
+		List<Tile> tilesById = world.getContentPack().getTilesById();
 		mapGenerator.initialize(seed);
 		this.mapGenerator = mapGenerator;
 		this.seed = seed;
@@ -33,7 +38,7 @@ public class ChunkSupplier {
 	}
 
 	public Chunk get(int x, int y) {
-		Chunk chunk = new Chunk(x, y);
+		Chunk chunk = new Chunk(map, x, y);
 		buildTiles(chunk);
 		buildStructures(chunk);
 		return chunk;
@@ -62,7 +67,8 @@ public class ChunkSupplier {
 							&& cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
 							&& !hasStructure(chunk, cx, cy, structure.getDimensions().getWidth(),
 									structure.getDimensions().getHeight())) {
-						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy);
+						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx,
+								y * GameConstants.CHUNK_SIZE + cy);
 					}
 				}
 			}

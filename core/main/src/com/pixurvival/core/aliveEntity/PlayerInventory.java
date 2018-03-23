@@ -17,6 +17,11 @@ public class PlayerInventory extends Inventory {
 		super(size);
 	}
 
+	public void set(PlayerInventory other) {
+		super.set(other);
+		heldItemStack = other.heldItemStack;
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerInventory> {
 
 		@Override

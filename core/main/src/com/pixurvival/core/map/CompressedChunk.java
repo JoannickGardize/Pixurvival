@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
 
 import lombok.AllArgsConstructor;
@@ -21,10 +22,11 @@ public class CompressedChunk {
 		return buffer;
 	});
 
+	private TiledMap map;
 	private byte[] data;
 
 	public CompressedChunk(Chunk chunk) {
-
+		map = chunk.getMap();
 		ByteBuffer buffer = bufferLocal.get();
 		buffer.reset();
 		buffer.putInt(chunk.getPosition().getX());
@@ -50,6 +52,7 @@ public class CompressedChunk {
 			buffer.put(structure.getDefinition().getId());
 			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
 			buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
+			buffer.put(structure.getData());
 		}
 		data = Arrays.copyOf(buffer.array(), buffer.position());
 	}
@@ -58,7 +61,7 @@ public class CompressedChunk {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int x = buffer.getInt();
 		int y = buffer.getInt();
-		Chunk chunk = new Chunk(x, y);
+		Chunk chunk = new Chunk(map, x, y);
 		MapTile[] data = chunk.getTiles();
 		int dataPosition = 0;
 		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
@@ -69,8 +72,9 @@ public class CompressedChunk {
 		}
 		int structureCount = buffer.getShort();
 		for (int i = 0; i < structureCount; i++) {
-			chunk.addStructure(structures.get(buffer.get()), buffer.get() + chunk.getOffsetX(),
+			MapStructure structure = chunk.addStructure(structures.get(buffer.get()), buffer.get() + chunk.getOffsetX(),
 					buffer.get() + chunk.getOffsetY());
+			structure.applyData(buffer.get());
 		}
 		chunk.setCompressed(this);
 		return chunk;
@@ -80,14 +84,16 @@ public class CompressedChunk {
 
 		@Override
 		public void write(Kryo kryo, Output output, CompressedChunk object) {
+			output.writeLong(object.map.getWorld().getId());
 			output.writeInt(object.data.length);
 			output.write(object.data);
 		}
 
 		@Override
 		public CompressedChunk read(Kryo kryo, Input input, Class<CompressedChunk> type) {
+			World world = World.getWorld(input.readLong());
 			int length = input.readInt();
-			return new CompressedChunk(input.readBytes(length));
+			return new CompressedChunk(world.getMap(), input.readBytes(length));
 		}
 
 	}

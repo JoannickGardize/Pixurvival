@@ -18,6 +18,7 @@ public class EntitiesUpdate {
 	private @Setter long worldId;
 	private @Setter int length;
 	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
+	private @Setter HarvestableStructureUpdate[] structureUpdates;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EntitiesUpdate> {
 
@@ -27,6 +28,14 @@ public class EntitiesUpdate {
 			output.writeLong(object.worldId);
 			output.writeInt(object.byteBuffer.position());
 			output.writeBytes(object.byteBuffer.array(), 0, object.byteBuffer.position());
+			if (object.structureUpdates == null) {
+				output.writeShort(-1);
+			} else {
+				output.writeShort(object.structureUpdates.length);
+				for (int i = 0; i < object.structureUpdates.length; i++) {
+					kryo.writeObject(output, object.structureUpdates[i]);
+				}
+			}
 		}
 
 		@Override
@@ -37,6 +46,7 @@ public class EntitiesUpdate {
 			if (world == null) {
 				int length = input.readInt();
 				input.setPosition(input.position() + length);
+				readStructureUpdates(kryo, input);
 				Log.error("EntitiesUpdate received for an unknown world : " + worldId);
 				return null;
 			}
@@ -50,8 +60,22 @@ public class EntitiesUpdate {
 				entitiesUpdate.updateId = updateId;
 				entitiesUpdate.length = input.readInt();
 				input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
+				entitiesUpdate.structureUpdates = readStructureUpdates(kryo, input);
 				return entitiesUpdate;
 			}
+		}
+
+		private HarvestableStructureUpdate[] readStructureUpdates(Kryo kryo, Input input) {
+			short length = input.readShort();
+			if (length == -1) {
+				return null;
+			}
+			HarvestableStructureUpdate[] result = new HarvestableStructureUpdate[length];
+			for (int i = 0; i < length; i++) {
+				HarvestableStructureUpdate hs = kryo.readObject(input, HarvestableStructureUpdate.class);
+				result[i] = hs;
+			}
+			return result;
 		}
 	}
 }

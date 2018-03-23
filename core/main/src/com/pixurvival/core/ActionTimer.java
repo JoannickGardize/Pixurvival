@@ -11,7 +11,7 @@ public class ActionTimer implements Comparable<ActionTimer> {
 	private long actionTimeMillis;
 
 	public ActionTimer(Action action, double actionTime) {
-		this(action, (long) (actionTime / 1000));
+		this(action, (long) (actionTime * 1000));
 	}
 
 	@Override

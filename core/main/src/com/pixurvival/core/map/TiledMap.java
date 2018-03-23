@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.message.HarvestableStructureUpdate;
 import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.util.Vector2;
+
+import lombok.Getter;
 
 public class TiledMap {
 
@@ -20,6 +24,7 @@ public class TiledMap {
 	private List<MissingChunk> tmpMissingChunks = new ArrayList<>();
 	private List<TiledMapListener> listeners = new ArrayList<>();
 
+	@Getter
 	private World world;
 
 	private MapTile outsideTile;
@@ -37,6 +42,10 @@ public class TiledMap {
 
 	public void addListener(TiledMapListener listener) {
 		listeners.add(listener);
+	}
+
+	public void notifyListeners(Consumer<TiledMapListener> action) {
+		listeners.forEach(action);
 	}
 
 	public MapTile tileAt(Vector2 position) {
@@ -73,7 +82,8 @@ public class TiledMap {
 	}
 
 	private void chunkPosition(Vector2 pos, Position position) {
-		position.set((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE), (int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
+		position.set((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE),
+				(int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
 	}
 
 	public void update() {
@@ -106,6 +116,19 @@ public class TiledMap {
 				}
 			}
 		});
+	}
+
+	public void applyUpdate(HarvestableStructureUpdate[] structureUpdates) {
+		if (structureUpdates == null) {
+			return;
+		}
+		for (HarvestableStructureUpdate structureUpdate : structureUpdates) {
+			MapTile mapTile = tileAt(structureUpdate.getX(), structureUpdate.getY());
+			System.out.println(structureUpdate.getX() + ", " + structureUpdate.getY());
+			if (mapTile instanceof TileAndStructure) {
+				((HarvestableStructure) mapTile.getStructure()).setHarvested(structureUpdate.isHarvested());
+			}
+		}
 	}
 
 	public MissingChunk[] pollMissingChunks() {

@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore.textures;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.GameConstants;
@@ -49,5 +50,9 @@ public class TextureAnimationSet {
 
 	public TextureAnimation get(ActionAnimation action) {
 		return map.get(action);
+	}
+
+	public void foreachAnimations(Consumer<TextureAnimation> action) {
+		map.values().forEach(action);
 	}
 }

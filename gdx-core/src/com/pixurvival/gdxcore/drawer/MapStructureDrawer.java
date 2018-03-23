@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
 public class MapStructureDrawer implements EntityDrawer<MapStructure> {
@@ -31,10 +33,16 @@ public class MapStructureDrawer implements EntityDrawer<MapStructure> {
 		TextureAnimationSet animationSet = animationSets[e.getDefinition().getId()];
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
 		float y = (float) (e.getY() /*- e.getHalfHeight()*/);
-		batch.draw(animationSet.getShadow(), x, y - animationSet.getWidth() / 6, animationSet.getWidth(),
-				animationSet.getWidth() / 2);
-		batch.draw(animationSet.get(ActionAnimation.NONE).getTexture(0), x, y + animationSet.getYOffset(),
-				animationSet.getWidth(), animationSet.getHeight());
+		ActionAnimation action = ActionAnimation.NONE;
+		if (e instanceof HarvestableStructure && ((HarvestableStructure) e).isHarvested()) {
+			action = ActionAnimation.HARVESTED;
+		}
+		TextureAnimation animation = animationSet.get(action);
+		batch.draw(animation.getShadow(), (float) e.getX() - animation.getWorldShadowWidth() / 2,
+				y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),
+				animation.getWorldShadowWidth() / 2);
+		batch.draw(animation.getTexture(0), x, y + animationSet.getYOffset(), animationSet.getWidth(),
+				animationSet.getHeight());
 	}
 
 }

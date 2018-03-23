@@ -22,8 +22,9 @@ public class CameraControlProcessor extends InputAdapter {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (button == Input.Buttons.MIDDLE) {
 			((OrthographicCamera) viewport.getCamera()).zoom = 1;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	@Override

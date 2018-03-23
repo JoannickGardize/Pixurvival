@@ -20,10 +20,11 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.contentPack.item.ItemStackEntity;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
+import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
@@ -130,17 +131,17 @@ public class ClientGame {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
-				Entity e = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
+				PlayerEntity e = getMyPlayer();
 				if (e != null) {
 					// ApplyPlayerActionAction action = new
 					// ApplyPlayerActionAction((PlayerEntity) e, request);
 					// world.getActionTimerManager().add(new ActionTimer(action,
 					// world.getTime().getTimeMillis() +
 					// world.getTime().getTimeOffsetMillis()));
-					((PlayerEntity) e).apply(request);
+					e.apply(request);
 				}
 			} else {
-				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
+				getMyPlayer().apply(request);
 			}
 		}
 	}
@@ -150,7 +151,17 @@ public class ClientGame {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
 			} else {
-				((PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId)).apply(request);
+				getMyPlayer().apply(request);
+			}
+		}
+	}
+
+	public void sendAction(InteractStructureRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+			} else {
+				getMyPlayer().apply(request);
 			}
 		}
 	}

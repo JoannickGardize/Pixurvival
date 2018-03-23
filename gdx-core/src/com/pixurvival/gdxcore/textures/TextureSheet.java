@@ -17,17 +17,10 @@ public class TextureSheet {
 	private TextureMetrics[] metrics;
 
 	public TextureSheet(SpriteSheetPixmap spriteSheetPixmap, Function<Region, Pixmap> transform) {
-		this(spriteSheetPixmap, transform, false);
-	}
-
-	public TextureSheet(SpriteSheetPixmap spriteSheetPixmap, Function<Region, Pixmap> transform,
-			boolean computeMetrics) {
 		sizeX = spriteSheetPixmap.getTileCountX();
 		sizeY = spriteSheetPixmap.getTileCountY();
 		textures = new Texture[sizeX * sizeY];
-		if (computeMetrics) {
-			metrics = new TextureMetrics[sizeX * sizeY];
-		}
+		metrics = new TextureMetrics[sizeX * sizeY];
 		for (int x = 0; x < sizeX; x++) {
 			for (int y = 0; y < sizeY; y++) {
 				Region region = spriteSheetPixmap.getRegion(x, y);
@@ -35,9 +28,7 @@ public class TextureSheet {
 				texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 				int index = x + y * sizeX;
 				textures[index] = texture;
-				if (computeMetrics) {
-					metrics[index] = buildMetrics(region);
-				}
+				metrics[index] = buildMetrics(region);
 			}
 		}
 	}

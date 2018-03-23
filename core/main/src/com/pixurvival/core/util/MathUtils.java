@@ -25,4 +25,8 @@ public class MathUtils {
 			return value;
 		}
 	}
+
+	public static double linearInterpolate(double start, double end, double alpha) {
+		return start + (end - start) * alpha;
+	}
 }

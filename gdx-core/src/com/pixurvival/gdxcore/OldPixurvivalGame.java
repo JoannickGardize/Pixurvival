@@ -6,7 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
-import com.pixurvival.core.message.Direction;
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
 

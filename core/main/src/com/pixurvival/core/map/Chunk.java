@@ -10,24 +10,25 @@ import com.pixurvival.core.contentPack.map.Tile;
 
 import lombok.Getter;
 
+@Getter
 public class Chunk {
 
-	@Getter
+	private TiledMap map;
+
 	private MapTile[] tiles;
-	@Getter
+
 	private List<MapStructure> structures = new ArrayList<>();
 
-	@Getter
 	private Position position;
 
-	@Getter
 	private int offsetX;
-	@Getter
+
 	private int offsetY;
 
 	private SoftReference<CompressedChunk> compressedChunkRef = new SoftReference<>(null);
 
-	public Chunk(int x, int y) {
+	public Chunk(TiledMap map, int x, int y) {
+		this.map = map;
 		this.position = new Position(x, y);
 		offsetX = position.getX() * GameConstants.CHUNK_SIZE;
 		offsetY = position.getY() * GameConstants.CHUNK_SIZE;
@@ -50,8 +51,8 @@ public class Chunk {
 		tiles[y * GameConstants.CHUNK_SIZE + x] = tile;
 	}
 
-	public void addStructure(Structure structure, int x, int y) {
-		MapStructure mapStructure = MapStructure.fromStructure(structure, x, y);
+	public MapStructure addStructure(Structure structure, int x, int y) {
+		MapStructure mapStructure = MapStructure.newInstance(this, structure, x, y);
 		int localX = x - offsetX;
 		int localY = y - offsetY;
 		for (int cx = localX; cx < localX + structure.getDimensions().getWidth(); cx++) {
@@ -62,6 +63,7 @@ public class Chunk {
 			}
 		}
 		structures.add(mapStructure);
+		return mapStructure;
 	}
 
 	public CompressedChunk getCompressed() {

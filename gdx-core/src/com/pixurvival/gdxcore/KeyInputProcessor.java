@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.InputAdapter;
-import com.pixurvival.core.message.Direction;
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.message.PlayerActionRequest;
 
 import lombok.Getter;

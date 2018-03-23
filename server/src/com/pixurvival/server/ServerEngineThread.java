@@ -1,9 +1,12 @@
 package com.pixurvival.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
-import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.message.HarvestableStructureUpdate;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -14,26 +17,33 @@ public class ServerEngineThread extends EngineThread {
 	private @NonNull ServerGame game;
 	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
+	private List<WorldSession> worldSessions = new ArrayList<>();
+
+	public void add(WorldSession worldSession) {
+		worldSessions.add(worldSession);
+	}
 
 	@Override
 	public void update(double deltaTimeMillis) {
 		game.consumeReceivedObjects();
-		World.getWorlds().forEach(w -> w.update(deltaTimeMillis));
+		worldSessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
 		sendUpdateTimer += deltaTimeMillis;
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
-			World.getWorlds().forEach(w -> {
-				w.incrementUpdateId();
-			});
-			game.foreachPlayers(p -> {
-				PlayerEntity playerEntity = p.getPlayerEntity();
-				if (p.isGameReady() && playerEntity != null) {
-					playerEntity.getWorld().writeEntitiesUpdateFor(playerEntity);
-					p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
-					if (p.isInventoryChanged()) {
-						p.setInventoryChanged(false);
-						p.sendUDP(p.getPlayerEntity().getInventory());
+			worldSessions.forEach(w -> {
+				w.getWorld().incrementUpdateId();
+				HarvestableStructureUpdate[] structureUpdates = w.consumeStructureUpdates();
+				w.getPlayers().forEach(p -> {
+					PlayerEntity playerEntity = p.getPlayerEntity();
+					if (p.isGameReady() && playerEntity != null) {
+						playerEntity.getWorld().writeEntitiesUpdateFor(playerEntity);
+						p.getPlayerEntity().getWorld().getEntitiesUpdate().setStructureUpdates(structureUpdates);
+						p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
+						if (p.isInventoryChanged()) {
+							p.setInventoryChanged(false);
+							p.sendUDP(p.getPlayerEntity().getInventory());
+						}
 					}
-				}
+				});
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
 				sendUpdateTimer = 0;

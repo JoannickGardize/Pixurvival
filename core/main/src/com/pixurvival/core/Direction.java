@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -18,14 +18,7 @@ public enum Direction {
 	SOUTH(-Math.PI / 2.0),
 	SOUTH_EAST(-Math.PI / 4.0);
 
-	static {
-		for (byte i = 0; i < Direction.values().length; i++) {
-			Direction.values()[i].id = i;
-		}
-	}
-
 	private double angle;
-	private byte id;
 
 	private Direction(double angle) {
 		this.angle = angle;
@@ -55,7 +48,7 @@ public enum Direction {
 
 		@Override
 		public void write(Kryo kryo, Output output, Direction object) {
-			output.write(object.getId());
+			output.write(object.ordinal());
 		}
 
 		@Override

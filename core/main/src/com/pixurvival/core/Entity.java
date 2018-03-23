@@ -19,9 +19,9 @@ public abstract class Entity implements Collidable {
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
 
-	private double speed;
-	private @Setter double movingAngle;
-	private @Setter boolean forward;
+	private double speed = 0;
+	private @Setter double movingAngle = 0;
+	private @Setter boolean forward = false;
 	private Vector2 velocity = new Vector2();
 
 	public abstract void initialize();
@@ -93,6 +93,10 @@ public abstract class Entity implements Collidable {
 
 	public double distanceSquared(Entity other) {
 		return position.distanceSquared(other.position);
+	}
+
+	public double distanceSquared(Vector2 position) {
+		return this.position.distanceSquared(position);
 	}
 
 	public double angleTo(Entity other) {

@@ -55,8 +55,7 @@ public class World {
 		this.contentPack = contentPack;
 		entitiesUpdate.setWorldId(id);
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(contentPack.getTilesById(), contentPack.getMapGenerators().get("default"),
-				new Random().nextLong());
+		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get("default"), new Random().nextLong());
 	}
 
 	public static World getWorld(long id) {
@@ -97,10 +96,12 @@ public class World {
 	}
 
 	public void update(double deltaTimeMillis) {
+		EntitiesUpdate entitiesUpdate = this.entitiesUpdate;
 		if (type != Type.SERVER && entitiesUpdate.getUpdateId() > previousUpdateId) {
 
 			entityPool.applyUpdate(entitiesUpdate.getByteBuffer());
 			previousUpdateId = entitiesUpdate.getUpdateId();
+			map.applyUpdate(entitiesUpdate.getStructureUpdates());
 		}
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();

@@ -87,8 +87,8 @@ public class Vector2 {
 	}
 
 	public double distanceSquared(Vector2 v) {
-		double dx = x - v.getX();
-		double dy = y - v.getY();
+		double dx = x - v.x;
+		double dy = y - v.y;
 		return dx * dx + dy * dy;
 	}
 

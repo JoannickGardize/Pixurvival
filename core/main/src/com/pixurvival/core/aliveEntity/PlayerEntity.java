@@ -6,7 +6,10 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.Position;
+import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
 
@@ -71,6 +74,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		}
 	}
 
+	public void apply(InteractStructureRequest request) {
+		MapTile mapTile = getWorld().getMap().tileAt(request.getX(), request.getY());
+		if (mapTile.getStructure() instanceof HarvestableStructure && mapTile.getStructure().canInteract(this)) {
+			HarvestableStructure structure = (HarvestableStructure) mapTile.getStructure();
+			setActivity(new HarvestingActivity(this, structure));
+			setForward(false);
+		}
+	}
+
 	@Override
 	public void initialize() {
 		if (getWorld().isServer()) {
@@ -122,6 +134,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		buffer.putDouble(getHealth());
 		buffer.putDouble(getAimingAngle());
 
+		buffer.put(getActivity().getId());
+		switch (getActivity().getId()) {
+		case Activity.HARVESTING_ID:
+			HarvestingActivity harvestingActivity = (HarvestingActivity) getActivity();
+			buffer.putInt(harvestingActivity.getStructure().getTileX());
+			buffer.putInt(harvestingActivity.getStructure().getTileY());
+			buffer.putDouble(harvestingActivity.getProgressTime());
+			break;
+		}
 		// extended part
 		// if (extendedUpdateRequired) {
 		// buffer.put((byte) 1);
@@ -138,6 +159,28 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		setForward(buffer.get() == 1 ? true : false);
 		setHealth(buffer.getDouble());
 		setAimingAngle(buffer.getDouble());
+		byte activityId = buffer.get();
+		switch (activityId) {
+		case Activity.NONE_ID:
+			setActivity(Activity.NONE);
+			break;
+		case Activity.HARVESTING_ID:
+			int tileX = buffer.getInt();
+			int tileY = buffer.getInt();
+			double progressTime = buffer.getDouble();
+			if (!(getActivity() instanceof HarvestingActivity)) {
+				MapTile tile = getWorld().getMap().tileAt(tileX, tileY);
+				if (tile.getStructure() instanceof HarvestableStructure) {
+					HarvestingActivity harvestingActivity = new HarvestingActivity(this,
+							(HarvestableStructure) tile.getStructure());
+					harvestingActivity.setProgressTime(progressTime);
+					setActivity(harvestingActivity);
+				} else {
+					Log.warn("Unknown harvesting tile");
+				}
+			}
+			break;
+		}
 
 		// extended part
 		// if (buffer.get() == 1) {

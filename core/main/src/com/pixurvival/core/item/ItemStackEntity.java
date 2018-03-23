@@ -1,11 +1,12 @@
-package com.pixurvival.core.contentPack.item;
+package com.pixurvival.core.item;
 
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -17,6 +18,9 @@ public class ItemStackEntity extends Entity {
 	public static final double MAGNET_DISTANCE = 2;
 	public static final double INHIBITION_DISTANCE = 2.5;
 	public static final double RANDOM_SPAWN_RADIUS = 2;
+	public static final double SPEED_INTERPOLATION_DURATION = 0.2;
+	public static final double START_SPEED = 2;
+	public static final double END_SPEED = 15;
 
 	public static enum State {
 		NORMAL,
@@ -29,6 +33,7 @@ public class ItemStackEntity extends Entity {
 	private PlayerEntity magnetTarget = null;
 	private @Getter State state;
 	private Vector2 spawnTarget = new Vector2();
+	private Timer speedInterpolation = new Timer(SPEED_INTERPOLATION_DURATION, false);
 
 	public ItemStackEntity(ItemStack itemStack) {
 		this.itemStack = itemStack;
@@ -37,7 +42,7 @@ public class ItemStackEntity extends Entity {
 
 	public void spawnRandom() {
 		spawnTarget.setFromEuclidean(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
-				getWorld().getRandom().nextDouble() * Math.PI * 2);
+				getWorld().getRandom().nextDouble() * Math.PI * 2).add(getPosition());
 		state = State.SPAWNING;
 	}
 
@@ -70,11 +75,13 @@ public class ItemStackEntity extends Entity {
 					if (distanceSquared(p) <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
 						magnetTarget = (PlayerEntity) p;
 						state = State.MAGNTIZED;
+						speedInterpolation.reset();
 					}
 				});
 			}
 			break;
 		case MAGNTIZED:
+			speedInterpolation.update(getWorld());
 			setMovingAngle(angleTo(magnetTarget));
 			setForward(true);
 			if (collide(magnetTarget)) {
@@ -82,11 +89,13 @@ public class ItemStackEntity extends Entity {
 				if (getWorld().isServer() && !magnetTarget.getInventory().smartAdd(itemStack)) {
 					setAlive(true);
 					state = State.INHIBITED;
+					speedInterpolation.reset();
 					setForward(false);
 				}
 			}
 			break;
 		case SPAWNING:
+			speedInterpolation.update(getWorld());
 			setForward(true);
 			setMovingAngle(getPosition().angleTo(spawnTarget));
 			double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
@@ -109,12 +118,16 @@ public class ItemStackEntity extends Entity {
 		buffer.put((byte) state.ordinal());
 		switch (state) {
 		case INHIBITED:
+			buffer.putLong(magnetTarget.getId());
+			break;
 		case MAGNTIZED:
 			buffer.putLong(magnetTarget.getId());
+			buffer.putDouble(speedInterpolation.getTimer());
 			break;
 		case SPAWNING:
 			buffer.putDouble(spawnTarget.x);
 			buffer.putDouble(spawnTarget.y);
+			buffer.putDouble(speedInterpolation.getTimer());
 			break;
 		default:
 			break;
@@ -133,12 +146,17 @@ public class ItemStackEntity extends Entity {
 		state = State.values()[buffer.get()];
 		switch (state) {
 		case INHIBITED:
-		case MAGNTIZED:
 			long magnetTargetId = buffer.getLong();
 			magnetTarget = (PlayerEntity) getWorld().getEntityPool().get(EntityGroup.PLAYER, magnetTargetId);
 			break;
+		case MAGNTIZED:
+			magnetTargetId = buffer.getLong();
+			magnetTarget = (PlayerEntity) getWorld().getEntityPool().get(EntityGroup.PLAYER, magnetTargetId);
+			speedInterpolation.setTimer(buffer.getDouble());
+			break;
 		case SPAWNING:
 			spawnTarget.set(buffer.getDouble(), buffer.getDouble());
+			speedInterpolation.setTimer(buffer.getDouble());
 			break;
 		default:
 			break;
@@ -148,7 +166,11 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public double getSpeedPotential() {
-		return 15;
+		if (state == State.MAGNTIZED) {
+			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, speedInterpolation.getProgress());
+		} else {
+			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, 1 - speedInterpolation.getProgress());
+		}
 	}
 
 	@Override

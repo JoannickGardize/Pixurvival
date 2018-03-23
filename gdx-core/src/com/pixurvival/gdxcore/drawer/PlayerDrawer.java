@@ -3,9 +3,9 @@ package com.pixurvival.gdxcore.drawer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.core.message.Direction;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
@@ -64,6 +64,9 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 	}
 
 	private TextureAnimation getAnimation(PlayerEntity e) {
+		if (e.getActivity().getActionAnimation() != null) {
+			return textureAnimationSet.get(e.getActivity().getActionAnimation());
+		}
 		Direction aimingDirection = Direction.closestCardinal(e.getMovingAngle());
 		if (e.isForward()) {
 			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));

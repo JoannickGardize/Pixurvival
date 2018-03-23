@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
@@ -49,6 +50,8 @@ public class KryoInitializer {
 		register(kryo, MissingChunk[].class);
 		register(kryo, CompressedChunk.class);
 		register(kryo, CompressedChunk[].class);
+		register(kryo, InteractStructureRequest.class);
+		register(kryo, HarvestableStructureUpdate.class);
 	}
 
 	@SuppressWarnings("unchecked")

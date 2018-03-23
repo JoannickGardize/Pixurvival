@@ -15,6 +15,7 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.gdxcore.PixurvivalGame;
@@ -78,12 +79,18 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
 		for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
 			for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
-				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures()
-						.getTileColor(chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
+				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(
+						chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
 			}
 		}
 		Texture texture = new Texture(pixmap, true);
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		chunkTextures.put(chunk.getPosition().copy(), texture);
+	}
+
+	@Override
+	public void structureChanged(MapStructure mapStructure) {
+		// TODO Auto-generated method stub
+
 	}
 }
