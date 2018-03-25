@@ -6,16 +6,23 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.pixurvival.core.contentPack.ElementReference;
 import com.pixurvival.core.contentPack.RefContext;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemStack;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemQuantity {
 
 	private Item item;
 	private int quantity;
+
+	public ItemStack toItemStack() {
+		return new ItemStack(item, quantity);
+	}
 
 	@Getter
 	public static class ItemQuantityXmlEntry extends ElementReference {

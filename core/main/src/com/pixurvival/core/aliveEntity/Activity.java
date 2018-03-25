@@ -6,6 +6,7 @@ public class Activity {
 
 	public static final byte NONE_ID = 0;
 	public static final byte HARVESTING_ID = 1;
+	public static final byte CRAFTING_ACTIVITY = 2;
 
 	public static Activity NONE = new Activity();
 

@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.item.ItemCrafts;
 import com.pixurvival.core.contentPack.item.ItemRewards;
 import com.pixurvival.core.contentPack.item.Items;
 import com.pixurvival.core.contentPack.map.MapGenerator;
@@ -94,7 +95,7 @@ public class ContentPacksContext {
 			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
 					Tiles.class, MapGenerator.class, Items.class, ItemRewards.class, Structures.class,
-					MapGenerators.class);
+					MapGenerators.class, ItemCrafts.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));

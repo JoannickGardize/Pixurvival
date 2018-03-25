@@ -19,6 +19,8 @@ import lombok.Setter;
 @Getter
 public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
+	private @Setter Activity activity = Activity.NONE;
+
 	private String name;
 
 	private PlayerInventory inventory;
@@ -78,7 +80,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		MapTile mapTile = getWorld().getMap().tileAt(request.getX(), request.getY());
 		if (mapTile.getStructure() instanceof HarvestableStructure && mapTile.getStructure().canInteract(this)) {
 			HarvestableStructure structure = (HarvestableStructure) mapTile.getStructure();
-			setActivity(new HarvestingActivity(this, structure));
+			activity = new HarvestingActivity(this, structure);
 			setForward(false);
 		}
 	}
@@ -93,6 +95,11 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	@Override
 	public void update() {
 		super.update();
+
+		if (isForward() && !activity.canMove()) {
+			activity = Activity.NONE;
+		}
+		activity.update();
 	}
 
 	@Override
@@ -162,7 +169,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		byte activityId = buffer.get();
 		switch (activityId) {
 		case Activity.NONE_ID:
-			setActivity(Activity.NONE);
+			activity = Activity.NONE;
 			break;
 		case Activity.HARVESTING_ID:
 			int tileX = buffer.getInt();
@@ -174,7 +181,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 					HarvestingActivity harvestingActivity = new HarvestingActivity(this,
 							(HarvestableStructure) tile.getStructure());
 					harvestingActivity.setProgressTime(progressTime);
-					setActivity(harvestingActivity);
+					activity = harvestingActivity;
 				} else {
 					Log.warn("Unknown harvesting tile");
 				}

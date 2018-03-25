@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 public abstract class AliveEntity extends Entity implements Damageable {
 
-	private Activity activity = Activity.NONE;
 	private double health = getMaxHealth();
 	private double aimingAngle;
 
@@ -32,10 +31,6 @@ public abstract class AliveEntity extends Entity implements Damageable {
 
 	@Override
 	public void update() {
-		if (isForward() && !activity.canMove()) {
-			activity = Activity.NONE;
-		}
-		activity.update();
 
 		// Only server has the final decision to kill an alive entity
 		if (getWorld().isServer() && health <= 0) {

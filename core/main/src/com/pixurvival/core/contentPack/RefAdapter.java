@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -111,6 +112,13 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 	public static class MapGeneratorRefAdapter extends RefAdapter<MapGenerator> {
 
 		public MapGeneratorRefAdapter(RefContext context) {
+			super(context);
+		}
+	}
+
+	public static class ItemCraftRefAdapter extends RefAdapter<ItemCraft> {
+
+		public ItemCraftRefAdapter(RefContext context) {
 			super(context);
 		}
 	}

@@ -10,6 +10,8 @@ import java.util.zip.ZipFile;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.item.ItemCraft;
+import com.pixurvival.core.contentPack.item.ItemCrafts;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.item.ItemRewards;
 import com.pixurvival.core.contentPack.item.Items;
@@ -40,9 +42,11 @@ public class ContentPack {
 	private ItemRewards itemRewards;
 	private Structures structures;
 	private MapGenerators mapGenerators;
+	private ItemCrafts itemCrafts;
 	private List<Tile> tilesById = new ArrayList<>();
 	private List<Item> itemsById = new ArrayList<>();
 	private List<Structure> structuresById = new ArrayList<>();
+	private List<ItemCraft> itemCraftsById = new ArrayList<>();
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
@@ -64,6 +68,8 @@ public class ContentPack {
 			refContext.addElementSet(Structure.class, contentPack.structures);
 			contentPack.mapGenerators = (MapGenerators) readXmlFile(unmarshaller, zipFile, "mapGenerators.xml");
 			refContext.addElementSet(MapGenerator.class, contentPack.mapGenerators);
+			contentPack.itemCrafts = (ItemCrafts) readXmlFile(unmarshaller, zipFile, "itemCrafts.xml");
+			refContext.addElementSet(ItemCraft.class, contentPack.itemCrafts);
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {
@@ -93,9 +99,20 @@ public class ContentPack {
 						private byte nextId = 0;
 
 						@Override
-						public void accept(Structure t) {
-							t.setId(nextId++);
-							contentPack.structuresById.add(t);
+						public void accept(Structure s) {
+							s.setId(nextId++);
+							contentPack.structuresById.add(s);
+						}
+					});
+			refContext.getAdapter(ItemCraft.class).allSets().stream().flatMap(e -> e.all().values().stream())
+					.forEach(new Consumer<ItemCraft>() {
+
+						private byte nextId = 0;
+
+						@Override
+						public void accept(ItemCraft i) {
+							i.setId(nextId++);
+							contentPack.itemCraftsById.add(i);
 						}
 					});
 			return contentPack;

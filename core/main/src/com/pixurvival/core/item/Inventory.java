@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.item.ItemQuantity;
 
 public class Inventory {
 
@@ -51,6 +52,28 @@ public class Inventory {
 		return null;
 	}
 
+	public boolean contains(ItemQuantity... itemQuantities) {
+		for (ItemQuantity itemQuantity : itemQuantities) {
+			if (!contains(itemQuantity.getItem(), itemQuantity.getQuantity())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean contains(ItemStack... itemStacks) {
+		for (ItemStack itemStack : itemStacks) {
+			if (!contains(itemStack)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean contains(ItemStack itemStack) {
+		return contains(itemStack.getItem(), itemStack.getQuantity());
+	}
+
 	public boolean contains(Item item, int quantity) {
 		int remainingQuantity = quantity;
 		for (int i = 0; i < slots.length; i++) {
@@ -80,6 +103,14 @@ public class Inventory {
 		if (!contains(item, quantity)) {
 			return null;
 		}
+		if (unsafeRemove(item, quantity)) {
+			return new ItemStack(item, quantity);
+		}
+		Log.warn("Something that should never happen happened !");
+		return null;
+	}
+
+	public boolean unsafeRemove(Item item, int quantity) {
 		int remainingQuantity = quantity;
 		for (int i = slots.length - 1; i >= 0; i--) {
 			ItemStack slot = slots[i];
@@ -91,12 +122,17 @@ public class Inventory {
 				}
 				notifySlotChanged(i);
 				if (remainingQuantity == 0) {
-					return new ItemStack(item, quantity);
+					return true;
 				}
 			}
 		}
-		Log.warn("Something that should never happen happened !");
-		return null;
+		return false;
+	}
+
+	public void unsafeRemoveAll(ItemQuantity... itemQuantities) {
+		for (ItemQuantity itemQuantity : itemQuantities) {
+			unsafeRemove(itemQuantity.getItem(), itemQuantity.getQuantity());
+		}
 	}
 
 	/**
