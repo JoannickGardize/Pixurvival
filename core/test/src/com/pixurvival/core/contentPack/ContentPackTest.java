@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.contentPack.item.ItemRewards;
 import com.pixurvival.core.contentPack.item.Items;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.MapGenerator;
@@ -22,7 +23,6 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.sprite.Sprites;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ItemRewards;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.MeleeWeaponItem;
 

@@ -1,10 +1,12 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.pixurvival.core.contentPack.ElementReference;
 import com.pixurvival.core.contentPack.RefContext;
+import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemStack;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

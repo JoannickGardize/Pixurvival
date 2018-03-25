@@ -6,12 +6,12 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ItemReward;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

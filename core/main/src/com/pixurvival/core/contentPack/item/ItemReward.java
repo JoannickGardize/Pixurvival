@@ -1,4 +1,4 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.item.ItemStack;
 
 public class ItemReward extends NamedElement {
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<itemCrafts>
+	<itemCraft name="arrows" duration="1">
+		<result quantity="5">arrow</result>
+		<recipes>
+			<recipe>wood</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="healing_pack" duration="2">
+		<result>healing_pack</result>
+		<recipes>
+			<recipe quantity="4">cotton</recipe>
+			<recipe quantity="2">pixie_powder</recipe>
+		</recipes>
+	</itemCraft>
+</itemCrafts>

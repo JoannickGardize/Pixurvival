@@ -1,7 +1,6 @@
 package com.pixurvival.core.contentPack.map;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.pixurvival.core.contentPack.ElementReference;
@@ -18,16 +17,10 @@ public class StructureGeneratorEntry {
 	private Structure structure;
 
 	@Getter
-	public static class StructureGeneratorXmlEntry {
+	public static class StructureGeneratorXmlEntry extends ElementReference {
 
 		@XmlAttribute(name = "probability")
 		private double probability;
-
-		@XmlAttribute(name = "packRef")
-		private String packRef;
-
-		@XmlValue
-		private String structure;
 	}
 
 	@AllArgsConstructor
@@ -37,8 +30,7 @@ public class StructureGeneratorEntry {
 
 		@Override
 		public StructureGeneratorEntry unmarshal(StructureGeneratorXmlEntry v) throws Exception {
-			ElementReference ref = new ElementReference(v.getPackRef(), v.getStructure());
-			return new StructureGeneratorEntry(v.getProbability(), refContext.get(Structure.class, ref));
+			return new StructureGeneratorEntry(v.getProbability(), refContext.get(Structure.class, v));
 		}
 
 		@Override

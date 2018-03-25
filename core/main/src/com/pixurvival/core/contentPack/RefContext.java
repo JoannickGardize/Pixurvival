@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.item.ItemReward;
+import com.pixurvival.core.contentPack.item.ItemRewardEntry;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
@@ -12,8 +14,6 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ItemReward;
-import com.pixurvival.core.item.ItemRewardEntry;
 
 import lombok.Getter;
 import lombok.Setter;

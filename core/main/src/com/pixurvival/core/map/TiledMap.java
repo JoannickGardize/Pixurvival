@@ -124,7 +124,6 @@ public class TiledMap {
 		}
 		for (HarvestableStructureUpdate structureUpdate : structureUpdates) {
 			MapTile mapTile = tileAt(structureUpdate.getX(), structureUpdate.getY());
-			System.out.println(structureUpdate.getX() + ", " + structureUpdate.getY());
 			if (mapTile instanceof TileAndStructure) {
 				((HarvestableStructure) mapTile.getStructure()).setHarvested(structureUpdate.isHarvested());
 			}

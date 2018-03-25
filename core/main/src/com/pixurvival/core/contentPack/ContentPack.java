@@ -10,6 +10,8 @@ import java.util.zip.ZipFile;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import com.pixurvival.core.contentPack.item.ItemReward;
+import com.pixurvival.core.contentPack.item.ItemRewards;
 import com.pixurvival.core.contentPack.item.Items;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.MapGenerators;
@@ -22,8 +24,6 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.sprite.Sprites;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ItemReward;
-import com.pixurvival.core.item.ItemRewards;
 
 import lombok.Getter;
 import lombok.NonNull;

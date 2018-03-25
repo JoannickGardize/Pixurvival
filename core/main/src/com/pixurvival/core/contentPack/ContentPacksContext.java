@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.item.ItemRewards;
 import com.pixurvival.core.contentPack.item.Items;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.MapGenerators;
@@ -23,7 +24,6 @@ import com.pixurvival.core.contentPack.map.Structures;
 import com.pixurvival.core.contentPack.map.Tiles;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
 import com.pixurvival.core.contentPack.sprite.Sprites;
-import com.pixurvival.core.item.ItemRewards;
 
 public class ContentPacksContext {
 

@@ -18,14 +18,14 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
-import com.pixurvival.gdxcore.drawer.EntityDrawer;
+import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
 
 public class EntitiesActor extends Actor {
 
-	private Map<Class<? extends Collidable>, EntityDrawer<? extends Collidable>> drawers = new HashMap<>();
+	private Map<Class<? extends Collidable>, ElementDrawer<? extends Collidable>> drawers = new HashMap<>();
 	private List<Collidable> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
@@ -41,7 +41,7 @@ public class EntitiesActor extends Actor {
 	@SuppressWarnings("unchecked")
 	public void act(float delta) {
 		PixurvivalGame.getWorld().getEntityPool()
-				.foreach(e -> ((EntityDrawer<Entity>) drawers.get(e.getClass())).update(e));
+				.foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
 		super.act(delta);
 	}
 
@@ -71,7 +71,9 @@ public class EntitiesActor extends Actor {
 		}
 
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
-		objectsToDraw.forEach(e -> ((EntityDrawer<Collidable>) drawers.get(e.getClass())).draw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).drawShadow(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).draw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).topDraw(batch, e));
 
 	}
 

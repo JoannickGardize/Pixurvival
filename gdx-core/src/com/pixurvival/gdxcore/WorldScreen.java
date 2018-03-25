@@ -40,7 +40,9 @@ public class WorldScreen implements Screen {
 		hudStage.clear();
 		InventoryUI inventoryUI = new InventoryUI();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
-		hudStage.addActor(new MiniMapUI(myPlayerId));
+		MiniMapUI miniMapUI = new MiniMapUI(myPlayerId);
+		hudStage.addActor(miniMapUI);
+		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		hudStage.addActor(inventoryUI);
 		hudStage.addActor(heldItemStackActor);
 	}

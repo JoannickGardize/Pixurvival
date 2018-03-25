@@ -7,7 +7,6 @@ import com.pixurvival.core.Direction;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.util.Vector2;
-import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
@@ -15,13 +14,18 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
+public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 
 	private @NonNull TextureAnimationSet textureAnimationSet;
 
 	@Override
-	public void update(PlayerEntity e) {
-		updateDrawPosition(e);
+	public void drawShadow(Batch batch, PlayerEntity e) {
+		DrawData data = (DrawData) e.getCustomData();
+		Vector2 drawPosition = data.getDrawPosition();
+		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
+		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
+		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
+				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
 	}
 
 	@Override
@@ -33,9 +37,6 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
 		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
-		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
-				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
-
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
 			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
 					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
@@ -43,6 +44,12 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
 					textureAnimationSet.getHeight());
 		}
+	}
+
+	@Override
+	public void topDraw(Batch batch, PlayerEntity e) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {
@@ -72,28 +79,6 @@ public class PlayerDrawer implements EntityDrawer<PlayerEntity> {
 			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));
 		} else {
 			return textureAnimationSet.get(ActionAnimation.getStandFromDirection(aimingDirection));
-		}
-	}
-
-	private void updateDrawPosition(PlayerEntity e) {
-		Object o = e.getCustomData();
-		if (o == null) {
-			o = new DrawData();
-			((DrawData) o).getDrawPosition().set(e.getPosition());
-			e.setCustomData(o);
-		}
-		DrawData data = (DrawData) o;
-		Vector2 drawPos = data.getDrawPosition();
-		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
-		double distance = drawPos.distanceSquared(position);
-		double deltaSpeed = e.getSpeed() * Gdx.graphics.getRawDeltaTime();
-		if (distance > 5 * 5 || distance <= deltaSpeed * deltaSpeed) {
-			drawPos.set(position);
-		} else {
-			double speed = e.getSpeed() + (distance / (5 * 5)) * (e.getSpeed() * 2);
-			double angle = drawPos.angleTo(position);
-			// reuse of position instance
-			drawPos.add(position.setFromEuclidean(speed * Gdx.graphics.getRawDeltaTime(), angle));
 		}
 	}
 
