@@ -52,6 +52,7 @@ public class KryoInitializer {
 		register(kryo, CompressedChunk[].class);
 		register(kryo, InteractStructureRequest.class);
 		register(kryo, HarvestableStructureUpdate.class);
+		register(kryo, CraftItemRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

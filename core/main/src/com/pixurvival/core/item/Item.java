@@ -4,11 +4,13 @@ import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.ZipContentReference;
 import com.pixurvival.core.contentPack.sprite.Frame;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode(of = "id", callSuper = false)
 public class Item extends NamedElement {
 
 	private short id;

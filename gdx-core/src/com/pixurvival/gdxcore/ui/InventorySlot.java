@@ -20,15 +20,6 @@ public class InventorySlot extends Button {
 
 		itemStackDrawer = new ItemStackDrawer(this, 2);
 
-		// this.addListener(new ClickListener() {
-		// @Override
-		// public void clicked(InputEvent event, float x, float y) {
-		// PixurvivalGame.getClient()
-		// .sendAction(new InventoryActionRequest(Type.CURSOR_MY_INVENTORY, (short)
-		// slotIndex));
-		// }
-		// });
-
 		this.addListener(new InventorySlotInputListener(slotIndex));
 	}
 

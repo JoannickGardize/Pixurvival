@@ -11,6 +11,7 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
@@ -38,12 +39,13 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap()));
 		worldStage.addActor(new EntitiesActor());
 		hudStage.clear();
-		InventoryUI inventoryUI = new InventoryUI();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(myPlayerId);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
+		InventoryUI inventoryUI = new InventoryUI();
 		hudStage.addActor(inventoryUI);
+		hudStage.addActor(new CraftUI());
 		hudStage.addActor(heldItemStackActor);
 	}
 

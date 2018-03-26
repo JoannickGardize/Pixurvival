@@ -84,7 +84,7 @@ public class ItemStackEntity extends Entity {
 			speedInterpolation.update(getWorld());
 			setMovingAngle(angleTo(magnetTarget));
 			setForward(true);
-			if (collide(magnetTarget)) {
+			if (collideDynamic(magnetTarget)) {
 				setAlive(false);
 				if (getWorld().isServer() && !magnetTarget.getInventory().smartAdd(itemStack)) {
 					setAlive(true);

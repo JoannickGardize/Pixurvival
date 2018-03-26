@@ -4,11 +4,13 @@ import java.nio.ByteBuffer;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EntityGroup;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.Position;
+import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -32,6 +34,13 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	public void apply(PlayerActionRequest actionRequest) {
 		setMovingAngle(actionRequest.getDirection().getAngle());
 		setForward(actionRequest.isForward());
+	}
+
+	public void apply(CraftItemRequest request) {
+		ItemCraft craft = getWorld().getContentPack().getItemCraftsById().get(request.getCraftId());
+		if (inventory.contains(craft.getRecipes()) && activity.in(Activity.NONE_ID, Activity.CRAFTING_ACTIVITY_ID)) {
+			activity = new CraftingActivity(this, craft);
+		}
 	}
 
 	public void apply(InventoryActionRequest actionRequest) {
@@ -149,6 +158,11 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			buffer.putInt(harvestingActivity.getStructure().getTileY());
 			buffer.putDouble(harvestingActivity.getProgressTime());
 			break;
+		case Activity.CRAFTING_ACTIVITY_ID:
+			CraftingActivity craftingActivity = (CraftingActivity) getActivity();
+			buffer.putShort(craftingActivity.getItemCraft().getId());
+			buffer.putDouble(craftingActivity.getProgress());
+			break;
 		}
 		// extended part
 		// if (extendedUpdateRequired) {
@@ -185,6 +199,16 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 				} else {
 					Log.warn("Unknown harvesting tile");
 				}
+			}
+			break;
+		case Activity.CRAFTING_ACTIVITY_ID:
+			short craftId = buffer.getShort();
+			progressTime = buffer.getDouble();
+			if (!(getActivity() instanceof CraftingActivity)) {
+				CraftingActivity activity = new CraftingActivity(this,
+						getWorld().getContentPack().getItemCraftsById().get(craftId));
+				activity.setProgressTime(progressTime);
+				setActivity(activity);
 			}
 			break;
 		}

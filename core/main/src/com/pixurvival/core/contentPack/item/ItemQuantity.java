@@ -27,7 +27,7 @@ public class ItemQuantity {
 	@Getter
 	public static class ItemQuantityXmlEntry extends ElementReference {
 		@XmlAttribute(name = "quantity")
-		private int quantity;
+		private int quantity = 1;
 	}
 
 	@AllArgsConstructor

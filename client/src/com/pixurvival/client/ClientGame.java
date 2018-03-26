@@ -22,6 +22,7 @@ import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.InteractStructureRequest;
@@ -157,6 +158,16 @@ public class ClientGame {
 	}
 
 	public void sendAction(InteractStructureRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+			} else {
+				getMyPlayer().apply(request);
+			}
+		}
+	}
+
+	public void sendAction(CraftItemRequest request) {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);

@@ -1,7 +1,9 @@
 package com.pixurvival.core.item;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -14,6 +16,8 @@ public class Inventory {
 
 	protected ItemStack[] slots;
 	private List<InventoryListener> listeners = new ArrayList<>();
+	private Map<Item, Integer> quantityMap = new HashMap<>();
+	private boolean mustRebuild;
 
 	public Inventory(int size) {
 		slots = new ItemStack[size];
@@ -131,6 +135,7 @@ public class Inventory {
 
 	public void unsafeRemoveAll(ItemQuantity... itemQuantities) {
 		for (ItemQuantity itemQuantity : itemQuantities) {
+			System.out.println(itemQuantity.getQuantity());
 			unsafeRemove(itemQuantity.getItem(), itemQuantity.getQuantity());
 		}
 	}
@@ -160,6 +165,7 @@ public class Inventory {
 		int emptySlot = findEmptySlot();
 		if (emptySlot != -1) {
 			slots[emptySlot] = new ItemStack(itemStack);
+			notifySlotChanged(emptySlot);
 			itemStack.setQuantity(0);
 			return true;
 		}
@@ -189,7 +195,37 @@ public class Inventory {
 	}
 
 	public void notifySlotChanged(int index) {
+		mustRebuild = true;
 		listeners.forEach(l -> l.slotChanged(this, index));
+	}
+
+	public void ensureQuantityMapbuilt() {
+		if (mustRebuild) {
+			quantityMap.clear();
+			for (ItemStack itemStack : slots) {
+				if (itemStack == null) {
+					continue;
+				}
+				Integer previousQuantity = quantityMap.get(itemStack.getItem());
+				if (previousQuantity == null) {
+					quantityMap.put(itemStack.getItem(), itemStack.getQuantity());
+				} else {
+					quantityMap.put(itemStack.getItem(), previousQuantity + itemStack.getQuantity());
+				}
+			}
+			mustRebuild = false;
+		}
+	}
+
+	public boolean fastContainsAll(ItemQuantity... quantities) {
+		ensureQuantityMapbuilt();
+		for (ItemQuantity itemQuantity : quantities) {
+			Integer quantity = quantityMap.get(itemQuantity.getItem());
+			if (quantity == null || quantity < itemQuantity.getQuantity()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Inventory> {

@@ -6,6 +6,7 @@
     white: { r: 1, g: 1, b: 1, a: 1 },
     gray: { r: 0.5, g: 0.5, b: 0.5, a: 1 },
     black: { r: 0, g: 0, b: 0, a: 1 },
+    dark: { r: 0.2, g: 0.2, b: 0.2, a: 1 },
     
     up: { r: 0.6, g: 0.6, b: 0.6, a: 1 },
     over: { r: 0.5, g: 0.5, b: 0.5, a: 1 },
@@ -172,7 +173,7 @@
     background: { background: tree, minus: treeMinus, plus: treePlus, selection: selection, over: treeOver }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-    default: { titleFont: default, background: window, titleFontColor: fontDisabled },
-    dialog: { titleFont: default, background: window, titleFontColor: fontDisabled, stageBackground: alpha }
+    default: { titleFont: default, background: window, titleFontColor: dark },
+    dialog: { titleFont: default, background: window, titleFontColor: dark, stageBackground: alpha }
   }
 }

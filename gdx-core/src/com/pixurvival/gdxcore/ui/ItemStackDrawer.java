@@ -31,12 +31,14 @@ public class ItemStackDrawer {
 					actor.getWidth() - padding * 2, actor.getHeight() - padding * 2, actor.getScaleX(),
 					actor.getScaleY(), actor.getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false,
 					false);
-			BitmapFont font = PixurvivalGame.getSkin().getFont("default");
-			font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			font.setColor(Color.WHITE);
-			GlyphLayout layout = new GlyphLayout(font, String.valueOf(itemStack.getQuantity()));
-			font.draw(batch, layout, actor.getX() + actor.getWidth() - layout.width - padding,
-					actor.getY() + actor.getHeight() - padding * 2);
+			if (itemStack.getQuantity() > 1) {
+				BitmapFont font = PixurvivalGame.getSkin().getFont("default");
+				font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+				font.setColor(Color.WHITE);
+				GlyphLayout layout = new GlyphLayout(font, String.valueOf(itemStack.getQuantity()));
+				font.draw(batch, layout, actor.getX() + actor.getWidth() - layout.width - padding,
+						actor.getY() + actor.getHeight() - padding * 2);
+			}
 		}
 	}
 }
