@@ -23,12 +23,15 @@ public class TextureAnimationSet {
 	private @Getter float yOffset;
 	private @Getter float width;
 	private @Getter float height;
+	private @Getter float shadowWidth;
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
 	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
-		width = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2);
-		height = (float) ((double) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2);
+		shadowWidth = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT);
+		width = (float) (shadowWidth + truePixelWidth * 2);
+		height = (float) ((float) ((double) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT)
+				+ truePixelWidth * 2);
 		yOffset = (float) -truePixelWidth;
 
 		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(spriteSheet.getImage().read(), spriteSheet.getWidth(),

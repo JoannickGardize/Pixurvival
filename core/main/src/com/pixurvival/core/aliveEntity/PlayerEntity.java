@@ -7,10 +7,12 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.core.message.CraftItemRequest;
+import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -25,7 +27,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private String name;
 
-	private PlayerInventory inventory;
+	private @Setter PlayerInventory inventory;
 
 	private boolean extendedUpdateRequired = false;
 	@Setter
@@ -49,35 +51,37 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			return;
 		}
 		switch (actionRequest.getType()) {
-		case NORMAL_CLICK_MY_INVENTORY:
+		case SWAP_CLICK_MY_INVENTORY:
 			performNormalInventoryAction(actionRequest.getSlotIndex());
 			break;
-		case SPECIAL_CLICK_MY_INVENTORY:
+		case SPLIT_CLICK_MY_INVENTORY:
 			ItemStack currentContent = inventory.getSlot(actionRequest.getSlotIndex());
 			ItemStack heldItemStack = inventory.getHeldItemStack();
 			if (heldItemStack != null && currentContent != null
 					&& heldItemStack.getItem() == currentContent.getItem()) {
-				if (currentContent.addQuantity(1) == 0) {
-					heldItemStack.removeQuantity(1);
-					inventory.notifySlotChanged(actionRequest.getSlotIndex());
-					if (heldItemStack.getQuantity() == 0) {
+				if (currentContent.overflowingQuantity(1) == 0) {
+					inventory.setSlot(actionRequest.getSlotIndex(), currentContent.add(1));
+					if (heldItemStack.getQuantity() == 1) {
 						inventory.setHeldItemStack(null);
+					} else {
+						inventory.setHeldItemStack(heldItemStack.sub(1));
 					}
 				}
 			} else if (heldItemStack != null && currentContent == null) {
-				heldItemStack.removeQuantity(1);
 				inventory.setSlot(actionRequest.getSlotIndex(), new ItemStack(heldItemStack.getItem()));
-				if (heldItemStack.getQuantity() == 0) {
+				if (heldItemStack.getQuantity() == 1) {
 					inventory.setHeldItemStack(null);
+				} else {
+					inventory.setHeldItemStack(heldItemStack.sub(1));
 				}
 			} else if (heldItemStack == null && currentContent != null) {
 				int halfQuantity = currentContent.getQuantity() / 2 + (currentContent.getQuantity() % 2 == 0 ? 0 : 1);
-				halfQuantity = currentContent.removeQuantity(halfQuantity);
 				inventory.setHeldItemStack(new ItemStack(currentContent.getItem(), halfQuantity));
-				if (currentContent.getQuantity() == 0) {
+				if (currentContent.getQuantity() == halfQuantity) {
 					inventory.setSlot(actionRequest.getSlotIndex(), null);
+				} else {
+					inventory.setSlot(actionRequest.getSlotIndex(), currentContent.sub(halfQuantity));
 				}
-				inventory.notifySlotChanged(actionRequest.getSlotIndex());
 			} else {
 				performNormalInventoryAction(actionRequest.getSlotIndex());
 			}
@@ -91,6 +95,16 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			HarvestableStructure structure = (HarvestableStructure) mapTile.getStructure();
 			activity = new HarvestingActivity(this, structure);
 			setForward(false);
+		}
+	}
+
+	public void apply(DropItemRequest request) {
+		if (getInventory().getHeldItemStack() != null) {
+			ItemStackEntity entity = new ItemStackEntity(getInventory().getHeldItemStack());
+			entity.getPosition().set(getPosition());
+			getWorld().getEntityPool().add(entity);
+			entity.spawn(request.getDirection());
+			getInventory().setHeldItemStack(null);
 		}
 	}
 
@@ -207,8 +221,10 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			if (!(getActivity() instanceof CraftingActivity)) {
 				CraftingActivity activity = new CraftingActivity(this,
 						getWorld().getContentPack().getItemCraftsById().get(craftId));
-				activity.setProgressTime(progressTime);
 				setActivity(activity);
+				activity.setProgressTime(progressTime);
+			} else {
+				((CraftingActivity) getActivity()).setProgressTime(progressTime);
 			}
 			break;
 		}
@@ -223,12 +239,12 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		ItemStack heldItemStack = inventory.getHeldItemStack();
 		if (heldItemStack != null && currentContent != null && heldItemStack.getItem() == currentContent.getItem()) {
 			int quantity = currentContent.getQuantity();
-			heldItemStack.setQuantity(currentContent.addQuantity(heldItemStack.getQuantity()));
-			if (quantity != currentContent.getQuantity()) {
-				inventory.notifySlotChanged(slotIndex);
-			}
-			if (heldItemStack.getQuantity() == 0) {
+			int overflow = currentContent.overflowingQuantity(heldItemStack.getQuantity());
+			inventory.setSlot(slotIndex, currentContent.copy(quantity + heldItemStack.getQuantity() - overflow));
+			if (overflow == 0) {
 				inventory.setHeldItemStack(null);
+			} else {
+				inventory.setHeldItemStack(heldItemStack.copy(overflow));
 			}
 		} else {
 			inventory.setSlot(slotIndex, heldItemStack);

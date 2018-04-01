@@ -1,45 +1,45 @@
 package com.pixurvival.core.item;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.contentPack.item.ItemQuantity;
 
 public class Inventory {
 
 	protected ItemStack[] slots;
+	private int[] quantities;
 	private List<InventoryListener> listeners = new ArrayList<>();
-	private Map<Item, Integer> quantityMap = new HashMap<>();
-	private boolean mustRebuild;
 
 	public Inventory(int size) {
 		slots = new ItemStack[size];
 	}
 
 	public void set(Inventory other) {
-		slots = other.slots;
+		for (int i = 0; i < slots.length; i++) {
+			setSlot(i, other.getSlot(i));
+		}
 	}
 
 	public void addListener(InventoryListener listener) {
 		listeners.add(listener);
 	}
 
-	public int getSize() {
+	public int size() {
 		return slots.length;
 	}
 
-	public void setSlot(int index, ItemStack itemStack) {
+	public ItemStack setSlot(int index, ItemStack itemStack) {
 		if (!ItemStack.equals(itemStack, slots[index])) {
+			ItemStack previousItemStack = slots[index];
 			slots[index] = itemStack;
-			notifySlotChanged(index);
+			slotChanged(index, previousItemStack, itemStack);
+			return previousItemStack;
 		}
+		return itemStack;
 	}
 
 	public ItemStack getSlot(int index) {
@@ -47,27 +47,14 @@ public class Inventory {
 	}
 
 	public ItemStack take(int index) {
-		if (slots[index] != null) {
-			ItemStack removed = slots[index];
-			slots[index] = null;
-			notifySlotChanged(index);
-			return removed;
-		}
-		return null;
-	}
-
-	public boolean contains(ItemQuantity... itemQuantities) {
-		for (ItemQuantity itemQuantity : itemQuantities) {
-			if (!contains(itemQuantity.getItem(), itemQuantity.getQuantity())) {
-				return false;
-			}
-		}
-		return true;
+		ItemStack itemStack = getSlot(index);
+		setSlot(index, null);
+		return itemStack;
 	}
 
 	public boolean contains(ItemStack... itemStacks) {
 		for (ItemStack itemStack : itemStacks) {
-			if (!contains(itemStack)) {
+			if (totalOf(itemStack.getItem()) < itemStack.getQuantity()) {
 				return false;
 			}
 		}
@@ -75,22 +62,15 @@ public class Inventory {
 	}
 
 	public boolean contains(ItemStack itemStack) {
-		return contains(itemStack.getItem(), itemStack.getQuantity());
+		return totalOf(itemStack.getItem()) >= itemStack.getQuantity();
 	}
 
-	public boolean contains(Item item, int quantity) {
-		int remainingQuantity = quantity;
-		for (int i = 0; i < slots.length; i++) {
-			ItemStack slot = slots[i];
-			if (slot != null && slot.getItem() == item) {
-				if (slot.getQuantity() >= remainingQuantity) {
-					return true;
-				} else {
-					remainingQuantity -= slot.getQuantity();
-				}
-			}
+	public int totalOf(Item item) {
+		if (quantities == null || quantities.length <= item.getId()) {
+			return 0;
+		} else {
+			return quantities[item.getId()];
 		}
-		return false;
 	}
 
 	/**
@@ -103,15 +83,19 @@ public class Inventory {
 	 *            the quantity of the item to take.
 	 * @return The ItemStack taken, or null if not available.
 	 */
-	public ItemStack smartTake(Item item, int quantity) {
-		if (!contains(item, quantity)) {
-			return null;
+	public boolean remove(ItemStack... itemStacks) {
+		if (!contains(itemStacks)) {
+			return false;
 		}
-		if (unsafeRemove(item, quantity)) {
-			return new ItemStack(item, quantity);
+
+		for (ItemStack itemStack : itemStacks) {
+			unsafeRemove(itemStack);
 		}
-		Log.warn("Something that should never happen happened !");
-		return null;
+		return true;
+	}
+
+	public boolean unsafeRemove(ItemStack itemStack) {
+		return unsafeRemove(itemStack.getItem(), itemStack.getQuantity());
 	}
 
 	public boolean unsafeRemove(Item item, int quantity) {
@@ -119,25 +103,20 @@ public class Inventory {
 		for (int i = slots.length - 1; i >= 0; i--) {
 			ItemStack slot = slots[i];
 			if (slot != null && slot.getItem() == item) {
-				int removed = slot.removeQuantity(remainingQuantity);
-				remainingQuantity -= removed;
-				if (slot.getQuantity() == 0) {
-					slots[i] = null;
-				}
-				notifySlotChanged(i);
-				if (remainingQuantity == 0) {
+				if (slot.getQuantity() > remainingQuantity) {
+					setSlot(i, slot.sub(remainingQuantity));
 					return true;
+				} else {
+					setSlot(i, null);
+					if (slot.getQuantity() == remainingQuantity) {
+						return true;
+					} else {
+						remainingQuantity -= slot.getQuantity();
+					}
 				}
 			}
 		}
 		return false;
-	}
-
-	public void unsafeRemoveAll(ItemQuantity... itemQuantities) {
-		for (ItemQuantity itemQuantity : itemQuantities) {
-			System.out.println(itemQuantity.getQuantity());
-			unsafeRemove(itemQuantity.getItem(), itemQuantity.getQuantity());
-		}
 	}
 
 	/**
@@ -150,26 +129,26 @@ public class Inventory {
 	 *            quantity of the itemStack is updated.
 	 * @return True if all the ItemStack is added, false otherwise.
 	 */
-	public boolean smartAdd(ItemStack itemStack) {
+	public ItemStack add(ItemStack itemStack) {
 		Item item = itemStack.getItem();
+		int remainingQuantity = itemStack.getQuantity();
 		for (int i = 0; i < slots.length; i++) {
 			ItemStack slot = slots[i];
 			if (slot != null && slot.getItem() == item) {
-				itemStack.setQuantity(slot.addQuantity(itemStack.getQuantity()));
-				notifySlotChanged(i);
-				if (itemStack.getQuantity() == 0) {
-					return true;
+				int overflow = slot.overflowingQuantity(remainingQuantity);
+				setSlot(i, slot.add(remainingQuantity - overflow));
+				if (overflow == 0) {
+					return null;
 				}
+				remainingQuantity = overflow;
 			}
 		}
 		int emptySlot = findEmptySlot();
 		if (emptySlot != -1) {
-			slots[emptySlot] = new ItemStack(itemStack);
-			notifySlotChanged(emptySlot);
-			itemStack.setQuantity(0);
-			return true;
+			setSlot(emptySlot, itemStack.copy(remainingQuantity));
+			return null;
 		}
-		return false;
+		return itemStack.copy(remainingQuantity);
 	}
 
 	public void foreachItemStacks(Consumer<ItemStack> action) {
@@ -194,38 +173,37 @@ public class Inventory {
 		return index >= 0 && index < slots.length;
 	}
 
-	public void notifySlotChanged(int index) {
-		mustRebuild = true;
-		listeners.forEach(l -> l.slotChanged(this, index));
+	public void slotChanged(int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
+
+		if (previousItemStack == null) {
+			ensureQuantitiesArrayLength(newItemStack.getItem().getId());
+			quantities[newItemStack.getItem().getId()] += newItemStack.getQuantity();
+		} else if (newItemStack == null) {
+			ensureQuantitiesArrayLength(previousItemStack.getItem().getId());
+			quantities[previousItemStack.getItem().getId()] -= previousItemStack.getQuantity();
+		} else if (previousItemStack.getItem() == newItemStack.getItem()) {
+			ensureQuantitiesArrayLength(previousItemStack.getItem().getId());
+			quantities[newItemStack.getItem().getId()] += newItemStack.getQuantity() - previousItemStack.getQuantity();
+		} else {
+			ensureQuantitiesArrayLength(Math.max(newItemStack.getItem().getId(), previousItemStack.getItem().getId()));
+			quantities[previousItemStack.getItem().getId()] -= previousItemStack.getQuantity();
+			quantities[newItemStack.getItem().getId()] += newItemStack.getQuantity();
+		}
+		notifySlotChanged(slotIndex, previousItemStack, newItemStack);
 	}
 
-	public void ensureQuantityMapbuilt() {
-		if (mustRebuild) {
-			quantityMap.clear();
-			for (ItemStack itemStack : slots) {
-				if (itemStack == null) {
-					continue;
-				}
-				Integer previousQuantity = quantityMap.get(itemStack.getItem());
-				if (previousQuantity == null) {
-					quantityMap.put(itemStack.getItem(), itemStack.getQuantity());
-				} else {
-					quantityMap.put(itemStack.getItem(), previousQuantity + itemStack.getQuantity());
-				}
-			}
-			mustRebuild = false;
-		}
+	protected void notifySlotChanged(int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
+		listeners.forEach(l -> l.slotChanged(this, slotIndex, previousItemStack, newItemStack));
 	}
 
-	public boolean fastContainsAll(ItemQuantity... quantities) {
-		ensureQuantityMapbuilt();
-		for (ItemQuantity itemQuantity : quantities) {
-			Integer quantity = quantityMap.get(itemQuantity.getItem());
-			if (quantity == null || quantity < itemQuantity.getQuantity()) {
-				return false;
-			}
+	private void ensureQuantitiesArrayLength(int maxIndex) {
+		if (quantities == null) {
+			quantities = new int[maxIndex + 5];
+		} else if (quantities.length <= maxIndex) {
+			int[] newArray = new int[maxIndex + 5];
+			System.arraycopy(quantities, 0, newArray, 0, quantities.length);
+			quantities = newArray;
 		}
-		return true;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Inventory> {
@@ -248,4 +226,5 @@ public class Inventory {
 			return inventory;
 		}
 	}
+
 }

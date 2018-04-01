@@ -23,7 +23,7 @@ public class ItemReward extends NamedElement {
 		result.clear();
 		for (ItemRewardEntry entry : entries) {
 			if (random.nextDouble() <= entry.getProbability()) {
-				result.add(entry.getItemStack().copy());
+				result.add(entry.getItemStack());
 			}
 		}
 		return result.toArray(new ItemStack[result.size()]);

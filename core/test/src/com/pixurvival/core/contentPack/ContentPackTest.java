@@ -150,7 +150,7 @@ public class ContentPackTest {
 		Assert.assertEquals(new ItemStack(items.get("wood"), 2), reward[0]);
 		Structures structures = pack.getStructures();
 		Structure tree = structures.get("tree");
-		Assert.assertEquals(4, tree.getHarvestingTime());
+		Assert.assertEquals(4, tree.getHarvestingTime(), Double.MIN_VALUE);
 		Assert.assertSame(itemRewards.get("tree"), tree.getItemReward());
 		MapGenerator mapGenerator = pack.getMapGenerators().get("default");
 		Heightmap heightmap = mapGenerator.getHeightmaps()[0];

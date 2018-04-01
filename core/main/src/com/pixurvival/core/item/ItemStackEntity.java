@@ -32,6 +32,8 @@ public class ItemStackEntity extends Entity {
 	private @Getter ItemStack itemStack;
 	private PlayerEntity magnetTarget = null;
 	private @Getter State state;
+	private float spawnProgress;
+	private float spawnDistance;
 	private Vector2 spawnTarget = new Vector2();
 	private Timer speedInterpolation = new Timer(SPEED_INTERPOLATION_DURATION, false);
 
@@ -40,10 +42,20 @@ public class ItemStackEntity extends Entity {
 		state = State.NORMAL;
 	}
 
-	public void spawnRandom() {
-		spawnTarget.setFromEuclidean(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
-				getWorld().getRandom().nextDouble() * Math.PI * 2).add(getPosition());
+	public void spawn(double distance, double angle) {
+		spawnProgress = 0;
+		spawnDistance = (float) distance;
+		spawnTarget.setFromEuclidean(distance, angle).add(getPosition());
 		state = State.SPAWNING;
+	}
+
+	public void spawn(double angle) {
+		spawn(INHIBITION_DISTANCE, angle);
+	}
+
+	public void spawnRandom() {
+		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
+				getWorld().getRandom().nextDouble() * Math.PI * 2);
 	}
 
 	@Override
@@ -86,19 +98,23 @@ public class ItemStackEntity extends Entity {
 			setForward(true);
 			if (collideDynamic(magnetTarget)) {
 				setAlive(false);
-				if (getWorld().isServer() && !magnetTarget.getInventory().smartAdd(itemStack)) {
-					setAlive(true);
-					state = State.INHIBITED;
-					speedInterpolation.reset();
-					setForward(false);
+				if (getWorld().isServer()) {
+					ItemStack rest = magnetTarget.getInventory().add(itemStack);
+					if (rest != null) {
+						setAlive(true);
+						state = State.INHIBITED;
+						speedInterpolation.reset();
+						setForward(false);
+						itemStack = rest;
+					}
 				}
 			}
 			break;
 		case SPAWNING:
-			speedInterpolation.update(getWorld());
 			setForward(true);
 			setMovingAngle(getPosition().angleTo(spawnTarget));
 			double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
+			spawnProgress += deltaSpeed;
 			if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {
 				getPosition().set(spawnTarget);
 				setForward(false);
@@ -127,7 +143,8 @@ public class ItemStackEntity extends Entity {
 		case SPAWNING:
 			buffer.putDouble(spawnTarget.x);
 			buffer.putDouble(spawnTarget.y);
-			buffer.putDouble(speedInterpolation.getTimer());
+			buffer.putFloat(spawnProgress);
+			buffer.putFloat(spawnDistance);
 			break;
 		default:
 			break;
@@ -156,7 +173,8 @@ public class ItemStackEntity extends Entity {
 			break;
 		case SPAWNING:
 			spawnTarget.set(buffer.getDouble(), buffer.getDouble());
-			speedInterpolation.setTimer(buffer.getDouble());
+			spawnProgress = buffer.getFloat();
+			spawnDistance = buffer.getFloat();
 			break;
 		default:
 			break;
@@ -169,7 +187,8 @@ public class ItemStackEntity extends Entity {
 		if (state == State.MAGNTIZED) {
 			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, speedInterpolation.getProgress());
 		} else {
-			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, 1 - speedInterpolation.getProgress());
+
+			return END_SPEED - ((END_SPEED - START_SPEED) * (spawnProgress / spawnDistance));
 		}
 	}
 

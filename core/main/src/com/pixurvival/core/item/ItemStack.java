@@ -6,25 +6,23 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.NonNull;
+import lombok.Value;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@Value
 public class ItemStack {
 
-	private Item item;
-	private @Setter int quantity;
+	private @NonNull Item item;
+	private int quantity;
 
 	public ItemStack(Item item) {
-		this.item = item;
-		quantity = 1;
+		this(item, 1);
 	}
 
 	public ItemStack(Item item, int quantity) {
+		if (item == null || quantity < 1) {
+			throw new IllegalArgumentException();
+		}
 		this.item = item;
 		this.quantity = quantity;
 	}
@@ -34,8 +32,8 @@ public class ItemStack {
 		quantity = other.quantity;
 	}
 
-	public ItemStack copy() {
-		return new ItemStack(this);
+	public ItemStack copy(int quantity) {
+		return new ItemStack(item, quantity);
 	}
 
 	public static boolean equals(ItemStack itemStack1, ItemStack itemStack2) {
@@ -46,39 +44,28 @@ public class ItemStack {
 	}
 
 	/**
-	 * try to add the given quantity to this itemStack.
+	 * Return the overflowing quantity if added to the quantity of this item stack,
+	 * according to {@link Item#getMaxStackSize()}.
 	 * 
 	 * @param quantity
 	 *            the quantity to add.
-	 * @return The quantity that cannot be added, according to
-	 *         {@link Item#getMaxStackSize()}.
+	 * @return The overflowing quantity.
 	 */
-	public int addQuantity(int quantity) {
-		this.quantity += quantity;
-		if (this.quantity > item.getMaxStackSize()) {
-			int rest = this.quantity - item.getMaxStackSize();
-			this.quantity = item.getMaxStackSize();
-			return rest;
+	public int overflowingQuantity(int quantity) {
+		int result = this.quantity + quantity - item.getMaxStackSize();
+		if (result < 0) {
+			return 0;
+		} else {
+			return result;
 		}
-		return 0;
 	}
 
-	/**
-	 * try to remove the given quantity.
-	 * 
-	 * @param quantity
-	 *            The quantity to remove.
-	 * @return The quantity effectively removed.
-	 */
-	public int removeQuantity(int quantity) {
-		if (this.quantity >= quantity) {
-			this.quantity -= quantity;
-			return quantity;
-		} else {
-			int removed = this.quantity;
-			this.quantity = 0;
-			return removed;
-		}
+	public ItemStack sub(int quantity) {
+		return new ItemStack(item, this.quantity - quantity);
+	}
+
+	public ItemStack add(int quantity) {
+		return new ItemStack(item, this.quantity + quantity);
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<ItemStack> {

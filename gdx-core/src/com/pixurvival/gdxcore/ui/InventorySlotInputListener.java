@@ -39,9 +39,9 @@ public class InventorySlotInputListener extends InputListener {
 
 	private Type getButtonActionType(int button) {
 		if (button == Input.Buttons.LEFT) {
-			return Type.NORMAL_CLICK_MY_INVENTORY;
+			return Type.SWAP_CLICK_MY_INVENTORY;
 		} else if (button == Input.Buttons.RIGHT) {
-			return Type.SPECIAL_CLICK_MY_INVENTORY;
+			return Type.SPLIT_CLICK_MY_INVENTORY;
 		} else {
 			return null;
 		}

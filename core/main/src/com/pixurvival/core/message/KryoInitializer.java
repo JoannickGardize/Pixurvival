@@ -47,12 +47,12 @@ public class KryoInitializer {
 		register(kryo, PlayerInventory.class);
 		register(kryo, InventoryActionRequest.class);
 		register(kryo, MissingChunk.class);
-		register(kryo, MissingChunk[].class);
 		register(kryo, CompressedChunk.class);
 		register(kryo, CompressedChunk[].class);
 		register(kryo, InteractStructureRequest.class);
 		register(kryo, HarvestableStructureUpdate.class);
 		register(kryo, CraftItemRequest.class);
+		register(kryo, DropItemRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

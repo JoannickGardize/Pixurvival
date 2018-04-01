@@ -29,15 +29,17 @@ public class CraftingActivity extends WorkActivity {
 	public void onFinished() {
 		if (getEntity().getWorld().isServer()) {
 			Inventory inventory = getEntity().getInventory();
-			if (inventory.contains(itemCraft.getRecipes())) {
-				inventory.unsafeRemoveAll(itemCraft.getRecipes());
-				ItemStack craftedItem = itemCraft.getResult().toItemStack();
-				if (!inventory.smartAdd(craftedItem)) {
-					ItemStackEntity entity = new ItemStackEntity(craftedItem);
+			if (inventory.remove(itemCraft.getRecipes())) {
+				ItemStack craftedItem = itemCraft.getResult();
+				ItemStack rest = inventory.add(craftedItem);
+				if (rest != null) {
+					ItemStackEntity entity = new ItemStackEntity(rest);
 					getEntity().getWorld().getEntityPool().add(entity);
+					entity.getPosition().set(getEntity().getPosition());
 					entity.spawnRandom();
 				}
 			}
+
 		}
 	}
 }

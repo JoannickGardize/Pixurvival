@@ -1,12 +1,16 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.aliveEntity.WorkActivity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.textures.ColorTextures;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
@@ -22,10 +26,10 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	public void drawShadow(Batch batch, PlayerEntity e) {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
+		float x = (float) (drawPosition.x - textureAnimationSet.getShadowWidth() / 2);
 		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
-		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getWidth() / 4,
-				textureAnimationSet.getWidth(), textureAnimationSet.getWidth() / 2);
+		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4,
+				textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
 	}
 
 	@Override
@@ -48,8 +52,17 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 
 	@Override
 	public void topDraw(Batch batch, PlayerEntity e) {
-		// TODO Auto-generated method stub
-
+		if (e.getActivity() instanceof WorkActivity) {
+			WorkActivity activity = (WorkActivity) e.getActivity();
+			DrawData data = (DrawData) e.getCustomData();
+			Vector2 drawPosition = data.getDrawPosition();
+			float y = (float) (drawPosition.y + textureAnimationSet.getHeight() + 0.1);
+			float x = (float) (drawPosition.x - 0.5);
+			float lineWidth = (float) PixurvivalGame.getContentPackTextures().getTruePixelWidth();
+			batch.draw(ColorTextures.get(Color.BLACK), x - lineWidth, y - lineWidth, 1 + lineWidth * 2,
+					0.2f + lineWidth * 2);
+			batch.draw(ColorTextures.get(Color.YELLOW), x, y, (float) (1 - (1 * activity.getProgress())), 0.2f);
+		}
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {

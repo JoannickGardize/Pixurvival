@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <itemCrafts>
+	<itemCraft name="wood_sword" duration="7">
+		<result>wood_sword</result>
+		<recipes>
+			<recipe quantity="10">wood</recipe>
+		</recipes>
+	</itemCraft>
 	<itemCraft name="arrows" duration="1">
 		<result quantity="5">arrow</result>
 		<recipes>
@@ -11,6 +17,61 @@
 		<recipes>
 			<recipe quantity="4">cotton</recipe>
 			<recipe quantity="2">pixie_powder</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="leather_armor" duration="10">
+		<result>leather_armor</result>
+		<recipes>
+			<recipe quantity="8">leather</recipe>
+			<recipe quantity="3">cotton</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="bow" duration="10">
+		<result>bow</result>
+		<recipes>
+			<recipe quantity="12">wood</recipe>
+			<recipe quantity="4">cotton</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="hard_leather_armor" duration="12">
+		<result>hard_leather_armor</result>
+		<recipes>
+			<recipe quantity="8">hard_leather</recipe>
+			<recipe quantity="4">leather</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="iron_armor" duration="15">
+		<result>iron_armor</result>
+		<recipes>
+			<recipe quantity="12">iron</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="iron_sword" duration="15">
+		<result>iron_sword</result>
+		<recipes>
+			<recipe quantity="10">iron</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="horn_bow" duration="18">
+		<result>horn_bow</result>
+		<recipes>
+			<recipe quantity="10">wood</recipe>
+			<recipe quantity="4">cotton</recipe>
+			<recipe quantity="2">horn</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="fire_sword" duration="10">
+		<result>fire_sword</result>
+		<recipes>
+			<recipe quantity="1">iron_sword</recipe>
+			<recipe quantity="3">fire_soul</recipe>
+		</recipes>
+	</itemCraft>
+	<itemCraft name="fire_bow" duration="10">
+		<result>fire_bow</result>
+		<recipes>
+			<recipe quantity="1">horn_bow</recipe>
+			<recipe quantity="3">fire_soul</recipe>
 		</recipes>
 	</itemCraft>
 </itemCrafts>

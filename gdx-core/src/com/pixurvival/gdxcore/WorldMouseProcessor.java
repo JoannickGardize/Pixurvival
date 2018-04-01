@@ -9,6 +9,7 @@ import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
 
 import lombok.AllArgsConstructor;
@@ -21,14 +22,25 @@ public class WorldMouseProcessor extends InputAdapter {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer != null && button == Input.Buttons.RIGHT && myPlayer.getActivity() == Activity.NONE) {
+		if (myPlayer == null) {
+			return false;
+		}
+		if (button == Input.Buttons.RIGHT && myPlayer.getActivity() == Activity.NONE) {
 			MapStructure structure = findClosest(screenX, screenY, 1);
 			if (structure instanceof HarvestableStructure && structure.canInteract(myPlayer)) {
 				PixurvivalGame.getClient()
 						.sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 			}
+		} else if (button == Input.Buttons.LEFT && myPlayer.getInventory().getHeldItemStack() != null) {
+			DropItemRequest request = new DropItemRequest((float) (getActionAngle(myPlayer, screenX, screenY)));
+			PixurvivalGame.getClient().sendAction(request);
 		}
 		return true;
+	}
+
+	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {
+		Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(screenX, screenY));
+		return player.getPosition().angleTo(worldPoint.x, worldPoint.y);
 	}
 
 	private MapStructure findClosest(int screenX, int screenY, int radius) {

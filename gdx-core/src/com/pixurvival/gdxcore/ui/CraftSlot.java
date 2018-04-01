@@ -20,10 +20,9 @@ public class CraftSlot extends Button implements InventoryListener {
 		super(PixurvivalGame.getSkin());
 		this.itemCraft = itemCraft;
 		itemStackDrawer = new ItemStackDrawer(this, 2);
-		System.out.println(itemCraft.getResult().getItem());
 		itemStackDrawer.setItemStack(new ItemStack(itemCraft.getResult().getItem()));
 		PixurvivalGame.getClient().getMyInventory().addListener(this);
-		slotChanged(PixurvivalGame.getClient().getMyInventory(), 0);
+		slotChanged(PixurvivalGame.getClient().getMyInventory(), 0, null, null);
 		addListener(new CraftSlotInputListener(itemCraft));
 	}
 
@@ -35,8 +34,8 @@ public class CraftSlot extends Button implements InventoryListener {
 	}
 
 	@Override
-	public void slotChanged(Inventory inventory, int slotIndex) {
-		if (inventory.fastContainsAll(itemCraft.getRecipes())) {
+	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
+		if (inventory.contains(itemCraft.getRecipes())) {
 			setColor(Color.WHITE);
 		} else {
 			setColor(UNCRAFTABLE_COLOR);

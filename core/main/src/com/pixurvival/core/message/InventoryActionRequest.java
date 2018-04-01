@@ -16,8 +16,8 @@ public class InventoryActionRequest {
 
 	@Getter
 	public static enum Type {
-		NORMAL_CLICK_MY_INVENTORY,
-		SPECIAL_CLICK_MY_INVENTORY;
+		SWAP_CLICK_MY_INVENTORY,
+		SPLIT_CLICK_MY_INVENTORY;
 	}
 
 	private Type type;

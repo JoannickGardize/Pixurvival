@@ -7,19 +7,28 @@ import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class PlayerInventory extends Inventory {
 
-	private @Getter @Setter ItemStack heldItemStack;
+	public static final int HELD_ITEM_STACK_INDEX = -1;
+
+	private @Getter ItemStack heldItemStack;
 
 	public PlayerInventory(int size) {
 		super(size);
 	}
 
+	public void setHeldItemStack(ItemStack itemStack) {
+		if (!ItemStack.equals(itemStack, heldItemStack)) {
+			ItemStack previous = heldItemStack;
+			heldItemStack = itemStack;
+			notifySlotChanged(HELD_ITEM_STACK_INDEX, previous, itemStack);
+		}
+	}
+
 	public void set(PlayerInventory other) {
-		super.set(other);
 		heldItemStack = other.heldItemStack;
+		super.set(other);
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerInventory> {

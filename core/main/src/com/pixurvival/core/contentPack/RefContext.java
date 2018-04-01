@@ -6,9 +6,9 @@ import java.util.Map;
 import javax.xml.bind.Unmarshaller;
 
 import com.pixurvival.core.contentPack.item.ItemCraft;
-import com.pixurvival.core.contentPack.item.ItemQuantity;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.item.ItemRewardEntry;
+import com.pixurvival.core.contentPack.item.ItemStackXmlEntry;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
@@ -49,7 +49,7 @@ public class RefContext {
 		unmarshaller.setAdapter(new ImageReferenceAdapter(this));
 		unmarshaller.setAdapter(new ItemRewardEntry.Adapter(this));
 		unmarshaller.setAdapter(new StructureGeneratorEntry.Adapter(this));
-		unmarshaller.setAdapter(new ItemQuantity.Adapter(this));
+		unmarshaller.setAdapter(new ItemStackXmlEntry.Adapter(this));
 	}
 
 	@SuppressWarnings("unchecked")

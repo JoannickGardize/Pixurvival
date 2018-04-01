@@ -22,7 +22,9 @@ import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.map.Position;
 import com.pixurvival.core.message.CraftItemRequest;
+import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.InteractStructureRequest;
@@ -151,6 +153,9 @@ public class ClientGame {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
+				if (getMyPlayer() != null) {
+					getMyPlayer().apply(request);
+				}
 			} else {
 				getMyPlayer().apply(request);
 			}
@@ -177,9 +182,22 @@ public class ClientGame {
 		}
 	}
 
+	public void sendAction(DropItemRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+			} else {
+				getMyPlayer().apply(request);
+			}
+		}
+	}
+
 	public void update(double deltaTimeMillis) {
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
+			if (getMyPlayer() != null) {
+				getMyPlayer().setInventory(myInventory);
+			}
 			world.update(deltaTimeMillis);
 			// timeRequestTimer += deltaTimeMillis;
 			// if (timeRequestTimer >= timeRequestFrequencyMillis) {
@@ -187,9 +205,9 @@ public class ClientGame {
 			// client.sendUDP(new TimeRequest(System.currentTimeMillis()));
 			// }
 			if (world.getType() == World.Type.CLIENT) {
-				MissingChunk[] missingChunks = world.getMap().pollMissingChunks();
+				Position[] missingChunks = world.getMap().pollMissingChunks();
 				if (missingChunks != null) {
-					client.sendUDP(missingChunks);
+					client.sendUDP(new MissingChunk(missingChunks));
 				}
 			}
 		}

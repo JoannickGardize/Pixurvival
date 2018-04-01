@@ -84,8 +84,6 @@ public class WorldScreen implements Screen {
 	public void resize(int width, int height) {
 		worldStage.getViewport().update(width, height);
 		hudStage.getViewport().update(width, height, true);
-		// table.setWidth(hudStage.getViewport().getWorldWidth());
-		// table.setHeight(hudStage.getViewport().getWorldHeight());
 	}
 
 	@Override

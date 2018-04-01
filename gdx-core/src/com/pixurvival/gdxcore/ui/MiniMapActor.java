@@ -19,6 +19,7 @@ import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.textures.ColorTextures;
 
 public class MiniMapActor extends Actor implements TiledMapListener {
 
@@ -32,10 +33,7 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 	public MiniMapActor(long myPlayerId) {
 		this.myPlayerId = myPlayerId;
 		PixurvivalGame.getWorld().getMap().addListener(this);
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGB888);
-		pixmap.drawPixel(0, 0, Color.rgb888(Color.BLACK));
-		background = new Texture(pixmap);
-		background.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background = ColorTextures.get(Color.BLACK);
 		mapElement = new Texture(Gdx.files.internal("map_element.png"), true);
 		mapElement.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
 	}
@@ -85,7 +83,7 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 		}
 		Texture texture = new Texture(pixmap, true);
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		chunkTextures.put(chunk.getPosition().copy(), texture);
+		chunkTextures.put(chunk.getPosition(), texture);
 	}
 
 	@Override

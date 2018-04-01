@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,11 +20,11 @@ public class ItemCraft extends NamedElement {
 	private double duration;
 
 	@XmlElement(name = "result")
-	@XmlJavaTypeAdapter(ItemQuantity.Adapter.class)
-	private ItemQuantity result;
+	@XmlJavaTypeAdapter(ItemStackXmlEntry.Adapter.class)
+	private ItemStack result;
 
 	@XmlElementWrapper(name = "recipes")
 	@XmlElement(name = "recipe")
-	@XmlJavaTypeAdapter(ItemQuantity.Adapter.class)
-	private ItemQuantity[] recipes;
+	@XmlJavaTypeAdapter(ItemStackXmlEntry.Adapter.class)
+	private ItemStack[] recipes;
 }

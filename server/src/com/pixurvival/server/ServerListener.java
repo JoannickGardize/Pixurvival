@@ -11,8 +11,10 @@ import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.CompressedChunk;
+import com.pixurvival.core.map.Position;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CraftItemRequest;
+import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
@@ -69,6 +71,13 @@ class ServerListener extends Listener {
 				entity.apply((CraftItemRequest) m.getObject());
 			}
 		});
+		messageActions.put(DropItemRequest.class, m -> {
+			PlayerConnection connection = m.getConnection();
+			PlayerEntity entity = connection.getPlayerEntity();
+			if (entity != null) {
+				entity.apply((DropItemRequest) m.getObject());
+			}
+		});
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
@@ -80,12 +89,12 @@ class ServerListener extends Listener {
 			m.getConnection().sendUDP(
 					new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis()));
 		});
-		messageActions.put(MissingChunk[].class, m -> {
+		messageActions.put(MissingChunk.class, m -> {
 			PlayerEntity p = m.getConnection().getPlayerEntity();
 			chunksToSend.clear();
 			TiledMap map = p.getWorld().getMap();
-			for (MissingChunk missingChunk : (MissingChunk[]) m.getObject()) {
-				Chunk chunk = map.chunkAt(missingChunk);
+			for (Position position : ((MissingChunk) m.getObject()).getPositions()) {
+				Chunk chunk = map.chunkAt(position);
 				if (chunk != null) {
 					chunksToSend.add(chunk.getCompressed());
 				}

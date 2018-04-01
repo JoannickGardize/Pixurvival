@@ -86,6 +86,10 @@ public class Vector2 {
 		return Math.atan2(other.y - y, other.x - x);
 	}
 
+	public double angleTo(double x, double y) {
+		return Math.atan2(y - this.y, x - this.x);
+	}
+
 	public double distanceSquared(Vector2 v) {
 		double dx = x - v.x;
 		double dy = y - v.y;

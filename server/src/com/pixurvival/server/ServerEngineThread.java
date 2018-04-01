@@ -9,15 +9,18 @@ import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.message.HarvestableStructureUpdate;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class ServerEngineThread extends EngineThread {
 
 	private @NonNull ServerGame game;
 	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
 	private List<WorldSession> worldSessions = new ArrayList<>();
+
+	public ServerEngineThread(ServerGame game) {
+		super("Main Server Thread");
+		this.game = game;
+	}
 
 	public void add(WorldSession worldSession) {
 		worldSessions.add(worldSession);
