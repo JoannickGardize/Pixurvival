@@ -43,17 +43,22 @@ public class ServerEngineThread extends EngineThread {
 						p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
 						if (p.isInventoryChanged()) {
 							p.setInventoryChanged(false);
-							p.sendUDP(p.getPlayerEntity().getInventory());
+							p.sendTCP(p.getPlayerEntity().getInventory());
 						}
 					}
 				});
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
 				sendUpdateTimer = 0;
-				Log.warn("Some frames skipped.");
+				Log.warn("Some frames send skipped.");
 			} else {
 				sendUpdateTimer -= sendUpdateIntervalMillis;
 			}
 		}
+	}
+
+	@Override
+	protected void frameSkipped() {
+		Log.warn("Server frames skipped.");
 	}
 }

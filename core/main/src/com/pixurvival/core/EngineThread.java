@@ -38,6 +38,7 @@ public abstract class EngineThread extends Thread {
 			while (timeToConsume > halfFrameDuration) {
 				update(frameDurationMillis);
 				timeToConsume -= frameDurationMillis;
+				frameSkipped();
 			}
 			long sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
 			if (sleepTime > 0) {
@@ -49,5 +50,8 @@ public abstract class EngineThread extends Thread {
 				}
 			}
 		}
+	}
+
+	protected void frameSkipped() {
 	}
 }

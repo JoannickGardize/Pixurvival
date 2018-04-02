@@ -9,12 +9,15 @@ import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
+import lombok.Getter;
+
 public class CraftSlot extends Button implements InventoryListener {
 
 	private static final Color UNCRAFTABLE_COLOR = new Color(0.8f, 0.3f, 0.3f, 1);
 
 	private ItemStackDrawer itemStackDrawer;
-	private ItemCraft itemCraft;
+	private @Getter ItemCraft itemCraft;
+	private boolean available = false;
 
 	public CraftSlot(ItemCraft itemCraft) {
 		super(PixurvivalGame.getSkin());
@@ -37,6 +40,7 @@ public class CraftSlot extends Button implements InventoryListener {
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
 		if (inventory.contains(itemCraft.getRecipes())) {
 			setColor(Color.WHITE);
+
 		} else {
 			setColor(UNCRAFTABLE_COLOR);
 		}

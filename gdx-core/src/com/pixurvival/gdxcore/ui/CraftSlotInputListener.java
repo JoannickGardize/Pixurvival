@@ -33,4 +33,11 @@ public class CraftSlotInputListener extends InputListener {
 		}
 		return true;
 	}
+
+	@Override
+	public boolean mouseMoved(InputEvent event, float x, float y) {
+		ItemCraftTooltip.getInstance().setVisible(true);
+		ItemCraftTooltip.getInstance().setItemCraft(itemCraft);
+		return true;
+	}
 }

@@ -59,7 +59,7 @@ public class ClientGame {
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
 		// TODO enlever lag simulation
-		client.addListener(new Listener.LagListener(100, 150, clientListener));
+		client.addListener(new Listener.LagListener(40, 50, clientListener));
 	}
 
 	public void addListener(ClientGameListener listener) {

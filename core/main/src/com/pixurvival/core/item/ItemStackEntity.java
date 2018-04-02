@@ -76,12 +76,14 @@ public class ItemStackEntity extends Entity {
 	public void update() {
 		switch (state) {
 		case INHIBITED:
+			setForward(false);
 			if (this.distanceSquared(magnetTarget) > INHIBITION_DISTANCE * INHIBITION_DISTANCE) {
 				state = State.NORMAL;
 				magnetTarget = null;
 			}
 			break;
 		case NORMAL:
+			setForward(false);
 			if (getWorld().isServer()) {
 				getWorld().getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
 					if (distanceSquared(p) <= MAGNET_DISTANCE * MAGNET_DISTANCE) {

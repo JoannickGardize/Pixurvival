@@ -11,6 +11,7 @@ import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
+import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 
 import lombok.AllArgsConstructor;
 
@@ -36,6 +37,12 @@ public class WorldMouseProcessor extends InputAdapter {
 			PixurvivalGame.getClient().sendAction(request);
 		}
 		return true;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		ItemCraftTooltip.getInstance().setVisible(false);
+		return false;
 	}
 
 	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {

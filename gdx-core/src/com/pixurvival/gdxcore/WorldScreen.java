@@ -14,6 +14,7 @@ import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
+import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 
 import lombok.Getter;
@@ -47,6 +48,7 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(inventoryUI);
 		hudStage.addActor(new CraftUI());
 		hudStage.addActor(heldItemStackActor);
+		hudStage.addActor(ItemCraftTooltip.getInstance());
 	}
 
 	@Override
