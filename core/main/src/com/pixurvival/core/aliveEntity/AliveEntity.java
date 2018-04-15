@@ -10,8 +10,13 @@ import lombok.Setter;
 @Setter
 public abstract class AliveEntity extends Entity implements Damageable {
 
-	private double health = getMaxHealth();
+	private double health;
 	private double aimingAngle;
+
+	@Override
+	public void initialize() {
+		health = getMaxHealth();
+	}
 
 	@Override
 	public void takeDamage(double amount) {

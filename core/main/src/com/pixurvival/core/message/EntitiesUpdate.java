@@ -18,7 +18,7 @@ public class EntitiesUpdate {
 	private @Setter long worldId;
 	private @Setter int length;
 	private ByteBuffer byteBuffer = ByteBuffer.allocate(4096);
-	private @Setter HarvestableStructureUpdate[] structureUpdates;
+	private @Setter StructureUpdate[] structureUpdates;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EntitiesUpdate> {
 
@@ -33,7 +33,7 @@ public class EntitiesUpdate {
 			} else {
 				output.writeShort(object.structureUpdates.length);
 				for (int i = 0; i < object.structureUpdates.length; i++) {
-					kryo.writeObject(output, object.structureUpdates[i]);
+					kryo.writeClassAndObject(output, object.structureUpdates[i]);
 				}
 			}
 		}
@@ -65,14 +65,14 @@ public class EntitiesUpdate {
 			}
 		}
 
-		private HarvestableStructureUpdate[] readStructureUpdates(Kryo kryo, Input input) {
+		private StructureUpdate[] readStructureUpdates(Kryo kryo, Input input) {
 			short length = input.readShort();
 			if (length == -1) {
 				return null;
 			}
-			HarvestableStructureUpdate[] result = new HarvestableStructureUpdate[length];
+			StructureUpdate[] result = new StructureUpdate[length];
 			for (int i = 0; i < length; i++) {
-				HarvestableStructureUpdate hs = kryo.readObject(input, HarvestableStructureUpdate.class);
+				StructureUpdate hs = (StructureUpdate) kryo.readClassAndObject(input);
 				result[i] = hs;
 			}
 			return result;

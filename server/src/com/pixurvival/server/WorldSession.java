@@ -24,7 +24,7 @@ public class WorldSession implements TiledMapListener {
 	}
 
 	@Override
-	public void chunkAdded(Chunk chunk) {
+	public void chunkLoaded(Chunk chunk) {
 	}
 
 	@Override
@@ -40,5 +40,23 @@ public class WorldSession implements TiledMapListener {
 				.toArray(new HarvestableStructureUpdate[structureUpdates.size()]);
 		structureUpdates.clear();
 		return result;
+	}
+
+	@Override
+	public void structureAdded(MapStructure mapStructure) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void structureRemoved(MapStructure mapStructure) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void chunkUnloaded(Chunk chunk) {
+		// TODO Auto-generated method stub
+
 	}
 }

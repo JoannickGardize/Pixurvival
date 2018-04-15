@@ -9,7 +9,8 @@ import com.pixurvival.core.util.BeanUtils;
 @XmlJavaTypeAdapter(ItemTypeAdapter.class)
 public enum ItemType {
 	RESOURCE,
-	EQUIPABLE,
+	CLOTHING,
+	ACCESSORY,
 	EDIBLE,
 	MELEE_WEAPON,
 	RANGED_WEAPON,

@@ -11,22 +11,30 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.message.HarvestableStructureUpdate;
+import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
+import lombok.Synchronized;
 
 public class TiledMap {
 
 	private List<Position> tmpMissingChunks = new ArrayList<>();
 	private List<TiledMapListener> listeners = new ArrayList<>();
 	private List<Chunk> newChunks = new ArrayList<>();
+	private List<Chunk> toRemoveChunks = new ArrayList<>();
 
 	@Getter
 	private World world;
 
 	private MapTile outsideTile;
 	private int chunkDistance;
+	@Getter
+	private MapTile[] mapTilesById;
+
+	@Getter
+	private TiledMapLimits limits = new TiledMapLimits();
 
 	private Map<Position, Chunk> chunks = new HashMap<>();
 
@@ -39,6 +47,12 @@ public class TiledMap {
 		});
 		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE
 				: GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
+		List<Tile> tilesById = world.getContentPack().getTilesById();
+		mapTilesById = new MapTile[tilesById.size()];
+		for (int i = 0; i < tilesById.size(); i++) {
+			mapTilesById[i] = new EmptyTile(tilesById.get(i));
+		}
+		addListener(limits);
 	}
 
 	public void addListener(TiledMapListener listener) {
@@ -66,15 +80,23 @@ public class TiledMap {
 		newChunks.add(chunk);
 	}
 
+	public void removeChunk(Chunk chunk) {
+		toRemoveChunks.add(chunk);
+	}
+
 	public void setChunk(CompressedChunk compressed) {
-		Chunk chunk = compressed.buildChunk(world.getChunkSupplier().getMapTilesById(),
-				world.getContentPack().getStructuresById());
+		Chunk chunk = compressed.buildChunk();
 		insertChunk(chunk);
 	}
 
 	private void insertChunk(Chunk chunk) {
 		chunks.put(chunk.getPosition(), chunk);
-		listeners.forEach(l -> l.chunkAdded(chunk));
+		listeners.forEach(l -> l.chunkLoaded(chunk));
+	}
+
+	private void unloadChunk(Chunk chunk) {
+		chunks.remove(chunk.getPosition());
+		listeners.forEach(l -> l.chunkUnloaded(chunk));
 	}
 
 	public Chunk chunkAt(double x, double y) {
@@ -96,49 +118,60 @@ public class TiledMap {
 		synchronized (this) {
 			newChunks.forEach(c -> insertChunk(c));
 			newChunks.clear();
+			toRemoveChunks.forEach(c -> unloadChunk(c));
+			toRemoveChunks.clear();
 		}
 		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
 			PlayerEntity player = (PlayerEntity) p;
 			Position chunkPosition = chunkPosition(p.getPosition());
-			boolean chunkChanged = false;
-			if (player.getChunkPosition() == null) {
-				chunkChanged = true;
-				player.setChunkPosition(chunkPosition);
-			} else {
-				chunkChanged = !player.getChunkPosition().equals(chunkPosition);
-			}
-			if (chunkChanged) {
-				player.setChunkPosition(chunkPosition);
-				tmpMissingChunks.clear();
-				for (int x = chunkPosition.getX() - chunkDistance; x <= chunkPosition.getX() + chunkDistance; x++) {
-					for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
-						Position position = new Position(x, y);
-						if (!chunks.containsKey(position)) {
-							chunks.put(position, null);
-							if (world.isServer()) {
-								ChunkManager.getInstance().requestChunk(this, position);
-							} else {
-								tmpMissingChunks.add(position);
-							}
+			// boolean chunkChanged = false;
+			// if (player.getChunkPosition() == null) {
+			// chunkChanged = true;
+			// player.setChunkPosition(chunkPosition);
+			// } else {
+			// chunkChanged = !player.getChunkPosition().equals(chunkPosition);
+			// }
+			// if (chunkChanged) {
+			player.setChunkPosition(chunkPosition);
+			for (int x = chunkPosition.getX() - chunkDistance; x <= chunkPosition.getX() + chunkDistance; x++) {
+				for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
+					Position position = new Position(x, y);
+					if (!chunks.containsKey(position)) {
+						// Putting the position key is pretty important, it prevent the chunk being
+						// requested every frame until it is present.
+						chunks.put(position, null);
+						ChunkManager.getInstance().requestChunk(this, position);
+					} else {
+						Chunk chunk = chunks.get(position);
+						if (chunk != null) {
+							chunk.check();
 						}
 					}
 				}
 			}
+			// }
 		});
+
 	}
 
-	public void applyUpdate(HarvestableStructureUpdate[] structureUpdates) {
+	public void applyUpdate(StructureUpdate[] structureUpdates) {
 		if (structureUpdates == null) {
 			return;
 		}
-		for (HarvestableStructureUpdate structureUpdate : structureUpdates) {
-			MapTile mapTile = tileAt(structureUpdate.getX(), structureUpdate.getY());
-			if (mapTile instanceof TileAndStructure) {
-				((HarvestableStructure) mapTile.getStructure()).setHarvested(structureUpdate.isHarvested());
-			}
+		for (StructureUpdate structureUpdate : structureUpdates) {
+			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
+			chunk.applyUpdate(structureUpdate);
 		}
 	}
 
+	@Synchronized("tmpMissingChunks")
+	public void addMissingChunk(Position position) {
+		synchronized (tmpMissingChunks) {
+			tmpMissingChunks.add(position);
+		}
+	}
+
+	@Synchronized("tmpMissingChunks")
 	public Position[] pollMissingChunks() {
 		if (tmpMissingChunks.isEmpty()) {
 			return null;
@@ -147,6 +180,10 @@ public class TiledMap {
 			tmpMissingChunks.clear();
 			return result;
 		}
+	}
+
+	public int chunkCount() {
+		return chunks.size();
 	}
 
 	public boolean collide(Entity e) {

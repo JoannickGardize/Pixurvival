@@ -1,5 +1,8 @@
 package com.pixurvival.core;
 
+import com.pixurvival.core.util.MathUtils;
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +13,8 @@ public abstract class EngineThread extends Thread {
 	private boolean running = true;
 	private double frameDurationMillis = 1000.0 / 30;
 	private int maxUpdatePerFrame = 5;
+
+	private @Setter(AccessLevel.NONE) double load;
 
 	public EngineThread(String name) {
 		super(name);
@@ -34,11 +39,11 @@ public abstract class EngineThread extends Thread {
 			lastUpdate = now;
 			if (timeToConsume > maxUpdatePerFrame * frameDurationMillis) {
 				timeToConsume = maxUpdatePerFrame * frameDurationMillis;
+				frameSkipped();
 			}
 			while (timeToConsume > halfFrameDuration) {
 				update(frameDurationMillis);
 				timeToConsume -= frameDurationMillis;
-				frameSkipped();
 			}
 			long sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
 			if (sleepTime > 0) {
@@ -49,6 +54,8 @@ public abstract class EngineThread extends Thread {
 					running = false;
 				}
 			}
+			double currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;
+			load = MathUtils.linearInterpolate(load, currentLoad, MathUtils.clamp(0.7, 0, 1));
 		}
 	}
 

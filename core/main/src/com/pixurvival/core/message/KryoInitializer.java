@@ -51,6 +51,8 @@ public class KryoInitializer {
 		register(kryo, CompressedChunk[].class);
 		register(kryo, InteractStructureRequest.class);
 		register(kryo, HarvestableStructureUpdate.class);
+		register(kryo, AddStructureUpdate.class);
+		register(kryo, RemoveStructureUpdate.class);
 		register(kryo, CraftItemRequest.class);
 		register(kryo, DropItemRequest.class);
 	}

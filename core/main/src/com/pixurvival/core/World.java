@@ -1,9 +1,11 @@
 package com.pixurvival.core;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -13,6 +15,7 @@ import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.EntitiesUpdate;
+import com.pixurvival.core.util.FileUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,7 +39,6 @@ public class World {
 	private static long nextId = 0;
 	private static Map<Long, World> worlds = new HashMap<>();
 	private @Getter static ContentPack currentContentPack;
-
 	private Type type;
 	private Time time = new Time();
 	private TiledMap map;
@@ -44,10 +46,12 @@ public class World {
 	private Random random = new Random();
 	private ActionTimerManager actionTimerManager = new ActionTimerManager(this);
 	private long id;
+	private UUID uid;
 	private long previousUpdateId = -1;
 	private EntitiesUpdate entitiesUpdate = new EntitiesUpdate();
 	private ContentPack contentPack;
 	private ChunkSupplier chunkSupplier;
+	private File saveDirectory;
 
 	private World(long id, Type type, ContentPack contentPack) {
 		this.id = id;
@@ -56,6 +60,10 @@ public class World {
 		entitiesUpdate.setWorldId(id);
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get("default"), new Random().nextLong());
+		uid = UUID.randomUUID();
+		saveDirectory = new File("worldSaves/" + uid);
+		FileUtils.delete(saveDirectory);
+		saveDirectory.mkdirs();
 	}
 
 	public static World getWorld(long id) {
@@ -98,7 +106,6 @@ public class World {
 	public void update(double deltaTimeMillis) {
 		EntitiesUpdate entitiesUpdate = this.entitiesUpdate;
 		if (type != Type.SERVER && entitiesUpdate.getUpdateId() > previousUpdateId) {
-
 			entityPool.applyUpdate(entitiesUpdate.getByteBuffer());
 			previousUpdateId = entitiesUpdate.getUpdateId();
 			map.applyUpdate(entitiesUpdate.getStructureUpdates());

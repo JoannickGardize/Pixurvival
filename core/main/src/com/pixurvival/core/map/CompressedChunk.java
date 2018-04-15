@@ -2,32 +2,26 @@ package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.List;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.util.ByteBuffers;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
 public class CompressedChunk {
 
-	private static ThreadLocal<ByteBuffer> bufferLocal = ThreadLocal.withInitial(() -> {
-		ByteBuffer buffer = ByteBuffer.allocate(4096);
-		buffer.mark();
-		return buffer;
-	});
-
 	private TiledMap map;
-	private byte[] data;
+	private @Getter byte[] data;
 
 	public CompressedChunk(Chunk chunk) {
 		map = chunk.getMap();
-		ByteBuffer buffer = bufferLocal.get();
+		ByteBuffer buffer = ByteBuffers.get();
 		buffer.reset();
 		buffer.putInt(chunk.getPosition().getX());
 		buffer.putInt(chunk.getPosition().getY());
@@ -57,7 +51,7 @@ public class CompressedChunk {
 		data = Arrays.copyOf(buffer.array(), buffer.position());
 	}
 
-	public Chunk buildChunk(MapTile[] tiles, List<Structure> structures) {
+	public Chunk buildChunk() {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int x = buffer.getInt();
 		int y = buffer.getInt();
@@ -66,14 +60,15 @@ public class CompressedChunk {
 		int dataPosition = 0;
 		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
 			byte length = buffer.get();
-			MapTile tile = tiles[buffer.get()];
+			MapTile tile = map.getMapTilesById()[buffer.get()];
 			Arrays.fill(data, dataPosition, dataPosition + length, tile);
 			dataPosition += length;
 		}
 		int structureCount = buffer.getShort();
 		for (int i = 0; i < structureCount; i++) {
-			MapStructure structure = chunk.addStructure(structures.get(buffer.get()), buffer.get() + chunk.getOffsetX(),
-					buffer.get() + chunk.getOffsetY());
+			MapStructure structure = chunk.addStructure(
+					map.getWorld().getContentPack().getStructuresById().get(buffer.get()),
+					buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
 			structure.applyData(buffer.get());
 		}
 		chunk.setCompressed(this);

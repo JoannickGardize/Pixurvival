@@ -42,4 +42,7 @@ public class Structure extends NamedElement {
 	@XmlElement(name = "itemReward")
 	@XmlJavaTypeAdapter(RefAdapter.ItemRewardRefAdapter.class)
 	private ItemReward itemReward;
+
+	@XmlElement(name = "duration")
+	private double duration;
 }

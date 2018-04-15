@@ -7,7 +7,8 @@ import com.pixurvival.core.util.BeanUtils;
 
 @XmlJavaTypeAdapter(StructureType.Adapter.class)
 public enum StructureType {
-	HARVESTABLE;
+	HARVESTABLE,
+	SHORT_LIVED;
 
 	public static class Adapter extends XmlAdapter<String, StructureType> {
 

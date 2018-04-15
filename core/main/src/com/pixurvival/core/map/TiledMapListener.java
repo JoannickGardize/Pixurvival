@@ -2,7 +2,13 @@ package com.pixurvival.core.map;
 
 public interface TiledMapListener {
 
-	void chunkAdded(Chunk chunk);
+	void chunkLoaded(Chunk chunk);
+
+	void chunkUnloaded(Chunk chunk);
 
 	void structureChanged(MapStructure mapStructure);
+
+	void structureAdded(MapStructure mapStructure);
+
+	void structureRemoved(MapStructure mapStructure);
 }

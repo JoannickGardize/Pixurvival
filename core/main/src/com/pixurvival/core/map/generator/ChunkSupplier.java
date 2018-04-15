@@ -1,20 +1,14 @@
 package com.pixurvival.core.map.generator;
 
-import java.util.List;
 import java.util.Random;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.EmptyTile;
-import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
-
-import lombok.Getter;
 
 public class ChunkSupplier {
 
@@ -22,19 +16,13 @@ public class ChunkSupplier {
 	private MapGenerator mapGenerator;
 	private long seed;
 
-	@Getter
-	private MapTile[] mapTilesById;
-
 	public ChunkSupplier(World world, MapGenerator mapGenerator, long seed) {
 		map = world.getMap();
-		List<Tile> tilesById = world.getContentPack().getTilesById();
+
 		mapGenerator.initialize(seed);
 		this.mapGenerator = mapGenerator;
 		this.seed = seed;
-		mapTilesById = new MapTile[tilesById.size()];
-		for (int i = 0; i < tilesById.size(); i++) {
-			mapTilesById[i] = new EmptyTile(tilesById.get(i));
-		}
+
 	}
 
 	public Chunk get(int x, int y) {
@@ -48,8 +36,10 @@ public class ChunkSupplier {
 		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
 			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
 				chunk.set(cx, cy,
-						mapTilesById[mapGenerator.getTileAt(chunk.getPosition().getX() * GameConstants.CHUNK_SIZE + cx,
-								chunk.getPosition().getY() * GameConstants.CHUNK_SIZE + cy).getId()]);
+						map.getMapTilesById()[mapGenerator
+								.getTileAt(chunk.getPosition().getX() * GameConstants.CHUNK_SIZE + cx,
+										chunk.getPosition().getY() * GameConstants.CHUNK_SIZE + cy)
+								.getId()]);
 			}
 		}
 	}
@@ -65,25 +55,14 @@ public class ChunkSupplier {
 							y * GameConstants.CHUNK_SIZE + cy, chunkRandom);
 					if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth()
 							&& cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
-							&& !hasStructure(chunk, cx, cy, structure.getDimensions().getWidth(),
+							&& chunk.isEmptyLocal(cx, cy, structure.getDimensions().getWidth(),
 									structure.getDimensions().getHeight())) {
 						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx,
-								y * GameConstants.CHUNK_SIZE + cy);
+								y * GameConstants.CHUNK_SIZE + cy, false);
 					}
 				}
 			}
 		}
-	}
-
-	private boolean hasStructure(Chunk chunk, int x, int y, int width, int height) {
-		for (int cx = x; cx < x + width; cx++) {
-			for (int cy = y; cy < y + height; cy++) {
-				if (chunk.tileAtLocal(cx, cy) instanceof MapStructure) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 }

@@ -53,17 +53,17 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getHeight());
 		for (double worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
 			for (double worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
-				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(worldX, worldY);
-				if (chunk != null) {
-					Texture texture = chunkTextures.get(chunk.getPosition());
-					if (texture != null) {
-						float drawX = (float) ((chunk.getOffsetX() - worldStartX) / worldViewSize * getWidth())
-								+ getX();
-						float drawY = (float) ((chunk.getOffsetY() - worldStartY) / worldViewSize * getHeight())
-								+ getY();
-						batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
-					}
+				Position position = new Position((int) Math.floor(worldX / GameConstants.CHUNK_SIZE),
+						(int) Math.floor(worldY / GameConstants.CHUNK_SIZE));
+				Texture texture = chunkTextures.get(position);
+				if (texture != null) {
+					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize
+							* getWidth()) + getX();
+					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize
+							* getHeight()) + getY();
+					batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
 				}
+
 			}
 		}
 
@@ -73,7 +73,7 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 	}
 
 	@Override
-	public void chunkAdded(Chunk chunk) {
+	public void chunkLoaded(Chunk chunk) {
 		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
 		for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
 			for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
@@ -87,8 +87,20 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
-		// TODO Auto-generated method stub
+	public void chunkUnloaded(Chunk chunk) {
 
 	}
+
+	@Override
+	public void structureChanged(MapStructure mapStructure) {
+	}
+
+	@Override
+	public void structureAdded(MapStructure mapStructure) {
+	}
+
+	@Override
+	public void structureRemoved(MapStructure mapStructure) {
+	}
+
 }

@@ -24,6 +24,7 @@ public abstract class MapStructure implements Collidable {
 
 	static {
 		mapStructureCreator.put(StructureType.HARVESTABLE, (c, s, x, y) -> new HarvestableStructure(c, s, x, y));
+		mapStructureCreator.put(StructureType.SHORT_LIVED, (c, s, x, y) -> new ShortLivedStructure(c, s, x, y));
 	}
 
 	private Chunk chunk;
@@ -54,6 +55,14 @@ public abstract class MapStructure implements Collidable {
 	@Override
 	public double getHalfHeight() {
 		return definition.getDimensions().getHeight() / 2.0;
+	}
+
+	public int getWidth() {
+		return definition.getDimensions().getWidth();
+	}
+
+	public int getHeight() {
+		return definition.getDimensions().getHeight();
 	}
 
 	public Vector2 getPosition() {

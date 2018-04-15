@@ -2,8 +2,9 @@ package com.pixurvival.core.contentPack.item;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import com.pixurvival.core.item.AccessoryItem;
+import com.pixurvival.core.item.ClothingItem;
 import com.pixurvival.core.item.EdibleItem;
-import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.MeleeWeaponItem;
 import com.pixurvival.core.item.RangedWeaponItem;
@@ -18,8 +19,11 @@ public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 		case EDIBLE:
 			item = new EdibleItem(baseItem.getName());
 			break;
-		case EQUIPABLE:
-			item = new EquipableItem(baseItem.getName());
+		case CLOTHING:
+			item = new ClothingItem(baseItem.getName());
+			break;
+		case ACCESSORY:
+			item = new AccessoryItem(baseItem.getName());
 			break;
 		case MELEE_WEAPON:
 			item = new MeleeWeaponItem(baseItem.getName());

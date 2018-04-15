@@ -3,24 +3,36 @@ package com.pixurvival.core.message;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.MapTile;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class HarvestableStructureUpdate {
+public class HarvestableStructureUpdate extends StructureUpdate {
 
-	private int x;
-	private int y;
 	private boolean harvested;
+
+	public HarvestableStructureUpdate(int x, int y, boolean harvested) {
+		super(x, y);
+		this.harvested = harvested;
+	}
+
+	@Override
+	public void perform(Chunk chunk) {
+		MapTile mapTile = chunk.tileAt(getX(), getY());
+		if (mapTile.getStructure() instanceof HarvestableStructure) {
+			((HarvestableStructure) mapTile.getStructure()).setHarvested(harvested);
+		}
+	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<HarvestableStructureUpdate> {
 
 		@Override
 		public void write(Kryo kryo, Output output, HarvestableStructureUpdate object) {
-			output.writeInt(object.x);
-			output.writeInt(object.y);
+			output.writeInt(object.getX());
+			output.writeInt(object.getY());
 			output.writeBoolean(object.harvested);
 		}
 

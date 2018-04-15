@@ -29,9 +29,13 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private @Setter PlayerInventory inventory;
 
-	private boolean extendedUpdateRequired = false;
 	@Setter
 	private Position chunkPosition;
+
+	private StatSet stats = new StatSet();
+
+	public PlayerEntity() {
+	}
 
 	public void apply(PlayerActionRequest actionRequest) {
 		setMovingAngle(actionRequest.getDirection().getAngle());
@@ -110,9 +114,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		if (getWorld().isServer()) {
 			inventory = new PlayerInventory(getInventorySize());
 		}
+		stats.get(StatType.MAX_HEALTH).addListener(s -> {
+			if (getHealth() > s.getValue()) {
+				setHealth(s.getValue());
+			}
+		});
 	}
 
 	@Override
@@ -127,12 +137,13 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	@Override
 	public double getMaxHealth() {
-		return 100;
+		return stats.valueOf(StatType.MAX_HEALTH);
 	}
 
 	@Override
 	public double getSpeedPotential() {
-		return 10 * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		return stats.valueOf(StatType.SPEED)
+				* getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override
@@ -250,6 +261,5 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			inventory.setSlot(slotIndex, heldItemStack);
 			inventory.setHeldItemStack(currentContent);
 		}
-		extendedUpdateRequired = true;
 	}
 }
