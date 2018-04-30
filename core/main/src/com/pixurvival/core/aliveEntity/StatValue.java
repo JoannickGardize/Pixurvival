@@ -12,7 +12,10 @@ public class StatValue implements StatListener {
 	private StatType type;
 	private float value;
 
+	private float base;
+
 	private List<StatListener> listeners = new ArrayList<>();
+	private float[] equipmentBonuses = new float[PlayerInventory.EQUIPMENT_SIZE];
 
 	public void addListener(StatListener listener) {
 		listeners.add(listener);
@@ -30,10 +33,24 @@ public class StatValue implements StatListener {
 		compute();
 	}
 
+	public void setBase(float base) {
+		if (this.base != base) {
+			this.base = base;
+			compute();
+		}
+	}
+
 	public void setValue(float value) {
 		if (this.value != value) {
 			this.value = value;
-			listeners.forEach(l -> l.changed(this));
+		}
+	}
+
+	public void setEquipmentBonus(int slotIndex, float value) {
+		int index = PlayerInventory.EQUIPMENT_SIZE + 1 + slotIndex;
+		if (equipmentBonuses[index] != value) {
+			equipmentBonuses[index] = value;
+			compute();
 		}
 	}
 
@@ -43,7 +60,14 @@ public class StatValue implements StatListener {
 	}
 
 	private void compute() {
-		value = type.getFormula().apply(statSet);
+		float newValue = base + type.getFormula().apply(statSet);
+		for (int i = 0; i < equipmentBonuses.length; i++) {
+			newValue += equipmentBonuses[i];
+		}
+		if (newValue != value) {
+			value = newValue;
+			listeners.forEach(l -> l.changed(this));
+		}
 	}
 
 }

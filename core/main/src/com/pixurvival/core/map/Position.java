@@ -10,13 +10,13 @@ public class Position {
 	private int x;
 	private int y;
 
-	public boolean insideSquare(Position other, int size) {
+	public boolean insideSquare(Position other, int halfSize) {
 		int dx = Math.abs(x - other.x);
 		int dy = Math.abs(y - other.y);
-		return dx <= size && dy <= size;
+		return dx <= halfSize && dy <= halfSize;
 	}
 
 	public String fileName() {
-		return x + "_" + y;
+		return "c" + x + "_" + y;
 	}
 }

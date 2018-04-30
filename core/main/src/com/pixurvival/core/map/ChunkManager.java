@@ -2,18 +2,17 @@ package com.pixurvival.core.map;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.pixurvival.core.EngineThread;
+import com.pixurvival.core.util.FileUtils;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 public class ChunkManager extends EngineThread {
 
@@ -74,13 +73,18 @@ public class ChunkManager extends EngineThread {
 		}
 	}
 
+	public void stopManaging(TiledMap map) {
+		synchronized (map) {
+			tiledMaps.remove(map);
+		}
+	}
+
 	@Override
 	public void update(double deltaTimeMillis) {
 		supplyChunks();
 		unloadChunks();
 	}
 
-	@SneakyThrows
 	private void supplyChunks() {
 		tiledMaps.values().forEach(entry -> {
 			tmpPositions.clear();
@@ -95,13 +99,13 @@ public class ChunkManager extends EngineThread {
 					if (entry.map.getWorld().isServer()) {
 						Chunk chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
 						tmpChunks.add(chunk);
-					} else {
-						entry.map.addMissingChunk(p);
 					}
 				} else {
 					try {
-						byte[] data = Files.readAllBytes(file.toPath());
-						tmpChunks.add(new CompressedChunk(entry.map, data).buildChunk());
+						byte[] data = FileUtils.readBytes(file);
+						Chunk chunk = new CompressedChunk(entry.map, data).buildChunk();
+						chunk.setFileSync(true);
+						tmpChunks.add(chunk);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -117,26 +121,30 @@ public class ChunkManager extends EngineThread {
 		if (getLoad() < 0.3) {
 			tiledMaps.values().forEach(entry -> {
 				int unloadTry = (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE);
-				for (int i = 0; i < unloadTry; i++) {
-					entry.nextCheckPosition();
-					synchronized (entry.map) {
+				tmpChunks.clear();
+				synchronized (entry.map) {
+					for (int i = 0; i < unloadTry; i++) {
+						entry.nextCheckPosition();
 						Chunk chunk = entry.map.chunkAt(entry.checkPosition);
 						if (chunk != null && chunk.isTimeout()) {
-							CompressedChunk compressedChunk = chunk.getCompressed();
-							try {
-								String fileName = entry.checkPosition.fileName();
-								File file = new File(entry.map.getWorld().getSaveDirectory(), fileName);
-								if (!file.exists()) {
-									Files.write(file.toPath(), compressedChunk.getData());
-									entry.allFiles.put(fileName, file);
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
+							tmpChunks.add(chunk);
 							entry.map.removeChunk(chunk);
 						}
 					}
 				}
+				tmpChunks.forEach(chunk -> {
+					CompressedChunk compressedChunk = chunk.getCompressed();
+					try {
+						String fileName = chunk.getPosition().fileName();
+						File file = new File(entry.map.getWorld().getSaveDirectory(), fileName);
+						if (!file.exists() || !chunk.isFileSync()) {
+							FileUtils.writeBytes(file, compressedChunk.getData());
+							entry.allFiles.put(fileName, file);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
 			});
 		}
 	}

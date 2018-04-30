@@ -19,6 +19,12 @@ public class PlayerInventory extends Inventory {
 	public static final int ACCESSORY1_INDEX = -4;
 	public static final int ACCESSORY2_INDEX = -5;
 
+	public static final int EQUIPMENT_SIZE = 4;
+
+	public static boolean isEquipmentSlot(int index) {
+		return index < -1;
+	}
+
 	private @Getter ItemStack heldItemStack;
 	private @Getter ItemStack hand;
 	private @Getter ItemStack clothing;
@@ -108,11 +114,11 @@ public class PlayerInventory extends Inventory {
 			for (int i = 0; i < length; i++) {
 				inventory.setSlot(i, kryo.readObjectOrNull(input, ItemStack.class));
 			}
-			inventory.heldItemStack = kryo.readObjectOrNull(input, ItemStack.class);
-			inventory.hand = kryo.readObjectOrNull(input, ItemStack.class);
-			inventory.clothing = kryo.readObjectOrNull(input, ItemStack.class);
-			inventory.accessory1 = kryo.readObjectOrNull(input, ItemStack.class);
-			inventory.accessory2 = kryo.readObjectOrNull(input, ItemStack.class);
+			inventory.setHeldItemStack(kryo.readObjectOrNull(input, ItemStack.class));
+			inventory.setHand(kryo.readObjectOrNull(input, ItemStack.class));
+			inventory.setClothing(kryo.readObjectOrNull(input, ItemStack.class));
+			inventory.setAccessory1(kryo.readObjectOrNull(input, ItemStack.class));
+			inventory.setAccessory2(kryo.readObjectOrNull(input, ItemStack.class));
 			return inventory;
 		}
 	}

@@ -1,5 +1,6 @@
 package com.pixurvival.core.map;
 
+import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -74,11 +75,7 @@ public abstract class MapStructure implements Collidable {
 				* GameConstants.MAX_HARVEST_DISTANCE;
 	}
 
-	public byte getData() {
-		return 0;
-	}
+	public abstract void writeData(ByteBuffer buffer);
 
-	public void applyData(byte data) {
-
-	}
+	public abstract void applyData(ByteBuffer buffer);
 }

@@ -9,15 +9,13 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
-import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.message.ContentPackPart;
-import com.pixurvival.core.message.EntitiesUpdate;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.WorldUpdate;
 
 class ClientListener extends Listener {
 
@@ -46,14 +44,6 @@ class ClientListener extends Listener {
 		messageActions.put(PlayerInventory.class, i -> {
 			game.getMyInventory().set((PlayerInventory) i);
 		});
-		messageActions.put(CompressedChunk[].class, c -> {
-			World world = game.getWorld();
-			if (world != null) {
-				for (CompressedChunk compressed : (CompressedChunk[]) c) {
-					world.getMap().setChunk(compressed);
-				}
-			}
-		});
 	}
 
 	@Override
@@ -65,7 +55,7 @@ class ClientListener extends Listener {
 	public void received(Connection connection, Object object) {
 		synchronized (receivedObjects) {
 			Log.debug(object.toString());
-			if (object != null && !(object instanceof EntitiesUpdate)) {
+			if (object != null && !(object instanceof WorldUpdate)) {
 				receivedObjects.add(object);
 			}
 		}

@@ -23,5 +23,4 @@ public enum StatType {
 		this.formula = formula;
 		this.dependencies = dependencies;
 	}
-
 }

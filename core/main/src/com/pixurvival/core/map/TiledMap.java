@@ -16,11 +16,9 @@ import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
-import lombok.Synchronized;
 
 public class TiledMap {
 
-	private List<Position> tmpMissingChunks = new ArrayList<>();
 	private List<TiledMapListener> listeners = new ArrayList<>();
 	private List<Chunk> newChunks = new ArrayList<>();
 	private List<Chunk> toRemoveChunks = new ArrayList<>();
@@ -37,6 +35,8 @@ public class TiledMap {
 	private TiledMapLimits limits = new TiledMapLimits();
 
 	private Map<Position, Chunk> chunks = new HashMap<>();
+
+	private Map<Position, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
 
 	public TiledMap(World world) {
 		this.world = world;
@@ -84,7 +84,7 @@ public class TiledMap {
 		toRemoveChunks.add(chunk);
 	}
 
-	public void setChunk(CompressedChunk compressed) {
+	public void addChunk(CompressedChunk compressed) {
 		Chunk chunk = compressed.buildChunk();
 		insertChunk(chunk);
 	}
@@ -116,23 +116,20 @@ public class TiledMap {
 
 	public void update() {
 		synchronized (this) {
-			newChunks.forEach(c -> insertChunk(c));
-			newChunks.clear();
 			toRemoveChunks.forEach(c -> unloadChunk(c));
 			toRemoveChunks.clear();
+			newChunks.forEach(c -> insertChunk(c));
+			newChunks.clear();
 		}
 		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
 			PlayerEntity player = (PlayerEntity) p;
 			Position chunkPosition = chunkPosition(p.getPosition());
-			// boolean chunkChanged = false;
-			// if (player.getChunkPosition() == null) {
-			// chunkChanged = true;
-			// player.setChunkPosition(chunkPosition);
-			// } else {
-			// chunkChanged = !player.getChunkPosition().equals(chunkPosition);
-			// }
-			// if (chunkChanged) {
-			player.setChunkPosition(chunkPosition);
+			if (!chunkPosition.equals(player.getChunkPosition())) {
+				System.out.println(chunkPosition);
+				player.setChunkPosition(chunkPosition);
+				listeners.forEach(l -> l.playerChangedChunk(player));
+
+			}
 			for (int x = chunkPosition.getX() - chunkDistance; x <= chunkPosition.getX() + chunkDistance; x++) {
 				for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
 					Position position = new Position(x, y);
@@ -149,36 +146,29 @@ public class TiledMap {
 					}
 				}
 			}
-			// }
 		});
 
 	}
 
-	public void applyUpdate(StructureUpdate[] structureUpdates) {
+	public void applyUpdate(long updateId, StructureUpdate[] structureUpdates) {
 		if (structureUpdates == null) {
 			return;
 		}
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
-			chunk.applyUpdate(structureUpdate);
-		}
-	}
-
-	@Synchronized("tmpMissingChunks")
-	public void addMissingChunk(Position position) {
-		synchronized (tmpMissingChunks) {
-			tmpMissingChunks.add(position);
-		}
-	}
-
-	@Synchronized("tmpMissingChunks")
-	public Position[] pollMissingChunks() {
-		if (tmpMissingChunks.isEmpty()) {
-			return null;
-		} else {
-			Position[] result = tmpMissingChunks.toArray(new Position[tmpMissingChunks.size()]);
-			tmpMissingChunks.clear();
-			return result;
+			if (chunk == null) {
+				synchronized (waitingStructureUpdates) {
+					Position position = new Position(structureUpdate.getX(), structureUpdate.getY());
+					List<StructureUpdate> waitingList = waitingStructureUpdates.get(position);
+					if (waitingList == null) {
+						waitingList = new ArrayList<>();
+						waitingStructureUpdates.put(position, waitingList);
+					}
+					waitingList.add(structureUpdate);
+				}
+			} else {
+				structureUpdate.perform(chunk);
+			}
 		}
 	}
 

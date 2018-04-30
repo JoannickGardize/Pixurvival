@@ -50,13 +50,13 @@ public class ServerConsole implements Runnable, ServerGameListener {
 				game.stopServer();
 				running = false;
 			}
-
 		}
 		reader.close();
 	}
 
 	public static void main(String[] args) {
 		new ServerConsole().run();
+		System.exit(0);
 	}
 
 }

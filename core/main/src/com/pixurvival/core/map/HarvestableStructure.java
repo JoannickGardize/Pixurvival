@@ -3,7 +3,6 @@ package com.pixurvival.core.map;
 import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.ActionTimer;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
@@ -29,10 +28,10 @@ public class HarvestableStructure extends MapStructure {
 		harvested = true;
 		getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
 		World world = getChunk().getMap().getWorld();
-		world.getActionTimerManager().add(new ActionTimer(() -> {
+		world.getActionTimerManager().addActionTimer(() -> {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
-		}, world.getTime().getTime() + getDefinition().getRespawnTime().next(world.getRandom())));
+		}, getDefinition().getRespawnTime().next(world.getRandom()));
 		return getDefinition().getItemReward().produce(random);
 	}
 

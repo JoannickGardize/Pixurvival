@@ -16,10 +16,11 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
+import com.pixurvival.core.message.PlayerData;
 
 import lombok.Getter;
 
@@ -67,21 +68,22 @@ public class ServerGame {
 	public void stopServer() {
 		server.stop();
 		server.close();
+		engineThread.setRunning(false);
+		contentPackUploadManager.setRunning(false);
+		ChunkManager.getInstance().setRunning(false);
+		World.getWorlds().forEach(w -> w.unload());
 	}
 
 	public void startTestGame() {
 		World world = World.createServerWorld(selectedContentPack);
-		WorldSession worldSession = new WorldSession(world);
+		GameSession session = new GameSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
-		ItemStackEntity itemStackEntity = new ItemStackEntity(
-				new ItemStack(selectedContentPack.getItems().get("apple")));
-		itemStackEntity.getPosition().set(10, 10);
-		world.getEntityPool().add(itemStackEntity);
+		List<PlayerData> playerDataList = new ArrayList<>();
 		foreachPlayers(playerConnection -> {
-			worldSession.getPlayers().add(playerConnection);
 			PlayerEntity playerEntity = new PlayerEntity();
+			playerEntity.setName(playerConnection.toString());
 			Random random = new Random();
 			world.getEntityPool().add(playerEntity);
 			for (int i = 0; i < 10; i++) {
@@ -93,10 +95,15 @@ public class ServerGame {
 			}
 			playerConnection.setPlayerEntity(playerEntity);
 			playerEntity.getInventory().addListener(playerConnection);
-			playerConnection
-					.sendTCP(new InitializeGame(createWorld, playerEntity.getId(), playerEntity.getInventory()));
+			playerDataList.add(playerEntity.getData());
+			session.addPlayer(playerConnection);
 		});
-		engineThread.add(worldSession);
+		PlayerData[] playerData = playerDataList.toArray(new PlayerData[playerDataList.size()]);
+		foreachPlayers(playerConnection -> {
+			playerConnection.sendTCP(new InitializeGame(createWorld, playerConnection.getPlayerEntity().getId(),
+					playerConnection.getPlayerEntity().getInventory(), playerData));
+		});
+		engineThread.add(session);
 	}
 
 	void notify(Consumer<ServerGameListener> action) {

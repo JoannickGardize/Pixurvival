@@ -29,7 +29,7 @@ public class KryoInitializer {
 		register(kryo, TimeResponse.class);
 		register(kryo, LoginRequest.class);
 		register(kryo, LoginResponse.class);
-		register(kryo, EntitiesUpdate.class);
+		register(kryo, WorldUpdate.class);
 		register(kryo, CreateWorld.class);
 		register(kryo, InitializeGame.class);
 		register(kryo, byte[].class);
@@ -46,7 +46,6 @@ public class KryoInitializer {
 		register(kryo, Inventory.class);
 		register(kryo, PlayerInventory.class);
 		register(kryo, InventoryActionRequest.class);
-		register(kryo, MissingChunk.class);
 		register(kryo, CompressedChunk.class);
 		register(kryo, CompressedChunk[].class);
 		register(kryo, InteractStructureRequest.class);
@@ -55,6 +54,8 @@ public class KryoInitializer {
 		register(kryo, RemoveStructureUpdate.class);
 		register(kryo, CraftItemRequest.class);
 		register(kryo, DropItemRequest.class);
+		register(kryo, PlayerData.class);
+		register(kryo, PlayerData[].class);
 	}
 
 	@SuppressWarnings("unchecked")

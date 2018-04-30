@@ -8,12 +8,7 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.CompressedChunk;
-import com.pixurvival.core.map.Position;
-import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.GameReady;
@@ -21,7 +16,6 @@ import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
@@ -30,10 +24,7 @@ import com.pixurvival.core.message.TimeResponse;
 class ServerListener extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
-	private List<ClientMessage> reportedMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new HashMap<>();
-	private List<CompressedChunk> chunksToSend = new ArrayList<>();
-	private List<Position> unavailablePositions = new ArrayList<>();
 
 	public ServerListener(ServerGame game) {
 		messageActions.put(LoginRequest.class, m -> {
@@ -91,34 +82,10 @@ class ServerListener extends Listener {
 			m.getConnection().sendUDP(
 					new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis()));
 		});
-		messageActions.put(MissingChunk.class, m -> {
-			PlayerEntity p = m.getConnection().getPlayerEntity();
-			chunksToSend.clear();
-			unavailablePositions.clear();
-			TiledMap map = p.getWorld().getMap();
-			System.out.println("ayayaya");
-			for (Position position : ((MissingChunk) m.getObject()).getPositions()) {
-				Chunk chunk = map.chunkAt(position);
-				if (chunk == null
-						|| !p.getChunkPosition().insideSquare(position, GameConstants.PLAYER_CHUNK_VIEW_DISTANCE)) {
-					unavailablePositions.add(position);
-				} else {
-					chunksToSend.add(chunk.getCompressed());
-				}
-			}
-			if (!chunksToSend.isEmpty()) {
-				m.getConnection().sendUDP(chunksToSend.toArray(new CompressedChunk[chunksToSend.size()]));
-			}
-			if (!unavailablePositions.isEmpty()) {
-				reportedMessages.add(new ClientMessage(m.getConnection(),
-						new MissingChunk(unavailablePositions.toArray(new Position[unavailablePositions.size()]))));
-			}
-		});
 	}
 
 	public void consumeReceivedObjects() {
 		synchronized (clientMessages) {
-			reportedMessages.clear();
 			for (ClientMessage clientMessage : clientMessages) {
 				Consumer<ClientMessage> action = messageActions.get(clientMessage.getObject().getClass());
 				if (action != null) {
@@ -126,9 +93,6 @@ class ServerListener extends Listener {
 				}
 			}
 			clientMessages.clear();
-			if (!reportedMessages.isEmpty()) {
-				clientMessages.addAll(reportedMessages);
-			}
 		}
 	}
 

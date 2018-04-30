@@ -7,14 +7,14 @@ import java.util.List;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
-import com.pixurvival.core.message.StructureUpdate;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Chunk {
 
-	private static final int KEEP_ALIVE_TIME = 10_000;
+	private static final int KEEP_ALIVE_MILLIS = 10_000;
 
 	private TiledMap map;
 
@@ -32,6 +32,8 @@ public class Chunk {
 
 	private long lastCheckTimestamp;
 
+	private @Setter boolean fileSync = false;
+
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
 		this.position = new Position(x, y);
@@ -46,11 +48,7 @@ public class Chunk {
 	}
 
 	public boolean isTimeout() {
-		return System.currentTimeMillis() - lastCheckTimestamp >= KEEP_ALIVE_TIME;
-	}
-
-	public void applyUpdate(StructureUpdate structureUpdate) {
-
+		return System.currentTimeMillis() - lastCheckTimestamp >= KEEP_ALIVE_MILLIS;
 	}
 
 	public MapTile tileAtLocal(int x, int y) {
@@ -67,6 +65,7 @@ public class Chunk {
 
 	public void set(int x, int y, MapTile tile) {
 		tiles[y * GameConstants.CHUNK_SIZE + x] = tile;
+		fileSync = false;
 	}
 
 	public MapStructure addStructure(Structure structure, int x, int y) {
@@ -87,6 +86,7 @@ public class Chunk {
 		structures.add(mapStructure);
 		if (notify) {
 			getMap().notifyListeners(l -> l.structureAdded(mapStructure));
+			fileSync = false;
 		}
 		return mapStructure;
 	}
@@ -121,6 +121,7 @@ public class Chunk {
 				}
 			}
 			getMap().notifyListeners(l -> l.structureRemoved(structure));
+			fileSync = false;
 		}
 	}
 

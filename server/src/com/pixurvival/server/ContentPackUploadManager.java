@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class ContentPackUploadManager extends Thread implements ServerGameListener {
@@ -34,7 +35,7 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 
 	private @NonNull ServerGame game;
 	private ContentPackIdentifier[] dependencyList;
-	private boolean running = true;
+	private @Setter boolean running = true;
 
 	private BlockingQueue<RequestEntry> requestQueue = new LinkedBlockingQueue<>();
 

@@ -22,7 +22,6 @@ import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.map.Position;
 import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.GameReady;
@@ -32,7 +31,6 @@ import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.MissingChunk;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 
@@ -195,7 +193,7 @@ public class ClientGame {
 	public void update(double deltaTimeMillis) {
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
-			if (getMyPlayer() != null) {
+			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
 				getMyPlayer().setInventory(myInventory);
 			}
 			world.update(deltaTimeMillis);
@@ -204,12 +202,6 @@ public class ClientGame {
 			// timeRequestTimer -= timeRequestFrequencyMillis;
 			// client.sendUDP(new TimeRequest(System.currentTimeMillis()));
 			// }
-			if (world.getType() == World.Type.CLIENT) {
-				Position[] missingChunks = world.getMap().pollMissingChunks();
-				if (missingChunks != null) {
-					client.sendUDP(new MissingChunk(missingChunks));
-				}
-			}
 		}
 	}
 
@@ -243,6 +235,7 @@ public class ClientGame {
 			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext()));
 			myPlayerId = initGame.getMyPlayerId();
 			myInventory = initGame.getInventory();
+			world.addPlayerData(initGame.getPlayerData());
 			notify(l -> l.initializeGame());
 		} catch (ContentPackException e) {
 			Log.error("Error occured when loading contentPack.", e);

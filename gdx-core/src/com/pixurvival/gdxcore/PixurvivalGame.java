@@ -114,6 +114,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	@Override
 	public void dispose() {
 		assetManager.dispose();
+		if (client.getWorld() != null) {
+			client.getWorld().unload();
+		}
 		super.dispose();
 	}
 

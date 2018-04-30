@@ -16,6 +16,7 @@ import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.PlayerData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,16 +26,18 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private @Setter Activity activity = Activity.NONE;
 
-	private String name;
+	private @Setter String name;
 
-	private @Setter PlayerInventory inventory;
+	private PlayerInventory inventory;
 
 	@Setter
 	private Position chunkPosition;
 
 	private StatSet stats = new StatSet();
 
-	public PlayerEntity() {
+	public void setInventory(PlayerInventory inventory) {
+		this.inventory = inventory;
+		inventory.addListener(stats);
 	}
 
 	public void apply(PlayerActionRequest actionRequest) {
@@ -116,7 +119,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 	public void initialize() {
 		super.initialize();
 		if (getWorld().isServer()) {
-			inventory = new PlayerInventory(getInventorySize());
+			setInventory(new PlayerInventory(getInventorySize()));
 		}
 		stats.get(StatType.MAX_HEALTH).addListener(s -> {
 			if (getHealth() > s.getValue()) {
@@ -165,6 +168,23 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		return 32;
 	}
 
+	public PlayerData getData() {
+		PlayerData data = new PlayerData();
+		data.setId(getId());
+		data.setName(name);
+		data.setStrength(stats.get(StatType.STRENGTH).getBase());
+		data.setAgility(stats.get(StatType.AGILITY).getBase());
+		data.setIntelligence(stats.get(StatType.INTELLIGENCE).getBase());
+		return data;
+	}
+
+	public void applyData(PlayerData data) {
+		name = data.getName();
+		stats.get(StatType.STRENGTH).setBase(data.getStrength());
+		stats.get(StatType.AGILITY).setBase(data.getAgility());
+		stats.get(StatType.INTELLIGENCE).setBase(data.getIntelligence());
+	}
+
 	@Override
 	public void writeUpdate(ByteBuffer buffer) {
 		// normal part
@@ -205,6 +225,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		setForward(buffer.get() == 1 ? true : false);
 		setHealth(buffer.getDouble());
 		setAimingAngle(buffer.getDouble());
+
 		byte activityId = buffer.get();
 		switch (activityId) {
 		case Activity.NONE_ID:

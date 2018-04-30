@@ -15,35 +15,37 @@ public class ServerEngineThread extends EngineThread {
 	private @NonNull ServerGame game;
 	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
-	private List<WorldSession> worldSessions = new ArrayList<>();
+	private List<GameSession> sessions = new ArrayList<>();
 
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
 		this.game = game;
 	}
 
-	public void add(WorldSession worldSession) {
-		worldSessions.add(worldSession);
+	public void add(GameSession worldSession) {
+		sessions.add(worldSession);
 	}
 
 	@Override
 	public void update(double deltaTimeMillis) {
 		game.consumeReceivedObjects();
-		worldSessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
+		sessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
 		sendUpdateTimer += deltaTimeMillis;
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
-			worldSessions.forEach(w -> {
-				w.getWorld().incrementUpdateId();
-				HarvestableStructureUpdate[] structureUpdates = w.consumeStructureUpdates();
-				w.getPlayers().forEach(p -> {
-					PlayerEntity playerEntity = p.getPlayerEntity();
-					if (p.isGameReady() && playerEntity != null) {
-						playerEntity.getWorld().writeEntitiesUpdateFor(playerEntity);
-						p.getPlayerEntity().getWorld().getEntitiesUpdate().setStructureUpdates(structureUpdates);
-						p.sendUDP(p.getPlayerEntity().getWorld().getEntitiesUpdate());
-						if (p.isInventoryChanged()) {
-							p.setInventoryChanged(false);
-							p.sendTCP(p.getPlayerEntity().getInventory());
+			sessions.forEach(ps -> {
+				ps.getWorld().incrementUpdateId();
+				HarvestableStructureUpdate[] structureUpdates = ps.consumeStructureUpdates();
+				ps.foreachPlayers(p -> {
+					PlayerConnection connection = p.getConnection();
+					PlayerEntity playerEntity = connection.getPlayerEntity();
+					if (connection.isGameReady() && playerEntity != null) {
+						playerEntity.getWorld().writeWorldUpdateFor(playerEntity);
+						playerEntity.getWorld().getWorldUpdate().setStructureUpdates(structureUpdates);
+						playerEntity.getWorld().getWorldUpdate().setCompressedChunks(p.pollChunksToSend());
+						connection.sendUDP(playerEntity.getWorld().getWorldUpdate());
+						if (connection.isInventoryChanged()) {
+							connection.setInventoryChanged(false);
+							connection.sendTCP(playerEntity.getInventory());
 						}
 					}
 				});

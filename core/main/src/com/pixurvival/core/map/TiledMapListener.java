@@ -1,5 +1,7 @@
 package com.pixurvival.core.map;
 
+import com.pixurvival.core.aliveEntity.PlayerEntity;
+
 public interface TiledMapListener {
 
 	void chunkLoaded(Chunk chunk);
@@ -11,4 +13,6 @@ public interface TiledMapListener {
 	void structureAdded(MapStructure mapStructure);
 
 	void structureRemoved(MapStructure mapStructure);
+
+	void playerChangedChunk(PlayerEntity player);
 }

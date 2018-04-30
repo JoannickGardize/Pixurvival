@@ -1,8 +1,11 @@
 package com.pixurvival.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -11,10 +14,13 @@ import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.map.ChunkManager;
+import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
-import com.pixurvival.core.message.EntitiesUpdate;
+import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.FileUtils;
 
 import lombok.AllArgsConstructor;
@@ -48,20 +54,21 @@ public class World {
 	private long id;
 	private UUID uid;
 	private long previousUpdateId = -1;
-	private EntitiesUpdate entitiesUpdate = new EntitiesUpdate();
+	private WorldUpdate worldUpdate = new WorldUpdate();
 	private ContentPack contentPack;
 	private ChunkSupplier chunkSupplier;
 	private File saveDirectory;
+	private List<PlayerData> playerDataList = new ArrayList<>();
 
 	private World(long id, Type type, ContentPack contentPack) {
 		this.id = id;
 		this.type = type;
 		this.contentPack = contentPack;
-		entitiesUpdate.setWorldId(id);
+		worldUpdate.setWorldId(id);
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get("default"), new Random().nextLong());
 		uid = UUID.randomUUID();
-		saveDirectory = new File("worldSaves/" + uid);
+		saveDirectory = new File(GlobalSettings.getSaveDirectory(), uid.toString());
 		FileUtils.delete(saveDirectory);
 		saveDirectory.mkdirs();
 	}
@@ -103,12 +110,34 @@ public class World {
 		return type.isServer();
 	}
 
+	public void addPlayerData(PlayerData[] playerData) {
+		playerDataList.addAll(Arrays.asList(playerData));
+	}
+
 	public void update(double deltaTimeMillis) {
-		EntitiesUpdate entitiesUpdate = this.entitiesUpdate;
-		if (type != Type.SERVER && entitiesUpdate.getUpdateId() > previousUpdateId) {
-			entityPool.applyUpdate(entitiesUpdate.getByteBuffer());
-			previousUpdateId = entitiesUpdate.getUpdateId();
-			map.applyUpdate(entitiesUpdate.getStructureUpdates());
+		WorldUpdate worldUpdate = this.worldUpdate;
+		if (!type.isServer()) {
+			map.applyUpdate(worldUpdate.getUpdateId(), worldUpdate.getStructureUpdates());
+			if (worldUpdate.getCompressedChunks() != null) {
+				for (CompressedChunk compressed : worldUpdate.getCompressedChunks()) {
+					map.addChunk(compressed);
+				}
+			}
+			worldUpdate.setStructureUpdates(null);
+			if (worldUpdate.getUpdateId() > previousUpdateId) {
+				entityPool.applyUpdate(worldUpdate.getByteBuffer());
+				previousUpdateId = worldUpdate.getUpdateId();
+			}
+			if (!playerDataList.isEmpty()) {
+				for (int i = 0; i < playerDataList.size(); i++) {
+					PlayerData playerData = playerDataList.get(i);
+					PlayerEntity e = (PlayerEntity) entityPool.get(EntityGroup.PLAYER, playerData.getId());
+					if (e != null) {
+						e.applyData(playerData);
+						playerDataList.remove(i);
+					}
+				}
+			}
 		}
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();
@@ -117,10 +146,17 @@ public class World {
 	}
 
 	public void incrementUpdateId() {
-		entitiesUpdate.setUpdateId(++previousUpdateId);
+		worldUpdate.setUpdateId(++previousUpdateId);
 	}
 
-	public void writeEntitiesUpdateFor(PlayerEntity player) {
-		entityPool.writeUpdate(player, entitiesUpdate.getByteBuffer());
+	public void writeWorldUpdateFor(PlayerEntity player) {
+		entityPool.writeUpdate(player, worldUpdate.getByteBuffer());
+	}
+
+	public void unload() {
+		synchronized (map) {
+			ChunkManager.getInstance().stopManaging(map);
+			FileUtils.delete(saveDirectory);
+		}
 	}
 }
