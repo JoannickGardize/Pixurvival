@@ -24,6 +24,7 @@ import com.pixurvival.core.contentPack.map.MapGenerators;
 import com.pixurvival.core.contentPack.map.Structures;
 import com.pixurvival.core.contentPack.map.Tiles;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffsets;
 import com.pixurvival.core.contentPack.sprite.Sprites;
 
 public class ContentPacksContext {
@@ -95,7 +96,7 @@ public class ContentPacksContext {
 			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
 					Tiles.class, MapGenerator.class, Items.class, ItemRewards.class, Structures.class,
-					MapGenerators.class, ItemCrafts.class);
+					MapGenerators.class, ItemCrafts.class, EquipmentOffsets.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));

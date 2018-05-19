@@ -30,6 +30,8 @@ public class Chunk {
 
 	private SoftReference<CompressedChunk> compressedChunkRef = new SoftReference<>(null);
 
+	private @Setter long updateTimestamp;
+
 	private long lastCheckTimestamp;
 
 	private @Setter boolean fileSync = false;
@@ -37,6 +39,7 @@ public class Chunk {
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
 		this.position = new Position(x, y);
+		updateTimestamp = map.getWorld().getTime().getTimeMillis();
 		offsetX = position.getX() * GameConstants.CHUNK_SIZE;
 		offsetY = position.getY() * GameConstants.CHUNK_SIZE;
 		tiles = new MapTile[GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE];
@@ -49,6 +52,10 @@ public class Chunk {
 
 	public boolean isTimeout() {
 		return System.currentTimeMillis() - lastCheckTimestamp >= KEEP_ALIVE_MILLIS;
+	}
+
+	public void updateTimestamp() {
+		updateTimestamp = map.getWorld().getTime().getTimeMillis();
 	}
 
 	public MapTile tileAtLocal(int x, int y) {

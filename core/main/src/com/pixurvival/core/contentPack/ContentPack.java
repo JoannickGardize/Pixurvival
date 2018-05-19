@@ -23,6 +23,8 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.map.Tiles;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplates;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffsets;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.sprite.Sprites;
 import com.pixurvival.core.item.Item;
@@ -43,10 +45,12 @@ public class ContentPack {
 	private Structures structures;
 	private MapGenerators mapGenerators;
 	private ItemCrafts itemCrafts;
+	private EquipmentOffsets equipmentOffsets;
 	private List<Tile> tilesById = new ArrayList<>();
 	private List<Item> itemsById = new ArrayList<>();
 	private List<Structure> structuresById = new ArrayList<>();
 	private List<ItemCraft> itemCraftsById = new ArrayList<>();
+	private Constants constants;
 
 	static ContentPack load(RefContext refContext, Unmarshaller unmarshaller, ContentPackFileInfo info)
 			throws ContentPackReadException {
@@ -56,6 +60,9 @@ public class ContentPack {
 			AnimationTemplates animationTemplates = (AnimationTemplates) readXmlFile(unmarshaller, zipFile,
 					"animationTemplates.xml");
 			refContext.addElementSet(AnimationTemplate.class, animationTemplates);
+			contentPack.equipmentOffsets = (EquipmentOffsets) readXmlFile(unmarshaller, zipFile,
+					"equipmentOffsets.xml");
+			refContext.addElementSet(EquipmentOffset.class, contentPack.equipmentOffsets);
 			contentPack.sprites = (Sprites) readXmlFile(unmarshaller, zipFile, "sprites.xml");
 			refContext.addElementSet(SpriteSheet.class, contentPack.sprites);
 			contentPack.tiles = (Tiles) readXmlFile(unmarshaller, zipFile, "tiles.xml");

@@ -95,15 +95,16 @@ public class ChunkManager extends EngineThread {
 			tmpChunks.clear();
 			tmpPositions.forEach(p -> {
 				File file = entry.allFiles.get(p.fileName());
+				Chunk chunk = null;
 				if (file == null) {
 					if (entry.map.getWorld().isServer()) {
-						Chunk chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
+						chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
 						tmpChunks.add(chunk);
 					}
 				} else {
 					try {
 						byte[] data = FileUtils.readBytes(file);
-						Chunk chunk = new CompressedChunk(entry.map, data).buildChunk();
+						chunk = new CompressedChunk(entry.map, data).buildChunk();
 						chunk.setFileSync(true);
 						tmpChunks.add(chunk);
 					} catch (IOException e) {
@@ -111,6 +112,7 @@ public class ChunkManager extends EngineThread {
 					}
 				}
 			});
+
 			synchronized (entry.map) {
 				tmpChunks.forEach(c -> entry.map.addChunk(c));
 			}

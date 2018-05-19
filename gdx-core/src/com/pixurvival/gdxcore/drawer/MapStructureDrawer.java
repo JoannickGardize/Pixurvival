@@ -20,7 +20,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		List<Structure> structures = contentpack.getStructuresById();
 		animationSets = new TextureAnimationSet[structures.size()];
 		for (int i = 0; i < structures.size(); i++) {
-			animationSets[i] = contentPackTextures.getAnimationSet(structures.get(i).getSpriteSheet().getName());
+			animationSets[i] = contentPackTextures.getAnimationSet(structures.get(i).getSpriteSheet());
 		}
 	}
 

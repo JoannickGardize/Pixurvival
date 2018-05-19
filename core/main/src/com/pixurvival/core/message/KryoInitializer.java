@@ -7,13 +7,13 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.aliveEntity.Equipment;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.CompressedChunk;
-import com.pixurvival.core.util.ByteArray2D;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -40,11 +40,10 @@ public class KryoInitializer {
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
 		register(kryo, GameReady.class);
-		register(kryo, ByteArray2D.class);
-		register(kryo, MapPart.class);
 		register(kryo, ItemStack.class);
 		register(kryo, Inventory.class);
 		register(kryo, PlayerInventory.class);
+		register(kryo, Equipment.class);
 		register(kryo, InventoryActionRequest.class);
 		register(kryo, CompressedChunk.class);
 		register(kryo, CompressedChunk[].class);
@@ -56,6 +55,7 @@ public class KryoInitializer {
 		register(kryo, DropItemRequest.class);
 		register(kryo, PlayerData.class);
 		register(kryo, PlayerData[].class);
+		register(kryo, EquipmentActionRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

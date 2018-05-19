@@ -24,6 +24,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.DropItemRequest;
+import com.pixurvival.core.message.EquipmentActionRequest;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.InteractStructureRequest;
@@ -32,6 +33,7 @@ import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.RequestContentPacks;
 
 import lombok.AccessLevel;
@@ -49,6 +51,7 @@ public class ClientGame {
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 	private ContentPack localGamePack;
 	private @Getter PlayerInventory myInventory;
+
 	// private double timeRequestFrequencyMillis = 200;
 	// private double timeRequestTimer = 0;
 
@@ -190,6 +193,19 @@ public class ClientGame {
 		}
 	}
 
+	public void sendAction(EquipmentActionRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+				if (getMyPlayer() != null) {
+					getMyPlayer().apply(request);
+				}
+			} else {
+				getMyPlayer().apply(request);
+			}
+		}
+	}
+
 	public void update(double deltaTimeMillis) {
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
@@ -228,6 +244,12 @@ public class ClientGame {
 
 	public void notifyReady() {
 		client.sendTCP(new GameReady());
+	}
+
+	public void addPlayerData(PlayerData[] data) {
+		if (world != null) {
+			world.addPlayerData(data);
+		}
 	}
 
 	private void initializeGame(InitializeGame initGame) {

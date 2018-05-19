@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import com.pixurvival.core.item.AccessoryItem;
 import com.pixurvival.core.item.ClothingItem;
 import com.pixurvival.core.item.EdibleItem;
+import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.MeleeWeaponItem;
 import com.pixurvival.core.item.RangedWeaponItem;
@@ -38,6 +39,13 @@ public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 			item = new StructureItem(baseItem.getName());
 		default:
 			break;
+		}
+		if (item instanceof EquipableItem) {
+			EquipableItem equipableItem = (EquipableItem) item;
+			equipableItem.setAgilityBonus(baseItem.getAgilityBonus());
+			equipableItem.setIntelligenceBonus(baseItem.getIntelligenceBonus());
+			equipableItem.setStrengthBonus(baseItem.getStrengthBonus());
+			equipableItem.setSpriteSheet(baseItem.getSpriteSheet());
 		}
 		item.setFrame(baseItem.getFrame());
 		item.setMaxStackSize(baseItem.getStackSize());

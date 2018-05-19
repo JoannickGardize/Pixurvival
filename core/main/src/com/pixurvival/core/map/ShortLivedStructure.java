@@ -1,7 +1,10 @@
 package com.pixurvival.core.map;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.message.StructureUpdate;
 
 public class ShortLivedStructure extends MapStructure {
 
@@ -18,6 +21,23 @@ public class ShortLivedStructure extends MapStructure {
 				}
 			}, definition.getDuration());
 		}
+	}
+
+	@Override
+	public void writeData(ByteBuffer buffer) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void applyData(ByteBuffer buffer) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public StructureUpdate getUpdate() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

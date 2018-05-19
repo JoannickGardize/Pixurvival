@@ -4,11 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import com.pixurvival.core.item.EquipableItem;
-import com.pixurvival.core.item.Inventory;
-import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
 
-public class StatSet implements InventoryListener {
+public class StatSet implements EquipmentListener {
 
 	private Map<StatType, StatValue> stats = new EnumMap<>(StatType.class);
 
@@ -17,6 +15,10 @@ public class StatSet implements InventoryListener {
 			stats.put(type, new StatValue(this, type));
 		}
 		stats.values().forEach(v -> v.initialize());
+	}
+
+	public void addListener(StatListener listener) {
+		stats.values().forEach(v -> v.addListener(listener));
 	}
 
 	public float valueOf(StatType type) {
@@ -28,12 +30,13 @@ public class StatSet implements InventoryListener {
 	}
 
 	@Override
-	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
-		if (PlayerInventory.isEquipmentSlot(slotIndex)) {
+	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack,
+			ItemStack newItemStack) {
+		if (newItemStack != null && newItemStack.getItem() instanceof EquipableItem) {
 			EquipableItem equipableItem = (EquipableItem) newItemStack.getItem();
-			stats.get(StatType.STRENGTH).setEquipmentBonus(slotIndex, equipableItem.getStrengthBonus());
-			stats.get(StatType.AGILITY).setEquipmentBonus(slotIndex, equipableItem.getStrengthBonus());
-			stats.get(StatType.INTELLIGENCE).setEquipmentBonus(slotIndex, equipableItem.getStrengthBonus());
+			stats.get(StatType.STRENGTH).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
+			stats.get(StatType.AGILITY).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
+			stats.get(StatType.INTELLIGENCE).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
 		}
 	}
 }

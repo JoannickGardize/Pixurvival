@@ -1,5 +1,6 @@
 package com.pixurvival.core.map;
 
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
@@ -7,6 +8,8 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.message.HarvestableStructureUpdate;
+import com.pixurvival.core.message.StructureUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +30,12 @@ public class HarvestableStructure extends MapStructure {
 		}
 		harvested = true;
 		getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
+		getChunk().updateTimestamp();
 		World world = getChunk().getMap().getWorld();
 		world.getActionTimerManager().addActionTimer(() -> {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
+			getChunk().updateTimestamp();
 		}, getDefinition().getRespawnTime().next(world.getRandom()));
 		return getDefinition().getItemReward().produce(random);
 	}
@@ -41,12 +46,18 @@ public class HarvestableStructure extends MapStructure {
 	}
 
 	@Override
-	public byte getData() {
-		return (byte) (harvested ? 1 : 0);
+	public void writeData(ByteBuffer buffer) {
+		buffer.put(harvested ? (byte) 1 : (byte) 0);
 	}
 
 	@Override
-	public void applyData(byte data) {
-		harvested = data == 1;
+	public void applyData(ByteBuffer buffer) {
+		harvested = buffer.get() == 1;
 	}
+
+	@Override
+	public StructureUpdate getUpdate() {
+		return new HarvestableStructureUpdate(getTileX(), getTileY(), harvested);
+	}
+
 }

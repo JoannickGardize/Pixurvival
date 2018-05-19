@@ -15,7 +15,6 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPacksContext;
 import com.pixurvival.core.map.ChunkManager;
-import com.pixurvival.core.map.CompressedChunk;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
@@ -59,6 +58,7 @@ public class World {
 	private ChunkSupplier chunkSupplier;
 	private File saveDirectory;
 	private List<PlayerData> playerDataList = new ArrayList<>();
+	private SyncWorldUpdateManager syncWorldUpdateManager = new SyncWorldUpdateManager(this);
 
 	private World(long id, Type type, ContentPack contentPack) {
 		this.id = id;
@@ -114,16 +114,10 @@ public class World {
 		playerDataList.addAll(Arrays.asList(playerData));
 	}
 
-	public void update(double deltaTimeMillis) {
+	public synchronized void update(double deltaTimeMillis) {
 		WorldUpdate worldUpdate = this.worldUpdate;
 		if (!type.isServer()) {
-			map.applyUpdate(worldUpdate.getUpdateId(), worldUpdate.getStructureUpdates());
-			if (worldUpdate.getCompressedChunks() != null) {
-				for (CompressedChunk compressed : worldUpdate.getCompressedChunks()) {
-					map.addChunk(compressed);
-				}
-			}
-			worldUpdate.setStructureUpdates(null);
+			syncWorldUpdateManager.update();
 			if (worldUpdate.getUpdateId() > previousUpdateId) {
 				entityPool.applyUpdate(worldUpdate.getByteBuffer());
 				previousUpdateId = worldUpdate.getUpdateId();
@@ -135,6 +129,7 @@ public class World {
 					if (e != null) {
 						e.applyData(playerData);
 						playerDataList.remove(i);
+						i--;
 					}
 				}
 			}

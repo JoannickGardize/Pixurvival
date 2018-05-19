@@ -17,7 +17,6 @@ public class CraftSlot extends Button implements InventoryListener {
 
 	private ItemStackDrawer itemStackDrawer;
 	private @Getter ItemCraft itemCraft;
-	private boolean available = false;
 
 	public CraftSlot(ItemCraft itemCraft) {
 		super(PixurvivalGame.getSkin());
@@ -33,7 +32,6 @@ public class CraftSlot extends Button implements InventoryListener {
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		itemStackDrawer.draw(batch);
-
 	}
 
 	@Override

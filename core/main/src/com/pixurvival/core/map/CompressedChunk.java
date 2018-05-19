@@ -25,6 +25,7 @@ public class CompressedChunk {
 		buffer.reset();
 		buffer.putInt(chunk.getPosition().getX());
 		buffer.putInt(chunk.getPosition().getY());
+		buffer.putLong(chunk.getUpdateTimestamp());
 		MapTile currentTile = null;
 		byte currentLength = 0;
 		for (MapTile tile : chunk.getTiles()) {
@@ -46,7 +47,7 @@ public class CompressedChunk {
 			buffer.put(structure.getDefinition().getId());
 			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
 			buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
-			buffer.put(structure.getData());
+			structure.writeData(buffer);
 		}
 		data = Arrays.copyOf(buffer.array(), buffer.position());
 	}
@@ -55,7 +56,9 @@ public class CompressedChunk {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
 		int x = buffer.getInt();
 		int y = buffer.getInt();
+		long updateTimestamp = buffer.getLong();
 		Chunk chunk = new Chunk(map, x, y);
+		chunk.setUpdateTimestamp(updateTimestamp);
 		MapTile[] data = chunk.getTiles();
 		int dataPosition = 0;
 		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
@@ -69,7 +72,7 @@ public class CompressedChunk {
 			MapStructure structure = chunk.addStructure(
 					map.getWorld().getContentPack().getStructuresById().get(buffer.get()),
 					buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
-			structure.applyData(buffer.get());
+			structure.applyData(buffer);
 		}
 		chunk.setCompressed(this);
 		return chunk;

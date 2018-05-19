@@ -221,7 +221,7 @@ public class Inventory {
 			short length = input.readShort();
 			Inventory inventory = new Inventory(length);
 			for (int i = 0; i < length; i++) {
-				inventory.setSlot(i, kryo.readObjectOrNull(input, ItemStack.class));
+				inventory.slots[i] = kryo.readObjectOrNull(input, ItemStack.class);
 			}
 			return inventory;
 		}

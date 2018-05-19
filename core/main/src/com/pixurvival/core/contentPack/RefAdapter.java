@@ -11,6 +11,7 @@ import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
 
@@ -119,6 +120,13 @@ public class RefAdapter<T extends NamedElement> extends XmlAdapter<ElementRefere
 	public static class ItemCraftRefAdapter extends RefAdapter<ItemCraft> {
 
 		public ItemCraftRefAdapter(RefContext context) {
+			super(context);
+		}
+	}
+
+	public static class EquipmentOffsetRefAdapter extends RefAdapter<EquipmentOffset> {
+
+		public EquipmentOffsetRefAdapter(RefContext context) {
 			super(context);
 		}
 	}

@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
@@ -78,7 +77,7 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 	}
 
 	private void build() {
-		PlayerInventory inv = PixurvivalGame.getClient().getMyInventory();
+		Inventory inv = PixurvivalGame.getClient().getMyInventory();
 		float maxWidth = 0;
 		lines.clear();
 		for (ItemStack itemStack : itemCraft.getRecipes()) {

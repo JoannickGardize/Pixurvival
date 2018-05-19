@@ -1,5 +1,7 @@
 package com.pixurvival.core.message;
 
+import com.pixurvival.core.aliveEntity.Equipment;
+
 import lombok.Data;
 
 @Data
@@ -10,4 +12,5 @@ public class PlayerData {
 	private float strength;
 	private float agility;
 	private float intelligence;
+	private Equipment equipment;
 }

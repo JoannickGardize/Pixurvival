@@ -27,4 +27,9 @@ public class SpriteSheet extends NamedElement {
 	@XmlElement(name = "animationTemplate")
 	@XmlJavaTypeAdapter(RefAdapter.AnimationTemplateRefAdapter.class)
 	private AnimationTemplate animationTemplate;
+
+	@XmlElement(name = "equipmentOffset")
+	@XmlJavaTypeAdapter(RefAdapter.EquipmentOffsetRefAdapter.class)
+	private EquipmentOffset equipmentOffset;
+
 }

@@ -8,6 +8,9 @@ import com.pixurvival.core.Direction;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.aliveEntity.WorkActivity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.WeaponItem;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
@@ -34,7 +37,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 
 	@Override
 	public void draw(Batch batch, PlayerEntity e) {
-		TextureAnimation textureAnimation = getAnimation(e);
+		ActionAnimation actionAnimation = getActionAnimation(e);
+		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
 		int index = getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
 		DrawData data = (DrawData) e.getCustomData();
@@ -47,6 +51,16 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		} else {
 			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
 					textureAnimationSet.getHeight());
+			ItemStack weapon = e.getEquipment().getWeapon();
+			if (weapon != null) {
+				SpriteSheet spriteSheet = ((WeaponItem) weapon.getItem()).getSpriteSheet();
+				TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
+				textureAnimation = animationSet.get(actionAnimation);
+				texture = textureAnimation.getTexture(index);
+				batch.draw(texture, x + textureAnimation.getOffsetX(index),
+						y + animationSet.getYOffset() + textureAnimation.getOffsetY(index), animationSet.getWidth(),
+						animationSet.getHeight());
+			}
 		}
 	}
 
@@ -83,16 +97,15 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		return (int) (timer / textureAnimation.getFrameDuration());
 	}
 
-	private TextureAnimation getAnimation(PlayerEntity e) {
+	private ActionAnimation getActionAnimation(PlayerEntity e) {
 		if (e.getActivity().getActionAnimation() != null) {
-			return textureAnimationSet.get(e.getActivity().getActionAnimation());
+			return e.getActivity().getActionAnimation();
 		}
 		Direction aimingDirection = Direction.closestCardinal(e.getMovingAngle());
 		if (e.isForward()) {
-			return textureAnimationSet.get(ActionAnimation.getMoveFromDirection(aimingDirection));
+			return ActionAnimation.getMoveFromDirection(aimingDirection);
 		} else {
-			return textureAnimationSet.get(ActionAnimation.getStandFromDirection(aimingDirection));
+			return ActionAnimation.getStandFromDirection(aimingDirection);
 		}
 	}
-
 }

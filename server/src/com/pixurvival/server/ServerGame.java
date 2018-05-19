@@ -95,6 +95,7 @@ public class ServerGame {
 			}
 			playerConnection.setPlayerEntity(playerEntity);
 			playerEntity.getInventory().addListener(playerConnection);
+			playerEntity.getEquipment().addListener(playerConnection);
 			playerDataList.add(playerEntity.getData());
 			session.addPlayer(playerConnection);
 		});

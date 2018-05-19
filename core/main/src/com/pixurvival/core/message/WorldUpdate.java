@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.SyncWorldUpdate;
 import com.pixurvival.core.World;
 import com.pixurvival.core.map.CompressedChunk;
 
@@ -14,6 +15,8 @@ import lombok.Setter;
 
 @Getter
 public class WorldUpdate {
+
+	public static final int BUFFER_SIZE = 4096;
 
 	private @Setter long updateId = -1;
 	private @Setter long worldId;
@@ -72,9 +75,15 @@ public class WorldUpdate {
 				entitiesUpdate.updateId = updateId;
 				entitiesUpdate.length = input.readInt();
 				input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
-				entitiesUpdate.structureUpdates = readStructureUpdates(kryo, input);
-				entitiesUpdate.playerData = readPlayerData(kryo, input);
-				entitiesUpdate.compressedChunks = kryo.readObjectOrNull(input, CompressedChunk[].class);
+				StructureUpdate[] structureUpdates = readStructureUpdates(kryo, input);
+				PlayerData[] playerData = readPlayerData(kryo, input);
+				CompressedChunk[] compressedChunks = kryo.readObjectOrNull(input, CompressedChunk[].class);
+				SyncWorldUpdate syncWorldUpdate = new SyncWorldUpdate();
+				syncWorldUpdate.setStructureUpdates(structureUpdates);
+				syncWorldUpdate.setPlayerData(playerData);
+				syncWorldUpdate.setCompressedChunks(compressedChunks);
+				syncWorldUpdate.setUpdateId(updateId);
+				world.getSyncWorldUpdateManager().add(syncWorldUpdate);
 				return entitiesUpdate;
 			}
 		}

@@ -14,6 +14,7 @@ import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
 
@@ -37,6 +38,7 @@ public class RefContext {
 		adapters.put(Structure.class, new RefAdapter.StructureRefAdapter(this));
 		adapters.put(MapGenerator.class, new RefAdapter.MapGeneratorRefAdapter(this));
 		adapters.put(ItemCraft.class, new RefAdapter.ItemCraftRefAdapter(this));
+		adapters.put(EquipmentOffset.class, new RefAdapter.EquipmentOffsetRefAdapter(this));
 	}
 
 	@SuppressWarnings("unchecked")

@@ -89,9 +89,22 @@ public class TiledMap {
 		insertChunk(chunk);
 	}
 
+	public void addAllChunks(CompressedChunk[] compresseds) {
+		for (CompressedChunk compressed : compresseds) {
+			addChunk(compressed);
+		}
+	}
+
 	private void insertChunk(Chunk chunk) {
-		chunks.put(chunk.getPosition(), chunk);
-		listeners.forEach(l -> l.chunkLoaded(chunk));
+		Chunk existingChunk = chunks.get(chunk.getPosition());
+		if (existingChunk == null || chunk.getUpdateTimestamp() > existingChunk.getUpdateTimestamp()) {
+			chunks.put(chunk.getPosition(), chunk);
+			List<StructureUpdate> updates = pollStructureUpdates(chunk.getPosition());
+			if (updates != null) {
+				updates.forEach(u -> u.perform(chunk));
+			}
+			listeners.forEach(l -> l.chunkLoaded(chunk));
+		}
 	}
 
 	private void unloadChunk(Chunk chunk) {
@@ -125,7 +138,6 @@ public class TiledMap {
 			PlayerEntity player = (PlayerEntity) p;
 			Position chunkPosition = chunkPosition(p.getPosition());
 			if (!chunkPosition.equals(player.getChunkPosition())) {
-				System.out.println(chunkPosition);
 				player.setChunkPosition(chunkPosition);
 				listeners.forEach(l -> l.playerChangedChunk(player));
 
@@ -150,10 +162,7 @@ public class TiledMap {
 
 	}
 
-	public void applyUpdate(long updateId, StructureUpdate[] structureUpdates) {
-		if (structureUpdates == null) {
-			return;
-		}
+	public void applyUpdate(StructureUpdate[] structureUpdates) {
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
@@ -169,6 +178,12 @@ public class TiledMap {
 			} else {
 				structureUpdate.perform(chunk);
 			}
+		}
+	}
+
+	public List<StructureUpdate> pollStructureUpdates(Position chunkPosition) {
+		synchronized (waitingStructureUpdates) {
+			return waitingStructureUpdates.remove(chunkPosition);
 		}
 	}
 

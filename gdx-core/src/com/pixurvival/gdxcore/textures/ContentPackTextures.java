@@ -3,7 +3,6 @@ package com.pixurvival.gdxcore.textures;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -27,7 +26,7 @@ import lombok.Getter;
 
 public class ContentPackTextures {
 
-	private Map<String, TextureAnimationSet> animationSet;
+	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
 	private TextureRegion[][] tileMapTextures;
 	private ItemTexture[] itemTextures;
@@ -48,8 +47,8 @@ public class ContentPackTextures {
 		loadItemTextures(pack, pixelWidth);
 	}
 
-	public TextureAnimationSet getAnimationSet(String name) {
-		return animationSet.get(name);
+	public TextureAnimationSet getAnimationSet(SpriteSheet spriteSheet) {
+		return animationSet.get(spriteSheet);
 	}
 
 	public TextureRegion getTile(int id, long frame) {
@@ -68,11 +67,11 @@ public class ContentPackTextures {
 	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackReadException {
 		animationSet = new HashMap<>();
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
-		for (Entry<String, SpriteSheet> entries : pack.getSprites().all().entrySet()) {
-			TextureAnimationSet set = new TextureAnimationSet(entries.getValue(), transform);
-			set.setShadow(getShadow(entries.getValue().getWidth()));
+		for (SpriteSheet spriteSheet : pack.getSprites().all().values()) {
+			TextureAnimationSet set = new TextureAnimationSet(spriteSheet, transform);
+			set.setShadow(getShadow(spriteSheet.getWidth()));
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
-			animationSet.put(entries.getKey(), set);
+			animationSet.put(spriteSheet, set);
 		}
 	}
 

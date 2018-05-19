@@ -1,6 +1,6 @@
 package com.pixurvival.core.item;
 
-public class ClothingItem extends Item {
+public class ClothingItem extends EquipableItem {
 
 	public ClothingItem(String name) {
 		super(name);

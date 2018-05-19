@@ -5,5 +5,4 @@ public class AccessoryItem extends EquipableItem {
 	public AccessoryItem(String name) {
 		super(name);
 	}
-
 }

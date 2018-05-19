@@ -9,6 +9,7 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.StructureType;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -32,16 +33,15 @@ public abstract class MapStructure implements Collidable {
 	private Structure definition;
 	private int tileX;
 	private int tileY;
-	private double x;
-	private double y;
+	private Vector2 position;
 
-	public MapStructure(Chunk chunk, Structure definition, int x, int y) {
+	protected MapStructure(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
 		this.definition = definition;
 		tileX = x;
 		tileY = y;
-		this.x = x + definition.getDimensions().getWidth() / 2.0;
-		this.y = y + definition.getDimensions().getHeight() / 2.0;
+		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0,
+				y + definition.getDimensions().getHeight() / 2.0);
 	}
 
 	public static MapStructure newInstance(Chunk chunk, Structure structure, int x, int y) {
@@ -66,9 +66,17 @@ public abstract class MapStructure implements Collidable {
 		return definition.getDimensions().getHeight();
 	}
 
-	public Vector2 getPosition() {
-		return new Vector2(x, y);
+	@Override
+	public double getX() {
+		return position.x;
 	}
+
+	@Override
+	public double getY() {
+		return position.y;
+	}
+
+	public abstract StructureUpdate getUpdate();
 
 	public boolean canInteract(Entity entity) {
 		return entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE

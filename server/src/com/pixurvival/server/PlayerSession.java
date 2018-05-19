@@ -30,6 +30,10 @@ public class PlayerSession {
 		}
 	}
 
+	public void invalidateChunk(Position position) {
+		knownPositions.remove(position);
+	}
+
 	public void addMissingChunk(Position position) {
 		missingChunks.add(position);
 	}

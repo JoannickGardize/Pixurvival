@@ -6,7 +6,7 @@ import java.util.List;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.message.HarvestableStructureUpdate;
+import com.pixurvival.core.message.PlayerData;
 
 import lombok.NonNull;
 
@@ -16,6 +16,7 @@ public class ServerEngineThread extends EngineThread {
 	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
 	private List<GameSession> sessions = new ArrayList<>();
+	private List<PlayerData> tmpPlayerData = new ArrayList<>();
 
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
@@ -34,19 +35,33 @@ public class ServerEngineThread extends EngineThread {
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
 			sessions.forEach(ps -> {
 				ps.getWorld().incrementUpdateId();
-				HarvestableStructureUpdate[] structureUpdates = ps.consumeStructureUpdates();
+				ps.foreachPlayers(p -> {
+					PlayerConnection connection = p.getConnection();
+					if (connection.isPlayerDataChanged()) {
+						tmpPlayerData.add(connection.getPlayerEntity().getData());
+						connection.setPlayerDataChanged(false);
+					}
+				});
+				PlayerData[] playerData = null;
+				if (!tmpPlayerData.isEmpty()) {
+					playerData = tmpPlayerData.toArray(new PlayerData[tmpPlayerData.size()]);
+				}
+				final PlayerData[] finalPlayerData = playerData;
 				ps.foreachPlayers(p -> {
 					PlayerConnection connection = p.getConnection();
 					PlayerEntity playerEntity = connection.getPlayerEntity();
 					if (connection.isGameReady() && playerEntity != null) {
 						playerEntity.getWorld().writeWorldUpdateFor(playerEntity);
-						playerEntity.getWorld().getWorldUpdate().setStructureUpdates(structureUpdates);
+						playerEntity.getWorld().getWorldUpdate().setStructureUpdates(p.pollStructureUpdatesToSend());
 						playerEntity.getWorld().getWorldUpdate().setCompressedChunks(p.pollChunksToSend());
 						connection.sendUDP(playerEntity.getWorld().getWorldUpdate());
 						if (connection.isInventoryChanged()) {
 							connection.setInventoryChanged(false);
 							connection.sendTCP(playerEntity.getInventory());
 						}
+					}
+					if (finalPlayerData != null) {
+						connection.sendTCP(finalPlayerData);
 					}
 				});
 			});

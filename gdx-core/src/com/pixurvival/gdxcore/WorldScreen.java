@@ -11,6 +11,7 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
@@ -44,9 +45,16 @@ public class WorldScreen implements Screen {
 		MiniMapUI miniMapUI = new MiniMapUI(myPlayerId);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
+		miniMapUI.initialize();
 		InventoryUI inventoryUI = new InventoryUI();
 		hudStage.addActor(inventoryUI);
-		hudStage.addActor(new CraftUI());
+		inventoryUI.initialize();
+		CraftUI craftUI = new CraftUI();
+		hudStage.addActor(craftUI);
+		craftUI.initialize();
+		CharacterUI characterUI = new CharacterUI();
+		hudStage.addActor(characterUI);
+		characterUI.initialize();
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 	}
@@ -85,7 +93,15 @@ public class WorldScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		worldStage.getViewport().update(width, height);
+		ScreenResizeEvent event = new ScreenResizeEvent();
+		event.setPrevScreenWidth(hudStage.getViewport().getScreenWidth());
+		event.setPrevScreenHeight(hudStage.getViewport().getScreenHeight());
+		event.setNewScreenWidth(width);
+		event.setNewScreenHeight(height);
 		hudStage.getViewport().update(width, height, true);
+		if (event.isValid()) {
+			hudStage.getRoot().fire(event);
+		}
 	}
 
 	@Override

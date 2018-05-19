@@ -13,6 +13,7 @@ import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.DropItemRequest;
+import com.pixurvival.core.message.EquipmentActionRequest;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.PlayerActionRequest;
@@ -22,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class PlayerEntity extends AliveEntity implements InventoryHolder {
+public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipable {
 
 	private @Setter Activity activity = Activity.NONE;
 
@@ -30,14 +31,19 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 
 	private PlayerInventory inventory;
 
-	@Setter
-	private Position chunkPosition;
+	private Equipment equipment = new Equipment();
 
 	private StatSet stats = new StatSet();
 
+	@Setter
+	private Position chunkPosition;
+
+	public PlayerEntity() {
+		equipment.addListener(stats);
+	}
+
 	public void setInventory(PlayerInventory inventory) {
 		this.inventory = inventory;
-		inventory.addListener(stats);
 	}
 
 	public void apply(PlayerActionRequest actionRequest) {
@@ -69,15 +75,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 				if (currentContent.overflowingQuantity(1) == 0) {
 					inventory.setSlot(actionRequest.getSlotIndex(), currentContent.add(1));
 					if (heldItemStack.getQuantity() == 1) {
-						inventory.setHeldItemStack(null);
+						heldItemStack = null;
 					} else {
-						inventory.setHeldItemStack(heldItemStack.sub(1));
+						heldItemStack = heldItemStack.sub(1);
 					}
 				}
 			} else if (heldItemStack != null && currentContent == null) {
 				inventory.setSlot(actionRequest.getSlotIndex(), new ItemStack(heldItemStack.getItem()));
 				if (heldItemStack.getQuantity() == 1) {
-					inventory.setHeldItemStack(null);
+					heldItemStack = null;
 				} else {
 					inventory.setHeldItemStack(heldItemStack.sub(1));
 				}
@@ -112,6 +118,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			getWorld().getEntityPool().add(entity);
 			entity.spawn(request.getDirection());
 			getInventory().setHeldItemStack(null);
+		}
+	}
+
+	public void apply(EquipmentActionRequest request) {
+		if (inventory.getHeldItemStack() == null
+				|| Equipment.canEquip(request.getIndex(), inventory.getHeldItemStack())) {
+			ItemStack previousEquipment = equipment.get(request.getIndex());
+			equipment.set(request.getIndex(), inventory.getHeldItemStack());
+			inventory.setHeldItemStack(previousEquipment);
 		}
 	}
 
@@ -175,6 +190,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		data.setStrength(stats.get(StatType.STRENGTH).getBase());
 		data.setAgility(stats.get(StatType.AGILITY).getBase());
 		data.setIntelligence(stats.get(StatType.INTELLIGENCE).getBase());
+		data.setEquipment(equipment);
 		return data;
 	}
 
@@ -183,6 +199,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 		stats.get(StatType.STRENGTH).setBase(data.getStrength());
 		stats.get(StatType.AGILITY).setBase(data.getAgility());
 		stats.get(StatType.INTELLIGENCE).setBase(data.getIntelligence());
+		equipment.set(data.getEquipment());
 	}
 
 	@Override
@@ -260,10 +277,6 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder {
 			}
 			break;
 		}
-
-		// extended part
-		// if (buffer.get() == 1) {
-		// }
 	}
 
 	private void performNormalInventoryAction(int slotIndex) {
