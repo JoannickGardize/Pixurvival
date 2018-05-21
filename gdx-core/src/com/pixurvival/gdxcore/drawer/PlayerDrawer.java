@@ -54,12 +54,13 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 			ItemStack weapon = e.getEquipment().getWeapon();
 			if (weapon != null) {
 				SpriteSheet spriteSheet = ((WeaponItem) weapon.getItem()).getSpriteSheet();
-				TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
-				textureAnimation = animationSet.get(actionAnimation);
-				texture = textureAnimation.getTexture(index);
-				batch.draw(texture, x + textureAnimation.getOffsetX(index),
-						y + animationSet.getYOffset() + textureAnimation.getOffsetY(index), animationSet.getWidth(),
-						animationSet.getHeight());
+				TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures()
+						.getAnimationSet(spriteSheet);
+				TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
+				Texture weaponTexture = weaponAnimation.getTexture(index);
+				batch.draw(weaponTexture, x + weaponAnimation.getOffsetX(index),
+						y + weaponAnimationSet.getYOffset() + weaponAnimation.getOffsetY(index),
+						weaponAnimationSet.getWidth(), weaponAnimationSet.getHeight());
 			}
 		}
 	}
@@ -86,7 +87,6 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 			((DrawData) o).getDrawPosition().set(e.getPosition());
 			e.setCustomData(o);
 		}
-
 		DrawData data = (DrawData) o;
 		float timer = data.getTimer();
 		timer += Gdx.graphics.getRawDeltaTime();

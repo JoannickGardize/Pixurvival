@@ -21,7 +21,7 @@ public class UIWindow extends Window implements EventListener {
 
 	@Override
 	public boolean handle(Event event) {
-		if (event instanceof ScreenResizeEvent) {
+		if (event instanceof ScreenResizeEvent && getParent() == getStage().getRoot()) {
 			moveOnScreenResize((ScreenResizeEvent) event);
 		}
 		return false;

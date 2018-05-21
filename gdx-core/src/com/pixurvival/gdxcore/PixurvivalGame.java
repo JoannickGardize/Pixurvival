@@ -81,6 +81,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.load(SKIN, Skin.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
+
 		setScreen(MainMenuScreen.class);
 	}
 

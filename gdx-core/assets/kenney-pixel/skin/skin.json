@@ -87,7 +87,10 @@
     treeMinus: { name: tree-minus, color: up },
     treePlus: { name: tree-plus, color: up },
     window: { name: window, color: background },
-    alpha: { name: dot, color: semiTransparent }
+    alpha: { name: dot, color: semiTransparent },
+    clothing: { name: clothing, color: font },
+    weapon: { name: weapon, color: font },
+    accessory: { name: accessory, color: font },
   },
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     default: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled },
@@ -105,7 +108,10 @@
       checkedFontColor: fontChecked, checkedOverFontColor: fontCheckedOver, disabledFontColor: fontDisabled, pressedOffsetY: -1, pressedOffsetX: 1 }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
-    default: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, imageUp: cross }
+    default: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, imageUp: cross },
+    clothing: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, imageUp: clothing },
+    weapon: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, imageUp: weapon },
+    accessory: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, imageUp: accessory }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
     default: { up: buttonUp, over: buttonOver, down: buttonDown, disabled: buttonDisabled, font: default, fontColor: font,

@@ -75,15 +75,15 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipa
 				if (currentContent.overflowingQuantity(1) == 0) {
 					inventory.setSlot(actionRequest.getSlotIndex(), currentContent.add(1));
 					if (heldItemStack.getQuantity() == 1) {
-						heldItemStack = null;
+						inventory.setHeldItemStack(null);
 					} else {
-						heldItemStack = heldItemStack.sub(1);
+						inventory.setHeldItemStack(heldItemStack.sub(1));
 					}
 				}
 			} else if (heldItemStack != null && currentContent == null) {
 				inventory.setSlot(actionRequest.getSlotIndex(), new ItemStack(heldItemStack.getItem()));
 				if (heldItemStack.getQuantity() == 1) {
-					heldItemStack = null;
+					inventory.setHeldItemStack(null);
 				} else {
 					inventory.setHeldItemStack(heldItemStack.sub(1));
 				}

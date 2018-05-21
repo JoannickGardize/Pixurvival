@@ -1,21 +1,28 @@
 package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.pixurvival.core.aliveEntity.Equipment;
 
 public class CharacterUI extends UIWindow {
 
 	public CharacterUI() {
 		super("character");
 		Table table = new Table();
-		table.defaults().pad(10).fill().expand().size(30);
-		table.add(new EquipmentSlot(Equipment.CLOTHING_INDEX));
-		table.add(new EquipmentSlot(Equipment.WEAPON_INDEX));
+
+		table.defaults().expand().fill();
+		EquipmentUI equipmentUI = new EquipmentUI();
+		equipmentUI.setMovable(false);
+		table.add(equipmentUI);
 		table.row();
-		table.add(new EquipmentSlot(Equipment.ACCESSORY1_INDEX));
-		table.add(new EquipmentSlot(Equipment.ACCESSORY2_INDEX));
-		add(table);
-		pack();
+		InventoryUI inventoryUI = new InventoryUI();
+		inventoryUI.setMovable(false);
+		table.add(inventoryUI);
+		table.row();
+		CraftUI craftUI = new CraftUI();
+		craftUI.setMovable(false);
+		table.add(craftUI);
+
+		add(table).expand().fill();
+		this.pack();
 	}
 
 }

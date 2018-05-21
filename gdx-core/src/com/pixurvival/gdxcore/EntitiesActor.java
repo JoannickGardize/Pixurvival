@@ -29,8 +29,8 @@ public class EntitiesActor extends Actor {
 	private List<Collidable> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
-		drawers.put(PlayerEntity.class,
-				new PlayerDrawer(PixurvivalGame.getContentPackTextures().getAnimationSet("character")));
+		drawers.put(PlayerEntity.class, new PlayerDrawer(PixurvivalGame.getContentPackTextures()
+				.getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
 		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(),
 				PixurvivalGame.getContentPackTextures());
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
@@ -69,11 +69,14 @@ public class EntitiesActor extends Actor {
 				}
 			}
 		}
-
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).topDraw(batch, e));
+
+	}
+
+	private void drawStructureToPlace(Batch batch) {
 
 	}
 

@@ -12,9 +12,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.ui.CharacterUI;
-import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
-import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 
@@ -46,17 +44,18 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		miniMapUI.initialize();
-		InventoryUI inventoryUI = new InventoryUI();
-		hudStage.addActor(inventoryUI);
-		inventoryUI.initialize();
-		CraftUI craftUI = new CraftUI();
-		hudStage.addActor(craftUI);
-		craftUI.initialize();
+		// InventoryUI inventoryUI = new InventoryUI();
+		// hudStage.addActor(inventoryUI);
+		// inventoryUI.initialize();
+		// CraftUI craftUI = new CraftUI();
+		// hudStage.addActor(craftUI);
+		// craftUI.initialize();
 		CharacterUI characterUI = new CharacterUI();
 		hudStage.addActor(characterUI);
 		characterUI.initialize();
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
+
 	}
 
 	@Override

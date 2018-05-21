@@ -231,3 +231,25 @@ x
   orig: 8, 8
   offset: 0, 0
   index: -1
+clothing
+  rotate: false
+  xy: 99, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+weapon
+  rotate: false
+  xy: 107, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+accessory
+  rotate: false
+  xy: 115, 0
+  size: 8, 8
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+

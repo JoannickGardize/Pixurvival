@@ -47,8 +47,12 @@ public class ItemAdapter extends XmlAdapter<BaseItem, Item> {
 			equipableItem.setStrengthBonus(baseItem.getStrengthBonus());
 			equipableItem.setSpriteSheet(baseItem.getSpriteSheet());
 		}
+		if (item instanceof EquipableItem || item instanceof StructureItem) {
+			item.setMaxStackSize(1);
+		} else {
+			item.setMaxStackSize(baseItem.getStackSize());
+		}
 		item.setFrame(baseItem.getFrame());
-		item.setMaxStackSize(baseItem.getStackSize());
 		return item;
 	}
 

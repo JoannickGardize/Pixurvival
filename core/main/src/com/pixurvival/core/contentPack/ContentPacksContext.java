@@ -96,15 +96,18 @@ public class ContentPacksContext {
 			RefContext refContext = new RefContext();
 			context = JAXBContext.newInstance(ContentPackInfo.class, AnimationTemplates.class, Sprites.class,
 					Tiles.class, MapGenerator.class, Items.class, ItemRewards.class, Structures.class,
-					MapGenerators.class, ItemCrafts.class, EquipmentOffsets.class);
+					MapGenerators.class, ItemCrafts.class, EquipmentOffsets.class, Constants.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			unmarshaller.setEventHandler(e -> !(e.getLinkedException() != null
 					&& e.getLinkedException().getCause() instanceof ContentPackReadException));
 			refContext.setAdapters(unmarshaller);
 			ContentPack lastContentPack = null;
+			Constants previousConstants = new Constants();
 			for (ContentPackFileInfo info : dependencyList) {
 				refContext.setCurrentInfo(info);
 				lastContentPack = ContentPack.load(refContext, unmarshaller, info);
+				lastContentPack.getConstants().merge(previousConstants);
+				previousConstants = lastContentPack.getConstants();
 			}
 			return lastContentPack;
 		} catch (JAXBException e) {

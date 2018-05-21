@@ -77,6 +77,9 @@ public class ContentPack {
 			refContext.addElementSet(MapGenerator.class, contentPack.mapGenerators);
 			contentPack.itemCrafts = (ItemCrafts) readXmlFile(unmarshaller, zipFile, "itemCrafts.xml");
 			refContext.addElementSet(ItemCraft.class, contentPack.itemCrafts);
+
+			contentPack.constants = (Constants) readXmlFile(unmarshaller, zipFile, "constants.xml");
+
 			refContext.removeCurrentSets();
 			refContext.getAdapter(Tile.class).allSets().stream().flatMap(e -> e.all().values().stream())
 					.forEach(new Consumer<Tile>() {
