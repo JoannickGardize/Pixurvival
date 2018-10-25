@@ -1,1 +1,1 @@
-include 'gdx-desktop', 'gdx-core', 'core', 'client', 'server'
+include 'gdx-desktop', 'gdx-core', 'core', 'client', 'server', 'contentpack-editor'

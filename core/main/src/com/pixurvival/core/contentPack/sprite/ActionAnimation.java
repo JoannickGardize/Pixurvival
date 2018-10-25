@@ -1,16 +1,10 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import com.pixurvival.core.Direction;
-import com.pixurvival.core.contentPack.sprite.ActionAnimation.ActionAnimationAdapter;
-import com.pixurvival.core.util.BeanUtils;
 
-@XmlJavaTypeAdapter(ActionAnimationAdapter.class)
 public enum ActionAnimation {
 	MOVE_RIGHT,
 	MOVE_UP,
@@ -23,8 +17,8 @@ public enum ActionAnimation {
 	NONE,
 	HARVESTED;
 
-	private static Map<Direction, ActionAnimation> moveByDirection = new HashMap<>();
-	private static Map<Direction, ActionAnimation> standByDirection = new HashMap<>();
+	private static Map<Direction, ActionAnimation> moveByDirection = new EnumMap<>(Direction.class);
+	private static Map<Direction, ActionAnimation> standByDirection = new EnumMap<>(Direction.class);
 
 	static {
 		moveByDirection.put(Direction.EAST, MOVE_RIGHT);
@@ -44,22 +38,5 @@ public enum ActionAnimation {
 
 	public static ActionAnimation getStandFromDirection(Direction direction) {
 		return standByDirection.get(direction);
-	}
-
-	public static ActionAnimation fromValue(String v) {
-		return ActionAnimation.valueOf(BeanUtils.camelToUpperCase(v));
-	}
-
-	public static class ActionAnimationAdapter extends XmlAdapter<String, ActionAnimation> {
-
-		@Override
-		public ActionAnimation unmarshal(String v) throws Exception {
-			return ActionAnimation.fromValue(v);
-		}
-
-		@Override
-		public String marshal(ActionAnimation v) throws Exception {
-			return BeanUtils.upperToCamelCase(v.name());
-		}
 	}
 }

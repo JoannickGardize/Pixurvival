@@ -1,19 +1,16 @@
 package com.pixurvival.core.contentPack;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
 import lombok.Getter;
 
 @Getter
-@XmlRootElement(name = "constants")
-public class Constants {
+public class Constants implements Serializable {
 
-	@XmlElement(name = "defaultCharacter")
-	@XmlJavaTypeAdapter(RefAdapter.SpriteSheetRefAdapter.class)
+	private static final long serialVersionUID = 1L;
+
 	private SpriteSheet defaultCharacter;
 
 	public void merge(Constants other) {

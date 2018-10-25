@@ -1,29 +1,24 @@
 package com.pixurvival.core.contentPack.map;
 
+import java.io.Serializable;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import lombok.Data;
 
-import lombok.Getter;
+@Data
+public class StructureGenerator implements Serializable {
 
-@Getter
-public class StructureGenerator {
+	private static final long serialVersionUID = 1L;
 
-	@XmlElement(name = "heightmapCondition")
 	private HeightmapCondition[] heightmapConditions;
 
-	@XmlElement(name = "structure")
-	@XmlJavaTypeAdapter(StructureGeneratorEntry.Adapter.class)
 	private StructureGeneratorEntry[] structureGeneratorEntries;
 	private double probabilityFactor;
 
 	private NavigableMap<Double, Structure> structureChooseMap;
 
-	@XmlAttribute(name = "density")
 	private double density;
 
 	public boolean test(int x, int y) {

@@ -159,7 +159,7 @@ public class ItemStackEntity extends Entity {
 		short itemId = buffer.getShort();
 		short quantity = buffer.getShort();
 		if (itemStack == null) {
-			itemStack = new ItemStack(getWorld().getContentPack().getItemsById().get(itemId), quantity);
+			itemStack = new ItemStack(getWorld().getContentPack().getItems().get(itemId), quantity);
 		}
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		state = State.values()[buffer.get()];

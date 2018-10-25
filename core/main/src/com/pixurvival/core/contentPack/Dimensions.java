@@ -1,23 +1,19 @@
 package com.pixurvival.core.contentPack;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class Dimensions {
+public class Dimensions implements Serializable {
 
-	@XmlAttribute(name = "width")
+	private static final long serialVersionUID = 1L;
+
 	private int width;
 
-	@XmlAttribute(name = "height")
 	private int height;
 }

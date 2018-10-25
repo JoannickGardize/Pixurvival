@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public abstract class EquipableItem extends Item {
 
+	private static final long serialVersionUID = 1L;
+
 	private float strengthBonus;
 	private float agilityBonus;
 	private float intelligenceBonus;

@@ -70,7 +70,7 @@ public class CompressedChunk {
 		int structureCount = buffer.getShort();
 		for (int i = 0; i < structureCount; i++) {
 			MapStructure structure = chunk.addStructure(
-					map.getWorld().getContentPack().getStructuresById().get(buffer.get()),
+					map.getWorld().getContentPack().getStructures().get(buffer.get()),
 					buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
 			structure.applyData(buffer);
 		}

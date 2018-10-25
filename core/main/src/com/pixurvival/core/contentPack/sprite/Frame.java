@@ -1,17 +1,18 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.io.Serializable;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-public class Frame {
-	@XmlAttribute(required = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Frame implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private int x;
-	@XmlAttribute(required = true)
 	private int y;
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class HeldItemStackActor extends Actor {
@@ -26,9 +27,13 @@ public class HeldItemStackActor extends Actor {
 		if (inventory == null) {
 			return;
 		}
+		ItemStack heldItemStack = inventory.getHeldItemStack();
+		if (heldItemStack == null) {
+			return;
+		}
 		Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		setPosition(mousePos.x - getWidth() / 2, mousePos.y - getHeight() / 2);
-		itemStackDrawer.setItemStack(inventory.getHeldItemStack());
+		itemStackDrawer.setItemStack(heldItemStack);
 		itemStackDrawer.draw(batch);
 	}
 }

@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.ContentPackReadException;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
@@ -26,7 +26,7 @@ public class TextureAnimationSet {
 	private @Getter float shadowWidth;
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
-	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackReadException {
+	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackException {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
 		shadowWidth = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT);
 		width = (float) (shadowWidth + truePixelWidth * 2);

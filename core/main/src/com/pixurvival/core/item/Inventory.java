@@ -81,7 +81,8 @@ public class Inventory {
 	 *            The item to take.
 	 * @param quantity
 	 *            the quantity of the item to take.
-	 * @return The ItemStack taken, or null if not available.
+	 * @return True if the itemStacks were available and has been removed, false
+	 *         overwise.
 	 */
 	public boolean remove(ItemStack... itemStacks) {
 		if (!contains(itemStacks)) {

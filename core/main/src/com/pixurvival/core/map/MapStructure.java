@@ -7,8 +7,8 @@ import java.util.Map;
 import com.pixurvival.core.Collidable;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.StructureType;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.StructureType;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 

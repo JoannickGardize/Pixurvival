@@ -1,25 +1,22 @@
 package com.pixurvival.core.contentPack.map;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
+import java.io.Serializable;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-public class HeightmapCondition {
+@Data
+public class HeightmapCondition implements Serializable {
 
-	@XmlIDREF
-	@XmlAttribute(name = "name")
+	private static final long serialVersionUID = 1L;
+
 	private Heightmap heightmap;
 
-	@XmlAttribute(name = "min")
 	private double min;
 
-	@XmlAttribute(name = "max")
 	private double max;
 
 	public boolean test(int x, int y) {
 		double noise = heightmap.getNoise(x, y);
-		return noise >= min && noise <= max;
+		return noise >= min && noise < max;
 	}
 }

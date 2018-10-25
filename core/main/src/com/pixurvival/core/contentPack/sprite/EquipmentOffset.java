@@ -1,14 +1,17 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.NamedElement;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-public class EquipmentOffset extends NamedElement {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class EquipmentOffset extends NamedElement implements Serializable {
 
-	@XmlElement(name = "frameOffset")
+	private static final long serialVersionUID = 1L;
+
 	private FrameOffset[] frameOffsets;
 }

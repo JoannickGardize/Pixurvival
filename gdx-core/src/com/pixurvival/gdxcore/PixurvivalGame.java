@@ -14,7 +14,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.ContentPackReadException;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
@@ -141,7 +141,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			int pixelWidth = 3;
 			Log.info("Loading texture with optimal pixel width : " + pixelWidth);
 			contentPackTextures.load(client.getWorld().getContentPack(), pixelWidth);
-		} catch (ContentPackReadException e) {
+		} catch (ContentPackException e) {
 			Log.error("Error when loading contentPack.", e);
 			e.printStackTrace();
 		}

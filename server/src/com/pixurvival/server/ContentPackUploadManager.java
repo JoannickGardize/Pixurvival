@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackOld;
 import com.pixurvival.core.contentPack.ContentPackDenpendencyException;
 import com.pixurvival.core.contentPack.ContentPackFileInfo;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -46,7 +46,7 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 		}
 	}
 
-	public void setSelectedContentPack(ContentPack selectedContentPack) {
+	public void setSelectedContentPack(ContentPackOld selectedContentPack) {
 		try {
 			List<ContentPackFileInfo> result = game.getContentPacksContext()
 					.resolveDependencies(selectedContentPack.getInfo());

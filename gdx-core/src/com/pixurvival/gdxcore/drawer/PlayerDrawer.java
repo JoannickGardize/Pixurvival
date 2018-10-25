@@ -9,6 +9,7 @@ import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.aliveEntity.WorkActivity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.item.ClothingItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.WeaponItem;
 import com.pixurvival.core.util.Vector2;
@@ -38,7 +39,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	@Override
 	public void draw(Batch batch, PlayerEntity e) {
 		ActionAnimation actionAnimation = getActionAnimation(e);
-		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
+		TextureAnimation textureAnimation = getTextureAnimationSet(e).get(actionAnimation);
 		int index = getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
 		DrawData data = (DrawData) e.getCustomData();
@@ -78,6 +79,15 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 					0.2f + lineWidth * 2);
 			batch.draw(ColorTextures.get(Color.YELLOW), x, y, (float) (1 - (1 * activity.getProgress())), 0.2f);
 		}
+	}
+
+	private TextureAnimationSet getTextureAnimationSet(PlayerEntity e) {
+		ItemStack clothing = e.getEquipment().getClothing();
+		if (clothing != null) {
+			return PixurvivalGame.getContentPackTextures()
+					.getAnimationSet(((ClothingItem) clothing.getItem()).getSpriteSheet());
+		}
+		return textureAnimationSet;
 	}
 
 	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {

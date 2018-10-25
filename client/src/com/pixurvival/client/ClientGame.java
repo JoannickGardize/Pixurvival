@@ -1,10 +1,8 @@
 package com.pixurvival.client;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
@@ -16,10 +14,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.ContentPacksContext;
-import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.message.CraftItemRequest;
@@ -48,7 +43,6 @@ public class ClientGame {
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
 	private ContentPack localGamePack;
 	private @Getter PlayerInventory myInventory;
 
@@ -101,34 +95,27 @@ public class ClientGame {
 	}
 
 	public void startLocalGame() {
-		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("0.1"),
-				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b"));
-		try {
-			localGamePack = contentPacksContext.load(id);
-			World world = World.createLocalWorld(localGamePack);
-			this.world = world;
-			PlayerEntity playerEntity = new PlayerEntity();
-			// TODO
-			playerEntity.getPosition().set(0, 0);
-			world.getEntityPool().add(playerEntity);
-			Random random = new Random();
-			for (int i = 0; i < 20; i++) {
-				playerEntity.getInventory().setSlot(i,
-						new ItemStack(
-								localGamePack.getItemsById().get(random.nextInt(localGamePack.getItemsById().size())),
-								random.nextInt(10) + 1));
-			}
-			myPlayerId = playerEntity.getId();
-			myInventory = playerEntity.getInventory();
-
-			ItemStackEntity itemStackEntity = new ItemStackEntity(new ItemStack(localGamePack.getItems().get("apple")));
-			itemStackEntity.getPosition().set(10, 10);
-			world.getEntityPool().add(itemStackEntity);
-
-			notify(l -> l.initializeGame());
-		} catch (ContentPackException e) {
-			e.printStackTrace();
+		localGamePack = null; // TODO
+		World world = World.createLocalWorld(localGamePack);
+		this.world = world;
+		PlayerEntity playerEntity = new PlayerEntity();
+		// TODO
+		playerEntity.getPosition().set(0, 0);
+		world.getEntityPool().add(playerEntity);
+		Random random = new Random();
+		for (int i = 0; i < 20; i++) {
+			playerEntity.getInventory().setSlot(i,
+					new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())),
+							random.nextInt(10) + 1));
 		}
+		myPlayerId = playerEntity.getId();
+		myInventory = playerEntity.getInventory();
+
+		ItemStackEntity itemStackEntity = new ItemStackEntity(new ItemStack(localGamePack.getItems().get(0)));
+		itemStackEntity.getPosition().set(10, 10);
+		world.getEntityPool().add(itemStackEntity);
+
+		notify(l -> l.initializeGame());
 	}
 
 	public void sendAction(PlayerActionRequest request) {
@@ -221,8 +208,7 @@ public class ClientGame {
 		}
 	}
 
-	public void checkMissingPacks(ContentPackIdentifier[] identifiers) {
-		Collection<ContentPackIdentifier> list = contentPacksContext.list();
+	public void checkMissingPacks(ContentPackIdentifier identifier) {
 		List<ContentPackIdentifier> missingPacks = new ArrayList<>();
 		for (ContentPackIdentifier identifier : identifiers) {
 			if (!list.contains(identifier)) {
@@ -253,16 +239,12 @@ public class ClientGame {
 	}
 
 	private void initializeGame(InitializeGame initGame) {
-		try {
-			setWorld(World.createClientWorld(initGame.getCreateWorld(), getContentPacksContext()));
-			myPlayerId = initGame.getMyPlayerId();
-			myInventory = initGame.getInventory();
-			world.addPlayerData(initGame.getPlayerData());
-			notify(l -> l.initializeGame());
-		} catch (ContentPackException e) {
-			Log.error("Error occured when loading contentPack.", e);
-			notify(l -> l.error(e));
-		}
+		// setWorld(World.createClientWorld(initGame.getCreateWorld(),
+		// getContentPacksContext()));
+		myPlayerId = initGame.getMyPlayerId();
+		myInventory = initGame.getInventory();
+		world.addPlayerData(initGame.getPlayerData());
+		notify(l -> l.initializeGame());
 		initGame = null;
 	}
 }

@@ -1,29 +1,25 @@
 package com.pixurvival.core.contentPack.map;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
+import java.io.Serializable;
 
 import com.pixurvival.core.map.generator.SimplexNoise;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-public class Heightmap {
+@Data
+public class Heightmap implements Serializable {
 
-	@XmlID
-	@XmlAttribute(name = "name")
+	private static final long serialVersionUID = 1L;
+
 	private String name;
 
-	@XmlAttribute(name = "octave")
 	private int octave;
 
-	@XmlAttribute(name = "persistence")
 	private double persistence;
 
-	@XmlAttribute(name = "scale")
 	private double scale;
 
-	private SimplexNoise simplexNoise;
+	private transient SimplexNoise simplexNoise;
 
 	public void initialiaze(long seed) {
 		simplexNoise = new SimplexNoise(octave, persistence, scale, seed);

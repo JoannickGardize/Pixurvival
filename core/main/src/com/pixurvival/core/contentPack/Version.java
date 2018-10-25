@@ -1,7 +1,6 @@
 package com.pixurvival.core.contentPack;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,8 +11,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlJavaTypeAdapter(Version.Adapter.class)
-public class Version implements Comparable<Version> {
+public class Version implements Comparable<Version>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private int major;
 	private int minor;
@@ -45,23 +45,5 @@ public class Version implements Comparable<Version> {
 	@Override
 	public String toString() {
 		return major + "." + minor;
-	}
-
-	public static class Adapter extends XmlAdapter<String, Version> {
-
-		@Override
-		public Version unmarshal(String v) throws Exception {
-			try {
-				return new Version(v);
-			} catch (Exception e) {
-				throw new ContentPackReadException(e);
-			}
-		}
-
-		@Override
-		public String marshal(Version v) throws Exception {
-			return v.toString();
-		}
-
 	}
 }

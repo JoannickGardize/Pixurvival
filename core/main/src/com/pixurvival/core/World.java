@@ -13,7 +13,7 @@ import java.util.UUID;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
@@ -66,7 +66,8 @@ public class World {
 		this.contentPack = contentPack;
 		worldUpdate.setWorldId(id);
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get("default"), new Random().nextLong());
+		// TODO Choix du mapGenerator en fonction du gameMode
+		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get(0), new Random().nextLong());
 		uid = UUID.randomUUID();
 		saveDirectory = new File(GlobalSettings.getSaveDirectory(), uid.toString());
 		FileUtils.delete(saveDirectory);
@@ -77,9 +78,9 @@ public class World {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPacksContext contentPacksContext)
+	public static World createClientWorld(CreateWorld createWorld, ContentPackLoader loader)
 			throws ContentPackException {
-		ContentPack pack = contentPacksContext.load(createWorld.getContentPackIdentifier());
+		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack);
 		worlds.put(world.getId(), world);

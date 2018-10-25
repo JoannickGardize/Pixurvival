@@ -52,7 +52,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipa
 	}
 
 	public void apply(CraftItemRequest request) {
-		ItemCraft craft = getWorld().getContentPack().getItemCraftsById().get(request.getCraftId());
+		ItemCraft craft = getWorld().getContentPack().getItemCrafts().get(request.getCraftId());
 		if (inventory.contains(craft.getRecipes()) && activity.in(Activity.NONE_ID, Activity.CRAFTING_ACTIVITY_ID)) {
 			activity = new CraftingActivity(this, craft);
 		}
@@ -226,17 +226,10 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipa
 			buffer.putDouble(craftingActivity.getProgress());
 			break;
 		}
-		// extended part
-		// if (extendedUpdateRequired) {
-		// buffer.put((byte) 1);
-		// } else {
-		// buffer.put((byte) 0);
-		// }
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		// normal part
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		setMovingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1 ? true : false);
@@ -269,7 +262,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipa
 			progressTime = buffer.getDouble();
 			if (!(getActivity() instanceof CraftingActivity)) {
 				CraftingActivity activity = new CraftingActivity(this,
-						getWorld().getContentPack().getItemCraftsById().get(craftId));
+						getWorld().getContentPack().getItemCrafts().get(craftId));
 				setActivity(activity);
 				activity.setProgressTime(progressTime);
 			} else {

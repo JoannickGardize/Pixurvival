@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.ContentPackReadException;
+import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.contentPack.ContentPackOld;
 import com.pixurvival.core.contentPack.ZipContentReference;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
@@ -39,7 +39,7 @@ public class ContentPackTextures {
 		Texture texture;
 	}
 
-	public void load(ContentPack pack, int pixelWidth) throws ContentPackReadException {
+	public void load(ContentPackOld pack, int pixelWidth) throws ContentPackException {
 		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
@@ -64,7 +64,7 @@ public class ContentPackTextures {
 		return itemTextures[id];
 	}
 
-	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackReadException {
+	private void loadAnimationSet(ContentPackOld pack, int pixelWidth) throws ContentPackException {
 		animationSet = new HashMap<>();
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
 		for (SpriteSheet spriteSheet : pack.getSprites().all().values()) {
@@ -105,7 +105,7 @@ public class ContentPackTextures {
 		return texture;
 	}
 
-	private void loadTileMapTextures(ContentPack pack) throws ContentPackReadException {
+	private void loadTileMapTextures(ContentPackOld pack) throws ContentPackException {
 		List<Tile> tilesbyId = pack.getTilesById();
 		tileMapTextures = new TextureRegion[tilesbyId.size()][];
 		tileAvgColors = new int[tilesbyId.size()];
@@ -150,7 +150,7 @@ public class ContentPackTextures {
 		return Color.rgba8888(new Color(redSum / pixelCount, greenSum / pixelCount, blueSum / pixelCount, 1));
 	}
 
-	private void loadItemTextures(ContentPack pack, int pixelWidth) throws ContentPackReadException {
+	private void loadItemTextures(ContentPackOld pack, int pixelWidth) throws ContentPackException {
 		List<Item> itemsById = pack.getItemsById();
 		itemTextures = new ItemTexture[itemsById.size()];
 		Map<ZipContentReference, TextureSheet> images = new HashMap<>();

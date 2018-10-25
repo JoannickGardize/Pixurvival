@@ -5,20 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.Collidable;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
+import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
@@ -29,19 +35,20 @@ public class EntitiesActor extends Actor {
 	private List<Collidable> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
-		drawers.put(PlayerEntity.class, new PlayerDrawer(PixurvivalGame.getContentPackTextures()
-				.getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
-		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(),
-				PixurvivalGame.getContentPackTextures());
+		drawers.put(
+				PlayerEntity.class,
+				new PlayerDrawer(PixurvivalGame.getContentPackTextures().getAnimationSet(
+						PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
+		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(), PixurvivalGame.getContentPackTextures());
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
+		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void act(float delta) {
-		PixurvivalGame.getWorld().getEntityPool()
-				.foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
+		PixurvivalGame.getWorld().getEntityPool().foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
 		super.act(delta);
 	}
 
@@ -70,14 +77,24 @@ public class EntitiesActor extends Actor {
 			}
 		}
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
+
+		manageGhostStructure();
+
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).topDraw(batch, e));
 
 	}
 
-	private void drawStructureToPlace(Batch batch) {
-
+	private void manageGhostStructure() {
+		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
+		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
+			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+			double x = Math.floor(mousePos.x);
+			double y = Math.floor(mousePos.y);
+			Structure structure = ((StructureItem) heldItemStack.getItem()).getStructure();
+			GhostStructure ghostStructure = new GhostStructure(structure, x, y);
+			objectsToDraw.add(ghostStructure);
+		}
 	}
-
 }

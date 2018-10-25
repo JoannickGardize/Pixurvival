@@ -1,15 +1,16 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import java.io.Serializable;
+import java.util.List;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-public class Animation {
-	@XmlAttribute(name = "action", required = true)
+@Data
+public class Animation implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private ActionAnimation action;
 
-	@XmlElement(name = "frame", required = true)
-	private Frame[] frames;
+	private List<Frame> frames;
 }

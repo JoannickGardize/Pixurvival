@@ -56,6 +56,16 @@ project(":client") {
     }
 }
 
+project(":contentpack-editor") {
+    apply plugin: "java"
+
+    dependencies {
+    	compile project(":core")
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+    }
+}
+
+
 project(":server") {
     apply plugin: "java"
 
@@ -70,6 +80,7 @@ project(":gdx-desktop") {
 
     dependencies {
         compile project(":gdx-core")
+        compile project(":contentpack-editor")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         

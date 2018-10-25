@@ -1,7 +1,7 @@
 package com.pixurvival.gdxcore.textures;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.pixurvival.core.contentPack.ContentPackReadException;
+import com.pixurvival.core.contentPack.ContentPackException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,12 +37,12 @@ public class SpriteSheetPixmap extends Pixmap {
 	private int spriteWidth;
 	private int spriteHeight;
 
-	public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) throws ContentPackReadException {
+	public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) throws ContentPackException {
 		super(data, 0, data.length);
 		this.spriteWidth = spriteWidth;
 		this.spriteHeight = spriteHeight;
 		if (getWidth() % spriteWidth != 0 || getHeight() % spriteHeight != 0) {
-			throw new ContentPackReadException("Illegal width/height for sprite sheet.");
+			throw new ContentPackException("Illegal width/height for sprite sheet.");
 		}
 	}
 

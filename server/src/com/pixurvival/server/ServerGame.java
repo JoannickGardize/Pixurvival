@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackOld;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPacksContext;
@@ -31,7 +31,7 @@ public class ServerGame {
 	private List<ServerGameListener> listeners = new ArrayList<>();
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
 	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
-	private @Getter ContentPack selectedContentPack;
+	private @Getter ContentPackOld selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 
 	public ServerGame() {
@@ -50,7 +50,7 @@ public class ServerGame {
 		}
 	}
 
-	public void setSelectedContentPack(ContentPack contentPack) {
+	public void setSelectedContentPack(ContentPackOld contentPack) {
 		selectedContentPack = contentPack;
 		contentPackUploadManager.setSelectedContentPack(contentPack);
 	}

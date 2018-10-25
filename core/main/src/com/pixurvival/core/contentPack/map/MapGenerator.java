@@ -1,33 +1,25 @@
 package com.pixurvival.core.contentPack.map;
 
+import java.io.Serializable;
 import java.util.Random;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import com.pixurvival.core.contentPack.NamedElement;
-import com.pixurvival.core.contentPack.RefAdapter;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-public class MapGenerator extends NamedElement {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class MapGenerator extends NamedElement implements Serializable {
 
-	@XmlElementWrapper(name = "heightmaps")
-	@XmlElement(name = "heightmap")
+	private static final long serialVersionUID = 1L;
+
 	private Heightmap[] heightmaps;
 
-	@XmlElement(name = "defaultTile")
-	@XmlJavaTypeAdapter(RefAdapter.TileRefAdapter.class)
 	private Tile defaultTile;
 
-	@XmlElementWrapper(name = "tileGenerators")
-	@XmlElement(name = "tileGenerator")
 	private TileGenerator[] tileGenerators;
 
-	@XmlElementWrapper(name = "structureGenerators")
-	@XmlElement(name = "structureGenerator")
 	private StructureGenerator[] structureGenerators;
 
 	public void initialize(long seed) {

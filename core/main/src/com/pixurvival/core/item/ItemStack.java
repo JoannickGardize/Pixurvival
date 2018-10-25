@@ -1,5 +1,7 @@
 package com.pixurvival.core.item;
 
+import java.io.Serializable;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -10,7 +12,9 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value
-public class ItemStack {
+public class ItemStack implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private @NonNull Item item;
 	private int quantity;
@@ -84,7 +88,7 @@ public class ItemStack {
 			if (pack == null) {
 				return null;
 			}
-			return new ItemStack(pack.getItemsById().get(itemId), quantity);
+			return new ItemStack(pack.getItems().get(itemId), quantity);
 		}
 
 	}

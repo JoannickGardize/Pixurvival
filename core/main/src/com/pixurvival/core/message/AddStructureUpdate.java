@@ -20,7 +20,7 @@ public class AddStructureUpdate extends StructureUpdate {
 
 	@Override
 	public void perform(Chunk chunk) {
-		Structure structure = chunk.getMap().getWorld().getContentPack().getStructuresById().get(structureId);
+		Structure structure = chunk.getMap().getWorld().getContentPack().getStructures().get(structureId);
 		if (chunk.isEmpty(getX(), getY(), structure.getDimensions().getWidth(),
 				structure.getDimensions().getHeight())) {
 			chunk.addStructure(structure, getX(), getY());

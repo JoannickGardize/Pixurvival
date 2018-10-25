@@ -40,14 +40,14 @@ public class TiledMap {
 
 	public TiledMap(World world) {
 		this.world = world;
-		world.getContentPack().getTilesById().forEach(t -> {
+		world.getContentPack().getTiles().forEach(t -> {
 			if (t.getName().equals("deepWater")) {
 				outsideTile = new EmptyTile(t);
 			}
 		});
 		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE
 				: GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
-		List<Tile> tilesById = world.getContentPack().getTilesById();
+		List<Tile> tilesById = world.getContentPack().getTiles();
 		mapTilesById = new MapTile[tilesById.size()];
 		for (int i = 0; i < tilesById.size(); i++) {
 			mapTilesById[i] = new EmptyTile(tilesById.get(i));
@@ -166,25 +166,21 @@ public class TiledMap {
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
-				synchronized (waitingStructureUpdates) {
-					Position position = new Position(structureUpdate.getX(), structureUpdate.getY());
-					List<StructureUpdate> waitingList = waitingStructureUpdates.get(position);
-					if (waitingList == null) {
-						waitingList = new ArrayList<>();
-						waitingStructureUpdates.put(position, waitingList);
-					}
-					waitingList.add(structureUpdate);
+				Position position = new Position(structureUpdate.getX(), structureUpdate.getY());
+				List<StructureUpdate> waitingList = waitingStructureUpdates.get(position);
+				if (waitingList == null) {
+					waitingList = new ArrayList<>();
+					waitingStructureUpdates.put(position, waitingList);
 				}
+				waitingList.add(structureUpdate);
 			} else {
 				structureUpdate.perform(chunk);
 			}
 		}
 	}
 
-	public List<StructureUpdate> pollStructureUpdates(Position chunkPosition) {
-		synchronized (waitingStructureUpdates) {
-			return waitingStructureUpdates.remove(chunkPosition);
-		}
+	private List<StructureUpdate> pollStructureUpdates(Position chunkPosition) {
+		return waitingStructureUpdates.remove(chunkPosition);
 	}
 
 	public int chunkCount() {

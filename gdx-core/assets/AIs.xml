@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AIs>
+	<AI name="pixieAI" initialBehavior="wander">
+
+		<behavior name="wander" type="wander">
+			<sleepTimeRange min="1" max="3" />
+			<walkTimeRange min="0.5" max="1.5" />
+			<changeCondition type="playerTooClose">
+				<distance>20</distance>
+				<to>runAway</to>
+			</changeCondition>
+		</behavior>
+
+		<behavior name="runAway" type="runAway">
+			<changeCondition type="playerTooFar">
+				<distance>20</distance>
+				<to>wander</to>
+			</changeCondition>
+		</behavior>
+
+	</AI>
+</AIs>
