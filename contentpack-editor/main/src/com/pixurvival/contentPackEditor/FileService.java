@@ -11,6 +11,8 @@ import java.util.zip.ZipOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
@@ -22,10 +24,12 @@ public class FileService {
 	private static @Getter FileService instance = new FileService();
 
 	private FileService() {
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		newContentPack();
 	}
 
-	private ContentPack currentContentPack;
-	private File currentFile;
+	private @Getter ContentPack currentContentPack;
+	private @Getter File currentFile;
 	private JFileChooser fileChooser = new JFileChooser();
 
 	public void newContentPack() {
@@ -33,13 +37,14 @@ public class FileService {
 			return;
 		}
 		currentContentPack = new ContentPack();
+		currentFile = null;
 	}
 
 	public void open() {
 		if (!savePrevious()) {
 			return;
 		}
-		int option = fileChooser.showOpenDialog(Context.getInstance().getFrame());
+		int option = fileChooser.showOpenDialog(null);
 		if (option != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
@@ -47,9 +52,9 @@ public class FileService {
 		try {
 			currentContentPack = loader.load(fileChooser.getSelectedFile());
 			currentFile = fileChooser.getSelectedFile();
+			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 		} catch (ContentPackException e) {
-			JOptionPane.showMessageDialog(Context.getInstance().getFrame(), e.toString(),
-					Context.getInstance().getBundle().getString("dialog.errorTitle"), JOptionPane.ERROR_MESSAGE);
+			Utils.showErrorDialog(e);
 		}
 	}
 
@@ -78,8 +83,7 @@ public class FileService {
 				zipOutputStream.close();
 			}
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(Context.getInstance().getFrame(), e.toString(),
-					Context.getInstance().getBundle().getString("dialog.errorTitle"), JOptionPane.ERROR_MESSAGE);
+			Utils.showErrorDialog(e);
 		}
 	}
 
@@ -91,8 +95,8 @@ public class FileService {
 
 	private boolean savePrevious() {
 		if (currentContentPack != null) {
-			int option = JOptionPane.showConfirmDialog(Context.getInstance().getFrame(),
-					Context.getInstance().getBundle().getString("dialog.unsavedContentPack"), "",
+			int option = JOptionPane.showConfirmDialog(null,
+					TranslationService.getInstance().getString("dialog.unsavedContentPack"), "",
 					JOptionPane.YES_NO_CANCEL_OPTION);
 			if (option == JOptionPane.CANCEL_OPTION) {
 				return false;
@@ -114,7 +118,7 @@ public class FileService {
 			fileChooser
 					.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
 		}
-		int option = fileChooser.showSaveDialog(Context.getInstance().getFrame());
+		int option = fileChooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {
 			currentFile = fileChooser.getSelectedFile();
 			return true;

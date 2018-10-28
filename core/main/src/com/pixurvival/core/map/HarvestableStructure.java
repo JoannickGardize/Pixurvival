@@ -7,6 +7,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.HarvestableStructureUpdate;
 import com.pixurvival.core.message.StructureUpdate;
@@ -36,8 +37,8 @@ public class HarvestableStructure extends MapStructure {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
 			getChunk().updateTimestamp();
-		}, getDefinition().getRespawnTime().next(world.getRandom()));
-		return getDefinition().getItemReward().produce(random);
+		}, ((Harvestable) getDefinition().getDetails()).getRespawnTime().next(world.getRandom()));
+		return ((Harvestable) getDefinition().getDetails()).getItemReward().produce(random);
 	}
 
 	@Override

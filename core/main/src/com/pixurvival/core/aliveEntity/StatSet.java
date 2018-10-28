@@ -3,7 +3,7 @@ package com.pixurvival.core.aliveEntity;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.pixurvival.core.item.EquipableItem;
+import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
 
 public class StatSet implements EquipmentListener {
@@ -32,11 +32,11 @@ public class StatSet implements EquipmentListener {
 	@Override
 	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack,
 			ItemStack newItemStack) {
-		if (newItemStack != null && newItemStack.getItem() instanceof EquipableItem) {
-			EquipableItem equipableItem = (EquipableItem) newItemStack.getItem();
-			stats.get(StatType.STRENGTH).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
-			stats.get(StatType.AGILITY).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
-			stats.get(StatType.INTELLIGENCE).setEquipmentBonus(equipmentIndex, equipableItem.getStrengthBonus());
+		if (newItemStack != null && newItemStack.getItem() instanceof EquipmentHolder) {
+			Item.Equipable equipable = (Item.Equipable) newItemStack.getItem().getDetails();
+			stats.get(StatType.STRENGTH).setEquipmentBonus(equipmentIndex, equipable.getStrengthBonus());
+			stats.get(StatType.AGILITY).setEquipmentBonus(equipmentIndex, equipable.getStrengthBonus());
+			stats.get(StatType.INTELLIGENCE).setEquipmentBonus(equipmentIndex, equipable.getStrengthBonus());
 		}
 	}
 }

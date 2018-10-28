@@ -1,14 +1,18 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.pixurvival.core.contentPack.NamedElement;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class MapGenerator extends NamedElement implements Serializable {
 
@@ -18,7 +22,7 @@ public class MapGenerator extends NamedElement implements Serializable {
 
 	private Tile defaultTile;
 
-	private TileGenerator[] tileGenerators;
+	private List<TileGenerator> tileGenerators = new ArrayList<>();
 
 	private StructureGenerator[] structureGenerators;
 

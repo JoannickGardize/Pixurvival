@@ -1,15 +1,18 @@
 package com.pixurvival.core.contentPack.item;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.item.ItemStack;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class ItemCraft extends NamedElement implements Serializable {
 
@@ -21,5 +24,5 @@ public class ItemCraft extends NamedElement implements Serializable {
 
 	private ItemStack result;
 
-	private ItemStack[] recipes;
+	private List<ItemStack> recipes = new ArrayList<>();
 }

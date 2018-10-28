@@ -7,10 +7,12 @@ import java.util.Map;
 
 import com.pixurvival.core.contentPack.NamedElement;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class AnimationTemplate extends NamedElement implements Serializable {
 

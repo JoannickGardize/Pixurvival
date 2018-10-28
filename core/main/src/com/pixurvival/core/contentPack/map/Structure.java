@@ -8,13 +8,38 @@ import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class Structure extends NamedElement implements Serializable {
+
+	public static interface Details extends Serializable {
+
+	}
+
+	@Getter
+	@Setter
+	public static class Harvestable implements Details {
+
+		private static final long serialVersionUID = 1L;
+
+		private ItemReward itemReward;
+		private double harvestingTime;
+		private DoubleInterval respawnTime;
+	}
+
+	@Getter
+	@Setter
+	public static class ShortLived implements Details {
+
+		private static final long serialVersionUID = 1L;
+
+		private double duration;
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,11 +53,5 @@ public class Structure extends NamedElement implements Serializable {
 
 	private Dimensions dimensions = new Dimensions(1, 1);
 
-	private double harvestingTime;
-
-	private DoubleInterval respawnTime;
-
-	private ItemReward itemReward;
-
-	private double duration;
+	private Details details;
 }

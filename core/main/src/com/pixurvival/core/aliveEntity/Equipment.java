@@ -6,10 +6,10 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.item.AccessoryItem;
-import com.pixurvival.core.item.ClothingItem;
+import com.pixurvival.core.item.Item.Accessory;
+import com.pixurvival.core.item.Item.Clothing;
+import com.pixurvival.core.item.Item.Weapon;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.WeaponItem;
 
 public class Equipment {
 
@@ -85,13 +85,13 @@ public class Equipment {
 
 		switch (index) {
 		case WEAPON_INDEX:
-			return itemStack.getItem() instanceof WeaponItem;
+			return itemStack.getItem().getDetails() instanceof Weapon;
 		case CLOTHING_INDEX:
-			return itemStack.getItem() instanceof ClothingItem;
+			return itemStack.getItem().getDetails() instanceof Clothing;
 		case ACCESSORY1_INDEX:
-			return itemStack.getItem() instanceof AccessoryItem;
+			return itemStack.getItem().getDetails() instanceof Accessory;
 		case ACCESSORY2_INDEX:
-			return itemStack.getItem() instanceof AccessoryItem;
+			return itemStack.getItem().getDetails() instanceof Accessory;
 		default:
 			return false;
 		}

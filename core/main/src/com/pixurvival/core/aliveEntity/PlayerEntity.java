@@ -23,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipable {
+public class PlayerEntity extends AliveEntity implements InventoryHolder, EquipmentHolder {
 
 	private @Setter Activity activity = Activity.NONE;
 

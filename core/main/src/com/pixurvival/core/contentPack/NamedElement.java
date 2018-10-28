@@ -3,14 +3,18 @@ package com.pixurvival.core.contentPack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public abstract class NamedElement {
 
 	@Getter
+	@Setter
 	private String name;
 
+	@Override
+	public final String toString() {
+		return name;
+	}
 }

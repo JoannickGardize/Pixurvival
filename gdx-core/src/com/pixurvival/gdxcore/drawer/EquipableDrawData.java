@@ -1,6 +1,6 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.pixurvival.core.aliveEntity.Equipable;
+import com.pixurvival.core.aliveEntity.EquipmentHolder;
 import com.pixurvival.core.aliveEntity.Equipment;
 import com.pixurvival.core.aliveEntity.EquipmentListener;
 import com.pixurvival.core.item.ClothingItem;
@@ -19,7 +19,7 @@ public class EquipableDrawData extends DrawData implements EquipmentListener {
 	private TextureAnimationSet clothingTexture;
 	private TextureAnimationSet weaponTexture;
 
-	public EquipableDrawData(Equipable e) {
+	public EquipableDrawData(EquipmentHolder e) {
 		e.getEquipment().addListener(this);
 		updateClothing(e.getEquipment().getClothing());
 		updateWeapon(e.getEquipment().getWeapon());

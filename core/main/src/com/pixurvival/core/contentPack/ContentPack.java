@@ -11,6 +11,7 @@ import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
@@ -26,17 +27,18 @@ public class ContentPack implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient Map<String, byte[]> resources = new HashMap<>();
+	private transient @Getter Map<String, byte[]> resources = new HashMap<>();
 
-	private ContentPackIdentifier identifier;
+	private ContentPackIdentifier identifier = new ContentPackIdentifier();
 	private List<SpriteSheet> spriteSheets = new ArrayList<>();
-	private List<Tile> tiles = new ArrayList<>();
+	private List<AnimationTemplate> animationTemplates = new ArrayList<>();
+	private List<EquipmentOffset> equipmentOffsets = new ArrayList<>();
 	private List<Item> items = new ArrayList<>();
+	private List<ItemCraft> itemCrafts = new ArrayList<>();
 	private List<ItemReward> itemRewards = new ArrayList<>();
+	private List<Tile> tiles = new ArrayList<>();
 	private List<Structure> structures = new ArrayList<>();
 	private List<MapGenerator> mapGenerators = new ArrayList<>();
-	private List<ItemCraft> itemCrafts = new ArrayList<>();
-	private List<EquipmentOffset> equipmentOffsets = new ArrayList<>();
 	private Constants constants = new Constants();
 
 	public byte[] getResource(String resource) {

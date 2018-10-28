@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.item.ItemStack;
 
 import lombok.Data;
+import lombok.Getter;
 
 public class ItemReward extends NamedElement implements Serializable {
 
@@ -25,7 +26,7 @@ public class ItemReward extends NamedElement implements Serializable {
 
 	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(() -> new ArrayList<>());
 
-	private List<Entry> entries;
+	private @Getter List<Entry> entries = new ArrayList<>();
 
 	public ItemStack[] produce(Random random) {
 		List<ItemStack> result = tmpLists.get();

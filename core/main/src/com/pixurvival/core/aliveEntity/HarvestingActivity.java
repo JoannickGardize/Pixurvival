@@ -2,6 +2,7 @@ package com.pixurvival.core.aliveEntity;
 
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
@@ -15,7 +16,7 @@ public class HarvestingActivity extends WorkActivity {
 	private ActionAnimation animation;
 
 	public HarvestingActivity(PlayerEntity entity, HarvestableStructure structure) {
-		super(entity, structure.getDefinition().getHarvestingTime());
+		super(entity, ((Harvestable) structure.getDefinition().getDetails()).getHarvestingTime());
 		this.structure = structure;
 		animation = ActionAnimation.getMoveFromDirection(Direction.closestCardinal(entity.angleTo(structure)));
 	}

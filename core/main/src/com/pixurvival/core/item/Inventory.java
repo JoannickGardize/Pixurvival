@@ -1,6 +1,7 @@
 package com.pixurvival.core.item;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -52,7 +53,7 @@ public class Inventory {
 		return itemStack;
 	}
 
-	public boolean contains(ItemStack... itemStacks) {
+	public boolean contains(Collection<ItemStack> itemStacks) {
 		for (ItemStack itemStack : itemStacks) {
 			if (totalOf(itemStack.getItem()) < itemStack.getQuantity()) {
 				return false;
@@ -84,7 +85,7 @@ public class Inventory {
 	 * @return True if the itemStacks were available and has been removed, false
 	 *         overwise.
 	 */
-	public boolean remove(ItemStack... itemStacks) {
+	public boolean remove(Collection<ItemStack> itemStacks) {
 		if (!contains(itemStacks)) {
 			return false;
 		}

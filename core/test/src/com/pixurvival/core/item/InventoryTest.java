@@ -1,5 +1,8 @@
 package com.pixurvival.core.item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,9 +51,12 @@ public class InventoryTest {
 		inventory.setSlot(3, new ItemStack(itemA, 5));
 
 		ItemStack itemStack = new ItemStack(itemA, 7);
-		Assert.assertTrue(inventory.remove(itemStack));
+		List<ItemStack> list = new ArrayList<>();
+		list.add(itemStack);
+		Assert.assertTrue(inventory.remove(list));
 		itemStack = new ItemStack(itemB, 2);
-		Assert.assertFalse(inventory.remove(itemStack));
+		list.set(0, itemStack);
+		Assert.assertFalse(inventory.remove(list));
 
 		Assert.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(0));
 		Assert.assertEquals(new ItemStack(itemA, 3), inventory.getSlot(1));

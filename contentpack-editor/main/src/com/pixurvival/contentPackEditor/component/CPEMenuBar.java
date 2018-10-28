@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor;
+package com.pixurvival.contentPackEditor.component;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -8,23 +8,30 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import com.pixurvival.contentPackEditor.FileService;
+import com.pixurvival.contentPackEditor.TranslationService;
+
 public class CPEMenuBar extends JMenuBar {
 
 	private static final long serialVersionUID = 1L;
 
 	public CPEMenuBar() {
 		FileService fs = FileService.getInstance();
+		final ResourcesDialog resourcesDialog = new ResourcesDialog();
 		addItem("file.new", () -> fs.newContentPack());
 		addItem("file.open", () -> fs.open());
 		addItem("file.save", () -> fs.save());
 		addItem("file.saveAs", () -> fs.saveAs());
+		addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
+		addItem("contentPack.constants", () -> {
+		});
 	}
 
 	private void addItem(String path, Runnable action) {
 		String[] split = path.split("\\.");
 		String textKey = "menuBar." + path;
 		JMenuItem item = findOrCreate(this, split, 0);
-		item.setText(Context.getInstance().getBundle().getString(textKey));
+		item.setText(TranslationService.getInstance().getString(textKey));
 		item.addActionListener(l -> action.run());
 	}
 
@@ -51,7 +58,7 @@ public class CPEMenuBar extends JMenuBar {
 		} else {
 			JMenu item = new JMenu();
 			item.setName(currentName);
-			item.setText(Context.getInstance().getBundle()
+			item.setText(TranslationService.getInstance()
 					.getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
 			addTo(component, item);
 			return findOrCreate(item, split, index + 1);

@@ -20,8 +20,8 @@ public class ContentPackIdentifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
-	private Version version;
+	private String name = "MyContentPack";
+	private Version version = new Version(1, 0);
 
 	public ContentPackIdentifier(ContentPackIdentifier other) {
 		name = other.name;

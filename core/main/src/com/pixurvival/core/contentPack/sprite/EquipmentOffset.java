@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.NamedElement;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 public class EquipmentOffset extends NamedElement implements Serializable {
 

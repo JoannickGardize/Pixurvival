@@ -1,6 +1,6 @@
 package com.pixurvival.core.aliveEntity;
 
-public interface Equipable {
+public interface EquipmentHolder {
 
 	Equipment getEquipment();
 }

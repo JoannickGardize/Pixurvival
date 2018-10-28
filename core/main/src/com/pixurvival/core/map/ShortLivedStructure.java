@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.map.Structure.ShortLived;
 import com.pixurvival.core.message.StructureUpdate;
 
 public class ShortLivedStructure extends MapStructure {
@@ -19,7 +20,7 @@ public class ShortLivedStructure extends MapStructure {
 						&& ((TileAndStructure) tile).getStructure() == ShortLivedStructure.this) {
 					chunk.removeStructure(x, y);
 				}
-			}, definition.getDuration());
+			}, ((ShortLived) definition.getDetails()).getDuration());
 		}
 	}
 
