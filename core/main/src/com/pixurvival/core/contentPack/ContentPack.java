@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class ContentPack implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient @Getter Map<String, byte[]> resources = new HashMap<>();
+	private transient Map<String, byte[]> resources;
 
 	private ContentPackIdentifier identifier = new ContentPackIdentifier();
 	private List<SpriteSheet> spriteSheets = new ArrayList<>();
@@ -42,11 +43,25 @@ public class ContentPack implements Serializable {
 	private Constants constants = new Constants();
 
 	public byte[] getResource(String resource) {
+		if (resources == null) {
+			return null;
+		}
 		return resources.get(resource);
 	}
 
 	public void addResource(String resource, byte[] data) {
+		if (resources == null) {
+			resources = new HashMap<>();
+		}
 		resources.put(resource, data);
+	}
+
+	public Map<String, byte[]> getResources() {
+		if (resources == null) {
+			return Collections.emptyMap();
+		} else {
+			return resources;
+		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.util;
 
 import javax.swing.JButton;
 

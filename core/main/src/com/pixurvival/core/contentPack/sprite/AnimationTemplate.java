@@ -1,6 +1,5 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -14,11 +13,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class AnimationTemplate extends NamedElement implements Serializable {
+public class AnimationTemplate extends NamedElement {
 
 	private static final long serialVersionUID = 1L;
-
-	private double frameDuration = 1;
 
 	private Map<ActionAnimation, Animation> animations = new EnumMap<>(ActionAnimation.class);
 

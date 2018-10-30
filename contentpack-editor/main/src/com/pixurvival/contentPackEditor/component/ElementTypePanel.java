@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.core.contentPack.NamedElement;
 
 public class ElementTypePanel<E extends NamedElement> extends JPanel {
@@ -16,13 +17,19 @@ public class ElementTypePanel<E extends NamedElement> extends JPanel {
 	@SuppressWarnings("unchecked")
 	public ElementTypePanel(ElementType elementType) {
 		elementList = new ElementList<>(elementType);
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(10, 0));
 		add(elementList, BorderLayout.WEST);
 		try {
 			elementEditor = (ElementEditor<E>) elementType.getElementEditor().newInstance();
+			elementEditor.setVisible(false);
 			add(elementEditor, BorderLayout.CENTER);
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		elementList.addListSelectionListener(e -> {
+			E element = elementList.getSelectedElement();
+			elementEditor.setVisible(element != null);
+			elementEditor.setValue(element);
+		});
 	}
 }

@@ -1,17 +1,23 @@
 package com.pixurvival.core.contentPack;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class NamedElement {
+public abstract class NamedElement implements Serializable {
 
-	@Getter
-	@Setter
+	private static final long serialVersionUID = 1L;
+
 	private String name;
+
+	private int index;
 
 	@Override
 	public final String toString() {

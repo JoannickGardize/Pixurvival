@@ -16,7 +16,8 @@ import javax.swing.JScrollPane;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
-import com.pixurvival.contentPackEditor.event.EventHandler;
+import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
 
@@ -64,7 +65,7 @@ public class ResourcesDialog extends JDialog {
 		pack();
 	}
 
-	@EventHandler
+	@EventListener
 	public void resourceListChanged(ResourceListChangedEvent event) {
 		DefaultListModel<ResourceEntry> model = (DefaultListModel<ResourceEntry>) resourceList.getModel();
 		model.clear();

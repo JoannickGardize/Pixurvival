@@ -38,6 +38,7 @@ public class FileService {
 		}
 		currentContentPack = new ContentPack();
 		currentFile = null;
+		EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 	}
 
 	public void open() {
@@ -52,6 +53,7 @@ public class FileService {
 		try {
 			currentContentPack = loader.load(fileChooser.getSelectedFile());
 			currentFile = fileChooser.getSelectedFile();
+			ResourcesService.getInstance().loadContentPack(currentContentPack);
 			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 		} catch (ContentPackException e) {
 			Utils.showErrorDialog(e);
@@ -111,10 +113,7 @@ public class FileService {
 		if (currentContentPack == null) {
 			return false;
 		}
-		if (currentFile == null) {
-			fileChooser.setSelectedFile(
-					new File(System.getProperty("user.home"), currentContentPack.getIdentifier().fileName()));
-		} else {
+		if (currentFile != null) {
 			fileChooser
 					.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
 		}

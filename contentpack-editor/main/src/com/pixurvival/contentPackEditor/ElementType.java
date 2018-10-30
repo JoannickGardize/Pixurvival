@@ -1,6 +1,10 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor;
 
-import com.pixurvival.contentPackEditor.TranslationService;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.pixurvival.contentPackEditor.component.ElementEditor;
+import com.pixurvival.contentPackEditor.component.SpriteSheetEditor;
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
@@ -28,11 +32,23 @@ public enum ElementType {
 	STRUCTURE(Structure.class, SpriteSheetEditor.class),
 	MAP_GENERATOR(MapGenerator.class, SpriteSheetEditor.class);
 
+	private static Map<Class<? extends NamedElement>, ElementType> classToType = new HashMap<>();
+
+	static {
+		for (ElementType type : ElementType.values()) {
+			classToType.put(type.getElementClass(), type);
+		}
+	}
+
 	private @Getter Class<? extends NamedElement> elementClass;
 	private @Getter Class<? extends ElementEditor<?>> elementEditor;
 
 	@Override
 	public String toString() {
 		return TranslationService.getInstance().getString("elementType." + CaseUtils.upperToCamelCase(name()));
+	}
+
+	public static ElementType typeOf(NamedElement element) {
+		return classToType.get(element.getClass());
 	}
 }

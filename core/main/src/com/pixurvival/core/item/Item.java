@@ -2,7 +2,9 @@ package com.pixurvival.core.item;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.ElementReference;
 import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.ResourceReference;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
@@ -30,6 +32,7 @@ public class Item extends NamedElement implements Serializable {
 		private float strengthBonus;
 		private float agilityBonus;
 		private float intelligenceBonus;
+		@ElementReference
 		private SpriteSheet spriteSheet;
 
 	}
@@ -76,6 +79,7 @@ public class Item extends NamedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
+		@ElementReference
 		private Structure structure;
 
 	}
@@ -85,10 +89,11 @@ public class Item extends NamedElement implements Serializable {
 	private short id;
 	private int maxStackSize;
 	private Frame frame;
+	@ResourceReference
 	private String image;
 	private Details details;
 
-	public Item(String name) {
-		super(name);
+	public Item(String name, int index) {
+		super(name, index);
 	}
 }

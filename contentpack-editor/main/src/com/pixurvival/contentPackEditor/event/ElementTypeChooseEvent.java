@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor.event;
 
-import com.pixurvival.contentPackEditor.component.ElementType;
+import com.pixurvival.contentPackEditor.ElementType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

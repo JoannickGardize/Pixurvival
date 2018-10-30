@@ -41,7 +41,7 @@ public class EventManager {
 	@SuppressWarnings("unchecked")
 	public synchronized void register(Object object) {
 		for (Method method : object.getClass().getMethods()) {
-			if (method.isAnnotationPresent(EventHandler.class) && method.getParameterTypes().length == 1
+			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1
 					&& Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
 				List<MethodRegistration> list = registrations.get(method.getParameterTypes()[0]);
 				if (list == null) {

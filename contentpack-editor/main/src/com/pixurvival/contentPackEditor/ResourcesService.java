@@ -1,6 +1,5 @@
 package com.pixurvival.contentPackEditor;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,12 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventHandler;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -30,11 +26,22 @@ public class ResourcesService {
 	private JFileChooser fileChooser = new JFileChooser();
 
 	private ResourcesService() {
-		EventManager.getInstance().register(this);
 	}
 
 	public Collection<ResourceEntry> getResources() {
 		return resources.values();
+	}
+
+	public ResourceEntry getResource(String name) {
+		return resources.get(name);
+	}
+
+	public boolean containsResource(String name) {
+		if (name == null) {
+			return false;
+		} else {
+			return resources.containsKey(name);
+		}
 	}
 
 	public void addResource() {
@@ -58,8 +65,7 @@ public class ResourcesService {
 		}
 		try {
 			byte[] data = FileUtils.readBytes(fileChooser.getSelectedFile());
-			resources.put(name, new ResourceEntry(name, data, loadPreview(name, data)));
-			contentPack.addResource(name, data);
+			putResource(name, data);
 			EventManager.getInstance().fire(new ResourceListChangedEvent());
 		} catch (IOException e) {
 			Utils.showErrorDialog(e);
@@ -92,7 +98,7 @@ public class ResourcesService {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				resources.put(name, new ResourceEntry(name, data, loadPreview(name, data)));
+				putResource(name, data);
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -101,30 +107,18 @@ public class ResourcesService {
 		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}
 
-	@EventHandler
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
+	public void loadContentPack(ContentPack contentPack) {
 		resources.clear();
-		for (Entry<String, byte[]> entry : event.getContentPack().getResources().entrySet()) {
+		for (Entry<String, byte[]> entry : contentPack.getResources().entrySet()) {
 			String name = entry.getKey();
 			byte[] data = entry.getValue();
-			resources.put(name, new ResourceEntry(name, data, loadPreview(name, data)));
+			resources.put(name, new ResourceEntry(name, data));
 		}
 		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}
 
-	private Object loadPreview(String name, byte[] data) {
-		Object preview = null;
-		int dotIndex = name.lastIndexOf('.');
-		if (dotIndex != -1) {
-			String extension = name.substring(dotIndex + 1);
-			if ("png".equalsIgnoreCase(extension)) {
-				try {
-					preview = ImageIO.read(new ByteArrayInputStream(data));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return preview;
+	private void putResource(String name, byte[] data) {
+		resources.put(name, new ResourceEntry(name, data));
+		FileService.getInstance().getCurrentContentPack().addResource(name, data);
 	}
 }

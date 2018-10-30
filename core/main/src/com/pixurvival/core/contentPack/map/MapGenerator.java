@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.pixurvival.core.contentPack.ElementReference;
 import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class MapGenerator extends NamedElement implements Serializable {
 
 	private Heightmap[] heightmaps;
 
+	@ElementReference
 	private Tile defaultTile;
 
 	private List<TileGenerator> tileGenerators = new ArrayList<>();

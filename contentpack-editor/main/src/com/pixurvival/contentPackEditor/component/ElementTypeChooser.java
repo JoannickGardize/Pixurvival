@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 

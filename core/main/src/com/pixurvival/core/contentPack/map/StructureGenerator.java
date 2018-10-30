@@ -17,7 +17,7 @@ public class StructureGenerator implements Serializable {
 	private StructureGeneratorEntry[] structureGeneratorEntries;
 	private double probabilityFactor;
 
-	private NavigableMap<Double, Structure> structureChooseMap;
+	private transient NavigableMap<Double, Structure> structureChooseMap;
 
 	private double density;
 
