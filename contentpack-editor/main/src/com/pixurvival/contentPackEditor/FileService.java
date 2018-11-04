@@ -25,7 +25,6 @@ public class FileService {
 
 	private FileService() {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		newContentPack();
 	}
 
 	private @Getter ContentPack currentContentPack;
@@ -97,9 +96,7 @@ public class FileService {
 
 	private boolean savePrevious() {
 		if (currentContentPack != null) {
-			int option = JOptionPane.showConfirmDialog(null,
-					TranslationService.getInstance().getString("dialog.unsavedContentPack"), "",
-					JOptionPane.YES_NO_CANCEL_OPTION);
+			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.unsavedContentPack"), "", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (option == JOptionPane.CANCEL_OPTION) {
 				return false;
 			} else if (option == JOptionPane.OK_OPTION) {
@@ -114,8 +111,7 @@ public class FileService {
 			return false;
 		}
 		if (currentFile != null) {
-			fileChooser
-					.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
+			fileChooser.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
 		}
 		int option = fileChooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {

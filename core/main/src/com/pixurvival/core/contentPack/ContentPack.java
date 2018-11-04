@@ -28,9 +28,12 @@ public class ContentPack implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private ContentPackIdentifier identifier = new ContentPackIdentifier();
+
 	private transient Map<String, byte[]> resources;
 
-	private ContentPackIdentifier identifier = new ContentPackIdentifier();
+	private Constants constants = new Constants();
+
 	private List<SpriteSheet> spriteSheets = new ArrayList<>();
 	private List<AnimationTemplate> animationTemplates = new ArrayList<>();
 	private List<EquipmentOffset> equipmentOffsets = new ArrayList<>();
@@ -40,7 +43,6 @@ public class ContentPack implements Serializable {
 	private List<Tile> tiles = new ArrayList<>();
 	private List<Structure> structures = new ArrayList<>();
 	private List<MapGenerator> mapGenerators = new ArrayList<>();
-	private Constants constants = new Constants();
 
 	public byte[] getResource(String resource) {
 		if (resources == null) {

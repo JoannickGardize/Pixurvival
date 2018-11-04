@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pixurvival.contentPackEditor.component.AnimationTemplateEditor;
 import com.pixurvival.contentPackEditor.component.ElementEditor;
 import com.pixurvival.contentPackEditor.component.SpriteSheetEditor;
 import com.pixurvival.core.contentPack.NamedElement;
@@ -23,7 +24,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ElementType {
 	SPRITE_SHEET(SpriteSheet.class, SpriteSheetEditor.class),
-	ANIMATION_TEMPLATE(AnimationTemplate.class, SpriteSheetEditor.class),
+	ANIMATION_TEMPLATE(AnimationTemplate.class, AnimationTemplateEditor.class),
 	EQUIPMENT_OFFSET(EquipmentOffset.class, SpriteSheetEditor.class),
 	ITEM(Item.class, SpriteSheetEditor.class),
 	ITEM_CRAFT(ItemCraft.class, SpriteSheetEditor.class),

@@ -17,7 +17,7 @@ public class ElementTypePanel<E extends NamedElement> extends JPanel {
 	@SuppressWarnings("unchecked")
 	public ElementTypePanel(ElementType elementType) {
 		elementList = new ElementList<>(elementType);
-		setLayout(new BorderLayout(10, 0));
+		setLayout(new BorderLayout());
 		add(elementList, BorderLayout.WEST);
 		try {
 			elementEditor = (ElementEditor<E>) elementType.getElementEditor().newInstance();
@@ -29,7 +29,9 @@ public class ElementTypePanel<E extends NamedElement> extends JPanel {
 		elementList.addListSelectionListener(e -> {
 			E element = elementList.getSelectedElement();
 			elementEditor.setVisible(element != null);
-			elementEditor.setValue(element);
+			if (element != null) {
+				elementEditor.setValue(element);
+			}
 		});
 	}
 }

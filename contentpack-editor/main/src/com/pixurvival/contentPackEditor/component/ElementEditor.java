@@ -10,9 +10,6 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.util.ValueComponent;
-import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
-import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,18 +29,6 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	private @Getter E value;
 	private List<SubValueEntry<?>> subValues = new ArrayList<>();
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
-
-	protected <T> void addSubValue(ValueComponent<T> component, Consumer<E> parentUpdate,
-			BiConsumer<E, T> childUpdate) {
-		subValues.add(new SubValueEntry<>(component, parentUpdate, childUpdate));
-		component.addValueChangeListener(v -> {
-			if (value != null) {
-				childUpdate.accept(value, v);
-				notifyValueChanged();
-			}
-			valueChanged();
-		});
-	}
 
 	@Override
 	public void setValue(E value) {
@@ -83,11 +68,19 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		listeners.add(listener);
 	}
 
-	private void notifyValueChanged() {
+	protected <T> void addSubValue(ValueComponent<T> component, Consumer<E> parentUpdate, BiConsumer<E, T> childUpdate) {
+		subValues.add(new SubValueEntry<>(component, parentUpdate, childUpdate));
+		component.addValueChangeListener(v -> {
+			if (value != null) {
+				childUpdate.accept(value, v);
+				notifyValueChanged();
+			}
+			valueChanged();
+		});
+	}
+
+	protected void notifyValueChanged() {
 		listeners.forEach(l -> l.valueChanged(value));
-		if (value instanceof NamedElement) {
-			EventManager.getInstance().fire(new ElementChangedEvent((NamedElement) value, isValueValid()));
-		}
 	}
 
 	protected void valueChanged() {

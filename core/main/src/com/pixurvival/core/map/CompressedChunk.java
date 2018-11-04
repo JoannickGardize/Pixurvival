@@ -32,7 +32,7 @@ public class CompressedChunk {
 			if (tile != currentTile || currentLength == Byte.MAX_VALUE) {
 				if (currentTile != null) {
 					buffer.put(currentLength);
-					buffer.put(currentTile.getTileDefinition().getId());
+					buffer.put((byte) currentTile.getTileDefinition().getId());
 				}
 				currentLength = 1;
 				currentTile = tile;
@@ -41,10 +41,10 @@ public class CompressedChunk {
 			}
 		}
 		buffer.put(currentLength);
-		buffer.put(currentTile.getTileDefinition().getId());
+		buffer.put((byte) currentTile.getTileDefinition().getId());
 		buffer.putShort((short) chunk.getStructures().size());
 		for (MapStructure structure : chunk.getStructures()) {
-			buffer.put(structure.getDefinition().getId());
+			buffer.put((byte) structure.getDefinition().getId());
 			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
 			buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
 			structure.writeData(buffer);
@@ -69,9 +69,7 @@ public class CompressedChunk {
 		}
 		int structureCount = buffer.getShort();
 		for (int i = 0; i < structureCount; i++) {
-			MapStructure structure = chunk.addStructure(
-					map.getWorld().getContentPack().getStructures().get(buffer.get()),
-					buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
+			MapStructure structure = chunk.addStructure(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
 			structure.applyData(buffer);
 		}
 		chunk.setCompressed(this);

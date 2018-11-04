@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.Dimensions;
 import com.pixurvival.core.contentPack.DoubleInterval;
-import com.pixurvival.core.contentPack.ElementReference;
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -28,7 +27,6 @@ public class Structure extends NamedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		@ElementReference
 		private ItemReward itemReward;
 		private double harvestingTime;
 		private DoubleInterval respawnTime;
@@ -45,16 +43,14 @@ public class Structure extends NamedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private @Setter byte id;
-
 	private StructureType type;
 
 	private boolean solid;
 
-	@ElementReference
 	private SpriteSheet spriteSheet;
 
 	private Dimensions dimensions = new Dimensions(1, 1);
 
 	private Details details;
+
 }

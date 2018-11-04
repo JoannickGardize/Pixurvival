@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.TitledBorder;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
@@ -21,7 +20,7 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
-public class SpriteSheetEditor extends ElementEditor<SpriteSheet> {
+public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +30,7 @@ public class SpriteSheetEditor extends ElementEditor<SpriteSheet> {
 	private ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(e -> null);
 	private ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(e -> null);
 	private JTabbedPane previewTabs = new JTabbedPane();
-	private ResourcePreview preview = new ResourcePreview(true);
+	private SpriteSheetPreview preview = new SpriteSheetPreview();
 
 	public SpriteSheetEditor() {
 		EventManager.getInstance().register(this);
@@ -39,7 +38,7 @@ public class SpriteSheetEditor extends ElementEditor<SpriteSheet> {
 		// Contruction
 		imageField.setItems(ResourcesService.getInstance().getResources());
 
-		previewTabs.setBorder(new TitledBorder(TranslationService.getInstance().getString("generic.preview")));
+		previewTabs.setBorder(LayoutUtils.createGroupBorder("generic.preview"));
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
 		// Binding
@@ -51,13 +50,14 @@ public class SpriteSheetEditor extends ElementEditor<SpriteSheet> {
 
 		// Layouting
 		JPanel propertiesPanel = new JPanel(new GridBagLayout());
-		propertiesPanel.setBorder(new TitledBorder(TranslationService.getInstance().getString("generic.properties")));
+		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets.top = 3;
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "generic.image", imageField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.width", widthField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.height", heightField, gbc);
+		LayoutUtils.addHorizontalSeparator(propertiesPanel, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.animationTemplate", animationTemplateField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.equipmentOffset", equipmentOffsetField, gbc);
 		LayoutUtils.addEmptyFiller(propertiesPanel, gbc);
@@ -75,9 +75,6 @@ public class SpriteSheetEditor extends ElementEditor<SpriteSheet> {
 
 	@Override
 	protected void valueChanged() {
-		Object o = imageField.getValue() == null ? null : imageField.getValue().getPreview();
-		int width = widthField.getValue() == null ? 0 : widthField.getValue();
-		int height = heightField.getValue() == null ? 0 : heightField.getValue();
-		preview.set(o, width, height);
+		preview.setSpriteSheet(getValue());
 	}
 }

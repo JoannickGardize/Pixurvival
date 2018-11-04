@@ -17,7 +17,7 @@ public abstract class NamedElement implements Serializable {
 
 	private String name;
 
-	private int index;
+	private int id;
 
 	@Override
 	public final String toString() {

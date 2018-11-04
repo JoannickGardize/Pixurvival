@@ -18,11 +18,10 @@ public class ItemCraft extends NamedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private @Setter byte id;
-
 	private double duration;
 
 	private ItemStack result;
 
 	private List<ItemStack> recipes = new ArrayList<>();
+
 }

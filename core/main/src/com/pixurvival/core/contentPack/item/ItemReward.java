@@ -38,4 +38,5 @@ public class ItemReward extends NamedElement implements Serializable {
 		}
 		return result.toArray(new ItemStack[result.size()]);
 	}
+
 }

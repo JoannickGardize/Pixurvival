@@ -10,6 +10,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.Getter;
@@ -53,5 +54,10 @@ public class ResourceEntry extends NamedElement {
 			icon = new ImageIcon(resizedImg);
 		}
 
+	}
+
+	@Override
+	public boolean isValid(ContentPack cotentPack) {
+		return data != null;
 	}
 }

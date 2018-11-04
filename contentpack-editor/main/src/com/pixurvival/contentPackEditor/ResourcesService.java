@@ -33,7 +33,11 @@ public class ResourcesService {
 	}
 
 	public ResourceEntry getResource(String name) {
-		return resources.get(name);
+		if (name == null) {
+			return null;
+		} else {
+			return resources.get(name);
+		}
 	}
 
 	public boolean containsResource(String name) {
@@ -49,8 +53,7 @@ public class ResourcesService {
 		if (contentPack == null) {
 			return;
 		}
-		String name = JOptionPane
-				.showInputDialog(TranslationService.getInstance().getString("resources.name.chooseNameMessage"));
+		String name = JOptionPane.showInputDialog(TranslationService.getInstance().getString("resources.name.chooseNameMessage"));
 		if (name == null) {
 			return;
 		}
@@ -81,8 +84,7 @@ public class ResourcesService {
 			String message = TranslationService.getInstance().getString("resources.importFolder.whatToDoWithPrevious");
 			String merge = TranslationService.getInstance().getString("resources.importFolder.merge");
 			String replace = TranslationService.getInstance().getString("resources.importFolder.replace");
-			int option = JOptionPane.showOptionDialog(null, message, "", JOptionPane.OK_CANCEL_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null, new String[] { merge, replace }, 0);
+			int option = JOptionPane.showOptionDialog(null, message, "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[] { merge, replace }, 0);
 			if (option == 1) {
 				resources.clear();
 			}

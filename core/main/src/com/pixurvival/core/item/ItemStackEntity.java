@@ -54,8 +54,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	public void spawnRandom() {
-		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
-				getWorld().getRandom().nextDouble() * Math.PI * 2);
+		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS, getWorld().getRandom().nextDouble() * Math.PI * 2);
 	}
 
 	@Override
@@ -129,7 +128,7 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer) {
-		buffer.putShort(itemStack.getItem().getId());
+		buffer.putShort((short) itemStack.getItem().getId());
 		buffer.putShort((short) itemStack.getQuantity());
 		buffer.putDouble(getPosition().x);
 		buffer.putDouble(getPosition().y);

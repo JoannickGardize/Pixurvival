@@ -70,8 +70,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 		case SPLIT_CLICK_MY_INVENTORY:
 			ItemStack currentContent = inventory.getSlot(actionRequest.getSlotIndex());
 			ItemStack heldItemStack = inventory.getHeldItemStack();
-			if (heldItemStack != null && currentContent != null
-					&& heldItemStack.getItem() == currentContent.getItem()) {
+			if (heldItemStack != null && currentContent != null && heldItemStack.getItem() == currentContent.getItem()) {
 				if (currentContent.overflowingQuantity(1) == 0) {
 					inventory.setSlot(actionRequest.getSlotIndex(), currentContent.add(1));
 					if (heldItemStack.getQuantity() == 1) {
@@ -122,8 +121,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 	}
 
 	public void apply(EquipmentActionRequest request) {
-		if (inventory.getHeldItemStack() == null
-				|| Equipment.canEquip(request.getIndex(), inventory.getHeldItemStack())) {
+		if (inventory.getHeldItemStack() == null || Equipment.canEquip(request.getIndex(), inventory.getHeldItemStack())) {
 			ItemStack previousEquipment = equipment.get(request.getIndex());
 			equipment.set(request.getIndex(), inventory.getHeldItemStack());
 			inventory.setHeldItemStack(previousEquipment);
@@ -160,8 +158,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 
 	@Override
 	public double getSpeedPotential() {
-		return stats.valueOf(StatType.SPEED)
-				* getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		return stats.valueOf(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override
@@ -222,7 +219,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			break;
 		case Activity.CRAFTING_ACTIVITY_ID:
 			CraftingActivity craftingActivity = (CraftingActivity) getActivity();
-			buffer.putShort(craftingActivity.getItemCraft().getId());
+			buffer.putShort((short) craftingActivity.getItemCraft().getId());
 			buffer.putDouble(craftingActivity.getProgress());
 			break;
 		}
@@ -248,8 +245,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			if (!(getActivity() instanceof HarvestingActivity)) {
 				MapTile tile = getWorld().getMap().tileAt(tileX, tileY);
 				if (tile.getStructure() instanceof HarvestableStructure) {
-					HarvestingActivity harvestingActivity = new HarvestingActivity(this,
-							(HarvestableStructure) tile.getStructure());
+					HarvestingActivity harvestingActivity = new HarvestingActivity(this, (HarvestableStructure) tile.getStructure());
 					harvestingActivity.setProgressTime(progressTime);
 					activity = harvestingActivity;
 				} else {
@@ -261,8 +257,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			short craftId = buffer.getShort();
 			progressTime = buffer.getDouble();
 			if (!(getActivity() instanceof CraftingActivity)) {
-				CraftingActivity activity = new CraftingActivity(this,
-						getWorld().getContentPack().getItemCrafts().get(craftId));
+				CraftingActivity activity = new CraftingActivity(this, getWorld().getContentPack().getItemCrafts().get(craftId));
 				setActivity(activity);
 				activity.setProgressTime(progressTime);
 			} else {

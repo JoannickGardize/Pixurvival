@@ -1,7 +1,9 @@
 package com.pixurvival.contentPackEditor.component;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -9,7 +11,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -26,13 +27,12 @@ public class ResourcesDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JList<ResourceEntry> resourceList = new JList<>(new DefaultListModel<>());
-	private JButton addButton = new CPEButton("resources.add", () -> ResourcesService.getInstance().addResource());
-	private JButton importButton = new CPEButton("resources.importFolder",
-			() -> ResourcesService.getInstance().importFolder());
+	private JButton addButton = new CPEButton("generic.add", () -> ResourcesService.getInstance().addResource());
+	private JButton importButton = new CPEButton("resources.importFolder", () -> ResourcesService.getInstance().importFolder());
 	private ResourcePreview resourcePreview = new ResourcePreview();
 
-	public ResourcesDialog() {
-		super(JOptionPane.getRootFrame(), TranslationService.getInstance().getString("resourcesDialog.title"), true);
+	public ResourcesDialog(Frame owner) {
+		super(owner, TranslationService.getInstance().getString("resourcesDialog.title"), true);
 		Container content = getContentPane();
 		content.setLayout(new BorderLayout());
 		JPanel listPanel = new JPanel(new BorderLayout());
@@ -59,10 +59,12 @@ public class ResourcesDialog extends JDialog {
 			} else {
 				resourcePreview.setObject(resourceList.getSelectedValue().getPreview());
 			}
+			resourcePreview.repaint();
 		});
 
 		EventManager.getInstance().register(this);
 		pack();
+		setBackground(Color.magenta);
 	}
 
 	@EventListener
@@ -76,7 +78,7 @@ public class ResourcesDialog extends JDialog {
 
 	@Override
 	public void setVisible(boolean b) {
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(getOwner());
 		super.setVisible(b);
 	}
 }

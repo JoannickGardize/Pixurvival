@@ -2,11 +2,13 @@ package com.pixurvival.contentPackEditor.component;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Frame;
 import java.util.Arrays;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.TranslationService;
@@ -17,7 +19,7 @@ public class CPEMenuBar extends JMenuBar {
 
 	public CPEMenuBar() {
 		FileService fs = FileService.getInstance();
-		final ResourcesDialog resourcesDialog = new ResourcesDialog();
+		final ResourcesDialog resourcesDialog = new ResourcesDialog((Frame) SwingUtilities.getRoot(this));
 		addItem("file.new", () -> fs.newContentPack());
 		addItem("file.open", () -> fs.open());
 		addItem("file.save", () -> fs.save());
@@ -58,8 +60,7 @@ public class CPEMenuBar extends JMenuBar {
 		} else {
 			JMenu item = new JMenu();
 			item.setName(currentName);
-			item.setText(TranslationService.getInstance()
-					.getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
+			item.setText(TranslationService.getInstance().getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
 			addTo(component, item);
 			return findOrCreate(item, split, index + 1);
 		}

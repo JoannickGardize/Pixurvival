@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.util;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,16 +49,8 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 
 	@Override
 	public void setValue(T item) {
-		if (item == null) {
-			setForeground(Color.RED);
-			setText(TranslationService.getInstance().getString("elementChooserButton.none"));
-			setIcon(null);
-		} else {
-			setIcon(iconProvider.apply(item));
-			setText(item.getName());
-			setForeground(Color.BLACK);
-		}
 		value = item;
+		updateDisplay();
 	}
 
 	public void setItems(Collection<T> items) {
@@ -81,5 +74,23 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 	@Override
 	public boolean isValueValid() {
 		return value != null;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		updateDisplay();
+		super.paint(g);
+	}
+
+	private void updateDisplay() {
+		if (value == null) {
+			setForeground(Color.RED);
+			setText(TranslationService.getInstance().getString("elementChooserButton.none"));
+			setIcon(null);
+		} else {
+			setIcon(iconProvider.apply(value));
+			setText(value.getName());
+			setForeground(Color.BLACK);
+		}
 	}
 }

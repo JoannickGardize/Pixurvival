@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack;
+package com.pixurvival.core.contentPack.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ElementReference {
+
 	boolean required() default true;
 }

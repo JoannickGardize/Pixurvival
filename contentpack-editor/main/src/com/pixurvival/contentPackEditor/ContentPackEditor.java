@@ -32,10 +32,11 @@ public class ContentPackEditor extends JFrame {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		new ContentPackEditor().setVisible(true);
+		ContentPackEditor editor = new ContentPackEditor();
+		editor.setVisible(true);
+		FileService.getInstance().newContentPack();
 	}
 }

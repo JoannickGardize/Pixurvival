@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
@@ -66,8 +67,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 
 			@Override
 			@SuppressWarnings("unchecked")
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 				Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				if (!((ElementEntry) value).isValid()) {
 					component.setForeground(Color.RED);
@@ -76,7 +76,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 			}
 		});
 
-		addButton = new CPEButton("elementList.add", () -> addClick());
+		addButton = new CPEButton("generic.add", () -> addClick());
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -94,8 +94,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 	}
 
 	private void addClick() {
-		String name = JOptionPane
-				.showInputDialog(TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), "");
+		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this), TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), "");
 		if (name == null) {
 			return;
 		}
@@ -122,7 +121,11 @@ public class ElementList<E extends NamedElement> extends JPanel {
 	}
 
 	public E getSelectedElement() {
-		return list.getSelectedValue().getElement();
+		if (list.getSelectedIndex() == -1) {
+			return null;
+		} else {
+			return list.getSelectedValue().getElement();
+		}
 	}
 
 	public void addListSelectionListener(ListSelectionListener listener) {
@@ -143,7 +146,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 	public void elementChanged(ElementChangedEvent event) {
 		if (elementType.getElementClass() == event.getElement().getClass()) {
 			DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
-			int index = event.getElement().getIndex();
+			int index = event.getElement().getId();
 			if (index < model.getSize()) {
 				model.get(index).setValid(event.isValid());
 			}
@@ -157,8 +160,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 		model.clear();
 		List<NamedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
-		elementList.forEach(
-				e -> model.addElement(new ElementEntry((E) e, ContentPackEditionService.getInstance().isValid(e))));
+		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ContentPackEditionService.getInstance().isValid(e))));
 	}
 
 }
