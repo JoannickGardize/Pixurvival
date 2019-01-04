@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.event.ActionEvent;
 

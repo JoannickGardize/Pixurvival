@@ -1,15 +1,15 @@
 package com.pixurvival.contentPackEditor.component.util;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.function.Function;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -19,6 +19,7 @@ import javax.swing.border.EtchedBorder;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
 import lombok.experimental.UtilityClass;
@@ -27,14 +28,22 @@ import lombok.experimental.UtilityClass;
 public class LayoutUtils {
 
 	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
+		addHorizontalLabelledItem(parent, labelKey, null, component, gbc);
+	}
+
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
 		int previousAnchor = gbc.anchor;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.weightx = 0;
 		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
 		parent.add(label, gbc);
 		gbc.anchor = previousAnchor;
 		gbc.gridx++;
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
 		int previousLeft = gbc.insets.left;
 		gbc.insets.left = 5;
 		parent.add(component, gbc);
@@ -44,6 +53,15 @@ public class LayoutUtils {
 		}
 		gbc.gridx--;
 		gbc.gridy++;
+
+		if (toolTipKey != null) {
+			label.setToolTipText(TranslationService.getInstance().getString(toolTipKey));
+		}
+	}
+
+	public static void nextColumn(GridBagConstraints gbc) {
+		gbc.gridx += 2;
+		gbc.gridy = 0;
 	}
 
 	public static void addHorizontalSeparator(Container parent, GridBagConstraints gbc) {
@@ -68,6 +86,26 @@ public class LayoutUtils {
 		return gbc;
 	}
 
+	public static void addSideBySide(Container parent, Component left, Component right) {
+		parent.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = createGridBagConstraints();
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.fill = GridBagConstraints.BOTH;
+		parent.add(left, gbc);
+		gbc.gridx++;
+		parent.add(right, gbc);
+
+	}
+
+	public static Component labelled(String labelKey, Component component) {
+		JPanel panel = new JPanel(new BorderLayout());
+		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
+		panel.add(label, BorderLayout.WEST);
+		panel.add(component, BorderLayout.CENTER);
+		return panel;
+	}
+
 	public static Border createGroupBorder(String titlekey) {
 		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), TranslationService.getInstance().getString(titlekey));
 	}
@@ -89,8 +127,8 @@ public class LayoutUtils {
 		return panel;
 	}
 
-	public static Rectangle getCenteredKeepRatioRectangle(Container container, Image image) {
-		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1, image.getWidth(null), image.getHeight(null));
+	public static Rectangle getCenteredKeepRatioRectangle(Container container, Rectangle rectangle) {
+		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1, (int) rectangle.getWidth(), (int) rectangle.getHeight());
 	}
 
 	public static Rectangle getCenteredKeepRatioRectangle(int destWidth, int destHeight, int sourceWidth, int sourceHeight) {
@@ -112,7 +150,7 @@ public class LayoutUtils {
 		return new Rectangle(xOffset, yOffset, width, height);
 	}
 
-	public static Function<SpriteSheet, ImageIcon> getSpriteSheetIconProvider() {
+	public static Function<SpriteSheet, Icon> getSpriteSheetIconProvider() {
 		return s -> {
 			if (s == null) {
 				return null;

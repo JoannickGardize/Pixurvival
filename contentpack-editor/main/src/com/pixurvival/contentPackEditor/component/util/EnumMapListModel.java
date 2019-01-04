@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.Map;
 import javax.swing.AbstractListModel;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -16,13 +18,14 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 
 	private static final long serialVersionUID = 1L;
 
+	@Getter
 	@AllArgsConstructor
-	private class Entry {
-		K key;
-		V value;
+	public static class Entry<K, V> {
+		private K key;
+		private V value;
 	}
 
-	private List<Entry> list = new ArrayList<>();
+	private List<Entry<K, V>> list = new ArrayList<>();
 	private @NonNull Class<K> enumType;
 
 	@Override
@@ -41,13 +44,13 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 			if (otherOrdinal == key.ordinal()) {
 				return -1;
 			} else if (key.ordinal() < otherOrdinal) {
-				list.add(i, new Entry(key, value));
+				list.add(i, new Entry<K, V>(key, value));
 				fireIntervalAdded(this, i, i);
 				return i;
 			}
 		}
 		int index = list.size();
-		list.add(new Entry(key, value));
+		list.add(new Entry<K, V>(key, value));
 		fireIntervalAdded(this, index, index);
 		return index;
 	}
@@ -63,7 +66,7 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 		}
 		list.clear();
 		for (Map.Entry<K, V> entry : map.entrySet()) {
-			list.add(new Entry(entry.getKey(), entry.getValue()));
+			list.add(new Entry<K, V>(entry.getKey(), entry.getValue()));
 		}
 		if (!list.isEmpty()) {
 			fireIntervalAdded(this, 0, list.size() - 1);
@@ -71,7 +74,7 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 	}
 
 	public boolean contains(K element) {
-		for (Entry entry : list) {
+		for (Entry<K, V> entry : list) {
 			if (entry.key == element) {
 				return true;
 			}
@@ -81,7 +84,7 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 
 	public List<V> values() {
 		List<V> values = new ArrayList<>(list.size());
-		for (Entry entry : list) {
+		for (Entry<K, V> entry : list) {
 			values.add(entry.value);
 		}
 		return values;
@@ -89,10 +92,14 @@ public class EnumMapListModel<K extends Enum<K>, V> extends AbstractListModel<V>
 
 	public Map<K, V> toMap() {
 		Map<K, V> map = new EnumMap<>(enumType);
-		for (Entry entry : list) {
+		for (Entry<K, V> entry : list) {
 			map.put(entry.key, entry.value);
 		}
 		return map;
+	}
+
+	public List<Entry<K, V>> entries() {
+		return Collections.unmodifiableList(list);
 	}
 
 }

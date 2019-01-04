@@ -1,11 +1,10 @@
-package com.pixurvival.core.contentPack.item;
+package com.pixurvival.core.item;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedElement;
-import com.pixurvival.core.item.ItemStack;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +19,7 @@ public class ItemCraft extends NamedElement implements Serializable {
 
 	private double duration;
 
-	private ItemStack result;
+	private ItemStack result = new ItemStack();
 
 	private List<ItemStack> recipes = new ArrayList<>();
 

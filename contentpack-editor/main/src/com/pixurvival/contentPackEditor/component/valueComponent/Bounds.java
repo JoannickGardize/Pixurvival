@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.util;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +14,11 @@ public class Bounds {
 	private boolean excludeMin = false;
 	private double max = Double.POSITIVE_INFINITY;
 	private boolean excludeMax = false;
+
+	public Bounds(double min, double max) {
+		this.min = min;
+		this.max = max;
+	}
 
 	public static Bounds minBounds(double min) {
 		return minBounds(min, false);
@@ -31,7 +36,12 @@ public class Bounds {
 		return new Bounds(Double.NEGATIVE_INFINITY, false, max, exclude);
 	}
 
-	public boolean test(double value) {
-		return (!excludeMin && value >= min || excludeMin && value > min) && (!excludeMax && value <= max || excludeMax && value < max);
+	public static Bounds noBounds() {
+		return new Bounds(Double.NEGATIVE_INFINITY, false, Double.POSITIVE_INFINITY, false);
+	}
+
+	public boolean test(Number value) {
+		double doubleValue = value.doubleValue();
+		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min) && (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
 	}
 }

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.util;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class ElementChooserButton<T extends NamedElement> extends JButton implements ValueComponent<T> {
 
@@ -22,12 +23,18 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 
 	private SearchPopup<T> searchPopup;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
-	private Function<T, ImageIcon> iconProvider;
+	private Function<T, Icon> iconProvider;
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
+	private @Getter @Setter boolean required;
 
-	public ElementChooserButton(Function<T, ImageIcon> iconProvider) {
+	public ElementChooserButton(Function<T, Icon> iconProvider) {
+		this(iconProvider, true);
+	}
+
+	public ElementChooserButton(Function<T, Icon> iconProvider, boolean required) {
 		super(TranslationService.getInstance().getString("elementChooserButton.none"));
+		this.required = required;
 
 		this.iconProvider = iconProvider;
 		searchPopup = new SearchPopup<>(iconProvider);
@@ -72,8 +79,8 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 	}
 
 	@Override
-	public boolean isValueValid() {
-		return value != null;
+	public boolean isValueValid(T value) {
+		return !required || (searchPopup.getItems() != null && searchPopup.getItems().contains(value));
 	}
 
 	@Override
@@ -83,14 +90,13 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 	}
 
 	private void updateDisplay() {
-		if (value == null) {
-			setForeground(Color.RED);
-			setText(TranslationService.getInstance().getString("elementChooserButton.none"));
-			setIcon(null);
-		} else {
+		if (isValueValid()) {
 			setIcon(iconProvider.apply(value));
-			setText(value.getName());
 			setForeground(Color.BLACK);
+		} else {
+			setForeground(Color.RED);
+			setIcon(null);
 		}
+		setText(value == null ? TranslationService.getInstance().getString("elementChooserButton.none") : value.getName());
 	}
 }

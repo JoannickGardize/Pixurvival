@@ -20,10 +20,13 @@ public class CPEMenuBar extends JMenuBar {
 	public CPEMenuBar() {
 		FileService fs = FileService.getInstance();
 		final ResourcesDialog resourcesDialog = new ResourcesDialog((Frame) SwingUtilities.getRoot(this));
-		addItem("file.new", () -> fs.newContentPack());
-		addItem("file.open", () -> fs.open());
-		addItem("file.save", () -> fs.save());
-		addItem("file.saveAs", () -> fs.saveAs());
+		final IdentifierDialog identifierDialog = new IdentifierDialog((Frame) SwingUtilities.getRoot(this));
+
+		addItem("file.new", fs::newContentPack);
+		addItem("file.open", fs::open);
+		addItem("file.save", fs::save);
+		addItem("file.saveAs", fs::saveAs);
+		addItem("contentPack.identifier", () -> identifierDialog.setVisible(true));
 		addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
 		addItem("contentPack.constants", () -> {
 		});

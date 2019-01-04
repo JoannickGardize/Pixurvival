@@ -1,22 +1,21 @@
 package com.pixurvival.contentPackEditor;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.contentPackEditor.component.util.GraphicsUtils;
 import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.Getter;
 
 @Getter
 public class ResourceEntry extends NamedElement {
+
+	private static final long serialVersionUID = 1L;
 
 	private byte[] data;
 	private Object preview;
@@ -45,19 +44,8 @@ public class ResourceEntry extends NamedElement {
 
 	private void loadIcon() {
 		if (preview instanceof Image) {
-			BufferedImage resizedImg = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2 = resizedImg.createGraphics();
-
-			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2.drawImage((Image) preview, 0, 0, 20, 20, null);
-			g2.dispose();
-			icon = new ImageIcon(resizedImg);
+			icon = GraphicsUtils.createIcon((Image) preview);
 		}
 
-	}
-
-	@Override
-	public boolean isValid(ContentPack cotentPack) {
-		return data != null;
 	}
 }

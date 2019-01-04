@@ -1,9 +1,9 @@
 package com.pixurvival.core.aliveEntity;
 
 import com.pixurvival.core.Direction;
-import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 

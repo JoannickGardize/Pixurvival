@@ -19,6 +19,12 @@ public class Item extends NamedElement implements Serializable {
 
 	}
 
+	public static class Resource implements Details {
+
+		private static final long serialVersionUID = 1L;
+
+	}
+
 	@Getter
 	@Setter
 	public static abstract class Equipable implements Details {

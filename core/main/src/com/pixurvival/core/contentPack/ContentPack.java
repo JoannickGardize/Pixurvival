@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.pixurvival.core.contentPack.item.ItemCraft;
-import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -16,6 +14,8 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ItemCraft;
+import com.pixurvival.core.item.ItemReward;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.util;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import javax.swing.JLabel;
 
@@ -13,7 +13,11 @@ public interface ValueComponent<T> {
 	 */
 	void setValue(T value);
 
-	boolean isValueValid();
+	default boolean isValueValid() {
+		return isValueValid(getValue());
+	}
+
+	boolean isValueValid(T value);
 
 	void setAssociatedLabel(JLabel label);
 

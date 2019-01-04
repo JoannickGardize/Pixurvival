@@ -14,14 +14,14 @@ public class StatSet implements EquipmentListener {
 		for (StatType type : StatType.values()) {
 			stats.put(type, new StatValue(this, type));
 		}
-		stats.values().forEach(v -> v.initialize());
+		stats.values().forEach(StatValue::initialize);
 	}
 
 	public void addListener(StatListener listener) {
 		stats.values().forEach(v -> v.addListener(listener));
 	}
 
-	public float valueOf(StatType type) {
+	public float getValue(StatType type) {
 		return stats.get(type).getValue();
 	}
 
@@ -30,8 +30,7 @@ public class StatSet implements EquipmentListener {
 	}
 
 	@Override
-	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack,
-			ItemStack newItemStack) {
+	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack, ItemStack newItemStack) {
 		if (newItemStack != null && newItemStack.getItem() instanceof EquipmentHolder) {
 			Item.Equipable equipable = (Item.Equipable) newItemStack.getItem().getDetails();
 			stats.get(StatType.STRENGTH).setEquipmentBonus(equipmentIndex, equipable.getStrengthBonus());

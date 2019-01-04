@@ -47,7 +47,7 @@ public class CaseUtils {
 		StringBuilder sb = new StringBuilder(s.length() + 3);
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (Character.isUpperCase(c)) {
+			if (Character.isUpperCase(c) && i > 0) {
 				sb.append('_').append(c);
 			} else {
 				sb.append(Character.toUpperCase(c));

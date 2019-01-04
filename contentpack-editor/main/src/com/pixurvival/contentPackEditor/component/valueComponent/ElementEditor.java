@@ -1,15 +1,12 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import com.pixurvival.contentPackEditor.component.util.ValueChangeListener;
-import com.pixurvival.contentPackEditor.component.util.ValueComponent;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,38 +17,52 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 
 	@Getter
 	@AllArgsConstructor
-	private class SubValueEntry<T> {
-		private ValueComponent<?> component;
-		private Consumer<E> parentUpdate;
-		private BiConsumer<E, T> childUpdate;
+	private class SubValueEntry {
+		@SuppressWarnings("rawtypes")
+		private ValueComponent component;
+		@SuppressWarnings("rawtypes")
+		private Function getter;
+		@SuppressWarnings("rawtypes")
+		private BiConsumer setter;
 	}
 
 	private @Getter E value;
-	private List<SubValueEntry<?>> subValues = new ArrayList<>();
+	private List<SubValueEntry> subValues = new ArrayList<>();
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(E value) {
 		this.value = value;
-		subValues.forEach(entry -> entry.getParentUpdate().accept(value));
+		subValues.forEach(entry -> entry.getComponent().setValue(entry.getGetter().apply(value)));
 		valueChanged();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean isValueValid() {
-		return isValueValid(value);
-	}
-
 	public boolean isValueValid(E value) {
 		if (value == null) {
 			return false;
 		}
-		for (SubValueEntry<?> entry : subValues) {
-			if (!entry.getComponent().isValueValid()) {
-				return false;
+		boolean valid = true;
+		boolean valueChanged = false;
+		for (SubValueEntry entry : subValues) {
+			if (!entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
+				// Remove references of elements when removed
+				if (entry.getComponent() instanceof ElementChooserButton<?> && entry.getGetter().apply(value) != null) {
+					entry.getSetter().accept(value, null);
+					valueChanged = true;
+					if (((ElementChooserButton<?>) entry.getComponent()).isRequired()) {
+						valid = false;
+					}
+				} else {
+					valid = false;
+				}
 			}
 		}
-		return true;
+		if (valueChanged) {
+		}
+		return valid;
 	}
 
 	@Override
@@ -68,18 +79,18 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		listeners.add(listener);
 	}
 
-	protected <T> void addSubValue(ValueComponent<T> component, Consumer<E> parentUpdate, BiConsumer<E, T> childUpdate) {
-		subValues.add(new SubValueEntry<>(component, parentUpdate, childUpdate));
+	protected <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter) {
+		subValues.add(new SubValueEntry(component, getter, setter));
 		component.addValueChangeListener(v -> {
 			if (value != null) {
-				childUpdate.accept(value, v);
+				setter.accept(value, v);
 				notifyValueChanged();
 			}
 			valueChanged();
 		});
 	}
 
-	protected void notifyValueChanged() {
+	public void notifyValueChanged() {
 		listeners.forEach(l -> l.valueChanged(value));
 	}
 

@@ -1,5 +1,7 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.animationTemplate;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -22,18 +25,36 @@ import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.EnumMapListModel;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Animation;
+import com.pixurvival.core.contentPack.sprite.Frame;
+
+import lombok.val;
 
 public class AnimationList extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JList<Animation> list = new JList<>(new EnumMapListModel<>(ActionAnimation.class));
-	private JButton addButton = new CPEButton("generic.add", () -> add());
-	private JButton removeButton = new CPEButton("generic.remove", () -> remove());
+	private JButton addButton = new CPEButton("generic.add", this::add);
+	private JButton removeButton = new CPEButton("generic.remove", this::remove);
 	private List<Consumer<Map<ActionAnimation, Animation>>> listChangedListener = new ArrayList<>();
 
 	public AnimationList() {
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		list.setCellRenderer(new DefaultListCellRenderer() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				if (((Animation) value).getFrames().isEmpty()) {
+					component.setForeground(Color.RED);
+				}
+				return component;
+			}
+		});
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -49,12 +70,11 @@ public class AnimationList extends JPanel {
 		add(addButton, gbc);
 		gbc.gridy++;
 		add(removeButton, gbc);
-
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setMap(Map<ActionAnimation, Animation> map) {
-		EnumMapListModel<ActionAnimation, Animation> listModel = (EnumMapListModel<ActionAnimation, Animation>) list.getModel();
+		val listModel = (EnumMapListModel<ActionAnimation, Animation>) list.getModel();
 		listModel.setMap(map);
 	}
 
@@ -68,6 +88,18 @@ public class AnimationList extends JPanel {
 
 	public void addListSelectionListener(ListSelectionListener listener) {
 		list.addListSelectionListener(listener);
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean isListValid() {
+		EnumMapListModel<ActionAnimation, Animation> listModel = (EnumMapListModel<ActionAnimation, Animation>) list.getModel();
+		for (val entry : listModel.entries()) {
+			List<Frame> frames = entry.getValue().getFrames();
+			if (frames == null || frames.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")

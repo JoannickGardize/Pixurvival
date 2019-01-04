@@ -4,12 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.SwingUtilities;
+
+import com.pixurvival.contentPackEditor.util.ReflectionUtil;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +37,7 @@ public class EventManager {
 	private static @Getter EventManager instance = new EventManager();
 
 	private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<>();
+	private Set<Object> registeredObjects = new HashSet<>();
 	private Map<Class<? extends Event>, List<MethodRegistration>> registrations = new HashMap<>();
 
 	private EventManager() {
@@ -40,9 +45,12 @@ public class EventManager {
 
 	@SuppressWarnings("unchecked")
 	public synchronized void register(Object object) {
-		for (Method method : object.getClass().getMethods()) {
-			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1
-					&& Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
+		if (registeredObjects.contains(object)) {
+			return;
+		}
+		registeredObjects.add(object);
+		for (Method method : ReflectionUtil.getAllMethods(object.getClass())) {
+			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
 				List<MethodRegistration> list = registrations.get(method.getParameterTypes()[0]);
 				if (list == null) {
 					list = new ArrayList<>();

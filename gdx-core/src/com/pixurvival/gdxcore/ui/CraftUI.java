@@ -2,8 +2,8 @@ package com.pixurvival.gdxcore.ui;
 
 import java.util.List;
 
-import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class CraftUI extends UIWindow {

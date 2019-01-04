@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.util;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -16,7 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -26,7 +27,7 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-import com.pixurvival.contentPackEditor.component.SearchPopupSelectionModel;
+import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
 import com.pixurvival.core.contentPack.NamedElement;
 
 import lombok.AllArgsConstructor;
@@ -55,21 +56,25 @@ public class SearchPopup<T extends NamedElement> extends JDialog {
 
 	private JTextField searchField = new JTextField(20);
 	private JPanel resultPanel = new JPanel(new GridBagLayout());
-	private @Setter Collection<T> items;
+	private @Getter @Setter Collection<T> items;
 	private List<ItemMatchEntry> sortedList = new ArrayList<>();
-	private Function<T, ImageIcon> iconProvider;
+	private Function<T, Icon> iconProvider;
 	private SearchPopupSelectionModel selectionModel;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 
-	public SearchPopup(Function<T, ImageIcon> iconProvider) {
+	public SearchPopup(Function<T, Icon> iconProvider) {
 		super(JOptionPane.getRootFrame());
 		this.iconProvider = iconProvider;
 		setUndecorated(true);
 		getRootPane().setBorder((Border) UIManager.get("PopupMenu.border"));
 		Container content = getContentPane();
 		selectionModel = new SearchPopupSelectionModel(resultPanel);
+		JButton removeButton = new JButton("X");
+		JPanel searchBar = new JPanel(new BorderLayout());
+		searchBar.add(searchField, BorderLayout.CENTER);
+		searchBar.add(removeButton, BorderLayout.EAST);
 		content.setLayout(new BorderLayout(0, 2));
-		content.add(searchField, BorderLayout.NORTH);
+		content.add(searchBar, BorderLayout.NORTH);
 		content.add(resultPanel, BorderLayout.CENTER);
 		addWindowFocusListener(new WindowFocusListener() {
 
@@ -88,6 +93,7 @@ public class SearchPopup<T extends NamedElement> extends JDialog {
 		searchField.getActionMap().put(SearchPopupSelectionModel.NEXT_SELECTION_ACTION, selectionModel.getNextAction());
 		searchField.getActionMap().put(SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION, selectionModel.getPreviousAction());
 		searchField.addActionListener(e -> selectItem());
+		removeButton.addActionListener(e -> remove());
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -173,5 +179,10 @@ public class SearchPopup<T extends NamedElement> extends JDialog {
 			listeners.forEach(l -> l.valueChanged(selectedItem));
 			setVisible(false);
 		}
+	}
+
+	private void remove() {
+		listeners.forEach(l -> l.valueChanged(null));
+		setVisible(false);
 	}
 }

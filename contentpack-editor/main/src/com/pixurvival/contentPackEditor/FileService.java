@@ -63,10 +63,8 @@ public class FileService {
 		if (currentContentPack == null) {
 			return;
 		}
-		if (currentFile == null) {
-			if (!chooseFile()) {
-				return;
-			}
+		if (currentFile == null && !chooseFile()) {
+			return;
 		}
 		try {
 			if (!currentFile.exists()) {
@@ -81,7 +79,6 @@ public class FileService {
 					zipOutputStream.write(resource.getValue());
 				}
 				zipOutputStream.closeEntry();
-				zipOutputStream.close();
 			}
 		} catch (IOException e) {
 			Utils.showErrorDialog(e);
@@ -112,6 +109,8 @@ public class FileService {
 		}
 		if (currentFile != null) {
 			fileChooser.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
+		} else {
+			fileChooser.setSelectedFile(new File(System.getProperty("user.home"), currentContentPack.getIdentifier().fileName()));
 		}
 		int option = fileChooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {

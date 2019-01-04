@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.map.HarvestableStructure;
@@ -153,12 +153,12 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 
 	@Override
 	public double getMaxHealth() {
-		return stats.valueOf(StatType.MAX_HEALTH);
+		return stats.getValue(StatType.MAX_HEALTH);
 	}
 
 	@Override
 	public double getSpeedPotential() {
-		return stats.valueOf(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override

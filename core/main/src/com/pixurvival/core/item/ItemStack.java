@@ -8,25 +8,25 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 
-import lombok.NonNull;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class ItemStack implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private @NonNull Item item;
+	private Item item;
 	private int quantity;
+
+	public ItemStack() {
+		this(null, 1);
+	}
 
 	public ItemStack(Item item) {
 		this(item, 1);
 	}
 
 	public ItemStack(Item item, int quantity) {
-		if (item == null || quantity < 1) {
-			throw new IllegalArgumentException();
-		}
 		this.item = item;
 		this.quantity = quantity;
 	}
@@ -48,8 +48,8 @@ public class ItemStack implements Serializable {
 	}
 
 	/**
-	 * Return the overflowing quantity if added to the quantity of this item stack,
-	 * according to {@link Item#getMaxStackSize()}.
+	 * Return the overflowing quantity if added to the quantity of this item
+	 * stack, according to {@link Item#getMaxStackSize()}.
 	 * 
 	 * @param quantity
 	 *            the quantity to add.

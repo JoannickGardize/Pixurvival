@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.item;
+package com.pixurvival.core.item;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Random;
 
 import com.pixurvival.core.contentPack.NamedElement;
-import com.pixurvival.core.item.ItemStack;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 public class ItemReward extends NamedElement implements Serializable {
 
@@ -20,13 +20,13 @@ public class ItemReward extends NamedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		private ItemStack itemStack;
-		private double probability;
+		private ItemStack itemStack = new ItemStack();
+		private double probability = 1;
 	}
 
-	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(() -> new ArrayList<>());
+	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(ArrayList::new);
 
-	private @Getter List<Entry> entries = new ArrayList<>();
+	private @Getter @Setter List<Entry> entries = new ArrayList<>();
 
 	public ItemStack[] produce(Random random) {
 		List<ItemStack> result = tmpLists.get();

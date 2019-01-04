@@ -3,9 +3,9 @@ package com.pixurvival.gdxcore.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
+import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 

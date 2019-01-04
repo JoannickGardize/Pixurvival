@@ -1,7 +1,9 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.animationTemplate;
 
 import java.awt.BorderLayout;
 
+import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 
 public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate> {
@@ -14,6 +16,7 @@ public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate
 	public AnimationTemplateEditor() {
 
 		animationEditor.setVisible(false);
+
 		list.addListChangedListener(map -> {
 			getValue().setAnimations(map);
 			notifyValueChanged();
@@ -29,6 +32,10 @@ public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate
 				animationEditor.setVisible(true);
 			}
 		});
+		animationEditor.addValueChangeListener(l -> {
+			list.repaint();
+			notifyValueChanged();
+		});
 
 		setLayout(new BorderLayout(10, 0));
 		add(list, BorderLayout.WEST);
@@ -36,7 +43,21 @@ public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate
 	}
 
 	@Override
+	public boolean isValueValid(AnimationTemplate value) {
+		if (value.getAnimations().isEmpty()) {
+			return false;
+		}
+		for (Animation animation : value.getAnimations().values()) {
+			if (!animationEditor.isValueValid(animation)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	protected void valueChanged() {
 		list.setMap(getValue().getAnimations());
+		list.repaint();
 	}
 }

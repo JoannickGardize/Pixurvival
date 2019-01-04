@@ -24,9 +24,12 @@ import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.Utils;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
+import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.NamedElement;
@@ -54,8 +57,6 @@ public class ElementList<E extends NamedElement> extends JPanel {
 
 	private ElementType elementType;
 	private JList<ElementEntry> list;
-	private JButton addButton;
-	private JButton removeButton;
 
 	public ElementList(ElementType elementType) {
 		this.elementType = elementType;
@@ -76,11 +77,25 @@ public class ElementList<E extends NamedElement> extends JPanel {
 			}
 		});
 
-		addButton = new CPEButton("generic.add", () -> addClick());
+		JButton addButton = new CPEButton("generic.add", this::addClick);
+		JButton renameButton = new CPEButton("generic.rename", () -> {
+			ElementEntry entry = list.getSelectedValue();
+			if (entry != null) {
+				String name = showChooseNameDialog();
+				if (name != null) {
+					entry.getElement().setName(name);
+					repaint();
+				}
+			}
+		});
+		JButton removeButton = new CPEButton("generic.remove", () -> {
+			ElementEntry entry = list.getSelectedValue();
+			if (entry != null) {
+				ContentPackEditionService.getInstance().removeElement(entry.getElement());
+			}
+		});
 		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.weighty = 1;
 		gbc.weightx = 1;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -90,24 +105,18 @@ public class ElementList<E extends NamedElement> extends JPanel {
 		gbc.gridy++;
 		gbc.weighty = 0;
 		add(addButton, gbc);
+		gbc.gridy++;
+		add(renameButton, gbc);
+		gbc.gridy++;
+		add(removeButton, gbc);
 		EventManager.getInstance().register(this);
 	}
 
 	private void addClick() {
-		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this), TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), "");
-		if (name == null) {
-			return;
+		String name = showChooseNameDialog();
+		if (name != null) {
+			ContentPackEditionService.getInstance().addElement(elementType, name);
 		}
-		name = name.trim();
-		if (name.length() == 0) {
-			Utils.showErrorDialog("elementList.add.emptyNameError");
-			return;
-		}
-		if (contains(name)) {
-			Utils.showErrorDialog("elementList.add.inUseNameError");
-			return;
-		}
-		ContentPackEditionService.getInstance().addElement(elementType, name);
 	}
 
 	public boolean contains(String name) {
@@ -132,12 +141,22 @@ public class ElementList<E extends NamedElement> extends JPanel {
 		list.addListSelectionListener(listener);
 	}
 
+	public boolean isListValid() {
+		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
+		for (int i = 0; i < model.size(); i++) {
+			if (!model.get(i).valid || model.get(i).getElement().getId() != i) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	@EventListener
 	@SuppressWarnings("unchecked")
 	public void elementAdded(ElementAddedEvent event) {
 		if (elementType.getElementClass() == event.getElement().getClass()) {
 			DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
-			model.addElement(new ElementEntry((E) event.getElement(), false));
+			model.addElement(new ElementEntry((E) event.getElement(), ElementType.of(event.getElement()).getElementEditor().isValueValid(event.getElement())));
 			list.setSelectedIndex(model.getSize() - 1);
 		}
 	}
@@ -156,11 +175,47 @@ public class ElementList<E extends NamedElement> extends JPanel {
 
 	@EventListener
 	@SuppressWarnings("unchecked")
+	public void elementRemoved(ElementRemovedEvent event) {
+		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
+		if (elementType.getElementClass() == event.getElement().getClass()) {
+			for (int i = 0; i < model.size(); i++) {
+				if (model.elementAt(i).getElement().equals(event.getElement())) {
+					model.remove(i);
+					break;
+				}
+			}
+		}
+		for (int i = 0; i < model.size(); i++) {
+			ElementEntry entry = model.get(i);
+			ElementEditor<NamedElement> editor = ElementType.of(entry.getElement()).getElementEditor();
+			entry.setValid(editor.isValueValid(entry.getElement()));
+		}
+		list.repaint();
+	}
+
+	@EventListener
+	@SuppressWarnings("unchecked")
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 		model.clear();
 		List<NamedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
-		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ContentPackEditionService.getInstance().isValid(e))));
+		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ElementType.of(e).getElementEditor().isValueValid(e))));
 	}
 
+	private String showChooseNameDialog() {
+		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this), TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), "");
+		if (name == null) {
+			return null;
+		}
+		name = name.trim();
+		if (name.length() == 0) {
+			Utils.showErrorDialog("elementList.add.emptyNameError");
+			return null;
+		}
+		if (contains(name)) {
+			Utils.showErrorDialog("elementList.add.inUseNameError");
+			return null;
+		}
+		return name;
+	}
 }

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.util;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 public interface ValueChangeListener<T> {
 

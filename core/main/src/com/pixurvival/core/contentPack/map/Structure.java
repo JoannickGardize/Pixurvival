@@ -5,8 +5,8 @@ import java.io.Serializable;
 import com.pixurvival.core.contentPack.Dimensions;
 import com.pixurvival.core.contentPack.DoubleInterval;
 import com.pixurvival.core.contentPack.NamedElement;
-import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.item.ItemReward;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

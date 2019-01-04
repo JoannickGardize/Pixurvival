@@ -1,9 +1,8 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import com.pixurvival.contentPackEditor.component.util.IntegerInput;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.sprite.Frame;
 
@@ -11,16 +10,16 @@ public class FrameEditor extends ElementEditor<Frame> {
 
 	private static final long serialVersionUID = 1L;
 
-	private IntegerInput xField = new IntegerInput();
-	private IntegerInput yField = new IntegerInput();
+	private NumberInput<Integer> xField = NumberInput.integerInput();
+	private NumberInput<Integer> yField = NumberInput.integerInput();
 
 	public FrameEditor() {
 
 		xField.setColumns(2);
 		yField.setColumns(2);
 
-		addSubValue(xField, p -> xField.setValue(p.getX()), (p, c) -> p.setX(c));
-		addSubValue(yField, p -> yField.setValue(p.getY()), (p, c) -> p.setY(c));
+		bind(xField, Frame::getX, Frame::setX);
+		bind(yField, Frame::getY, Frame::setY);
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();

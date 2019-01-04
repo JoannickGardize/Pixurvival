@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.animationTemplate;
 
 import java.awt.Graphics;
 import java.awt.Image;

@@ -1,6 +1,8 @@
 package com.pixurvival.core.contentPack.sprite;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedElement;
 
@@ -15,6 +17,6 @@ public class EquipmentOffset extends NamedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private FrameOffset[] frameOffsets;
+	private List<FrameOffset> frameOffsets = new ArrayList<FrameOffset>();
 
 }

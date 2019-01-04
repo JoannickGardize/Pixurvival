@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,18 +14,23 @@ import javax.swing.JScrollPane;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ListEditor<E> extends ElementEditor<List<E>> {
 
 	private static final long serialVersionUID = 1L;
 
+	private @Getter @Setter boolean oneRequired = false;
+	private @Getter ElementEditor<E> editorForValidation;
 	private Supplier<ElementEditor<E>> elementEditorSupplier;
 	private JPanel listPanel = new JPanel();
 
 	public ListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+		this.elementEditorSupplier = elementEditorSupplier;
+		editorForValidation = elementEditorSupplier.get();
 		setMinimumSize(new Dimension(100, 50));
 		setPreferredSize(new Dimension(100, 50));
-		this.elementEditorSupplier = elementEditorSupplier;
-
 		setLayout(new BorderLayout());
 		listPanel.setLayout(new GridBagLayout());
 		JPanel pusherPanel = new JPanel(new BorderLayout());
@@ -34,10 +39,9 @@ public class ListEditor<E> extends ElementEditor<List<E>> {
 		add(new JScrollPane(pusherPanel));
 
 		JButton addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));
-		JButton removeButton = new CPEButton("generic.remove", () -> remove());
+		JButton removeButton = new CPEButton("generic.remove", this::remove);
 
 		add(LayoutUtils.createVerticalBox(3, addButton, removeButton), BorderLayout.SOUTH);
-
 	}
 
 	@Override
@@ -49,6 +53,19 @@ public class ListEditor<E> extends ElementEditor<List<E>> {
 		}
 		listPanel.revalidate();
 		listPanel.repaint();
+	}
+
+	@Override
+	public boolean isValueValid(List<E> value) {
+		if (oneRequired && value.isEmpty()) {
+			return false;
+		}
+		for (E item : value) {
+			if (!editorForValidation.isValueValid(item)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void add(E value) {
