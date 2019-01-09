@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.util;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
@@ -27,11 +28,13 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LayoutUtils {
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component,
+			GridBagConstraints gbc) {
 		addHorizontalLabelledItem(parent, labelKey, null, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey,
+			Component component, GridBagConstraints gbc) {
 		int previousAnchor = gbc.anchor;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;
@@ -107,31 +110,41 @@ public class LayoutUtils {
 	}
 
 	public static Border createGroupBorder(String titlekey) {
-		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), TranslationService.getInstance().getString(titlekey));
+		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+				TranslationService.getInstance().getString(titlekey));
 	}
 
 	public static JPanel createVerticalBox(int gap, Component... components) {
+		return createVerticalBox(gap, -1, components);
+	}
+
+	public static JPanel createVerticalBox(int gap, int fillIndex, Component... components) {
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.insets.top = gap;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
-		for (int i = 0; i < components.length - 1; i++) {
+		for (int i = 0; i < components.length; i++) {
+			if (fillIndex == i) {
+				gbc.weighty = 1;
+			}
+			if (i == components.length - 1) {
+				gbc.insets.bottom = gap;
+			}
 			panel.add(components[i], gbc);
+			gbc.weighty = 0;
 			gbc.gridy++;
-		}
-		if (components.length > 0) {
-			gbc.insets.bottom = gap;
-			panel.add(components[components.length - 1], gbc);
 		}
 		return panel;
 	}
 
 	public static Rectangle getCenteredKeepRatioRectangle(Container container, Rectangle rectangle) {
-		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1, (int) rectangle.getWidth(), (int) rectangle.getHeight());
+		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1,
+				(int) rectangle.getWidth(), (int) rectangle.getHeight());
 	}
 
-	public static Rectangle getCenteredKeepRatioRectangle(int destWidth, int destHeight, int sourceWidth, int sourceHeight) {
+	public static Rectangle getCenteredKeepRatioRectangle(int destWidth, int destHeight, int sourceWidth,
+			int sourceHeight) {
 		int xOffset = 0;
 		int yOffset = 0;
 		int width;
@@ -162,5 +175,11 @@ public class LayoutUtils {
 				return null;
 			}
 		};
+	}
+
+	public static void setMinimumSize(Component component, int minimumWidth, int minimumHeight) {
+		Dimension dim = new Dimension(minimumWidth, minimumHeight);
+		component.setMinimumSize(dim);
+		component.setPreferredSize(dim);
 	}
 }

@@ -11,9 +11,13 @@ import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypeChooser;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
 
+import lombok.Getter;
+
 public class ContentPackEditor extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+
+	private static @Getter ContentPackEditor instance;
 
 	public ContentPackEditor() {
 		setSize(800, 600);
@@ -32,11 +36,13 @@ public class ContentPackEditor extends JFrame {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
 		ContentPackEditor editor = new ContentPackEditor();
-		editor.setVisible(true);
+		instance = editor;
+		instance.setVisible(true);
 		FileService.getInstance().newContentPack();
 	}
 }

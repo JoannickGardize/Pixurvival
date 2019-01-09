@@ -21,7 +21,7 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 
 	private static final long serialVersionUID = 1L;
 
-	private SearchPopup<T> searchPopup;
+	private @Getter SearchPopup<T> searchPopup;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 	private Function<T, Icon> iconProvider;
 	private @Getter JLabel associatedLabel;
@@ -80,7 +80,7 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 
 	@Override
 	public boolean isValueValid(T value) {
-		return !required || (searchPopup.getItems() != null && searchPopup.getItems().contains(value));
+		return !required || searchPopup.getItems() != null && searchPopup.getItems().contains(value);
 	}
 
 	@Override
@@ -97,6 +97,7 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 			setForeground(Color.RED);
 			setIcon(null);
 		}
-		setText(value == null ? TranslationService.getInstance().getString("elementChooserButton.none") : value.getName());
+		setText(value == null ? TranslationService.getInstance().getString("elementChooserButton.none")
+				: value.getName());
 	}
 }

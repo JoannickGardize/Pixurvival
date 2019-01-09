@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.AnimationPreview;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooserPreviewTabs;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -15,6 +16,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.Frame;
@@ -52,7 +54,8 @@ public class AnimationEditor extends ElementEditor<Animation> {
 		JPanel editionPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.insets.top = 5;
-		LayoutUtils.addHorizontalLabelledItem(editionPanel, "animationTemplateEditor.frameDuration", frameDurationInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(editionPanel, "animationTemplateEditor.frameDuration", frameDurationInput,
+				gbc);
 		gbc.gridwidth = 2;
 		gbc.weighty = 1;
 		gbc.weightx = 1;
@@ -68,7 +71,7 @@ public class AnimationEditor extends ElementEditor<Animation> {
 	}
 
 	@Override
-	protected void valueChanged() {
+	protected void valueChanged(ValueComponent<?> source) {
 		animationPreview.setAnimation(getValue());
 	}
 }

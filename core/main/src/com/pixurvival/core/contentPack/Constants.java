@@ -14,4 +14,6 @@ public class Constants implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private SpriteSheet defaultCharacter;
+
+	private double tileAnimationSpeed = 0.3;
 }

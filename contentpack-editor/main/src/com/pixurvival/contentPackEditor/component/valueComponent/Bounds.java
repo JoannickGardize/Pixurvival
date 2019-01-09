@@ -40,8 +40,13 @@ public class Bounds {
 		return new Bounds(Double.NEGATIVE_INFINITY, false, Double.POSITIVE_INFINITY, false);
 	}
 
+	public static Bounds positive() {
+		return minBounds(0);
+	}
+
 	public boolean test(Number value) {
 		double doubleValue = value.doubleValue();
-		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min) && (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
+		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min)
+				&& (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
 	}
 }

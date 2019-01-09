@@ -1,6 +1,8 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
@@ -17,8 +19,7 @@ public class Tile extends NamedElement implements Serializable {
 	public static final byte SPECIAL_TILE = -1;
 
 	private boolean solid = false;
-	private float velocityFactor = 1f;
-	private Frame[] frames;
+	private double velocityFactor = 1f;
+	private List<Frame> frames = new ArrayList<>();
 	private String image;
-
 }

@@ -18,6 +18,7 @@ import com.pixurvival.contentPackEditor.component.util.ElementEditorTablePanel;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.FrameOffset;
 
@@ -53,8 +54,10 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 		previewPanel.getSpriteSheetPreview().addInteractionListener(o -> {
 			if (o instanceof ClickEvent) {
 				ClickEvent clickEvent = (ClickEvent) o;
-				if (tablePanel.getTableWidth() > clickEvent.getSpriteX() && tablePanel.getTableHeight() > clickEvent.getSpriteY()) {
-					FrameOffsetEditor editor = (FrameOffsetEditor) tablePanel.getCell(clickEvent.getSpriteX(), clickEvent.getSpriteY());
+				if (tablePanel.getTableWidth() > clickEvent.getSpriteX()
+						&& tablePanel.getTableHeight() > clickEvent.getSpriteY()) {
+					FrameOffsetEditor editor = (FrameOffsetEditor) tablePanel.getCell(clickEvent.getSpriteX(),
+							clickEvent.getSpriteY());
 					editor.getValue().setOffsetX(clickEvent.getPixelX());
 					editor.getValue().setOffsetY(clickEvent.getPixelY());
 					editor.setValue(editor.getValue());
@@ -76,7 +79,8 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 			if (width == tablePanel.getTableWidth() && height == tablePanel.getTableHeight()) {
 				return;
 			}
-			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("equipmentOffsetEditor.setSizeToPreviewQuestion"));
+			int option = JOptionPane.showConfirmDialog(null,
+					TranslationService.getInstance().getString("equipmentOffsetEditor.setSizeToPreviewQuestion"));
 			if (option == JOptionPane.YES_OPTION) {
 				tablePanel.setTableSize(width, height, true);
 			}
@@ -99,7 +103,7 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 	}
 
 	@Override
-	protected void valueChanged() {
+	protected void valueChanged(ValueComponent<?> source) {
 		SwingUtilities.invokeLater(() -> {
 			widthInput.setValue(tablePanel.getTableWidth());
 			heightInput.setValue(tablePanel.getTableHeight());

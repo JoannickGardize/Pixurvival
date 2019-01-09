@@ -10,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.item.ItemEditor;
 import com.pixurvival.contentPackEditor.component.itemCraft.ItemCraftEditor;
 import com.pixurvival.contentPackEditor.component.itemReward.ItemRewardEditor;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetEditor;
+import com.pixurvival.contentPackEditor.component.tile.TileEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.core.contentPack.NamedElement;
 import com.pixurvival.core.contentPack.map.MapGenerator;
@@ -35,7 +36,7 @@ public enum ElementType {
 	ITEM(Item.class, new ItemEditor()),
 	ITEM_CRAFT(ItemCraft.class, new ItemCraftEditor()),
 	ITEM_REWARD(ItemReward.class, new ItemRewardEditor()),
-	TILE(Tile.class, new SpriteSheetEditor()),
+	TILE(Tile.class, new TileEditor()),
 	STRUCTURE(Structure.class, new SpriteSheetEditor()),
 	MAP_GENERATOR(MapGenerator.class, new SpriteSheetEditor());
 

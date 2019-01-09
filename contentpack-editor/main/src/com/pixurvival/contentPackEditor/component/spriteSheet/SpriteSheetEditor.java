@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
@@ -40,7 +41,8 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()),
+				(v, f) -> v.setImage(f == null ? null : f.getName()));
 		bind(widthField, SpriteSheet::getWidth, SpriteSheet::setWidth);
 		bind(heightField, SpriteSheet::getHeight, SpriteSheet::setHeight);
 		bind(animationTemplateField, SpriteSheet::getAnimationTemplate, SpriteSheet::setAnimationTemplate);
@@ -56,8 +58,10 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.width", widthField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.height", heightField, gbc);
 		LayoutUtils.addHorizontalSeparator(propertiesPanel, gbc);
-		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.animationTemplate", animationTemplateField, gbc);
-		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.equipmentOffset", equipmentOffsetField, gbc);
+		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.animationTemplate", animationTemplateField,
+				gbc);
+		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.equipmentOffset", equipmentOffsetField,
+				gbc);
 		LayoutUtils.addEmptyFiller(propertiesPanel, gbc);
 
 		setLayout(new BorderLayout(10, 0));
@@ -72,7 +76,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 	}
 
 	@Override
-	protected void valueChanged() {
+	protected void valueChanged(ValueComponent<?> source) {
 		preview.setSpriteSheet(getValue());
 	}
 }

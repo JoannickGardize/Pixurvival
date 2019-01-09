@@ -1,38 +1,35 @@
 package com.pixurvival.contentPackEditor.component;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
-import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
 
-public class ResourcesDialog extends JDialog {
+public class ResourcesDialog extends EditorDialog {
 
 	private static final long serialVersionUID = 1L;
 
 	private JList<ResourceEntry> resourceList = new JList<>(new DefaultListModel<>());
 	private JButton addButton = new CPEButton("generic.add", () -> ResourcesService.getInstance().addResource());
-	private JButton importButton = new CPEButton("resources.importFolder", () -> ResourcesService.getInstance().importFolder());
+	private JButton importButton = new CPEButton("resources.importFolder",
+			() -> ResourcesService.getInstance().importFolder());
 	private ResourcePreview resourcePreview = new ResourcePreview();
 
-	public ResourcesDialog(Frame owner) {
-		super(owner, TranslationService.getInstance().getString("resourcesDialog.title"), true);
+	public ResourcesDialog() {
+		super("resourcesDialog.title");
 		Container content = getContentPane();
 		content.setLayout(new BorderLayout());
 		JPanel listPanel = new JPanel(new BorderLayout());
@@ -64,7 +61,6 @@ public class ResourcesDialog extends JDialog {
 
 		EventManager.getInstance().register(this);
 		pack();
-		setBackground(Color.magenta);
 	}
 
 	@EventListener

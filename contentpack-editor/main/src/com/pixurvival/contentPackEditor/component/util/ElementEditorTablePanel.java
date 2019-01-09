@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.util.Array2D;
 import com.pixurvival.core.contentPack.sprite.Frame;
 
@@ -79,7 +80,7 @@ public class ElementEditorTablePanel<T extends Frame> extends ElementEditor<List
 	}
 
 	@Override
-	protected void valueChanged() {
+	protected void valueChanged(ValueComponent<?> source) {
 		int width = 0;
 		int height = 0;
 		for (T element : getValue()) {

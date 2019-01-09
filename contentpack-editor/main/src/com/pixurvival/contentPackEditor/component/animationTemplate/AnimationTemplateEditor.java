@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.animationTemplate;
 import java.awt.BorderLayout;
 
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 
@@ -56,7 +57,7 @@ public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate
 	}
 
 	@Override
-	protected void valueChanged() {
+	protected void valueChanged(ValueComponent<?> source) {
 		list.setMap(getValue().getAnimations());
 		list.repaint();
 	}

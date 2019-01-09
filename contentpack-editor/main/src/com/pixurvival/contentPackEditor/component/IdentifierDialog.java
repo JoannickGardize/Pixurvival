@@ -1,31 +1,28 @@
 package com.pixurvival.contentPackEditor.component;
 
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.pixurvival.contentPackEditor.FileService;
-import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.Version;
 
-public class IdentifierDialog extends JDialog {
+public class IdentifierDialog extends EditorDialog {
 
 	private static final long serialVersionUID = 1L;
 
 	private JTextField nameField = new JTextField(20);
 	private JTextField versionField = new JTextField(20);
 
-	public IdentifierDialog(Frame owner) {
-		super(owner, TranslationService.getInstance().getString("identifierDialog.title"), true);
+	public IdentifierDialog() {
+		super("identifierDialog.title");
 
 		nameField.getDocument().addDocumentListener(new DocumentAdapter(e -> {
 			String name = nameField.getText().trim();
@@ -36,7 +33,8 @@ public class IdentifierDialog extends JDialog {
 
 		versionField.getDocument().addDocumentListener(new DocumentAdapter(e -> {
 			if (versionField.getText().matches("\\d+\\.\\d+")) {
-				FileService.getInstance().getCurrentContentPack().getIdentifier().setVersion(new Version(versionField.getText()));
+				FileService.getInstance().getCurrentContentPack().getIdentifier()
+						.setVersion(new Version(versionField.getText()));
 				versionField.setForeground(Color.BLACK);
 			} else {
 				versionField.setForeground(Color.RED);

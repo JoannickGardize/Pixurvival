@@ -8,39 +8,41 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
+import com.pixurvival.contentPackEditor.component.ImageFramePreview;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.item.Item;
 
 public class ItemEditor extends RootElementEditor<Item> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ItemPreview itemPreview;
+	private ImageFramePreview itemPreview = new ImageFramePreview();
 	private JComboBox<ItemType> typeChooser = new JComboBox<>(ItemType.values());
+	private ItemDetailsEditor detailsEditor = new ItemDetailsEditor();
 
 	public ItemEditor() {
 		// Contruction
-		itemPreview = new ItemPreview();
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
 		imageField.setItems(ResourcesService.getInstance().getResources());
 		FrameEditor frameEditor = new FrameEditor();
-		ItemDetailsEditor detailsEditor = new ItemDetailsEditor();
 		typeChooser = new JComboBox<>(ItemType.values());
 		NumberInput<Integer> maxStackSizeInput = NumberInput.integerInput(Bounds.minBounds(1));
 
-		// actions
+		// Listeners
+		typeChooser.addActionListener(e -> detailsEditor.changeType((ItemType) typeChooser.getSelectedItem()));
 
-		typeChooser.addActionListener(e -> {
-			detailsEditor.changeType((ItemType) typeChooser.getSelectedItem());
-		});
+		imageField.addValueChangeListener(v -> itemPreview.setImage(v.getName()));
+		frameEditor.addValueChangeListener(v -> itemPreview.setFrame(v));
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()),
+				(v, f) -> v.setImage(f == null ? null : f.getName()));
 		bind(frameEditor, Item::getFrame, Item::setFrame);
 		bind(detailsEditor, Item::getDetails, Item::setDetails);
 		bind(maxStackSizeInput, Item::getMaxStackSize, Item::setMaxStackSize);
@@ -78,8 +80,10 @@ public class ItemEditor extends RootElementEditor<Item> {
 	}
 
 	@Override
-	protected void valueChanged() {
-		typeChooser.setSelectedItem(ItemType.forClass(getValue().getDetails().getClass()));
-		itemPreview.setItem(getValue());
+	protected void valueChanged(ValueComponent<?> source) {
+		if (source == detailsEditor) {
+			typeChooser.setSelectedItem(ItemType.forClass(getValue().getDetails().getClass()));
+		}
+		itemPreview.setImage(getValue().getImage());
 	}
 }

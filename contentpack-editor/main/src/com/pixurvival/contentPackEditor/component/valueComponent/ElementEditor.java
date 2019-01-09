@@ -35,7 +35,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	public void setValue(E value) {
 		this.value = value;
 		subValues.forEach(entry -> entry.getComponent().setValue(entry.getGetter().apply(value)));
-		valueChanged();
+		valueChanged(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -61,6 +61,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 			}
 		}
 		if (valueChanged) {
+			notifyValueChanged();
 		}
 		return valid;
 	}
@@ -86,7 +87,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 				setter.accept(value, v);
 				notifyValueChanged();
 			}
-			valueChanged();
+			valueChanged(component);
 		});
 	}
 
@@ -94,7 +95,13 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		listeners.forEach(l -> l.valueChanged(value));
 	}
 
-	protected void valueChanged() {
+	/**
+	 * Called after the value of this editor has been changed and all sub fields
+	 * has been updated.
+	 * 
+	 * @param value
+	 */
+	protected void valueChanged(ValueComponent<?> source) {
 	}
 
 }
