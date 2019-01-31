@@ -7,8 +7,9 @@ import javax.swing.BorderFactory;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
+import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.core.contentPack.sprite.FrameOffset;
 
 public class FrameOffsetEditor extends ElementEditor<FrameOffset> {
@@ -19,8 +20,8 @@ public class FrameOffsetEditor extends ElementEditor<FrameOffset> {
 
 		// Construction
 		setBorder(BorderFactory.createEtchedBorder());
-		NumberInput<Integer> offsetXInput = NumberInput.integerInput();
-		NumberInput<Integer> offsetYInput = NumberInput.integerInput();
+		IntegerInput offsetXInput = new IntegerInput(Bounds.positive());
+		IntegerInput offsetYInput = new IntegerInput(Bounds.positive());
 		BooleanCheckBox isBackCheckbox = new BooleanCheckBox();
 
 		// Binding

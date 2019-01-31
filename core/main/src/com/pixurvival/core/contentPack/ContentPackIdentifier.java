@@ -2,6 +2,10 @@ package com.pixurvival.core.contentPack;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +17,11 @@ public class ContentPackIdentifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Required
+	@Length(min = 3)
 	private String name = "MyContentPack";
+
+	@Valid
 	private Version version = new Version(1, 0);
 
 	public ContentPackIdentifier(ContentPackIdentifier other) {

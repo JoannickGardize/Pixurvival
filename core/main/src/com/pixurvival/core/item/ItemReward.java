@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ItemReward extends NamedElement implements Serializable {
+public class ItemReward extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,12 +23,17 @@ public class ItemReward extends NamedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
+		@Valid
+		@Required
 		private ItemStack itemStack = new ItemStack();
+
+		@Bounds(min = 0, max = 1, maxInclusive = true)
 		private double probability = 1;
 	}
 
 	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(ArrayList::new);
 
+	@Valid
 	private @Getter @Setter List<Entry> entries = new ArrayList<>();
 
 	public ItemStack[] produce(Random random) {
@@ -33,7 +41,7 @@ public class ItemReward extends NamedElement implements Serializable {
 		result.clear();
 		for (Entry entry : entries) {
 			if (random.nextDouble() <= entry.getProbability()) {
-				result.add(entry.getItemStack());
+				result.add(new ItemStack(entry.getItemStack()));
 			}
 		}
 		return result.toArray(new ItemStack[result.size()]);

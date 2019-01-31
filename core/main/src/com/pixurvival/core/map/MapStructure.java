@@ -1,14 +1,14 @@
 package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.pixurvival.core.Collidable;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.contentPack.map.StructureType;
+import com.pixurvival.core.contentPack.map.Structure.Details;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
@@ -22,11 +22,11 @@ public abstract class MapStructure implements Collidable {
 		MapStructure apply(Chunk chunk, Structure structure, int x, int y);
 	}
 
-	private static Map<StructureType, StructureSupplier> mapStructureCreator = new EnumMap<>(StructureType.class);
+	private static Map<Class<? extends Details>, StructureSupplier> mapStructureCreator = new HashMap<>();
 
 	static {
-		mapStructureCreator.put(StructureType.HARVESTABLE, (c, s, x, y) -> new HarvestableStructure(c, s, x, y));
-		mapStructureCreator.put(StructureType.SHORT_LIVED, (c, s, x, y) -> new ShortLivedStructure(c, s, x, y));
+		mapStructureCreator.put(Structure.Harvestable.class, HarvestableStructure::new);
+		mapStructureCreator.put(Structure.ShortLived.class, ShortLivedStructure::new);
 	}
 
 	private Chunk chunk;
@@ -45,7 +45,7 @@ public abstract class MapStructure implements Collidable {
 	}
 
 	public static MapStructure newInstance(Chunk chunk, Structure structure, int x, int y) {
-		return mapStructureCreator.get(structure.getType()).apply(chunk, structure, x, y);
+		return mapStructureCreator.get(structure.getDetails().getClass()).apply(chunk, structure, x, y);
 	}
 
 	@Override

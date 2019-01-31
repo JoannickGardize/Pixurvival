@@ -9,13 +9,13 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.AnimationPreview;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
@@ -39,9 +39,9 @@ public class TileEditor extends RootElementEditor<Tile> {
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
 		imageField.setItems(ResourcesService.getInstance().getResources());
 		EventManager.getInstance().register(this);
-		ListEditor<Frame> frameList = new ListEditor<>(FrameEditor::new, Frame::new);
+		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new);
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
-		NumberInput<Double> velocityFactorInput = NumberInput.doubleInput(Bounds.positive());
+		DoubleInput velocityFactorInput = new DoubleInput(Bounds.positive());
 		imagePreview.setAnimation(new Animation());
 		SpriteSheet tileSpriteSheet = new SpriteSheet();
 		tileSpriteSheet.setWidth(GameConstants.PIXEL_PER_UNIT);
@@ -50,8 +50,7 @@ public class TileEditor extends RootElementEditor<Tile> {
 		LayoutUtils.setMinimumSize(imagePreview, 32, 32);
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()),
-				(v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
 		bind(frameList, Tile::getFrames, Tile::setFrames);
 		bind(solidCheckBox, Tile::isSolid, Tile::setSolid);
 		bind(velocityFactorInput, Tile::getVelocityFactor, Tile::setVelocityFactor);
@@ -59,13 +58,12 @@ public class TileEditor extends RootElementEditor<Tile> {
 		// Layouting
 		setLayout(new BorderLayout(10, 5));
 
-		JPanel leftPanel = LayoutUtils.createVerticalBox(10, 2, imagePreview,
-				LayoutUtils.labelled("generic.image", imageField), frameList);
+		JPanel leftPanel = LayoutUtils.createVerticalBox(10, 2, imagePreview, LayoutUtils.labelled("generic.image", imageField), frameList);
 		leftPanel.setBorder(LayoutUtils.createGroupBorder("generic.image"));
 		add(leftPanel, BorderLayout.WEST);
 		JPanel centerPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
-		LayoutUtils.addHorizontalLabelledItem(centerPanel, "tileEditor.solid", solidCheckBox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(centerPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(centerPanel, "tileEditor.velocityFactor", velocityFactorInput, gbc);
 		add(centerPanel, BorderLayout.CENTER);
 

@@ -7,9 +7,9 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -22,11 +22,11 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 	private static final long serialVersionUID = 1L;
 
 	private ItemStackEditor resultEditor = new ItemStackEditor();
-	private ListEditor<ItemStack> recipesList = new ListEditor<>(ItemStackEditor::new, ItemStack::new);
+	private VerticalListEditor<ItemStack> recipesList = new VerticalListEditor<>(ItemStackEditor::new, ItemStack::new);
 
 	public ItemCraftEditor() {
 
-		NumberInput<Double> durationField = NumberInput.doubleInput(Bounds.minBounds(0));
+		DoubleInput durationField = new DoubleInput(Bounds.min(0));
 
 		bind(recipesList, ItemCraft::getRecipes, ItemCraft::setRecipes);
 		bind(resultEditor, ItemCraft::getResult, ItemCraft::setResult);

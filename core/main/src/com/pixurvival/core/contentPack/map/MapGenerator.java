@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,17 +18,23 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class MapGenerator extends NamedElement implements Serializable {
+public class MapGenerator extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Heightmap[] heightmaps;
+	@Valid
+	@ElementCollection(value = Heightmap.class, isRoot = false)
+	private List<Heightmap> heightmaps = new ArrayList<>();
 
+	@Required
+	@ElementReference
 	private Tile defaultTile;
 
+	@Valid
 	private List<TileGenerator> tileGenerators = new ArrayList<>();
 
-	private StructureGenerator[] structureGenerators;
+	@Valid
+	private List<StructureGenerator> structureGenerators = new ArrayList<>();
 
 	public void initialize(long seed) {
 		Random random = new Random(seed);
@@ -36,7 +46,7 @@ public class MapGenerator extends NamedElement implements Serializable {
 	public Tile getTileAt(int x, int y) {
 		for (TileGenerator tileGenerator : tileGenerators) {
 			if (tileGenerator.test(x, y)) {
-				return tileGenerator.getTile();
+				return tileGenerator.getTileAt(x, y);
 			}
 		}
 		return defaultTile;
@@ -45,7 +55,7 @@ public class MapGenerator extends NamedElement implements Serializable {
 	public Structure getStructureAt(int x, int y, Random random) {
 		for (StructureGenerator structureGenerator : structureGenerators) {
 			if (structureGenerator.test(x, y)) {
-				return structureGenerator.getStructure(x, y, random);
+				return structureGenerator.next(random);
 			}
 		}
 		return null;

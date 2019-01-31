@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.valueComponent;
+package com.pixurvival.contentPackEditor.component.elementChooser;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -28,13 +28,14 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SearchPopup<T extends NamedElement> extends JDialog {
+public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 
 	public static final String ELEMENT_SELECTED_ACTION = "ELEMENT_SELECTED_ACTION";
 
@@ -88,10 +89,13 @@ public class SearchPopup<T extends NamedElement> extends JDialog {
 			}
 		});
 		searchField.getDocument().addDocumentListener(new DocumentAdapter(e -> updateSearchList()));
-		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), SearchPopupSelectionModel.NEXT_SELECTION_ACTION);
-		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION);
+		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),
+				SearchPopupSelectionModel.NEXT_SELECTION_ACTION);
+		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),
+				SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION);
 		searchField.getActionMap().put(SearchPopupSelectionModel.NEXT_SELECTION_ACTION, selectionModel.getNextAction());
-		searchField.getActionMap().put(SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION, selectionModel.getPreviousAction());
+		searchField.getActionMap().put(SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION,
+				selectionModel.getPreviousAction());
 		searchField.addActionListener(e -> selectItem());
 		removeButton.addActionListener(e -> remove());
 
@@ -143,6 +147,14 @@ public class SearchPopup<T extends NamedElement> extends JDialog {
 				int index;
 				if ((index = item.getName().toLowerCase().indexOf(searchText.toLowerCase())) != -1) {
 					sortedList.add(new ItemMatchEntry(item, index * 10000 + item.getName().length()));
+				}
+			}
+		} else {
+			int index = 0;
+			for (T item : items) {
+				sortedList.add(new ItemMatchEntry(item, index++));
+				if (index >= RESULT_SIZE) {
+					break;
 				}
 			}
 		}

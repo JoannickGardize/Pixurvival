@@ -8,6 +8,8 @@ import java.util.function.Function;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

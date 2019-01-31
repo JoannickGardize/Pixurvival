@@ -12,7 +12,8 @@ import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
@@ -25,7 +26,7 @@ public class ContentPackEditionService {
 	private static @Getter ContentPackEditionService instance = new ContentPackEditionService();
 
 	private Map<ElementType, Method> listGetters = new EnumMap<>(ElementType.class);
-	private Map<ElementType, Consumer<NamedElement>> initializers = new EnumMap<>(ElementType.class);
+	private Map<ElementType, Consumer<IdentifiedElement>> initializers = new EnumMap<>(ElementType.class);
 
 	private ContentPackEditionService() {
 		for (ElementType type : ElementType.values()) {
@@ -42,6 +43,11 @@ public class ContentPackEditionService {
 			item.setDetails(new Item.Resource());
 			item.setMaxStackSize(1);
 		});
+
+		initializers.put(ElementType.STRUCTURE, o -> {
+			Structure structure = (Structure) o;
+			structure.setDetails(new Structure.ShortLived());
+		});
 	}
 
 	public void addElement(ElementType type, String name) {
@@ -49,11 +55,11 @@ public class ContentPackEditionService {
 			return;
 		}
 		try {
-			List<NamedElement> list = listOf(type);
-			NamedElement newElement = type.getElementClass().newInstance();
+			List<IdentifiedElement> list = listOf(type);
+			IdentifiedElement newElement = type.getElementClass().newInstance();
 			newElement.setName(name);
 			newElement.setId(list.size());
-			Consumer<NamedElement> initializer = initializers.get(type);
+			Consumer<IdentifiedElement> initializer = initializers.get(type);
 			if (initializer != null) {
 				initializer.accept(newElement);
 			}
@@ -64,22 +70,22 @@ public class ContentPackEditionService {
 		}
 	}
 
-	public void removeElement(NamedElement element) {
+	public void removeElement(IdentifiedElement element) {
 		ElementType type = ElementType.of(element);
-		List<NamedElement> list = listOf(type);
+		List<IdentifiedElement> list = listOf(type);
 		list.remove(element);
 		reindex(list);
 		EventManager.getInstance().fire(new ElementRemovedEvent(element));
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<NamedElement> listOf(ElementType type) {
+	public List<IdentifiedElement> listOf(ElementType type) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
 			return Collections.emptyList();
 		}
 		try {
-			return (List<NamedElement>) listGetters.get(type).invoke(contentPack);
+			return (List<IdentifiedElement>) listGetters.get(type).invoke(contentPack);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -91,7 +97,7 @@ public class ContentPackEditionService {
 				&& ResourcesService.getInstance().getResource(spriteSheet.getImage()) != null;
 	}
 
-	private void reindex(List<NamedElement> list) {
+	private void reindex(List<IdentifiedElement> list) {
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setId(i);
 		}

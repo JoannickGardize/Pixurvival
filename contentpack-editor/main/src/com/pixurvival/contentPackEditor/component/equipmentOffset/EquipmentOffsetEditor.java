@@ -14,9 +14,10 @@ import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooserPreviewTabs;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
-import com.pixurvival.contentPackEditor.component.util.ElementEditorTablePanel;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditorTablePanel;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
@@ -26,8 +27,8 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 
 	private static final long serialVersionUID = 1L;
 
-	NumberInput<Integer> widthInput = NumberInput.integerInput();
-	NumberInput<Integer> heightInput = NumberInput.integerInput();
+	private IntegerInput widthInput = new IntegerInput(Bounds.min(1));
+	private IntegerInput heightInput = new IntegerInput(Bounds.min(1));
 	private ElementEditorTablePanel<FrameOffset> tablePanel;
 	private SpriteSheetChooserPreviewTabs previewPanel = new SpriteSheetChooserPreviewTabs();
 
@@ -45,6 +46,7 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 		bind(tablePanel, EquipmentOffset::getFrameOffsets, EquipmentOffset::setFrameOffsets);
 
 		widthInput.addValueChangeListener(x -> {
+
 			tablePanel.setTableSize(x, heightInput.getValue() == null ? 0 : heightInput.getValue(), true);
 		});
 		heightInput.addValueChangeListener(y -> {
@@ -74,6 +76,9 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 				return;
 			}
 			BufferedImage image = (BufferedImage) resourceEntry.getPreview();
+			if (spriteSheet.getWidth() == 0 || spriteSheet.getHeight() == 0) {
+				return;
+			}
 			int width = image.getWidth() / spriteSheet.getWidth();
 			int height = image.getHeight() / spriteSheet.getHeight();
 			if (width == tablePanel.getTableWidth() && height == tablePanel.getTableHeight()) {

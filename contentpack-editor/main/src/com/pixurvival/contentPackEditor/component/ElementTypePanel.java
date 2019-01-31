@@ -6,18 +6,18 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
-public class ElementTypePanel<E extends NamedElement> extends JPanel {
+public class ElementTypePanel<E extends IdentifiedElement> extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementList<E> elementList;
+	private RootElementList<E> elementList;
 	private ElementEditor<E> elementEditor;
 
 	@SuppressWarnings("unchecked")
 	public ElementTypePanel(ElementType elementType) {
-		elementList = (ElementList<E>) elementType.getElementList();
+		elementList = (RootElementList<E>) elementType.getElementList();
 		setLayout(new BorderLayout());
 		add(elementList, BorderLayout.WEST);
 		elementEditor = elementType.getElementEditor();

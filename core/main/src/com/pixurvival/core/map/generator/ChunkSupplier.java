@@ -47,7 +47,7 @@ public class ChunkSupplier {
 	private void buildStructures(Chunk chunk) {
 		int x = chunk.getPosition().getX();
 		int y = chunk.getPosition().getY();
-		Random chunkRandom = new Random((seed << 32) ^ (x << 16) ^ y);
+		Random chunkRandom = new Random(seed << 32 ^ x << 16 ^ y);
 		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
 			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
 				if (chunk.tileAtLocal(cx, cy) instanceof EmptyTile) {

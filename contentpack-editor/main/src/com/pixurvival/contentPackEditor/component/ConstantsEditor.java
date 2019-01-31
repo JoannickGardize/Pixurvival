@@ -5,11 +5,11 @@ import java.awt.GridBagLayout;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
@@ -29,7 +29,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 		EventManager.getInstance().register(this);
 		defaultCharacterChooser.getSearchPopup().setModal(true);
 		// Construction
-		NumberInput<Double> tileAnimationSpeedInput = NumberInput.doubleInput(Bounds.positive());
+		DoubleInput tileAnimationSpeedInput = new DoubleInput(Bounds.positive());
 
 		// Binding
 		bind(defaultCharacterChooser, Constants::getDefaultCharacter, Constants::setDefaultCharacter);

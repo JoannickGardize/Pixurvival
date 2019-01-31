@@ -20,33 +20,32 @@ public class Bounds {
 		this.max = max;
 	}
 
-	public static Bounds minBounds(double min) {
-		return minBounds(min, false);
+	public static Bounds min(double min) {
+		return min(min, false);
 	}
 
-	public static Bounds minBounds(double min, boolean exclude) {
+	public static Bounds min(double min, boolean exclude) {
 		return new Bounds(min, exclude, Double.POSITIVE_INFINITY, false);
 	}
 
-	public static Bounds maxBounds(double max) {
+	public static Bounds max(double max) {
 		return new Bounds(Double.NEGATIVE_INFINITY, false, max, false);
 	}
 
-	public static Bounds maxBounds(double max, boolean exclude) {
+	public static Bounds max(double max, boolean exclude) {
 		return new Bounds(Double.NEGATIVE_INFINITY, false, max, exclude);
 	}
 
-	public static Bounds noBounds() {
+	public static Bounds none() {
 		return new Bounds(Double.NEGATIVE_INFINITY, false, Double.POSITIVE_INFINITY, false);
 	}
 
 	public static Bounds positive() {
-		return minBounds(0);
+		return min(0);
 	}
 
 	public boolean test(Number value) {
 		double doubleValue = value.doubleValue();
-		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min)
-				&& (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
+		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min) && (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
 	}
 }

@@ -11,6 +11,7 @@ import javax.swing.border.EtchedBorder;
 
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
@@ -19,10 +20,11 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(item -> IconService.getInstance().get(item));
+	private ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(
+			item -> IconService.getInstance().get(item));
 
 	public ItemStackEditor() {
-		NumberInput<Integer> quantityInput = NumberInput.integerInput();
+		IntegerInput quantityInput = new IntegerInput(Bounds.min(1));
 		if (FileService.getInstance().getCurrentContentPack() != null) {
 			itemChooser.setItems(FileService.getInstance().getCurrentContentPack().getItems());
 		}

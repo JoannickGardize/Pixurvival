@@ -39,7 +39,8 @@ public class ElementTypeChooser extends JList<ElementType> {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
 				Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				if (!validMap.get(value)) {
 					component.setForeground(Color.RED);

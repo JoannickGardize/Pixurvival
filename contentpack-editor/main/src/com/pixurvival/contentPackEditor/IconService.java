@@ -12,39 +12,67 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.item.Item;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 public class IconService {
 
 	private static @Getter IconService instance = new IconService();
 
-	private Map<Item, Icon> itemIcons = new HashMap<>();
+	@Getter
+	@EqualsAndHashCode
+	@AllArgsConstructor
+	private static class IconKey {
+		private String imageName;
+		private Frame frame;
+	}
+
+	private Map<IconKey, Icon> itemIcons = new HashMap<>();
 
 	private IconService() {
 		EventManager.getInstance().register(this);
 	}
 
 	public Icon get(Item item) {
-		Frame frame = item.getFrame();
+		if (item.getImage() == null || item.getFrame() == null) {
+			return null;
+		} else {
+			return get(item.getImage(), item.getFrame());
+		}
+	}
+
+	public Icon get(Tile tile) {
+		if (tile.getImage() == null || tile.getFrames() == null || tile.getFrames().isEmpty()) {
+			return null;
+		} else {
+			return get(tile.getImage(), tile.getFrames().get(0));
+		}
+	}
+
+	public Icon get(String imageName, Frame frame) {
 		if (frame == null) {
 			return null;
 		}
-		Icon imageIcon = itemIcons.get(item);
+		IconKey key = new IconKey(imageName, frame);
+		Icon imageIcon = itemIcons.get(key);
 		if (imageIcon == null) {
-			ResourceEntry resource = ResourcesService.getInstance().getResource(item.getImage());
+			ResourceEntry resource = ResourcesService.getInstance().getResource(imageName);
 			if (resource == null) {
 				return null;
 			}
 			if (!(resource.getPreview() instanceof BufferedImage)) {
 				return null;
 			}
-			BufferedImage subimage = ((BufferedImage) resource.getPreview()).getSubimage(frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT,
+			BufferedImage subimage = ((BufferedImage) resource.getPreview()).getSubimage(
+					frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT,
 					GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 			imageIcon = GraphicsUtils.createIcon(subimage);
-			itemIcons.put(item, imageIcon);
+			itemIcons.put(key, imageIcon);
 		}
 		return imageIcon;
 	}

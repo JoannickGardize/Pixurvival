@@ -2,6 +2,8 @@ package com.pixurvival.core.contentPack;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +17,10 @@ public class Version implements Comparable<Version>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Bounds(min = 0)
 	private int major;
+
+	@Bounds(min = 0)
 	private int minor;
 
 	public Version(String s) {

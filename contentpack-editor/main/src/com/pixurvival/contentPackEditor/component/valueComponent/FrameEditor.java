@@ -10,8 +10,8 @@ public class FrameEditor extends ElementEditor<Frame> {
 
 	private static final long serialVersionUID = 1L;
 
-	private NumberInput<Integer> xField = NumberInput.integerInput();
-	private NumberInput<Integer> yField = NumberInput.integerInput();
+	private IntegerInput xField = new IntegerInput(Bounds.positive());
+	private IntegerInput yField = new IntegerInput(Bounds.positive());
 
 	public FrameEditor() {
 

@@ -8,12 +8,12 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.pixurvival.contentPackEditor.component.util.GraphicsUtils;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.Getter;
 
 @Getter
-public class ResourceEntry extends NamedElement {
+public class ResourceEntry extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

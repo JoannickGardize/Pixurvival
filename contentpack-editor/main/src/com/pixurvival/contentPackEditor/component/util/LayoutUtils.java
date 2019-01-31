@@ -8,13 +8,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
@@ -110,8 +113,28 @@ public class LayoutUtils {
 	}
 
 	public static Border createGroupBorder(String titlekey) {
-		return BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
-				TranslationService.getInstance().getString(titlekey));
+		return BorderFactory.createTitledBorder(createBorder(), TranslationService.getInstance().getString(titlekey));
+	}
+
+	public static Border createBorder() {
+		return BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+	}
+
+	public static JPanel createHorizontalBox(int gap, Component... components) {
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = createGridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.insets.right = gap;
+		for (int i = 0; i < components.length; i++) {
+			if (i == components.length - 1) {
+				gbc.insets.right = 0;
+			}
+			panel.add(components[i]);
+			gbc.gridx++;
+		}
+		return panel;
 	}
 
 	public static JPanel createVerticalBox(int gap, Component... components) {
@@ -181,5 +204,21 @@ public class LayoutUtils {
 		Dimension dim = new Dimension(minimumWidth, minimumHeight);
 		component.setMinimumSize(dim);
 		component.setPreferredSize(dim);
+	}
+
+	public static Component addBorder(Component comp, int top, int left, int bottom, int right) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.add(comp, BorderLayout.CENTER);
+		panel.setBorder(new EmptyBorder(top, left, bottom, right));
+		return panel;
+	}
+
+	public static <T extends JComponent> Supplier<T> bordered(Supplier<T> supplier) {
+		return () -> {
+			T result = supplier.get();
+			result.setBorder(createBorder());
+			return result;
+		};
 	}
 }

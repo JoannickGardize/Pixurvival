@@ -2,27 +2,32 @@ package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.map.generator.SimplexNoise;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class Heightmap implements Serializable {
+@Getter
+@Setter
+public class Heightmap extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	@Bounds(min = 1)
+	private int numberOfoctaves;
 
-	private int octave;
-
+	@Bounds(min = 0)
 	private double persistence;
 
+	@Bounds(min = 0)
 	private double scale;
 
 	private transient SimplexNoise simplexNoise;
 
 	public void initialiaze(long seed) {
-		simplexNoise = new SimplexNoise(octave, persistence, scale, seed);
+		simplexNoise = new SimplexNoise(numberOfoctaves, persistence, scale, seed);
 	}
 
 	public double getNoise(int x, int y) {

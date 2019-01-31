@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;

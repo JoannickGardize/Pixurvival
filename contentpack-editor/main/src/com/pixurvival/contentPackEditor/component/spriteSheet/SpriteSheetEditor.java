@@ -10,10 +10,10 @@ import javax.swing.JTabbedPane;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementChooserButton;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
@@ -27,8 +27,8 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
-	private NumberInput<Integer> widthField = NumberInput.integerInput(Bounds.minBounds(1));
-	private NumberInput<Integer> heightField = NumberInput.integerInput(Bounds.minBounds(1));
+	private IntegerInput widthField = new IntegerInput(Bounds.min(1));
+	private IntegerInput heightField = new IntegerInput(Bounds.min(1));
 	private ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(e -> null);
 	private ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(e -> null, false);
 	private JTabbedPane previewTabs = new JTabbedPane();

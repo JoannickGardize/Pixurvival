@@ -1,9 +1,13 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
+
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
 
@@ -12,13 +16,17 @@ public class StructureGenerator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HeightmapCondition[] heightmapConditions;
+	@Valid
+	private List<HeightmapCondition> heightmapConditions;
 
-	private StructureGeneratorEntry[] structureGeneratorEntries;
-	private double probabilityFactor;
+	@Valid
+	private List<StructureGeneratorEntry> structureGeneratorEntries;
+
+	private transient double probabilityWeight;
 
 	private transient NavigableMap<Double, Structure> structureChooseMap;
 
+	@Bounds(min = 0, max = 1, maxInclusive = true)
 	private double density;
 
 	public boolean test(int x, int y) {
@@ -30,10 +38,10 @@ public class StructureGenerator implements Serializable {
 		return true;
 	}
 
-	public Structure getStructure(int x, int y, Random random) {
+	public Structure next(Random random) {
 		if (random.nextDouble() < density) {
 			ensureChooseMapBuilt();
-			return structureChooseMap.ceilingEntry(random.nextDouble() * probabilityFactor).getValue();
+			return structureChooseMap.ceilingEntry(random.nextDouble() * probabilityWeight).getValue();
 		} else {
 			return null;
 		}
@@ -44,10 +52,10 @@ public class StructureGenerator implements Serializable {
 			return;
 		}
 		structureChooseMap = new TreeMap<>();
-		probabilityFactor = 0;
+		probabilityWeight = 0;
 		for (StructureGeneratorEntry entry : structureGeneratorEntries) {
-			probabilityFactor += entry.getProbability();
-			structureChooseMap.put(probabilityFactor, entry.getStructure());
+			probabilityWeight += entry.getProbability();
+			structureChooseMap.put(probabilityWeight, entry.getStructure());
 		}
 	}
 }

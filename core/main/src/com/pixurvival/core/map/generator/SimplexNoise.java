@@ -7,7 +7,7 @@ import com.pixurvival.core.util.MathUtils;
 public class SimplexNoise {
 
 	private SimplexNoiseOctave[] octaves;
-	private double[] frequencys;
+	private double[] frequencies;
 	private double[] amplitudes;
 
 	private double scale;
@@ -16,7 +16,7 @@ public class SimplexNoise {
 		this.scale = scale;
 
 		octaves = new SimplexNoiseOctave[numberOfOctaves];
-		frequencys = new double[numberOfOctaves];
+		frequencies = new double[numberOfOctaves];
 		amplitudes = new double[numberOfOctaves];
 
 		Random rnd = new Random(seed);
@@ -24,7 +24,7 @@ public class SimplexNoise {
 		for (int i = 0; i < numberOfOctaves; i++) {
 			octaves[i] = new SimplexNoiseOctave(rnd.nextLong());
 
-			frequencys[i] = Math.pow(2, i);
+			frequencies[i] = Math.pow(2, i);
 			amplitudes[i] = Math.pow(persistence, numberOfOctaves - i);
 
 		}
@@ -38,9 +38,7 @@ public class SimplexNoise {
 		double sx = x / scale;
 		double sy = y / scale;
 		for (int i = 0; i < octaves.length; i++) {
-			// double frequency = Math.pow(2,i);
-			// double amplitude = Math.pow(persistence,octaves.length-i);
-			result = result + octaves[i].noise(sx / frequencys[i], sy / frequencys[i]) * amplitudes[i];
+			result = result + octaves[i].noise(sx / frequencies[i], sy / frequencies[i]) * amplitudes[i];
 		}
 
 		return MathUtils.clamp(0.5 + result / 2, 0, 0.99999);

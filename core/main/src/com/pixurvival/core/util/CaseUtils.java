@@ -55,4 +55,8 @@ public class CaseUtils {
 		}
 		return sb.toString();
 	}
+
+	public static String pascalToCamelCase(String s) {
+		return s.substring(0, 1).toLowerCase() + s.substring(1);
+	}
 }

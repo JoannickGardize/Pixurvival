@@ -12,10 +12,10 @@ import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooser
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.NumberInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.sprite.Animation;
@@ -25,7 +25,7 @@ public class AnimationEditor extends ElementEditor<Animation> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Frame> frameList = new ListEditor<>(() -> new FrameEditor(), Frame::new);
+	private VerticalListEditor<Frame> frameList = new VerticalListEditor<>(() -> new FrameEditor(), Frame::new);
 	private AnimationPreview animationPreview = new AnimationPreview();
 	private SpriteSheetChooserPreviewTabs previewPanel = new SpriteSheetChooserPreviewTabs();
 
@@ -33,8 +33,8 @@ public class AnimationEditor extends ElementEditor<Animation> {
 		EventManager.getInstance().register(this);
 
 		previewPanel.addTab(TranslationService.getInstance().getString("generic.animation"), animationPreview);
-		NumberInput<Double> frameDurationInput = NumberInput.doubleInput();
-		frameDurationInput.setValueBounds(Bounds.minBounds(Animation.MIN_FRAME_DURATION));
+		DoubleInput frameDurationInput = new DoubleInput(Bounds.positive());
+		frameDurationInput.setValueBounds(Bounds.min(Animation.MIN_FRAME_DURATION));
 		frameList.setBorder(LayoutUtils.createGroupBorder("animationTemplateEditor.frames"));
 
 		previewPanel.getSpriteSheetChooser().addValueChangeListener(s -> {

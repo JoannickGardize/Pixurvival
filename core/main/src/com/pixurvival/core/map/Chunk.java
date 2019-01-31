@@ -59,11 +59,7 @@ public class Chunk {
 	}
 
 	public MapTile tileAtLocal(int x, int y) {
-		try {
-			return tiles[y * GameConstants.CHUNK_SIZE + x];
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw e;
-		}
+		return tiles[y * GameConstants.CHUNK_SIZE + x];
 	}
 
 	public MapTile tileAt(int x, int y) {

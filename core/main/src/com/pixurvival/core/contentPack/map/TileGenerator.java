@@ -1,6 +1,12 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
 
@@ -9,9 +15,13 @@ public class TileGenerator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private HeightmapCondition[] heightmapConditions;
+	@Valid
+	@Length(min = 1)
+	private List<HeightmapCondition> heightmapConditions = new ArrayList<>();
 
-	private Tile tile;
+	@Required
+	@Valid
+	private TileHashmap tileHashmap = new TileHashmap();
 
 	public boolean test(int x, int y) {
 		for (HeightmapCondition h : heightmapConditions) {
@@ -20,5 +30,9 @@ public class TileGenerator implements Serializable {
 			}
 		}
 		return true;
+	}
+
+	public Tile getTileAt(int x, int y) {
+		return tileHashmap.get(x, y);
 	}
 }

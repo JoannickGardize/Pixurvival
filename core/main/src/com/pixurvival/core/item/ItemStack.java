@@ -7,6 +7,9 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Required;
 
 import lombok.Data;
 
@@ -15,7 +18,11 @@ public class ItemStack implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Required
+	@ElementReference
 	private Item item;
+
+	@Bounds(min = 1)
 	private int quantity;
 
 	public ItemStack() {

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.valueComponent;
+package com.pixurvival.contentPackEditor.component.elementChooser;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,12 +12,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.pixurvival.contentPackEditor.TranslationService;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class ElementChooserButton<T extends NamedElement> extends JButton implements ValueComponent<T> {
+public class ElementChooserButton<T extends IdentifiedElement> extends JButton implements ValueComponent<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,6 +29,10 @@ public class ElementChooserButton<T extends NamedElement> extends JButton implem
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
 	private @Getter @Setter boolean required;
+
+	public ElementChooserButton() {
+		this(e -> null);
+	}
 
 	public ElementChooserButton(Function<T, Icon> iconProvider) {
 		this(iconProvider, true);

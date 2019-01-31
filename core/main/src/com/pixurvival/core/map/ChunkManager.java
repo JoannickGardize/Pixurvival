@@ -120,35 +120,36 @@ public class ChunkManager extends EngineThread {
 	}
 
 	private void unloadChunks() {
-		if (getLoad() < 0.3) {
-			tiledMaps.values().forEach(entry -> {
-				int unloadTry = (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE);
-				tmpChunks.clear();
-				synchronized (entry.map) {
-					for (int i = 0; i < unloadTry; i++) {
-						entry.nextCheckPosition();
-						Chunk chunk = entry.map.chunkAt(entry.checkPosition);
-						if (chunk != null && chunk.isTimeout()) {
-							tmpChunks.add(chunk);
-							entry.map.removeChunk(chunk);
-						}
+		if (getLoad() > 0.3) {
+			return;
+		}
+		tiledMaps.values().forEach(entry -> {
+			int unloadTry = (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE);
+			tmpChunks.clear();
+			synchronized (entry.map) {
+				for (int i = 0; i < unloadTry; i++) {
+					entry.nextCheckPosition();
+					Chunk chunk = entry.map.chunkAt(entry.checkPosition);
+					if (chunk != null && chunk.isTimeout()) {
+						tmpChunks.add(chunk);
+						entry.map.removeChunk(chunk);
 					}
 				}
-				tmpChunks.forEach(chunk -> {
-					CompressedChunk compressedChunk = chunk.getCompressed();
-					try {
-						String fileName = chunk.getPosition().fileName();
-						File file = new File(entry.map.getWorld().getSaveDirectory(), fileName);
-						if (!file.exists() || !chunk.isFileSync()) {
-							FileUtils.writeBytes(file, compressedChunk.getData());
-							entry.allFiles.put(fileName, file);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
+			}
+			tmpChunks.forEach(chunk -> {
+				CompressedChunk compressedChunk = chunk.getCompressed();
+				try {
+					String fileName = chunk.getPosition().fileName();
+					File file = new File(entry.map.getWorld().getSaveDirectory(), fileName);
+					if (!file.exists() || !chunk.isFileSync()) {
+						FileUtils.writeBytes(file, compressedChunk.getData());
+						entry.allFiles.put(fileName, file);
 					}
-				});
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			});
-		}
+		});
 	}
 
 }

@@ -32,13 +32,13 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ElementList<E extends NamedElement> extends JPanel {
+public class RootElementList<E extends IdentifiedElement> extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -58,7 +58,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 	private ElementType elementType;
 	private JList<ElementEntry> list;
 
-	public ElementList(ElementType elementType) {
+	public RootElementList(ElementType elementType) {
 		this.elementType = elementType;
 		list = new JList<>(new DefaultListModel<>());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -187,7 +187,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 		}
 		for (int i = 0; i < model.size(); i++) {
 			ElementEntry entry = model.get(i);
-			ElementEditor<NamedElement> editor = ElementType.of(entry.getElement()).getElementEditor();
+			ElementEditor<IdentifiedElement> editor = ElementType.of(entry.getElement()).getElementEditor();
 			entry.setValid(editor.isValueValid(entry.getElement()));
 		}
 		list.repaint();
@@ -198,7 +198,7 @@ public class ElementList<E extends NamedElement> extends JPanel {
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 		model.clear();
-		List<NamedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
+		List<IdentifiedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
 		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ElementType.of(e).getElementEditor().isValueValid(e))));
 	}
 

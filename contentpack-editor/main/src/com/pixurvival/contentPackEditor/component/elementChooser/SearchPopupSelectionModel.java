@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.valueComponent;
+package com.pixurvival.contentPackEditor.component.elementChooser;
 
 import java.awt.event.ActionEvent;
 

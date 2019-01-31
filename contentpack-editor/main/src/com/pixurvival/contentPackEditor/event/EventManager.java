@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.SwingUtilities;
 
-import com.pixurvival.contentPackEditor.util.ReflectionUtil;
+import com.pixurvival.core.util.ReflectionUtil;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

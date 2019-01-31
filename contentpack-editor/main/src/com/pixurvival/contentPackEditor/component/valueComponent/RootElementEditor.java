@@ -7,14 +7,15 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
-public class RootElementEditor<E extends NamedElement> extends ElementEditor<E> {
+public class RootElementEditor<E extends IdentifiedElement> extends ElementEditor<E> {
 
 	private static final long serialVersionUID = 1L;
 
 	public RootElementEditor() {
-		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
+		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10),
+				BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
 		EventManager.getInstance().register(this);
 	}
 
@@ -30,5 +31,4 @@ public class RootElementEditor<E extends NamedElement> extends ElementEditor<E> 
 			setValue(getValue());
 		}
 	}
-
 }

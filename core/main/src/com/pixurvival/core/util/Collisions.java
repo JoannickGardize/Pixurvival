@@ -30,7 +30,7 @@ public class Collisions {
 		double dx = s2.x - s1.x;
 		double dy = s2.y - s1.y;
 
-		if ((dx == 0) && (dy == 0)) {
+		if (dx == 0 && dy == 0) {
 			return new Vector2(s1);
 		} else {
 			double u = ((p.x - s1.x) * dx + (p.y - s1.y) * dy) / (dx * dx + dy * dy);

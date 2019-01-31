@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor.event;
 
-import com.pixurvival.core.contentPack.NamedElement;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ElementAddedEvent extends Event {
 
-	private NamedElement element;
+	private IdentifiedElement element;
 }
