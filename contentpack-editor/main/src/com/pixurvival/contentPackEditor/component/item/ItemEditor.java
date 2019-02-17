@@ -35,7 +35,8 @@ public class ItemEditor extends RootElementEditor<Item> {
 		FrameEditor frameEditor = new FrameEditor();
 		IntegerInput maxStackSizeInput = new IntegerInput(Bounds.min(1));
 
-		ChangeableTypeBuilder<Item.Details> builder = new ChangeableTypeBuilder<>(Item.class, getClass().getPackage().getName(), "item.type");
+		ChangeableTypeBuilder<Item.Details> builder = new ChangeableTypeBuilder<>(Item.class,
+				getClass().getPackage().getName(), "item.type");
 		typeChooser = builder.getChooser();
 		detailsEditor = builder.getEditor();
 
@@ -43,7 +44,8 @@ public class ItemEditor extends RootElementEditor<Item> {
 		frameEditor.addValueChangeListener(v -> itemPreview.setFrame(v));
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()),
+				(v, f) -> v.setImage(f == null ? null : f.getName()));
 		bind(frameEditor, Item::getFrame, Item::setFrame);
 		bind(detailsEditor, Item::getDetails, Item::setDetails);
 		bind(maxStackSizeInput, Item::getMaxStackSize, Item::setMaxStackSize);
@@ -86,5 +88,6 @@ public class ItemEditor extends RootElementEditor<Item> {
 			typeChooser.setSelectedItem(((Item) source.getValue()).getDetails().getClass());
 		}
 		itemPreview.setImage(getValue().getImage());
+		itemPreview.setFrame(getValue().getFrame());
 	}
 }

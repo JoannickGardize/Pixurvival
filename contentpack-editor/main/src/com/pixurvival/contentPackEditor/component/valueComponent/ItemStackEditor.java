@@ -50,5 +50,4 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 	public void setItemList(Collection<Item> itemList) {
 		itemChooser.setItems(itemList);
 	}
-
 }

@@ -8,8 +8,6 @@ import java.util.function.Function;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -51,15 +49,17 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		for (SubValueEntry entry : subValues) {
 			if (!entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
 				// Remove references of elements when removed
-				if (entry.getComponent() instanceof ElementChooserButton<?> && entry.getGetter().apply(value) != null) {
-					entry.getSetter().accept(value, null);
-					valueChanged = true;
-					if (((ElementChooserButton<?>) entry.getComponent()).isRequired()) {
-						valid = false;
-					}
-				} else {
-					valid = false;
-				}
+				// if (entry.getComponent() instanceof ElementChooserButton<?>
+				// && entry.getGetter().apply(value) != null) {
+				// entry.getSetter().accept(value, null);
+				// valueChanged = true;
+				// if (((ElementChooserButton<?>)
+				// entry.getComponent()).isRequired()) {
+				// valid = false;
+				// }
+				// } else {
+				valid = false;
+				// }
 			}
 		}
 		if (valueChanged) {

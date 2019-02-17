@@ -24,7 +24,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        lombokVersion = '1.16.20'
+        lombokVersion = '1.18.4'
     }
 
     repositories {

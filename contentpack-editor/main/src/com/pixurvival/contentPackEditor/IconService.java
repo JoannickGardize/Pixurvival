@@ -12,8 +12,13 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.contentPack.sprite.Animation;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.Frame;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
 
 import lombok.AllArgsConstructor;
@@ -39,7 +44,7 @@ public class IconService {
 	}
 
 	public Icon get(Item item) {
-		if (item.getImage() == null || item.getFrame() == null) {
+		if (item == null || item.getImage() == null || item.getFrame() == null) {
 			return null;
 		} else {
 			return get(item.getImage(), item.getFrame());
@@ -47,10 +52,24 @@ public class IconService {
 	}
 
 	public Icon get(Tile tile) {
-		if (tile.getImage() == null || tile.getFrames() == null || tile.getFrames().isEmpty()) {
+		if (tile == null || tile.getImage() == null || tile.getFrames() == null || tile.getFrames().isEmpty()) {
 			return null;
 		} else {
 			return get(tile.getImage(), tile.getFrames().get(0));
+		}
+	}
+
+	public Icon get(Structure structure) {
+		SpriteSheet spriteSheet;
+		AnimationTemplate animationTemplate;
+		Animation animation;
+		if ((spriteSheet = structure.getSpriteSheet()) == null || spriteSheet.getImage() == null
+				|| (animationTemplate = spriteSheet.getAnimationTemplate()) == null
+				|| (animation = animationTemplate.getAnimations().get(ActionAnimation.NONE)) == null
+				|| animation.getFrames().isEmpty()) {
+			return null;
+		} else {
+			return get(spriteSheet.getImage(), animation.getFrames().get(0));
 		}
 	}
 

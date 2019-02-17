@@ -16,9 +16,12 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 
 	private static final long serialVersionUID = 1L;
 
+	private Collection<Heightmap> heightmapCollection = null;
+
 	private ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(() -> {
 		HeightmapConditionEditor result = new HeightmapConditionEditor();
 		result.setBorder(LayoutUtils.createBorder());
+		result.setHeightmapCollection(heightmapCollection);
 		return result;
 	}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
@@ -43,8 +46,10 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 	}
 
 	public void setHeightmapCollection(Collection<Heightmap> collection) {
+		heightmapCollection = collection;
 		heightmapConditionsEditor
 				.forEachEditors(e -> ((HeightmapConditionEditor) e).setHeightmapCollection(collection));
+		tileHashmapEditor.setHeightmapCollection(collection);
 	}
 
 	public void setTileCollection(Collection<Tile> tiles) {

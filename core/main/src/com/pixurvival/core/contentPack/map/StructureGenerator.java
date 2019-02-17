@@ -1,6 +1,7 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.Random;
@@ -17,10 +18,10 @@ public class StructureGenerator implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	private List<HeightmapCondition> heightmapConditions;
+	private List<HeightmapCondition> heightmapConditions = new ArrayList<>();
 
 	@Valid
-	private List<StructureGeneratorEntry> structureGeneratorEntries;
+	private List<StructureGeneratorEntry> structureGeneratorEntries = new ArrayList<>();
 
 	private transient double probabilityWeight;
 
