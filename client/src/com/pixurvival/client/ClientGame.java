@@ -29,7 +29,6 @@ import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.PlayerData;
-import com.pixurvival.core.message.RequestContentPacks;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -209,17 +208,19 @@ public class ClientGame {
 	}
 
 	public void checkMissingPacks(ContentPackIdentifier identifier) {
-		List<ContentPackIdentifier> missingPacks = new ArrayList<>();
-		for (ContentPackIdentifier identifier : identifiers) {
-			if (!list.contains(identifier)) {
-				missingPacks.add(identifier);
-			}
-		}
-		if (!missingPacks.isEmpty()) {
-			client.sendTCP(
-					new RequestContentPacks(missingPacks.toArray(new ContentPackIdentifier[missingPacks.size()])));
-		}
-		contentPackDownloadManager.setMissingList(missingPacks);
+		// TODO Make the auto-download of contentPack great again
+		// List<ContentPackIdentifier> missingPacks = new ArrayList<>();
+		// for (ContentPackIdentifier identifier : identifiers) {
+		// if (!list.contains(identifier)) {
+		// missingPacks.add(identifier);
+		// }
+		// }
+		// if (!missingPacks.isEmpty()) {
+		// client.sendTCP(
+		// new RequestContentPacks(missingPacks.toArray(new
+		// ContentPackIdentifier[missingPacks.size()])));
+		// }
+		// contentPackDownloadManager.setMissingList(missingPacks);
 	}
 
 	public void updatePing(long timeMillis) {

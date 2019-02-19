@@ -3,7 +3,7 @@ package com.pixurvival.gdxcore.drawer;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.pixurvival.core.contentPack.ContentPackOld;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.map.HarvestableStructure;
@@ -16,8 +16,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	TextureAnimationSet[] animationSets;
 
-	public MapStructureDrawer(ContentPackOld contentpack, ContentPackTextures contentPackTextures) {
-		List<Structure> structures = contentpack.getStructuresById();
+	public MapStructureDrawer(ContentPack contentpack, ContentPackTextures contentPackTextures) {
+		List<Structure> structures = contentpack.getStructures();
 		animationSets = new TextureAnimationSet[structures.size()];
 		for (int i = 0; i < structures.size(); i++) {
 			animationSets[i] = contentPackTextures.getAnimationSet(structures.get(i).getSpriteSheet());
@@ -37,7 +37,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		}
 		TextureAnimation animation = animationSet.get(action);
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
-		float y = (float) (e.getY() /*- e.getHalfHeight()*/);
+		float y = (float) e.getY();
 		batch.draw(animation.getShadow(), (float) e.getX() - animation.getWorldShadowWidth() / 2,
 				y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),
 				animation.getWorldShadowWidth() / 2);
@@ -47,7 +47,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	public void draw(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = animationSets[e.getDefinition().getId()];
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
-		float y = (float) (e.getY() /*- e.getHalfHeight()*/);
+		float y = (float) e.getY();
 		ActionAnimation action = ActionAnimation.NONE;
 		if (e instanceof HarvestableStructure && ((HarvestableStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;

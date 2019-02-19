@@ -24,7 +24,7 @@ public class ContentPackDownloadManager {
 		try {
 			output = writingMap.get(contentPackPart.getIdentifier());
 			if (output == null) {
-				File file = new File("contentPacks/" + contentPackPart.getIdentifier().buildFileName());
+				File file = new File("contentPacks/" + contentPackPart.getIdentifier().fileName());
 				Log.debug("Creating file : " + file.getAbsolutePath());
 				output = new BufferedOutputStream(new FileOutputStream(file));
 				writingMap.put(contentPackPart.getIdentifier(), output);

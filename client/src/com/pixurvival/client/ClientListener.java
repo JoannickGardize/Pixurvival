@@ -14,7 +14,6 @@ import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerData;
-import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldUpdate;
 
@@ -34,9 +33,11 @@ class ClientListener extends Listener {
 		});
 		messageActions.put(ContentPackPart.class,
 				p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
-		messageActions.put(RequestContentPacks.class, r -> {
-			game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
-		});
+
+		// TODO Download system
+		// messageActions.put(RequestContentPacks.class, r -> {
+		// game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
+		// });
 		messageActions.put(TimeResponse.class, o -> {
 			TimeResponse t = (TimeResponse) o;
 			long time = (System.currentTimeMillis() - t.getRequesterTime()) / 2;

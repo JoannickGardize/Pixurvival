@@ -16,9 +16,9 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
@@ -35,11 +35,10 @@ public class EntitiesActor extends Actor {
 	private List<Collidable> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
-		drawers.put(
-				PlayerEntity.class,
-				new PlayerDrawer(PixurvivalGame.getContentPackTextures().getAnimationSet(
-						PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
-		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(), PixurvivalGame.getContentPackTextures());
+		drawers.put(PlayerEntity.class, new PlayerDrawer(PixurvivalGame.getContentPackTextures()
+				.getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
+		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(),
+				PixurvivalGame.getContentPackTextures());
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
@@ -48,7 +47,8 @@ public class EntitiesActor extends Actor {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void act(float delta) {
-		PixurvivalGame.getWorld().getEntityPool().foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
+		PixurvivalGame.getWorld().getEntityPool()
+				.foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
 		super.act(delta);
 	}
 
@@ -88,11 +88,11 @@ public class EntitiesActor extends Actor {
 
 	private void manageGhostStructure() {
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
-		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
+		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.Structure) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 			double x = Math.floor(mousePos.x);
 			double y = Math.floor(mousePos.y);
-			Structure structure = ((StructureItem) heldItemStack.getItem()).getStructure();
+			Structure structure = ((Item.Structure) heldItemStack.getItem().getDetails()).getStructure();
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y);
 			objectsToDraw.add(ghostStructure);
 		}

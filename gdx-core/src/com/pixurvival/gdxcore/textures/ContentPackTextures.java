@@ -12,9 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPackOld;
-import com.pixurvival.core.contentPack.ZipContentReference;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -39,7 +38,7 @@ public class ContentPackTextures {
 		Texture texture;
 	}
 
-	public void load(ContentPackOld pack, int pixelWidth) throws ContentPackException {
+	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
 		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
@@ -64,10 +63,10 @@ public class ContentPackTextures {
 		return itemTextures[id];
 	}
 
-	private void loadAnimationSet(ContentPackOld pack, int pixelWidth) throws ContentPackException {
+	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackException {
 		animationSet = new HashMap<>();
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
-		for (SpriteSheet spriteSheet : pack.getSprites().all().values()) {
+		for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
 			TextureAnimationSet set = new TextureAnimationSet(spriteSheet, transform);
 			set.setShadow(getShadow(spriteSheet.getWidth()));
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
@@ -105,32 +104,33 @@ public class ContentPackTextures {
 		return texture;
 	}
 
-	private void loadTileMapTextures(ContentPackOld pack) throws ContentPackException {
-		List<Tile> tilesbyId = pack.getTilesById();
+	private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
+		List<Tile> tilesbyId = pack.getTiles();
 		tileMapTextures = new TextureRegion[tilesbyId.size()][];
 		tileAvgColors = new int[tilesbyId.size()];
-		Map<ZipContentReference, ImageEntry> images = new HashMap<>();
+		Map<String, ImageEntry> images = new HashMap<>();
 		for (int i = 0; i < tilesbyId.size(); i++) {
 			Tile tile = tilesbyId.get(i);
 			ImageEntry image = images.get(tile.getImage());
 			if (image == null) {
-				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(tile.getImage().read(),
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()),
 						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				Texture texture = new Texture(spriteSheetPixmap);
 				texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 				image = new ImageEntry(spriteSheetPixmap, texture);
 				images.put(tile.getImage(), image);
 			}
-			Frame[] frames = tile.getFrames();
-			TextureRegion[] textures = new TextureRegion[frames.length];
-			for (int j = 0; j < frames.length; j++) {
-				Frame frame = frames[j];
+			List<Frame> frames = tile.getFrames();
+			TextureRegion[] textures = new TextureRegion[frames.size()];
+			for (int j = 0; j < frames.size(); j++) {
+				Frame frame = frames.get(j);
 				textures[j] = new TextureRegion(image.texture, frame.getX() * GameConstants.PIXEL_PER_UNIT,
 						frame.getY() * GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT,
 						GameConstants.PIXEL_PER_UNIT);
 			}
 			tileMapTextures[i] = textures;
-			tileAvgColors[i] = getAverageColor(image.spriteSheetPixmap.getRegion(frames[0].getX(), frames[0].getY()));
+			tileAvgColors[i] = getAverageColor(
+					image.spriteSheetPixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
 		}
 	}
 
@@ -146,20 +146,20 @@ public class ContentPackTextures {
 				blueSum += color.b;
 			}
 		}
-		float pixelCount = region.getWidth() * region.getHeight();
+		int pixelCount = region.getWidth() * region.getHeight();
 		return Color.rgba8888(new Color(redSum / pixelCount, greenSum / pixelCount, blueSum / pixelCount, 1));
 	}
 
-	private void loadItemTextures(ContentPackOld pack, int pixelWidth) throws ContentPackException {
-		List<Item> itemsById = pack.getItemsById();
+	private void loadItemTextures(ContentPack pack, int pixelWidth) throws ContentPackException {
+		List<Item> itemsById = pack.getItems();
 		itemTextures = new ItemTexture[itemsById.size()];
-		Map<ZipContentReference, TextureSheet> images = new HashMap<>();
+		Map<String, TextureSheet> images = new HashMap<>();
 
 		for (int i = 0; i < itemsById.size(); i++) {
 			Item item = itemsById.get(i);
 			TextureSheet textureSheet = images.get(item.getImage());
 			if (textureSheet == null) {
-				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(item.getImage().read(),
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(item.getImage()),
 						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
 				images.put(item.getImage(), textureSheet);

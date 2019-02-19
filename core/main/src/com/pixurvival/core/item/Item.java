@@ -88,7 +88,7 @@ public class Item extends IdentifiedElement implements Serializable {
 
 		@Required
 		@ElementReference
-		private Structure structure;
+		private com.pixurvival.core.contentPack.map.Structure structure;
 
 	}
 
