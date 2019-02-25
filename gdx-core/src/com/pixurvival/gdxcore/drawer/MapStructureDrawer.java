@@ -36,7 +36,6 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);
-		float x = (float) (e.getX() - animationSet.getWidth() / 2);
 		float y = (float) e.getY();
 		batch.draw(animation.getShadow(), (float) e.getX() - animation.getWorldShadowWidth() / 2,
 				y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),

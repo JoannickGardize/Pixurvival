@@ -40,11 +40,9 @@ public class TiledMap {
 
 	public TiledMap(World world) {
 		this.world = world;
-		world.getContentPack().getTiles().forEach(t -> {
-			if (t.getName().equals("deepWater")) {
-				outsideTile = new EmptyTile(t);
-			}
-		});
+
+		outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
+
 		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE
 				: GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
 		List<Tile> tilesById = world.getContentPack().getTiles();
@@ -129,9 +127,9 @@ public class TiledMap {
 
 	public void update() {
 		synchronized (this) {
-			toRemoveChunks.forEach(c -> unloadChunk(c));
+			toRemoveChunks.forEach(this::unloadChunk);
 			toRemoveChunks.clear();
-			newChunks.forEach(c -> insertChunk(c));
+			newChunks.forEach(this::insertChunk);
 			newChunks.clear();
 		}
 		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
@@ -146,8 +144,9 @@ public class TiledMap {
 				for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
 					Position position = new Position(x, y);
 					if (!chunks.containsKey(position)) {
-						// Putting the position key is pretty important, it prevent the chunk being
-						// requested every frame until it is present.
+						// Putting the position key is pretty important, it
+						// prevent the chunk to be
+						// requested every frame until it is generated.
 						chunks.put(position, null);
 						ChunkManager.getInstance().requestChunk(this, position);
 					} else {

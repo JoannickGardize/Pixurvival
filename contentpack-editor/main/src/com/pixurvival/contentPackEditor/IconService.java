@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +15,6 @@ import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
-import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.core.contentPack.sprite.Animation;
-import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item;
@@ -61,16 +59,13 @@ public class IconService {
 
 	public Icon get(Structure structure) {
 		SpriteSheet spriteSheet;
-		AnimationTemplate animationTemplate;
-		Animation animation;
-		if ((spriteSheet = structure.getSpriteSheet()) == null || spriteSheet.getImage() == null
-				|| (animationTemplate = spriteSheet.getAnimationTemplate()) == null
-				|| (animation = animationTemplate.getAnimations().get(ActionAnimation.NONE)) == null
-				|| animation.getFrames().isEmpty()) {
-			return null;
-		} else {
-			return get(spriteSheet.getImage(), animation.getFrames().get(0));
+		if ((spriteSheet = structure.getSpriteSheet()) != null && spriteSheet.getImage() != null) {
+			ResourceEntry entry = ResourcesService.getInstance().getResource(spriteSheet.getImage());
+			if (entry != null && entry.getPreview() instanceof BufferedImage) {
+				return GraphicsUtils.createIcon((BufferedImage) entry.getPreview());
+			}
 		}
+		return null;
 	}
 
 	public Icon get(String imageName, Frame frame) {
@@ -81,17 +76,19 @@ public class IconService {
 		Icon imageIcon = itemIcons.get(key);
 		if (imageIcon == null) {
 			ResourceEntry resource = ResourcesService.getInstance().getResource(imageName);
-			if (resource == null) {
+			if (resource == null || !(resource.getPreview() instanceof BufferedImage)) {
 				return null;
 			}
-			if (!(resource.getPreview() instanceof BufferedImage)) {
+			try {
+				BufferedImage subimage = ((BufferedImage) resource.getPreview()).getSubimage(
+						frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT,
+						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
+
+				imageIcon = GraphicsUtils.createIcon(subimage);
+				itemIcons.put(key, imageIcon);
+			} catch (RasterFormatException e) {
 				return null;
 			}
-			BufferedImage subimage = ((BufferedImage) resource.getPreview()).getSubimage(
-					frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT,
-					GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-			imageIcon = GraphicsUtils.createIcon(subimage);
-			itemIcons.put(key, imageIcon);
 		}
 		return imageIcon;
 	}

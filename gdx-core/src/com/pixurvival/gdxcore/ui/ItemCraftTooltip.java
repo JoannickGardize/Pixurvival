@@ -97,7 +97,7 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 			}
 		}
 		setWidth(maxWidth + MARGIN * 3 + ITEM_WIDTH);
-		setHeight(itemCraft.getRecipes().length * (ITEM_WIDTH + MARGIN) + MARGIN);
+		setHeight(itemCraft.getRecipes().size() * (ITEM_WIDTH + MARGIN) + MARGIN);
 	}
 
 	@Override

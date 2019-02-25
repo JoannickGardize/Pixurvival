@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pixurvival.core.Collidable;
-import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.aliveEntity.Activity;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structure.Details;
 import com.pixurvival.core.message.StructureUpdate;
@@ -78,9 +79,30 @@ public abstract class MapStructure implements Collidable {
 
 	public abstract StructureUpdate getUpdate();
 
-	public boolean canInteract(Entity entity) {
-		return entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE
-				* GameConstants.MAX_HARVEST_DISTANCE;
+	public boolean canInteract(PlayerEntity entity) {
+		return entity.getActivity() == Activity.NONE
+				&& entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE
+						* GameConstants.MAX_HARVEST_DISTANCE;
+	}
+
+	public static boolean canPlace(PlayerEntity player, TiledMap map, Structure structure, int x, int y) {
+		int x2 = x + structure.getDimensions().getWidth();
+		int y2 = y + structure.getDimensions().getHeight();
+		double centerX = (x + x2) / 2.0;
+		double centerY = (y + y2) / 2.0;
+		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE
+				* GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
+			return false;
+		}
+		for (int xi = x; xi < x2; xi++) {
+			for (int yi = y; yi < y2; yi++) {
+				MapTile mapTile = map.tileAt(x, y);
+				if (mapTile.isSolid() || mapTile.getStructure() != null) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	public abstract void writeData(ByteBuffer buffer);

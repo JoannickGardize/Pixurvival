@@ -1,19 +1,19 @@
 package com.pixurvival.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.contentPack.ContentPackOld;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.ContentPacksContext;
+import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.ChunkManager;
@@ -30,8 +30,9 @@ public class ServerGame {
 	private ServerListener serverListener = new ServerListener(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
-	private @Getter ContentPacksContext contentPacksContext = new ContentPacksContext("contentPacks");
-	private @Getter ContentPackOld selectedContentPack;
+	// private @Getter ContentPacksContext contentPacksContext = new
+	// ContentPacksContext("contentPacks");
+	private @Getter ContentPack selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 
 	public ServerGame() {
@@ -41,16 +42,17 @@ public class ServerGame {
 		addListener(contentPackUploadManager);
 		KryoInitializer.apply(server.getKryo());
 		// TODO selection dynamique des packs
-		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("0.1"),
-				UUID.fromString("633d85fe-35f0-499a-b671-184396071e1b"));
+		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("1.0"));
+
 		try {
-			setSelectedContentPack(contentPacksContext.load(id));
+			setSelectedContentPack(
+					new ContentPackLoader(new File("D:/git/pixurvival/gdx-core/assets/contentPacks")).load(id));
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void setSelectedContentPack(ContentPackOld contentPack) {
+	public void setSelectedContentPack(ContentPack contentPack) {
 		selectedContentPack = contentPack;
 		contentPackUploadManager.setSelectedContentPack(contentPack);
 	}
@@ -79,7 +81,7 @@ public class ServerGame {
 		GameSession session = new GameSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
-		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getInfo()));
+		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getIdentifier()));
 		List<PlayerData> playerDataList = new ArrayList<>();
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
@@ -89,8 +91,8 @@ public class ServerGame {
 			for (int i = 0; i < 10; i++) {
 				playerEntity.getInventory().setSlot(i,
 						new ItemStack(
-								selectedContentPack.getItemsById()
-										.get(random.nextInt(selectedContentPack.getItemsById().size())),
+								selectedContentPack.getItems()
+										.get(random.nextInt(selectedContentPack.getItems().size())),
 								random.nextInt(10) + 1));
 			}
 			playerConnection.setPlayerEntity(playerEntity);

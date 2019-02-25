@@ -9,9 +9,9 @@ import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.aliveEntity.WorkActivity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.ClothingItem;
+import com.pixurvival.core.item.Item.Clothing;
+import com.pixurvival.core.item.Item.Weapon;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.WeaponItem;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
@@ -31,7 +31,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getShadowWidth() / 2);
-		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
+		float y = (float) drawPosition.y;
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4,
 				textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
 	}
@@ -45,7 +45,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
-		float y = (float) (drawPosition.y /*- e.getBoundingRadius()*/);
+		float y = (float) drawPosition.y;
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
 			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
 					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
@@ -54,7 +54,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 					textureAnimationSet.getHeight());
 			ItemStack weapon = e.getEquipment().getWeapon();
 			if (weapon != null) {
-				SpriteSheet spriteSheet = ((WeaponItem) weapon.getItem()).getSpriteSheet();
+				SpriteSheet spriteSheet = ((Weapon) weapon.getItem().getDetails()).getSpriteSheet();
 				TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures()
 						.getAnimationSet(spriteSheet);
 				TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
@@ -77,7 +77,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 			float lineWidth = (float) PixurvivalGame.getContentPackTextures().getTruePixelWidth();
 			batch.draw(ColorTextures.get(Color.BLACK), x - lineWidth, y - lineWidth, 1 + lineWidth * 2,
 					0.2f + lineWidth * 2);
-			batch.draw(ColorTextures.get(Color.YELLOW), x, y, (float) (1 - (1 * activity.getProgress())), 0.2f);
+			batch.draw(ColorTextures.get(Color.YELLOW), x, y, (float) (1 - 1 * activity.getProgress()), 0.2f);
 		}
 	}
 
@@ -85,7 +85,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		ItemStack clothing = e.getEquipment().getClothing();
 		if (clothing != null) {
 			return PixurvivalGame.getContentPackTextures()
-					.getAnimationSet(((ClothingItem) clothing.getItem()).getSpriteSheet());
+					.getAnimationSet(((Clothing) clothing.getItem().getDetails()).getSpriteSheet());
 		}
 		return textureAnimationSet;
 	}

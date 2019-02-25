@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Animation;
@@ -26,7 +27,8 @@ public class TextureAnimationSet {
 	private @Getter float shadowWidth;
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
-	public TextureAnimationSet(SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackException {
+	public TextureAnimationSet(ContentPack pack, SpriteSheet spriteSheet, PixelTextureBuilder transform)
+			throws ContentPackException {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
 		shadowWidth = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT);
 		width = (float) (shadowWidth + truePixelWidth * 2);
@@ -34,8 +36,8 @@ public class TextureAnimationSet {
 				+ truePixelWidth * 2);
 		yOffset = (float) -truePixelWidth;
 
-		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(spriteSheet.getImage().read(), spriteSheet.getWidth(),
-				spriteSheet.getHeight());
+		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()),
+				spriteSheet.getWidth(), spriteSheet.getHeight());
 		TextureSheet textureSheet = new TextureSheet(sheetPixmap, transform);
 
 		AnimationTemplate template = spriteSheet.getAnimationTemplate();

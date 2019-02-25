@@ -7,6 +7,8 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -54,6 +56,11 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 
 	public void setTileCollection(Collection<Tile> tiles) {
 		tileHashmapEditor.setTileCollection(tiles);
+	}
+
+	@EventListener
+	public void contentPackLoaded(ContentPackLoadedEvent event) {
+
 	}
 
 	// @Override

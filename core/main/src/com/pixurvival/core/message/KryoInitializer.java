@@ -56,6 +56,7 @@ public class KryoInitializer {
 		register(kryo, PlayerData.class);
 		register(kryo, PlayerData[].class);
 		register(kryo, EquipmentActionRequest.class);
+		register(kryo, PlaceStructureRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

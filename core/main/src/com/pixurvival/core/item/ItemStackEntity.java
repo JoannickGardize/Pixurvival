@@ -22,7 +22,7 @@ public class ItemStackEntity extends Entity {
 	public static final double START_SPEED = 2;
 	public static final double END_SPEED = 15;
 
-	public static enum State {
+	public enum State {
 		NORMAL,
 		MAGNTIZED,
 		INHIBITED,
@@ -54,7 +54,8 @@ public class ItemStackEntity extends Entity {
 	}
 
 	public void spawnRandom() {
-		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS, getWorld().getRandom().nextDouble() * Math.PI * 2);
+		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
+				getWorld().getRandom().nextDouble() * Math.PI * 2);
 	}
 
 	@Override
@@ -189,7 +190,7 @@ public class ItemStackEntity extends Entity {
 			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, speedInterpolation.getProgress());
 		} else {
 
-			return END_SPEED - ((END_SPEED - START_SPEED) * (spawnProgress / spawnDistance));
+			return END_SPEED - (END_SPEED - START_SPEED) * (spawnProgress / spawnDistance);
 		}
 	}
 

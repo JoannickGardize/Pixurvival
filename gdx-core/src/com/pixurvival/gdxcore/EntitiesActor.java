@@ -24,7 +24,6 @@ import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
-import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
@@ -41,7 +40,7 @@ public class EntitiesActor extends Actor {
 				PixurvivalGame.getContentPackTextures());
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
-		drawers.put(GhostStructure.class, new GhostStructureDrawer());
+		drawers.put(GhostStructure.class, mapStructureDrawer);
 	}
 
 	@Override
@@ -88,11 +87,11 @@ public class EntitiesActor extends Actor {
 
 	private void manageGhostStructure() {
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
-		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.Structure) {
+		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.StructureDetails) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-			double x = Math.floor(mousePos.x);
-			double y = Math.floor(mousePos.y);
-			Structure structure = ((Item.Structure) heldItemStack.getItem().getDetails()).getStructure();
+			int x = (int) Math.floor(mousePos.x);
+			int y = (int) Math.floor(mousePos.y);
+			Structure structure = ((Item.StructureDetails) heldItemStack.getItem().getDetails()).getStructure();
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y);
 			objectsToDraw.add(ghostStructure);
 		}

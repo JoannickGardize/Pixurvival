@@ -1,5 +1,7 @@
 package com.pixurvival.gdxcore.textures;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.sprite.Animation;
@@ -25,25 +27,25 @@ public class TextureAnimation {
 	public TextureAnimation(TextureSheet textureSheet, Animation animation, double frameDuration,
 			EquipmentOffset equipmentOffset) {
 		this.frameDuration = frameDuration;
-		Frame[] frames = animation.getFrames();
-		textures = new Texture[frames.length];
-		for (int i = 0; i < frames.length; i++) {
-			textures[i] = textureSheet.get(frames[i].getX(), frames[i].getY());
+		List<Frame> frames = animation.getFrames();
+		textures = new Texture[frames.size()];
+		for (int i = 0; i < frames.size(); i++) {
+			textures[i] = textureSheet.get(frames.get(i).getX(), frames.get(i).getY());
 		}
 		if (equipmentOffset != null) {
-			offsetX = new float[frames.length];
-			offsetY = new float[frames.length];
-			back = new boolean[frames.length];
+			offsetX = new float[frames.size()];
+			offsetY = new float[frames.size()];
+			back = new boolean[frames.size()];
 
-			for (int i = 0; i < frames.length; i++) {
-				FrameOffset frameOffset = findFrameOffset(equipmentOffset.getFrameOffsets(), frames[i]);
+			for (int i = 0; i < frames.size(); i++) {
+				FrameOffset frameOffset = findFrameOffset(equipmentOffset.getFrameOffsets(), frames.get(i));
 				offsetX[i] = (float) frameOffset.getOffsetX() / GameConstants.PIXEL_PER_UNIT;
 				offsetY[i] = (float) frameOffset.getOffsetY() / GameConstants.PIXEL_PER_UNIT;
 				back[i] = frameOffset.isBack();
 			}
 
 		}
-		TextureMetrics metrics = textureSheet.getMetrics(frames[0].getX(), frames[0].getY());
+		TextureMetrics metrics = textureSheet.getMetrics(frames.get(0).getX(), frames.get(0).getY());
 		shadowWidth = metrics.getWidth();
 		worldShadowWidth = metrics.getWorldWidth();
 	}
@@ -68,9 +70,9 @@ public class TextureAnimation {
 		return textures.length;
 	}
 
-	private FrameOffset findFrameOffset(FrameOffset[] frameOffsets, Frame frame) {
-		for (int i = 0; i < frameOffsets.length; i++) {
-			FrameOffset frameOffset = frameOffsets[i];
+	private FrameOffset findFrameOffset(List<FrameOffset> frameOffsets, Frame frame) {
+		for (int i = 0; i < frameOffsets.size(); i++) {
+			FrameOffset frameOffset = frameOffsets.get(i);
 			if (frame.getX() == frameOffset.getX() && frame.getY() == frameOffset.getY()) {
 				return frameOffset;
 			}

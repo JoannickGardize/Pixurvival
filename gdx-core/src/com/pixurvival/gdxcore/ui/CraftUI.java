@@ -10,7 +10,7 @@ public class CraftUI extends UIWindow {
 
 	public CraftUI() {
 		super("crafting");
-		List<ItemCraft> itemCrafts = PixurvivalGame.getWorld().getContentPack().getItemCraftsById();
+		List<ItemCraft> itemCrafts = PixurvivalGame.getWorld().getContentPack().getItemCrafts();
 		Inventory inventory = new Inventory(itemCrafts.size());
 		add(new InventoryTable(inventory, 8) {
 			@Override

@@ -12,6 +12,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -95,12 +96,11 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 		defaultTileChooser.setItems(event.getContentPack().getTiles());
 	}
 
-	// @Override
-	// protected void valueChanged(ValueComponent<?> source) {
-	// if (source == this) {
-	// tileGeneratorsEditor.forEachEditors(e -> ((TileGeneratorEditor) e)
-	// .setHeightmapCollection(((MapGenerator)
-	// source.getValue()).getHeightmaps()));
-	// }
-	// }
+	@Override
+	protected void valueChanged(ValueComponent<?> source) {
+		if (source == this) {
+			tileGeneratorsEditor.forEachEditors(e -> ((TileGeneratorEditor) e)
+					.setHeightmapCollection(((MapGenerator) source.getValue()).getHeightmaps()));
+		}
+	}
 }

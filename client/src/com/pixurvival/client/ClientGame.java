@@ -1,5 +1,6 @@
 package com.pixurvival.client;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,19 +9,22 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.message.CraftItemRequest;
 import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.EquipmentActionRequest;
 import com.pixurvival.core.message.GameReady;
+import com.pixurvival.core.message.IPlayerActionRequest;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.InteractStructureRequest;
 import com.pixurvival.core.message.InventoryActionRequest;
@@ -42,8 +46,9 @@ public class ClientGame {
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private ContentPack localGamePack;
 	private @Getter PlayerInventory myInventory;
+	private ContentPackLoader contentPackLoader = new ContentPackLoader(
+			new File("D:/git/pixurvival/gdx-core/assets/contentPacks"));
 
 	// private double timeRequestFrequencyMillis = 200;
 	// private double timeRequestTimer = 0;
@@ -65,12 +70,7 @@ public class ClientGame {
 	}
 
 	public PlayerEntity getMyPlayer() {
-		Entity e = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
-		if (e != null) {
-			return (PlayerEntity) e;
-		} else {
-			return null;
-		}
+		return (PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
 	}
 
 	public void connectToServer(String address, int port, String playerName) {
@@ -94,7 +94,13 @@ public class ClientGame {
 	}
 
 	public void startLocalGame() {
-		localGamePack = null; // TODO
+		ContentPack localGamePack;
+		try {
+			localGamePack = contentPackLoader.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
+		} catch (ContentPackException e) {
+			e.printStackTrace();
+			return;
+		}
 		World world = World.createLocalWorld(localGamePack);
 		this.world = world;
 		PlayerEntity playerEntity = new PlayerEntity();
@@ -114,7 +120,21 @@ public class ClientGame {
 		itemStackEntity.getPosition().set(10, 10);
 		world.getEntityPool().add(itemStackEntity);
 
-		notify(l -> l.initializeGame());
+		notify(ClientGameListener::initializeGame);
+	}
+
+	public void sendAction(IPlayerActionRequest request) {
+		if (world != null) {
+			if (world.getType() == World.Type.CLIENT) {
+				client.sendUDP(request);
+				PlayerEntity e = getMyPlayer();
+				if (e != null) {
+					e.apply(request);
+				}
+			} else {
+				getMyPlayer().apply(request);
+			}
+		}
 	}
 
 	public void sendAction(PlayerActionRequest request) {
@@ -123,11 +143,6 @@ public class ClientGame {
 				client.sendUDP(request);
 				PlayerEntity e = getMyPlayer();
 				if (e != null) {
-					// ApplyPlayerActionAction action = new
-					// ApplyPlayerActionAction((PlayerEntity) e, request);
-					// world.getActionTimerManager().add(new ActionTimer(action,
-					// world.getTime().getTimeMillis() +
-					// world.getTime().getTimeOffsetMillis()));
 					e.apply(request);
 				}
 			} else {
@@ -240,12 +255,15 @@ public class ClientGame {
 	}
 
 	private void initializeGame(InitializeGame initGame) {
-		// setWorld(World.createClientWorld(initGame.getCreateWorld(),
-		// getContentPacksContext()));
-		myPlayerId = initGame.getMyPlayerId();
-		myInventory = initGame.getInventory();
-		world.addPlayerData(initGame.getPlayerData());
-		notify(l -> l.initializeGame());
-		initGame = null;
+		try {
+			setWorld(World.createClientWorld(initGame.getCreateWorld(), contentPackLoader));
+			myPlayerId = initGame.getMyPlayerId();
+			myInventory = initGame.getInventory();
+			world.addPlayerData(initGame.getPlayerData());
+			notify(ClientGameListener::initializeGame);
+		} catch (ContentPackException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

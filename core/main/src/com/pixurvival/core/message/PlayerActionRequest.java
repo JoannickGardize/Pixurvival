@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class PlayerActionRequest {
+public class PlayerActionRequest implements IPlayerActionRequest {
 
 	private Direction direction;
 	private boolean forward;
@@ -27,6 +28,15 @@ public class PlayerActionRequest {
 	public void set(PlayerActionRequest other) {
 		direction = other.direction;
 		forward = other.forward;
+	}
+
+	public void apply(PlayerActionRequest actionRequest) {
+	}
+
+	@Override
+	public void apply(PlayerEntity player) {
+		player.setMovingAngle(direction.getAngle());
+		player.setForward(forward);
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerActionRequest> {

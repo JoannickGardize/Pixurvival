@@ -67,7 +67,7 @@ public class ContentPackTextures {
 		animationSet = new HashMap<>();
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
 		for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
-			TextureAnimationSet set = new TextureAnimationSet(spriteSheet, transform);
+			TextureAnimationSet set = new TextureAnimationSet(pack, spriteSheet, transform);
 			set.setShadow(getShadow(spriteSheet.getWidth()));
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
 			animationSet.put(spriteSheet, set);

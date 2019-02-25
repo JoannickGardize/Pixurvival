@@ -11,9 +11,9 @@ import lombok.Getter;
 @Getter
 public class AddStructureUpdate extends StructureUpdate {
 
-	private byte structureId;
+	private int structureId;
 
-	public AddStructureUpdate(int x, int y, byte structureId) {
+	public AddStructureUpdate(int x, int y, int structureId) {
 		super(x, y);
 		this.structureId = structureId;
 	}
@@ -33,12 +33,12 @@ public class AddStructureUpdate extends StructureUpdate {
 		public void write(Kryo kryo, Output output, AddStructureUpdate object) {
 			output.writeInt(object.getX());
 			output.writeInt(object.getY());
-			output.writeByte(object.structureId);
+			output.writeInt(object.structureId);
 		}
 
 		@Override
 		public AddStructureUpdate read(Kryo kryo, Input input, Class<AddStructureUpdate> type) {
-			return new AddStructureUpdate(input.readInt(), input.readInt(), input.readByte());
+			return new AddStructureUpdate(input.readInt(), input.readInt(), input.readInt());
 		}
 	}
 

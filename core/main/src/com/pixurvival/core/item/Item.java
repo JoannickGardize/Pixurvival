@@ -3,6 +3,7 @@ package com.pixurvival.core.item;
 import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
@@ -82,13 +83,13 @@ public class Item extends IdentifiedElement implements Serializable {
 
 	@Getter
 	@Setter
-	public static class Structure implements Details {
+	public static class StructureDetails implements Details {
 
 		private static final long serialVersionUID = 1L;
 
 		@Required
 		@ElementReference
-		private com.pixurvival.core.contentPack.map.Structure structure;
+		private Structure structure;
 
 	}
 

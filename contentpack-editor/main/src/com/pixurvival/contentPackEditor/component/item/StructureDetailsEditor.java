@@ -1,10 +1,31 @@
 package com.pixurvival.contentPackEditor.component.item;
 
+import com.pixurvival.contentPackEditor.IconService;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.core.item.Item.Structure;
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.item.Item.StructureDetails;
 
-public class StructureEditor extends ElementEditor<Structure> {
+public class StructureDetailsEditor extends ElementEditor<StructureDetails> {
 
 	private static final long serialVersionUID = 1L;
 
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(
+			IconService.getInstance()::get);
+
+	public StructureDetailsEditor() {
+		EventManager.getInstance().register(this);
+		bind(structureChooser, StructureDetails::getStructure, StructureDetails::setStructure);
+
+		add(LayoutUtils.labelled("elementType.structure", structureChooser));
+	}
+
+	@EventListener
+	public void contentPackLoaded(ContentPackLoadedEvent event) {
+		structureChooser.setItems(event.getContentPack().getStructures());
+	}
 }

@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.Entity;
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.item.ItemStack;
@@ -42,7 +42,7 @@ public class HarvestableStructure extends MapStructure {
 	}
 
 	@Override
-	public boolean canInteract(Entity entity) {
+	public boolean canInteract(PlayerEntity entity) {
 		return !harvested && super.canInteract(entity);
 	}
 

@@ -1,27 +1,28 @@
 package com.pixurvival.gdxcore;
 
-import com.pixurvival.core.Collidable;
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.message.StructureUpdate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public class GhostStructure extends MapStructure {
 
-@Getter
-@AllArgsConstructor
-public class GhostStructure implements Collidable {
-
-	private Structure structure;
-	private double x;
-	private double y;
-
-	@Override
-	public double getHalfWidth() {
-		return 0.5;
+	protected GhostStructure(Structure definition, int x, int y) {
+		super(null, definition, x, y);
 	}
 
 	@Override
-	public double getHalfHeight() {
-		return 0.5;
+	public StructureUpdate getUpdate() {
+		return null;
+	}
+
+	@Override
+	public void writeData(ByteBuffer buffer) {
+	}
+
+	@Override
+	public void applyData(ByteBuffer buffer) {
 	}
 
 }

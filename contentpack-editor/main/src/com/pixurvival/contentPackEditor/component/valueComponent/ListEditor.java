@@ -82,6 +82,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		for (Component component : listPanel.getComponents()) {
 			action.accept((ElementEditor<E>) component);
 		}
+		action.accept(editorForValidation);
 	}
 
 	private ElementEditor<E> addComponent(E value) {
