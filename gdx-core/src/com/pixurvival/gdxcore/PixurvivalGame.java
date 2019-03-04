@@ -100,15 +100,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	private void setScreenInternal(Class<? extends Screen> screenClass) {
-		Screen screen = screens.get(screenClass);
-		if (screen == null) {
+		Screen screen = screens.computeIfAbsent(screenClass, k -> {
 			try {
-				screen = screenClass.newInstance();
-				screens.put(screenClass, screen);
+				return (Screen) k.newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
 				Log.error("Error when trying to instantiate new Screen", e);
+				return null;
 			}
-		}
+		});
 		setScreen(screen);
 	}
 

@@ -6,10 +6,18 @@ import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.message.StructureUpdate;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class GhostStructure extends MapStructure {
 
-	protected GhostStructure(Structure definition, int x, int y) {
+	@Getter
+	@Setter
+	private boolean valid;
+
+	protected GhostStructure(Structure definition, int x, int y, boolean valid) {
 		super(null, definition, x, y);
+		this.valid = valid;
 	}
 
 	@Override

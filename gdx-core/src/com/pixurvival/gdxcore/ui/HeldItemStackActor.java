@@ -32,7 +32,7 @@ public class HeldItemStackActor extends Actor {
 			return;
 		}
 		Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-		setPosition(mousePos.x - getWidth() / 2, mousePos.y - getHeight() / 2);
+		setPosition(mousePos.x/* - getWidth() / 2 */, mousePos.y - getHeight());
 		itemStackDrawer.setItemStack(heldItemStack);
 		itemStackDrawer.draw(batch);
 	}

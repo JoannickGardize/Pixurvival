@@ -5,11 +5,14 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.item.Item.StructureDetails;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.message.DropItemRequest;
-import com.pixurvival.core.message.InteractStructureRequest;
+import com.pixurvival.core.message.request.DropItemRequest;
+import com.pixurvival.core.message.request.InteractStructureRequest;
+import com.pixurvival.core.message.request.PlaceStructureRequest;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 
 import lombok.AllArgsConstructor;
@@ -25,13 +28,24 @@ public class WorldMouseProcessor extends InputAdapter {
 		if (myPlayer == null) {
 			return false;
 		}
+		ItemStack heldItemStack = myPlayer.getInventory().getHeldItemStack();
 		if (button == Input.Buttons.RIGHT) {
-			MapStructure structure = findClosest(screenX, screenY, 1);
-			if (structure instanceof HarvestableStructure && structure.canInteract(myPlayer)) {
-				PixurvivalGame.getClient()
-						.sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
+			if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof StructureDetails) {
+				Vector2 worldPoint = screenToWorld(screenX, screenY);
+				int x = (int) Math.floor(worldPoint.x);
+				int y = (int) Math.floor(worldPoint.y);
+				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(),
+						((StructureDetails) heldItemStack.getItem().getDetails()).getStructure(), x, y)) {
+					PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
+				}
+			} else {
+				MapStructure structure = findClosest(screenX, screenY, 1);
+				if (structure instanceof HarvestableStructure && structure.canInteract(myPlayer)) {
+					PixurvivalGame.getClient()
+							.sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
+				}
 			}
-		} else if (button == Input.Buttons.LEFT && myPlayer.getInventory().getHeldItemStack() != null) {
+		} else if (button == Input.Buttons.LEFT && heldItemStack != null) {
 			DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, screenX, screenY));
 			PixurvivalGame.getClient().sendAction(request);
 		}
@@ -45,12 +59,12 @@ public class WorldMouseProcessor extends InputAdapter {
 	}
 
 	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {
-		Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(screenX, screenY));
+		Vector2 worldPoint = screenToWorld(screenX, screenY);
 		return player.getPosition().angleTo(worldPoint.x, worldPoint.y);
 	}
 
 	private MapStructure findClosest(int screenX, int screenY, int radius) {
-		Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(screenX, screenY));
+		Vector2 worldPoint = screenToWorld(screenX, screenY);
 		int x = (int) Math.floor(worldPoint.x);
 		int y = (int) Math.floor(worldPoint.y);
 		TiledMap map = PixurvivalGame.getWorld().getMap();
@@ -71,5 +85,9 @@ public class WorldMouseProcessor extends InputAdapter {
 			}
 		}
 		return closest;
+	}
+
+	private Vector2 screenToWorld(int screenX, int screenY) {
+		return worldStage.getViewport().unproject(new Vector2(screenX, screenY));
 	}
 }

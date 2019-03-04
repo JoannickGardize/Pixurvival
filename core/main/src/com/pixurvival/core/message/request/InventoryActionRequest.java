@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -90,6 +90,11 @@ public class InventoryActionRequest implements IPlayerActionRequest {
 			inventory.setSlot(slotIndex, heldItemStack);
 			inventory.setHeldItemStack(currentContent);
 		}
+	}
+
+	@Override
+	public boolean isClientPreapply() {
+		return true;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<InventoryActionRequest> {

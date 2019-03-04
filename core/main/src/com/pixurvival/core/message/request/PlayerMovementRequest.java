@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -15,22 +15,19 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class PlayerActionRequest implements IPlayerActionRequest {
+public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	private Direction direction;
 	private boolean forward;
 
-	public PlayerActionRequest(PlayerActionRequest other) {
+	public PlayerMovementRequest(PlayerMovementRequest other) {
 		direction = other.direction;
 		forward = other.forward;
 	}
 
-	public void set(PlayerActionRequest other) {
+	public void set(PlayerMovementRequest other) {
 		direction = other.direction;
 		forward = other.forward;
-	}
-
-	public void apply(PlayerActionRequest actionRequest) {
 	}
 
 	@Override
@@ -39,22 +36,26 @@ public class PlayerActionRequest implements IPlayerActionRequest {
 		player.setForward(forward);
 	}
 
-	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerActionRequest> {
+	@Override
+	public boolean isClientPreapply() {
+		return true;
+	}
+
+	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerMovementRequest> {
 
 		@Override
-		public void write(Kryo kryo, Output output, PlayerActionRequest object) {
+		public void write(Kryo kryo, Output output, PlayerMovementRequest object) {
 			kryo.writeObject(output, object.direction);
 			output.writeBoolean(object.forward);
 
 		}
 
 		@Override
-		public PlayerActionRequest read(Kryo kryo, Input input, Class<PlayerActionRequest> type) {
-			PlayerActionRequest playerActionRequest = new PlayerActionRequest();
+		public PlayerMovementRequest read(Kryo kryo, Input input, Class<PlayerMovementRequest> type) {
+			PlayerMovementRequest playerActionRequest = new PlayerMovementRequest();
 			playerActionRequest.direction = kryo.readObject(input, Direction.class);
 			playerActionRequest.forward = input.readBoolean();
 			return playerActionRequest;
 		}
 	}
-
 }

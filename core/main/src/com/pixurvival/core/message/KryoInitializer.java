@@ -14,6 +14,13 @@ import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.CompressedChunk;
+import com.pixurvival.core.message.request.CraftItemRequest;
+import com.pixurvival.core.message.request.DropItemRequest;
+import com.pixurvival.core.message.request.EquipmentActionRequest;
+import com.pixurvival.core.message.request.InteractStructureRequest;
+import com.pixurvival.core.message.request.InventoryActionRequest;
+import com.pixurvival.core.message.request.PlaceStructureRequest;
+import com.pixurvival.core.message.request.PlayerMovementRequest;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -24,7 +31,7 @@ public class KryoInitializer {
 	public static void apply(Kryo kryo) {
 		register(kryo, Direction.class);
 		register(kryo, Vector2.class);
-		register(kryo, PlayerActionRequest.class);
+		register(kryo, PlayerMovementRequest.class);
 		register(kryo, TimeRequest.class);
 		register(kryo, TimeResponse.class);
 		register(kryo, LoginRequest.class);

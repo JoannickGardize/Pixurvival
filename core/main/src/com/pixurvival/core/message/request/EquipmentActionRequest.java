@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -26,6 +26,11 @@ public class EquipmentActionRequest implements IPlayerActionRequest {
 		}
 	}
 
+	@Override
+	public boolean isClientPreapply() {
+		return true;
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EquipmentActionRequest> {
 
 		@Override
@@ -39,5 +44,4 @@ public class EquipmentActionRequest implements IPlayerActionRequest {
 		}
 
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -26,6 +26,11 @@ public class InteractStructureRequest implements IPlayerActionRequest {
 			player.setActivity(new HarvestingActivity(player, structure));
 			player.setForward(false);
 		}
+	}
+
+	@Override
+	public boolean isClientPreapply() {
+		return false;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<InteractStructureRequest> {

@@ -8,13 +8,13 @@ import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.request.PlayerMovementRequest;
 
 public class OldPixurvivalGame extends Game implements ClientGameListener {
 
 	private ClientGame game;
 	// private WorldStage worldStage;
-	private PlayerActionRequest actionRequest = new PlayerActionRequest();
+	private PlayerMovementRequest actionRequest = new PlayerMovementRequest();
 	private double frameDurationMillis = 1000.0 / 30;
 	private int maxUpdatePerFrame = 5;
 	private double frameCounter;

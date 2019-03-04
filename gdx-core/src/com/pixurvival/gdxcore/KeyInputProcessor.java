@@ -5,15 +5,15 @@ import java.util.Map;
 
 import com.badlogic.gdx.InputAdapter;
 import com.pixurvival.core.Direction;
-import com.pixurvival.core.message.PlayerActionRequest;
+import com.pixurvival.core.message.request.PlayerMovementRequest;
 
 import lombok.Getter;
 
 public class KeyInputProcessor extends InputAdapter {
 
 	private KeyMapping keyMapping;
-	private @Getter PlayerActionRequest playerAction = new PlayerActionRequest();
-	private PlayerActionRequest previousPlayerAction = new PlayerActionRequest();
+	private @Getter PlayerMovementRequest playerAction = new PlayerMovementRequest();
+	private PlayerMovementRequest previousPlayerAction = new PlayerMovementRequest();
 	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
 
 	public KeyInputProcessor(KeyMapping keyMapping) {

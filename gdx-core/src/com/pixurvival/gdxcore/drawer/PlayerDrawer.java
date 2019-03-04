@@ -1,6 +1,5 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -17,6 +16,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
+import com.pixurvival.gdxcore.util.GraphicsUtil;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +40,9 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	public void draw(Batch batch, PlayerEntity e) {
 		ActionAnimation actionAnimation = getActionAnimation(e);
 		TextureAnimation textureAnimation = getTextureAnimationSet(e).get(actionAnimation);
-		int index = getIndexAndUpdateTimer(e, textureAnimation);
+		int index = GraphicsUtil.getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		DrawData data = (DrawData) e.getCustomData();
-		Vector2 drawPosition = data.getDrawPosition();
+		Vector2 drawPosition = e.getPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
 		float y = (float) drawPosition.y;
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
@@ -88,23 +87,6 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 					.getAnimationSet(((Clothing) clothing.getItem().getDetails()).getSpriteSheet());
 		}
 		return textureAnimationSet;
-	}
-
-	private int getIndexAndUpdateTimer(PlayerEntity e, TextureAnimation textureAnimation) {
-		Object o = e.getCustomData();
-		if (o == null) {
-			o = new DrawData();
-			((DrawData) o).getDrawPosition().set(e.getPosition());
-			e.setCustomData(o);
-		}
-		DrawData data = (DrawData) o;
-		float timer = data.getTimer();
-		timer += Gdx.graphics.getRawDeltaTime();
-		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
-			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
-		}
-		data.setTimer(timer);
-		return (int) (timer / textureAnimation.getFrameDuration());
 	}
 
 	private ActionAnimation getActionAnimation(PlayerEntity e) {

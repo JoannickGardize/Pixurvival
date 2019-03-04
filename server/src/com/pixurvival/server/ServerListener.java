@@ -9,17 +9,13 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.message.CraftItemRequest;
-import com.pixurvival.core.message.DropItemRequest;
 import com.pixurvival.core.message.GameReady;
-import com.pixurvival.core.message.InteractStructureRequest;
-import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.request.IPlayerActionRequest;
 
 class ServerListener extends Listener {
 
@@ -36,52 +32,22 @@ class ServerListener extends Listener {
 			connection.setName(((LoginRequest) m.getObject()).getPlayerName());
 			game.notify(l -> l.playerLoggedIn(connection));
 		});
-		messageActions.put(PlayerActionRequest.class, m -> {
+		messageActions.put(IPlayerActionRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			PlayerEntity entity = connection.getPlayerEntity();
 			if (entity != null) {
-				entity.apply((PlayerActionRequest) m.getObject());
-			}
-		});
-		messageActions.put(InventoryActionRequest.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			PlayerEntity entity = connection.getPlayerEntity();
-			if (entity != null) {
-				entity.apply((InventoryActionRequest) m.getObject());
-			}
-		});
-		messageActions.put(InteractStructureRequest.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			PlayerEntity entity = connection.getPlayerEntity();
-			if (entity != null) {
-				entity.apply((InteractStructureRequest) m.getObject());
-			}
-		});
-		messageActions.put(CraftItemRequest.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			PlayerEntity entity = connection.getPlayerEntity();
-			if (entity != null) {
-				entity.apply((CraftItemRequest) m.getObject());
-			}
-		});
-		messageActions.put(DropItemRequest.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			PlayerEntity entity = connection.getPlayerEntity();
-			if (entity != null) {
-				entity.apply((DropItemRequest) m.getObject());
+				((IPlayerActionRequest) m.getObject()).apply(entity);
 			}
 		});
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
 		});
-		messageActions.put(GameReady.class, m -> {
-			m.getConnection().setGameReady(true);
-		});
-		messageActions.put(TimeRequest.class, m -> {
-			m.getConnection().sendUDP(
-					new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis()));
-		});
+		messageActions.put(GameReady.class, m -> m.getConnection().setGameReady(true));
+
+		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(
+				new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
+
 	}
 
 	public void consumeReceivedObjects() {

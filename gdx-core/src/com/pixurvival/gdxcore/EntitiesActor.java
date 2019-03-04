@@ -23,7 +23,9 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;
+import com.pixurvival.core.map.ShortLivedStructure;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
+import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
@@ -36,11 +38,11 @@ public class EntitiesActor extends Actor {
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer(PixurvivalGame.getContentPackTextures()
 				.getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
-		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer(PixurvivalGame.getWorld().getContentPack(),
-				PixurvivalGame.getContentPackTextures());
+		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
+		drawers.put(ShortLivedStructure.class, mapStructureDrawer);
+		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
-		drawers.put(GhostStructure.class, mapStructureDrawer);
 	}
 
 	@Override
@@ -86,13 +88,18 @@ public class EntitiesActor extends Actor {
 	}
 
 	private void manageGhostStructure() {
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (myPlayer == null) {
+			return;
+		}
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
 		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.StructureDetails) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 			int x = (int) Math.floor(mousePos.x);
 			int y = (int) Math.floor(mousePos.y);
 			Structure structure = ((Item.StructureDetails) heldItemStack.getItem().getDetails()).getStructure();
-			GhostStructure ghostStructure = new GhostStructure(structure, x, y);
+			boolean valid = MapStructure.canPlace(myPlayer, myPlayer.getWorld().getMap(), structure, x, y);
+			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);
 			objectsToDraw.add(ghostStructure);
 		}
 	}

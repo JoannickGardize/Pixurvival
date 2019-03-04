@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -15,9 +15,6 @@ public class DropItemRequest implements IPlayerActionRequest {
 
 	private float direction;
 
-	public void apply(DropItemRequest request) {
-	}
-
 	@Override
 	public void apply(PlayerEntity player) {
 		if (player.getInventory().getHeldItemStack() != null) {
@@ -27,6 +24,11 @@ public class DropItemRequest implements IPlayerActionRequest {
 			entity.spawn(direction);
 			player.getInventory().setHeldItemStack(null);
 		}
+	}
+
+	@Override
+	public boolean isClientPreapply() {
+		return false;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<DropItemRequest> {
@@ -40,7 +42,5 @@ public class DropItemRequest implements IPlayerActionRequest {
 		public DropItemRequest read(Kryo kryo, Input input, Class<DropItemRequest> type) {
 			return new DropItemRequest(input.readFloat());
 		}
-
 	}
-
 }

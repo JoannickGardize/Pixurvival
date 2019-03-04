@@ -1,4 +1,4 @@
-package com.pixurvival.core.message;
+package com.pixurvival.core.message.request;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -18,9 +18,6 @@ public class CraftItemRequest implements IPlayerActionRequest {
 	private int craftId;
 	private short quantity;
 
-	public void apply(CraftItemRequest request) {
-	}
-
 	@Override
 	public void apply(PlayerEntity player) {
 		ItemCraft craft = player.getWorld().getContentPack().getItemCrafts().get(craftId);
@@ -28,6 +25,11 @@ public class CraftItemRequest implements IPlayerActionRequest {
 				&& player.getActivity().in(Activity.NONE_ID, Activity.CRAFTING_ACTIVITY_ID)) {
 			player.setActivity(new CraftingActivity(player, craft));
 		}
+	}
+
+	@Override
+	public boolean isClientPreapply() {
+		return false;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<CraftItemRequest> {
@@ -44,5 +46,4 @@ public class CraftItemRequest implements IPlayerActionRequest {
 		}
 
 	}
-
 }

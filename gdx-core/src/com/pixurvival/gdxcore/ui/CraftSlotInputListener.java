@@ -7,7 +7,7 @@ import com.pixurvival.core.aliveEntity.Activity;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemCraft;
-import com.pixurvival.core.message.CraftItemRequest;
+import com.pixurvival.core.message.request.CraftItemRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.AllArgsConstructor;

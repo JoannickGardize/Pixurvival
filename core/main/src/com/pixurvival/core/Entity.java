@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class Entity implements Collidable {
+public abstract class Entity implements Collidable, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter(AccessLevel.PACKAGE) World world;

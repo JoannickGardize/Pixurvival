@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pixurvival.core.Collidable;
+import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.aliveEntity.Activity;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
@@ -14,9 +15,10 @@ import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-public abstract class MapStructure implements Collidable {
+public abstract class MapStructure implements Collidable, CustomDataHolder {
 
 	@FunctionalInterface
 	private static interface StructureSupplier {
@@ -35,6 +37,7 @@ public abstract class MapStructure implements Collidable {
 	private int tileX;
 	private int tileY;
 	private Vector2 position;
+	private @Setter Object customData;
 
 	protected MapStructure(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;

@@ -4,8 +4,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.pixurvival.core.message.InventoryActionRequest;
-import com.pixurvival.core.message.InventoryActionRequest.Type;
+import com.pixurvival.core.message.request.InventoryActionRequest;
+import com.pixurvival.core.message.request.InventoryActionRequest.Type;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.AllArgsConstructor;

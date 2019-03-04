@@ -1,28 +1,15 @@
 package com.pixurvival.gdxcore.drawer;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
+import com.pixurvival.gdxcore.util.GraphicsUtil;
 
 public class MapStructureDrawer implements ElementDrawer<MapStructure> {
-
-	TextureAnimationSet[] animationSets;
-
-	public MapStructureDrawer(ContentPack contentpack, ContentPackTextures contentPackTextures) {
-		List<Structure> structures = contentpack.getStructures();
-		animationSets = new TextureAnimationSet[structures.size()];
-		for (int i = 0; i < structures.size(); i++) {
-			animationSets[i] = contentPackTextures.getAnimationSet(structures.get(i).getSpriteSheet());
-		}
-	}
 
 	@Override
 	public void update(MapStructure e) {
@@ -30,7 +17,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	@Override
 	public void drawShadow(Batch batch, MapStructure e) {
-		TextureAnimationSet animationSet = animationSets[e.getDefinition().getId()];
+		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures()
+				.getAnimationSet(e.getDefinition().getSpriteSheet());
 		ActionAnimation action = ActionAnimation.NONE;
 		if (e instanceof HarvestableStructure && ((HarvestableStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
@@ -44,7 +32,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	@Override
 	public void draw(Batch batch, MapStructure e) {
-		TextureAnimationSet animationSet = animationSets[e.getDefinition().getId()];
+		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures()
+				.getAnimationSet(e.getDefinition().getSpriteSheet());
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
 		float y = (float) e.getY();
 		ActionAnimation action = ActionAnimation.NONE;
@@ -52,7 +41,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);
-		batch.draw(animation.getTexture(0), x, y + animationSet.getYOffset(), animationSet.getWidth(),
+		int index = GraphicsUtil.getIndexAndUpdateTimer(e, animation);
+		batch.draw(animation.getTexture(index), x, y + animationSet.getYOffset(), animationSet.getWidth(),
 				animationSet.getHeight());
 	}
 

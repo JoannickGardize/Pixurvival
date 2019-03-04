@@ -113,7 +113,7 @@ public class Chunk {
 	}
 
 	public void removeStructure(int x, int y) {
-		MapTile tile = tileAtLocal(x, y);
+		MapTile tile = tileAt(x, y);
 		if (tile.getStructure() != null) {
 			MapStructure structure = tile.getStructure();
 			int localX = structure.getTileX() - offsetX;
@@ -123,6 +123,7 @@ public class Chunk {
 					set(sx, sy, map.getMapTilesById()[tile.getTileDefinition().getId()]);
 				}
 			}
+			structures.remove(structure);
 			getMap().notifyListeners(l -> l.structureRemoved(structure));
 			fileSync = false;
 		}

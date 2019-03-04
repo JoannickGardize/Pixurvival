@@ -20,19 +20,13 @@ import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.message.CraftItemRequest;
-import com.pixurvival.core.message.DropItemRequest;
-import com.pixurvival.core.message.EquipmentActionRequest;
 import com.pixurvival.core.message.GameReady;
-import com.pixurvival.core.message.IPlayerActionRequest;
 import com.pixurvival.core.message.InitializeGame;
-import com.pixurvival.core.message.InteractStructureRequest;
-import com.pixurvival.core.message.InventoryActionRequest;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.PlayerActionRequest;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.request.IPlayerActionRequest;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -49,6 +43,7 @@ public class ClientGame {
 	private @Getter PlayerInventory myInventory;
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(
 			new File("D:/git/pixurvival/gdx-core/assets/contentPacks"));
+	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
 	// private double timeRequestFrequencyMillis = 200;
 	// private double timeRequestTimer = 0;
@@ -127,87 +122,24 @@ public class ClientGame {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
-				PlayerEntity e = getMyPlayer();
-				if (e != null) {
-					e.apply(request);
+				if (getMyPlayer() != null && request.isClientPreapply()) {
+					synchronized (playerActionRequests) {
+						playerActionRequests.add(request);
+					}
 				}
 			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(PlayerActionRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-				PlayerEntity e = getMyPlayer();
-				if (e != null) {
-					e.apply(request);
+				synchronized (playerActionRequests) {
+					playerActionRequests.add(request);
 				}
-			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(InventoryActionRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-				if (getMyPlayer() != null) {
-					getMyPlayer().apply(request);
-				}
-			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(InteractStructureRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(CraftItemRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(DropItemRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-			} else {
-				getMyPlayer().apply(request);
-			}
-		}
-	}
-
-	public void sendAction(EquipmentActionRequest request) {
-		if (world != null) {
-			if (world.getType() == World.Type.CLIENT) {
-				client.sendUDP(request);
-				if (getMyPlayer() != null) {
-					getMyPlayer().apply(request);
-				}
-			} else {
-				getMyPlayer().apply(request);
 			}
 		}
 	}
 
 	public void update(double deltaTimeMillis) {
+		synchronized (playerActionRequests) {
+			playerActionRequests.forEach(r -> r.apply(getMyPlayer()));
+			playerActionRequests.clear();
+		}
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
 			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
@@ -224,6 +156,7 @@ public class ClientGame {
 
 	public void checkMissingPacks(ContentPackIdentifier identifier) {
 		// TODO Make the auto-download of contentPack great again
+
 		// List<ContentPackIdentifier> missingPacks = new ArrayList<>();
 		// for (ContentPackIdentifier identifier : identifiers) {
 		// if (!list.contains(identifier)) {
