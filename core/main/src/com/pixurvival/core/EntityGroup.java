@@ -8,7 +8,8 @@ import lombok.Getter;
 
 public enum EntityGroup {
 	PLAYER,
-	ITEM_STACK;
+	ITEM_STACK,
+	CREATURE;
 
 	static {
 		for (byte i = 0; i < EntityGroup.values().length; i++) {

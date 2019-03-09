@@ -69,6 +69,19 @@ public class EntityPool {
 		return entities.get(group).values();
 	}
 
+	public Entity closest(EntityGroup group, Entity entity) {
+		Entity closestEntity = null;
+		double closestDistance = Double.POSITIVE_INFINITY;
+		for (Entity e : entities.get(group).values()) {
+			double distance = entity.distanceSquared(e);
+			if (distance < closestDistance) {
+				closestDistance = distance;
+				closestEntity = e;
+			}
+		}
+		return closestEntity;
+	}
+
 	public void foreach(Consumer<Entity> action) {
 		entities.values().forEach(m -> m.values().forEach(action));
 	}
@@ -81,8 +94,7 @@ public class EntityPool {
 			Map<Long, Entity> entityMap = groupEntry.getValue();
 			tmpEntityList.clear();
 			for (Entity e : entityMap.values()) {
-				if (player.distanceSquared(e) <= GameConstants.PLAYER_ENTITY_VIEW_DISTANCE
-						* GameConstants.PLAYER_ENTITY_VIEW_DISTANCE) {
+				if (player.distanceSquared(e) <= GameConstants.PLAYER_ENTITY_VIEW_DISTANCE * GameConstants.PLAYER_ENTITY_VIEW_DISTANCE) {
 					tmpEntityList.add(e);
 				}
 			}

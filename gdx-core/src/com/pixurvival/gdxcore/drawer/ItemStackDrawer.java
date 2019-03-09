@@ -50,12 +50,9 @@ public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
 
 	}
 
-	private void draw(Batch batch, ContentPackTextures contentPackTextures, Texture texture, TextureMetrics metrics,
-			float x, float y) {
-		batch.draw(texture, (float) (x - metrics.getWorldOffsetX() - contentPackTextures.getTruePixelWidth()),
-				(float) (y - contentPackTextures.getTruePixelWidth() - metrics.getWorldOffsetY()),
-				(float) (1 + contentPackTextures.getTruePixelWidth() * 2),
-				(float) (1 + contentPackTextures.getTruePixelWidth() * 2));
+	private void draw(Batch batch, ContentPackTextures contentPackTextures, Texture texture, TextureMetrics metrics, float x, float y) {
+		batch.draw(texture, (float) (x - metrics.getWorldOffsetX() - contentPackTextures.getTruePixelWidth()), (float) (y - contentPackTextures.getTruePixelWidth() - metrics.getWorldOffsetY()),
+				(float) (1 + contentPackTextures.getTruePixelWidth() * 2), (float) (1 + contentPackTextures.getTruePixelWidth() * 2));
 	}
 
 }

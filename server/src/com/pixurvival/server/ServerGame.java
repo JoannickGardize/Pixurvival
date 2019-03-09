@@ -45,8 +45,7 @@ public class ServerGame {
 		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("1.0"));
 
 		try {
-			setSelectedContentPack(
-					new ContentPackLoader(new File("D:/git/pixurvival/gdx-core/assets/contentPacks")).load(id));
+			setSelectedContentPack(new ContentPackLoader(new File("contentPacks")).load(id));
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 		}
@@ -83,28 +82,36 @@ public class ServerGame {
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getIdentifier()));
 		List<PlayerData> playerDataList = new ArrayList<>();
+		foreachPlayers(playerConnection -> playerConnection.sendTCP(createWorld));
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
 			playerEntity.setName(playerConnection.toString());
 			Random random = new Random();
 			world.getEntityPool().add(playerEntity);
-			for (int i = 0; i < 10; i++) {
-				playerEntity.getInventory().setSlot(i,
-						new ItemStack(
-								selectedContentPack.getItems()
-										.get(random.nextInt(selectedContentPack.getItems().size())),
-								random.nextInt(10) + 1));
-			}
 			playerConnection.setPlayerEntity(playerEntity);
 			playerEntity.getInventory().addListener(playerConnection);
 			playerEntity.getEquipment().addListener(playerConnection);
 			playerDataList.add(playerEntity.getData());
 			session.addPlayer(playerConnection);
+			for (int i = 0; i < 20; i++) {
+				playerEntity.getInventory().setSlot(i, new ItemStack(selectedContentPack.getItems().get(random.nextInt(selectedContentPack.getItems().size())), random.nextInt(10) + 1));
+			}
 		});
 		PlayerData[] playerData = playerDataList.toArray(new PlayerData[playerDataList.size()]);
 		foreachPlayers(playerConnection -> {
-			playerConnection.sendTCP(new InitializeGame(createWorld, playerConnection.getPlayerEntity().getId(),
-					playerConnection.getPlayerEntity().getInventory(), playerData));
+			boolean messageSent = false;
+			while (!messageSent) {
+				if (playerConnection.isWorldReady()) {
+					messageSent = true;
+					playerConnection.sendTCP(new InitializeGame(playerConnection.getPlayerEntity().getId(), playerConnection.getPlayerEntity().getInventory(), playerData));
+				} else {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		});
 		engineThread.add(session);
 	}

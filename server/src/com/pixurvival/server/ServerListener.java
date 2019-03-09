@@ -15,6 +15,7 @@ import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.WorldReady;
 import com.pixurvival.core.message.request.IPlayerActionRequest;
 
 class ServerListener extends Listener {
@@ -43,10 +44,10 @@ class ServerListener extends Listener {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
 		});
+		messageActions.put(WorldReady.class, m -> m.getConnection().setWorldReady(true));
 		messageActions.put(GameReady.class, m -> m.getConnection().setGameReady(true));
 
-		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(
-				new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
+		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
 
 	}
 

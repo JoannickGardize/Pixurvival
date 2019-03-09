@@ -10,6 +10,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.message.ContentPackPart;
+import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerData;
@@ -18,20 +19,15 @@ import com.pixurvival.core.message.WorldUpdate;
 
 class ClientListener extends Listener {
 
-	private ClientGame game;
-
 	private Map<Class<?>, Consumer<?>> messageActions = new HashMap<>();
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
 	public ClientListener(ClientGame game) {
-		this.game = game;
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
-		messageActions.put(InitializeGame.class, s -> {
-			game.setInitGame((InitializeGame) s);
-		});
-		messageActions.put(ContentPackPart.class,
-				p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
+		messageActions.put(InitializeGame.class, s -> game.initializeGame((InitializeGame) s));
+		messageActions.put(CreateWorld.class, s -> game.initializeWorld((CreateWorld) s));
+		messageActions.put(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
 
 		// TODO Download system
 		// messageActions.put(RequestContentPacks.class, r -> {
@@ -43,6 +39,7 @@ class ClientListener extends Listener {
 			game.updatePing(time);
 		});
 		messageActions.put(Inventory.class, i -> {
+			System.out.println("pif");
 			game.getMyInventory().set((Inventory) i);
 		});
 		messageActions.put(PlayerData[].class, d -> {

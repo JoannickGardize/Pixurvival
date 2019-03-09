@@ -20,6 +20,7 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 	private boolean logged = false;
 	private PlayerEntity playerEntity = null;
 	private boolean gameReady = false;
+	private boolean worldReady = false;
 	private boolean inventoryChanged = true;
 	private boolean playerDataChanged = true;
 
@@ -29,8 +30,7 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 	}
 
 	@Override
-	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack,
-			ItemStack newItemStack) {
+	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack, ItemStack newItemStack) {
 		playerDataChanged = true;
 	}
 

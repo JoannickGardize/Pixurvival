@@ -1,6 +1,7 @@
-package com.pixurvival.core.aliveEntity;
+package com.pixurvival.core.aliveEntity.ability;
 
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemCraft;

@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InitializeGame {
 
-	private CreateWorld createWorld;
 	private long myPlayerId;
 	private PlayerInventory inventory;
 	private PlayerData[] playerData;

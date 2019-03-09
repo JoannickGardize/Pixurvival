@@ -1,7 +1,8 @@
-package com.pixurvival.core.aliveEntity;
+package com.pixurvival.core.aliveEntity.ability;
 
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;

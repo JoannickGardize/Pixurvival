@@ -19,9 +19,12 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
 
+	private double previousMovingAngle = 0;
+	private double previousSpeed = 0;
 	private double speed = 0;
 	private @Setter double movingAngle = 0;
 	private @Setter boolean forward = false;
+	private @Setter double forwardFactor = 1;
 	private Vector2 velocity = new Vector2();
 
 	public abstract void initialize();
@@ -29,9 +32,8 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 	public void update() {
 		// Update position
 		if (forward) {
-			speed = getSpeedPotential();
-			velocity.x = Math.cos(movingAngle) * speed;
-			velocity.y = Math.sin(movingAngle) * speed;
+			speed = getSpeedPotential() * forwardFactor;
+			updateVelocity();
 			double dx = velocity.x * getWorld().getTime().getDeltaTime();
 			double dy = velocity.y * getWorld().getTime().getDeltaTime();
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
@@ -112,7 +114,15 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getBoundingRadius(),
-				velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
+		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
+	}
+
+	private void updateVelocity() {
+		if (previousMovingAngle != movingAngle || previousSpeed != speed) {
+			previousMovingAngle = movingAngle;
+			previousSpeed = speed;
+			velocity.x = Math.cos(movingAngle) * speed;
+			velocity.y = Math.sin(movingAngle) * speed;
+		}
 	}
 }

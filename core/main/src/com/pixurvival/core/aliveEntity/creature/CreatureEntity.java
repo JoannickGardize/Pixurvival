@@ -4,7 +4,9 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.aliveEntity.AliveEntity;
-import com.pixurvival.core.aliveEntity.creature.ai.Behavior;
+import com.pixurvival.core.contentPack.ai.ArtificialIntelligence;
+import com.pixurvival.core.contentPack.ai.Behavior;
+import com.pixurvival.core.contentPack.ai.BehaviorData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,18 +14,21 @@ import lombok.Setter;
 public class CreatureEntity extends AliveEntity {
 
 	private @Getter @Setter Behavior currentBehavior;
-	private @Getter @Setter double behaviorTime;
+	private @Getter @Setter BehaviorData behaviorData;
+
+	public void setAI(ArtificialIntelligence ai) {
+		currentBehavior = ai.getBehaviors().get(0);
+		currentBehavior.begin(this);
+	}
 
 	@Override
 	public double getMaxHealth() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public EntityGroup getGroup() {
-		// TODO Auto-generated method stub
-		return null;
+		return EntityGroup.CREATURE;
 	}
 
 	@Override

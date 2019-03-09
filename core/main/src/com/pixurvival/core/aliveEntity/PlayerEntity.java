@@ -4,6 +4,10 @@ import java.nio.ByteBuffer;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EntityGroup;
+import com.pixurvival.core.aliveEntity.ability.AbilitySet;
+import com.pixurvival.core.aliveEntity.ability.Activity;
+import com.pixurvival.core.aliveEntity.ability.CraftingActivity;
+import com.pixurvival.core.aliveEntity.ability.HarvestingActivity;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapTile;
@@ -14,7 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class PlayerEntity extends AliveEntity implements InventoryHolder, EquipmentHolder {
+public class PlayerEntity extends AliveEntity<PlayerEntity> implements InventoryHolder, EquipmentHolder {
 
 	private @Setter Activity activity = Activity.NONE;
 
@@ -67,8 +71,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 
 	@Override
 	public double getSpeedPotential() {
-		return stats.getValue(StatType.SPEED)
-				* getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override
@@ -155,8 +158,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			if (!(getActivity() instanceof HarvestingActivity)) {
 				MapTile tile = getWorld().getMap().tileAt(tileX, tileY);
 				if (tile.getStructure() instanceof HarvestableStructure) {
-					HarvestingActivity harvestingActivity = new HarvestingActivity(this,
-							(HarvestableStructure) tile.getStructure());
+					HarvestingActivity harvestingActivity = new HarvestingActivity(this, (HarvestableStructure) tile.getStructure());
 					harvestingActivity.setProgressTime(progressTime);
 					activity = harvestingActivity;
 				} else {
@@ -168,8 +170,7 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			short craftId = buffer.getShort();
 			progressTime = buffer.getDouble();
 			if (!(getActivity() instanceof CraftingActivity)) {
-				CraftingActivity activity = new CraftingActivity(this,
-						getWorld().getContentPack().getItemCrafts().get(craftId));
+				CraftingActivity activity = new CraftingActivity(this, getWorld().getContentPack().getItemCrafts().get(craftId));
 				setActivity(activity);
 				activity.setProgressTime(progressTime);
 			} else {
@@ -177,5 +178,11 @@ public class PlayerEntity extends AliveEntity implements InventoryHolder, Equipm
 			}
 			break;
 		}
+	}
+
+	@Override
+	public AbilitySet<PlayerEntity> getAbilitySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

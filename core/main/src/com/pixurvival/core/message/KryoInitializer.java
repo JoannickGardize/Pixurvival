@@ -44,6 +44,7 @@ public class KryoInitializer {
 		kryo.register(UUID.class, new UUIDSerializer());
 		register(kryo, ContentPackIdentifier.class);
 		register(kryo, ContentPackIdentifier[].class);
+		register(kryo, WorldReady.class);
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
 		register(kryo, GameReady.class);
@@ -71,8 +72,7 @@ public class KryoInitializer {
 		try {
 			Class<?>[] internalClasses = clazz.getClasses();
 			for (Class<?> internalClass : internalClasses) {
-				if (internalClass.getSimpleName().equals("Serializer")
-						&& internalClass.getSuperclass() == Serializer.class) {
+				if (internalClass.getSimpleName().equals("Serializer") && internalClass.getSuperclass() == Serializer.class) {
 					kryo.register(clazz, ((Class<? extends Serializer<?>>) internalClass).newInstance());
 					return;
 				}

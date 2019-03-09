@@ -3,8 +3,8 @@ package com.pixurvival.core.message.request;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.aliveEntity.HarvestingActivity;
 import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.aliveEntity.ability.HarvestingActivity;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapTile;
 

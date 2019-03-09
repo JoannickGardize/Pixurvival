@@ -2,19 +2,25 @@ package com.pixurvival.gdxcore.util;
 
 import com.badlogic.gdx.Gdx;
 import com.pixurvival.core.CustomDataHolder;
+import com.pixurvival.core.Entity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class GraphicsUtil {
 
-	public int getIndexAndUpdateTimer(CustomDataHolder e, TextureAnimation textureAnimation) {
-		Object o = e.getCustomData();
+	public static int getIndexAndUpdateTimer(CustomDataHolder e, TextureAnimation textureAnimation) {
+		DrawData o = (DrawData) e.getCustomData();
 		if (o == null) {
 			o = new DrawData();
-			((DrawData) o).getDrawPosition().set(e.getPosition());
 			e.setCustomData(o);
+			if (e instanceof Entity) {
+				o.getDrawPosition().set(((Entity) e).getPosition());
+			}
 		}
-		DrawData data = (DrawData) o;
+		DrawData data = o;
 		float timer = data.getTimer();
 		timer += Gdx.graphics.getRawDeltaTime();
 		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {

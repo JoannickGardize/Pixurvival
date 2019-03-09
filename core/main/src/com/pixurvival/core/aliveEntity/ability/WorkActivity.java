@@ -1,6 +1,7 @@
-package com.pixurvival.core.aliveEntity;
+package com.pixurvival.core.aliveEntity.ability;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.aliveEntity.PlayerEntity;
 
 import lombok.Getter;
 import lombok.Setter;
