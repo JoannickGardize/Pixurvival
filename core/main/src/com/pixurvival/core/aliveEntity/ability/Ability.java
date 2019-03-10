@@ -1,7 +1,5 @@
 package com.pixurvival.core.aliveEntity.ability;
 
-import java.nio.ByteBuffer;
-
 import com.pixurvival.core.aliveEntity.AliveEntity;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 
@@ -13,17 +11,18 @@ public abstract class Ability<T extends AliveEntity<T>> {
 
 	private @Getter @Setter(AccessLevel.PACKAGE) int id;
 
-	public Object getAbilityData(AliveEntity<?> entity) {
+	public AbilityData getAbilityData(AliveEntity<?> entity) {
 		return entity.getAbilityData(id);
 	}
 
 	/**
 	 * Override to create initialize an object data that this ability needs.
 	 * 
+	 * @param entity
 	 * @return the object containing the data of this ability, called for each
 	 *         {@link AliveEntity} created, during their initializations.
 	 */
-	public Object createAbilityData() {
+	public AbilityData createAbilityData(AliveEntity<?> entity) {
 		return null;
 	}
 
@@ -65,9 +64,4 @@ public abstract class Ability<T extends AliveEntity<T>> {
 	 * @param entity
 	 */
 	public abstract void stop(T entity);
-
-	public abstract void writeUpdate(ByteBuffer buffer);
-
-	public abstract void applyUpdate(ByteBuffer buffer);
-
 }

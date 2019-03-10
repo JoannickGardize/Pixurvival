@@ -127,9 +127,9 @@ public class Inventory {
 	 * different slots if necessary.
 	 * 
 	 * @param itemStack
-	 *            The ItemStack to add. If the ItemStack cannot be fully added, the
-	 *            quantity of the itemStack is updated.
-	 * @return True if all the ItemStack is added, false otherwise.
+	 *            The ItemStack to add.
+	 * @return An ItemStack containing the quantity that cannot be added to this
+	 *         inventory, or null if all the quantity was added.
 	 */
 	public ItemStack add(ItemStack itemStack) {
 		Item item = itemStack.getItem();

@@ -2,6 +2,7 @@ package com.pixurvival.core.aliveEntity;
 
 import com.pixurvival.core.Damageable;
 import com.pixurvival.core.Entity;
+import com.pixurvival.core.aliveEntity.ability.AbilityData;
 import com.pixurvival.core.aliveEntity.ability.AbilitySet;
 
 import lombok.Getter;
@@ -14,13 +15,13 @@ public abstract class AliveEntity<T extends AliveEntity<T>> extends Entity imple
 	private double health;
 	private double aimingAngle;
 
-	private Object[] abilityData;
+	private AbilityData[] abilityData;
 
 	@Override
 	public void initialize() {
 		health = getMaxHealth();
 		AbilitySet<T> abilitySet = getAbilitySet();
-		abilityData = new Object[abilitySet.size()];
+		abilityData = new AbilityData[abilitySet.size()];
 		for (int i = 0; i < abilitySet.size(); i++) {
 			abilityData[i] = abilitySet.get(i).getAbilityData(this);
 		}
@@ -52,7 +53,7 @@ public abstract class AliveEntity<T extends AliveEntity<T>> extends Entity imple
 		super.update();
 	}
 
-	public Object getAbilityData(int abilityId) {
+	public AbilityData getAbilityData(int abilityId) {
 		return abilityData[abilityId];
 	}
 
