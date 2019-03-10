@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;

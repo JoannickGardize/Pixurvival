@@ -1,6 +1,6 @@
 package com.pixurvival.core.message;
 
-import com.pixurvival.core.aliveEntity.PlayerInventory;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

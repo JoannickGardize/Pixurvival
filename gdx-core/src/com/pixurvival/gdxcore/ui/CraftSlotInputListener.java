@@ -3,8 +3,6 @@ package com.pixurvival.gdxcore.ui;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.ability.Activity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.message.request.CraftItemRequest;
@@ -26,9 +24,7 @@ public class CraftSlotInputListener extends InputListener {
 			return false;
 		}
 		Inventory inventory = PixurvivalGame.getClient().getMyInventory();
-		PlayerEntity player = PixurvivalGame.getClient().getMyPlayer();
-		if (inventory.contains(itemCraft.getRecipes())
-				&& player.getActivity().in(Activity.NONE_ID, Activity.CRAFTING_ACTIVITY_ID)) {
+		if (inventory.contains(itemCraft.getRecipes())) {
 			PixurvivalGame.getClient().sendAction(new CraftItemRequest(itemCraft.getId(), quantity));
 		}
 		return true;

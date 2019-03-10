@@ -1,6 +1,6 @@
 package com.pixurvival.core.map;
 
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 public interface TiledMapListener {
 

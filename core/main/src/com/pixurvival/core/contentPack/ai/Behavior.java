@@ -2,8 +2,8 @@ package com.pixurvival.core.contentPack.ai;
 
 import java.util.List;
 
-import com.pixurvival.core.aliveEntity.creature.CreatureEntity;
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Setter;
 

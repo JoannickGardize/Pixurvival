@@ -7,10 +7,9 @@ import java.util.Map;
 import com.pixurvival.core.Collidable;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.ability.Activity;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structure.Details;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
@@ -83,7 +82,7 @@ public abstract class MapStructure implements Collidable, CustomDataHolder {
 	public abstract StructureUpdate getUpdate();
 
 	public boolean canInteract(PlayerEntity entity) {
-		return entity.getActivity() == Activity.NONE
+		return entity.getCurrentAbility() == null
 				&& entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE
 						* GameConstants.MAX_HARVEST_DISTANCE;
 	}

@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.ai;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.aliveEntity.creature.CreatureEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;
 import lombok.Setter;

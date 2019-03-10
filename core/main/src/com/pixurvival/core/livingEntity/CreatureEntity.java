@@ -1,17 +1,17 @@
-package com.pixurvival.core.aliveEntity.creature;
+package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.aliveEntity.AliveEntity;
 import com.pixurvival.core.contentPack.ai.ArtificialIntelligence;
 import com.pixurvival.core.contentPack.ai.Behavior;
 import com.pixurvival.core.contentPack.ai.BehaviorData;
+import com.pixurvival.core.livingEntity.ability.AbilitySet;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class CreatureEntity extends AliveEntity {
+public class CreatureEntity extends LivingEntity {
 
 	private @Getter @Setter Behavior currentBehavior;
 	private @Getter @Setter BehaviorData behaviorData;
@@ -59,6 +59,12 @@ public class CreatureEntity extends AliveEntity {
 	public boolean isSolid() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public AbilitySet getAbilitySet() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

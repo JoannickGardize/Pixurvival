@@ -1,10 +1,11 @@
 package com.pixurvival.core.map;
 
 import java.util.Map.Entry;
+
+import com.pixurvival.core.livingEntity.PlayerEntity;
+
 import java.util.NavigableMap;
 import java.util.TreeMap;
-
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 
 public class TiledMapLimits implements TiledMapListener {
 

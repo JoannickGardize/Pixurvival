@@ -2,9 +2,9 @@ package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.pixurvival.core.aliveEntity.Equipment;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.Equipment;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class EquipmentSlot extends ImageButton {

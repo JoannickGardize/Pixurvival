@@ -15,8 +15,9 @@ public class Time {
 	private long timeMillis = 0;
 	private @Getter(AccessLevel.NONE) long localTimeMillis = 0;
 	/**
-	 * Utilisé par le client pour prendre en compte la différence de temps entre le
-	 * client et le serveur, évalué par des envoi régulier de {@link TimeRequest}.
+	 * Utilisé par le client pour prendre en compte la différence de temps
+	 * entre le client et le serveur, évalué par des envoi régulier de
+	 * {@link TimeRequest}.
 	 */
 	private @Setter long timeOffsetMillis = 0;
 	private double timeOffset;
@@ -48,6 +49,6 @@ public class Time {
 	}
 
 	public double getTime() {
-		return timeMillis / 1000;
+		return timeMillis / 1000.0;
 	}
 }

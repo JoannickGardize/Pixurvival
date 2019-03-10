@@ -83,15 +83,17 @@ public class ChunkManager extends EngineThread {
 	}
 
 	public void stopManaging(final TiledMap map) {
-		synchronized (map) {
+		synchronized (tiledMaps) {
 			tiledMaps.remove(map);
 		}
 	}
 
 	@Override
 	public void update(double deltaTimeMillis) {
-		supplyChunks();
-		unloadChunks();
+		synchronized (tiledMaps) {
+			supplyChunks();
+			unloadChunks();
+		}
 	}
 
 	private void supplyChunks() {

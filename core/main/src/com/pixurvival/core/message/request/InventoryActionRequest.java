@@ -4,9 +4,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

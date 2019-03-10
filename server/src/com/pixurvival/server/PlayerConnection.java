@@ -1,14 +1,14 @@
 package com.pixurvival.server;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.pixurvival.core.aliveEntity.Equipment;
-import com.pixurvival.core.aliveEntity.EquipmentListener;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.StatListener;
-import com.pixurvival.core.aliveEntity.StatValue;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.Equipment;
+import com.pixurvival.core.livingEntity.EquipmentListener;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.StatListener;
+import com.pixurvival.core.livingEntity.StatValue;
 
 import lombok.Getter;
 import lombok.Setter;

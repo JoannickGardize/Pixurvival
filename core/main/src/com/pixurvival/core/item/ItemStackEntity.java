@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;

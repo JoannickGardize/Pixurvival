@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -16,7 +16,14 @@ import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
+import com.pixurvival.core.message.request.CraftItemRequest;
+import com.pixurvival.core.message.request.DropItemRequest;
+import com.pixurvival.core.message.request.EquipmentActionRequest;
 import com.pixurvival.core.message.request.IPlayerActionRequest;
+import com.pixurvival.core.message.request.InteractStructureRequest;
+import com.pixurvival.core.message.request.InventoryActionRequest;
+import com.pixurvival.core.message.request.PlaceStructureRequest;
+import com.pixurvival.core.message.request.PlayerMovementRequest;
 
 class ServerListener extends Listener {
 
@@ -33,13 +40,13 @@ class ServerListener extends Listener {
 			connection.setName(((LoginRequest) m.getObject()).getPlayerName());
 			game.notify(l -> l.playerLoggedIn(connection));
 		});
-		messageActions.put(IPlayerActionRequest.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			PlayerEntity entity = connection.getPlayerEntity();
-			if (entity != null) {
-				((IPlayerActionRequest) m.getObject()).apply(entity);
-			}
-		});
+		messageActions.put(PlayerMovementRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(PlaceStructureRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(InventoryActionRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(InteractStructureRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(EquipmentActionRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(DropItemRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(CraftItemRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
@@ -47,7 +54,8 @@ class ServerListener extends Listener {
 		messageActions.put(WorldReady.class, m -> m.getConnection().setWorldReady(true));
 		messageActions.put(GameReady.class, m -> m.getConnection().setGameReady(true));
 
-		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
+		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(
+				new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
 
 	}
 
@@ -78,6 +86,15 @@ class ServerListener extends Listener {
 			synchronized (clientMessages) {
 				clientMessages.add(new ClientMessage((PlayerConnection) connection, object));
 			}
+		}
+	}
+
+	private void handlePlayerActionRequest(ClientMessage m) {
+		PlayerConnection connection = m.getConnection();
+		PlayerEntity entity = connection.getPlayerEntity();
+		if (entity != null) {
+
+			((IPlayerActionRequest) m.getObject()).apply(entity);
 		}
 	}
 }

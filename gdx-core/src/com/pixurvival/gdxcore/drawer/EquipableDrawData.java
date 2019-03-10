@@ -1,9 +1,9 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.pixurvival.core.aliveEntity.Equipment;
-import com.pixurvival.core.aliveEntity.EquipmentHolder;
-import com.pixurvival.core.aliveEntity.EquipmentListener;
 import com.pixurvival.core.item.Item.Equipable;
+import com.pixurvival.core.livingEntity.Equipment;
+import com.pixurvival.core.livingEntity.EquipmentHolder;
+import com.pixurvival.core.livingEntity.EquipmentListener;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;

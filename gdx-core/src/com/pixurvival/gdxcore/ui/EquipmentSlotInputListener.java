@@ -3,8 +3,8 @@ package com.pixurvival.gdxcore.ui;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.pixurvival.core.aliveEntity.Equipment;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.message.request.EquipmentActionRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 

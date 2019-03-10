@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.PlayerData;
 
 import lombok.NonNull;

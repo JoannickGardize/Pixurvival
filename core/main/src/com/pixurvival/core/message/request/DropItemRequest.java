@@ -3,8 +3,8 @@ package com.pixurvival.core.message.request;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

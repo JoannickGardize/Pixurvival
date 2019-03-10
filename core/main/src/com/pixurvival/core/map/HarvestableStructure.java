@@ -5,10 +5,10 @@ import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.HarvestableStructureUpdate;
 import com.pixurvival.core.message.StructureUpdate;
 

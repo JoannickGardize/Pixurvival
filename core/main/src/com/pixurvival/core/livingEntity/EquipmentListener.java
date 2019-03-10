@@ -1,4 +1,4 @@
-package com.pixurvival.core.aliveEntity;
+package com.pixurvival.core.livingEntity;
 
 import com.pixurvival.core.item.ItemStack;
 

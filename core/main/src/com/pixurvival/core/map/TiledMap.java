@@ -10,8 +10,8 @@ import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 

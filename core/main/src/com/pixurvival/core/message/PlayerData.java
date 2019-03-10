@@ -1,6 +1,6 @@
 package com.pixurvival.core.message;
 
-import com.pixurvival.core.aliveEntity.Equipment;
+import com.pixurvival.core.livingEntity.Equipment;
 
 import lombok.Data;
 

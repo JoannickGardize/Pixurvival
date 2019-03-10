@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.experimental.UtilityClass;
 

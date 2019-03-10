@@ -11,8 +11,6 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.World;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.PlayerInventory;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -20,6 +18,8 @@ import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
@@ -116,7 +116,9 @@ public class ClientGame {
 		world.getEntityPool().add(playerEntity);
 		Random random = new Random();
 		for (int i = 0; i < 20; i++) {
-			playerEntity.getInventory().setSlot(i, new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())), random.nextInt(10) + 1));
+			playerEntity.getInventory().setSlot(i,
+					new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())),
+							random.nextInt(10) + 1));
 		}
 		myPlayerId = playerEntity.getId();
 		myInventory = playerEntity.getInventory();
@@ -154,6 +156,7 @@ public class ClientGame {
 		if (world != null) {
 			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
 				getMyPlayer().setInventory(myInventory);
+				System.out.println("setInventory");
 			}
 			world.update(deltaTimeMillis);
 			// timeRequestTimer += deltaTimeMillis;

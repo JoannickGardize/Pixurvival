@@ -1,7 +1,7 @@
 package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.pixurvival.core.aliveEntity.Equipment;
+import com.pixurvival.core.livingEntity.Equipment;
 
 public class EquipmentUI extends UIWindow {
 

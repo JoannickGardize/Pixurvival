@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.Position;

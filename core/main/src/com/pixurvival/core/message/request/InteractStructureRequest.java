@@ -3,8 +3,7 @@ package com.pixurvival.core.message.request;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.ability.HarvestingActivity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapTile;
 
@@ -23,8 +22,7 @@ public class InteractStructureRequest implements IPlayerActionRequest {
 		MapTile mapTile = player.getWorld().getMap().tileAt(x, y);
 		if (mapTile.getStructure() instanceof HarvestableStructure && mapTile.getStructure().canInteract(player)) {
 			HarvestableStructure structure = (HarvestableStructure) mapTile.getStructure();
-			player.setActivity(new HarvestingActivity(player, structure));
-			player.setForward(false);
+			player.harvest(structure);
 		}
 	}
 

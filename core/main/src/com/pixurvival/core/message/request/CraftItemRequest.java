@@ -3,10 +3,8 @@ package com.pixurvival.core.message.request;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.aliveEntity.PlayerEntity;
-import com.pixurvival.core.aliveEntity.ability.Activity;
-import com.pixurvival.core.aliveEntity.ability.CraftingActivity;
 import com.pixurvival.core.item.ItemCraft;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,10 +19,7 @@ public class CraftItemRequest implements IPlayerActionRequest {
 	@Override
 	public void apply(PlayerEntity player) {
 		ItemCraft craft = player.getWorld().getContentPack().getItemCrafts().get(craftId);
-		if (player.getInventory().contains(craft.getRecipes())
-				&& player.getActivity().in(Activity.NONE_ID, Activity.CRAFTING_ACTIVITY_ID)) {
-			player.setActivity(new CraftingActivity(player, craft));
-		}
+		player.craft(craft);
 	}
 
 	@Override

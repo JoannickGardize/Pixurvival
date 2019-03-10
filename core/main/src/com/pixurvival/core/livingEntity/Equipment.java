@@ -1,4 +1,4 @@
-package com.pixurvival.core.aliveEntity;
+package com.pixurvival.core.livingEntity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import com.pixurvival.core.aliveEntity.PlayerEntity;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;

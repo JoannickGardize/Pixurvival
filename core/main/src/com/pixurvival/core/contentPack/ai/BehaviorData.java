@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.ai;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.Time;
-import com.pixurvival.core.aliveEntity.creature.CreatureEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;
 import lombok.Setter;
