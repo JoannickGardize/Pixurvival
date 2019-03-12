@@ -33,8 +33,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.x - textureAnimationSet.getShadowWidth() / 2);
 		float y = (float) drawPosition.y;
-		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4,
-				textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
+		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
 	}
 
 	@Override
@@ -47,21 +46,17 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
 		float y = (float) drawPosition.y;
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
-			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
-					(float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
+			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
 		} else {
-			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(),
-					textureAnimationSet.getHeight());
+			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(), textureAnimationSet.getHeight());
 			ItemStack weapon = e.getEquipment().getWeapon();
 			if (weapon != null) {
 				SpriteSheet spriteSheet = ((Weapon) weapon.getItem().getDetails()).getSpriteSheet();
-				TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures()
-						.getAnimationSet(spriteSheet);
+				TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
 				TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
 				Texture weaponTexture = weaponAnimation.getTexture(index);
-				batch.draw(weaponTexture, x + weaponAnimation.getOffsetX(index),
-						y + weaponAnimationSet.getYOffset() + weaponAnimation.getOffsetY(index),
-						weaponAnimationSet.getWidth(), weaponAnimationSet.getHeight());
+				batch.draw(weaponTexture, x + weaponAnimation.getOffsetX(index), y + weaponAnimationSet.getYOffset() + weaponAnimation.getOffsetY(index), weaponAnimationSet.getWidth(),
+						weaponAnimationSet.getHeight());
 			}
 		}
 	}
@@ -75,10 +70,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 			float y = (float) (drawPosition.y + textureAnimationSet.getHeight() + 0.1);
 			float x = (float) (drawPosition.x - 0.5);
 			float lineWidth = (float) PixurvivalGame.getContentPackTextures().getTruePixelWidth();
-			batch.draw(ColorTextures.get(Color.BLACK), x - lineWidth, y - lineWidth, 1 + lineWidth * 2,
-					0.2f + lineWidth * 2);
-			double progress = ((WorkAbilityData) ability.getAbilityData(e))
-					.getProgress(e.getWorld().getTime().getTime());
+			batch.draw(ColorTextures.get(Color.BLACK), x - lineWidth, y - lineWidth, 1 + lineWidth * 2, 0.2f + lineWidth * 2);
+			double progress = ((WorkAbilityData) ability.getAbilityData(e)).getProgress(e.getWorld().getTime().getTimeMillis());
 			batch.draw(ColorTextures.get(Color.YELLOW), x, y, (float) (1 - 1 * progress), 0.2f);
 		}
 	}
@@ -86,8 +79,7 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	private TextureAnimationSet getTextureAnimationSet(PlayerEntity e) {
 		ItemStack clothing = e.getEquipment().getClothing();
 		if (clothing != null) {
-			return PixurvivalGame.getContentPackTextures()
-					.getAnimationSet(((Clothing) clothing.getItem().getDetails()).getSpriteSheet());
+			return PixurvivalGame.getContentPackTextures().getAnimationSet(((Clothing) clothing.getItem().getDetails()).getSpriteSheet());
 		}
 		return textureAnimationSet;
 	}

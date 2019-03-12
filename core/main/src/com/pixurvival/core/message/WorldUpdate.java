@@ -67,14 +67,15 @@ public class WorldUpdate {
 			}
 			synchronized (world) {
 				WorldUpdate entitiesUpdate = world.getWorldUpdate();
-				if (entitiesUpdate.updateId >= updateId) {
+				if (world.getPreviousUpdateId() >= updateId) {
 					int length = input.readInt();
 					input.setPosition(input.position() + length);
-					return entitiesUpdate;
+				} else {
+					entitiesUpdate.updateId = updateId;
+					entitiesUpdate.length = input.readInt();
+					System.out.println("length " + entitiesUpdate.length);
+					input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
 				}
-				entitiesUpdate.updateId = updateId;
-				entitiesUpdate.length = input.readInt();
-				input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
 				StructureUpdate[] structureUpdates = readStructureUpdates(kryo, input);
 				PlayerData[] playerData = readPlayerData(kryo, input);
 				CompressedChunk[] compressedChunks = kryo.readObjectOrNull(input, CompressedChunk[].class);

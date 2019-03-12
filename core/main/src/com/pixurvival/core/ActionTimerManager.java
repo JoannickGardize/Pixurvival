@@ -11,8 +11,8 @@ public class ActionTimerManager {
 	private @NonNull World world;
 	private PriorityQueue<ActionTimer> actionTimerQueue = new PriorityQueue<>();
 
-	public void addActionTimer(Action action, double time) {
-		actionTimerQueue.add(new ActionTimer(action, world.getTime().getTime() + time));
+	public void addActionTimer(Action action, long timeMillis) {
+		actionTimerQueue.add(new ActionTimer(action, world.getTime().getTimeMillis() + timeMillis));
 	}
 
 	public void update() {

@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public abstract class WorkAbilityData implements AbilityData {
 
-	private double startTime;
-	private double duration;
+	private long startTimeMillis;
+	private long durationMillis;
 
-	public double getProgress(double currentTime) {
-		return (currentTime - startTime) / duration;
+	public double getProgress(long currentTime) {
+		return (double) (currentTime - startTimeMillis) / (double) durationMillis;
 	}
 }

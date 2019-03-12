@@ -27,6 +27,8 @@ import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.TimeRequest;
+import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
 import com.pixurvival.core.message.request.IPlayerActionRequest;
 
@@ -46,8 +48,8 @@ public class ClientGame {
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
-	// private double timeRequestFrequencyMillis = 200;
-	// private double timeRequestTimer = 0;
+	private long timeRequestFrequencyMillis = 1000;
+	private double timeRequestTimer = 0;
 
 	public ClientGame() {
 		client = new Client(8192, 8192);
@@ -116,9 +118,7 @@ public class ClientGame {
 		world.getEntityPool().add(playerEntity);
 		Random random = new Random();
 		for (int i = 0; i < 20; i++) {
-			playerEntity.getInventory().setSlot(i,
-					new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())),
-							random.nextInt(10) + 1));
+			playerEntity.getInventory().setSlot(i, new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())), random.nextInt(10) + 1));
 		}
 		myPlayerId = playerEntity.getId();
 		myInventory = playerEntity.getInventory();
@@ -156,14 +156,13 @@ public class ClientGame {
 		if (world != null) {
 			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
 				getMyPlayer().setInventory(myInventory);
-				System.out.println("setInventory");
 			}
 			world.update(deltaTimeMillis);
-			// timeRequestTimer += deltaTimeMillis;
-			// if (timeRequestTimer >= timeRequestFrequencyMillis) {
-			// timeRequestTimer -= timeRequestFrequencyMillis;
-			// client.sendUDP(new TimeRequest(System.currentTimeMillis()));
-			// }
+			timeRequestTimer -= deltaTimeMillis;
+			if (timeRequestTimer <= 0) {
+				timeRequestTimer = timeRequestFrequencyMillis;
+				client.sendUDP(new TimeRequest(world.getTime().getTimeMillis()));
+			}
 		}
 	}
 
@@ -184,9 +183,9 @@ public class ClientGame {
 		// contentPackDownloadManager.setMissingList(missingPacks);
 	}
 
-	public void updatePing(long timeMillis) {
+	public void synchronizeTime(TimeResponse timeResponse) {
 		if (world != null) {
-			world.getTime().updateOffset(timeMillis);
+			timeRequestFrequencyMillis = world.getTime().synchronizeTime(timeResponse);
 		}
 	}
 

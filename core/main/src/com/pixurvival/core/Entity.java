@@ -117,17 +117,18 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getBoundingRadius(),
-				velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
+		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
 	}
 
 	private void updateVelocity() {
-		if (velocityChanged || previousMovingAngle != movingAngle || previousSpeed != speed) {
-			previousMovingAngle = movingAngle;
-			previousSpeed = speed;
-			velocity.x = Math.cos(movingAngle) * speed;
-			velocity.y = Math.sin(movingAngle) * speed;
-			velocityChanged = false;
-		}
+		// TODO Check that
+		// if (velocityChanged || previousMovingAngle != movingAngle || previousSpeed !=
+		// speed) {
+		previousMovingAngle = movingAngle;
+		previousSpeed = speed;
+		velocity.x = Math.cos(movingAngle) * speed;
+		velocity.y = Math.sin(movingAngle) * speed;
+		velocityChanged = false;
+		// }
 	}
 }

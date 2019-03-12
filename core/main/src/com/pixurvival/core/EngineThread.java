@@ -41,21 +41,26 @@ public abstract class EngineThread extends Thread {
 				timeToConsume = maxUpdatePerFrame * frameDurationMillis;
 				frameSkipped();
 			}
+			int updateCount = 0;
 			while (timeToConsume > halfFrameDuration) {
 				update(frameDurationMillis);
 				timeToConsume -= frameDurationMillis;
+				updateCount++;
 			}
-			long sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
-			if (sleepTime > 0) {
-				try {
-					Thread.sleep(sleepTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					running = false;
+			long sleepTime = 0;
+			if (updateCount == 1) {
+				sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
+				if (sleepTime > 0) {
+					try {
+						Thread.sleep(sleepTime);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						running = false;
+					}
 				}
 			}
 			double currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;
-			load = MathUtils.linearInterpolate(load, currentLoad, MathUtils.clamp(0.7, 0, 1));
+			load = MathUtils.linearInterpolate(load, currentLoad, 0.7);
 		}
 	}
 

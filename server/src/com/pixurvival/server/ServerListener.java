@@ -54,8 +54,8 @@ class ServerListener extends Listener {
 		messageActions.put(WorldReady.class, m -> m.getConnection().setWorldReady(true));
 		messageActions.put(GameReady.class, m -> m.getConnection().setGameReady(true));
 
-		messageActions.put(TimeRequest.class, m -> m.getConnection().sendUDP(
-				new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), System.currentTimeMillis())));
+		messageActions.put(TimeRequest.class,
+				m -> m.getConnection().sendUDP(new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), m.getConnection().getPlayerEntity().getWorld().getTime().getTimeMillis())));
 
 	}
 

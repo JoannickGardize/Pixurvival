@@ -9,28 +9,33 @@ import lombok.Setter;
 @Setter
 public class Timer {
 
-	private double timer;
-	private double duration;
+	private World world;
+	private long startTimeMillis;
+	private long durationMillis;
 	private boolean loop;
 
-	public Timer(double duration, boolean loop) {
-		this.duration = duration;
+	public Timer(World world, long durationMillis, boolean loop) {
+		this.world = world;
+		this.durationMillis = durationMillis;
 		this.loop = loop;
 	}
 
 	public void reset() {
-		timer = 0;
+		startTimeMillis = world.getTime().getTimeMillis();
+	}
+
+	public long getElapsedTimeMillis() {
+		return world.getTime().getTimeMillis() - startTimeMillis;
 	}
 
 	public double getProgress() {
-		return MathUtils.clamp(timer / duration, 0, 1);
+		return MathUtils.clamp((double) getElapsedTimeMillis() / (double) durationMillis, 0, 1);
 	}
 
 	public boolean update(World world) {
-		timer += world.getTime().getDeltaTime();
-		if (timer >= duration) {
+		if (getElapsedTimeMillis() >= durationMillis) {
 			if (loop) {
-				timer -= duration;
+				startTimeMillis += durationMillis;
 			}
 			return true;
 		} else {

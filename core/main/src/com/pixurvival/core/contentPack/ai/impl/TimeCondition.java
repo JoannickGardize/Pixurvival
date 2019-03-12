@@ -12,11 +12,11 @@ public class TimeCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;
 
-	private double targetTime;
+	private long targetTimeMillis;
 
 	@Override
 	public boolean test(CreatureEntity creature) {
-		return creature.getBehaviorData().getElapsedTime() >= targetTime;
+		return creature.getBehaviorData().getElapsedTimeMillis() >= targetTimeMillis;
 	}
 
 }

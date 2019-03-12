@@ -13,7 +13,7 @@ public abstract class WorkAbility extends Ability {
 	@Override
 	public boolean start(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
-			((WorkAbilityData) getAbilityData(entity)).setStartTime(entity.getWorld().getTime().getTime());
+			((WorkAbilityData) getAbilityData(entity)).setStartTimeMillis(entity.getWorld().getTime().getTimeMillis());
 		}
 		return true;
 	}
@@ -22,7 +22,7 @@ public abstract class WorkAbility extends Ability {
 	public boolean update(LivingEntity entity) {
 		World world = entity.getWorld();
 		WorkAbilityData data = (WorkAbilityData) getAbilityData(entity);
-		if (world.getTime().getTime() - data.getStartTime() >= data.getDuration()) {
+		if (world.getTime().getTimeMillis() - data.getStartTimeMillis() >= data.getDurationMillis()) {
 			workFinished(entity);
 			return true;
 		}

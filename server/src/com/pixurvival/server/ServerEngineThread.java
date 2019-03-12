@@ -33,9 +33,9 @@ public class ServerEngineThread extends EngineThread {
 		sessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
 		sendUpdateTimer += deltaTimeMillis;
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
-			sessions.forEach(ps -> {
-				ps.getWorld().incrementUpdateId();
-				ps.foreachPlayers(p -> {
+			sessions.forEach(gs -> {
+				gs.getWorld().incrementUpdateId();
+				gs.foreachPlayers(p -> {
 					PlayerConnection connection = p.getConnection();
 					if (connection.isPlayerDataChanged()) {
 						tmpPlayerData.add(connection.getPlayerEntity().getData());
@@ -47,7 +47,7 @@ public class ServerEngineThread extends EngineThread {
 					playerData = tmpPlayerData.toArray(new PlayerData[tmpPlayerData.size()]);
 				}
 				final PlayerData[] finalPlayerData = playerData;
-				ps.foreachPlayers(p -> {
+				gs.foreachPlayers(p -> {
 					PlayerConnection connection = p.getConnection();
 					PlayerEntity playerEntity = connection.getPlayerEntity();
 					if (connection.isGameReady() && playerEntity != null) {

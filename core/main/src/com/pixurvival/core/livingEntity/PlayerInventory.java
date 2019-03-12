@@ -18,9 +18,10 @@ public class PlayerInventory extends Inventory {
 		super(size);
 	}
 
-	public void set(PlayerInventory other) {
+	@Override
+	public void set(Inventory other) {
 		super.set(other);
-		setHeldItemStack(other.heldItemStack);
+		setHeldItemStack(((PlayerInventory) other).heldItemStack);
 	}
 
 	public void setHeldItemStack(ItemStack itemStack) {

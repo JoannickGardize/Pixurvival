@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -38,7 +39,8 @@ public class ServerGame {
 	public ServerGame() {
 		// Log.set(Log.LEVEL_DEBUG);
 		contentPackUploadManager.start();
-		server.addListener(serverListener);
+		// TODO enlever lag simulation
+		server.addListener(new Listener.LagListener(40, 50, serverListener));
 		addListener(contentPackUploadManager);
 		KryoInitializer.apply(server.getKryo());
 		// TODO selection dynamique des packs

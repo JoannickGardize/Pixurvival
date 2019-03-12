@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.map.Structure.Harvestable;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.HarvestableStructure;
@@ -17,19 +18,19 @@ public class HarvestAbilityData extends WorkAbilityData {
 
 	public void setStructure(HarvestableStructure structure) {
 		this.structure = structure;
-		setDuration(((Harvestable) structure.getDefinition().getDetails()).getHarvestingTime());
+		setDurationMillis(Time.secToMillis(((Harvestable) structure.getDefinition().getDetails()).getHarvestingTime()));
 	}
 
 	@Override
 	public void write(ByteBuffer buffer) {
-		buffer.putDouble(getDuration());
-		buffer.putDouble(getStartTime());
+		buffer.putLong(getDurationMillis());
+		buffer.putLong(getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		setDuration(buffer.getDouble());
-		setStartTime(buffer.getDouble());
+		setDurationMillis(buffer.getLong());
+		setStartTimeMillis(buffer.getLong());
 	}
 
 }

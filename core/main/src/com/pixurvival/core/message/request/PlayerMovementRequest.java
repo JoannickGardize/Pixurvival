@@ -38,7 +38,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	@Override
 	public boolean isClientPreapply() {
-		return true;
+		return false;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerMovementRequest> {

@@ -18,7 +18,7 @@ public class ItemStackEntity extends Entity {
 	public static final double MAGNET_DISTANCE = 2;
 	public static final double INHIBITION_DISTANCE = 2.5;
 	public static final double RANDOM_SPAWN_RADIUS = 2;
-	public static final double SPEED_INTERPOLATION_DURATION = 0.2;
+	public static final long SPEED_INTERPOLATION_DURATION = 200;
 	public static final double START_SPEED = 2;
 	public static final double END_SPEED = 15;
 
@@ -35,7 +35,7 @@ public class ItemStackEntity extends Entity {
 	private float spawnProgress;
 	private float spawnDistance;
 	private Vector2 spawnTarget = new Vector2();
-	private Timer speedInterpolation = new Timer(SPEED_INTERPOLATION_DURATION, false);
+	private Timer speedInterpolation;
 
 	public ItemStackEntity(ItemStack itemStack) {
 		this.itemStack = itemStack;
@@ -54,12 +54,12 @@ public class ItemStackEntity extends Entity {
 	}
 
 	public void spawnRandom() {
-		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS,
-				getWorld().getRandom().nextDouble() * Math.PI * 2);
+		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS, getWorld().getRandom().nextDouble() * Math.PI * 2);
 	}
 
 	@Override
 	public void initialize() {
+		speedInterpolation = new Timer(getWorld(), SPEED_INTERPOLATION_DURATION, false);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class ItemStackEntity extends Entity {
 			break;
 		case MAGNTIZED:
 			buffer.putLong(magnetTarget.getId());
-			buffer.putDouble(speedInterpolation.getTimer());
+			buffer.putLong(speedInterpolation.getStartTimeMillis());
 			break;
 		case SPAWNING:
 			buffer.putDouble(spawnTarget.x);
@@ -171,7 +171,7 @@ public class ItemStackEntity extends Entity {
 		case MAGNTIZED:
 			magnetTargetId = buffer.getLong();
 			magnetTarget = (PlayerEntity) getWorld().getEntityPool().get(EntityGroup.PLAYER, magnetTargetId);
-			speedInterpolation.setTimer(buffer.getDouble());
+			speedInterpolation.setStartTimeMillis(buffer.getLong());
 			break;
 		case SPAWNING:
 			spawnTarget.set(buffer.getDouble(), buffer.getDouble());
@@ -189,7 +189,6 @@ public class ItemStackEntity extends Entity {
 		if (state == State.MAGNTIZED) {
 			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, speedInterpolation.getProgress());
 		} else {
-
 			return END_SPEED - (END_SPEED - START_SPEED) * (spawnProgress / spawnDistance);
 		}
 	}

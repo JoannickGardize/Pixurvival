@@ -14,7 +14,7 @@ public class BehaviorData {
 
 	@Getter
 	@Setter
-	private double beginTime;
+	private long beginTimeMillis;
 
 	private @Getter CreatureEntity creature;
 
@@ -24,11 +24,11 @@ public class BehaviorData {
 	public BehaviorData(CreatureEntity creature) {
 		this.creature = creature;
 		time = creature.getWorld().getTime();
-		beginTime = time.getTime();
+		beginTimeMillis = time.getTimeMillis();
 	}
 
-	public double getElapsedTime() {
-		return time.getTime() - beginTime;
+	public long getElapsedTimeMillis() {
+		return time.getTimeMillis() - beginTimeMillis;
 	}
 
 	public Entity getClosestPlayer() {

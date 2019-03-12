@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
@@ -35,11 +36,9 @@ class ClientListener extends Listener {
 		// });
 		messageActions.put(TimeResponse.class, o -> {
 			TimeResponse t = (TimeResponse) o;
-			long time = (System.currentTimeMillis() - t.getRequesterTime()) / 2;
-			game.updatePing(time);
+			game.synchronizeTime(t);
 		});
-		messageActions.put(Inventory.class, i -> {
-			System.out.println("pif");
+		messageActions.put(PlayerInventory.class, i -> {
 			game.getMyInventory().set((Inventory) i);
 		});
 		messageActions.put(PlayerData[].class, d -> {

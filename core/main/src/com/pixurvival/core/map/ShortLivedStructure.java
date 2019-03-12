@@ -2,6 +2,7 @@ package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Structure.ShortLived;
@@ -16,11 +17,10 @@ public class ShortLivedStructure extends MapStructure {
 		if (world.isServer()) {
 			world.getActionTimerManager().addActionTimer(() -> {
 				MapTile tile = chunk.tileAt(x, y);
-				if (tile instanceof TileAndStructure
-						&& ((TileAndStructure) tile).getStructure() == ShortLivedStructure.this) {
+				if (tile instanceof TileAndStructure && ((TileAndStructure) tile).getStructure() == ShortLivedStructure.this) {
 					chunk.removeStructure(x, y);
 				}
-			}, ((ShortLived) definition.getDetails()).getDuration());
+			}, Time.secToMillis(((ShortLived) definition.getDetails()).getDuration()));
 		}
 	}
 

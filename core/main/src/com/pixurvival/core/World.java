@@ -78,8 +78,7 @@ public class World {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPackLoader loader)
-			throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPackLoader loader) throws ContentPackException {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack);
