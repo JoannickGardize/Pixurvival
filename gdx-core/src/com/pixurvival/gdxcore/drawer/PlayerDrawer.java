@@ -85,8 +85,11 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	}
 
 	private ActionAnimation getActionAnimation(PlayerEntity e) {
-		if (e.getCurrentAbility() != null && e.getCurrentAbility().getActionAnimation() != null) {
-			return e.getCurrentAbility().getActionAnimation();
+		if (e.getCurrentAbility() != null) {
+			ActionAnimation animation = e.getCurrentAbility().getActionAnimation(e);
+			if (animation != null) {
+				return animation;
+			}
 		}
 		Direction aimingDirection = Direction.closestCardinal(e.getMovingAngle());
 		if (e.isForward()) {

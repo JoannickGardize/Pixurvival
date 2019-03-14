@@ -1,7 +1,7 @@
-package com.pixurvival.core.contentPack.ai.impl;
+package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
 import com.pixurvival.core.Entity;
-import com.pixurvival.core.contentPack.ai.Behavior;
+import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 public class RunAwayBehavior extends Behavior {

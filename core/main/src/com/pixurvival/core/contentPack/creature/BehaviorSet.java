@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.ai;
+package com.pixurvival.core.contentPack.creature;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ArtificialIntelligence implements Serializable {
+public class BehaviorSet implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

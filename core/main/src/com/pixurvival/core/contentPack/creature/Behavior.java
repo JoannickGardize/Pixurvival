@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.ai;
+package com.pixurvival.core.contentPack.creature;
 
 import java.util.List;
 
@@ -20,15 +20,6 @@ public abstract class Behavior extends IdentifiedElement {
 		nextBehavior(creature);
 	}
 
-	public void nextBehavior(CreatureEntity creature) {
-		for (ChangeCondition condition : changeConditions) {
-			if (condition.test(creature)) {
-				pass(creature, condition.getNextBehavior());
-				break;
-			}
-		}
-	}
-
 	public void begin(CreatureEntity creature) {
 		creature.setBehaviorData(new BehaviorData(creature));
 	}
@@ -36,6 +27,15 @@ public abstract class Behavior extends IdentifiedElement {
 	protected abstract void step(CreatureEntity creature);
 
 	protected abstract void end(CreatureEntity creature);
+
+	private void nextBehavior(CreatureEntity creature) {
+		for (ChangeCondition condition : changeConditions) {
+			if (condition.test(creature)) {
+				pass(creature, condition.getNextBehavior());
+				break;
+			}
+		}
+	}
 
 	private void pass(CreatureEntity creature, Behavior nextBehavior) {
 		end(creature);

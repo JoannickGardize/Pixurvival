@@ -1,6 +1,8 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
@@ -11,6 +13,12 @@ public class HarvestAbility extends WorkAbility {
 	@Override
 	public AbilityData createAbilityData() {
 		return new HarvestAbilityData();
+	}
+
+	@Override
+	public ActionAnimation getActionAnimation(LivingEntity entity) {
+		double angle = entity.angleTo(((HarvestAbilityData) getAbilityData(entity)).getStructure());
+		return ActionAnimation.getMoveFromDirection(Direction.closestCardinal(angle));
 	}
 
 	@Override

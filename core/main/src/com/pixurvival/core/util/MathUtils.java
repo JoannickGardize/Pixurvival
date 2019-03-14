@@ -26,6 +26,16 @@ public class MathUtils {
 		}
 	}
 
+	public static float clamp(float value, float min, float max) {
+		if (value > max) {
+			return max;
+		} else if (value < min) {
+			return min;
+		} else {
+			return value;
+		}
+	}
+
 	public static double linearInterpolate(double start, double end, double alpha) {
 		return start + (end - start) * alpha;
 	}

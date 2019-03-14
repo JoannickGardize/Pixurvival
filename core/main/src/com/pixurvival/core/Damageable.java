@@ -2,11 +2,11 @@ package com.pixurvival.core;
 
 public interface Damageable {
 
-	double getHealth();
+	float getHealth();
 
-	double getMaxHealth();
+	float getMaxHealth();
 
-	void takeDamage(double amount);
+	void takeDamage(float amount);
 
-	void takeHeal(double amount);
+	void takeHeal(float amount);
 }

@@ -34,13 +34,11 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private Equipment equipment = new Equipment();
 
-	private StatSet stats = new StatSet();
-
 	@Setter
 	private Position chunkPosition;
 
 	public PlayerEntity() {
-		equipment.addListener(stats);
+		equipment.addListener(getStats());
 	}
 
 	public void setInventory(PlayerInventory inventory) {
@@ -53,22 +51,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(getInventorySize()));
 		}
-		stats.get(StatType.MAX_HEALTH).addListener(s -> {
-			if (getHealth() > s.getValue()) {
-				setHealth(s.getValue());
-			}
-		});
-	}
-
-	@Override
-	public double getMaxHealth() {
-		return stats.getValue(StatType.MAX_HEALTH);
-	}
-
-	@Override
-	public double getSpeedPotential() {
-		return stats.getValue(StatType.SPEED)
-				* getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
 	}
 
 	@Override
@@ -104,18 +86,18 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PlayerData data = new PlayerData();
 		data.setId(getId());
 		data.setName(name);
-		data.setStrength(stats.get(StatType.STRENGTH).getBase());
-		data.setAgility(stats.get(StatType.AGILITY).getBase());
-		data.setIntelligence(stats.get(StatType.INTELLIGENCE).getBase());
+		data.setStrength(getStats().get(StatType.STRENGTH).getBase());
+		data.setAgility(getStats().get(StatType.AGILITY).getBase());
+		data.setIntelligence(getStats().get(StatType.INTELLIGENCE).getBase());
 		data.setEquipment(equipment);
 		return data;
 	}
 
 	public void applyData(PlayerData data) {
 		name = data.getName();
-		stats.get(StatType.STRENGTH).setBase(data.getStrength());
-		stats.get(StatType.AGILITY).setBase(data.getAgility());
-		stats.get(StatType.INTELLIGENCE).setBase(data.getIntelligence());
+		getStats().get(StatType.STRENGTH).setBase(data.getStrength());
+		getStats().get(StatType.AGILITY).setBase(data.getAgility());
+		getStats().get(StatType.INTELLIGENCE).setBase(data.getIntelligence());
 		equipment.set(data.getEquipment());
 	}
 

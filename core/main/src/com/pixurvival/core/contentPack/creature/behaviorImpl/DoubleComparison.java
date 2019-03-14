@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.ai.impl;
+package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
 import com.pixurvival.core.util.DoubleBiPredicate;
 

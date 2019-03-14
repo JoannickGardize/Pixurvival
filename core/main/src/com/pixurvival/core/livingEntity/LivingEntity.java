@@ -15,14 +15,21 @@ import lombok.Setter;
 @Setter
 public abstract class LivingEntity extends Entity implements Damageable {
 
-	private double health;
+	private float health;
 	private double aimingAngle;
+
+	private StatSet stats = new StatSet();
 
 	private AbilityData[] abilityData;
 	private Ability currentAbility;
 
 	@Override
 	public void initialize() {
+		stats.get(StatType.MAX_HEALTH).addListener(s -> {
+			if (getHealth() > s.getValue()) {
+				setHealth(s.getValue());
+			}
+		});
 		health = getMaxHealth();
 		AbilitySet abilitySet = getAbilitySet();
 		abilityData = new AbilityData[abilitySet.size()];
@@ -32,7 +39,17 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	}
 
 	@Override
-	public void takeDamage(double amount) {
+	public float getMaxHealth() {
+		return stats.getValue(StatType.MAX_HEALTH);
+	}
+
+	@Override
+	public double getSpeedPotential() {
+		return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+	}
+
+	@Override
+	public void takeDamage(float amount) {
 		health -= amount;
 		if (health < 0) {
 			health = 0;
@@ -40,7 +57,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	}
 
 	@Override
-	public void takeHeal(double amount) {
+	public void takeHeal(float amount) {
 		health += amount;
 		if (health > getMaxHealth()) {
 			health = getMaxHealth();
@@ -49,8 +66,10 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	@Override
 	public void update() {
+		super.update();
+
 		// Only server has the final decision to kill an alive entity
-		if (getWorld().isServer() && health <= 0) {
+		if (health <= 0 && getWorld().isServer()) {
 			setAlive(false);
 		}
 
@@ -62,7 +81,6 @@ public abstract class LivingEntity extends Entity implements Damageable {
 			}
 		}
 
-		super.update();
 	}
 
 	public AbilityData getAbilityData(int abilityId) {
@@ -98,7 +116,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		buffer.putDouble(getPosition().y);
 		buffer.putDouble(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
-		buffer.putDouble(getHealth());
+		buffer.putFloat(getHealth());
 		buffer.putDouble(getAimingAngle());
 
 		if (getCurrentAbility() == null) {
@@ -115,7 +133,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		setMovingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1);
-		setHealth(buffer.getDouble());
+		setHealth(buffer.getFloat());
 		setAimingAngle(buffer.getDouble());
 
 		byte abilityId = buffer.get();

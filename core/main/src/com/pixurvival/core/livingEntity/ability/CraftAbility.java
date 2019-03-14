@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemCraft;
@@ -20,6 +21,11 @@ public class CraftAbility extends WorkAbility {
 	@Override
 	public AbilityData createAbilityData() {
 		return new CraftAbilityData();
+	}
+
+	@Override
+	public ActionAnimation getActionAnimation(LivingEntity entity) {
+		return ActionAnimation.MOVE_DOWN;
 	}
 
 	@Override

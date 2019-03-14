@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.ai;
+package com.pixurvival.core.contentPack.creature;
 
 import java.io.Serializable;
 

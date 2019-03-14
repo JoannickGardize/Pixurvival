@@ -3,27 +3,39 @@ package com.pixurvival.core.livingEntity;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.EntityGroup;
-import com.pixurvival.core.contentPack.ai.ArtificialIntelligence;
-import com.pixurvival.core.contentPack.ai.Behavior;
-import com.pixurvival.core.contentPack.ai.BehaviorData;
+import com.pixurvival.core.contentPack.creature.Behavior;
+import com.pixurvival.core.contentPack.creature.BehaviorData;
+import com.pixurvival.core.contentPack.creature.BehaviorSet;
+import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
 	private @Getter @Setter Behavior currentBehavior;
 	private @Getter @Setter BehaviorData behaviorData;
+	private @Getter Creature definition;
 
-	public void setAI(ArtificialIntelligence ai) {
+	public void setAI(BehaviorSet ai) {
 		currentBehavior = ai.getBehaviors().get(0);
 		currentBehavior.begin(this);
 	}
 
+	public CreatureEntity(Creature definition) {
+		this.definition = definition;
+	}
+
 	@Override
-	public double getMaxHealth() {
-		return 0;
+	public void update() {
+		super.update();
+
+		if (getWorld().isServer()) {
+			currentBehavior.update(this);
+		}
 	}
 
 	@Override
@@ -50,21 +62,14 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public AbilitySet getAbilitySet() {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
 	public boolean isSolid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public AbilitySet getAbilitySet() {
-		// TODO Auto-generated method stub
-		return null;
+		return true;
 	}
 
 }

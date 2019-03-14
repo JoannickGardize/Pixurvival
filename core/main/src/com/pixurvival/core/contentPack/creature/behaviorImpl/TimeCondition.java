@@ -1,6 +1,6 @@
-package com.pixurvival.core.contentPack.ai.impl;
+package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
-import com.pixurvival.core.contentPack.ai.ChangeCondition;
+import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;

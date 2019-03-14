@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.ai;
+package com.pixurvival.core.contentPack.creature;
 
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.EntityGroup;
@@ -19,7 +19,7 @@ public class BehaviorData {
 	private @Getter CreatureEntity creature;
 
 	private Entity closestPlayer;
-	private @Getter double closestDistanceSquaredToPlayer;
+	private double closestDistanceSquaredToPlayer;
 
 	public BehaviorData(CreatureEntity creature) {
 		this.creature = creature;
@@ -32,15 +32,23 @@ public class BehaviorData {
 	}
 
 	public Entity getClosestPlayer() {
-		if (closestPlayer == null) {
-			closestPlayer = creature.getWorld().getEntityPool().closest(EntityGroup.PLAYER, creature);
-			closestDistanceSquaredToPlayer = creature.distanceSquared(closestPlayer);
-		}
+		findClosestPlayer();
 		return closestPlayer;
+	}
+
+	public double getClosestDistanceSquaredToPlayer() {
+		findClosestPlayer();
+		return closestDistanceSquaredToPlayer;
 	}
 
 	void beforeStep() {
 		closestPlayer = null;
 	}
 
+	private void findClosestPlayer() {
+		if (closestPlayer == null) {
+			closestPlayer = creature.getWorld().getEntityPool().closest(EntityGroup.PLAYER, creature);
+			closestDistanceSquaredToPlayer = creature.distanceSquared(closestPlayer);
+		}
+	}
 }
