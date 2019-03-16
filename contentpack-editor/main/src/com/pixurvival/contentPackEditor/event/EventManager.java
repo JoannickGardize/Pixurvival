@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.SwingUtilities;
 
-import com.pixurvival.core.util.ReflectionUtil;
+import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,7 +49,7 @@ public class EventManager {
 			return;
 		}
 		registeredObjects.add(object);
-		for (Method method : ReflectionUtil.getAllMethods(object.getClass())) {
+		for (Method method : ReflectionUtils.getAllMethods(object.getClass())) {
 			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
 				List<MethodRegistration> list = registrations.get(method.getParameterTypes()[0]);
 				if (list == null) {

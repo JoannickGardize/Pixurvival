@@ -22,7 +22,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.Position;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.ShortLivedStructure;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
@@ -68,7 +68,7 @@ public class EntitiesActor extends Actor {
 		int endY = (int) Math.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new Position(x, y));
+				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
 				if (chunk == null) {
 					continue;
 				}

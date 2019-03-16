@@ -16,15 +16,15 @@ import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.Position;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 
 public class MiniMapActor extends Actor implements TiledMapListener {
 
-	private Map<Position, Texture> chunkTextures = new HashMap<>();
+	private Map<ChunkPosition, Texture> chunkTextures = new HashMap<>();
 	private Texture background;
 	private Texture mapElement;
 	private long myPlayerId;
@@ -46,22 +46,19 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 		if (targetEntity == null) {
 			return;
 		}
-		double worldStartX = targetEntity.getPosition().x - worldViewSize / 2;
-		double worldStartY = targetEntity.getPosition().y - worldViewSize / 2;
-		double worldEndX = targetEntity.getPosition().x + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
-		double worldEndY = targetEntity.getPosition().y + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
+		double worldStartX = targetEntity.getPosition().getX() - worldViewSize / 2;
+		double worldStartY = targetEntity.getPosition().getY() - worldViewSize / 2;
+		double worldEndX = targetEntity.getPosition().getX() + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
+		double worldEndY = targetEntity.getPosition().getY() + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
 		float drawWidth = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getWidth());
 		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getHeight());
 		for (double worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
 			for (double worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
-				Position position = new Position((int) Math.floor(worldX / GameConstants.CHUNK_SIZE),
-						(int) Math.floor(worldY / GameConstants.CHUNK_SIZE));
+				ChunkPosition position = new ChunkPosition((int) Math.floor(worldX / GameConstants.CHUNK_SIZE), (int) Math.floor(worldY / GameConstants.CHUNK_SIZE));
 				Texture texture = chunkTextures.get(position);
 				if (texture != null) {
-					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize
-							* getWidth()) + getX();
-					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize
-							* getHeight()) + getY();
+					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * getWidth()) + getX();
+					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * getHeight()) + getY();
 					batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
 				}
 
@@ -78,8 +75,7 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
 		for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
 			for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
-				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(
-						chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
+				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
 			}
 		}
 		Texture texture = new Texture(pixmap, true);

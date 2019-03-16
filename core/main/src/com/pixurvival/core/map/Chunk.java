@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 public class Chunk {
 
-	private static final int KEEP_ALIVE_MILLIS = 10_000;
+	private static final long KEEP_ALIVE_MILLIS = 10_000;
 
 	private TiledMap map;
 
@@ -22,7 +22,7 @@ public class Chunk {
 
 	private List<MapStructure> structures = new ArrayList<>();
 
-	private Position position;
+	private ChunkPosition position;
 
 	private int offsetX;
 
@@ -38,7 +38,7 @@ public class Chunk {
 
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
-		this.position = new Position(x, y);
+		this.position = new ChunkPosition(x, y);
 		updateTimestamp = map.getWorld().getTime().getTimeMillis();
 		offsetX = position.getX() * GameConstants.CHUNK_SIZE;
 		offsetY = position.getY() * GameConstants.CHUNK_SIZE;

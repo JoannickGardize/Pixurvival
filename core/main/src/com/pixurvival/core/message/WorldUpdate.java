@@ -73,7 +73,6 @@ public class WorldUpdate {
 				} else {
 					entitiesUpdate.updateId = updateId;
 					entitiesUpdate.length = input.readInt();
-					System.out.println("length " + entitiesUpdate.length);
 					input.readBytes(entitiesUpdate.byteBuffer.array(), 0, entitiesUpdate.length);
 				}
 				StructureUpdate[] structureUpdates = readStructureUpdates(kryo, input);

@@ -31,8 +31,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 	public void drawShadow(Batch batch, PlayerEntity e) {
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.x - textureAnimationSet.getShadowWidth() / 2);
-		float y = (float) drawPosition.y;
+		float x = (float) (drawPosition.getX() - textureAnimationSet.getShadowWidth() / 2);
+		float y = (float) drawPosition.getY();
 		batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
 	}
 
@@ -43,8 +43,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 		int index = GraphicsUtil.getIndexAndUpdateTimer(e, textureAnimation);
 		Texture texture = textureAnimation.getTexture(index);
 		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
-		float x = (float) (drawPosition.x - textureAnimationSet.getWidth() / 2);
-		float y = (float) drawPosition.y;
+		float x = (float) (drawPosition.getX() - textureAnimationSet.getWidth() / 2);
+		float y = (float) drawPosition.getY();
 		if (e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1) {
 			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(), (float) (textureAnimationSet.getHeight() * 0.7), 0, 0.7f, 1, 0);
 		} else {
@@ -67,8 +67,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 			WorkAbility ability = (WorkAbility) e.getCurrentAbility();
 			DrawData data = (DrawData) e.getCustomData();
 			Vector2 drawPosition = data.getDrawPosition();
-			float y = (float) (drawPosition.y + textureAnimationSet.getHeight() + 0.1);
-			float x = (float) (drawPosition.x - 0.5);
+			float y = (float) (drawPosition.getY() + textureAnimationSet.getHeight() + 0.1);
+			float x = (float) (drawPosition.getX() - 0.5);
 			float lineWidth = (float) PixurvivalGame.getContentPackTextures().getTruePixelWidth();
 			batch.draw(ColorTextures.get(Color.BLACK), x - lineWidth, y - lineWidth, 1 + lineWidth * 2, 0.2f + lineWidth * 2);
 			double progress = ((WorkAbilityData) ability.getAbilityData(e)).getProgress(e.getWorld().getTime().getTimeMillis());

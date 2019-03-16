@@ -18,8 +18,7 @@ public class Collisions {
 		return dx * dx + dy * dy <= r * r;
 	}
 
-	public static boolean dynamicCircleCircle(Vector2 center1, double radius1, Vector2 velocity1, Vector2 center2,
-			double radius2) {
+	public static boolean dynamicCircleCircle(Vector2 center1, double radius1, Vector2 velocity1, Vector2 center2, double radius2) {
 		Vector2 endPosition = new Vector2(center1).add(velocity1);
 		Vector2 closestPoint = closestPointOnSegment(center1, endPosition, center2);
 
@@ -27,19 +26,19 @@ public class Collisions {
 	}
 
 	public static Vector2 closestPointOnSegment(Vector2 s1, Vector2 s2, Vector2 p) {
-		double dx = s2.x - s1.x;
-		double dy = s2.y - s1.y;
+		double dx = s2.getX() - s1.getX();
+		double dy = s2.getY() - s1.getY();
 
 		if (dx == 0 && dy == 0) {
 			return new Vector2(s1);
 		} else {
-			double u = ((p.x - s1.x) * dx + (p.y - s1.y) * dy) / (dx * dx + dy * dy);
+			double u = ((p.getX() - s1.getX()) * dx + (p.getY() - s1.getY()) * dy) / (dx * dx + dy * dy);
 			if (u < 0) {
 				return new Vector2(s1);
 			} else if (u > 1) {
 				return new Vector2(s2);
 			} else {
-				return new Vector2(s1.x + u * dx, s1.y + u * dy);
+				return new Vector2(s1.getX() + u * dx, s1.getY() + u * dy);
 			}
 		}
 	}

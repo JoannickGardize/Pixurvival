@@ -131,8 +131,8 @@ public class ItemStackEntity extends Entity {
 	public void writeUpdate(ByteBuffer buffer) {
 		buffer.putShort((short) itemStack.getItem().getId());
 		buffer.putShort((short) itemStack.getQuantity());
-		buffer.putDouble(getPosition().x);
-		buffer.putDouble(getPosition().y);
+		buffer.putDouble(getPosition().getX());
+		buffer.putDouble(getPosition().getY());
 		buffer.put((byte) state.ordinal());
 		switch (state) {
 		case INHIBITED:
@@ -143,8 +143,8 @@ public class ItemStackEntity extends Entity {
 			buffer.putLong(speedInterpolation.getStartTimeMillis());
 			break;
 		case SPAWNING:
-			buffer.putDouble(spawnTarget.x);
-			buffer.putDouble(spawnTarget.y);
+			buffer.putDouble(spawnTarget.getX());
+			buffer.putDouble(spawnTarget.getY());
 			buffer.putFloat(spawnProgress);
 			buffer.putFloat(spawnDistance);
 			break;

@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Vector2 {
-	public double x = 0;
-	public double y = 0;
+	private double x = 0;
+	private double y = 0;
 
 	public Vector2(Vector2 v) {
 		x = v.getX();
@@ -43,6 +43,16 @@ public class Vector2 {
 	public Vector2 setFromEuclidean(double length, double direction) {
 		x = Math.cos(direction) * length;
 		y = Math.sin(direction) * length;
+		return this;
+	}
+
+	public Vector2 addX(double x) {
+		this.x += x;
+		return this;
+	}
+
+	public Vector2 addY(double y) {
+		this.y += y;
 		return this;
 	}
 
