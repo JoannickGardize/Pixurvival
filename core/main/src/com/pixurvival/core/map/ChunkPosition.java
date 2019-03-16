@@ -5,12 +5,12 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class Position {
+public class ChunkPosition {
 
 	private int x;
 	private int y;
 
-	public boolean insideSquare(Position other, int halfSize) {
+	public boolean insideSquare(ChunkPosition other, int halfSize) {
 		int dx = Math.abs(x - other.x);
 		int dy = Math.abs(y - other.y);
 		return dx <= halfSize && dy <= halfSize;

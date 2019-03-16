@@ -9,7 +9,7 @@ import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.map.HarvestableStructure;
-import com.pixurvival.core.map.Position;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.message.PlayerData;
 
 import lombok.Getter;
@@ -35,7 +35,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	private Equipment equipment = new Equipment();
 
 	@Setter
-	private Position chunkPosition;
+	private ChunkPosition chunkPosition;
 
 	public PlayerEntity() {
 		equipment.addListener(getStats());

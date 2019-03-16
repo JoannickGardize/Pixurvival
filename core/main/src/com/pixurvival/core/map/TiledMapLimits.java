@@ -46,7 +46,7 @@ public class TiledMapLimits implements TiledMapListener {
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
-		Position position = chunk.getPosition();
+		ChunkPosition position = chunk.getPosition();
 		Integer count = xCounter.get(position.getX());
 		if (count == null) {
 			xCounter.put(position.getX(), 1);
@@ -63,7 +63,7 @@ public class TiledMapLimits implements TiledMapListener {
 
 	@Override
 	public void chunkUnloaded(Chunk chunk) {
-		Position position = chunk.getPosition();
+		ChunkPosition position = chunk.getPosition();
 		Integer count = xCounter.get(position.getX());
 		if (count == 1) {
 			xCounter.remove(position.getX());

@@ -3,7 +3,7 @@ package com.pixurvival.core.reflection.visitor;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import com.pixurvival.core.util.ReflectionUtil;
+import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,8 +19,8 @@ public class FieldsVisitor implements Visitor {
 	private final FieldNode[] fieldNodes;
 
 	public FieldsVisitor(VisitorContext context, Class<?> clazz) {
-		Field[] fields = ReflectionUtil.getAllFields(clazz);
-		ReflectionUtil.setAccessible(fields);
+		Field[] fields = ReflectionUtils.getAllFields(clazz);
+		ReflectionUtils.setAccessible(fields);
 		fieldNodes = Arrays.stream(fields)
 				.map(field -> new FieldNode(field, context.getTraversalCondition().test(field)))
 				.toArray(FieldNode[]::new);

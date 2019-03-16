@@ -43,8 +43,7 @@ public abstract class MapStructure implements Collidable, CustomDataHolder {
 		this.definition = definition;
 		tileX = x;
 		tileY = y;
-		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0,
-				y + definition.getDimensions().getHeight() / 2.0);
+		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0, y + definition.getDimensions().getHeight() / 2.0);
 	}
 
 	public static MapStructure newInstance(Chunk chunk, Structure structure, int x, int y) {
@@ -71,20 +70,18 @@ public abstract class MapStructure implements Collidable, CustomDataHolder {
 
 	@Override
 	public double getX() {
-		return position.x;
+		return position.getX();
 	}
 
 	@Override
 	public double getY() {
-		return position.y;
+		return position.getY();
 	}
 
 	public abstract StructureUpdate getUpdate();
 
 	public boolean canInteract(PlayerEntity entity) {
-		return entity.getCurrentAbility() == null
-				&& entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE
-						* GameConstants.MAX_HARVEST_DISTANCE;
+		return entity.getCurrentAbility() == null && entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE * GameConstants.MAX_HARVEST_DISTANCE;
 	}
 
 	public static boolean canPlace(PlayerEntity player, TiledMap map, Structure structure, int x, int y) {
@@ -92,8 +89,7 @@ public abstract class MapStructure implements Collidable, CustomDataHolder {
 		int y2 = y + structure.getDimensions().getHeight();
 		double centerX = (x + x2) / 2.0;
 		double centerY = (y + y2) / 2.0;
-		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE
-				* GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
+		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE * GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
 			return false;
 		}
 		for (int xi = x; xi < x2; xi++) {

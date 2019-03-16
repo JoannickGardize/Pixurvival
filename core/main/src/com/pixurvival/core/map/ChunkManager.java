@@ -31,8 +31,8 @@ public class ChunkManager extends EngineThread {
 	private static class TiledMapEntry {
 		@NonNull
 		TiledMap map;
-		List<Position> requestedPositions = new ArrayList<>();
-		Position checkPosition = new Position(0, 0);
+		List<ChunkPosition> requestedPositions = new ArrayList<>();
+		ChunkPosition checkPosition = new ChunkPosition(0, 0);
 		Map<String, File> allFiles = new HashMap<>();
 
 		void nextCheckPosition() {
@@ -45,7 +45,7 @@ public class ChunkManager extends EngineThread {
 					nextY = map.getLimits().getYMin();
 				}
 			}
-			checkPosition = new Position(nextX, nextY);
+			checkPosition = new ChunkPosition(nextX, nextY);
 		}
 
 		void refreshList() {
@@ -60,7 +60,7 @@ public class ChunkManager extends EngineThread {
 	private @Getter static ChunkManager instance = new ChunkManager();
 
 	private Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
-	private List<Position> tmpPositions = new ArrayList<>();
+	private List<ChunkPosition> tmpPositions = new ArrayList<>();
 	private List<Chunk> tmpChunks = new ArrayList<>();
 
 	private ChunkManager() {
@@ -70,7 +70,7 @@ public class ChunkManager extends EngineThread {
 		start();
 	}
 
-	public void requestChunk(final TiledMap map, Position position) {
+	public void requestChunk(final TiledMap map, ChunkPosition position) {
 		synchronized (map) {
 			TiledMapEntry entry = tiledMaps.get(map);
 			if (entry == null) {

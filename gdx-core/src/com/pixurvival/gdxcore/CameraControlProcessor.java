@@ -40,8 +40,8 @@ public class CameraControlProcessor extends InputAdapter {
 		if (timeForward > 0.1f) {
 			timeForward = 0.1f;
 		}
-		viewport.getCamera().position.x += (targetPosition.x - viewport.getCamera().position.x) * (timeForward / 0.1f);
-		viewport.getCamera().position.y += (targetPosition.y - viewport.getCamera().position.y) * (timeForward / 0.1f);
+		viewport.getCamera().position.x += (targetPosition.getX() - viewport.getCamera().position.x) * (timeForward / 0.1f);
+		viewport.getCamera().position.y += (targetPosition.getY() - viewport.getCamera().position.y) * (timeForward / 0.1f);
 
 		// viewport.getCamera().position.x = (float) targetPosition.x;
 		// viewport.getCamera().position.y = (float) targetPosition.y;
@@ -52,8 +52,7 @@ public class CameraControlProcessor extends InputAdapter {
 		int screenViewportY = viewport.getScreenHeight() - 1 - screenY + viewport.getTopGutterHeight();
 		int w = viewport.getScreenWidth() / 2;
 		int h = viewport.getScreenHeight() / 2;
-		com.badlogic.gdx.math.Vector2 vector = new com.badlogic.gdx.math.Vector2(screenViewportX - w,
-				screenViewportY - h);
+		com.badlogic.gdx.math.Vector2 vector = new com.badlogic.gdx.math.Vector2(screenViewportX - w, screenViewportY - h);
 		// int min = Math.min(w, h);
 		// if (vector.len2() > min * min) {
 		// vector.setLength(min);

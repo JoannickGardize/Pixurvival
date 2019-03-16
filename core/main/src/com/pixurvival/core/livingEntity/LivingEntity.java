@@ -112,8 +112,8 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	@Override
 	public void writeUpdate(ByteBuffer buffer) {
 		// normal part
-		buffer.putDouble(getPosition().x);
-		buffer.putDouble(getPosition().y);
+		buffer.putDouble(getPosition().getX());
+		buffer.putDouble(getPosition().getY());
 		buffer.putDouble(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putFloat(getHealth());

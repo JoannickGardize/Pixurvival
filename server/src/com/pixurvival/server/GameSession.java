@@ -9,7 +9,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.Position;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.message.AddStructureUpdate;
 import com.pixurvival.core.message.RemoveStructureUpdate;
@@ -39,7 +39,7 @@ public class GameSession implements TiledMapListener {
 	public void chunkLoaded(Chunk chunk) {
 
 		for (PlayerSession playerSession : players.values()) {
-			if (playerSession.missThisChunk(chunk.getPosition())
+			if (playerSession.isMissing(chunk.getPosition())
 					|| playerSession.getConnection().getPlayerEntity().getChunkPosition().insideSquare(chunk.getPosition(), GameConstants.PLAYER_CHUNK_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
 			}
@@ -56,14 +56,14 @@ public class GameSession implements TiledMapListener {
 	public void playerChangedChunk(PlayerEntity player) {
 		PlayerSession playerSession = players.get(player.getId());
 		if (playerSession != null) {
-			Position position = player.getChunkPosition();
+			ChunkPosition position = player.getChunkPosition();
 
 			for (int x = position.getX() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x <= position.getX() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x++) {
 				for (int y = position.getY() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y <= position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y++) {
-					Position chunkPosition = new Position(x, y);
+					ChunkPosition chunkPosition = new ChunkPosition(x, y);
 					Chunk chunk = world.getMap().chunkAt(chunkPosition);
 					addChunk(playerSession, chunkPosition, chunk);
-					chunkPosition = new Position(x, position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE);
+					chunkPosition = new ChunkPosition(x, position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE);
 					chunk = world.getMap().chunkAt(chunkPosition);
 					addChunk(playerSession, chunkPosition, chunk);
 				}
@@ -72,7 +72,7 @@ public class GameSession implements TiledMapListener {
 		}
 	}
 
-	private void addChunk(PlayerSession session, Position position, Chunk chunk) {
+	private void addChunk(PlayerSession session, ChunkPosition position, Chunk chunk) {
 		if (chunk == null) {
 			session.addMissingChunk(position);
 		} else {
@@ -98,7 +98,7 @@ public class GameSession implements TiledMapListener {
 
 	private void addStructureUpdate(MapStructure mapStructure, StructureUpdate structureUpdate) {
 		for (PlayerSession player : players.values()) {
-			Position chunkPosition = mapStructure.getChunk().getPosition();
+			ChunkPosition chunkPosition = mapStructure.getChunk().getPosition();
 			if (player.getConnection().getPlayerEntity().getChunkPosition().insideSquare(chunkPosition, GameConstants.PLAYER_CHUNK_VIEW_DISTANCE)) {
 				player.addStructureUpdate(structureUpdate);
 			} else {

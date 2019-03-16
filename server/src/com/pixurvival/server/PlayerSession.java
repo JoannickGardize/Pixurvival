@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.CompressedChunk;
-import com.pixurvival.core.map.Position;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.message.StructureUpdate;
 
 import lombok.Getter;
@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 public class PlayerSession {
 
 	private @NonNull @Getter PlayerConnection connection;
-	private Set<Position> knownPositions = new HashSet<>();
+	private Set<ChunkPosition> knownPositions = new HashSet<>();
 	private List<CompressedChunk> chunksToSend = new ArrayList<>();
 	private List<StructureUpdate> structureUpdatesToSend = new ArrayList<>();
-	private Set<Position> missingChunks = new HashSet<>();
+	private Set<ChunkPosition> missingChunks = new HashSet<>();
 
 	public void addChunkIfNotKnown(Chunk chunk) {
 		if (!knownPositions.contains(chunk.getPosition())) {
@@ -30,11 +30,11 @@ public class PlayerSession {
 		}
 	}
 
-	public void invalidateChunk(Position position) {
+	public void invalidateChunk(ChunkPosition position) {
 		knownPositions.remove(position);
 	}
 
-	public void addMissingChunk(Position position) {
+	public void addMissingChunk(ChunkPosition position) {
 		missingChunks.add(position);
 	}
 
@@ -42,7 +42,7 @@ public class PlayerSession {
 		structureUpdatesToSend.add(structureUpdate);
 	}
 
-	public boolean missThisChunk(Position position) {
+	public boolean isMissing(ChunkPosition position) {
 		return missingChunks.remove(position);
 	}
 

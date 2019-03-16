@@ -34,17 +34,16 @@ public class TiledMap {
 	@Getter
 	private TiledMapLimits limits = new TiledMapLimits();
 
-	private Map<Position, Chunk> chunks = new HashMap<>();
+	private Map<ChunkPosition, Chunk> chunks = new HashMap<>();
 
-	private Map<Position, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
+	private Map<ChunkPosition, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
 
 	public TiledMap(World world) {
 		this.world = world;
 
 		outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
 
-		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE
-				: GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
+		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE : GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
 		List<Tile> tilesById = world.getContentPack().getTiles();
 		mapTilesById = new MapTile[tilesById.size()];
 		for (int i = 0; i < tilesById.size(); i++) {
@@ -62,7 +61,7 @@ public class TiledMap {
 	}
 
 	public MapTile tileAt(Vector2 position) {
-		return tileAt((int) Math.floor(position.x), (int) Math.floor(position.y));
+		return tileAt((int) Math.floor(position.getX()), (int) Math.floor(position.getY()));
 	}
 
 	public MapTile tileAt(int x, int y) {
@@ -111,18 +110,16 @@ public class TiledMap {
 	}
 
 	public Chunk chunkAt(double x, double y) {
-		Position position = new Position((int) Math.floor(x / GameConstants.CHUNK_SIZE),
-				(int) Math.floor(y / GameConstants.CHUNK_SIZE));
+		ChunkPosition position = new ChunkPosition((int) Math.floor(x / GameConstants.CHUNK_SIZE), (int) Math.floor(y / GameConstants.CHUNK_SIZE));
 		return chunks.get(position);
 	}
 
-	public Chunk chunkAt(Position position) {
+	public Chunk chunkAt(ChunkPosition position) {
 		return chunks.get(position);
 	}
 
-	private Position chunkPosition(Vector2 pos) {
-		return new Position((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE),
-				(int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
+	private ChunkPosition chunkPosition(Vector2 pos) {
+		return new ChunkPosition((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE), (int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
 	}
 
 	public void update() {
@@ -134,7 +131,7 @@ public class TiledMap {
 		}
 		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
 			PlayerEntity player = (PlayerEntity) p;
-			Position chunkPosition = chunkPosition(p.getPosition());
+			ChunkPosition chunkPosition = chunkPosition(p.getPosition());
 			if (!chunkPosition.equals(player.getChunkPosition())) {
 				player.setChunkPosition(chunkPosition);
 				listeners.forEach(l -> l.playerChangedChunk(player));
@@ -142,7 +139,7 @@ public class TiledMap {
 			}
 			for (int x = chunkPosition.getX() - chunkDistance; x <= chunkPosition.getX() + chunkDistance; x++) {
 				for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
-					Position position = new Position(x, y);
+					ChunkPosition position = new ChunkPosition(x, y);
 					if (!chunks.containsKey(position)) {
 						// Putting the position key is pretty important, it
 						// prevent the chunk to be
@@ -165,7 +162,7 @@ public class TiledMap {
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
-				Position position = new Position(structureUpdate.getX(), structureUpdate.getY());
+				ChunkPosition position = new ChunkPosition(structureUpdate.getX(), structureUpdate.getY());
 				List<StructureUpdate> waitingList = waitingStructureUpdates.get(position);
 				if (waitingList == null) {
 					waitingList = new ArrayList<>();
@@ -178,7 +175,7 @@ public class TiledMap {
 		}
 	}
 
-	private List<StructureUpdate> pollStructureUpdates(Position chunkPosition) {
+	private List<StructureUpdate> pollStructureUpdates(ChunkPosition chunkPosition) {
 		return waitingStructureUpdates.remove(chunkPosition);
 	}
 
@@ -187,11 +184,11 @@ public class TiledMap {
 	}
 
 	public boolean collide(Entity e) {
-		return collide(e.getPosition().x, e.getPosition().y, e.getBoundingRadius());
+		return collide(e.getPosition().getX(), e.getPosition().getY(), e.getBoundingRadius());
 	}
 
 	public boolean collide(Entity e, double dx, double dy) {
-		return collide(e.getPosition().x + dx, e.getPosition().y + dy, e.getBoundingRadius());
+		return collide(e.getPosition().getX() + dx, e.getPosition().getY() + dy, e.getBoundingRadius());
 	}
 
 	public boolean collide(double x, double y, double radius) {

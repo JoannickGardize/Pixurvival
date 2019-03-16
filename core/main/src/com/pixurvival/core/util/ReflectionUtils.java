@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class ReflectionUtil {
+public class ReflectionUtils {
 
 	public static Method[] getAllMethods(Class<?> clazz) {
 		List<Method> list = new ArrayList<>();
