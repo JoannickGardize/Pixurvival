@@ -8,8 +8,8 @@ import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
-import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.message.PlayerData;
 
 import lombok.Getter;

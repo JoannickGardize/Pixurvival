@@ -15,6 +15,7 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter(AccessLevel.PACKAGE) World world;
+	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
@@ -43,40 +44,34 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 		}
 	}
 
-	public void setSpeed(double speed) {
-		if (this.speed != speed) {
-			this.speed = speed;
-			velocityChanged = true;
-		}
-	}
-
 	public void update() {
 		// Update position
 		if (forward) {
+			previousPosition.set(position);
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
 			double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 			double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 				if (targetVelocity.getX() > 0) {
-					getPosition().setX(Math.floor(getPosition().getX()) + 1 - getBoundingRadius());
+					position.setX(Math.floor(position.getX()) + 1 - getBoundingRadius());
 				} else {
-					getPosition().setX(Math.floor(getPosition().getX()) + getBoundingRadius());
+					position.setX(Math.floor(position.getX()) + getBoundingRadius());
 				}
 				velocity.setX(0);
 			} else {
-				getPosition().addX(dx);
+				position.addX(dx);
 				velocity.setX(targetVelocity.getX());
 			}
 			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 				if (targetVelocity.getY() > 0) {
-					getPosition().setY(Math.floor(getPosition().getY()) + 1 - getBoundingRadius());
+					position.setY(Math.floor(position.getY()) + 1 - getBoundingRadius());
 				} else {
-					getPosition().setY(Math.floor(getPosition().getY()) + getBoundingRadius());
+					position.setY(Math.floor(position.getY()) + getBoundingRadius());
 				}
 				velocity.setY(0);
 			} else {
-				getPosition().addY(dy);
+				position.addY(dy);
 				velocity.setY(targetVelocity.getY());
 			}
 		} else {
@@ -117,6 +112,24 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 		return getBoundingRadius();
 	}
 
+	private void setSpeed(double speed) {
+		if (this.speed != speed) {
+			this.speed = speed;
+			velocityChanged = true;
+		}
+	}
+
+	private void updateVelocity() {
+		if (velocityChanged) {
+			targetVelocity.setFromEuclidean(speed, movingAngle);
+			velocityChanged = false;
+		}
+	}
+
+	// *******************
+	// * Utility methods *
+	// *******************
+
 	public double distanceSquared(Entity other) {
 		return position.distanceSquared(other.position);
 	}
@@ -125,11 +138,11 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 		return this.position.distanceSquared(position);
 	}
 
-	public double angleTo(Entity other) {
+	public double angleToward(Entity other) {
 		return position.angleTo(other.position);
 	}
 
-	public double angleTo(MapStructure structure) {
+	public double angleToward(MapStructure structure) {
 		return position.angleTo(new Vector2(structure.getX(), structure.getY()));
 	}
 
@@ -141,10 +154,4 @@ public abstract class Entity implements Collidable, CustomDataHolder {
 		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), targetVelocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
 	}
 
-	private void updateVelocity() {
-		if (velocityChanged) {
-			targetVelocity.setFromEuclidean(speed, movingAngle);
-			velocityChanged = false;
-		}
-	}
 }

@@ -91,7 +91,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		if (currentAbility != null && (currentAbility.getId() == abilityId || !currentAbility.stop(this))) {
 			return;
 		}
-		if (abilityId == Ability.NONE_ID) {
+		if (abilityId < 0 || abilityId >= getAbilitySet().size()) {
 			currentAbility = null;
 		} else {
 			Ability ability = getAbilitySet().get(abilityId);

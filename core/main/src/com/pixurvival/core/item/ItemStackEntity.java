@@ -96,7 +96,7 @@ public class ItemStackEntity extends Entity {
 			break;
 		case MAGNTIZED:
 			speedInterpolation.update(getWorld());
-			setMovingAngle(angleTo(magnetTarget));
+			setMovingAngle(angleToward(magnetTarget));
 			setForward(true);
 			if (collideDynamic(magnetTarget)) {
 				setAlive(false);
@@ -197,5 +197,4 @@ public class ItemStackEntity extends Entity {
 	public boolean isSolid() {
 		return false;
 	}
-
 }

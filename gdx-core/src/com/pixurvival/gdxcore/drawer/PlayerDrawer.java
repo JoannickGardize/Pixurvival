@@ -55,8 +55,8 @@ public class PlayerDrawer extends EntityDrawer<PlayerEntity> {
 				TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
 				TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
 				Texture weaponTexture = weaponAnimation.getTexture(index);
-				batch.draw(weaponTexture, x + weaponAnimation.getOffsetX(index), y + weaponAnimationSet.getYOffset() + weaponAnimation.getOffsetY(index), weaponAnimationSet.getWidth(),
-						weaponAnimationSet.getHeight());
+				batch.draw(weaponTexture, x + textureAnimation.getOffsetX(index) - weaponAnimation.getOffsetX(index),
+						y + weaponAnimationSet.getYOffset() + textureAnimation.getOffsetY(index) - weaponAnimation.getOffsetY(index), weaponAnimationSet.getWidth(), weaponAnimationSet.getHeight());
 			}
 		}
 	}

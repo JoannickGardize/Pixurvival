@@ -21,6 +21,10 @@ public class BehaviorData {
 	private Entity closestPlayer;
 	private double closestDistanceSquaredToPlayer;
 
+	@Getter
+	@Setter
+	private long nextUpdateTimeMillis;
+
 	public BehaviorData(CreatureEntity creature) {
 		this.creature = creature;
 		time = creature.getWorld().getTime();
@@ -39,6 +43,10 @@ public class BehaviorData {
 	public double getClosestDistanceSquaredToPlayer() {
 		findClosestPlayer();
 		return closestDistanceSquaredToPlayer;
+	}
+
+	public void setNextUpdateDelay(long delayMillis) {
+		nextUpdateTimeMillis = time.getTimeMillis() + delayMillis;
 	}
 
 	void beforeStep() {

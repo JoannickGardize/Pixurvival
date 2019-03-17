@@ -19,4 +19,18 @@ public class ChunkPosition {
 	public String fileName() {
 		return "c" + x + "_" + y;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || !(other instanceof ChunkPosition)) {
+			return false;
+		}
+		ChunkPosition otherChunkPosition = (ChunkPosition) other;
+		return x == otherChunkPosition.x && y == otherChunkPosition.y;
+	}
+
+	@Override
+	public int hashCode() {
+		return x << 16 ^ y;
+	}
 }

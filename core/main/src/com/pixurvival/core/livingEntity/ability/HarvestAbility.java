@@ -17,7 +17,7 @@ public class HarvestAbility extends WorkAbility {
 
 	@Override
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
-		double angle = entity.angleTo(((HarvestAbilityData) getAbilityData(entity)).getStructure());
+		double angle = entity.angleToward(((HarvestAbilityData) getAbilityData(entity)).getStructure());
 		return ActionAnimation.getMoveFromDirection(Direction.closestCardinal(angle));
 	}
 

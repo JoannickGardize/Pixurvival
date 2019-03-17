@@ -8,8 +8,8 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.message.AddStructureUpdate;
 import com.pixurvival.core.message.RemoveStructureUpdate;
@@ -57,7 +57,6 @@ public class GameSession implements TiledMapListener {
 		PlayerSession playerSession = players.get(player.getId());
 		if (playerSession != null) {
 			ChunkPosition position = player.getChunkPosition();
-
 			for (int x = position.getX() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x <= position.getX() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x++) {
 				for (int y = position.getY() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y <= position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y++) {
 					ChunkPosition chunkPosition = new ChunkPosition(x, y);
