@@ -8,7 +8,7 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.util.MovePathUtils;
+import com.pixurvival.core.util.MoveUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,12 +44,16 @@ public class CreatureEntity extends LivingEntity {
 		}
 	}
 
+	public void move(double direction) {
+		MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4);
+		setForward(true);
+	}
+
 	public void moveIfNotNull(Entity entity, double direction) {
 		if (entity == null) {
 			setForward(false);
 		} else {
-			MovePathUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4);
-			setForward(true);
+			move(direction);
 		}
 	}
 
@@ -68,8 +72,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public double getBoundingRadius() {
-		// TODO Auto-generated method stub
-		return 0;
+		return definition.getCollisionRadius();
 	}
 
 	@Override

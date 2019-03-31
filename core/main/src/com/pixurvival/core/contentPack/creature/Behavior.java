@@ -4,18 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
+@Getter
 public abstract class Behavior extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private List<ChangeCondition> changeConditions = new ArrayList<>();
 
+	@Bounds(min = Ability.NONE_ID)
 	private int abilityToUseId = Ability.NONE_ID;
 
 	public void update(CreatureEntity creature) {

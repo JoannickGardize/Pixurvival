@@ -21,6 +21,7 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.FileUtils;
+import com.pixurvival.core.util.WorldRandom;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -48,7 +49,7 @@ public class World {
 	private Time time = new Time();
 	private TiledMap map;
 	private EntityPool entityPool = new EntityPool(this);
-	private Random random = new Random();
+	private WorldRandom random = new WorldRandom();
 	private ActionTimerManager actionTimerManager = new ActionTimerManager(this);
 	private long id;
 	private UUID uid;

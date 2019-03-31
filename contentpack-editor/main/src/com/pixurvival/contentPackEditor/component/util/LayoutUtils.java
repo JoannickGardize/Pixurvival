@@ -31,13 +31,13 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LayoutUtils {
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component,
-			GridBagConstraints gbc) {
+	public static final int NORMAL_GAP = 5;
+
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
 		addHorizontalLabelledItem(parent, labelKey, null, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey,
-			Component component, GridBagConstraints gbc) {
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
 		int previousAnchor = gbc.anchor;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;
@@ -51,7 +51,7 @@ public class LayoutUtils {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		int previousLeft = gbc.insets.left;
-		gbc.insets.left = 5;
+		gbc.insets.left = NORMAL_GAP;
 		parent.add(component, gbc);
 		gbc.insets.left = previousLeft;
 		if (component instanceof ValueComponent) {
@@ -105,7 +105,7 @@ public class LayoutUtils {
 	}
 
 	public static Component labelled(String labelKey, Component component) {
-		JPanel panel = new JPanel(new BorderLayout());
+		JPanel panel = new JPanel(new BorderLayout(NORMAL_GAP, 0));
 		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
 		panel.add(label, BorderLayout.WEST);
 		panel.add(component, BorderLayout.CENTER);
@@ -131,10 +131,14 @@ public class LayoutUtils {
 			if (i == components.length - 1) {
 				gbc.insets.right = 0;
 			}
-			panel.add(components[i]);
+			panel.add(components[i], gbc);
 			gbc.gridx++;
 		}
 		return panel;
+	}
+
+	public static JPanel createHorizontalBox(Component... components) {
+		return createHorizontalBox(NORMAL_GAP, components);
 	}
 
 	public static JPanel createVerticalBox(int gap, Component... components) {
@@ -142,7 +146,21 @@ public class LayoutUtils {
 	}
 
 	public static JPanel createVerticalBox(int gap, int fillIndex, Component... components) {
-		JPanel panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel();
+		addVertically(panel, gap, fillIndex, components);
+		return panel;
+	}
+
+	public static void addVertically(JPanel panel, int gap, Component... components) {
+		addVertically(panel, gap, -1, components);
+	}
+
+	public static void addVertically(JPanel panel, Component... components) {
+		addVertically(panel, NORMAL_GAP, components);
+	}
+
+	public static void addVertically(JPanel panel, int gap, int fillIndex, Component... components) {
+		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.insets.top = gap;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -158,16 +176,13 @@ public class LayoutUtils {
 			gbc.weighty = 0;
 			gbc.gridy++;
 		}
-		return panel;
 	}
 
 	public static Rectangle getCenteredKeepRatioRectangle(Container container, Rectangle rectangle) {
-		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1,
-				(int) rectangle.getWidth(), (int) rectangle.getHeight());
+		return getCenteredKeepRatioRectangle(container.getWidth() - 1, container.getHeight() - 1, (int) rectangle.getWidth(), (int) rectangle.getHeight());
 	}
 
-	public static Rectangle getCenteredKeepRatioRectangle(int destWidth, int destHeight, int sourceWidth,
-			int sourceHeight) {
+	public static Rectangle getCenteredKeepRatioRectangle(int destWidth, int destHeight, int sourceWidth, int sourceHeight) {
 		int xOffset = 0;
 		int yOffset = 0;
 		int width;

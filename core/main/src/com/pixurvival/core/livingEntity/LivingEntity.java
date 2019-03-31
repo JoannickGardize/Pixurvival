@@ -16,7 +16,7 @@ import lombok.Setter;
 public abstract class LivingEntity extends Entity implements Damageable {
 
 	private float health;
-	private double aimingAngle;
+	private float aimingAngle;
 
 	private StatSet stats = new StatSet();
 
@@ -117,7 +117,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		buffer.putDouble(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putFloat(getHealth());
-		buffer.putDouble(getAimingAngle());
+		buffer.putFloat(getAimingAngle());
 
 		if (getCurrentAbility() == null) {
 			buffer.put(Ability.NONE_ID);
@@ -134,7 +134,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		setMovingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1);
 		setHealth(buffer.getFloat());
-		setAimingAngle(buffer.getDouble());
+		setAimingAngle(buffer.getFloat());
 
 		byte abilityId = buffer.get();
 		if (abilityId == Ability.NONE_ID) {

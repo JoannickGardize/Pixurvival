@@ -50,8 +50,9 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	public void setValue(List<E> value) {
 		super.setValue(value);
 		listPanel.removeAll();
-		for (E element : value) {
-			addComponent(element);
+		for (int i = 0; i < value.size(); i++) {
+			E element = value.get(i);
+			addComponent(i, element);
 		}
 		listPanel.revalidate();
 		listPanel.repaint();
@@ -71,7 +72,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	}
 
 	public void add(E value) {
-		getValue().add(addComponent(value).getValue());
+		getValue().add(addComponent(getValue().size(), value).getValue());
 		notifyValueChanged();
 		listPanel.revalidate();
 		listPanel.repaint();
@@ -85,12 +86,15 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		action.accept(editorForValidation);
 	}
 
-	private ElementEditor<E> addComponent(E value) {
+	private ElementEditor<E> addComponent(int index, E value) {
 		ElementEditor<E> elementEditor = elementEditorSupplier.get();
 		if (value != null) {
 			elementEditor.setValue(value);
 		}
-		elementEditor.addValueChangeListener(v -> notifyValueChanged());
+		elementEditor.addValueChangeListener(v -> {
+			getValue().set(index, v);
+			notifyValueChanged();
+		});
 		addEditor(elementEditor);
 		return elementEditor;
 	}

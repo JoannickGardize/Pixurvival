@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +25,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		private Function getter;
 		@SuppressWarnings("rawtypes")
 		private BiConsumer setter;
+		@SuppressWarnings("rawtypes")
+		private Predicate condition;
 	}
 
 	private @Getter E value;
@@ -34,7 +37,11 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	@Override
 	public void setValue(E value) {
 		this.value = value;
-		subValues.forEach(entry -> entry.getComponent().setValue(entry.getGetter().apply(value)));
+		subValues.forEach(entry -> {
+			if (entry.getCondition().test(value)) {
+				entry.getComponent().setValue(entry.getGetter().apply(value));
+			}
+		});
 		valueChanged(this);
 	}
 
@@ -44,10 +51,10 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		if (value == null) {
 			return false;
 		}
-		boolean valid = true;
-		boolean valueChanged = false;
+		// boolean valid = true;
+		// boolean valueChanged = false;
 		for (SubValueEntry entry : subValues) {
-			if (!entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
+			if (entry.getCondition().test(value) && !entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
 				// Remove references of elements when removed
 				// if (entry.getComponent() instanceof ElementChooserButton<?>
 				// && entry.getGetter().apply(value) != null) {
@@ -58,14 +65,15 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 				// valid = false;
 				// }
 				// } else {
-				valid = false;
+				// valid = false;
 				// }
+				return false;
 			}
 		}
-		if (valueChanged) {
-			notifyValueChanged();
-		}
-		return valid;
+		// if (valueChanged) {
+		// notifyValueChanged();
+		// }
+		return true;
 	}
 
 	@Override
@@ -82,10 +90,10 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		listeners.add(listener);
 	}
 
-	protected <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter) {
-		subValues.add(new SubValueEntry(component, getter, setter));
+	protected <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter, Predicate<E> condition) {
+		subValues.add(new SubValueEntry(component, getter, setter, condition));
 		component.addValueChangeListener(v -> {
-			if (value != null) {
+			if (value != null && condition.test(value)) {
 				setter.accept(value, v);
 				notifyValueChanged();
 			}
@@ -93,13 +101,22 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
+	protected <T, F extends E> void bind(ValueComponent<T> component, Function<F, T> getter, BiConsumer<F, T> setter, Class<F> type) {
+		bind(component, (Function<E, T>) getter, (BiConsumer<E, T>) setter, type::isInstance);
+	}
+
+	protected <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter) {
+		bind(component, getter, setter, v -> true);
+	}
+
 	public void notifyValueChanged() {
 		listeners.forEach(l -> l.valueChanged(value));
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields
-	 * has been updated.
+	 * Called after the value of this editor has been changed and all sub fields has
+	 * been updated.
 	 * 
 	 * @param value
 	 */

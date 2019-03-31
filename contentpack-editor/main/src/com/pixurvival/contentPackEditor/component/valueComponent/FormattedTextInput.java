@@ -21,10 +21,14 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
-	private boolean settingValue = false;;
+	private boolean settingValue = false;
 
 	public FormattedTextInput() {
-		super(2);
+		this(10);
+	}
+
+	public FormattedTextInput(int columns) {
+		super(columns);
 		getDocument().addDocumentListener(new DocumentAdapter(e -> updateValue()));
 		addFocusListener(new FocusListener() {
 

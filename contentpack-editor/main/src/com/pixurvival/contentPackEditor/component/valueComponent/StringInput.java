@@ -13,6 +13,11 @@ public class StringInput extends FormattedTextInput<String> {
 		regex = ".{" + minLength + ",}";
 	}
 
+	public StringInput(int columns, int minLength) {
+		super(columns);
+		regex = ".{" + minLength + ",}";
+	}
+
 	@Override
 	protected String parse(String text) {
 		String result = text.trim();
