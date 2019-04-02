@@ -1,51 +1,40 @@
 package com.pixurvival.contentPackEditor.component.behaviorSet;
 
-import java.awt.CardLayout;
 import java.awt.Component;
-import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.PlayerDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 
-public class BehaviorEditor extends ElementEditor<Behavior> {
+public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 	private static final long serialVersionUID = 1L;
 
-	private JPanel specificPartPanel;
-	private JComboBox<BehaviorType> typeChooser;
+	private ListEditor<ChangeCondition> changeConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(ChangeConditionEditor::new), PlayerDistanceCondition::new, ListEditor.HORIZONTAL, false);
 
 	public BehaviorEditor() {
+		super("behaviorType");
 
 		// Construction
 
 		StringInput nameInput = new StringInput(1);
 		IntegerInput abilityIndexInput = new IntegerInput(Bounds.min(-1));
-		typeChooser = new JComboBox<>(BehaviorType.values());
-		createSpecificPart();
-		ListEditor<ChangeCondition> changeConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(ChangeConditionEditor::new), PlayerDistanceCondition::new, ListEditor.HORIZONTAL, false);
-
-		// Actions
-
-		typeChooser.addItemListener(e -> {
-			if (typeChooser.isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
-				changeInstance(((BehaviorType) e.getItem()).getBehaviorSupplier().get());
-			}
-		});
 
 		// Binding
 
@@ -57,59 +46,47 @@ public class BehaviorEditor extends ElementEditor<Behavior> {
 
 		Component nameComp = LayoutUtils.labelled("generic.name", nameInput);
 		Component abilityIndexComp = LayoutUtils.labelled("behaviorEditor.abilityIndex", abilityIndexInput);
-		Component typeChooserComp = LayoutUtils.labelled("generic.type", typeChooser);
+		Component typeChooserComp = LayoutUtils.labelled("generic.type", getTypeChooser());
 		JPanel topPanel = LayoutUtils.createHorizontalBox(nameComp, abilityIndexComp, typeChooserComp);
 		changeConditionsEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.changeConditions"));
-		LayoutUtils.addVertically(this, topPanel, specificPartPanel, changeConditionsEditor);
+		LayoutUtils.addVertically(this, topPanel, getSpecificPartPanel(), changeConditionsEditor);
 
 	}
 
-	private void createSpecificPart() {
-		specificPartPanel = new JPanel(new CardLayout());
+	public void setBehaviorList(List<Behavior> list) {
+		changeConditionsEditor.forEachEditors(e -> ((ChangeConditionEditor) e).setBehaviorList(list));
+	}
+
+	@Override
+	protected List<ClassEntry> getClassEntries() {
+		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// GET_AWAY
-		specificPartPanel.add(new JPanel(), BehaviorType.GET_AWAY.name());
+		classEntries.add(new ClassEntry(GetAwayBehavior.class, new JPanel()));
 
 		// MOVE_TOWARD
 		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
 		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
-		specificPartPanel.add(LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput)), BehaviorType.MOVE_TOWARD.name());
+		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput))));
 
 		// TURN_AROUND
 		minDistanceInput = new DoubleInput(Bounds.positive());
 		DoubleInput maxDistanceInput = new DoubleInput(Bounds.positive());
 		bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
 		bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
-		specificPartPanel.add(
-				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput), LayoutUtils.labelled("behaviorEditor.maxDistance", maxDistanceInput)),
-				BehaviorType.TURN_AROUND.name());
+		classEntries.add(new ClassEntry(TurnAroundBehavior.class,
+				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput), LayoutUtils.labelled("behaviorEditor.maxDistance", maxDistanceInput))));
 
 		// WANDER_BEHAVIOR
-		specificPartPanel.add(new JPanel(), BehaviorType.WANDER.name());
-	}
+		classEntries.add(new ClassEntry(WanderBehavior.class, new JPanel()));
 
-	private void changeInstance(Behavior newInstance) {
-		if (newInstance == null) {
-			return;
-		}
-		Behavior oldInstance = getValue();
-		if (oldInstance == null) {
-			setValue(newInstance);
-			return;
-		}
-		newInstance.setName(oldInstance.getName());
-		newInstance.setAbilityToUseId(oldInstance.getAbilityToUseId());
-		newInstance.setChangeConditions(oldInstance.getChangeConditions());
-		setValue(newInstance);
-		notifyValueChanged();
+		return classEntries;
 	}
 
 	@Override
-	protected void valueChanged(ValueComponent<?> source) {
-		if (source == this) {
-			BehaviorType type = BehaviorType.of(getValue());
-			((CardLayout) specificPartPanel.getLayout()).show(specificPartPanel, type.name());
-			typeChooser.setSelectedItem(type);
-		}
+	protected void initialize(Behavior oldInstance, Behavior newInstance) {
+		newInstance.setName(oldInstance.getName());
+		newInstance.setAbilityToUseId(oldInstance.getAbilityToUseId());
+		newInstance.setChangeConditions(oldInstance.getChangeConditions());
 	}
 }

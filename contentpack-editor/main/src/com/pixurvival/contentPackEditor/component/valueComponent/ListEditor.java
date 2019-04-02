@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,10 +35,10 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		removeButton = new CPEButton("generic.remove", () -> {
 			if (!getValue().isEmpty()) {
 				removeLast();
-				listPanel.revalidate();
-				listPanel.repaint();
 				getValue().remove(getValue().size() - 1);
 				notifyValueChanged();
+				listPanel.revalidate();
+				listPanel.repaint();
 			}
 		});
 	}
@@ -72,6 +73,9 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	}
 
 	public void add(E value) {
+		if (value instanceof IdentifiedElement) {
+			((IdentifiedElement) value).setId(getValue().size());
+		}
 		getValue().add(addComponent(getValue().size(), value).getValue());
 		notifyValueChanged();
 		listPanel.revalidate();

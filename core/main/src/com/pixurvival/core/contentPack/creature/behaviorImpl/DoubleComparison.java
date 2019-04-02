@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum DoubleComparison implements DoubleBiPredicate {
 
-	GEATER_THAN((d1, d2) -> d1 > d2),
+	GREATER_THAN((d1, d2) -> d1 > d2),
 	LESS_THAN((d1, d2) -> d1 < d2);
 
 	private DoubleBiPredicate test;

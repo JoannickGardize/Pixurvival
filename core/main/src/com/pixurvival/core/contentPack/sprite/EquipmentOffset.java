@@ -8,13 +8,11 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class EquipmentOffset extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;

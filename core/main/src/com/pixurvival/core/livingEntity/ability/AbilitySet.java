@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AbilitySet implements Iterable<Ability> {
+import com.pixurvival.core.contentPack.IdentifiedElement;
+
+public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
+
+	private static final long serialVersionUID = 1L;
 
 	private List<Ability> abilities = new ArrayList<>();
 

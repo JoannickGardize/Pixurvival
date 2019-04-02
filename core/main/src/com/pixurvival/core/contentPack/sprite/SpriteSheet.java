@@ -6,13 +6,11 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class SpriteSheet extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;

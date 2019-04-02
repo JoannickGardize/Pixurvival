@@ -68,6 +68,7 @@ public class LayoutUtils {
 	public static void nextColumn(GridBagConstraints gbc) {
 		gbc.gridx += 2;
 		gbc.gridy = 0;
+		gbc.insets.left = NORMAL_GAP;
 	}
 
 	public static void addHorizontalSeparator(Container parent, GridBagConstraints gbc) {
@@ -104,11 +105,14 @@ public class LayoutUtils {
 
 	}
 
-	public static Component labelled(String labelKey, Component component) {
+	public static JPanel labelled(String labelKey, Component component) {
 		JPanel panel = new JPanel(new BorderLayout(NORMAL_GAP, 0));
 		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
 		panel.add(label, BorderLayout.WEST);
 		panel.add(component, BorderLayout.CENTER);
+		if (component instanceof ValueComponent) {
+			((ValueComponent<?>) component).setAssociatedLabel(label);
+		}
 		return panel;
 	}
 
@@ -127,12 +131,11 @@ public class LayoutUtils {
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.insets.right = gap;
+		gbc.insets.left = gap;
 		for (int i = 0; i < components.length; i++) {
-			if (i == components.length - 1) {
-				gbc.insets.right = 0;
-			}
 			panel.add(components[i], gbc);
 			gbc.gridx++;
+			gbc.insets.left = 0;
 		}
 		return panel;
 	}

@@ -11,13 +11,11 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 public class MapGenerator extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;

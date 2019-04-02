@@ -17,6 +17,10 @@ public class StatSet implements EquipmentListener {
 		stats.values().forEach(StatValue::initialize);
 	}
 
+	public void computeAll() {
+		stats.values().forEach(StatValue::compute);
+	}
+
 	public void addListener(StatListener listener) {
 		stats.values().forEach(v -> v.addListener(listener));
 	}

@@ -19,7 +19,7 @@ public class DoubleInput extends NumberInput<Double> {
 	@SneakyThrows
 	@Override
 	protected Double parse(String text) {
-		if (text.matches("\\d+(\\.\\d+)?")) {
+		if (text.matches("\\-?\\d+(\\.\\d+)?")) {
 			return DECIMAL_FORMAT.parse(text).doubleValue();
 		}
 		return null;

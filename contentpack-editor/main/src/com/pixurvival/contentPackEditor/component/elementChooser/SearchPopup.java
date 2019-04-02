@@ -89,13 +89,10 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 			}
 		});
 		searchField.getDocument().addDocumentListener(new DocumentAdapter(e -> updateSearchList()));
-		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),
-				SearchPopupSelectionModel.NEXT_SELECTION_ACTION);
-		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),
-				SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION);
+		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), SearchPopupSelectionModel.NEXT_SELECTION_ACTION);
+		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION);
 		searchField.getActionMap().put(SearchPopupSelectionModel.NEXT_SELECTION_ACTION, selectionModel.getNextAction());
-		searchField.getActionMap().put(SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION,
-				selectionModel.getPreviousAction());
+		searchField.getActionMap().put(SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION, selectionModel.getPreviousAction());
 		searchField.addActionListener(e -> selectItem());
 		removeButton.addActionListener(e -> remove());
 
@@ -145,7 +142,7 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 		if (!searchText.isEmpty()) {
 			for (T item : items) {
 				int index;
-				if ((index = item.getName().toLowerCase().indexOf(searchText.toLowerCase())) != -1) {
+				if (item.getName() != null && item.getName().length() > 0 && (index = item.getName().toLowerCase().indexOf(searchText.toLowerCase())) != -1) {
 					sortedList.add(new ItemMatchEntry(item, index * 10000 + item.getName().length()));
 				}
 			}

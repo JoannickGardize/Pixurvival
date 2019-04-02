@@ -17,6 +17,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
+	private static final AbilitySet EMPTY_ABILITY_SET = new AbilitySet();
+
 	public static final double OBSTACLE_VISION_DISTANCE = 4;
 
 	private @Getter @Setter Behavior currentBehavior;
@@ -29,11 +31,17 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void initialize() {
-		super.initialize();
 		if (getWorld().isServer()) {
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 		}
+		getStats().get(StatType.STRENGTH).setBase(definition.getStrength());
+		getStats().get(StatType.AGILITY).setBase(definition.getAgility());
+		getStats().get(StatType.INTELLIGENCE).setBase(definition.getIntelligence());
+		if (definition.getAbilitySet() == null) {
+			definition.setAbilitySet(EMPTY_ABILITY_SET);
+		}
+		super.initialize();
 	}
 
 	@Override
@@ -45,7 +53,7 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	public void move(double direction) {
-		MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4);
+		setMovingAngle(MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
 		setForward(true);
 	}
 
@@ -76,18 +84,6 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void applyUpdate(ByteBuffer buffer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public AbilitySet getAbilitySet() {
 		return definition.getAbilitySet();
 	}
@@ -97,4 +93,15 @@ public class CreatureEntity extends LivingEntity {
 		return true;
 	}
 
+	@Override
+	public void writeUpdate(ByteBuffer buffer) {
+		super.writeUpdate(buffer);
+		buffer.put((byte) definition.getId());
+	}
+
+	@Override
+	public void applyUpdate(ByteBuffer buffer) {
+		super.applyUpdate(buffer);
+		definition = getWorld().getContentPack().getCreatures().get(buffer.get());
+	}
 }

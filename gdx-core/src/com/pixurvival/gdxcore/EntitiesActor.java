@@ -18,12 +18,14 @@ import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.ShortLivedStructure;
+import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
@@ -36,20 +38,19 @@ public class EntitiesActor extends Actor {
 	private List<Collidable> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
-		drawers.put(PlayerEntity.class, new PlayerDrawer(PixurvivalGame.getContentPackTextures()
-				.getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter())));
+		drawers.put(PlayerEntity.class, new PlayerDrawer());
 		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
 		drawers.put(ShortLivedStructure.class, mapStructureDrawer);
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
+		drawers.put(CreatureEntity.class, new CreatureDrawer());
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void act(float delta) {
-		PixurvivalGame.getWorld().getEntityPool()
-				.foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
+		PixurvivalGame.getWorld().getEntityPool().foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
 		super.act(delta);
 	}
 

@@ -26,7 +26,7 @@ public class StatValue implements StatListener {
 		this.type = type;
 	}
 
-	public void initialize() {
+	void initialize() {
 		for (StatType dependency : type.getDependencies()) {
 			statSet.get(dependency).addListener(this);
 		}
@@ -53,7 +53,7 @@ public class StatValue implements StatListener {
 		compute();
 	}
 
-	private void compute() {
+	public void compute() {
 		float newValue = base + type.getFormula().apply(statSet);
 		for (int i = 0; i < equipmentBonuses.length; i++) {
 			newValue += equipmentBonuses[i];

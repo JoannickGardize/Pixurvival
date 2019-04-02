@@ -18,6 +18,7 @@ import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.CreateWorld;
@@ -116,6 +117,11 @@ public class ClientGame {
 		// TODO
 		playerEntity.getPosition().set(0, 0);
 		world.getEntityPool().add(playerEntity);
+
+		CreatureEntity creature = new CreatureEntity(localGamePack.getCreatures().get(0));
+		creature.getPosition().set(15, 15);
+		world.getEntityPool().add(creature);
+
 		Random random = new Random();
 		for (int i = 0; i < 20; i++) {
 			playerEntity.getInventory().setSlot(i, new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())), random.nextInt(10) + 1));

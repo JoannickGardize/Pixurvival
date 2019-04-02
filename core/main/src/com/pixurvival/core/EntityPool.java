@@ -38,8 +38,8 @@ public class EntityPool {
 	}
 
 	public void add(Entity e) {
-		e.setWorld(world);
 		if (world.isServer()) {
+			e.setWorld(world);
 			e.setId(nextId++);
 		}
 		entities.get(e.getGroup()).put(e.getId(), e);
@@ -123,10 +123,13 @@ public class EntityPool {
 				if (e == null) {
 					e = EntityClassRegistry.newEntity(classId);
 					e.setId(entityId);
+					e.setWorld(world);
+					e.applyUpdate(byteBuffer);
 					add(e);
+				} else {
+					e.applyUpdate(byteBuffer);
 				}
 				e.setAlive(true);
-				e.applyUpdate(byteBuffer);
 			}
 		}
 	}

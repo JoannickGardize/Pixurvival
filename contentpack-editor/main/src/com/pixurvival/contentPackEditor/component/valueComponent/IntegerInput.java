@@ -10,7 +10,7 @@ public class IntegerInput extends NumberInput<Integer> {
 
 	@Override
 	protected Integer parse(String text) {
-		if (text.matches("\\d+")) {
+		if (text.matches("\\-?\\d+")) {
 			return Integer.valueOf(text);
 		} else {
 			return null;

@@ -14,10 +14,10 @@ public class TimeCondition extends ChangeCondition {
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 0)
-	private long targetTimeMillis;
+	private double targetTime;
 
 	@Override
 	public boolean test(CreatureEntity creature) {
-		return creature.getBehaviorData().getElapsedTimeMillis() >= targetTimeMillis;
+		return creature.getBehaviorData().getElapsedTimeMillis() >= targetTime * 1000;
 	}
 }

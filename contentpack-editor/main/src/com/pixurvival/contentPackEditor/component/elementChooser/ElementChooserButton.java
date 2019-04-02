@@ -34,6 +34,10 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 		this(e -> null);
 	}
 
+	public ElementChooserButton(boolean required) {
+		this(e -> null, required);
+	}
+
 	public ElementChooserButton(Function<T, Icon> iconProvider) {
 		this(iconProvider, true);
 	}
@@ -86,7 +90,7 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public boolean isValueValid(T value) {
-		return !required || searchPopup.getItems() != null && searchPopup.getItems().contains(value);
+		return !required && value == null || searchPopup.getItems() != null && searchPopup.getItems().contains(value);
 	}
 
 	@Override
@@ -103,7 +107,6 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 			setForeground(Color.RED);
 			setIcon(null);
 		}
-		setText(value == null ? TranslationService.getInstance().getString("elementChooserButton.none")
-				: value.getName());
+		setText(value == null ? TranslationService.getInstance().getString("elementChooserButton.none") : value.getName());
 	}
 }

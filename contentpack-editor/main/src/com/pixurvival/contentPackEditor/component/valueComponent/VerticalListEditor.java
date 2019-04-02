@@ -1,10 +1,13 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -30,8 +33,9 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		super(elementEditorSupplier, valueSupplier);
 		// setMinimumSize(new Dimension(100, 50));
 		// setPreferredSize(new Dimension(100, 50));
+		listPanel.setBackground(new Color(150, 150, 150));
 		setLayout(new BorderLayout());
-		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+		listPanel.setLayout(new GridBagLayout());
 		listPanel.setBorder(new EmptyBorder(1, 5, 1, 5));
 		if (useScrollPane) {
 			JPanel pusherPanel = new JPanel(new BorderLayout());
@@ -51,7 +55,13 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	@Override
 	protected void addEditor(ElementEditor<E> editor) {
 		editor.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(3, 2, 3, 2), editor.getBorder()));
-		listPanel.add(editor);
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.insets = new Insets(3, 2, 3, 2);
+		gbc.gridy = listPanel.getComponentCount();
+		listPanel.add(editor, gbc);
 		listPanel.revalidate();
 	}
 

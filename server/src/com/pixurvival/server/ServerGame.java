@@ -16,6 +16,7 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.message.CreateWorld;
@@ -99,6 +100,11 @@ public class ServerGame {
 				playerEntity.getInventory().setSlot(i, new ItemStack(selectedContentPack.getItems().get(random.nextInt(selectedContentPack.getItems().size())), random.nextInt(10) + 1));
 			}
 		});
+
+		// TODO Retirer
+		CreatureEntity creatureEntity = new CreatureEntity(selectedContentPack.getCreatures().get(0));
+		world.getEntityPool().add(creatureEntity);
+
 		PlayerData[] playerData = playerDataList.toArray(new PlayerData[playerDataList.size()]);
 		foreachPlayers(playerConnection -> {
 			boolean messageSent = false;

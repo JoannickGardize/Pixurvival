@@ -25,7 +25,7 @@ public class PlayerDistanceCondition extends ChangeCondition {
 	public boolean test(CreatureEntity creature) {
 		BehaviorData data = creature.getBehaviorData();
 		double distance = data.getClosestDistanceSquaredToPlayer();
-		return test.test(distance, targetDistance);
+		return test.test(distance, targetDistance * targetDistance);
 	}
 
 }

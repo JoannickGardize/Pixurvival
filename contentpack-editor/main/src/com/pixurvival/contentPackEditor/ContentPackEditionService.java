@@ -1,7 +1,7 @@
 package com.pixurvival.contentPackEditor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -20,22 +20,23 @@ import com.pixurvival.core.item.Item;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 public class ContentPackEditionService {
 
 	private static @Getter ContentPackEditionService instance = new ContentPackEditionService();
 
 	private Map<ElementType, Method> listGetters = new EnumMap<>(ElementType.class);
+	private Map<ElementType, Method> listSetters = new EnumMap<>(ElementType.class);
 	private Map<ElementType, Consumer<IdentifiedElement>> initializers = new EnumMap<>(ElementType.class);
 
+	@SneakyThrows
 	private ContentPackEditionService() {
 		for (ElementType type : ElementType.values()) {
 			String methodName = "get" + CaseUtils.upperToPascalCase(type.name()) + "s";
-			try {
-				listGetters.put(type, ContentPack.class.getMethod(methodName));
-			} catch (IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
+			listGetters.put(type, ContentPack.class.getMethod(methodName));
+			methodName = "set" + CaseUtils.upperToPascalCase(type.name()) + "s";
+			listSetters.put(type, ContentPack.class.getMethod(methodName, List.class));
 		}
 		initializers.put(ElementType.ITEM, o -> {
 			Item item = (Item) o;
@@ -50,24 +51,21 @@ public class ContentPackEditionService {
 		});
 	}
 
+	@SneakyThrows
 	public void addElement(ElementType type, String name) {
 		if (FileService.getInstance().getCurrentContentPack() == null) {
 			return;
 		}
-		try {
-			List<IdentifiedElement> list = listOf(type);
-			IdentifiedElement newElement = type.getElementClass().newInstance();
-			newElement.setName(name);
-			newElement.setId(list.size());
-			Consumer<IdentifiedElement> initializer = initializers.get(type);
-			if (initializer != null) {
-				initializer.accept(newElement);
-			}
-			list.add(newElement);
-			EventManager.getInstance().fire(new ElementAddedEvent(newElement));
-		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException e) {
-			e.printStackTrace();
+		List<IdentifiedElement> list = listOf(type);
+		IdentifiedElement newElement = type.getElementClass().newInstance();
+		newElement.setName(name);
+		newElement.setId(list.size());
+		Consumer<IdentifiedElement> initializer = initializers.get(type);
+		if (initializer != null) {
+			initializer.accept(newElement);
 		}
+		list.add(newElement);
+		EventManager.getInstance().fire(new ElementAddedEvent(newElement));
 	}
 
 	public void removeElement(IdentifiedElement element) {
@@ -79,17 +77,18 @@ public class ContentPackEditionService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@SneakyThrows
 	public List<IdentifiedElement> listOf(ElementType type) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
 			return Collections.emptyList();
 		}
-		try {
-			return (List<IdentifiedElement>) listGetters.get(type).invoke(contentPack);
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
-			e.printStackTrace();
+		List<IdentifiedElement> result = (List<IdentifiedElement>) listGetters.get(type).invoke(contentPack);
+		if (result == null) {
+			result = new ArrayList<>();
+			listSetters.get(type).invoke(contentPack, result);
 		}
-		return null;
+		return result;
 	}
 
 	public boolean isValidForPreview(SpriteSheet spriteSheet) {

@@ -2,7 +2,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.CardLayout;
 import java.awt.event.ItemEvent;
-import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -28,8 +28,8 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 
 	@SuppressWarnings("unchecked")
 	public InstanceChangingElementEditor(String translationPreffix) {
-		ClassEntry[] classEntries = getClassEntries();
-		typeChooser = new JComboBox<>(Arrays.stream(classEntries).map(ClassEntry::getType).toArray(Class[]::new));
+		List<ClassEntry> classEntries = getClassEntries();
+		typeChooser = new JComboBox<>(classEntries.stream().map(ClassEntry::getType).toArray(Class[]::new));
 		typeChooser.setRenderer(new ClassNameCellRenderer(translationPreffix));
 		specificPartPanel = new JPanel(new CardLayout());
 
@@ -71,7 +71,7 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		}
 	}
 
-	protected abstract ClassEntry[] getClassEntries();
+	protected abstract List<ClassEntry> getClassEntries();
 
 	protected abstract void initialize(E oldInstance, E newInstance);
 
