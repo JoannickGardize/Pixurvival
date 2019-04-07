@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity;
+package com.pixurvival.core.livingEntity.stats;
 
 import java.util.function.Function;
 

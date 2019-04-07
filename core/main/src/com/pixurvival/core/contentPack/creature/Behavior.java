@@ -25,9 +25,12 @@ public abstract class Behavior extends IdentifiedElement {
 	private int abilityToUseId = Ability.NONE_ID;
 
 	public void update(CreatureEntity creature) {
-		if (creature.getWorld().getTime().getTimeMillis() >= creature.getBehaviorData().getNextUpdateTimeMillis()) {
-			creature.getBehaviorData().beforeStep();
+		BehaviorData behaviorData = creature.getBehaviorData();
+		if (creature.getWorld().getTime().getTimeMillis() >= behaviorData.getNextUpdateTimeMillis()) {
+			behaviorData.beforeStep();
 			step(creature);
+		}
+		if (behaviorData.mustCheckChangeCondition()) {
 			nextBehavior(creature);
 		}
 	}

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.pixurvival.core.Collidable;
+import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class MapStructure implements Collidable, CustomDataHolder {
+public abstract class MapStructure implements Body, CustomDataHolder {
 
 	@FunctionalInterface
 	private static interface StructureSupplier {
@@ -28,7 +28,7 @@ public abstract class MapStructure implements Collidable, CustomDataHolder {
 
 	static {
 		mapStructureCreator.put(Structure.Harvestable.class, HarvestableStructure::new);
-		mapStructureCreator.put(Structure.ShortLived.class, ShortLivedStructure::new);
+		mapStructureCreator.put(Structure.ShortLived.class, FixedTermStructure::new);
 	}
 
 	private Chunk chunk;

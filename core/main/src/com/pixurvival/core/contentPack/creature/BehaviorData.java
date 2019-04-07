@@ -12,6 +12,7 @@ import lombok.Setter;
 public class BehaviorData {
 
 	public static final long MAX_UPDATE_DELAY_RELATIVE_TO_SPEED = 1000;
+	public static final long CHANGE_CONDITION_CHECK_DELAY = 300;
 
 	public static final long DEFAULT_STANDBY_DELAY = 500;
 
@@ -20,6 +21,8 @@ public class BehaviorData {
 	@Getter
 	@Setter
 	private long beginTimeMillis;
+
+	private long previousChangeConditionCheck;
 
 	private @Getter CreatureEntity creature;
 
@@ -39,6 +42,7 @@ public class BehaviorData {
 		this.creature = creature;
 		time = creature.getWorld().getTime();
 		beginTimeMillis = time.getTimeMillis();
+		previousChangeConditionCheck = time.getTimeMillis();
 	}
 
 	public long getElapsedTimeMillis() {
@@ -72,6 +76,15 @@ public class BehaviorData {
 		double speed = creature.getSpeed();
 		long delayMillis = Math.min(Time.secToMillis(speed > 0 ? targetDistance / speed : 0), MAX_UPDATE_DELAY_RELATIVE_TO_SPEED);
 		setNextUpdateDelayMillis(delayMillis);
+	}
+
+	public boolean mustCheckChangeCondition() {
+		if (time.getTimeMillis() - previousChangeConditionCheck <= CHANGE_CONDITION_CHECK_DELAY) {
+			previousChangeConditionCheck = time.getTimeMillis();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	void beforeStep() {

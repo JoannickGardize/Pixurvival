@@ -1,9 +1,9 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.pixurvival.core.Collidable;
+import com.pixurvival.core.Body;
 
-public interface ElementDrawer<E extends Collidable> {
+public interface ElementDrawer<E extends Body> {
 
 	void update(E e);
 

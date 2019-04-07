@@ -1,6 +1,8 @@
 package com.pixurvival.core.item;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.map.Structure;
@@ -11,6 +13,8 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.livingEntity.ability.Ability;
+import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,11 +41,10 @@ public class Item extends IdentifiedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		private float strengthBonus;
-		private float agilityBonus;
-		private float intelligenceBonus;
 		@ElementReference
 		private SpriteSheet spriteSheet;
+
+		private List<PersistentStatAlteration> alterations = new ArrayList<>();
 
 	}
 
@@ -51,9 +54,13 @@ public class Item extends IdentifiedElement implements Serializable {
 
 	}
 
+	@Getter
+	@Setter
 	public static class Accessory extends Equipable {
 
 		private static final long serialVersionUID = 1L;
+
+		private Ability specialAbility;
 
 	}
 
@@ -63,21 +70,14 @@ public class Item extends IdentifiedElement implements Serializable {
 
 	}
 
-	public abstract static class Weapon extends Equipable {
+	@Getter
+	@Setter
+	public static class Weapon extends Equipable {
 
 		private static final long serialVersionUID = 1L;
 
-	}
-
-	public static class MeleeWeapon extends Weapon {
-
-		private static final long serialVersionUID = 1L;
-
-	}
-
-	public static class RangedWeapon extends Equipable {
-
-		private static final long serialVersionUID = 1L;
+		private Ability baseAbility;
+		private Ability specialAbility;
 
 	}
 

@@ -22,9 +22,9 @@ import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemReward;
-import com.pixurvival.core.livingEntity.StatSet;
-import com.pixurvival.core.livingEntity.StatType;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.stats.StatSet;
+import com.pixurvival.core.livingEntity.stats.StatType;
 
 public class CreatureEditor extends RootElementEditor<Creature> {
 

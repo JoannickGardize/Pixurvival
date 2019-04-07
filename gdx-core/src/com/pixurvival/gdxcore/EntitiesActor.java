@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.pixurvival.core.Collidable;
+import com.pixurvival.core.Body;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
@@ -24,7 +24,7 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.ShortLivedStructure;
+import com.pixurvival.core.map.FixedTermStructure;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
@@ -34,14 +34,14 @@ import com.pixurvival.gdxcore.drawer.PlayerDrawer;
 
 public class EntitiesActor extends Actor {
 
-	private Map<Class<? extends Collidable>, ElementDrawer<? extends Collidable>> drawers = new HashMap<>();
-	private List<Collidable> objectsToDraw = new ArrayList<>();
+	private Map<Class<? extends Body>, ElementDrawer<? extends Body>> drawers = new HashMap<>();
+	private List<Body> objectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
 		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
 		drawers.put(HarvestableStructure.class, mapStructureDrawer);
-		drawers.put(ShortLivedStructure.class, mapStructureDrawer);
+		drawers.put(FixedTermStructure.class, mapStructureDrawer);
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());
@@ -82,9 +82,9 @@ public class EntitiesActor extends Actor {
 
 		manageGhostStructure();
 
-		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).drawShadow(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).draw(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Collidable>) drawers.get(e.getClass())).topDraw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).topDraw(batch, e));
 
 	}
 

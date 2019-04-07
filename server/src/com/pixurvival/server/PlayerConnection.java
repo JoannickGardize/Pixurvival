@@ -7,8 +7,8 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.EquipmentListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.StatListener;
-import com.pixurvival.core.livingEntity.StatValue;
+import com.pixurvival.core.livingEntity.stats.StatListener;
+import com.pixurvival.core.livingEntity.stats.StatValue;
 
 import lombok.Getter;
 import lombok.Setter;

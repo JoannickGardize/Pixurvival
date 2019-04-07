@@ -1,7 +1,11 @@
-package com.pixurvival.core.livingEntity;
+package com.pixurvival.core.livingEntity.stats;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.pixurvival.core.livingEntity.Equipment;
+import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
+import com.pixurvival.core.livingEntity.alteration.StatAlterationOperation;
 
 import lombok.Getter;
 
@@ -16,6 +20,7 @@ public class StatValue implements StatListener {
 
 	private List<StatListener> listeners = new ArrayList<>();
 	private float[] equipmentBonuses = new float[Equipment.EQUIPMENT_SIZE];
+	private List<PersistentStatAlteration> alterations = new ArrayList<>();
 
 	public void addListener(StatListener listener) {
 		listeners.add(listener);
@@ -41,9 +46,13 @@ public class StatValue implements StatListener {
 		}
 	}
 
-	public void setEquipmentBonus(int equipmentIndex, float value) {
-		if (equipmentBonuses[equipmentIndex] != value) {
-			equipmentBonuses[equipmentIndex] = value;
+	public void addAlteration(PersistentStatAlteration alteration) {
+		alterations.add(alteration);
+		compute();
+	}
+
+	public void removeAlteration(PersistentStatAlteration alteration) {
+		if (alterations.remove(alteration)) {
 			compute();
 		}
 	}
@@ -54,10 +63,16 @@ public class StatValue implements StatListener {
 	}
 
 	public void compute() {
-		float newValue = base + type.getFormula().apply(statSet);
-		for (int i = 0; i < equipmentBonuses.length; i++) {
-			newValue += equipmentBonuses[i];
+		float absoluteModifier = 0;
+		float relativeModifier = 1;
+		for (PersistentStatAlteration alteration : alterations) {
+			if (alteration.getOperation() == StatAlterationOperation.ADDITIVE) {
+				absoluteModifier += alteration.getValue();
+			} else {
+				relativeModifier += alteration.getValue();
+			}
 		}
+		float newValue = (base + type.getFormula().apply(statSet) + absoluteModifier) * relativeModifier;
 		if (newValue != value) {
 			value = newValue;
 			listeners.forEach(l -> l.changed(this));

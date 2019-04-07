@@ -2,12 +2,14 @@ package com.pixurvival.core.livingEntity;
 
 import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
+import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.message.PlayerData;
@@ -17,6 +19,8 @@ import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder {
+
+	public static final int INVENTORY_SIZE = 32;
 
 	public static final int CRAFT_ABILITY_ID = 0;
 	public static final int HARVEST_ABILITY_ID = 1;
@@ -38,7 +42,12 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	private ChunkPosition chunkPosition;
 
 	public PlayerEntity() {
-		equipment.addListener(getStats());
+		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
+			if (previousItemStack != null) {
+				((Equipable) previousItemStack.getItem().getDetails()).getAlterations().forEach(a -> a.supply(this));
+			}
+			((Equipable) newItemStack.getItem().getDetails()).getAlterations().forEach(a -> a.apply(this));
+		});
 	}
 
 	public void setInventory(PlayerInventory inventory) {
@@ -49,7 +58,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public void initialize() {
 		super.initialize();
 		if (getWorld().isServer()) {
-			setInventory(new PlayerInventory(getInventorySize()));
+			setInventory(new PlayerInventory(INVENTORY_SIZE));
 		}
 	}
 
@@ -66,10 +75,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public double getBoundingRadius() {
 		return 0.42;
-	}
-
-	public int getInventorySize() {
-		return 32;
 	}
 
 	public void craft(ItemCraft itemCraft) {

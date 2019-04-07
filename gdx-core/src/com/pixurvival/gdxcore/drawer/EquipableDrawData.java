@@ -1,10 +1,10 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.pixurvival.core.item.Item.Equipable;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.EquipmentHolder;
 import com.pixurvival.core.livingEntity.EquipmentListener;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
@@ -28,8 +28,7 @@ public class EquipableDrawData extends DrawData implements EquipmentListener {
 	}
 
 	@Override
-	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack,
-			ItemStack newItemStack) {
+	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack, ItemStack newItemStack) {
 		updateAnimationSet(equipmentIndex, newItemStack);
 	}
 
@@ -37,8 +36,7 @@ public class EquipableDrawData extends DrawData implements EquipmentListener {
 		if (newItemStack == null) {
 			textureAnimationSets[equipmentIndex] = defaultTextureAnimationSets[equipmentIndex];
 		} else {
-			textureAnimationSets[equipmentIndex] = PixurvivalGame.getContentPackTextures()
-					.getAnimationSet(((Equipable) newItemStack.getItem().getDetails()).getSpriteSheet());
+			textureAnimationSets[equipmentIndex] = PixurvivalGame.getContentPackTextures().getAnimationSet(((Equipable) newItemStack.getItem().getDetails()).getSpriteSheet());
 		}
 	}
 }

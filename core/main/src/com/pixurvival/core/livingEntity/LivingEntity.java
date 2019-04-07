@@ -1,12 +1,16 @@
 package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.Damageable;
 import com.pixurvival.core.Entity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.stats.StatSet;
+import com.pixurvival.core.livingEntity.stats.StatType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +26,8 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	private AbilityData[] abilityData;
 	private Ability currentAbility;
+
+	private List<EntityGraft> grafts = new ArrayList<>();
 
 	@Override
 	public void initialize() {
@@ -66,6 +72,16 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	@Override
 	public void update() {
+
+		grafts.removeIf(graft -> {
+			graft.update();
+			return graft.getTermTimeMillis() >= getWorld().getTime().getTimeMillis();
+		});
+
+		for (int i = 0; i < grafts.size(); i++) {
+
+		}
+
 		super.update();
 
 		// Only server has the final decision to kill an alive entity
@@ -80,10 +96,13 @@ public abstract class LivingEntity extends Entity implements Damageable {
 				currentAbility = null;
 			}
 		}
-
 	}
 
 	public AbilityData getAbilityData(int abilityId) {
+		return abilityData[abilityId];
+	}
+
+	public AbilityData setAbilityData(int abilityId) {
 		return abilityData[abilityId];
 	}
 

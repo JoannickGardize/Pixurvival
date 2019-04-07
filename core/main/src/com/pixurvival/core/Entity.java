@@ -10,8 +10,16 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Classe abstraite de tout objet du monde : joueur, créatures, items,
+ * projectiles...
+ * 
+ * 
+ * @author SharkHendrix
+ *
+ */
 @Getter
-public abstract class Entity implements Collidable, CustomDataHolder {
+public abstract class Entity implements Body, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter(AccessLevel.PACKAGE) World world;

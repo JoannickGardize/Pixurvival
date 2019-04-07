@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity;
+package com.pixurvival.core.livingEntity.stats;
 
 public interface StatListener {
 
