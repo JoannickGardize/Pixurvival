@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.livingEntity.Equipment;
-import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
-import com.pixurvival.core.livingEntity.alteration.StatAlterationOperation;
 
 import lombok.Getter;
 
@@ -20,7 +18,7 @@ public class StatValue implements StatListener {
 
 	private List<StatListener> listeners = new ArrayList<>();
 	private float[] equipmentBonuses = new float[Equipment.EQUIPMENT_SIZE];
-	private List<PersistentStatAlteration> alterations = new ArrayList<>();
+	private List<StatModifier> modifiers = new ArrayList<>();
 
 	public void addListener(StatListener listener) {
 		listeners.add(listener);
@@ -46,13 +44,13 @@ public class StatValue implements StatListener {
 		}
 	}
 
-	public void addAlteration(PersistentStatAlteration alteration) {
-		alterations.add(alteration);
+	public void addModifier(StatModifier modifier) {
+		modifiers.add(modifier);
 		compute();
 	}
 
-	public void removeAlteration(PersistentStatAlteration alteration) {
-		if (alterations.remove(alteration)) {
+	public void removeModifier(StatModifier modifier) {
+		if (modifiers.remove(modifier)) {
 			compute();
 		}
 	}
@@ -65,11 +63,11 @@ public class StatValue implements StatListener {
 	public void compute() {
 		float absoluteModifier = 0;
 		float relativeModifier = 1;
-		for (PersistentStatAlteration alteration : alterations) {
-			if (alteration.getOperation() == StatAlterationOperation.ADDITIVE) {
-				absoluteModifier += alteration.getValue();
+		for (StatModifier modifier : modifiers) {
+			if (modifier.getOperationType() == StatModifier.OperationType.ADDITIVE) {
+				absoluteModifier += modifier.getValue();
 			} else {
-				relativeModifier += alteration.getValue();
+				relativeModifier += modifier.getValue();
 			}
 		}
 		float newValue = (base + type.getFormula().apply(statSet) + absoluteModifier) * relativeModifier;
@@ -78,5 +76,4 @@ public class StatValue implements StatListener {
 			listeners.forEach(l -> l.changed(this));
 		}
 	}
-
 }

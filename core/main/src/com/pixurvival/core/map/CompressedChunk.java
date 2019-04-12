@@ -59,12 +59,12 @@ public class CompressedChunk {
 		long updateTimestamp = buffer.getLong();
 		Chunk chunk = new Chunk(map, x, y);
 		chunk.setUpdateTimestamp(updateTimestamp);
-		MapTile[] data = chunk.getTiles();
+		MapTile[] chunkData = chunk.getTiles();
 		int dataPosition = 0;
 		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
 			byte length = buffer.get();
 			MapTile tile = map.getMapTilesById()[buffer.get()];
-			Arrays.fill(data, dataPosition, dataPosition + length, tile);
+			Arrays.fill(chunkData, dataPosition, dataPosition + length, tile);
 			dataPosition += length;
 		}
 		int structureCount = buffer.getShort();

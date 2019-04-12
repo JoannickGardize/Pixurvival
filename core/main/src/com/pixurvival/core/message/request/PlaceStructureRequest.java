@@ -4,8 +4,8 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.item.Item.StructureDetails;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.Item.StructureDetails;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.MapStructure;
 

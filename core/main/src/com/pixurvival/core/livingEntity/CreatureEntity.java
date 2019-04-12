@@ -1,21 +1,27 @@
 package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
+import java.util.function.Consumer;
 
-import com.pixurvival.core.Entity;
-import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.effect.TargetType;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.util.MoveUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
 	private static final AbilitySet EMPTY_ABILITY_SET = new AbilitySet();
@@ -24,11 +30,7 @@ public class CreatureEntity extends LivingEntity {
 
 	private @Getter @Setter Behavior currentBehavior;
 	private @Getter @Setter BehaviorData behaviorData;
-	private @Getter Creature definition;
-
-	public CreatureEntity(Creature definition) {
-		this.definition = definition;
-	}
+	private @Getter @NonNull Creature definition;
 
 	@Override
 	public void initialize() {
@@ -97,12 +99,33 @@ public class CreatureEntity extends LivingEntity {
 	@Override
 	public void writeUpdate(ByteBuffer buffer) {
 		super.writeUpdate(buffer);
-		buffer.put((byte) definition.getId());
+		buffer.putShort((short) definition.getId());
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
 		super.applyUpdate(buffer);
-		definition = getWorld().getContentPack().getCreatures().get(buffer.get());
+		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
+	}
+
+	@Override
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void foreach(TargetType targetType, Consumer<LivingEntity> action) {
+		EntityPool entityPool = getWorld().getEntityPool();
+		switch (targetType) {
+		case ALL_ENEMIES:
+			entityPool.get(EntityGroup.PLAYER).forEach((Consumer) action);
+			break;
+		case ALL_ALLIES:
+			entityPool.get(EntityGroup.CREATURE).forEach((Consumer) action);
+			break;
+		case OTHER_ALLIES:
+			for (Entity entity : entityPool.get(EntityGroup.CREATURE)) {
+				if (!this.equals(entity)) {
+					action.accept((LivingEntity) entity);
+				}
+			}
+			break;
+		}
 	}
 }

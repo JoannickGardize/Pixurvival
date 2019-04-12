@@ -14,7 +14,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.Ability;
-import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
+import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,7 +44,7 @@ public class Item extends IdentifiedElement implements Serializable {
 		@ElementReference
 		private SpriteSheet spriteSheet;
 
-		private List<PersistentStatAlteration> alterations = new ArrayList<>();
+		private List<StatModifier> statModifiers = new ArrayList<>();
 
 	}
 
@@ -67,7 +67,6 @@ public class Item extends IdentifiedElement implements Serializable {
 	public static class Clothing extends Equipable {
 
 		private static final long serialVersionUID = 1L;
-
 	}
 
 	@Getter
@@ -78,7 +77,6 @@ public class Item extends IdentifiedElement implements Serializable {
 
 		private Ability baseAbility;
 		private Ability specialAbility;
-
 	}
 
 	@Getter

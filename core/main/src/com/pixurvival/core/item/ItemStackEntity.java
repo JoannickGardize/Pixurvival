@@ -2,8 +2,8 @@ package com.pixurvival.core.item;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.Entity;
-import com.pixurvival.core.EntityGroup;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
@@ -98,9 +98,9 @@ public class ItemStackEntity extends Entity {
 			speedInterpolation.update(getWorld());
 			setMovingAngle(angleToward(magnetTarget));
 			setForward(true);
-			if (collideDynamic(magnetTarget)) {
-				setAlive(false);
-				if (getWorld().isServer()) {
+			if (getWorld().isServer()) {
+				if (collideDynamic(magnetTarget)) {
+					setAlive(false);
 					ItemStack rest = magnetTarget.getInventory().add(itemStack);
 					if (rest != null) {
 						setAlive(true);
@@ -114,7 +114,7 @@ public class ItemStackEntity extends Entity {
 			break;
 		case SPAWNING:
 			setForward(true);
-			setMovingAngle(getPosition().angleTo(spawnTarget));
+			setMovingAngle(getPosition().angleToward(spawnTarget));
 			double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
 			spawnProgress += deltaSpeed;
 			if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {

@@ -5,8 +5,8 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.item.Item.StructureDetails;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
@@ -34,15 +34,13 @@ public class WorldMouseProcessor extends InputAdapter {
 				Vector2 worldPoint = screenToWorld(screenX, screenY);
 				int x = (int) Math.floor(worldPoint.x);
 				int y = (int) Math.floor(worldPoint.y);
-				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(),
-						((StructureDetails) heldItemStack.getItem().getDetails()).getStructure(), x, y)) {
+				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(), ((StructureDetails) heldItemStack.getItem().getDetails()).getStructure(), x, y)) {
 					PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
 				}
 			} else {
 				MapStructure structure = findClosest(screenX, screenY, 1);
 				if (structure instanceof HarvestableStructure && structure.canInteract(myPlayer)) {
-					PixurvivalGame.getClient()
-							.sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
+					PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 				}
 			}
 		} else if (button == Input.Buttons.LEFT && heldItemStack != null) {
@@ -60,7 +58,7 @@ public class WorldMouseProcessor extends InputAdapter {
 
 	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {
 		Vector2 worldPoint = screenToWorld(screenX, screenY);
-		return player.getPosition().angleTo(worldPoint.x, worldPoint.y);
+		return player.getPosition().angleToward(worldPoint.x, worldPoint.y);
 	}
 
 	private MapStructure findClosest(int screenX, int screenY, int radius) {

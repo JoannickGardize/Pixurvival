@@ -1,6 +1,7 @@
 package com.pixurvival.core.contentPack.effect;
 
-public enum TargetGroup {
+public enum TargetType {
 	ALL_ENEMIES,
-	ALLIES;
+	ALL_ALLIES,
+	OTHER_ALLIES
 }

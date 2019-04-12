@@ -10,7 +10,7 @@ import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item.Equipable;
-import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
+import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 public abstract class EquipableEditor<T extends Equipable> extends ElementEditor<T> {
 
@@ -23,12 +23,12 @@ public abstract class EquipableEditor<T extends Equipable> extends ElementEditor
 
 		// Construction
 
-		ListEditor<PersistentStatAlteration> alterationListEditor = new VerticalListEditor<>(PersistentStatAlterationEditor::new, PersistentStatAlteration::new);
+		ListEditor<StatModifier> alterationListEditor = new VerticalListEditor<>(StatModifierEditor::new, StatModifier::new);
 
 		// Binding
 
 		bind(spriteSheetChooser, Equipable::getSpriteSheet, Equipable::setSpriteSheet);
-		bind(alterationListEditor, Equipable::getAlterations, Equipable::setAlterations);
+		bind(alterationListEditor, Equipable::getStatModifiers, Equipable::setStatModifiers);
 
 		// Layouting
 

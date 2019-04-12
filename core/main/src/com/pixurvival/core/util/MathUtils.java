@@ -40,4 +40,7 @@ public class MathUtils {
 		return start + (end - start) * alpha;
 	}
 
+	public static double oppositeDirection(double angle) {
+		return angle + Math.PI;
+	}
 }

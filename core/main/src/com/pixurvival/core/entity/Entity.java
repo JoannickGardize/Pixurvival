@@ -1,12 +1,16 @@
-package com.pixurvival.core;
+package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.Body;
+import com.pixurvival.core.CustomDataHolder;
+import com.pixurvival.core.World;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +23,7 @@ import lombok.Setter;
  *
  */
 @Getter
+@EqualsAndHashCode(of = "id")
 public abstract class Entity implements Body, CustomDataHolder {
 
 	private @Setter long id;
@@ -147,11 +152,11 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public double angleToward(Entity other) {
-		return position.angleTo(other.position);
+		return position.angleToward(other.position);
 	}
 
 	public double angleToward(MapStructure structure) {
-		return position.angleTo(new Vector2(structure.getX(), structure.getY()));
+		return position.angleToward(new Vector2(structure.getX(), structure.getY()));
 	}
 
 	public boolean collide(Entity other) {
@@ -159,7 +164,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), targetVelocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
+		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
 	}
-
 }

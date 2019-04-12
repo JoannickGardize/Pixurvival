@@ -1,12 +1,19 @@
 package com.pixurvival.core.livingEntity;
 
-import com.pixurvival.core.EntityGroup;
+import java.util.function.Consumer;
+
+import com.pixurvival.core.contentPack.effect.TargetType;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
@@ -24,12 +31,20 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final int CRAFT_ABILITY_ID = 0;
 	public static final int HARVEST_ABILITY_ID = 1;
+	public static final int WEAPON_BASE_ABILITY_ID = 2;
+	public static final int WEAPON_SPECIAL_ABILITY_ID = 3;
+	public static final int ACCESSORY1_SPECIAL_ABILITY_ID = 4;
+	public static final int ACCESSORY2_SPECIAL_ABILITY_ID = 5;
 
 	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
 
 	static {
 		PLAYER_ABILITY_SET.add(new CraftAbility());
 		PLAYER_ABILITY_SET.add(new HarvestAbility());
+		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_BASE));
+		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
+		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
+		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
 
 	private @Setter String name;
@@ -41,12 +56,14 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Setter
 	private ChunkPosition chunkPosition;
 
+	private @Getter short teamId;
+
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
 			if (previousItemStack != null) {
-				((Equipable) previousItemStack.getItem().getDetails()).getAlterations().forEach(a -> a.supply(this));
+				((Equipable) previousItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().addModifier(m));
 			}
-			((Equipable) newItemStack.getItem().getDetails()).getAlterations().forEach(a -> a.apply(this));
+			((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 		});
 	}
 
@@ -109,5 +126,41 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public AbilitySet getAbilitySet() {
 		return PLAYER_ABILITY_SET;
+	}
+
+	@Override
+	public void foreach(TargetType targetType, Consumer<LivingEntity> action) {
+		switch (targetType) {
+		case ALL_ENEMIES:
+			foreachEnemies(action);
+			break;
+		case ALL_ALLIES:
+			foreachAllies(action, true);
+			break;
+		case OTHER_ALLIES:
+			foreachAllies(action, false);
+			break;
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void foreachEnemies(Consumer<LivingEntity> action) {
+		EntityPool entityPool = getWorld().getEntityPool();
+		for (Entity entity : entityPool.get(EntityGroup.PLAYER)) {
+			PlayerEntity playerEntity = (PlayerEntity) entity;
+			if (playerEntity.teamId != teamId) {
+				action.accept(playerEntity);
+			}
+		}
+		entityPool.get(EntityGroup.CREATURE).forEach((Consumer) action);
+	}
+
+	public void foreachAllies(Consumer<LivingEntity> action, boolean includeSelf) {
+		for (Entity entity : getWorld().getEntityPool().get(EntityGroup.PLAYER)) {
+			PlayerEntity playerEntity = (PlayerEntity) entity;
+			if (playerEntity.teamId == teamId && (includeSelf || !this.equals(playerEntity))) {
+				action.accept(playerEntity);
+			}
+		}
 	}
 }

@@ -5,6 +5,8 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 
 public abstract class WorkAbility extends Ability {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public boolean canMove() {
 		return false;

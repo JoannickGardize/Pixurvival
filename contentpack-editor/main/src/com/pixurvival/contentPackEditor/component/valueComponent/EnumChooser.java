@@ -9,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import com.pixurvival.contentPackEditor.component.util.EnumConstantCellRenderer;
+import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
 
@@ -21,8 +22,12 @@ public class EnumChooser<E extends Enum<E>> extends JComboBox<E> implements Valu
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 
 	public EnumChooser(Class<E> type) {
+		this(type, CaseUtils.pascalToCamelCase(type.getSimpleName()));
+	}
+
+	public EnumChooser(Class<E> type, String translationPreffix) {
 		super(type.getEnumConstants());
-		setRenderer(new EnumConstantCellRenderer());
+		setRenderer(new EnumConstantCellRenderer(translationPreffix));
 		addItemListener(e -> {
 			if (isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
 				listeners.forEach(l -> l.valueChanged(getValue()));

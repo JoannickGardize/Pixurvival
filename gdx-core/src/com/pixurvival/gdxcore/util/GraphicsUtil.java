@@ -2,7 +2,7 @@ package com.pixurvival.gdxcore.util;
 
 import com.badlogic.gdx.Gdx;
 import com.pixurvival.core.CustomDataHolder;
-import com.pixurvival.core.Entity;
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 

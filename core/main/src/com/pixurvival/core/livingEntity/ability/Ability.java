@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import java.io.Serializable;
+
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
@@ -13,9 +15,11 @@ import lombok.Setter;
  * containing this ability. This id is used to share the current ability used by
  * an entity between the server and the clients.
  * 
- * @author jojog
+ * @author SharkHendrix
  */
-public abstract class Ability {
+public abstract class Ability implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final byte NONE_ID = -1;
 
@@ -38,8 +42,7 @@ public abstract class Ability {
 	/**
 	 * Indicates if the entity can move or not when using this ability.
 	 * 
-	 * @return true if the entity can move when using this ability, false
-	 *         otherwise.
+	 * @return true if the entity can move when using this ability, false otherwise.
 	 */
 	public boolean canMove() {
 		return true;
@@ -47,17 +50,16 @@ public abstract class Ability {
 
 	/**
 	 * @param entity
-	 * @return The animation to play, or null if no special animation is
-	 *         required.
+	 * @return The animation to play, or null if no special animation is required.
 	 */
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
 		return null;
 	}
 
 	/**
-	 * Called when the entity starts using this ability. If data is needed to
-	 * start this ability (e.g. The item to craft), The {@link AbilityData} must
-	 * be set correctly before.
+	 * Called when the entity starts using this ability. If data is needed to start
+	 * this ability (e.g. The item to craft), The {@link AbilityData} must be set
+	 * correctly before.
 	 * 
 	 * @param entity
 	 * @return true if the ability has started successfully, false otherwise (it
@@ -74,12 +76,12 @@ public abstract class Ability {
 	public abstract boolean update(LivingEntity entity);
 
 	/**
-	 * Called when the ability is interrupted, or terminated by returning true
-	 * in the {@link #update(LivingEntity)} method.
+	 * Called when the ability is interrupted, or terminated by returning true in
+	 * the {@link #update(LivingEntity)} method.
 	 * 
 	 * @param entity
-	 * @return true if the ability has ended successfully, false otherwise (it
-	 *         will continue).
+	 * @return true if the ability has ended successfully, false otherwise (it will
+	 *         continue).
 	 */
 	public abstract boolean stop(LivingEntity entity);
 }

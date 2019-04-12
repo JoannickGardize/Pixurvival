@@ -1,4 +1,4 @@
-package com.pixurvival.core;
+package com.pixurvival.core.entity;
 
 public interface EntityPoolListener {
 

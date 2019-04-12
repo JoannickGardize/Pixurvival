@@ -10,6 +10,8 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 
 public class CraftAbility extends WorkAbility {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public boolean start(LivingEntity entity) {
 		super.start(entity);

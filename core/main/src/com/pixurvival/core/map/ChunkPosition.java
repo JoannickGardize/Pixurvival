@@ -22,7 +22,7 @@ public class ChunkPosition {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == null || !(other instanceof ChunkPosition)) {
+		if (!(other instanceof ChunkPosition)) {
 			return false;
 		}
 		ChunkPosition otherChunkPosition = (ChunkPosition) other;

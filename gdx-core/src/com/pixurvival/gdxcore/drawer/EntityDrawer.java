@@ -1,7 +1,7 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.Gdx;
-import com.pixurvival.core.Entity;
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
@@ -24,7 +24,7 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 			drawPos.set(position);
 		} else {
 			double speed = e.getSpeed() + (distance / (5 * 5)) * (e.getSpeed() * 2);
-			double angle = drawPos.angleTo(position);
+			double angle = drawPos.angleToward(position);
 			// reuse of position instance
 			drawPos.add(position.setFromEuclidean(speed * Gdx.graphics.getRawDeltaTime(), angle));
 		}

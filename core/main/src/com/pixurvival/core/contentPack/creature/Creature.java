@@ -32,11 +32,9 @@ public class Creature extends IdentifiedElement {
 	@ElementReference
 	private BehaviorSet behaviorSet;
 
-	@Required
 	@ElementReference
 	private ItemReward itemReward;
 
-	@Required
 	@ElementReference
 	private AbilitySet abilitySet;
 }

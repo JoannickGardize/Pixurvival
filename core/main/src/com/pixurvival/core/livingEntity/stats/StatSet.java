@@ -3,8 +3,6 @@ package com.pixurvival.core.livingEntity.stats;
 import java.util.EnumMap;
 import java.util.Map;
 
-import com.pixurvival.core.livingEntity.alteration.PersistentStatAlteration;
-
 public class StatSet {
 
 	private Map<StatType, StatValue> stats = new EnumMap<>(StatType.class);
@@ -32,11 +30,11 @@ public class StatSet {
 		return stats.get(type);
 	}
 
-	public void addAlteration(PersistentStatAlteration alteration) {
-		stats.get(alteration.getStatType()).addAlteration(alteration);
+	public void addModifier(StatModifier modifier) {
+		stats.get(modifier.getStatType()).addModifier(modifier);
 	}
 
-	public void removeAlteration(PersistentStatAlteration alteration) {
-		stats.get(alteration.getStatType()).removeAlteration(alteration);
+	public void removeModifier(StatModifier modifier) {
+		stats.get(modifier.getStatType()).removeModifier(modifier);
 	}
 }

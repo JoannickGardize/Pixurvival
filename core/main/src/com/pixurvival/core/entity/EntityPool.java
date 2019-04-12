@@ -1,4 +1,4 @@
-package com.pixurvival.core;
+package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
 /**

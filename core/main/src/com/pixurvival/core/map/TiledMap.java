@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.Entity;
-import com.pixurvival.core.EntityGroup;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;

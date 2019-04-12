@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -74,6 +75,10 @@ public class ContentPack implements Serializable {
 	@Valid
 	@ElementCollection(Creature.class)
 	private List<Creature> creatures = new ArrayList<>();
+
+	@Valid
+	@ElementCollection(Effect.class)
+	private List<Effect> effects = new ArrayList<>();
 
 	@Valid
 	@ElementCollection(Tile.class)

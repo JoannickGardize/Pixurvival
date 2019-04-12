@@ -13,6 +13,8 @@ import java.util.UUID;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.map.TiledMap;
@@ -44,7 +46,7 @@ public class World {
 
 	private static long nextId = 0;
 	private static Map<Long, World> worlds = new HashMap<>();
-	private @Getter static ContentPack currentContentPack;
+	private static @Getter ContentPack currentContentPack;
 	private Type type;
 	private Time time = new Time();
 	private TiledMap map;

@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -49,10 +50,14 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	@Override
 	public void setValue(List<E> value) {
-		super.setValue(value);
+		List<E> nonNullValue = value;
+		if (nonNullValue == null) {
+			nonNullValue = new ArrayList<>();
+		}
+		super.setValue(nonNullValue);
 		listPanel.removeAll();
-		for (int i = 0; i < value.size(); i++) {
-			E element = value.get(i);
+		for (int i = 0; i < nonNullValue.size(); i++) {
+			E element = nonNullValue.get(i);
 			addComponent(i, element);
 		}
 		listPanel.revalidate();

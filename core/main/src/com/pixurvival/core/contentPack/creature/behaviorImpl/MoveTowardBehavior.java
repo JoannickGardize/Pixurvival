@@ -1,9 +1,9 @@
 package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
-import com.pixurvival.core.Entity;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;

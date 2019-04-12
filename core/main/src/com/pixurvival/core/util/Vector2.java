@@ -62,6 +62,12 @@ public class Vector2 {
 		return this;
 	}
 
+	public Vector2 addEuclidean(double length, double direction) {
+		x += Math.cos(direction) * length;
+		y += Math.sin(direction) * length;
+		return this;
+	}
+
 	public Vector2 sub(Vector2 v) {
 		x -= v.getX();
 		y -= v.getY();
@@ -92,11 +98,11 @@ public class Vector2 {
 		return Math.atan2(y, x);
 	}
 
-	public double angleTo(Vector2 other) {
+	public double angleToward(Vector2 other) {
 		return Math.atan2(other.y - y, other.x - x);
 	}
 
-	public double angleTo(double x, double y) {
+	public double angleToward(double x, double y) {
 		return Math.atan2(y - this.y, x - this.x);
 	}
 

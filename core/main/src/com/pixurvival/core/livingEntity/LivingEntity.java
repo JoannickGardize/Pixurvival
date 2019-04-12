@@ -3,14 +3,20 @@ package com.pixurvival.core.livingEntity;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.Damageable;
-import com.pixurvival.core.Entity;
+import com.pixurvival.core.Time;
+import com.pixurvival.core.contentPack.effect.TargetType;
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
+import com.pixurvival.core.livingEntity.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +33,9 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	private AbilityData[] abilityData;
 	private Ability currentAbility;
 
-	private List<EntityGraft> grafts = new ArrayList<>();
+	private Vector2 targetPosition = new Vector2();
+
+	private List<PersistentAlterationEntry> persistentAlterationEntries = new ArrayList<>();
 
 	@Override
 	public void initialize() {
@@ -70,17 +78,25 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		}
 	}
 
+	public void applyPersistentAlteration(Object source, PersistentAlteration alteration) {
+		PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
+		if (alteration.getStackPolicy().getProcessor().test(persistentAlterationEntries, entry)) {
+			entry.setTermTimeMillis(Time.secToMillis(alteration.getDuration()) + getWorld().getTime().getTimeMillis());
+			entry.getAlteration().begin(this);
+		}
+	}
+
 	@Override
 	public void update() {
-
-		grafts.removeIf(graft -> {
-			graft.update();
-			return graft.getTermTimeMillis() >= getWorld().getTime().getTimeMillis();
+		long timeMillis = getWorld().getTime().getTimeMillis();
+		persistentAlterationEntries.removeIf(entry -> {
+			entry.getAlteration().update(this);
+			if (entry.getTermTimeMillis() >= timeMillis) {
+				entry.getAlteration().end(this);
+				return true;
+			}
+			return false;
 		});
-
-		for (int i = 0; i < grafts.size(); i++) {
-
-		}
 
 		super.update();
 
@@ -165,4 +181,6 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	}
 
 	public abstract AbilitySet getAbilitySet();
+
+	public abstract void foreach(TargetType targetType, Consumer<LivingEntity> action);
 }

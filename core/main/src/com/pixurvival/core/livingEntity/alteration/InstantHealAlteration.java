@@ -4,10 +4,12 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 
 public class InstantHealAlteration implements Alteration {
 
+	private static final long serialVersionUID = 1L;
+
 	private float amount;
 
 	@Override
-	public void apply(LivingEntity entity) {
+	public void apply(Object source, LivingEntity entity) {
 		entity.takeHeal(amount);
 	}
 

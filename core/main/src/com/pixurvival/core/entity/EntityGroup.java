@@ -1,4 +1,4 @@
-package com.pixurvival.core;
+package com.pixurvival.core.entity;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -9,7 +9,8 @@ import lombok.Getter;
 public enum EntityGroup {
 	PLAYER,
 	ITEM_STACK,
-	CREATURE;
+	CREATURE,
+	EFFECT;
 
 	static {
 		for (byte i = 0; i < EntityGroup.values().length; i++) {

@@ -10,6 +10,8 @@ import com.pixurvival.core.map.HarvestableStructure;
 
 public class HarvestAbility extends WorkAbility {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public AbilityData createAbilityData() {
 		return new HarvestAbilityData();

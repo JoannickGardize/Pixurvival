@@ -1,10 +1,14 @@
 package com.pixurvival.core.contentPack.effect;
 
-import com.pixurvival.core.effect.EffectEntity;
+import java.io.Serializable;
 
-public abstract class EffectMovement {
+import com.pixurvival.core.entity.EffectEntity;
 
-	public abstract void initialize(EffectEntity entity);
+public interface EffectMovement extends Serializable {
 
-	public abstract void update(EffectEntity entity);
+	void initialize(EffectEntity entity);
+
+	void update(EffectEntity entity);
+
+	double getSpeedPotential();
 }

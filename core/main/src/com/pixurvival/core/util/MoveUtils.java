@@ -1,6 +1,6 @@
 package com.pixurvival.core.util;
 
-import com.pixurvival.core.Entity;
+import com.pixurvival.core.entity.Entity;
 
 import lombok.experimental.UtilityClass;
 

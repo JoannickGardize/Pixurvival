@@ -57,11 +57,11 @@ public class ChunkManager extends EngineThread {
 		}
 	}
 
-	private @Getter static ChunkManager instance = new ChunkManager();
+	private static @Getter ChunkManager instance = new ChunkManager();
 
-	private Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
-	private List<ChunkPosition> tmpPositions = new ArrayList<>();
-	private List<Chunk> tmpChunks = new ArrayList<>();
+	private final Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
+	private final List<ChunkPosition> tmpPositions = new ArrayList<>();
+	private final List<Chunk> tmpChunks = new ArrayList<>();
 
 	private ChunkManager() {
 		super("Chunk Manager");
@@ -70,16 +70,16 @@ public class ChunkManager extends EngineThread {
 		start();
 	}
 
-	public void requestChunk(final TiledMap map, ChunkPosition position) {
+	public void requestChunk(TiledMap map, ChunkPosition position) {
 		synchronized (map) {
-			TiledMapEntry entry = tiledMaps.get(map);
-			if (entry == null) {
-				entry = new TiledMapEntry(map);
-				entry.refreshList();
-				tiledMaps.put(map, entry);
-			}
+			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, m -> {
+				TiledMapEntry result = new TiledMapEntry(m);
+				result.refreshList();
+				return result;
+			});
 			entry.requestedPositions.add(position);
 		}
+
 	}
 
 	public void stopManaging(final TiledMap map) {
