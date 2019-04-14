@@ -198,7 +198,7 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 		model.clear();
-		List<IdentifiedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
+		List<? extends IdentifiedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
 		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ElementType.of(e).getElementEditor().isValueValid(e))));
 	}
 

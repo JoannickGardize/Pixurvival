@@ -115,12 +115,13 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields has
-	 * been updated.
+	 * Called after the value of this editor has been changed and all sub fields
+	 * has been updated.
 	 * 
 	 * @param value
 	 */
 	protected void valueChanged(ValueComponent<?> source) {
+		// optional overwrite
 	}
 
 }

@@ -52,11 +52,12 @@ public class ContentPackEditionService {
 	}
 
 	@SneakyThrows
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addElement(ElementType type, String name) {
 		if (FileService.getInstance().getCurrentContentPack() == null) {
 			return;
 		}
-		List<IdentifiedElement> list = listOf(type);
+		List list = listOf(type);
 		IdentifiedElement newElement = type.getElementClass().newInstance();
 		newElement.setName(name);
 		newElement.setId(list.size());
@@ -70,7 +71,7 @@ public class ContentPackEditionService {
 
 	public void removeElement(IdentifiedElement element) {
 		ElementType type = ElementType.of(element);
-		List<IdentifiedElement> list = listOf(type);
+		List<? extends IdentifiedElement> list = listOf(type);
 		list.remove(element);
 		reindex(list);
 		EventManager.getInstance().fire(new ElementRemovedEvent(element));
@@ -78,7 +79,7 @@ public class ContentPackEditionService {
 
 	@SuppressWarnings("unchecked")
 	@SneakyThrows
-	public List<IdentifiedElement> listOf(ElementType type) {
+	public List<? extends IdentifiedElement> listOf(ElementType type) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
 			return Collections.emptyList();
@@ -96,7 +97,7 @@ public class ContentPackEditionService {
 				&& ResourcesService.getInstance().getResource(spriteSheet.getImage()) != null;
 	}
 
-	private void reindex(List<IdentifiedElement> list) {
+	private void reindex(List<? extends IdentifiedElement> list) {
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setId(i);
 		}

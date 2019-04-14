@@ -1,5 +1,7 @@
 package com.pixurvival.contentPackEditor.component.item;
 
+import javax.swing.JPanel;
+
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
@@ -12,11 +14,16 @@ import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
+import lombok.Getter;
+
 public abstract class EquipableEditor<T extends Equipable> extends ElementEditor<T> {
 
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
+
+	private JPanel leftPanel;
+	private @Getter JPanel rightPanel = new JPanel();
 
 	public EquipableEditor() {
 		EventManager.getInstance().register(this);
@@ -32,13 +39,17 @@ public abstract class EquipableEditor<T extends Equipable> extends ElementEditor
 
 		// Layouting
 
-		alterationListEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.statAlterations"));
-		LayoutUtils.addVertically(this, LayoutUtils.NORMAL_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), alterationListEditor);
+		alterationListEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.statModifiers"));
+		leftPanel = LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), alterationListEditor);
 	}
 
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
+	}
+
+	protected void finalizeLayouting() {
+		LayoutUtils.addSideBySide(this, leftPanel, rightPanel);
 	}
 
 }

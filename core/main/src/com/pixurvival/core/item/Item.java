@@ -14,6 +14,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.Ability;
+import com.pixurvival.core.livingEntity.ability.EffectAbility;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 import lombok.Getter;
@@ -75,8 +76,8 @@ public class Item extends IdentifiedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		private Ability baseAbility;
-		private Ability specialAbility;
+		private EffectAbility baseAbility;
+		private EffectAbility specialAbility;
 	}
 
 	@Getter

@@ -17,15 +17,16 @@ public class EffectAbility extends CooldownAbility {
 	private static final long serialVersionUID = 1L;
 
 	private List<Alteration> selfAlterations;
-	private Effect effect;
+	private List<Effect> effects;
 
 	@Override
 	public void fire(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
 			selfAlterations.forEach(a -> a.apply(this, entity));
-			EffectEntity effectEntity = new EffectEntity(effect, entity);
-			entity.getWorld().getEntityPool().add(effectEntity);
+			for (Effect effect : effects) {
+				EffectEntity effectEntity = new EffectEntity(effect, entity);
+				entity.getWorld().getEntityPool().add(effectEntity);
+			}
 		}
 	}
-
 }

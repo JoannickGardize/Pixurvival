@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.util.BeanUtils;
+
 public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T> {
 
 	private static final long serialVersionUID = 1L;
@@ -25,8 +27,7 @@ public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T>
 	public void addType(Class<?> type, String editorsPackageName) {
 		ElementEditor<T> editor;
 		try {
-			editor = (ElementEditor<T>) Class.forName(editorsPackageName + "." + type.getSimpleName() + "Editor")
-					.newInstance();
+			editor = (ElementEditor<T>) Class.forName(editorsPackageName + "." + type.getSimpleName() + "Editor").newInstance();
 			typesMap.put((Class<? extends T>) type, editor);
 			add(editor, type.getSimpleName());
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
@@ -40,11 +41,7 @@ public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T>
 		}
 		currentType = newType;
 		ElementEditor<T> elementEditor = typesMap.get(newType);
-		try {
-			elementEditor.setValue(newType.newInstance());
-		} catch (InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+		elementEditor.setValue(BeanUtils.newFilledInstance(newType));
 		listeners.forEach(l -> l.valueChanged(elementEditor.getValue()));
 		((CardLayout) getLayout()).show(this, newType.getSimpleName());
 	}

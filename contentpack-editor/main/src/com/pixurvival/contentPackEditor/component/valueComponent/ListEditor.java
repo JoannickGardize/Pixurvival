@@ -66,6 +66,9 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	@Override
 	public boolean isValueValid(List<E> value) {
+		if (value == null) {
+			return false;
+		}
 		if (oneRequired && value.isEmpty()) {
 			return false;
 		}

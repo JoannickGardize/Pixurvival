@@ -140,6 +140,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		case OTHER_ALLIES:
 			foreachAllies(action, false);
 			break;
+		default:
+			break;
 		}
 	}
 

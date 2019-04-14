@@ -7,6 +7,7 @@ import com.pixurvival.contentPackEditor.component.RootElementList;
 import com.pixurvival.contentPackEditor.component.animationTemplate.AnimationTemplateEditor;
 import com.pixurvival.contentPackEditor.component.behaviorSet.BehaviorSetEditor;
 import com.pixurvival.contentPackEditor.component.creature.CreatureEditor;
+import com.pixurvival.contentPackEditor.component.effect.EffectEditor;
 import com.pixurvival.contentPackEditor.component.equipmentOffset.EquipmentOffsetEditor;
 import com.pixurvival.contentPackEditor.component.item.ItemEditor;
 import com.pixurvival.contentPackEditor.component.itemCraft.ItemCraftEditor;
@@ -19,6 +20,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -42,6 +44,7 @@ public enum ElementType {
 	ITEM(Item.class, new ItemEditor()),
 	ITEM_CRAFT(ItemCraft.class, new ItemCraftEditor()),
 	ITEM_REWARD(ItemReward.class, new ItemRewardEditor()),
+	EFFECT(Effect.class, new EffectEditor()),
 	BEHAVIOR_SET(BehaviorSet.class, new BehaviorSetEditor()),
 	CREATURE(Creature.class, new CreatureEditor()),
 	TILE(Tile.class, new TileEditor()),

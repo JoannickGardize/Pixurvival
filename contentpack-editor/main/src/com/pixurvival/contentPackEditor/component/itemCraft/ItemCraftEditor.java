@@ -9,11 +9,10 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 
@@ -39,8 +38,6 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 		LayoutUtils.addHorizontalLabelledItem(rightPanel, "itemCraftEditor.duration", durationField, gbc);
 
 		LayoutUtils.addSideBySide(this, recipesList, rightPanel);
-
-		EventManager.getInstance().register(this);
 	}
 
 	@EventListener

@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.NONE)
 public class VisitorContext {
 
-	private @Getter static VisitorContext instance = new VisitorContext();
+	private static @Getter VisitorContext instance = new VisitorContext();
 
 	private final Visitor listVisitor = new ListVisitor();
 	private final Visitor mapVisitor = new MapVisitor();

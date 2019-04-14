@@ -82,7 +82,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		gbc.insets.bottom = 2;
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.behaviorSet", behaviorSetChooser, gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.collisionRadius", collisionRadiusInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.collisionRadius", collisionRadiusInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.abilitySet", abilitySetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.itemReward", itemRewardChooser, gbc);

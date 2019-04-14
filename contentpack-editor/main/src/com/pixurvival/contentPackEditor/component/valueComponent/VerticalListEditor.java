@@ -48,7 +48,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		if (buttonAlignment == VERTICAL) {
 			add(LayoutUtils.createVerticalBox(3, addButton, removeButton), BorderLayout.SOUTH);
 		} else {
-			add(LayoutUtils.createVerticalBox(3, LayoutUtils.createHorizontalBox(3, addButton, removeButton)), BorderLayout.SOUTH);
+			add(LayoutUtils.createVerticalBox(3, LayoutUtils.createHorizontalBox(addButton, removeButton)), BorderLayout.SOUTH);
 		}
 	}
 

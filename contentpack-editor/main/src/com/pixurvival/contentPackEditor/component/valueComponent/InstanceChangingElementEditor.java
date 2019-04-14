@@ -42,7 +42,6 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 				}
 			}
 		});
-
 		for (ClassEntry classEntry : classEntries) {
 			specificPartPanel.add(classEntry.getSpecificPanel(), classEntry.getType().getSimpleName());
 		}
@@ -52,19 +51,17 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		if (newInstance == null) {
 			return;
 		}
-		E oldInstance = getValue();
-		if (oldInstance == null) {
-			setValue(newInstance);
-			return;
-		}
-		initialize(oldInstance, newInstance);
 		setValue(newInstance);
+		E oldInstance = getValue();
+		if (oldInstance != null) {
+			initialize(oldInstance, newInstance);
+		}
 		notifyValueChanged();
 	}
 
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
-		if (source == this) {
+		if (source == this && getValue() != null) {
 			Class<?> type = getValue().getClass();
 			((CardLayout) specificPartPanel.getLayout()).show(specificPartPanel, type.getSimpleName());
 			typeChooser.setSelectedItem(type);

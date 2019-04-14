@@ -1,18 +1,22 @@
 package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.Effect;
+import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class EffectEntity extends Entity {
+public class EffectEntity extends Entity implements CheckListHolder {
 
 	private @Getter Effect definition;
 
@@ -23,6 +27,8 @@ public class EffectEntity extends Entity {
 	private float orientation;
 
 	private long termTimeMillis;
+
+	private Collection<Object> checkList;
 
 	public EffectEntity(Effect definition, LivingEntity source) {
 		this.definition = definition;
@@ -48,8 +54,22 @@ public class EffectEntity extends Entity {
 				return;
 			}
 			definition.getMovement().update(this);
+			processEffectTarget();
 		}
 		super.update();
+	}
+
+	private void processEffectTarget() {
+		for (EffectTarget effectTarget : definition.getTargets()) {
+			source.foreach(effectTarget.getTargetType(), e -> {
+				if (collideDynamic(e)) {
+					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
+					if (effectTarget.isDestroyWhenCollide()) {
+						setAlive(false);
+					}
+				}
+			});
+		}
 	}
 
 	@Override
@@ -91,4 +111,11 @@ public class EffectEntity extends Entity {
 		return false;
 	}
 
+	@Override
+	public Collection<Object> getCheckList() {
+		if (checkList == null) {
+			checkList = new ArrayList<>();
+		}
+		return checkList;
+	}
 }

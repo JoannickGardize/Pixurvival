@@ -67,7 +67,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		// MOVE_TOWARD
 		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
 		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
-		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput))));
+		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput))));
 
 		// TURN_AROUND
 		minDistanceInput = new DoubleInput(Bounds.positive());
@@ -75,7 +75,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
 		bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
 		classEntries.add(new ClassEntry(TurnAroundBehavior.class,
-				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("behaviorEditor.minDistance", minDistanceInput), LayoutUtils.labelled("behaviorEditor.maxDistance", maxDistanceInput))));
+				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput), LayoutUtils.labelled("generic.maxDistance", maxDistanceInput))));
 
 		// WANDER_BEHAVIOR
 		classEntries.add(new ClassEntry(WanderBehavior.class, new JPanel()));

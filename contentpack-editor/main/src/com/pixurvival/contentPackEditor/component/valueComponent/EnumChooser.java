@@ -21,16 +21,17 @@ public class EnumChooser<E extends Enum<E>> extends JComboBox<E> implements Valu
 
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 
-	public EnumChooser(Class<E> type) {
-		this(type, CaseUtils.pascalToCamelCase(type.getSimpleName()));
+	public EnumChooser(Class<E> enumType) {
+		this(enumType, CaseUtils.pascalToCamelCase(enumType.getSimpleName()));
 	}
 
-	public EnumChooser(Class<E> type, String translationPreffix) {
-		super(type.getEnumConstants());
+	public EnumChooser(Class<E> enumType, String translationPreffix) {
+		super(enumType.getEnumConstants());
 		setRenderer(new EnumConstantCellRenderer(translationPreffix));
 		addItemListener(e -> {
 			if (isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
 				listeners.forEach(l -> l.valueChanged(getValue()));
+				updateColor();
 			}
 		});
 	}
@@ -44,6 +45,7 @@ public class EnumChooser<E extends Enum<E>> extends JComboBox<E> implements Valu
 	@Override
 	public void setValue(E value) {
 		setSelectedItem(value);
+		updateColor();
 	}
 
 	@Override
@@ -70,4 +72,11 @@ public class EnumChooser<E extends Enum<E>> extends JComboBox<E> implements Valu
 		super.setForeground(fg);
 	}
 
+	private void updateColor() {
+		if (getValue() == null) {
+			setForeground(Color.RED);
+		} else {
+			setForeground(Color.BLACK);
+		}
+	}
 }

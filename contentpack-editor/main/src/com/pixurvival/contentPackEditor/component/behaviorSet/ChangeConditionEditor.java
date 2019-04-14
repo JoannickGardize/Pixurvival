@@ -50,7 +50,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		DoubleInput targetDistanceInput = new DoubleInput(Bounds.positive());
 		bind(testChooser, PlayerDistanceCondition::getTest, PlayerDistanceCondition::setTest, PlayerDistanceCondition.class);
 		bind(targetDistanceInput, PlayerDistanceCondition::getTargetDistance, PlayerDistanceCondition::setTargetDistance, PlayerDistanceCondition.class);
-		Component testComponent = LayoutUtils.labelled("changeConditionEditor.distance", testChooser);
+		Component testComponent = LayoutUtils.labelled("generic.distance", testChooser);
 		classEntries.add(new ClassEntry(PlayerDistanceCondition.class, LayoutUtils.createHorizontalBox(testComponent, targetDistanceInput)));
 
 		// TimeCondition

@@ -85,9 +85,8 @@ public class VisitorTest {
 		VisitorContext.getInstance().setTraversalAnnotation(Traverse.class);
 		VisitorContext.getInstance().visit(a, handler);
 
-		Object[] expectedLogs = { "string", "integer", "b", "b.integer", "b.c", "b.c.dooble", "b.list",
-				"b.list.0.dooble", "b.list.1.dooble", "b.list.2.dooble", "c", "c.dooble", "map", "map.key1.dooble",
-				"map.key2.dooble" };
+		Object[] expectedLogs = { "string", "integer", "b", "b.integer", "b.c", "b.c.dooble", "b.list", "b.list.0.dooble", "b.list.1.dooble", "b.list.2.dooble", "c", "c.dooble", "map",
+				"map.key1.dooble", "map.key2.dooble" };
 		Assert.assertArrayEquals(expectedLogs, handler.getLogs());
 	}
 }

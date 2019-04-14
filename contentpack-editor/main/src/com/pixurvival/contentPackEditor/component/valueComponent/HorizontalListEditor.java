@@ -16,7 +16,7 @@ public class HorizontalListEditor<E> extends ListEditor<E> {
 		setLayout(new BorderLayout());
 		JScrollPane scrollPane = new JScrollPane(listPanel);
 		add(scrollPane, BorderLayout.CENTER);
-		add(LayoutUtils.createHorizontalBox(3, addButton, removeButton), BorderLayout.SOUTH);
+		add(LayoutUtils.createHorizontalBox(addButton, removeButton), BorderLayout.SOUTH);
 		LayoutUtils.setMinimumSize(scrollPane, 0, 70);
 	}
 

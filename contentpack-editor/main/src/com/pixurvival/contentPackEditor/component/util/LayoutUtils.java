@@ -31,7 +31,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class LayoutUtils {
 
-	public static final int NORMAL_GAP = 5;
+	public static final int DEFAULT_GAP = 5;
 
 	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
 		addHorizontalLabelledItem(parent, labelKey, null, component, gbc);
@@ -51,7 +51,7 @@ public class LayoutUtils {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		int previousLeft = gbc.insets.left;
-		gbc.insets.left = NORMAL_GAP;
+		gbc.insets.left = DEFAULT_GAP;
 		parent.add(component, gbc);
 		gbc.insets.left = previousLeft;
 		if (component instanceof ValueComponent) {
@@ -68,7 +68,7 @@ public class LayoutUtils {
 	public static void nextColumn(GridBagConstraints gbc) {
 		gbc.gridx += 2;
 		gbc.gridy = 0;
-		gbc.insets.left = NORMAL_GAP;
+		gbc.insets.left = DEFAULT_GAP;
 	}
 
 	public static void addHorizontalSeparator(Container parent, GridBagConstraints gbc) {
@@ -106,7 +106,7 @@ public class LayoutUtils {
 	}
 
 	public static JPanel labelled(String labelKey, Component component) {
-		JPanel panel = new JPanel(new BorderLayout(NORMAL_GAP, 0));
+		JPanel panel = new JPanel(new BorderLayout(DEFAULT_GAP, 0));
 		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
 		panel.add(label, BorderLayout.WEST);
 		panel.add(component, BorderLayout.CENTER);
@@ -124,24 +124,56 @@ public class LayoutUtils {
 		return BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 	}
 
-	public static JPanel createHorizontalBox(int gap, Component... components) {
-		JPanel panel = new JPanel(new GridBagLayout());
+	public static void addHorizontally(JPanel panel, Component... components) {
+		addHorizontally(panel, -1, components);
+	}
+
+	public static void addHorizontally(JPanel panel, int fillIndex, Component... components) {
+		addHorizontally(panel, fillIndex, DEFAULT_GAP, components);
+	}
+
+	public static void addHorizontally(JPanel panel, int fillIndex, int gap, Component... components) {
+		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1;
+		int defaultWeight = fillIndex == -1 ? 1 : 0;
+		gbc.weightx = defaultWeight;
 		gbc.weighty = 1;
 		gbc.insets.right = gap;
 		gbc.insets.left = gap;
 		for (int i = 0; i < components.length; i++) {
+			if (fillIndex == i) {
+				gbc.weightx = 1;
+			}
 			panel.add(components[i], gbc);
 			gbc.gridx++;
 			gbc.insets.left = 0;
+			gbc.weightx = defaultWeight;
 		}
+	}
+
+	public static JPanel createHorizontalBox(int gap, Component... components) {
+		JPanel panel = new JPanel();
+		addHorizontally(panel, -1, gap, components);
 		return panel;
 	}
 
+	public static JPanel createHorizontalLabelledBox(Object... labelAndComponents) {
+		Component[] components = new Component[labelAndComponents.length / 2];
+		for (int i = 0; i < labelAndComponents.length; i += 2) {
+			String labelKey = (String) labelAndComponents[i];
+			Component component = (Component) labelAndComponents[i + 1];
+			components[i / 2] = LayoutUtils.labelled(labelKey, component);
+		}
+		return createHorizontalBox(components);
+	}
+
 	public static JPanel createHorizontalBox(Component... components) {
-		return createHorizontalBox(NORMAL_GAP, components);
+		return createHorizontalBox(DEFAULT_GAP, components);
+	}
+
+	public static JPanel createVerticalBox(Component... components) {
+		return createVerticalBox(DEFAULT_GAP, components);
 	}
 
 	public static JPanel createVerticalBox(int gap, Component... components) {
@@ -159,7 +191,7 @@ public class LayoutUtils {
 	}
 
 	public static void addVertically(JPanel panel, Component... components) {
-		addVertically(panel, NORMAL_GAP, components);
+		addVertically(panel, DEFAULT_GAP, components);
 	}
 
 	public static void addVertically(JPanel panel, int gap, int fillIndex, Component... components) {
@@ -167,6 +199,8 @@ public class LayoutUtils {
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.insets.top = gap;
 		gbc.fill = GridBagConstraints.BOTH;
+		int defaultWeight = fillIndex == -1 ? 1 : 0;
+		gbc.weighty = defaultWeight;
 		gbc.weightx = 1;
 		for (int i = 0; i < components.length; i++) {
 			if (fillIndex == i) {
@@ -176,7 +210,7 @@ public class LayoutUtils {
 				gbc.insets.bottom = gap;
 			}
 			panel.add(components[i], gbc);
-			gbc.weighty = 0;
+			gbc.weighty = defaultWeight;
 			gbc.gridy++;
 		}
 	}
