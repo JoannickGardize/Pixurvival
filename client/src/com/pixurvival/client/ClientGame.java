@@ -31,7 +31,7 @@ import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
-import com.pixurvival.core.message.request.IPlayerActionRequest;
+import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 
 import lombok.AccessLevel;
 import lombok.Getter;

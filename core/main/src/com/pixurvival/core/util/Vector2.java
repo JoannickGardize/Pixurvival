@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Vector2 {
+
 	private double x = 0;
 	private double y = 0;
 
@@ -83,6 +84,12 @@ public class Vector2 {
 	public Vector2 div(double d) {
 		x /= d;
 		y /= d;
+		return this;
+	}
+
+	public Vector2 lerp(Vector2 target, double delta) {
+		x += (target.x - x) * delta;
+		y += (target.y - y) * delta;
 		return this;
 	}
 

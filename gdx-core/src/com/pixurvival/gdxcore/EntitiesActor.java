@@ -8,12 +8,14 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
@@ -22,10 +24,11 @@ import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.FixedTermStructure;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.FixedTermStructure;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
+import com.pixurvival.gdxcore.drawer.EffectDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
@@ -45,6 +48,7 @@ public class EntitiesActor extends Actor {
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());
+		drawers.put(EffectEntity.class, new EffectDrawer());
 	}
 
 	@Override
@@ -79,13 +83,16 @@ public class EntitiesActor extends Actor {
 			}
 		}
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
-
 		manageGhostStructure();
-
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).topDraw(batch, e));
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void drawDebug(ShapeRenderer shapes) {
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawDebug(shapes, e));
 	}
 
 	private void manageGhostStructure() {

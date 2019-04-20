@@ -59,17 +59,17 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public void update() {
 		// Update position
+		previousPosition.set(position);
 		if (forward) {
-			previousPosition.set(position);
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
 			double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 			double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 				if (targetVelocity.getX() > 0) {
-					position.setX(Math.floor(position.getX()) + 1 - getBoundingRadius());
+					position.setX(Math.floor(position.getX()) + 1 - getCollisionRadius());
 				} else {
-					position.setX(Math.floor(position.getX()) + getBoundingRadius());
+					position.setX(Math.floor(position.getX()) + getCollisionRadius());
 				}
 				velocity.setX(0);
 			} else {
@@ -78,9 +78,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 			}
 			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 				if (targetVelocity.getY() > 0) {
-					position.setY(Math.floor(position.getY()) + 1 - getBoundingRadius());
+					position.setY(Math.floor(position.getY()) + 1 - getCollisionRadius());
 				} else {
-					position.setY(Math.floor(position.getY()) + getBoundingRadius());
+					position.setY(Math.floor(position.getY()) + getCollisionRadius());
 				}
 				velocity.setY(0);
 			} else {
@@ -95,7 +95,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract EntityGroup getGroup();
 
-	public abstract double getBoundingRadius();
+	public abstract double getCollisionRadius();
 
 	public abstract void writeUpdate(ByteBuffer buffer);
 
@@ -117,12 +117,12 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	@Override
 	public double getHalfWidth() {
-		return getBoundingRadius();
+		return getCollisionRadius();
 	}
 
 	@Override
 	public double getHalfHeight() {
-		return getBoundingRadius();
+		return getCollisionRadius();
 	}
 
 	private void setSpeed(double speed) {
@@ -160,10 +160,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public boolean collide(Entity other) {
-		return Collisions.circleCircle(position, getBoundingRadius(), other.position, other.getBoundingRadius());
+		return Collisions.circleCircle(position, getCollisionRadius(), other.position, other.getCollisionRadius());
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getBoundingRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getBoundingRadius());
+		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getCollisionRadius());
 	}
 }

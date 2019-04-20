@@ -1,4 +1,4 @@
-package com.pixurvival.core.message.request;
+package com.pixurvival.core.message.playerRequest;
 
 import com.pixurvival.core.livingEntity.PlayerEntity;
 

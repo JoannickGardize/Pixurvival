@@ -4,5 +4,6 @@ public enum KeyAction {
 	MOVE_UP,
 	MOVE_LEFT,
 	MOVE_RIGHT,
-	MOVE_DOWN
+	MOVE_DOWN,
+	SWITCH_DEBUG_MODE;
 }

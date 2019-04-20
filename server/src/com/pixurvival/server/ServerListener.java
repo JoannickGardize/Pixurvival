@@ -16,14 +16,15 @@ import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
-import com.pixurvival.core.message.request.CraftItemRequest;
-import com.pixurvival.core.message.request.DropItemRequest;
-import com.pixurvival.core.message.request.EquipmentActionRequest;
-import com.pixurvival.core.message.request.IPlayerActionRequest;
-import com.pixurvival.core.message.request.InteractStructureRequest;
-import com.pixurvival.core.message.request.InventoryActionRequest;
-import com.pixurvival.core.message.request.PlaceStructureRequest;
-import com.pixurvival.core.message.request.PlayerMovementRequest;
+import com.pixurvival.core.message.playerRequest.CraftItemRequest;
+import com.pixurvival.core.message.playerRequest.DropItemRequest;
+import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
+import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
+import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
+import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
+import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
+import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 
 class ServerListener extends Listener {
 
@@ -47,6 +48,7 @@ class ServerListener extends Listener {
 		messageActions.put(EquipmentActionRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(DropItemRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(CraftItemRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(PlayerEquipmentAbilityRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());

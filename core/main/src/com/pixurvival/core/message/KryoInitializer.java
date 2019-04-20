@@ -14,13 +14,14 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.CompressedChunk;
-import com.pixurvival.core.message.request.CraftItemRequest;
-import com.pixurvival.core.message.request.DropItemRequest;
-import com.pixurvival.core.message.request.EquipmentActionRequest;
-import com.pixurvival.core.message.request.InteractStructureRequest;
-import com.pixurvival.core.message.request.InventoryActionRequest;
-import com.pixurvival.core.message.request.PlaceStructureRequest;
-import com.pixurvival.core.message.request.PlayerMovementRequest;
+import com.pixurvival.core.message.playerRequest.CraftItemRequest;
+import com.pixurvival.core.message.playerRequest.DropItemRequest;
+import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
+import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
+import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
+import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
+import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -65,6 +66,7 @@ public class KryoInitializer {
 		register(kryo, PlayerData[].class);
 		register(kryo, EquipmentActionRequest.class);
 		register(kryo, PlaceStructureRequest.class);
+		register(kryo, PlayerEquipmentAbilityRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

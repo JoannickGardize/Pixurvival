@@ -22,11 +22,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public abstract class LivingEntity extends Entity implements Damageable {
 
-	private float health;
-	private float aimingAngle;
+	private @Setter float health;
+	private @Setter float aimingAngle;
 
 	private StatSet stats = new StatSet();
 

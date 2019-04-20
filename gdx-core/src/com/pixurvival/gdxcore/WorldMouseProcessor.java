@@ -7,20 +7,25 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.item.Item.StructureDetails;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.message.request.DropItemRequest;
-import com.pixurvival.core.message.request.InteractStructureRequest;
-import com.pixurvival.core.message.request.PlaceStructureRequest;
+import com.pixurvival.core.message.playerRequest.DropItemRequest;
+import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
+import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
+import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WorldMouseProcessor extends InputAdapter {
 
-	private Stage worldStage;
+	private @NonNull Stage worldStage;
+
+	private boolean usingAbility = false;
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -43,17 +48,47 @@ public class WorldMouseProcessor extends InputAdapter {
 					PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 				}
 			}
-		} else if (button == Input.Buttons.LEFT && heldItemStack != null) {
-			DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, screenX, screenY));
-			PixurvivalGame.getClient().sendAction(request);
+		} else if (button == Input.Buttons.LEFT) {
+			if (heldItemStack != null) {
+				DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, screenX, screenY));
+				PixurvivalGame.getClient().sendAction(request);
+			} else {
+				PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(EquipmentAbilityType.WEAPON_BASE));
+				usingAbility = true;
+			}
 		}
 		return true;
 	}
 
 	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if (button == Input.Buttons.LEFT && usingAbility) {
+			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null));
+			usingAbility = false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		processMouseMoved(screenX, screenY);
+		return true;
+	}
+
+	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
+		processMouseMoved(screenX, screenY);
+		return true;
+	}
+
+	private void processMouseMoved(int screenX, int screenY) {
 		ItemCraftTooltip.getInstance().setVisible(false);
-		return false;
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (myPlayer != null) {
+			Vector2 worldPoint = screenToWorld(screenX, screenY);
+			myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
+		}
 	}
 
 	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {

@@ -1,5 +1,6 @@
 package com.pixurvival.gdxcore;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +8,7 @@ import com.badlogic.gdx.Input.Keys;
 
 public class KeyMapping {
 
-	private Map<KeyAction, Integer> keyByAction = new HashMap<>();
+	private Map<KeyAction, Integer> keyByAction = new EnumMap<>(KeyAction.class);
 	private Map<Integer, KeyAction> actionByKey = new HashMap<>();
 
 	public KeyMapping() {
@@ -15,6 +16,7 @@ public class KeyMapping {
 		bind(KeyAction.MOVE_LEFT, Keys.LEFT);
 		bind(KeyAction.MOVE_RIGHT, Keys.RIGHT);
 		bind(KeyAction.MOVE_UP, Keys.UP);
+		bind(KeyAction.SWITCH_DEBUG_MODE, Keys.F1);
 	}
 
 	public int getKey(KeyAction action) {

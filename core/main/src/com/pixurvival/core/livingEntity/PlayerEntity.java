@@ -63,7 +63,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 			if (previousItemStack != null) {
 				((Equipable) previousItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().addModifier(m));
 			}
-			((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+			if (newItemStack != null) {
+				((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+			}
 		});
 	}
 
@@ -90,7 +92,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
-	public double getBoundingRadius() {
+	public double getCollisionRadius() {
 		return 0.42;
 	}
 
@@ -102,6 +104,27 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public void harvest(HarvestableStructure harvestableStructure) {
 		((HarvestAbilityData) getAbilityData(HARVEST_ABILITY_ID)).setStructure(harvestableStructure);
 		startAbility(HARVEST_ABILITY_ID);
+	}
+
+	public void startEquipmentAbility(EquipmentAbilityType type) {
+		if (type == null) {
+			stopCurrentAbility();
+			return;
+		}
+		switch (type) {
+		case WEAPON_BASE:
+			startAbility(WEAPON_BASE_ABILITY_ID);
+			break;
+		case WEAPON_SPECIAL:
+			startAbility(WEAPON_SPECIAL_ABILITY_ID);
+			break;
+		case ACCESSORY1_SPECIAL:
+			startAbility(ACCESSORY1_SPECIAL_ABILITY_ID);
+			break;
+		case ACCESSORY2_SPECIAL:
+			startAbility(ACCESSORY2_SPECIAL_ABILITY_ID);
+			break;
+		}
 	}
 
 	public PlayerData getData() {

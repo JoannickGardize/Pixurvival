@@ -1,11 +1,12 @@
 package com.pixurvival.gdxcore;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Screen;
 import com.pixurvival.core.Direction;
-import com.pixurvival.core.message.request.PlayerMovementRequest;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 
 import lombok.Getter;
 
@@ -14,7 +15,7 @@ public class KeyInputProcessor extends InputAdapter {
 	private KeyMapping keyMapping;
 	private @Getter PlayerMovementRequest playerAction = new PlayerMovementRequest();
 	private PlayerMovementRequest previousPlayerAction = new PlayerMovementRequest();
-	private Map<KeyAction, Boolean> pressedKeys = new HashMap<>();
+	private Map<KeyAction, Boolean> pressedKeys = new EnumMap<>(KeyAction.class);
 
 	public KeyInputProcessor(KeyMapping keyMapping) {
 		this.keyMapping = keyMapping;
@@ -30,6 +31,16 @@ public class KeyInputProcessor extends InputAdapter {
 		KeyAction keyAction = keyMapping.getAction(keycode);
 		if (keyAction != null) {
 			pressedKeys.put(keyAction, true);
+			switch (keyAction) {
+			case SWITCH_DEBUG_MODE:
+				Screen screen = PixurvivalGame.getInstance().getScreen();
+				if (screen instanceof WorldScreen) {
+					((WorldScreen) screen).switchShowCollisionBoxes();
+				}
+				break;
+			default:
+				break;
+			}
 		}
 		return true;
 	}

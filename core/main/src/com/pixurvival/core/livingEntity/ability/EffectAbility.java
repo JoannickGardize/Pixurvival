@@ -22,7 +22,9 @@ public class EffectAbility extends CooldownAbility {
 	@Override
 	public void fire(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
-			selfAlterations.forEach(a -> a.apply(this, entity));
+			if (selfAlterations != null) {
+				selfAlterations.forEach(a -> a.apply(this, entity));
+			}
 			for (Effect effect : effects) {
 				EffectEntity effectEntity = new EffectEntity(effect, entity);
 				entity.getWorld().getEntityPool().add(effectEntity);

@@ -31,7 +31,7 @@ public class StaticEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public double getSpeedPotential(EffectEntity entity) {
 		return 0;
 	}
 }

@@ -35,7 +35,7 @@ public class World {
 
 	@Getter
 	@AllArgsConstructor
-	public static enum Type {
+	public enum Type {
 		LOCAL(true, true),
 		CLIENT(true, false),
 		SERVER(false, true);

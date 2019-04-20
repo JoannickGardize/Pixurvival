@@ -35,35 +35,8 @@ public class ServerEngineThread extends EngineThread {
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
 			sessions.forEach(gs -> {
 				gs.getWorld().incrementUpdateId();
-				gs.foreachPlayers(p -> {
-					PlayerConnection connection = p.getConnection();
-					if (connection.isPlayerDataChanged()) {
-						tmpPlayerData.add(connection.getPlayerEntity().getData());
-						connection.setPlayerDataChanged(false);
-					}
-				});
-				PlayerData[] playerData = null;
-				if (!tmpPlayerData.isEmpty()) {
-					playerData = tmpPlayerData.toArray(new PlayerData[tmpPlayerData.size()]);
-				}
-				final PlayerData[] finalPlayerData = playerData;
-				gs.foreachPlayers(p -> {
-					PlayerConnection connection = p.getConnection();
-					PlayerEntity playerEntity = connection.getPlayerEntity();
-					if (connection.isGameReady() && playerEntity != null) {
-						playerEntity.getWorld().writeWorldUpdateFor(playerEntity);
-						playerEntity.getWorld().getWorldUpdate().setStructureUpdates(p.pollStructureUpdatesToSend());
-						playerEntity.getWorld().getWorldUpdate().setCompressedChunks(p.pollChunksToSend());
-						connection.sendUDP(playerEntity.getWorld().getWorldUpdate());
-						if (connection.isInventoryChanged()) {
-							connection.setInventoryChanged(false);
-							connection.sendTCP(playerEntity.getInventory());
-						}
-					}
-					if (finalPlayerData != null) {
-						connection.sendTCP(finalPlayerData);
-					}
-				});
+				final PlayerData[] finalPlayerData = buildPlayerData(gs);
+				sendWorldData(gs, finalPlayerData);
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
 				sendUpdateTimer = 0;
@@ -72,6 +45,42 @@ public class ServerEngineThread extends EngineThread {
 				sendUpdateTimer -= sendUpdateIntervalMillis;
 			}
 		}
+	}
+
+	private PlayerData[] buildPlayerData(GameSession gs) {
+		gs.foreachPlayers(p -> {
+			PlayerConnection connection = p.getConnection();
+			if (connection.isPlayerDataChanged()) {
+				tmpPlayerData.add(connection.getPlayerEntity().getData());
+				connection.setPlayerDataChanged(false);
+			}
+		});
+		PlayerData[] playerData = null;
+		if (!tmpPlayerData.isEmpty()) {
+			playerData = tmpPlayerData.toArray(new PlayerData[tmpPlayerData.size()]);
+			tmpPlayerData.clear();
+		}
+		return playerData;
+	}
+
+	private void sendWorldData(GameSession gs, PlayerData[] finalPlayerData) {
+		gs.foreachPlayers(p -> {
+			PlayerConnection connection = p.getConnection();
+			PlayerEntity playerEntity = connection.getPlayerEntity();
+			if (connection.isGameReady() && playerEntity != null) {
+				playerEntity.getWorld().writeWorldUpdateFor(playerEntity);
+				playerEntity.getWorld().getWorldUpdate().setStructureUpdates(p.pollStructureUpdatesToSend());
+				playerEntity.getWorld().getWorldUpdate().setCompressedChunks(p.pollChunksToSend());
+				connection.sendUDP(playerEntity.getWorld().getWorldUpdate());
+				if (connection.isInventoryChanged()) {
+					connection.setInventoryChanged(false);
+					connection.sendTCP(playerEntity.getInventory());
+				}
+			}
+			if (finalPlayerData != null) {
+				connection.sendTCP(finalPlayerData);
+			}
+		});
 	}
 
 	@Override

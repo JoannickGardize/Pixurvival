@@ -3,6 +3,7 @@ package com.pixurvival.server.console;
 import java.io.IOException;
 import java.util.Scanner;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGame;
 import com.pixurvival.server.ServerGameListener;
@@ -18,7 +19,7 @@ public class ServerConsole implements Runnable, ServerGameListener {
 
 	@Override
 	public void playerLoggedIn(PlayerConnection playerConnection) {
-		System.out.println("New player connected : " + playerConnection);
+		Log.info("New player connected : " + playerConnection);
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public class ServerConsole implements Runnable, ServerGameListener {
 			case "bind":
 				if (commandInput.argsLength() == 1) {
 					try {
-						game.startServer(Integer.valueOf(commandInput.getArg(0)));
+						game.startServer(Integer.parseInt(commandInput.getArg(0)));
 					} catch (NumberFormatException | IOException e) {
 						e.printStackTrace();
 					}

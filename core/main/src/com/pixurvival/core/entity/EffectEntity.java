@@ -24,7 +24,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	private @Getter @Setter Object movementData;
 
-	private float orientation;
+	private @Getter float orientation;
 
 	private long termTimeMillis;
 
@@ -78,7 +78,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 	}
 
 	@Override
-	public double getBoundingRadius() {
+	public double getCollisionRadius() {
 		return definition.getCollisionRadius();
 	}
 
@@ -103,7 +103,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	@Override
 	public double getSpeedPotential() {
-		return definition.getMovement().getSpeedPotential();
+		return definition.getMovement().getSpeedPotential(this);
 	}
 
 	@Override

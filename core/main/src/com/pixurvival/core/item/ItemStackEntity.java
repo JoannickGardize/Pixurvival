@@ -68,7 +68,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	@Override
-	public double getBoundingRadius() {
+	public double getCollisionRadius() {
 		return 0.1;
 	}
 

@@ -30,7 +30,8 @@ public enum Direction {
 	 * @param angle
 	 *            The normalized angle, in radians ( ]-Pi;Pi] )
 	 * @return The closest cardinal direction (North, East, South, West). For
-	 *         ambiguous angles (e.g. Pi/4), The closest cardinal to south is given.
+	 *         ambiguous angles (e.g. Pi/4), The closest cardinal to south is
+	 *         given.
 	 */
 	public static Direction closestCardinal(double angle) {
 		if (angle <= Math.PI / 4 && angle > -Math.PI / 4) {

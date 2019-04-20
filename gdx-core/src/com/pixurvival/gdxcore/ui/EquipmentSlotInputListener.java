@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
-import com.pixurvival.core.message.request.EquipmentActionRequest;
+import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.AllArgsConstructor;

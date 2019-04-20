@@ -10,7 +10,6 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.gdxcore.drawer.DrawData;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
@@ -31,13 +30,15 @@ public class WorldScreen implements Screen {
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private long myPlayerId;
+	private EntitiesActor entitiesActor;
 
-	public void setWorld(World world, ContentPackTextures contentPackTextures, long myPlayerId) {
+	public void setWorld(World world, long myPlayerId) {
 		this.myPlayerId = myPlayerId;
 		this.world = world;
 		worldStage.clear();
 		worldStage.addActor(new MapActor(world.getMap()));
-		worldStage.addActor(new EntitiesActor());
+		entitiesActor = new EntitiesActor();
+		worldStage.addActor(entitiesActor);
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(myPlayerId);
@@ -56,6 +57,10 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 
+	}
+
+	public void switchShowCollisionBoxes() {
+		entitiesActor.setDebug(!entitiesActor.getDebug());
 	}
 
 	@Override

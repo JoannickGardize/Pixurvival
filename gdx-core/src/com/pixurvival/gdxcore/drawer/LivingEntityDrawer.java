@@ -1,6 +1,5 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -8,7 +7,7 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
-import com.pixurvival.gdxcore.util.GraphicsUtil;
+import com.pixurvival.gdxcore.util.GraphicsUtils;
 
 public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityDrawer<E> {
 
@@ -27,19 +26,14 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		ActionAnimation actionAnimation = getActionAnimation(e);
 		TextureAnimationSet textureAnimationSet = getBodyTextureAnimationSet(e);
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
-		int index = GraphicsUtil.getIndexAndUpdateTimer(e, textureAnimation);
-		Texture texture = textureAnimation.getTexture(index);
+		int index = GraphicsUtils.getIndexAndUpdateTimer(e, textureAnimation);
 		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
 		float x = (float) (drawPosition.getX() - textureAnimationSet.getWidth() / 2);
 		float y = (float) drawPosition.getY();
 		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 ? -textureAnimationSet.getHeight() * 0.3f : 0;
 		float equipmentY = y + yOffset;
 		drawBeforeBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
-		if (yOffset != 0) {
-			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(), textureAnimationSet.getHeight() + yOffset, 0, 1 + yOffset, 1, 0);
-		} else {
-			batch.draw(texture, x, y + textureAnimationSet.getYOffset(), textureAnimationSet.getWidth(), textureAnimationSet.getHeight());
-		}
+		GraphicsUtils.drawStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset);
 		drawAfterBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 	}
 

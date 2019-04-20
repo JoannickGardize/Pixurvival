@@ -28,7 +28,7 @@ public class LinearEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public double getSpeedPotential(EffectEntity entity) {
 		return speed;
 	}
 }

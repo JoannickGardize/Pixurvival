@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore.textures;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
@@ -15,6 +16,7 @@ import lombok.Setter;
 public class TextureAnimation {
 
 	private Texture[] textures;
+	private TextureRegion[] textureRegions;
 	private float[] offsetX;
 	private float[] offsetY;
 	private boolean[] back;
@@ -24,13 +26,15 @@ public class TextureAnimation {
 	private @Getter float worldShadowWidth;
 	private @Getter @Setter Texture shadow;
 
-	public TextureAnimation(TextureSheet textureSheet, Animation animation, double frameDuration,
-			EquipmentOffset equipmentOffset) {
+	public TextureAnimation(TextureSheet textureSheet, Animation animation, double frameDuration, EquipmentOffset equipmentOffset) {
 		this.frameDuration = frameDuration;
 		List<Frame> frames = animation.getFrames();
 		textures = new Texture[frames.size()];
+		textureRegions = new TextureRegion[frames.size()];
 		for (int i = 0; i < frames.size(); i++) {
-			textures[i] = textureSheet.get(frames.get(i).getX(), frames.get(i).getY());
+			Texture texture = textureSheet.get(frames.get(i).getX(), frames.get(i).getY());
+			textures[i] = texture;
+			textureRegions[i] = new TextureRegion(texture);
 		}
 		if (equipmentOffset != null) {
 			offsetX = new float[frames.size()];
@@ -52,6 +56,10 @@ public class TextureAnimation {
 
 	public Texture getTexture(int index) {
 		return textures[index];
+	}
+
+	public TextureRegion getTextureRegion(int index) {
+		return textureRegions[index];
 	}
 
 	public float getOffsetX(int index) {

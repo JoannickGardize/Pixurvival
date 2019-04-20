@@ -75,7 +75,7 @@ public class ServerGame {
 		engineThread.setRunning(false);
 		contentPackUploadManager.setRunning(false);
 		ChunkManager.getInstance().setRunning(false);
-		World.getWorlds().forEach(w -> w.unload());
+		World.getWorlds().forEach(World::unload);
 	}
 
 	public void startTestGame() {

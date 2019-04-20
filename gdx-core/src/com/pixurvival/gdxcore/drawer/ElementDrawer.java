@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.Body;
 
 public interface ElementDrawer<E extends Body> {
@@ -12,5 +13,7 @@ public interface ElementDrawer<E extends Body> {
 	void draw(Batch batch, E e);
 
 	void topDraw(Batch batch, E e);
+
+	void drawDebug(ShapeRenderer renderer, E e);
 
 }

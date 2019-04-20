@@ -49,7 +49,7 @@ public class MoveUtils {
 		Vector2 testPoint = entity.getPosition().copy();
 		for (int i = 0; i < viewDistance; i++) {
 			testPoint.add(delta);
-			if (entity.getWorld().getMap().collide(testPoint.getX(), testPoint.getY(), entity.getBoundingRadius())) {
+			if (entity.getWorld().getMap().collide(testPoint.getX(), testPoint.getY(), entity.getCollisionRadius())) {
 				return true;
 			}
 		}

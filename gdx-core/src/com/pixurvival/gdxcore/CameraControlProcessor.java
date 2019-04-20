@@ -52,7 +52,9 @@ public class CameraControlProcessor extends InputAdapter {
 		int screenViewportY = viewport.getScreenHeight() - 1 - screenY + viewport.getTopGutterHeight();
 		int w = viewport.getScreenWidth() / 2;
 		int h = viewport.getScreenHeight() / 2;
-		com.badlogic.gdx.math.Vector2 vector = new com.badlogic.gdx.math.Vector2(screenViewportX - w, screenViewportY - h);
+		// com.badlogic.gdx.math.Vector2 vector = new
+		// com.badlogic.gdx.math.Vector2(screenViewportX - w, screenViewportY -
+		// h);
 		// int min = Math.min(w, h);
 		// if (vector.len2() > min * min) {
 		// vector.setLength(min);

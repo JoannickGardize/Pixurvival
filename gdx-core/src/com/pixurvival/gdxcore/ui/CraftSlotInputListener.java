@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemCraft;
-import com.pixurvival.core.message.request.CraftItemRequest;
+import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.AllArgsConstructor;

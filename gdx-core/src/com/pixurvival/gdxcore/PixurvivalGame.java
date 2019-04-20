@@ -54,12 +54,12 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		return instance.client.getWorld();
 	}
 
-	private static PixurvivalGame instance = null;
+	private static @Getter PixurvivalGame instance = null;
 
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
 	private ClientGame client;
 	private AssetManager assetManager;
-	private @Getter KeyMapping KeyMapping;
+	private @Getter KeyMapping keyMapping;
 	private double frameDurationMillis = 1000.0 / 30;
 	private double frameCounter;
 	private float interpolationTime = 0;
@@ -144,7 +144,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			Log.error("Error when loading contentPack.", e);
 			e.printStackTrace();
 		}
-		worldScreen.setWorld(client.getWorld(), contentPackTextures, client.getMyPlayerId());
+		worldScreen.setWorld(client.getWorld(), client.getMyPlayerId());
 		setScreen(worldScreen);
 		if (client.getWorld().getType() == World.Type.CLIENT) {
 			client.notifyReady();

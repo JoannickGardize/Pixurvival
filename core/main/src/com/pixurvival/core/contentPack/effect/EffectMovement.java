@@ -10,5 +10,5 @@ public interface EffectMovement extends Serializable {
 
 	void update(EffectEntity entity);
 
-	double getSpeedPotential();
+	double getSpeedPotential(EffectEntity entity);
 }

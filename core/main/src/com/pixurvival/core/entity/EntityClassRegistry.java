@@ -14,7 +14,7 @@ import lombok.experimental.UtilityClass;
 public class EntityClassRegistry {
 
 	@SuppressWarnings("unchecked")
-	private static Supplier<Entity>[] entityProducers = new Supplier[3];
+	private static Supplier<Entity>[] entityProducers = new Supplier[4];
 	private static Map<Class<? extends Entity>, Byte> entityIds = new HashMap<>();
 
 	static {
@@ -26,6 +26,9 @@ public class EntityClassRegistry {
 
 		entityProducers[2] = CreatureEntity::new;
 		entityIds.put(CreatureEntity.class, (byte) 2);
+
+		entityProducers[3] = EffectEntity::new;
+		entityIds.put(EffectEntity.class, (byte) 3);
 	}
 
 	public static Entity newEntity(byte id) {

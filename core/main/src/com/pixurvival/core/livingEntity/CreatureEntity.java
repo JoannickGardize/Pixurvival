@@ -82,7 +82,7 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public double getBoundingRadius() {
+	public double getCollisionRadius() {
 		return definition.getCollisionRadius();
 	}
 

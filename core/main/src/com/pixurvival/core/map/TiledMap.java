@@ -184,11 +184,11 @@ public class TiledMap {
 	}
 
 	public boolean collide(Entity e) {
-		return collide(e.getPosition().getX(), e.getPosition().getY(), e.getBoundingRadius());
+		return collide(e.getPosition().getX(), e.getPosition().getY(), e.getCollisionRadius());
 	}
 
 	public boolean collide(Entity e, double dx, double dy) {
-		return collide(e.getPosition().getX() + dx, e.getPosition().getY() + dy, e.getBoundingRadius());
+		return collide(e.getPosition().getX() + dx, e.getPosition().getY() + dy, e.getCollisionRadius());
 	}
 
 	public boolean collide(double x, double y, double radius) {
