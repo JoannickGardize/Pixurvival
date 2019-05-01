@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
-import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -32,6 +31,7 @@ import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
+import com.pixurvival.core.util.CommonMainArgs;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -48,16 +48,16 @@ public class ClientGame {
 	private @Getter PlayerInventory myInventory;
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
+	private List<IClientGamePlugin> plugins = new ArrayList<>();
 
 	private long timeRequestFrequencyMillis = 1000;
 	private double timeRequestTimer = 0;
 
-	public ClientGame() {
+	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new ClientListener(this);
-		// TODO enlever lag simulation
-		client.addListener(new Listener.LagListener(40, 50, clientListener));
+		clientArgs.apply(client, clientListener);
 	}
 
 	public void addListener(ClientGameListener listener) {
@@ -87,7 +87,7 @@ public class ClientGame {
 		}
 	}
 
-	public void initializeWorld(CreateWorld createWorld) {
+	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			setWorld(World.createClientWorld(createWorld, contentPackLoader));
 			client.sendTCP(new WorldReady());
@@ -96,11 +96,15 @@ public class ClientGame {
 		}
 	}
 
-	public void initializeGame(InitializeGame initGame) {
+	public void initializeNetworkGame(InitializeGame initGame) {
 		myPlayerId = initGame.getMyPlayerId();
+		initGame.getInventory().computeQuantities();
 		myInventory = initGame.getInventory();
 		world.addPlayerData(initGame.getPlayerData());
 		notify(ClientGameListener::initializeGame);
+		plugins.clear();
+		plugins.add(new TargetPositionUpdateManager());
+		initializePlugins();
 	}
 
 	public void startLocalGame() {
@@ -133,6 +137,8 @@ public class ClientGame {
 		itemStackEntity.getPosition().set(10, 10);
 		world.getEntityPool().add(itemStackEntity);
 
+		initializePlugins();
+
 		notify(ClientGameListener::initializeGame);
 	}
 
@@ -154,6 +160,9 @@ public class ClientGame {
 	}
 
 	public void update(double deltaTimeMillis) {
+		for (IClientGamePlugin plugin : plugins) {
+			plugin.update(this);
+		}
 		synchronized (playerActionRequests) {
 			playerActionRequests.forEach(r -> r.apply(getMyPlayer()));
 			playerActionRequests.clear();
@@ -164,10 +173,12 @@ public class ClientGame {
 				getMyPlayer().setInventory(myInventory);
 			}
 			world.update(deltaTimeMillis);
-			timeRequestTimer -= deltaTimeMillis;
-			if (timeRequestTimer <= 0) {
-				timeRequestTimer = timeRequestFrequencyMillis;
-				client.sendUDP(new TimeRequest(world.getTime().getTimeMillis()));
+			if (world.isClient()) {
+				timeRequestTimer -= deltaTimeMillis;
+				if (timeRequestTimer <= 0) {
+					timeRequestTimer = timeRequestFrequencyMillis;
+					client.sendUDP(new TimeRequest(world.getTime().getTimeMillis()));
+				}
 			}
 		}
 	}
@@ -202,6 +213,12 @@ public class ClientGame {
 	public void addPlayerData(PlayerData[] data) {
 		if (world != null) {
 			world.addPlayerData(data);
+		}
+	}
+
+	private void initializePlugins() {
+		for (IClientGamePlugin plugin : plugins) {
+			plugin.initialize(this);
 		}
 	}
 }

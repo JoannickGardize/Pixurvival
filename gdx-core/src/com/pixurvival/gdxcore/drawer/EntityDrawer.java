@@ -9,6 +9,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E> {
 
+	@Deprecated
 	public void updateOld(E e) {
 		Object o = e.getCustomData();
 		if (o == null) {
@@ -35,12 +36,12 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 		Vector2 drawPos = data.getDrawPosition();
 		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
 		double distance = drawPos.distanceSquared(position);
-		double speed = Math.max(e.getSpeed(), 1);
+		double speed = Math.max(e.getSpeed(), 2);
 		double deltaSpeed = speed * Gdx.graphics.getRawDeltaTime();
 		if (distance > 5 * 5 || distance <= deltaSpeed * deltaSpeed) {
 			drawPos.set(position);
 		} else {
-			double step = speed + (distance / (5 * 5)) * (speed * 2);
+			double step = speed + (distance / (5 * 5)) * (speed * 3);
 			double angle = drawPos.angleToward(position);
 			// reuse of position instance
 			drawPos.add(position.setFromEuclidean(step * Gdx.graphics.getRawDeltaTime(), angle));

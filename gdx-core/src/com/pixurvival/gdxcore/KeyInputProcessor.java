@@ -88,6 +88,7 @@ public class KeyInputProcessor extends InputAdapter {
 			return false;
 		} else {
 			previousPlayerAction.set(playerAction);
+			playerAction.incrementsId();
 			return true;
 		}
 	}

@@ -41,8 +41,7 @@ public class InventoryActionRequest implements IPlayerActionRequest {
 		case SPLIT_CLICK_MY_INVENTORY:
 			ItemStack currentContent = inventory.getSlot(slotIndex);
 			ItemStack heldItemStack = inventory.getHeldItemStack();
-			if (heldItemStack != null && currentContent != null
-					&& heldItemStack.getItem() == currentContent.getItem()) {
+			if (heldItemStack != null && currentContent != null && heldItemStack.getItem() == currentContent.getItem()) {
 				if (currentContent.overflowingQuantity(1) == 0) {
 					inventory.setSlot(slotIndex, currentContent.add(1));
 					if (heldItemStack.getQuantity() == 1) {

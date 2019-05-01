@@ -7,9 +7,6 @@ import lombok.Getter;
 @Getter
 public class Time {
 
-	public static final double timeOffsetAlpha = 0.6;
-	public static final double timeOffsetAlpha2 = 1.0 - timeOffsetAlpha;
-
 	private long timeMillis = 0;
 
 	private double deltaTime = 0;

@@ -14,7 +14,7 @@ public class CooldownAbilityData implements AbilityData {
 	private long readyTimeMillis;
 
 	@Override
-	public void write(ByteBuffer buffer) {
+	public void write(ByteBuffer buffer, LivingEntity entity) {
 		buffer.putLong(readyTimeMillis);
 	}
 

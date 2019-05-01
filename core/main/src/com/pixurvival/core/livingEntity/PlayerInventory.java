@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity;
 
+import java.util.Objects;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -25,7 +27,7 @@ public class PlayerInventory extends Inventory {
 	}
 
 	public void setHeldItemStack(ItemStack itemStack) {
-		if (!ItemStack.equals(itemStack, heldItemStack)) {
+		if (!Objects.equals(itemStack, heldItemStack)) {
 			ItemStack previous = heldItemStack;
 			heldItemStack = itemStack;
 			notifySlotChanged(HELD_ITEM_STACK_INDEX, previous, itemStack);

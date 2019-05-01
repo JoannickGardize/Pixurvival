@@ -39,7 +39,7 @@ public class StatValue implements StatListener {
 	public void setBase(float base) {
 		if (this.base != base) {
 			this.base = base;
-			listeners.forEach(l -> l.baseChanged(this));
+			listeners.forEach(l -> l.baseStatChanged(this));
 			compute();
 		}
 	}
@@ -56,7 +56,7 @@ public class StatValue implements StatListener {
 	}
 
 	@Override
-	public void changed(StatValue statValue) {
+	public void statChanged(StatValue statValue) {
 		compute();
 	}
 
@@ -73,7 +73,7 @@ public class StatValue implements StatListener {
 		float newValue = (base + type.getFormula().apply(statSet) + absoluteModifier) * relativeModifier;
 		if (newValue != value) {
 			value = newValue;
-			listeners.forEach(l -> l.changed(this));
+			listeners.forEach(l -> l.statChanged(this));
 		}
 	}
 }

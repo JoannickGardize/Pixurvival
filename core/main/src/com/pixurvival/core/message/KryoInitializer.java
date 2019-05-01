@@ -22,6 +22,7 @@ import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.core.message.playerRequest.UpdateTargetPositionRequest;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -67,6 +68,7 @@ public class KryoInitializer {
 		register(kryo, EquipmentActionRequest.class);
 		register(kryo, PlaceStructureRequest.class);
 		register(kryo, PlayerEquipmentAbilityRequest.class);
+		register(kryo, UpdateTargetPositionRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

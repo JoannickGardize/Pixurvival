@@ -58,6 +58,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private @Getter short teamId;
 
+	private @Getter @Setter long previousMovementId = -1;
+
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
 			if (previousItemStack != null) {

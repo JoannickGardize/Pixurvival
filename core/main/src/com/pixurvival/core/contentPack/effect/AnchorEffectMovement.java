@@ -18,23 +18,26 @@ public class AnchorEffectMovement implements EffectMovement {
 	public void initialize(EffectEntity entity) {
 		LivingEntity source = entity.getSource();
 		entity.setMovementData(source.getPosition().angleToward(source.getTargetPosition()));
-		entity.setForward(true);
 		updatePosition(entity);
 	}
 
 	@Override
 	public void update(EffectEntity entity) {
 		updatePosition(entity);
-		entity.getVelocity().set(entity.getSource().getVelocity());
+		entity.setForward(entity.getSource().isForward());
+		entity.setMovingAngle(entity.getSource().getMovingAngle());
 	}
 
 	private void updatePosition(EffectEntity entity) {
-		entity.getPosition().set(entity.getSource().getPosition()).addEuclidean(distance, (double) entity.getMovementData());
+		entity.getPosition().set(entity.getSource().getPreviousPosition()).addEuclidean(distance, (double) entity.getMovementData());
 	}
 
 	@Override
 	public double getSpeedPotential(EffectEntity entity) {
-		return entity.getSource().getSpeed();
+		if (entity.getSource() == null) {
+			return 0;
+		} else {
+			return entity.getSource().getSpeed();
+		}
 	}
-
 }

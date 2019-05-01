@@ -18,8 +18,7 @@ public class EquipmentActionRequest implements IPlayerActionRequest {
 
 	@Override
 	public void apply(PlayerEntity player) {
-		if (player.getInventory().getHeldItemStack() == null
-				|| Equipment.canEquip(index, player.getInventory().getHeldItemStack())) {
+		if (player.getInventory().getHeldItemStack() == null || Equipment.canEquip(index, player.getInventory().getHeldItemStack())) {
 			ItemStack previousEquipment = player.getEquipment().get(index);
 			player.getEquipment().set(index, player.getInventory().getHeldItemStack());
 			player.getInventory().setHeldItemStack(previousEquipment);
@@ -36,6 +35,7 @@ public class EquipmentActionRequest implements IPlayerActionRequest {
 		@Override
 		public void write(Kryo kryo, Output output, EquipmentActionRequest object) {
 			output.writeShort(object.index);
+
 		}
 
 		@Override

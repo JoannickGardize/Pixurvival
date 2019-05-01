@@ -13,27 +13,33 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "id")
 @NoArgsConstructor
 public class PlayerMovementRequest implements IPlayerActionRequest {
 
+	private long id;
 	private Direction direction;
 	private boolean forward;
 
 	public PlayerMovementRequest(PlayerMovementRequest other) {
 		direction = other.direction;
 		forward = other.forward;
+		id = other.id;
 	}
 
 	public void set(PlayerMovementRequest other) {
 		direction = other.direction;
 		forward = other.forward;
+		id = other.id;
 	}
 
 	@Override
 	public void apply(PlayerEntity player) {
-		player.setMovingAngle(direction.getAngle());
-		player.setForward(forward);
+		if (id > player.getPreviousMovementId()) {
+			player.setMovingAngle(direction.getAngle());
+			player.setForward(forward);
+			player.setPreviousMovementId(id);
+		}
 	}
 
 	@Override
@@ -41,10 +47,15 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 		return false;
 	}
 
+	public void incrementsId() {
+		id++;
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerMovementRequest> {
 
 		@Override
 		public void write(Kryo kryo, Output output, PlayerMovementRequest object) {
+			output.writeLong(object.id);
 			kryo.writeObject(output, object.direction);
 			output.writeBoolean(object.forward);
 
@@ -53,6 +64,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 		@Override
 		public PlayerMovementRequest read(Kryo kryo, Input input, Class<PlayerMovementRequest> type) {
 			PlayerMovementRequest playerActionRequest = new PlayerMovementRequest();
+			playerActionRequest.id = input.readLong();
 			playerActionRequest.direction = kryo.readObject(input, Direction.class);
 			playerActionRequest.forward = input.readBoolean();
 			return playerActionRequest;

@@ -135,4 +135,14 @@ public class EntityPool {
 			}
 		}
 	}
+
+	public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
+		byteBuffer.put((byte) entity.getGroup().ordinal());
+		byteBuffer.putLong(entity.getId());
+	}
+
+	public Entity readEntityReference(ByteBuffer byteBuffer) {
+		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
+		return entities.get(group).get(byteBuffer.getLong());
+	}
 }

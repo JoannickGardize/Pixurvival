@@ -25,6 +25,7 @@ import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.core.message.playerRequest.UpdateTargetPositionRequest;
 
 class ServerListener extends Listener {
 
@@ -49,6 +50,7 @@ class ServerListener extends Listener {
 		messageActions.put(DropItemRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(CraftItemRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(PlayerEquipmentAbilityRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(UpdateTargetPositionRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());

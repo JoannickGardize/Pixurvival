@@ -21,7 +21,7 @@ public class CraftAbilityData extends WorkAbilityData {
 	}
 
 	@Override
-	public void write(ByteBuffer buffer) {
+	public void write(ByteBuffer buffer, LivingEntity entity) {
 		buffer.putShort((short) itemCraft.getId());
 		buffer.putLong(getStartTimeMillis());
 	}

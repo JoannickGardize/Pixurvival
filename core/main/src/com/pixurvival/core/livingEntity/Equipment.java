@@ -2,14 +2,15 @@ package com.pixurvival.core.livingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.Item.Accessory;
 import com.pixurvival.core.item.Item.Clothing;
 import com.pixurvival.core.item.Item.Weapon;
+import com.pixurvival.core.item.ItemStack;
 
 public class Equipment {
 
@@ -36,7 +37,7 @@ public class Equipment {
 
 	public void set(int index, ItemStack itemStack) {
 		ItemStack previous = equipment[index];
-		if (!ItemStack.equals(itemStack, previous)) {
+		if (!Objects.equals(itemStack, previous)) {
 			equipment[index] = itemStack;
 			listeners.forEach(l -> l.equipmentChanged(this, index, previous, itemStack));
 		}
@@ -82,7 +83,6 @@ public class Equipment {
 		if (itemStack.getQuantity() != 1) {
 			return false;
 		}
-
 		switch (index) {
 		case WEAPON_INDEX:
 			return itemStack.getItem().getDetails() instanceof Weapon;

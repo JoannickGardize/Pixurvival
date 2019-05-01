@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.pixurvival.core.World;
 import com.pixurvival.core.item.Item.StructureDetails;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -53,7 +54,9 @@ public class WorldMouseProcessor extends InputAdapter {
 				DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, screenX, screenY));
 				PixurvivalGame.getClient().sendAction(request);
 			} else {
-				PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(EquipmentAbilityType.WEAPON_BASE));
+				World world = PixurvivalGame.getClient().getWorld();
+				com.pixurvival.core.util.Vector2 targetPosition = world.getType().isClient() ? myPlayer.getTargetPosition() : null;
+				PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(EquipmentAbilityType.WEAPON_BASE, targetPosition));
 				usingAbility = true;
 			}
 		}
@@ -63,7 +66,7 @@ public class WorldMouseProcessor extends InputAdapter {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (button == Input.Buttons.LEFT && usingAbility) {
-			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null));
+			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null, null));
 			usingAbility = false;
 		}
 
@@ -72,23 +75,18 @@ public class WorldMouseProcessor extends InputAdapter {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		processMouseMoved(screenX, screenY);
+		processMouseMoved();
 		return true;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		processMouseMoved(screenX, screenY);
+		processMouseMoved();
 		return true;
 	}
 
-	private void processMouseMoved(int screenX, int screenY) {
+	private void processMouseMoved() {
 		ItemCraftTooltip.getInstance().setVisible(false);
-		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer != null) {
-			Vector2 worldPoint = screenToWorld(screenX, screenY);
-			myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
-		}
 	}
 
 	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {

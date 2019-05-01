@@ -1,8 +1,10 @@
 package com.pixurvival.core.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -34,7 +36,7 @@ public class Inventory {
 	}
 
 	public ItemStack setSlot(int index, ItemStack itemStack) {
-		if (!ItemStack.equals(itemStack, slots[index])) {
+		if (!Objects.equals(itemStack, slots[index])) {
 			ItemStack previousItemStack = slots[index];
 			slots[index] = itemStack;
 			slotChanged(index, previousItemStack, itemStack);
@@ -75,8 +77,9 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is not
-	 * available nothing happen. The items are taken in priority from the end.
+	 * Try to take the given item with the given quantity. If the quantity is
+	 * not available nothing happen. The items are taken in priority from the
+	 * end.
 	 * 
 	 * @param item
 	 *            The item to take.
@@ -122,8 +125,8 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
-	 * will be stacked with similar items if possible. It can be spited into
+	 * Try to add the maximum quantity of the given ItemStack to this inventory,
+	 * it will be stacked with similar items if possible. It can be spited into
 	 * different slots if necessary.
 	 * 
 	 * @param itemStack
@@ -192,6 +195,17 @@ public class Inventory {
 			quantities[newItemStack.getItem().getId()] += newItemStack.getQuantity();
 		}
 		notifySlotChanged(slotIndex, previousItemStack, newItemStack);
+	}
+
+	public void computeQuantities() {
+		ensureQuantitiesArrayLength(0);
+		Arrays.fill(quantities, 0);
+		for (ItemStack itemStack : slots) {
+			if (itemStack != null) {
+				ensureQuantitiesArrayLength(itemStack.getItem().getId());
+				quantities[itemStack.getItem().getId()] += itemStack.getQuantity();
+			}
+		}
 	}
 
 	protected void notifySlotChanged(int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {

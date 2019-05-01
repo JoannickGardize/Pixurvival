@@ -158,7 +158,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		} else {
 			byte id = getCurrentAbility().getId();
 			buffer.put(id);
-			getAbilityData(id).write(buffer);
+			getAbilityData(id).write(buffer, this);
 		}
 	}
 

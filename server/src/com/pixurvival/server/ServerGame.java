@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -23,8 +22,10 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.util.CommonMainArgs;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 public class ServerGame {
 
@@ -37,11 +38,10 @@ public class ServerGame {
 	private @Getter ContentPack selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 
-	public ServerGame() {
-		// Log.set(Log.LEVEL_DEBUG);
+	@SneakyThrows
+	public ServerGame(CommonMainArgs serverArgs) {
+		serverArgs.apply(server, serverListener);
 		contentPackUploadManager.start();
-		// TODO enlever lag simulation
-		server.addListener(new Listener.LagListener(40, 50, serverListener));
 		addListener(contentPackUploadManager);
 		KryoInitializer.apply(server.getKryo());
 		// TODO selection dynamique des packs

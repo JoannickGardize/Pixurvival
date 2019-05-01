@@ -16,6 +16,7 @@ import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 
@@ -65,17 +66,17 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private float interpolationTime = 0;
 	private ContentPackTextures contentPackTextures;
 
-	public PixurvivalGame() {
+	public PixurvivalGame(CommonMainArgs clientArgs) {
 		if (instance != null) {
 			throw new IllegalStateException("Cannot instantiate multiple instances of the game !");
 		}
 		instance = this;
+		client = new ClientGame(clientArgs);
+		client.addListener(this);
 	}
 
 	@Override
 	public void create() {
-		client = new ClientGame();
-		client.addListener(this);
 		assetManager = new AssetManager();
 		assetManager.load(I18N_BUNDLE, I18NBundle.class);
 		assetManager.load(SKIN, Skin.class);

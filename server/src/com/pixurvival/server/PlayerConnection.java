@@ -31,17 +31,16 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 
 	@Override
 	public void equipmentChanged(Equipment equipment, int equipmentIndex, ItemStack previousItemStack, ItemStack newItemStack) {
-		System.out.println("equip");
 		playerDataChanged = true;
 	}
 
 	@Override
-	public void changed(StatValue statValue) {
+	public void statChanged(StatValue statValue) {
+
 	}
 
 	@Override
-	public void baseChanged(StatValue statValue) {
-		System.out.println("base");
+	public void baseStatChanged(StatValue statValue) {
 		playerDataChanged = true;
 	}
 

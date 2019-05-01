@@ -6,7 +6,7 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 
 public interface AbilityData {
 
-	void write(ByteBuffer buffer);
+	void write(ByteBuffer buffer, LivingEntity entity);
 
 	void apply(ByteBuffer buffer, LivingEntity entity);
 

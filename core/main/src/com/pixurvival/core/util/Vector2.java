@@ -1,5 +1,8 @@
 package com.pixurvival.core.util;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -13,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Vector2 {
 
+	private static final NumberFormat TO_STRING_FORMAT = new DecimalFormat("0.0#");
 	private double x = 0;
 	private double y = 0;
 
@@ -123,6 +127,17 @@ public class Vector2 {
 		double dx = this.x - x;
 		double dy = this.y - y;
 		return dx * dx + dy * dy;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(TO_STRING_FORMAT.format(x));
+		sb.append(", ");
+		sb.append(TO_STRING_FORMAT.format(y));
+		sb.append(")");
+		return sb.toString();
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Vector2> {

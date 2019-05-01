@@ -7,6 +7,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.MapStructure;
 
 public class HarvestAbility extends WorkAbility {
 
@@ -19,8 +20,13 @@ public class HarvestAbility extends WorkAbility {
 
 	@Override
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
-		double angle = entity.angleToward(((HarvestAbilityData) getAbilityData(entity)).getStructure());
-		return ActionAnimation.getMoveFromDirection(Direction.closestCardinal(angle));
+		MapStructure structure = ((HarvestAbilityData) getAbilityData(entity)).getStructure();
+		if (structure == null) {
+			return null;
+		} else {
+			double angle = entity.angleToward(structure);
+			return ActionAnimation.getMoveFromDirection(Direction.closestCardinal(angle));
+		}
 	}
 
 	@Override

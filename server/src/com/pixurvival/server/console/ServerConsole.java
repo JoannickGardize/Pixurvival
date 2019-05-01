@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGame;
 import com.pixurvival.server.ServerGameListener;
@@ -11,7 +12,7 @@ import com.pixurvival.server.ServerGameListener;
 public class ServerConsole implements Runnable, ServerGameListener {
 
 	private boolean running = true;
-	private ServerGame game = new ServerGame();
+	private ServerGame game = new ServerGame(new CommonMainArgs());
 
 	public ServerConsole() {
 		game.addListener(this);

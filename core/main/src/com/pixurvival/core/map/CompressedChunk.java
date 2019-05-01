@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.util.ByteBuffers;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class CompressedChunk {
 
 	public CompressedChunk(Chunk chunk) {
 		map = chunk.getMap();
-		ByteBuffer buffer = ByteBuffers.get();
+		ByteBuffer buffer = ByteBufferUtils.getThreadSafeInstance();
 		buffer.reset();
 		buffer.putInt(chunk.getPosition().getX());
 		buffer.putInt(chunk.getPosition().getY());

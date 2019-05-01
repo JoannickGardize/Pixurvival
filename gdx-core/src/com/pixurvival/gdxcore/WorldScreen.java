@@ -3,12 +3,14 @@ package com.pixurvival.gdxcore;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
@@ -79,6 +81,7 @@ public class WorldScreen implements Screen {
 			PixurvivalGame.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
 		}
 		worldStage.getViewport().apply();
+		updateMouseTarget();
 		worldStage.act();
 		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
 		if (myPlayer != null) {
@@ -130,5 +133,13 @@ public class WorldScreen implements Screen {
 	public void dispose() {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void updateMouseTarget() {
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (myPlayer != null) {
+			Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+			myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
+		}
 	}
 }

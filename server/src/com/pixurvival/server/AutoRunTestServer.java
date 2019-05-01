@@ -3,7 +3,8 @@ package com.pixurvival.server;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.util.ArgsUtils;
+import com.pixurvival.core.util.CommonMainArgs;
 
 /**
  * Utility class that start the server automotically on port 7777, and start the
@@ -13,9 +14,10 @@ import com.esotericsoftware.minlog.Log;
  *
  */
 public class AutoRunTestServer implements ServerGameListener {
-	private ServerGame game = new ServerGame();
+	private ServerGame game;
 
-	public AutoRunTestServer() throws IOException {
+	public AutoRunTestServer(CommonMainArgs serverArgs) throws IOException {
+		game = new ServerGame(serverArgs);
 		game.addListener(this);
 		game.startServer(7777);
 	}
@@ -33,9 +35,6 @@ public class AutoRunTestServer implements ServerGameListener {
 	}
 
 	public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		if (args.length > 0) {
-			Log.class.getMethod(args[0]).invoke(null);
-		}
-		new AutoRunTestServer();
+		new AutoRunTestServer(ArgsUtils.readArgs(args, CommonMainArgs.class));
 	}
 }

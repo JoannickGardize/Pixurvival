@@ -47,13 +47,6 @@ public class ItemStack implements Serializable {
 		return new ItemStack(item, quantity);
 	}
 
-	public static boolean equals(ItemStack itemStack1, ItemStack itemStack2) {
-		if (itemStack1 != null) {
-			return itemStack1.equals(itemStack2);
-		}
-		return itemStack2 == null;
-	}
-
 	/**
 	 * Return the overflowing quantity if added to the quantity of this item
 	 * stack, according to {@link Item#getMaxStackSize()}.

@@ -40,7 +40,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 		if (getWorld().isServer()) {
 			definition.getMovement().initialize(this);
 			if (definition.getOrientation() == OrientationType.FROM_SOURCE) {
-				orientation = (float) source.getPosition().angleToward(getPosition());
+				orientation = (float) source.getPosition().angleToward(source.getTargetPosition());
 			}
 			termTimeMillis = getWorld().getTime().getTimeMillis() + Time.secToMillis(definition.getDuration());
 		}
@@ -90,6 +90,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 		buffer.putFloat(orientation);
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putDouble(getMovingAngle());
+		getWorld().getEntityPool().writeEntityReference(buffer, source);
 	}
 
 	@Override
@@ -99,6 +100,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 		orientation = buffer.getFloat();
 		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getDouble());
+		source = (LivingEntity) getWorld().getEntityPool().readEntityReference(buffer);
 	}
 
 	@Override
