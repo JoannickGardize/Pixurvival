@@ -34,6 +34,7 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 		// Binding
 
 		bind(cooldownInput, EffectAbility::getCooldown, EffectAbility::setCooldown);
+		bind(ammunitionChooser, EffectAbility::getAmmunition, EffectAbility::setAmmunition);
 		bind(effectsEditor, EffectAbility::getEffects, EffectAbility::setEffects);
 
 		// Layouting
