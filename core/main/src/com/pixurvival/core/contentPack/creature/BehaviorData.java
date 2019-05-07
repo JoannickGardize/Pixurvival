@@ -4,6 +4,7 @@ import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 public class BehaviorData {
 
+	public static final double TARGET_SEARCH_RADIUS = 64;
 	public static final long MAX_UPDATE_DELAY_RELATIVE_TO_SPEED = 1000;
 	public static final long CHANGE_CONDITION_CHECK_DELAY = 300;
 
@@ -30,9 +32,9 @@ public class BehaviorData {
 	private double closestDistanceSquaredToPlayer;
 
 	/**
-	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur n'est
-	 * pas modifié, ou est inférieur ou temps actuel du {@link World}, il en
-	 * résultera une mise à jour du behavior à chaque frame.
+	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur
+	 * n'est pas modifié, ou est inférieur ou temps actuel du {@link World}, il
+	 * en résultera une mise à jour du behavior à chaque frame.
 	 */
 	@Getter
 	@Setter
@@ -64,9 +66,10 @@ public class BehaviorData {
 	}
 
 	/**
-	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière à ce
-	 * qu'elle corresponde au temps qu'il faut pour que la créature parcourt la
-	 * distance passé en paramètre, relatif donc à la vitesse de la créature.
+	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière
+	 * à ce qu'elle corresponde au temps qu'il faut pour que la créature
+	 * parcourt la distance passé en paramètre, relatif donc à la vitesse de la
+	 * créature.
 	 * 
 	 * @param targetDistance
 	 *            La distance à parcourir utilisé pour calculer le temps de la
@@ -79,12 +82,11 @@ public class BehaviorData {
 	}
 
 	public boolean mustCheckChangeCondition() {
-		if (time.getTimeMillis() - previousChangeConditionCheck <= CHANGE_CONDITION_CHECK_DELAY) {
-			previousChangeConditionCheck = time.getTimeMillis();
-			return true;
-		} else {
-			return false;
-		}
+		return time.getTimeMillis() - previousChangeConditionCheck >= CHANGE_CONDITION_CHECK_DELAY;
+	}
+
+	public void updatePreviousChangeConditionCheck() {
+		previousChangeConditionCheck = time.getTimeMillis();
 	}
 
 	void beforeStep() {
@@ -93,8 +95,9 @@ public class BehaviorData {
 
 	private void findClosestPlayer() {
 		if (closestPlayer == null) {
-			closestPlayer = creature.getWorld().getEntityPool().closest(EntityGroup.PLAYER, creature);
-			closestDistanceSquaredToPlayer = creature.distanceSquared(closestPlayer);
+			EntitySearchResult result = creature.findClosest(EntityGroup.PLAYER, TARGET_SEARCH_RADIUS);
+			closestPlayer = result.getEntity();
+			closestDistanceSquaredToPlayer = result.getDistanceSquared();
 		}
 	}
 }

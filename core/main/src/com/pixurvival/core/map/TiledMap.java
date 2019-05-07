@@ -1,6 +1,7 @@
 package com.pixurvival.core.map;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import lombok.Getter;
 public class TiledMap {
 
 	private List<TiledMapListener> listeners = new ArrayList<>();
+	private List<PlayerMapEventListener> playerMapEventListeners = new ArrayList<>();
 	private List<Chunk> newChunks = new ArrayList<>();
 	private List<Chunk> toRemoveChunks = new ArrayList<>();
 
@@ -27,7 +29,7 @@ public class TiledMap {
 	private World world;
 
 	private MapTile outsideTile;
-	private int chunkDistance;
+	private double chunkDistance;
 	@Getter
 	private MapTile[] mapTilesById;
 
@@ -43,7 +45,7 @@ public class TiledMap {
 
 		outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
 
-		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_CHUNK_VIEW_DISTANCE : GameConstants.PLAYER_CHUNK_VIEW_DISTANCE;
+		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_DISTANCE : GameConstants.PLAYER_VIEW_DISTANCE;
 		List<Tile> tilesById = world.getContentPack().getTiles();
 		mapTilesById = new MapTile[tilesById.size()];
 		for (int i = 0; i < tilesById.size(); i++) {
@@ -54,6 +56,18 @@ public class TiledMap {
 
 	public void addListener(TiledMapListener listener) {
 		listeners.add(listener);
+	}
+
+	public void addPlayerMapEventListener(PlayerMapEventListener listener) {
+		playerMapEventListeners.add(listener);
+	}
+
+	public void notifyEnterView(PlayerEntity player, ChunkPosition position) {
+		playerMapEventListeners.forEach(l -> l.enterVision(player, position));
+	}
+
+	public void notifyExitView(PlayerEntity player, ChunkPosition position) {
+		playerMapEventListeners.forEach(l -> l.exitVision(player, position));
 	}
 
 	public void notifyListeners(Consumer<TiledMapListener> action) {
@@ -86,7 +100,7 @@ public class TiledMap {
 		insertChunk(chunk);
 	}
 
-	public void addAllChunks(CompressedChunk[] compresseds) {
+	public void addAllChunks(Collection<CompressedChunk> compresseds) {
 		for (CompressedChunk compressed : compresseds) {
 			addChunk(compressed);
 		}
@@ -118,8 +132,15 @@ public class TiledMap {
 		return chunks.get(position);
 	}
 
-	private ChunkPosition chunkPosition(Vector2 pos) {
-		return new ChunkPosition((int) Math.floor(pos.getX() / GameConstants.CHUNK_SIZE), (int) Math.floor(pos.getY() / GameConstants.CHUNK_SIZE));
+	public void ifChunkExists(ChunkPosition position, Consumer<Chunk> action) {
+		Chunk chunk = chunkAt(position);
+		if (chunk != null) {
+			action.accept(chunk);
+		}
+	}
+
+	public void notifyChangedChunk(PlayerEntity e) {
+		playerMapEventListeners.forEach(l -> l.enterChunk(e));
 	}
 
 	public void update() {
@@ -130,44 +151,55 @@ public class TiledMap {
 			newChunks.clear();
 		}
 		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
-			PlayerEntity player = (PlayerEntity) p;
-			ChunkPosition chunkPosition = chunkPosition(p.getPosition());
-			if (!chunkPosition.equals(player.getChunkPosition())) {
-				player.setChunkPosition(chunkPosition);
-				listeners.forEach(l -> l.playerChangedChunk(player));
-
-			}
-			for (int x = chunkPosition.getX() - chunkDistance; x <= chunkPosition.getX() + chunkDistance; x++) {
-				for (int y = chunkPosition.getY() - chunkDistance; y <= chunkPosition.getY() + chunkDistance; y++) {
-					ChunkPosition position = new ChunkPosition(x, y);
-					if (!chunks.containsKey(position)) {
-						// Putting the position key is pretty important, it
-						// prevent the chunk to be
-						// requested every frame until it is generated.
-						chunks.put(position, null);
-						ChunkManager.getInstance().requestChunk(this, position);
-					} else {
-						Chunk chunk = chunks.get(position);
-						if (chunk != null) {
-							chunk.check();
-						}
+			if (world.isServer() || world.getMyPlayerId() == p.getId()) {
+				if (p.getChunk() == null) {
+					ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(p.getPosition());
+					if (!chunks.containsKey(chunkPosition)) {
+						requestChunk(chunkPosition);
 					}
+				} else {
+					checkChunkToRequest(p);
 				}
 			}
 		});
-
 	}
 
-	public void applyUpdate(StructureUpdate[] structureUpdates) {
+	private void checkChunkToRequest(Entity e) {
+		ChunkPosition.forEachChunkPosition(e.getPosition(), chunkDistance, position -> {
+			if (!chunks.containsKey(position)) {
+				// Putting the position key is very important, it
+				// prevent the chunk to be
+				// requested every frame until it is generated.
+				requestChunk(position);
+			} else {
+				Chunk chunk = chunks.get(position);
+				if (chunk != null) {
+					chunk.check();
+				}
+			}
+		});
+	}
+
+	private void requestChunk(ChunkPosition position) {
+		chunks.put(position, null);
+		ChunkManager.getInstance().requestChunk(this, position);
+	}
+
+	public void forEachChunk(Vector2 center, double halfSquareLength, Consumer<Chunk> action) {
+		ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
+			Chunk chunk = chunks.get(position);
+			if (chunk != null) {
+				action.accept(chunk);
+			}
+		});
+	}
+
+	public void applyUpdate(Collection<StructureUpdate> structureUpdates) {
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
 				ChunkPosition position = new ChunkPosition(structureUpdate.getX(), structureUpdate.getY());
-				List<StructureUpdate> waitingList = waitingStructureUpdates.get(position);
-				if (waitingList == null) {
-					waitingList = new ArrayList<>();
-					waitingStructureUpdates.put(position, waitingList);
-				}
+				List<StructureUpdate> waitingList = waitingStructureUpdates.computeIfAbsent(position, p -> new ArrayList<>());
 				waitingList.add(structureUpdate);
 			} else {
 				structureUpdate.perform(chunk);

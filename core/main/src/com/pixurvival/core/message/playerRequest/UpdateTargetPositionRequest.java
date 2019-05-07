@@ -18,7 +18,6 @@ public class UpdateTargetPositionRequest implements IPlayerActionRequest {
 	@Override
 	public void apply(PlayerEntity player) {
 		player.getTargetPosition().set(targetPosition);
-		System.out.println("update target : " + targetPosition);
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public abstract class Behavior extends IdentifiedElement {
 		if (creature.getWorld().getTime().getTimeMillis() >= behaviorData.getNextUpdateTimeMillis()) {
 			behaviorData.beforeStep();
 			step(creature);
+			nextBehavior(creature);
 		}
 		if (behaviorData.mustCheckChangeCondition()) {
 			nextBehavior(creature);
@@ -53,6 +54,7 @@ public abstract class Behavior extends IdentifiedElement {
 				break;
 			}
 		}
+		creature.getBehaviorData().updatePreviousChangeConditionCheck();
 	}
 
 	private void pass(CreatureEntity creature, Behavior nextBehavior) {

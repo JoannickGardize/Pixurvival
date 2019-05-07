@@ -17,6 +17,8 @@ public class AnchorEffectMovement implements EffectMovement {
 	@Override
 	public void initialize(EffectEntity entity) {
 		LivingEntity source = entity.getSource();
+		// TODO Trouver une solution pour synchroniser cette donnée entre client
+		// et serveur :
 		entity.setMovementData(source.getPosition().angleToward(source.getTargetPosition()));
 		updatePosition(entity);
 	}

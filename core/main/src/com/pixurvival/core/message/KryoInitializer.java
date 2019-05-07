@@ -56,7 +56,6 @@ public class KryoInitializer {
 		register(kryo, Equipment.class);
 		register(kryo, InventoryActionRequest.class);
 		register(kryo, CompressedChunk.class);
-		register(kryo, CompressedChunk[].class);
 		register(kryo, InteractStructureRequest.class);
 		register(kryo, HarvestableStructureUpdate.class);
 		register(kryo, AddStructureUpdate.class);

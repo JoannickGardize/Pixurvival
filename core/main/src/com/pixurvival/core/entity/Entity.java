@@ -1,11 +1,15 @@
 package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.World;
+import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.Vector2;
 
@@ -28,6 +32,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter(AccessLevel.PACKAGE) World world;
+	private Chunk chunk;
 	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
@@ -40,6 +45,12 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Getter(AccessLevel.NONE) Vector2 targetVelocity = new Vector2();
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
+	/**
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
+	 */
+	private @Setter boolean stateChanged = true;
 
 	public abstract void initialize();
 
@@ -58,38 +69,73 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public void update() {
+
 		// Update position
 		previousPosition.set(position);
 		if (forward) {
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
-			double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
-			double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
-			if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
-				if (targetVelocity.getX() > 0) {
-					position.setX(Math.floor(position.getX()) + 1 - getCollisionRadius());
-				} else {
-					position.setX(Math.floor(position.getX()) + getCollisionRadius());
-				}
-				velocity.setX(0);
-			} else {
-				position.addX(dx);
-				velocity.setX(targetVelocity.getX());
-			}
-			if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
-				if (targetVelocity.getY() > 0) {
-					position.setY(Math.floor(position.getY()) + 1 - getCollisionRadius());
-				} else {
-					position.setY(Math.floor(position.getY()) + getCollisionRadius());
-				}
-				velocity.setY(0);
-			} else {
-				position.addY(dy);
-				velocity.setY(targetVelocity.getY());
-			}
+			stepX();
+			stepY();
 		} else {
 			setSpeed(0);
 			velocity.set(0, 0);
+		}
+
+		// Update current chunk
+		if (chunk == null) {
+			chunk = getWorld().getMap().chunkAt(position.getX(), position.getY());
+			if (chunk != null) {
+				chunk.getEntities().add(this);
+				setStateChanged(true);
+				chunkChanged();
+			}
+		} else {
+			ChunkPosition previousChunkPosition = chunk.getPosition();
+			ChunkPosition newChunkPosition = previousChunkPosition.createIfDifferent(position);
+			if (newChunkPosition != previousChunkPosition) {
+				chunk.getEntities().remove(this);
+				chunk = getWorld().getMap().chunkAt(newChunkPosition);
+				if (chunk != null) {
+					chunk.getEntities().add(this);
+					setStateChanged(true);
+					chunkChanged();
+				}
+			}
+		}
+	}
+
+	protected void chunkChanged() {
+		// for override
+	}
+
+	private void stepY() {
+		double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
+		if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
+			if (targetVelocity.getY() > 0) {
+				position.setY(Math.floor(position.getY()) + 1 - getCollisionRadius());
+			} else {
+				position.setY(Math.floor(position.getY()) + getCollisionRadius());
+			}
+			velocity.setY(0);
+		} else {
+			position.addY(dy);
+			velocity.setY(targetVelocity.getY());
+		}
+	}
+
+	private void stepX() {
+		double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
+		if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
+			if (targetVelocity.getX() > 0) {
+				position.setX(Math.floor(position.getX()) + 1 - getCollisionRadius());
+			} else {
+				position.setX(Math.floor(position.getX()) + getCollisionRadius());
+			}
+			velocity.setX(0);
+		} else {
+			position.addX(dx);
+			velocity.setX(targetVelocity.getX());
 		}
 	}
 
@@ -143,6 +189,25 @@ public abstract class Entity implements Body, CustomDataHolder {
 	// * Utility methods *
 	// *******************
 
+	public EntitySearchResult findClosest(EntityGroup group, double maxSquareDistance) {
+		TiledMap map = world.getMap();
+
+		EntitySearchResult searchResult = new EntitySearchResult();
+		map.forEachChunk(position, maxSquareDistance, c -> c.getEntities().get(group).forEach(e -> {
+			double distance = distanceSquared(e);
+			if (distance < searchResult.getDistanceSquared()) {
+				searchResult.setDistanceSquared(distance);
+				searchResult.setEntity(e);
+			}
+		}));
+		return searchResult;
+	}
+
+	public void foreachEntities(EntityGroup group, double maxSquareDistance, Consumer<Entity> action) {
+		TiledMap map = world.getMap();
+		map.forEachChunk(position, maxSquareDistance, c -> c.getEntities().get(group).forEach(action::accept));
+	}
+
 	public double distanceSquared(Entity other) {
 		return position.distanceSquared(other.position);
 	}
@@ -165,5 +230,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public boolean collideDynamic(Entity other) {
 		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getCollisionRadius());
+	}
+
+	public ChunkPosition chunkPosition() {
+		if (chunk == null) {
+			return ChunkPosition.fromWorldPosition(position);
+		} else {
+			return chunk.getPosition();
+		}
 	}
 }

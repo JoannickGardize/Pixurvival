@@ -19,13 +19,11 @@ import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public abstract class LivingEntity extends Entity implements Damageable {
 
-	private @Setter float health;
-	private @Setter float aimingAngle;
+	private float health;
 
 	private StatSet stats = new StatSet();
 
@@ -51,6 +49,29 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		}
 	}
 
+	public void setHealth(float health) {
+		if (health != this.health) {
+			this.health = health;
+			setStateChanged(true);
+		}
+	}
+
+	@Override
+	public void setForward(boolean forward) {
+		if (forward != isForward()) {
+			super.setForward(forward);
+			setStateChanged(true);
+		}
+	}
+
+	@Override
+	public void setMovingAngle(double movingAngle) {
+		if (movingAngle != getMovingAngle()) {
+			super.setMovingAngle(movingAngle);
+			setStateChanged(true);
+		}
+	}
+
 	@Override
 	public float getMaxHealth() {
 		return stats.getValue(StatType.MAX_HEALTH);
@@ -67,6 +88,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		if (health < 0) {
 			health = 0;
 		}
+		setStateChanged(true);
 	}
 
 	@Override
@@ -75,6 +97,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		if (health > getMaxHealth()) {
 			health = getMaxHealth();
 		}
+		setStateChanged(true);
 	}
 
 	public void applyPersistentAlteration(Object source, PersistentAlteration alteration) {
@@ -97,8 +120,6 @@ public abstract class LivingEntity extends Entity implements Damageable {
 			return false;
 		});
 
-		super.update();
-
 		// Only server has the final decision to kill an alive entity
 		if (health <= 0 && getWorld().isServer()) {
 			setAlive(false);
@@ -111,6 +132,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 				currentAbility = null;
 			}
 		}
+		super.update();
 	}
 
 	public AbilityData getAbilityData(int abilityId) {
@@ -134,7 +156,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 			}
 			currentAbility = ability;
 		}
-
+		setStateChanged(true);
 	}
 
 	public void stopCurrentAbility() {
@@ -151,7 +173,6 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		buffer.putDouble(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putFloat(getHealth());
-		buffer.putFloat(getAimingAngle());
 
 		if (getCurrentAbility() == null) {
 			buffer.put(Ability.NONE_ID);
@@ -168,7 +189,6 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		setMovingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1);
 		setHealth(buffer.getFloat());
-		setAimingAngle(buffer.getFloat());
 
 		byte abilityId = buffer.get();
 		if (abilityId == Ability.NONE_ID) {
@@ -181,5 +201,5 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	public abstract AbilitySet getAbilitySet();
 
-	public abstract void foreach(TargetType targetType, Consumer<LivingEntity> action);
+	public abstract void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action);
 }

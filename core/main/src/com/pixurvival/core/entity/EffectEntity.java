@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
@@ -37,8 +38,8 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	@Override
 	public void initialize() {
+		definition.getMovement().initialize(this);
 		if (getWorld().isServer()) {
-			definition.getMovement().initialize(this);
 			if (definition.getOrientation() == OrientationType.FROM_SOURCE) {
 				orientation = (float) source.getPosition().angleToward(source.getTargetPosition());
 			}
@@ -48,12 +49,12 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	@Override
 	public void update() {
+		definition.getMovement().update(this);
 		if (getWorld().isServer()) {
 			if (getWorld().getTime().getTimeMillis() >= termTimeMillis || definition.isSolid() && getWorld().getMap().collide(this)) {
 				setAlive(false);
 				return;
 			}
-			definition.getMovement().update(this);
 			processEffectTarget();
 		}
 		super.update();
@@ -61,7 +62,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	private void processEffectTarget() {
 		for (EffectTarget effectTarget : definition.getTargets()) {
-			source.foreach(effectTarget.getTargetType(), e -> {
+			source.foreach(effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
 					if (effectTarget.isDestroyWhenCollide()) {

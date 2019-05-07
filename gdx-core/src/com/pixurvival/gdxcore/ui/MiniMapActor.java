@@ -18,11 +18,12 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 
-public class MiniMapActor extends Actor implements TiledMapListener {
+public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEventListener {
 
 	private Map<ChunkPosition, Texture> chunkTextures = new HashMap<>();
 	private Texture background;
@@ -34,6 +35,7 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 	public MiniMapActor(long myPlayerId) {
 		this.myPlayerId = myPlayerId;
 		PixurvivalGame.getWorld().getMap().addListener(this);
+		PixurvivalGame.getWorld().getMap().addPlayerMapEventListener(this);
 		background = ColorTextures.get(Color.BLACK);
 		mapElement = new Texture(Gdx.files.internal("map_element.png"), true);
 		mapElement.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.MipMapLinearLinear);
@@ -61,7 +63,6 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * getHeight()) + getY();
 					batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
 				}
-
 			}
 		}
 
@@ -72,15 +73,10 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
-		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
-		for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
-			for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
-				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
-			}
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (myPlayer != null && chunk.getPosition().insideSquare(myPlayer.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+			addChunk(chunk);
 		}
-		Texture texture = new Texture(pixmap, true);
-		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		chunkTextures.put(chunk.getPosition(), texture);
 	}
 
 	@Override
@@ -101,7 +97,36 @@ public class MiniMapActor extends Actor implements TiledMapListener {
 	}
 
 	@Override
-	public void playerChangedChunk(PlayerEntity player) {
+	public void enterVision(PlayerEntity entity, ChunkPosition position) {
+		if (entity == PixurvivalGame.getClient().getMyPlayer()) {
+			Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(position);
+			if (chunk != null) {
+				addChunk(chunk);
+			}
+		}
+	}
+
+	@Override
+	public void exitVision(PlayerEntity entity, ChunkPosition position) {
+	}
+
+	private void addChunk(Chunk chunk) {
+		if (chunkTextures.containsKey(chunk.getPosition())) {
+			return;
+		}
+		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
+		for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
+			for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
+				pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
+			}
+		}
+		Texture texture = new Texture(pixmap, true);
+		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		chunkTextures.put(chunk.getPosition(), texture);
+	}
+
+	@Override
+	public void enterChunk(PlayerEntity e) {
 	}
 
 }

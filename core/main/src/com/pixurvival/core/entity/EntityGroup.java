@@ -1,30 +1,33 @@
 package com.pixurvival.core.entity;
 
+import java.util.function.Supplier;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 public enum EntityGroup {
-	PLAYER,
-	ITEM_STACK,
-	CREATURE,
-	EFFECT;
+	PLAYER(PlayerEntity::new),
+	ITEM_STACK(ItemStackEntity::new),
+	CREATURE(CreatureEntity::new),
+	EFFECT(EffectEntity::new);
 
-	static {
-		for (byte i = 0; i < EntityGroup.values().length; i++) {
-			EntityGroup.values()[i].id = i;
-		}
-	}
+	public static final byte END_MARKER = -1;
 
-	private @Getter byte id;
+	private @Getter Supplier<Entity> entitySupplier;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EntityGroup> {
 
 		@Override
 		public void write(Kryo kryo, Output output, EntityGroup object) {
-			output.writeByte(object.id);
+			output.writeByte(object.ordinal());
 		}
 
 		@Override

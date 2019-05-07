@@ -7,6 +7,7 @@ import java.util.List;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.entity.EntityCollection;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +36,8 @@ public class Chunk {
 	private long lastCheckTimestamp;
 
 	private @Setter boolean fileSync = false;
+
+	private EntityCollection entities = new EntityCollection();
 
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;

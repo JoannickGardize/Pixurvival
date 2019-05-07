@@ -2,10 +2,9 @@ package com.pixurvival.core.livingEntity;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.TargetType;
-import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.item.ItemCraft;
@@ -17,7 +16,8 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
-import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.message.PlayerData;
 
@@ -53,12 +53,11 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private Equipment equipment = new Equipment();
 
-	@Setter
-	private ChunkPosition chunkPosition;
-
 	private @Getter short teamId;
 
 	private @Getter @Setter long previousMovementId = -1;
+
+	private ChunkGroupChangeHelper chunkVision = new ChunkGroupChangeHelper();
 
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
@@ -73,6 +72,13 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public void setInventory(PlayerInventory inventory) {
 		this.inventory = inventory;
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		chunkVision.move(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, position -> getWorld().getMap().notifyEnterView(this, position),
+				position -> getWorld().getMap().notifyExitView(this, position));
 	}
 
 	@Override
@@ -154,16 +160,16 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
-	public void foreach(TargetType targetType, Consumer<LivingEntity> action) {
+	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
 		switch (targetType) {
 		case ALL_ENEMIES:
-			foreachEnemies(action);
+			foreachEnemies(maxSquareDistance, action);
 			break;
 		case ALL_ALLIES:
-			foreachAllies(action, true);
+			foreachAllies(maxSquareDistance, true, action);
 			break;
 		case OTHER_ALLIES:
-			foreachAllies(action, false);
+			foreachAllies(maxSquareDistance, false, action);
 			break;
 		default:
 			break;
@@ -171,23 +177,32 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void foreachEnemies(Consumer<LivingEntity> action) {
-		EntityPool entityPool = getWorld().getEntityPool();
-		for (Entity entity : entityPool.get(EntityGroup.PLAYER)) {
-			PlayerEntity playerEntity = (PlayerEntity) entity;
+	public void foreachEnemies(double maxSquareDistance, Consumer<LivingEntity> action) {
+		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, e -> {
+			PlayerEntity playerEntity = (PlayerEntity) e;
 			if (playerEntity.teamId != teamId) {
 				action.accept(playerEntity);
 			}
-		}
-		entityPool.get(EntityGroup.CREATURE).forEach((Consumer) action);
+
+		});
+		foreachEntities(EntityGroup.CREATURE, maxSquareDistance, (Consumer) action);
 	}
 
-	public void foreachAllies(Consumer<LivingEntity> action, boolean includeSelf) {
-		for (Entity entity : getWorld().getEntityPool().get(EntityGroup.PLAYER)) {
-			PlayerEntity playerEntity = (PlayerEntity) entity;
+	public void foreachAllies(double maxSquareDistance, boolean includeSelf, Consumer<LivingEntity> action) {
+		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, e -> {
+			PlayerEntity playerEntity = (PlayerEntity) e;
 			if (playerEntity.teamId == teamId && (includeSelf || !this.equals(playerEntity))) {
 				action.accept(playerEntity);
 			}
-		}
+		});
+	}
+
+	public void foreachChunkInView(Consumer<Chunk> action) {
+		getWorld().getMap().forEachChunk(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, action);
+	}
+
+	@Override
+	protected void chunkChanged() {
+		getWorld().getMap().notifyChangedChunk(this);
 	}
 }

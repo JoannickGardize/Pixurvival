@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.ui.CharacterUI;
@@ -31,11 +30,9 @@ public class WorldScreen implements Screen {
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
-	private long myPlayerId;
 	private EntitiesActor entitiesActor;
 
-	public void setWorld(World world, long myPlayerId) {
-		this.myPlayerId = myPlayerId;
+	public void setWorld(World world) {
 		this.world = world;
 		worldStage.clear();
 		worldStage.addActor(new MapActor(world.getMap()));
@@ -43,7 +40,7 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(entitiesActor);
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
-		MiniMapUI miniMapUI = new MiniMapUI(myPlayerId);
+		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		miniMapUI.initialize();
@@ -83,7 +80,7 @@ public class WorldScreen implements Screen {
 		worldStage.getViewport().apply();
 		updateMouseTarget();
 		worldStage.act();
-		Entity myPlayer = world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
+		Entity myPlayer = world.getMyPlayer();
 		if (myPlayer != null) {
 			Object oData = myPlayer.getCustomData();
 			if (oData != null) {

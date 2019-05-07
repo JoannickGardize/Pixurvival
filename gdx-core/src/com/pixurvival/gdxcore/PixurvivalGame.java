@@ -145,7 +145,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			Log.error("Error when loading contentPack.", e);
 			e.printStackTrace();
 		}
-		worldScreen.setWorld(client.getWorld(), client.getMyPlayerId());
+		worldScreen.setWorld(client.getWorld());
 		setScreen(worldScreen);
 		if (client.getWorld().getType() == World.Type.CLIENT) {
 			client.notifyReady();

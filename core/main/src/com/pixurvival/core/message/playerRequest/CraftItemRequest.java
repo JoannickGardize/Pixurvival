@@ -39,6 +39,5 @@ public class CraftItemRequest implements IPlayerActionRequest {
 		public CraftItemRequest read(Kryo kryo, Input input, Class<CraftItemRequest> type) {
 			return new CraftItemRequest(input.readInt(), input.readShort());
 		}
-
 	}
 }

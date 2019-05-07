@@ -9,7 +9,6 @@ import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.util.MoveUtils;
@@ -110,21 +109,20 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void foreach(TargetType targetType, Consumer<LivingEntity> action) {
-		EntityPool entityPool = getWorld().getEntityPool();
+	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
 		switch (targetType) {
 		case ALL_ENEMIES:
-			entityPool.get(EntityGroup.PLAYER).forEach((Consumer) action);
+			foreachEntities(EntityGroup.PLAYER, maxSquareDistance, (Consumer) action);
 			break;
 		case ALL_ALLIES:
-			entityPool.get(EntityGroup.CREATURE).forEach((Consumer) action);
+			foreachEntities(EntityGroup.CREATURE, maxSquareDistance, (Consumer) action);
 			break;
 		case OTHER_ALLIES:
-			for (Entity entity : entityPool.get(EntityGroup.CREATURE)) {
-				if (!this.equals(entity)) {
-					action.accept((LivingEntity) entity);
+			foreachEntities(EntityGroup.CREATURE, maxSquareDistance, e -> {
+				if (!this.equals(e)) {
+					action.accept((LivingEntity) e);
 				}
-			}
+			});
 			break;
 		}
 	}

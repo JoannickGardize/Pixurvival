@@ -2,6 +2,7 @@ package com.pixurvival.client;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -14,7 +15,6 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
@@ -43,7 +43,6 @@ public class ClientGame {
 	private ClientListener clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
-	private @Getter long myPlayerId;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private @Getter PlayerInventory myInventory;
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
@@ -69,7 +68,7 @@ public class ClientGame {
 	}
 
 	public PlayerEntity getMyPlayer() {
-		return (PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, myPlayerId);
+		return world.getMyPlayer();
 	}
 
 	public void connectToServer(String address, int port, String playerName) {
@@ -97,10 +96,10 @@ public class ClientGame {
 	}
 
 	public void initializeNetworkGame(InitializeGame initGame) {
-		myPlayerId = initGame.getMyPlayerId();
+		world.setMyPlayerId(initGame.getMyPlayerId());
 		initGame.getInventory().computeQuantities();
 		myInventory = initGame.getInventory();
-		world.addPlayerData(initGame.getPlayerData());
+		world.addPlayerData(Arrays.asList(initGame.getPlayerData()));
 		notify(ClientGameListener::initializeGame);
 		plugins.clear();
 		plugins.add(new TargetPositionUpdateManager());
@@ -115,8 +114,7 @@ public class ClientGame {
 			e.printStackTrace();
 			return;
 		}
-		World world = World.createLocalWorld(localGamePack);
-		this.world = world;
+		this.world = World.createLocalWorld(localGamePack);
 		PlayerEntity playerEntity = new PlayerEntity();
 		// TODO
 		playerEntity.getPosition().set(0, 0);
@@ -130,7 +128,7 @@ public class ClientGame {
 		for (int i = 0; i < 20; i++) {
 			playerEntity.getInventory().setSlot(i, new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())), random.nextInt(10) + 1));
 		}
-		myPlayerId = playerEntity.getId();
+		world.setMyPlayerId(playerEntity.getId());
 		myInventory = playerEntity.getInventory();
 
 		ItemStackEntity itemStackEntity = new ItemStackEntity(new ItemStack(localGamePack.getItems().get(0)));
@@ -212,7 +210,7 @@ public class ClientGame {
 
 	public void addPlayerData(PlayerData[] data) {
 		if (world != null) {
-			world.addPlayerData(data);
+			world.addPlayerData(Arrays.asList(data));
 		}
 	}
 

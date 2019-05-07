@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackPart;
@@ -40,6 +41,7 @@ class ClientListener extends Listener {
 		});
 		messageActions.put(PlayerInventory.class, i -> game.getMyInventory().set((Inventory) i));
 		messageActions.put(PlayerData[].class, d -> game.addPlayerData((PlayerData[]) d));
+		messageActions.put(WorldUpdate.class, u -> game.getWorld().getSyncWorldUpdateManager().add((WorldUpdate) u));
 	}
 
 	@Override
@@ -50,7 +52,7 @@ class ClientListener extends Listener {
 	@Override
 	public void received(Connection connection, Object object) {
 		synchronized (receivedObjects) {
-			if (object != null && !(object instanceof WorldUpdate)) {
+			if (object != null) {
 				receivedObjects.add(object);
 			}
 		}
@@ -63,6 +65,8 @@ class ClientListener extends Listener {
 				Consumer<Object> action = (Consumer<Object>) messageActions.get(object.getClass());
 				if (action != null) {
 					action.accept(object);
+				} else {
+					Log.warn("Received unknown object type  : " + object.getClass().getSimpleName());
 				}
 			}
 			receivedObjects.clear();

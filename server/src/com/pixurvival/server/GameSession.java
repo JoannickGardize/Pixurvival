@@ -6,10 +6,14 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityCollection;
+import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.message.AddStructureUpdate;
 import com.pixurvival.core.message.RemoveStructureUpdate;
@@ -17,14 +21,17 @@ import com.pixurvival.core.message.StructureUpdate;
 
 import lombok.Getter;
 
-public class GameSession implements TiledMapListener {
+public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener {
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
+	private @Getter Map<ChunkPosition, EntityCollection> removedEntities = new HashMap<>();
 
 	public GameSession(World world) {
 		this.world = world;
 		world.getMap().addListener(this);
+		world.getMap().addPlayerMapEventListener(this);
+		world.getEntityPool().addListener(this);
 	}
 
 	public void addPlayer(PlayerConnection player) {
@@ -37,10 +44,8 @@ public class GameSession implements TiledMapListener {
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
-
 		for (PlayerSession playerSession : players.values()) {
-			if (playerSession.isMissing(chunk.getPosition())
-					|| playerSession.getConnection().getPlayerEntity().getChunkPosition().insideSquare(chunk.getPosition(), GameConstants.PLAYER_CHUNK_VIEW_DISTANCE)) {
+			if (playerSession.isMissing(chunk.getPosition()) || chunk.getPosition().insideSquare(playerSession.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
 			}
 		}
@@ -50,25 +55,6 @@ public class GameSession implements TiledMapListener {
 	public void structureChanged(MapStructure mapStructure) {
 		StructureUpdate structureUpdate = mapStructure.getUpdate();
 		addStructureUpdate(mapStructure, structureUpdate);
-	}
-
-	@Override
-	public void playerChangedChunk(PlayerEntity player) {
-		PlayerSession playerSession = players.get(player.getId());
-		if (playerSession != null) {
-			ChunkPosition position = player.getChunkPosition();
-			for (int x = position.getX() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x <= position.getX() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; x++) {
-				for (int y = position.getY() - GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y <= position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE; y++) {
-					ChunkPosition chunkPosition = new ChunkPosition(x, y);
-					Chunk chunk = world.getMap().chunkAt(chunkPosition);
-					addChunk(playerSession, chunkPosition, chunk);
-					chunkPosition = new ChunkPosition(x, position.getY() + GameConstants.PLAYER_CHUNK_VIEW_DISTANCE);
-					chunk = world.getMap().chunkAt(chunkPosition);
-					addChunk(playerSession, chunkPosition, chunk);
-				}
-			}
-
-		}
 	}
 
 	private void addChunk(PlayerSession session, ChunkPosition position, Chunk chunk) {
@@ -93,12 +79,13 @@ public class GameSession implements TiledMapListener {
 
 	@Override
 	public void chunkUnloaded(Chunk chunk) {
+		// I f*cking don't care of this event.
 	}
 
 	private void addStructureUpdate(MapStructure mapStructure, StructureUpdate structureUpdate) {
 		for (PlayerSession player : players.values()) {
 			ChunkPosition chunkPosition = mapStructure.getChunk().getPosition();
-			if (player.getConnection().getPlayerEntity().getChunkPosition().insideSquare(chunkPosition, GameConstants.PLAYER_CHUNK_VIEW_DISTANCE)) {
+			if (chunkPosition.insideSquare(player.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				player.addStructureUpdate(structureUpdate);
 			} else {
 				player.invalidateChunk(chunkPosition);
@@ -106,4 +93,40 @@ public class GameSession implements TiledMapListener {
 		}
 	}
 
+	@Override
+	public void enterVision(PlayerEntity entity, ChunkPosition position) {
+		PlayerSession playerSession = players.get(entity.getId());
+		if (playerSession != null) {
+			Chunk chunk = world.getMap().chunkAt(position);
+			addChunk(playerSession, position, chunk);
+			playerSession.addNewPosition(position);
+		}
+	}
+
+	@Override
+	public void exitVision(PlayerEntity entity, ChunkPosition position) {
+		PlayerSession playerSession = players.get(entity.getId());
+		if (playerSession != null) {
+			playerSession.addOldPosition(position);
+		}
+	}
+
+	@Override
+	public void enterChunk(PlayerEntity e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void entityAdded(Entity e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void entityRemoved(Entity e) {
+		if (e.getChunk() != null) {
+			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new EntityCollection()).add(e);
+		}
+	}
 }

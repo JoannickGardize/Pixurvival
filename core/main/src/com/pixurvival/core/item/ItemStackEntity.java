@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
@@ -23,7 +24,7 @@ public class ItemStackEntity extends Entity {
 	public static final double END_SPEED = 15;
 
 	public enum State {
-		NORMAL,
+		WAITING,
 		MAGNTIZED,
 		INHIBITED,
 		SPAWNING;
@@ -39,7 +40,7 @@ public class ItemStackEntity extends Entity {
 
 	public ItemStackEntity(ItemStack itemStack) {
 		this.itemStack = itemStack;
-		state = State.NORMAL;
+		state = State.WAITING;
 	}
 
 	public void spawn(double distance, double angle) {
@@ -78,20 +79,21 @@ public class ItemStackEntity extends Entity {
 		case INHIBITED:
 			setForward(false);
 			if (this.distanceSquared(magnetTarget) > INHIBITION_DISTANCE * INHIBITION_DISTANCE) {
-				state = State.NORMAL;
+				state = State.WAITING;
 				magnetTarget = null;
 			}
 			break;
-		case NORMAL:
+		case WAITING:
 			setForward(false);
 			if (getWorld().isServer()) {
-				getWorld().getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
-					if (distanceSquared(p) <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
-						magnetTarget = (PlayerEntity) p;
-						state = State.MAGNTIZED;
-						speedInterpolation.reset();
-					}
-				});
+				EntitySearchResult result = findClosest(EntityGroup.PLAYER, MAGNET_DISTANCE);
+				if (result.getDistanceSquared() <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
+					setStateChanged(true);
+					magnetTarget = (PlayerEntity) result.getEntity();
+					state = State.MAGNTIZED;
+					speedInterpolation.reset();
+
+				}
 			}
 			break;
 		case MAGNTIZED:
@@ -107,6 +109,7 @@ public class ItemStackEntity extends Entity {
 					speedInterpolation.reset();
 					setForward(false);
 					itemStack = rest;
+					setStateChanged(true);
 				}
 			}
 			break;
@@ -118,7 +121,7 @@ public class ItemStackEntity extends Entity {
 			if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {
 				getPosition().set(spawnTarget);
 				setForward(false);
-				state = State.NORMAL;
+				state = State.WAITING;
 			}
 			break;
 		}

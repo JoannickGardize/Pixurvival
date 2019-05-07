@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.util.FileUtils;
 
@@ -119,7 +120,7 @@ public class ChunkManager extends EngineThread {
 						chunk.setFileSync(true);
 						tmpChunks.add(chunk);
 					} catch (IOException e) {
-						e.printStackTrace();
+						Log.error("Error when reading chunk file", e);
 					}
 				}
 			});
@@ -157,7 +158,7 @@ public class ChunkManager extends EngineThread {
 						entry.allFiles.put(fileName, file);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.error("Error when writing chunk file", e);
 				}
 			});
 		});
