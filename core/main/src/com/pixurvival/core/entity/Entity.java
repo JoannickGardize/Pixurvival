@@ -46,9 +46,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server will
-	 * send data of this entity at the next data send tick to clients that view this
-	 * entity. Must be true at initialization to send the new entity data.
+	 * Indicate if the state of this entity has changed, if true, the server
+	 * will send data of this entity at the next data send tick to clients that
+	 * view this entity. Must be true at initialization to send the new entity
+	 * data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -88,25 +89,22 @@ public abstract class Entity implements Body, CustomDataHolder {
 			if (chunk != null) {
 				chunk.getEntities().add(this);
 				setStateChanged(true);
-				chunkChanged();
+				getWorld().getMap().notifyChangedChunk(null, this);
 			}
 		} else {
 			ChunkPosition previousChunkPosition = chunk.getPosition();
 			ChunkPosition newChunkPosition = previousChunkPosition.createIfDifferent(position);
 			if (newChunkPosition != previousChunkPosition) {
 				chunk.getEntities().remove(this);
-				chunk = getWorld().getMap().chunkAt(newChunkPosition);
-				if (chunk != null) {
+				Chunk newChunk = getWorld().getMap().chunkAt(newChunkPosition);
+				if (newChunk != null) {
+					chunk = newChunk;
 					chunk.getEntities().add(this);
 					setStateChanged(true);
-					chunkChanged();
+					getWorld().getMap().notifyChangedChunk(previousChunkPosition, this);
 				}
 			}
 		}
-	}
-
-	protected void chunkChanged() {
-		// for override
 	}
 
 	private void stepY() {

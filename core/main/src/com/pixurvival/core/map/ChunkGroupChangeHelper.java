@@ -28,4 +28,8 @@ public class ChunkGroupChangeHelper {
 		});
 		previousSet.forEach(oldPositionAction::accept);
 	}
+
+	public boolean contains(ChunkPosition position) {
+		return chunkPositions.getCurrentValue().contains(position);
+	}
 }

@@ -4,6 +4,8 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import com.pixurvival.core.entity.Entity;
+
 public class TiledMapLimits implements TiledMapListener {
 
 	private NavigableMap<Integer, Integer> xCounter = new TreeMap<>();
@@ -89,6 +91,12 @@ public class TiledMapLimits implements TiledMapListener {
 
 	@Override
 	public void structureRemoved(MapStructure mapStructure) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
 		// TODO Auto-generated method stub
 
 	}

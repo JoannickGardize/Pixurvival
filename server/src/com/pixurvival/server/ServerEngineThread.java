@@ -7,6 +7,7 @@ import java.util.List;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
@@ -23,6 +24,7 @@ public class ServerEngineThread extends EngineThread {
 	private List<GameSession> sessions = new ArrayList<>();
 	private List<PlayerData> tmpPlayerData = new ArrayList<>();
 	private WorldUpdate worldUpdate = new WorldUpdate();
+	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
 
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
@@ -43,6 +45,7 @@ public class ServerEngineThread extends EngineThread {
 				worldUpdate.setUpdateId(worldUpdate.getUpdateId() + 1);
 				sendWorldData(gs, buildPlayerData(gs));
 				gs.getRemovedEntities().clear();
+				gs.getChunkChangedEntities().clear();
 				gs.getWorld().getEntityPool().foreach(entity -> entity.setStateChanged(false));
 			});
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
@@ -83,12 +86,23 @@ public class ServerEngineThread extends EngineThread {
 					chunk.getEntities().writeUpdate(byteBuffer, onlyChanged);
 				});
 				byteBuffer.put(EntityGroup.END_MARKER);
-				session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> chunk.getEntities().writeAllIds(byteBuffer)));
+				tmpRemoveEntityCollection.clear();
+				session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> tmpRemoveEntityCollection.addAll(chunk.getEntities())));
 				gs.getRemovedEntities().forEach((position, entityCollection) -> {
 					if (position.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
-						entityCollection.writeAllIds(byteBuffer);
+						tmpRemoveEntityCollection.addAll(entityCollection);
 					}
 				});
+				gs.getChunkChangedEntities().forEach((previousPosition, entityList) -> {
+					if (previousPosition.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+						entityList.forEach(e -> {
+							if (!playerEntity.getChunkVision().contains(e.getChunk().getPosition())) {
+								tmpRemoveEntityCollection.addAll(entityList);
+							}
+						});
+					}
+				});
+				tmpRemoveEntityCollection.writeAllIds(byteBuffer);
 				byteBuffer.put(EntityGroup.END_MARKER);
 				session.extractStructureUpdatesToSend(worldUpdate.getStructureUpdates());
 				session.extractChunksToSend(worldUpdate.getCompressedChunks());

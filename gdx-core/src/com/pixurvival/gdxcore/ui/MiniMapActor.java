@@ -126,7 +126,9 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	}
 
 	@Override
-	public void enterChunk(PlayerEntity e) {
+	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

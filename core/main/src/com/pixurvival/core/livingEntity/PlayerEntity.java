@@ -201,8 +201,4 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		getWorld().getMap().forEachChunk(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, action);
 	}
 
-	@Override
-	protected void chunkChanged() {
-		getWorld().getMap().notifyChangedChunk(this);
-	}
 }

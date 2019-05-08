@@ -15,8 +15,11 @@ public class CraftAbility extends WorkAbility {
 	@Override
 	public boolean start(LivingEntity entity) {
 		super.start(entity);
-		Inventory inventory = ((InventoryHolder) entity).getInventory();
 		ItemCraft itemCraft = ((CraftAbilityData) getAbilityData(entity)).getItemCraft();
+		if (itemCraft == null) {
+			return false;
+		}
+		Inventory inventory = ((InventoryHolder) entity).getInventory();
 		return inventory.contains(itemCraft.getRecipes());
 	}
 

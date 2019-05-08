@@ -139,8 +139,8 @@ public class TiledMap {
 		}
 	}
 
-	public void notifyChangedChunk(PlayerEntity e) {
-		playerMapEventListeners.forEach(l -> l.enterChunk(e));
+	public void notifyChangedChunk(ChunkPosition previousPosition, Entity e) {
+		listeners.forEach(l -> l.entityEnterChunk(previousPosition, e));
 	}
 
 	public void update() {

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -12,10 +13,6 @@ import java.util.function.Consumer;
 public class EntityCollection {
 
 	private Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
-
-	public Entity get(EntityGroup group, long id) {
-		return entities.get(group).get(id);
-	}
 
 	public Collection<Entity> get(EntityGroup group) {
 		Map<Long, Entity> groupMap = entities.get(group);
@@ -36,6 +33,18 @@ public class EntityCollection {
 
 	public void foreach(Consumer<Entity> action) {
 		entities.values().forEach(map -> map.values().forEach(action));
+	}
+
+	public void clear() {
+		entities.values().forEach(Map::clear);
+	}
+
+	public void addAll(EntityCollection other) {
+		other.entities.entrySet().forEach(entry -> entities.computeIfAbsent(entry.getKey(), key -> new HashMap<>()).putAll(entry.getValue()));
+	}
+
+	public void addAll(List<Entity> entityList) {
+		entityList.forEach(this::add);
 	}
 
 	public void writeUpdate(ByteBuffer byteBuffer, boolean onlyChanged) {

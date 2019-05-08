@@ -1,13 +1,14 @@
 package com.pixurvival.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
@@ -25,7 +26,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
-	private @Getter Map<ChunkPosition, EntityCollection> removedEntities = new HashMap<>();
+	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
+	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
 
 	public GameSession(World world) {
 		this.world = world;
@@ -112,21 +114,20 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	@Override
-	public void enterChunk(PlayerEntity e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void entityAdded(Entity e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void entityRemoved(Entity e) {
 		if (e.getChunk() != null) {
-			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new EntityCollection()).add(e);
+			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new ArrayList()).add(e);
+		}
+	}
+
+	@Override
+	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
+		if (previousPosition != null) {
+			chunkChangedEntities.computeIfAbsent(previousPosition, position -> new ArrayList<>()).add(e);
 		}
 	}
 }
