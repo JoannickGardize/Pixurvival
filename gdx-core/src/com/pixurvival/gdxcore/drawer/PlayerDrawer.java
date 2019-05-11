@@ -17,9 +17,6 @@ import com.pixurvival.gdxcore.textures.ColorTextures;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 
 	private TextureAnimationSet defaultBody = PixurvivalGame.getContentPackTextures().getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter());

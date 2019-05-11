@@ -8,7 +8,7 @@ import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
-import com.pixurvival.gdxcore.util.GraphicsUtils;
+import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class EffectDrawer extends EntityDrawer<EffectEntity> {
 
@@ -20,9 +20,9 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 	public void draw(Batch batch, EffectEntity e) {
 		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
 		TextureAnimation textureAnimation = textureAnimationSet.get(ActionAnimation.NONE);
-		int index = GraphicsUtils.getIndexAndUpdateTimer(e, textureAnimation);
+		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
 		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
-		GraphicsUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.NONE, index, drawPosition, e.getOrientation() * MathUtils.radDeg);
+		DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.NONE, index, drawPosition, e.getOrientation() * MathUtils.radDeg);
 	}
 
 	@Override

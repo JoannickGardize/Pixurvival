@@ -7,9 +7,16 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
-import com.pixurvival.gdxcore.util.GraphicsUtils;
+import com.pixurvival.gdxcore.util.DrawUtils;
 
 public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityDrawer<E> {
+
+	@Override
+	public void update(E e) {
+		super.update(e);
+		DrawData data = (DrawData) e.getCustomData();
+		data.setOverlayOffsetY(getBodyTextureAnimationSet(e).getHeight());
+	}
 
 	@Override
 	public void drawShadow(Batch batch, E e) {
@@ -26,14 +33,14 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		ActionAnimation actionAnimation = getActionAnimation(e);
 		TextureAnimationSet textureAnimationSet = getBodyTextureAnimationSet(e);
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
-		int index = GraphicsUtils.getIndexAndUpdateTimer(e, textureAnimation);
+		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
 		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
 		float x = (float) (drawPosition.getX() - textureAnimationSet.getWidth() / 2);
 		float y = (float) drawPosition.getY();
 		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 ? -textureAnimationSet.getHeight() * 0.3f : 0;
 		float equipmentY = y + yOffset;
 		drawBeforeBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
-		GraphicsUtils.drawStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset);
+		DrawUtils.drawStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset);
 		drawAfterBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 	}
 

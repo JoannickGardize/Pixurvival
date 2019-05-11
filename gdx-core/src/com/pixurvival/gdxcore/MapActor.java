@@ -31,12 +31,11 @@ public class MapActor extends Actor {
 		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
 		int startX = (int) Math.floor(camPos.x - width / 2);
 		int startY = (int) Math.floor(camPos.y - height / 2);
-		int endX = (int) Math.floor(startX + width);
-		int endY = (int) Math.floor(startY + height);
+		int endX = (int) Math.ceil(startX + width);
+		int endY = (int) Math.ceil(startY + height);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
-				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(),
-						animationNumber), x, y, 1, 1);
+				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(), animationNumber), x, y, 1, 1);
 			}
 		}
 	}

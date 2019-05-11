@@ -1,12 +1,10 @@
 package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
-import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -105,25 +103,5 @@ public class CreatureEntity extends LivingEntity {
 	public void applyUpdate(ByteBuffer buffer) {
 		super.applyUpdate(buffer);
 		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
-	}
-
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
-		switch (targetType) {
-		case ALL_ENEMIES:
-			foreachEntities(EntityGroup.PLAYER, maxSquareDistance, (Consumer) action);
-			break;
-		case ALL_ALLIES:
-			foreachEntities(EntityGroup.CREATURE, maxSquareDistance, (Consumer) action);
-			break;
-		case OTHER_ALLIES:
-			foreachEntities(EntityGroup.CREATURE, maxSquareDistance, e -> {
-				if (!this.equals(e)) {
-					action.accept((LivingEntity) e);
-				}
-			});
-			break;
-		}
 	}
 }

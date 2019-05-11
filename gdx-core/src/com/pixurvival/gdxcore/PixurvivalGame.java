@@ -7,7 +7,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
@@ -26,9 +33,11 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	public static final String I18N_BUNDLE = "i18n/Bundle";
 	public static final String SKIN = "kenney-pixel/skin/skin.json";
+	public static final String DEFAULT_FONT = "default_font.ttf";
+	public static final String OVERLAY_FONT = "overlay_font.ttf";
 
 	public static Skin getSkin() {
-		return instance.assetManager.get(SKIN, Skin.class);
+		return instance.skin;
 	}
 
 	public static ClientGame getClient() {
@@ -45,6 +54,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	public static String getString(String key) {
 		return instance.assetManager.get(I18N_BUNDLE, I18NBundle.class).get(key);
+	}
+
+	public static BitmapFont getOverlayFont() {
+		return instance.assetManager.get(OVERLAY_FONT, BitmapFont.class);
+	}
+
+	public static BitmapFont getDefaultFont() {
+		return instance.assetManager.get(DEFAULT_FONT, BitmapFont.class);
 	}
 
 	public static ContentPackTextures getContentPackTextures() {
@@ -65,6 +82,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private double frameCounter;
 	private float interpolationTime = 0;
 	private ContentPackTextures contentPackTextures;
+	private Skin skin;
 
 	public PixurvivalGame(CommonMainArgs clientArgs) {
 		if (instance != null) {
@@ -78,10 +96,35 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	@Override
 	public void create() {
 		assetManager = new AssetManager();
+		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(assetManager.getFileHandleResolver()));
+		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(assetManager.getFileHandleResolver()));
+
+		FreeTypeFontLoaderParameter defaultFontParams = new FreeTypeFontLoaderParameter();
+		defaultFontParams.fontFileName = "OpenSans-Bold.ttf";
+		defaultFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 25);
+		// defaultFontParams.fontParameters.genMipMaps = true;
+		// defaultFontParams.fontParameters.minFilter =
+		// TextureFilter.MipMapNearestNearest;
+		// defaultFontParams.fontParameters.magFilter =
+		// TextureFilter.MipMapNearestNearest;
+
+		assetManager.load(DEFAULT_FONT, BitmapFont.class, defaultFontParams);
+
+		FreeTypeFontLoaderParameter overlayFontParams = new FreeTypeFontLoaderParameter();
+		overlayFontParams.fontFileName = "OpenSans-Bold.ttf";
+		overlayFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 20);
+		overlayFontParams.fontParameters.borderColor = Color.BLACK;
+		overlayFontParams.fontParameters.borderWidth = 1;
+		assetManager.load(OVERLAY_FONT, BitmapFont.class, overlayFontParams);
+
 		assetManager.load(I18N_BUNDLE, I18NBundle.class);
-		assetManager.load(SKIN, Skin.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
+		getDefaultFont().getData().markupEnabled = true;
+		skin = new Skin();
+		skin.add("default", getDefaultFont(), BitmapFont.class);
+		skin.addRegions(new TextureAtlas(Gdx.files.internal("kenney-pixel/skin/skin.atlas")));
+		skin.load(Gdx.files.internal(SKIN));
 
 		setScreen(MainMenuScreen.class);
 	}
@@ -134,9 +177,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
 			// Gdx.graphics.getHeight());
-			// int pixelWidth = Math
-			// .round((float) screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH *
-			// World.PIXEL_PER_UNIT));
+			// int pixelWidth = Math.round(screenWidth /
+			// (WorldScreen.VIEWPORT_WORLD_WIDTH *
+			// GameConstants.PIXEL_PER_UNIT));
 			// Seems better :
 			int pixelWidth = 3;
 			Log.info("Loading texture with optimal pixel width : " + pixelWidth);

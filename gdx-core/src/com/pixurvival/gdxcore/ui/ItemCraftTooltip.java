@@ -23,7 +23,7 @@ import lombok.Getter;
 
 public class ItemCraftTooltip extends Actor implements InventoryListener {
 
-	private @Getter static ItemCraftTooltip instance = new ItemCraftTooltip();
+	private static @Getter ItemCraftTooltip instance = new ItemCraftTooltip();
 
 	public static final float ITEM_WIDTH = 20;
 	public static final float MARGIN = 5;
@@ -65,13 +65,11 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 		getStage().getViewport().unproject(tmpVec);
 		setX(tmpVec.x + OFFSET);
 		setY(tmpVec.y + OFFSET);
-		PixurvivalGame.getSkin().get(TextFieldStyle.class).background.draw(batch, getX(), getY(), getWidth(),
-				getHeight());
+		PixurvivalGame.getSkin().get(TextFieldStyle.class).background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		float y = getY() + getHeight() - MARGIN - ITEM_WIDTH;
 		for (Line line : lines) {
 			batch.draw(line.itemTexture, getX() + MARGIN, y, ITEM_WIDTH, ITEM_WIDTH);
-			PixurvivalGame.getSkin().getFont("default").draw(batch, line.textGlyph, getX() + MARGIN * 2 + ITEM_WIDTH,
-					y + line.textGlyph.height + (ITEM_WIDTH - line.textGlyph.height) / 2);
+			PixurvivalGame.getDefaultFont().draw(batch, line.textGlyph, getX() + MARGIN * 2 + ITEM_WIDTH, y + line.textGlyph.height + (ITEM_WIDTH - line.textGlyph.height) / 2);
 			y -= MARGIN + ITEM_WIDTH;
 		}
 	}
@@ -82,20 +80,21 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 		lines.clear();
 		for (ItemStack itemStack : itemCraft.getRecipes()) {
 			int myTotal = inv.totalOf(itemStack.getItem());
-			String quantityString = myTotal + " / " + itemStack.getQuantity();
-			GlyphLayout glyphLayout = null;
+			StringBuilder quantitySB = new StringBuilder();
 			if (myTotal >= itemStack.getQuantity()) {
-				glyphLayout = Caches.whiteGlyphLayout.get(quantityString);
+				quantitySB.append("[WHITE]");
 			} else {
-				glyphLayout = Caches.redGlyphLayout.get(quantityString);
+				quantitySB.append("[RED]");
 			}
-			Texture itemTexture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId())
-					.getTexture();
+			quantitySB.append(myTotal).append(" / ").append(itemStack.getQuantity());
+			GlyphLayout glyphLayout = Caches.defaultGlyphLayout.get(quantitySB.toString());
+			Texture itemTexture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId()).getTexture();
 			lines.add(new Line(itemTexture, glyphLayout));
 			if (glyphLayout.width > maxWidth) {
 				maxWidth = glyphLayout.width;
 			}
 		}
+
 		setWidth(maxWidth + MARGIN * 3 + ITEM_WIDTH);
 		setHeight(itemCraft.getRecipes().size() * (ITEM_WIDTH + MARGIN) + MARGIN);
 	}

@@ -10,7 +10,7 @@ public class GameConstants {
 
 	public static final double EFFECT_TARGET_DISTANCE_CHECK = 16;
 
-	public static final double PLAYER_VIEW_DISTANCE = 45;
+	public static final double PLAYER_VIEW_DISTANCE = 35;
 
 	public static final double KEEP_ALIVE_DISTANCE = 150;
 	public static final double MAX_HARVEST_DISTANCE = 2;

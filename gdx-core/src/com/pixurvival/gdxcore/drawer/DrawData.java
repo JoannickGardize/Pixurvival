@@ -8,4 +8,5 @@ import lombok.Data;
 public class DrawData {
 	private float timer = 0;
 	private Vector2 drawPosition = new Vector2();
+	private float overlayOffsetY;
 }

@@ -8,7 +8,7 @@ import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
-import com.pixurvival.gdxcore.util.GraphicsUtils;
+import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
@@ -39,7 +39,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);
-		int index = GraphicsUtils.getIndexAndUpdateTimer(e, animation);
+		int index = DrawUtils.getIndexAndUpdateTimer(e, animation);
 		batch.draw(animation.getTexture(index), x, y + animationSet.getYOffset(), animationSet.getWidth(), animationSet.getHeight());
 	}
 

@@ -7,10 +7,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
@@ -22,7 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
-	public static final int VIEWPORT_WORLD_WIDTH = 30;
+	public static final double CAMERA_BOUNDS = GameConstants.PLAYER_VIEW_DISTANCE - 5;
+	public static final float VIEWPORT_WORLD_WIDTH = (float) (CAMERA_BOUNDS * 2 * 0.75);
 
 	@Getter
 	private World world;
@@ -41,6 +44,9 @@ public class WorldScreen implements Screen {
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
+		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
+		hudStage.addListener(overlayActor);
+		hudStage.addActor(overlayActor);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		miniMapUI.initialize();
@@ -55,6 +61,7 @@ public class WorldScreen implements Screen {
 		characterUI.initialize();
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
+		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 
 	}
 

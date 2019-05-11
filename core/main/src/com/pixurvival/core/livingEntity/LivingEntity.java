@@ -3,12 +3,14 @@ package com.pixurvival.core.livingEntity;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.Damageable;
 import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -19,6 +21,7 @@ import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class LivingEntity extends Entity implements Damageable {
@@ -33,6 +36,8 @@ public abstract class LivingEntity extends Entity implements Damageable {
 	private Vector2 targetPosition = new Vector2();
 
 	private List<PersistentAlterationEntry> persistentAlterationEntries = new ArrayList<>();
+
+	private @Setter Team team = TeamSet.WILD_TEAM;
 
 	@Override
 	public void initialize() {
@@ -201,5 +206,28 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	public abstract AbilitySet getAbilitySet();
 
-	public abstract void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action);
+	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
+		BiPredicate<LivingEntity, LivingEntity> teamPredicate;
+		switch (targetType) {
+		case ALL_ALLIES:
+			teamPredicate = (self, other) -> self.getTeam() == other.getTeam();
+			break;
+		case ALL_ENEMIES:
+			teamPredicate = (self, other) -> self.getTeam() != other.getTeam();
+			break;
+		case OTHER_ALLIES:
+			teamPredicate = (self, other) -> self.getTeam() == other.getTeam() && self != other;
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+		Consumer<Entity> actionFilter = e -> {
+			LivingEntity livingEntity = (LivingEntity) e;
+			if (teamPredicate.test(this, livingEntity)) {
+				action.accept(livingEntity);
+			}
+		};
+		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, actionFilter);
+		foreachEntities(EntityGroup.CREATURE, maxSquareDistance, actionFilter);
+	}
 }

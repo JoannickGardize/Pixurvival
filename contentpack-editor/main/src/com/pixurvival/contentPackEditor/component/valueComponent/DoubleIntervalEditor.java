@@ -18,7 +18,7 @@ public class DoubleIntervalEditor extends ElementEditor<DoubleInterval> {
 		// Binding
 
 		bind(minInput, DoubleInterval::getMin, DoubleInterval::setMin);
-		bind(maxInput, DoubleInterval::getMax, DoubleInterval::setMin);
+		bind(maxInput, DoubleInterval::getMax, DoubleInterval::setMax);
 
 		// Layouting
 		setLayout(new GridBagLayout());

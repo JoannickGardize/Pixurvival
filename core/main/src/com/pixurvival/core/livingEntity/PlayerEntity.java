@@ -3,7 +3,6 @@ package com.pixurvival.core.livingEntity;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.Item.Equipable;
@@ -20,12 +19,17 @@ import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder {
+
+	public static final float MAX_HUNGER = 100;
+	public static final float HUNGER_DECREASE = 100f / (60 * 10);
+	public static final float HUNGER_DECREASE_MOVE = 100f / (60 * 10);
 
 	public static final int INVENTORY_SIZE = 32;
 
@@ -47,13 +51,13 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
 
-	private @Setter String name;
+	private @Setter String name = "Unknown";
 
 	private PlayerInventory inventory;
 
 	private Equipment equipment = new Equipment();
 
-	private @Getter short teamId;
+	private @Getter float hunger = MAX_HUNGER;
 
 	private @Getter @Setter long previousMovementId = -1;
 
@@ -76,6 +80,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	public void update() {
+		addHunger(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
+		if (isForward()) {
+			addHunger(-(float) (HUNGER_DECREASE_MOVE * getWorld().getTime().getDeltaTime()));
+		}
 		super.update();
 		chunkVision.move(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, position -> getWorld().getMap().notifyEnterView(this, position),
 				position -> getWorld().getMap().notifyExitView(this, position));
@@ -102,6 +110,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public double getCollisionRadius() {
 		return 0.42;
+	}
+
+	public void addHunger(float hungerToAdd) {
+		hunger = MathUtils.clamp(hunger + hungerToAdd, 0, MAX_HUNGER);
 	}
 
 	public void craft(ItemCraft itemCraft) {
@@ -157,44 +169,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public AbilitySet getAbilitySet() {
 		return PLAYER_ABILITY_SET;
-	}
-
-	@Override
-	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
-		switch (targetType) {
-		case ALL_ENEMIES:
-			foreachEnemies(maxSquareDistance, action);
-			break;
-		case ALL_ALLIES:
-			foreachAllies(maxSquareDistance, true, action);
-			break;
-		case OTHER_ALLIES:
-			foreachAllies(maxSquareDistance, false, action);
-			break;
-		default:
-			break;
-		}
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void foreachEnemies(double maxSquareDistance, Consumer<LivingEntity> action) {
-		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, e -> {
-			PlayerEntity playerEntity = (PlayerEntity) e;
-			if (playerEntity.teamId != teamId) {
-				action.accept(playerEntity);
-			}
-
-		});
-		foreachEntities(EntityGroup.CREATURE, maxSquareDistance, (Consumer) action);
-	}
-
-	public void foreachAllies(double maxSquareDistance, boolean includeSelf, Consumer<LivingEntity> action) {
-		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, e -> {
-			PlayerEntity playerEntity = (PlayerEntity) e;
-			if (playerEntity.teamId == teamId && (includeSelf || !this.equals(playerEntity))) {
-				action.accept(playerEntity);
-			}
-		});
 	}
 
 	public void foreachChunkInView(Consumer<Chunk> action) {

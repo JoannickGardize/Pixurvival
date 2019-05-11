@@ -113,8 +113,7 @@ public class ContentPackTextures {
 			Tile tile = tilesbyId.get(i);
 			ImageEntry image = images.get(tile.getImage());
 			if (image == null) {
-				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()),
-						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				Texture texture = new Texture(spriteSheetPixmap);
 				texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 				image = new ImageEntry(spriteSheetPixmap, texture);
@@ -124,13 +123,11 @@ public class ContentPackTextures {
 			TextureRegion[] textures = new TextureRegion[frames.size()];
 			for (int j = 0; j < frames.size(); j++) {
 				Frame frame = frames.get(j);
-				textures[j] = new TextureRegion(image.texture, frame.getX() * GameConstants.PIXEL_PER_UNIT,
-						frame.getY() * GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT,
+				textures[j] = new TextureRegion(image.texture, frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT,
 						GameConstants.PIXEL_PER_UNIT);
 			}
 			tileMapTextures[i] = textures;
-			tileAvgColors[i] = getAverageColor(
-					image.spriteSheetPixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
+			tileAvgColors[i] = getAverageColor(image.spriteSheetPixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
 		}
 	}
 
@@ -159,8 +156,7 @@ public class ContentPackTextures {
 			Item item = itemsById.get(i);
 			TextureSheet textureSheet = images.get(item.getImage());
 			if (textureSheet == null) {
-				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(item.getImage()),
-						GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
+				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(item.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
 				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
 				images.put(item.getImage(), textureSheet);
 			}

@@ -4,13 +4,12 @@ import com.pixurvival.core.message.TimeResponse;
 
 import lombok.Getter;
 
-@Getter
 public class Time {
 
-	private long timeMillis = 0;
+	private @Getter long timeMillis = 0;
 
-	private double deltaTime = 0;
-	private double deltaTimeMillis = 0;
+	private @Getter double deltaTime = 0;
+	private @Getter double deltaTimeMillis = 0;
 	private double decimalAccumulator = 0;
 	private long synchronizeTimeCounter = 0;
 
@@ -18,6 +17,7 @@ public class Time {
 		this.deltaTimeMillis = deltaTimeMillis;
 		deltaTime = deltaTimeMillis / 1000.0;
 		long integerPart = (long) deltaTimeMillis;
+
 		decimalAccumulator += deltaTimeMillis - integerPart;
 		while (decimalAccumulator > 0.5) {
 			timeMillis++;
