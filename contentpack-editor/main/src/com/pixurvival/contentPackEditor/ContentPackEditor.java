@@ -2,6 +2,7 @@ package com.pixurvival.contentPackEditor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
@@ -10,6 +11,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypeChooser;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
+import com.pixurvival.core.util.ArgsUtils;
 
 import lombok.Getter;
 
@@ -36,13 +38,18 @@ public class ContentPackEditor extends JFrame {
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
+
 		ContentPackEditor editor = new ContentPackEditor();
 		instance = editor;
 		instance.setVisible(true);
-		FileService.getInstance().newContentPack();
+		if (mainArgs.getOpen() == null) {
+			FileService.getInstance().newContentPack();
+		} else {
+			FileService.getInstance().open(new File(mainArgs.getOpen()));
+		}
 	}
 }

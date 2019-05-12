@@ -11,6 +11,7 @@ import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.util.Collisions;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.AccessLevel;
@@ -107,13 +108,17 @@ public abstract class Entity implements Body, CustomDataHolder {
 		}
 	}
 
+	protected void onDeath() {
+
+	}
+
 	private void stepY() {
 		double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 			if (targetVelocity.getY() > 0) {
-				position.setY(Math.floor(position.getY()) + 1 - getCollisionRadius());
+				position.setY(MathUtils.floor(position.getY()) + 1 - getCollisionRadius());
 			} else {
-				position.setY(Math.floor(position.getY()) + getCollisionRadius());
+				position.setY(MathUtils.floor(position.getY()) + getCollisionRadius());
 			}
 			velocity.setY(0);
 		} else {
@@ -126,9 +131,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 		double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 			if (targetVelocity.getX() > 0) {
-				position.setX(Math.floor(position.getX()) + 1 - getCollisionRadius());
+				position.setX(MathUtils.floor(position.getX()) + 1 - getCollisionRadius());
 			} else {
-				position.setX(Math.floor(position.getX()) + getCollisionRadius());
+				position.setX(MathUtils.floor(position.getX()) + getCollisionRadius());
 			}
 			velocity.setX(0);
 		} else {

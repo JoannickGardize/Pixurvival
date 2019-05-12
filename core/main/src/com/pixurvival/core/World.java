@@ -15,6 +15,7 @@ import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.TeamSet;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.generator.ChunkSupplier;
@@ -60,6 +61,8 @@ public class World {
 	private List<PlayerData> playerDataList = new ArrayList<>();
 	private SyncWorldUpdateManager syncWorldUpdateManager = new SyncWorldUpdateManager(this);
 	private @Setter long myPlayerId = -1;
+	private @Setter Object endGameConditionData;
+	private TeamSet teamSet = new TeamSet();
 
 	private World(long id, Type type, ContentPack contentPack) {
 		this.id = id;

@@ -50,6 +50,7 @@ public class EntityPool {
 			Collection<Entity> groupCollection = groupMap.values();
 			groupCollection.removeIf(e -> {
 				if (!e.isAlive()) {
+					e.onDeath();
 					listeners.forEach(l -> l.entityRemoved(e));
 					if (e.getChunk() != null) {
 						e.getChunk().getEntities().remove(e);

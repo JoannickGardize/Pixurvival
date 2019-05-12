@@ -1,9 +1,10 @@
 package com.pixurvival.core.livingEntity;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class TeamSet {
+public class TeamSet implements Iterable<Team> {
 
 	/**
 	 * The Wild team represents all creatures excepts the ones owned by players.
@@ -26,5 +27,10 @@ public class TeamSet {
 
 	public Team get(short id) {
 		return teams.get(id);
+	}
+
+	@Override
+	public Iterator<Team> iterator() {
+		return teams.values().iterator();
 	}
 }

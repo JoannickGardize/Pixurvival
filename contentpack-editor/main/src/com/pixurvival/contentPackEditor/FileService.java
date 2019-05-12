@@ -50,10 +50,14 @@ public class FileService {
 		if (option != JFileChooser.APPROVE_OPTION) {
 			return;
 		}
+		open(fileChooser.getSelectedFile());
+	}
+
+	public void open(File file) {
 		ContentPackLoader loader = new ContentPackLoader();
 		try {
-			currentContentPack = loader.load(fileChooser.getSelectedFile());
-			currentFile = fileChooser.getSelectedFile();
+			currentContentPack = loader.load(file);
+			currentFile = file;
 			ResourcesService.getInstance().loadContentPack(currentContentPack);
 			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 			EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));
@@ -96,9 +100,7 @@ public class FileService {
 
 	private boolean savePrevious() {
 		if (currentContentPack != null) {
-			int option = JOptionPane.showConfirmDialog(null,
-					TranslationService.getInstance().getString("dialog.unsavedContentPack"), "",
-					JOptionPane.YES_NO_CANCEL_OPTION);
+			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.unsavedContentPack"), "", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (option == JOptionPane.CANCEL_OPTION) {
 				return false;
 			} else if (option == JOptionPane.OK_OPTION) {
@@ -113,11 +115,9 @@ public class FileService {
 			return false;
 		}
 		if (currentFile != null) {
-			fileChooser
-					.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
+			fileChooser.setSelectedFile(new File(currentFile.getParent(), currentContentPack.getIdentifier().fileName()));
 		} else {
-			fileChooser.setSelectedFile(
-					new File(System.getProperty("user.home"), currentContentPack.getIdentifier().fileName()));
+			fileChooser.setSelectedFile(new File(System.getProperty("user.home"), currentContentPack.getIdentifier().fileName()));
 		}
 		int option = fileChooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {

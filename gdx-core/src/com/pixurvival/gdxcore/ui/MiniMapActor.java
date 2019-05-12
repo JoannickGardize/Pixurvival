@@ -20,6 +20,7 @@ import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 
@@ -56,7 +57,7 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getHeight());
 		for (double worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
 			for (double worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
-				ChunkPosition position = new ChunkPosition((int) Math.floor(worldX / GameConstants.CHUNK_SIZE), (int) Math.floor(worldY / GameConstants.CHUNK_SIZE));
+				ChunkPosition position = new ChunkPosition(MathUtils.floor(worldX / GameConstants.CHUNK_SIZE), MathUtils.floor(worldY / GameConstants.CHUNK_SIZE));
 				Texture texture = chunkTextures.get(position);
 				if (texture != null) {
 					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * getWidth()) + getX();

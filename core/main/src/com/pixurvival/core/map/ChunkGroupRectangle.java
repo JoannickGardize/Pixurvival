@@ -1,6 +1,7 @@
 package com.pixurvival.core.map;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Data;
@@ -23,10 +24,10 @@ public class ChunkGroupRectangle {
 	 * @return true if the rectangle has changed
 	 */
 	public boolean set(Vector2 center, double halfSquareLength) {
-		int newXStart = (int) Math.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
-		int newXEnd = (int) Math.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);
-		int newYStart = (int) Math.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);
-		int newYEnd = (int) Math.floor((center.getY() + halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int newXStart = MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int newXEnd = MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int newYStart = MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int newYEnd = MathUtils.floor((center.getY() + halfSquareLength) / GameConstants.CHUNK_SIZE);
 		if (xStart != newXStart || xEnd != newXEnd || yStart != newYStart || yEnd != newYEnd) {
 			xStart = newXStart;
 			xEnd = newXEnd;

@@ -14,8 +14,7 @@ public class StructureGeneratorEntryEditor extends ElementEditor<StructureGenera
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(
-			IconService.getInstance()::get);
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(IconService.getInstance()::get);
 
 	public StructureGeneratorEntryEditor() {
 		DoubleInput probability = new DoubleInput(Bounds.positive());
@@ -30,5 +29,4 @@ public class StructureGeneratorEntryEditor extends ElementEditor<StructureGenera
 	public void setStructureCollection(Collection<Structure> structures) {
 		structureChooser.setItems(structures);
 	}
-
 }

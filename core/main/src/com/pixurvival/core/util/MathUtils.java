@@ -43,4 +43,26 @@ public class MathUtils {
 	public static double oppositeDirection(double angle) {
 		return angle + Math.PI;
 	}
+
+	/**
+	 * This method is <b>a lot</b> faster than {@link Math#floor(double)}
+	 * 
+	 * @param x
+	 * @return
+	 */
+	public static int floor(double x) {
+		int xi = (int) x;
+		return x < xi ? xi - 1 : xi;
+	}
+
+	/**
+	 * This method is <b>a lot</b> faster than {@link Math#floor(double)}
+	 * 
+	 * @param x
+	 * @return
+	 */
+	public static int ceil(double x) {
+		int xi = (int) x;
+		return x > xi ? xi + 1 : xi;
+	}
 }

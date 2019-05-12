@@ -27,6 +27,7 @@ import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.FixedTermStructure;
 import com.pixurvival.core.map.HarvestableStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.EffectDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
@@ -67,10 +68,10 @@ public class EntitiesActor extends Actor {
 		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
 		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
 		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
-		int startX = (int) Math.floor((camPos.x - width / 2 - 3) / GameConstants.CHUNK_SIZE);
-		int startY = (int) Math.floor((camPos.y - height / 2 - 3) / GameConstants.CHUNK_SIZE);
-		int endX = (int) Math.ceil((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
-		int endY = (int) Math.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
+		int startX = MathUtils.floor((camPos.x - width / 2 - 3) / GameConstants.CHUNK_SIZE);
+		int startY = MathUtils.floor((camPos.y - height / 2 - 3) / GameConstants.CHUNK_SIZE);
+		int endX = MathUtils.ceil((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
+		int endY = MathUtils.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
@@ -103,8 +104,8 @@ public class EntitiesActor extends Actor {
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
 		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.StructureDetails) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-			int x = (int) Math.floor(mousePos.x);
-			int y = (int) Math.floor(mousePos.y);
+			int x = MathUtils.floor(mousePos.x);
+			int y = MathUtils.floor(mousePos.y);
 			Structure structure = ((Item.StructureDetails) heldItemStack.getItem().getDetails()).getStructure();
 			boolean valid = MapStructure.canPlace(myPlayer, myPlayer.getWorld().getMap(), structure, x, y);
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);

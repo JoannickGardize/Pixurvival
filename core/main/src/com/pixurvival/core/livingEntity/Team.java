@@ -1,7 +1,7 @@
 package com.pixurvival.core.livingEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -13,11 +13,26 @@ public class Team {
 	private short id;
 	private String name;
 
-	private List<PlayerEntity> members = new ArrayList<>();
+	private Set<PlayerEntity> aliveMembers = new HashSet<>();
+	private Set<PlayerEntity> deadMembers = new HashSet<>();
 
 	public Team(short id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public void addAlive(PlayerEntity playerEntity) {
+		aliveMembers.add(playerEntity);
+		deadMembers.remove(playerEntity);
+	}
+
+	public void addDead(PlayerEntity playerEntity) {
+		aliveMembers.remove(playerEntity);
+		deadMembers.add(playerEntity);
+	}
+
+	public int aliveMemberCount() {
+		return aliveMembers.size();
 	}
 
 	@Override

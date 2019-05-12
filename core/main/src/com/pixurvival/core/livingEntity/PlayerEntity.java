@@ -90,11 +90,17 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
+	protected void onDeath() {
+		getTeam().addDead(this);
+	}
+
+	@Override
 	public void initialize() {
 		super.initialize();
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(INVENTORY_SIZE));
 		}
+		getTeam().addAlive(this);
 	}
 
 	@Override

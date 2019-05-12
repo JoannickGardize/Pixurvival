@@ -16,6 +16,7 @@ import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 
 import lombok.NonNull;
@@ -38,8 +39,8 @@ public class WorldMouseProcessor extends InputAdapter {
 		if (button == Input.Buttons.RIGHT) {
 			if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof StructureDetails) {
 				Vector2 worldPoint = screenToWorld(screenX, screenY);
-				int x = (int) Math.floor(worldPoint.x);
-				int y = (int) Math.floor(worldPoint.y);
+				int x = MathUtils.floor(worldPoint.x);
+				int y = MathUtils.floor(worldPoint.y);
 				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(), ((StructureDetails) heldItemStack.getItem().getDetails()).getStructure(), x, y)) {
 					PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
 				}
@@ -96,8 +97,8 @@ public class WorldMouseProcessor extends InputAdapter {
 
 	private MapStructure findClosest(int screenX, int screenY, int radius) {
 		Vector2 worldPoint = screenToWorld(screenX, screenY);
-		int x = (int) Math.floor(worldPoint.x);
-		int y = (int) Math.floor(worldPoint.y);
+		int x = MathUtils.floor(worldPoint.x);
+		int y = MathUtils.floor(worldPoint.y);
 		TiledMap map = PixurvivalGame.getWorld().getMap();
 		MapStructure closest = null;
 		double closestDist = Double.POSITIVE_INFINITY;

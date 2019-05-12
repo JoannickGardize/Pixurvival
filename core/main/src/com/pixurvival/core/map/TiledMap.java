@@ -14,6 +14,7 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -75,7 +76,7 @@ public class TiledMap {
 	}
 
 	public MapTile tileAt(Vector2 position) {
-		return tileAt((int) Math.floor(position.getX()), (int) Math.floor(position.getY()));
+		return tileAt(MathUtils.floor(position.getX()), MathUtils.floor(position.getY()));
 	}
 
 	public MapTile tileAt(int x, int y) {
@@ -124,7 +125,7 @@ public class TiledMap {
 	}
 
 	public Chunk chunkAt(double x, double y) {
-		ChunkPosition position = new ChunkPosition((int) Math.floor(x / GameConstants.CHUNK_SIZE), (int) Math.floor(y / GameConstants.CHUNK_SIZE));
+		ChunkPosition position = new ChunkPosition(MathUtils.floor(x / GameConstants.CHUNK_SIZE), MathUtils.floor(y / GameConstants.CHUNK_SIZE));
 		return chunks.get(position);
 	}
 
@@ -224,15 +225,15 @@ public class TiledMap {
 	}
 
 	public boolean collide(double x, double y, double radius) {
-		int tileX = (int) Math.floor(x - radius);
-		int startY = (int) Math.floor(y - radius);
+		int tileX = MathUtils.floor(x - radius);
+		int startY = MathUtils.floor(y - radius);
 		double right = x + radius;
-		int endX = (int) Math.floor(right);
+		int endX = MathUtils.floor(right);
 		if (right == endX) {
 			endX--;
 		}
 		double top = y + radius;
-		int endY = (int) Math.floor(top);
+		int endY = MathUtils.floor(top);
 		if (endY == top) {
 			endY--;
 		}

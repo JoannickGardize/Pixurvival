@@ -51,10 +51,8 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		// Binding
 
 		bind(densityInput, StructureGenerator::getDensity, StructureGenerator::setDensity);
-		bind(heightmapConditionsEditor, StructureGenerator::getHeightmapConditions,
-				StructureGenerator::setHeightmapConditions);
-		bind(structureGeneratorEntriesEditor, StructureGenerator::getStructureGeneratorEntries,
-				StructureGenerator::setStructureGeneratorEntries);
+		bind(heightmapConditionsEditor, StructureGenerator::getHeightmapConditions, StructureGenerator::setHeightmapConditions);
+		bind(structureGeneratorEntriesEditor, StructureGenerator::getStructureGeneratorEntries, StructureGenerator::setStructureGeneratorEntries);
 
 		// Layouting
 
@@ -74,13 +72,11 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 
 	public void setHeightmapCollection(Collection<Heightmap> collection) {
 		heightmapCollection = collection;
-		heightmapConditionsEditor
-				.forEachEditors(e -> ((HeightmapConditionEditor) e).setHeightmapCollection(collection));
+		heightmapConditionsEditor.forEachEditors(e -> ((HeightmapConditionEditor) e).setHeightmapCollection(collection));
 	}
 
 	public void setStructureCollection(Collection<Structure> structures) {
-		structureGeneratorEntriesEditor
-				.forEachEditors(e -> ((StructureGeneratorEntryEditor) e).setStructureCollection(structures));
+		structureGeneratorEntriesEditor.forEachEditors(e -> ((StructureGeneratorEntryEditor) e).setStructureCollection(structures));
 	}
 
 	// @Override

@@ -89,6 +89,10 @@ public abstract class LivingEntity extends Entity implements Damageable {
 
 	@Override
 	public void takeDamage(float amount) {
+		takeTrueDamage(amount * (1 - stats.getValue(StatType.ARMOR)));
+	}
+
+	public void takeTrueDamage(float amount) {
 		health -= amount;
 		if (health < 0) {
 			health = 0;

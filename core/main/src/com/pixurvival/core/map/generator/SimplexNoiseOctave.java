@@ -3,6 +3,7 @@ package com.pixurvival.core.map.generator;
 import java.util.Random;
 
 import com.pixurvival.core.util.IntUrn;
+import com.pixurvival.core.util.MathUtils;
 
 import lombok.AllArgsConstructor;
 
@@ -25,9 +26,8 @@ import lombok.AllArgsConstructor;
 
 public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 
-	private static Grad grad3[] = { new Grad(1, 1), new Grad(-1, 1), new Grad(1, -1), new Grad(-1, -1), new Grad(1, 0),
-			new Grad(-1, 0), new Grad(1, 0), new Grad(-1, 0), new Grad(0, 1), new Grad(0, -1), new Grad(0, 1),
-			new Grad(0, -1) };
+	private static Grad grad3[] = { new Grad(1, 1), new Grad(-1, 1), new Grad(1, -1), new Grad(-1, -1), new Grad(1, 0), new Grad(-1, 0), new Grad(1, 0), new Grad(-1, 0), new Grad(0, 1),
+			new Grad(0, -1), new Grad(0, 1), new Grad(0, -1) };
 
 	// To remove the need for index wrapping, double the permutation table
 	// length
@@ -57,12 +57,6 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 	private static final double F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
 	private static final double G2 = (3.0 - Math.sqrt(3.0)) / 6.0;
 
-	// This method is a *lot* faster than using (int)Math.floor(x)
-	private static int fastfloor(double x) {
-		int xi = (int) x;
-		return x < xi ? xi - 1 : xi;
-	}
-
 	private static double dot(Grad g, double x, double y) {
 		return g.x * x + g.y * y;
 	}
@@ -72,8 +66,8 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 		double n0, n1, n2; // Noise contributions from the three corners
 		// Skew the input space to determine which simplex cell we're in
 		double s = (xin + yin) * F2; // Hairy factor for 2D
-		int i = fastfloor(xin + s);
-		int j = fastfloor(yin + s);
+		int i = MathUtils.floor(xin + s);
+		int j = MathUtils.floor(yin + s);
 		double t = (i + j) * G2;
 		double X0 = i - t; // Unskew the cell origin back to (x,y) space
 		double Y0 = j - t;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.util.MathUtils;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class MapActor extends Actor {
 		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
 		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
 		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
-		int startX = (int) Math.floor(camPos.x - width / 2);
-		int startY = (int) Math.floor(camPos.y - height / 2);
+		int startX = MathUtils.floor(camPos.x - width / 2);
+		int startY = MathUtils.floor(camPos.y - height / 2);
 		int endX = (int) Math.ceil(startX + width);
 		int endY = (int) Math.ceil(startY + height);
 		for (int x = startX; x <= endX; x++) {
