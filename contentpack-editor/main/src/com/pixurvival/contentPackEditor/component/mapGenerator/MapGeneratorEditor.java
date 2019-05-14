@@ -75,8 +75,7 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 		// Layouting
 
 		JPanel tileGeneratorTab = new JPanel(new BorderLayout());
-		tileGeneratorTab.add(LayoutUtils.labelled("mapGeneratorEditor.defaultTile", defaultTileChooser),
-				BorderLayout.NORTH);
+		tileGeneratorTab.add(LayoutUtils.labelled("mapGeneratorEditor.defaultTile", defaultTileChooser), BorderLayout.NORTH);
 		tileGeneratorTab.add(tileGeneratorsEditor, BorderLayout.CENTER);
 
 		setLayout(new BorderLayout());
@@ -99,8 +98,7 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
 		if (source == this) {
-			tileGeneratorsEditor.forEachEditors(e -> ((TileGeneratorEditor) e)
-					.setHeightmapCollection(((MapGenerator) source.getValue()).getHeightmaps()));
+			tileGeneratorsEditor.forEachEditors(e -> ((TileGeneratorEditor) e).setHeightmapCollection(((MapGenerator) source.getValue()).getHeightmaps()));
 		}
 	}
 }

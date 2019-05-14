@@ -16,23 +16,19 @@ public class WeightedValueProducerEditor<E extends IdentifiedElement> extends El
 
 	private static final long serialVersionUID = 1L;
 
-	private Function<E, Icon> iconProvider;
-	private Function<ContentPack, Collection<E>> itemsGetter;
-
-	private ListEditor<Entry<E>> structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
-		WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(iconProvider);
-		editor.setBorder(LayoutUtils.createBorder());
-		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
-		if (currentPack != null) {
-			editor.setCollection(itemsGetter.apply(currentPack));
-		}
-		return editor;
-
-	}, Entry::new);
+	private ListEditor<Entry<E>> structureGeneratorEntriesEditor;
 
 	public WeightedValueProducerEditor(Function<E, Icon> iconProvider, Function<ContentPack, Collection<E>> itemsGetter) {
-		this.iconProvider = iconProvider;
-		this.itemsGetter = itemsGetter;
+		structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
+			WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(iconProvider);
+			editor.setBorder(LayoutUtils.createBorder());
+			ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
+			if (currentPack != null) {
+				editor.setCollection(itemsGetter.apply(currentPack));
+			}
+			return editor;
+
+		}, Entry::new);
 
 		bind(structureGeneratorEntriesEditor, WeightedValueProducer::getBackingArray, WeightedValueProducer::setBackingArray);
 
