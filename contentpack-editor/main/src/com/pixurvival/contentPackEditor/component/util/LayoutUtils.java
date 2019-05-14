@@ -266,6 +266,12 @@ public class LayoutUtils {
 		return panel;
 	}
 
+	public static void fill(Container parent, Component child) {
+		parent.setLayout(new BorderLayout());
+		parent.add(child, BorderLayout.CENTER);
+	}
+
+	@Deprecated
 	public static <T extends JComponent> Supplier<T> bordered(Supplier<T> supplier) {
 		return () -> {
 			T result = supplier.get();

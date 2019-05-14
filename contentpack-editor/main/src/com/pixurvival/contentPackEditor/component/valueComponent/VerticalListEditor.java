@@ -2,12 +2,14 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -21,15 +23,15 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 
 	private static final long serialVersionUID = 1L;
 
-	public VerticalListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
 		this(elementEditorSupplier, valueSupplier, VERTICAL);
 	}
 
-	public VerticalListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment) {
 		this(elementEditorSupplier, valueSupplier, buttonAlignment, true);
 	}
 
-	public VerticalListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment, boolean useScrollPane) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment, boolean useScrollPane) {
 		super(elementEditorSupplier, valueSupplier);
 		// setMinimumSize(new Dimension(100, 50));
 		// setPreferredSize(new Dimension(100, 50));
@@ -53,15 +55,15 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	}
 
 	@Override
-	protected void addEditor(ElementEditor<E> editor) {
-		editor.setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(3, 2, 3, 2), editor.getBorder()));
+	protected void addEditor(ValueComponent<E> editor) {
+		((JComponent) editor).setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(3, 2, 3, 2), ((JComponent) editor).getBorder()));
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.insets = new Insets(3, 2, 3, 2);
 		gbc.gridy = listPanel.getComponentCount();
-		listPanel.add(editor, gbc);
+		listPanel.add((Component) editor, gbc);
 		listPanel.revalidate();
 	}
 

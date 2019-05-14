@@ -26,7 +26,11 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<ChangeCondition> changeConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(ChangeConditionEditor::new), PlayerDistanceCondition::new, ListEditor.HORIZONTAL, false);
+	private ListEditor<ChangeCondition> changeConditionsEditor = new VerticalListEditor<>(() -> {
+		ChangeConditionEditor editor = new ChangeConditionEditor();
+		editor.setBorder(LayoutUtils.createBorder());
+		return editor;
+	}, PlayerDistanceCondition::new, ListEditor.HORIZONTAL, false);
 
 	public BehaviorEditor() {
 		super("behaviorType");

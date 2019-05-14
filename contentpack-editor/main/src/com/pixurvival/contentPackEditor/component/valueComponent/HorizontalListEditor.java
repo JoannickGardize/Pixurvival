@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.function.Supplier;
 
 import javax.swing.JScrollPane;
@@ -11,7 +12,7 @@ public class HorizontalListEditor<E> extends ListEditor<E> {
 
 	private static final long serialVersionUID = 1L;
 
-	public HorizontalListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+	public HorizontalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
 		super(elementEditorSupplier, valueSupplier);
 		setLayout(new BorderLayout());
 		JScrollPane scrollPane = new JScrollPane(listPanel);
@@ -21,8 +22,8 @@ public class HorizontalListEditor<E> extends ListEditor<E> {
 	}
 
 	@Override
-	protected void addEditor(ElementEditor<E> editor) {
-		listPanel.add(editor);
+	protected void addEditor(ValueComponent<E> editor) {
+		listPanel.add((Component) editor);
 	}
 
 	@Override

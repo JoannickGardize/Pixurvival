@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.Random;
-import java.util.TreeMap;
 
+import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
@@ -17,11 +17,12 @@ public class StructureGenerator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private WeightedValueProducer<Structure> structureProducer = new WeightedValueProducer<>();
+
 	@Valid
 	private List<HeightmapCondition> heightmapConditions = new ArrayList<>();
 
-	@Valid
-	private List<StructureGeneratorEntry> structureGeneratorEntries = new ArrayList<>();
+	private List<Tile> bannedTiles = new ArrayList<>();
 
 	private transient double probabilityWeight;
 
@@ -39,24 +40,11 @@ public class StructureGenerator implements Serializable {
 		return true;
 	}
 
-	public Structure next(Random random) {
-		if (random.nextDouble() < density) {
-			ensureChooseMapBuilt();
-			return structureChooseMap.ceilingEntry(random.nextDouble() * probabilityWeight).getValue();
+	public Structure next(Tile tile, Random random) {
+		if (!bannedTiles.contains(tile)) {
+			return structureProducer.next(random);
 		} else {
 			return null;
-		}
-	}
-
-	private void ensureChooseMapBuilt() {
-		if (structureChooseMap != null) {
-			return;
-		}
-		structureChooseMap = new TreeMap<>();
-		probabilityWeight = 0;
-		for (StructureGeneratorEntry entry : structureGeneratorEntries) {
-			probabilityWeight += entry.getProbability();
-			structureChooseMap.put(probabilityWeight, entry.getStructure());
 		}
 	}
 }

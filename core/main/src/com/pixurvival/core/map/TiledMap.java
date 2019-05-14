@@ -229,12 +229,12 @@ public class TiledMap {
 		int startY = MathUtils.floor(y - radius);
 		double right = x + radius;
 		int endX = MathUtils.floor(right);
-		if (right == endX) {
+		if (MathUtils.equals(right, endX)) {
 			endX--;
 		}
 		double top = y + radius;
 		int endY = MathUtils.floor(top);
-		if (endY == top) {
+		if (MathUtils.equals(endY, top)) {
 			endY--;
 		}
 		for (; tileX <= endX; tileX++) {

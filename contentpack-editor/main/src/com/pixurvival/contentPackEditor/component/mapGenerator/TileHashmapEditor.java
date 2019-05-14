@@ -19,11 +19,12 @@ public class TileHashmapEditor extends ElementEditor<TileHashmap> {
 
 	private Collection<Tile> tileCollection;
 	private ElementChooserButton<Heightmap> heightmapChooser = new ElementChooserButton<>();
-	private ListEditor<TileHashmapEntry> entriesEditor = new HorizontalListEditor<>(LayoutUtils.bordered(() -> {
+	private ListEditor<TileHashmapEntry> entriesEditor = new HorizontalListEditor<>(() -> {
 		TileHashmapEntryEditor editor = new TileHashmapEntryEditor();
+		editor.setBorder(LayoutUtils.createBorder());
 		editor.setTileCollection(tileCollection);
 		return editor;
-	}), TileHashmapEntry::new);
+	}, TileHashmapEntry::new);
 
 	public TileHashmapEditor() {
 		bind(heightmapChooser, TileHashmap::getHeightmap, TileHashmap::setHeightmap);

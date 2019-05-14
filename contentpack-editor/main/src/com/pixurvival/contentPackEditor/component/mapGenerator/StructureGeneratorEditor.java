@@ -6,6 +6,8 @@ import java.util.Collection;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.FileService;
+import com.pixurvival.contentPackEditor.IconService;
+import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
@@ -13,12 +15,13 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGenerator;
-import com.pixurvival.core.contentPack.map.StructureGeneratorEntry;
+import com.pixurvival.core.contentPack.map.Tile;
 
 public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> {
 
@@ -33,16 +36,17 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		return result;
 	}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
-	private ListEditor<StructureGeneratorEntry> structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
-		StructureGeneratorEntryEditor editor = new StructureGeneratorEntryEditor();
-		editor.setBorder(LayoutUtils.createBorder());
+	private ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
+		ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>();
+		tileChooser.setBorder(LayoutUtils.createBorder());
 		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
 		if (currentPack != null) {
-			editor.setStructureCollection(currentPack.getStructures());
+			tileChooser.setItems(currentPack.getTiles());
 		}
-		return editor;
+		return tileChooser;
+	}, () -> null);
 
-	}, StructureGeneratorEntry::new);
+	private WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(IconService.getInstance()::get, ContentPack::getStructures);
 
 	public StructureGeneratorEditor() {
 
@@ -52,7 +56,8 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 
 		bind(densityInput, StructureGenerator::getDensity, StructureGenerator::setDensity);
 		bind(heightmapConditionsEditor, StructureGenerator::getHeightmapConditions, StructureGenerator::setHeightmapConditions);
-		bind(structureGeneratorEntriesEditor, StructureGenerator::getStructureGeneratorEntries, StructureGenerator::setStructureGeneratorEntries);
+		bind(bannedTilesEditor, StructureGenerator::getBannedTiles, StructureGenerator::setBannedTiles);
+		bind(structureProducerEditor, StructureGenerator::getStructureProducer, StructureGenerator::setStructureProducer);
 
 		// Layouting
 
@@ -60,12 +65,13 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		JPanel topPanel = new JPanel(new BorderLayout());
 		JPanel wrapper = new JPanel();
 		wrapper.add(LayoutUtils.labelled("structureGeneratorEditor.density", densityInput));
-		topPanel.add(heightmapConditionsEditor, BorderLayout.CENTER);
-		topPanel.add(wrapper, BorderLayout.EAST);
 		heightmapConditionsEditor.setBorder(LayoutUtils.createGroupBorder("generic.conditions"));
+		bannedTilesEditor.setBorder(LayoutUtils.createGroupBorder("generic.bannedTiles"));
+		topPanel.add(LayoutUtils.createVerticalBox(heightmapConditionsEditor, bannedTilesEditor), BorderLayout.CENTER);
+		topPanel.add(wrapper, BorderLayout.EAST);
 		add(topPanel, BorderLayout.CENTER);
-		structureGeneratorEntriesEditor.setBorder(LayoutUtils.createGroupBorder("elementType.structure"));
-		add(structureGeneratorEntriesEditor, BorderLayout.SOUTH);
+		structureProducerEditor.setBorder(LayoutUtils.createGroupBorder("elementType.structure"));
+		add(structureProducerEditor, BorderLayout.SOUTH);
 		LayoutUtils.setMinimumSize(heightmapConditionsEditor, 1, 120);
 		// LayoutUtils.setMinimumSize(tileHashmapEditor, 1, 140);
 	}
@@ -76,7 +82,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 	}
 
 	public void setStructureCollection(Collection<Structure> structures) {
-		structureGeneratorEntriesEditor.forEachEditors(e -> ((StructureGeneratorEntryEditor) e).setStructureCollection(structures));
+		structureProducerEditor.setAllItems(structures);
 	}
 
 	// @Override

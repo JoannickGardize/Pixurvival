@@ -116,7 +116,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 			if (targetVelocity.getY() > 0) {
-				position.setY(MathUtils.floor(position.getY()) + 1 - getCollisionRadius());
+				position.setY(MathUtils.floor(position.getY() + 1) - getCollisionRadius());
 			} else {
 				position.setY(MathUtils.floor(position.getY()) + getCollisionRadius());
 			}
@@ -131,7 +131,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 			if (targetVelocity.getX() > 0) {
-				position.setX(MathUtils.floor(position.getX()) + 1 - getCollisionRadius());
+				position.setX(MathUtils.floor(position.getX() + 1) - getCollisionRadius());
 			} else {
 				position.setX(MathUtils.floor(position.getX()) + getCollisionRadius());
 			}

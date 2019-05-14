@@ -23,13 +23,13 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	private static final long serialVersionUID = 1L;
 
 	private @Getter @Setter boolean oneRequired = false;
-	private @Getter ElementEditor<E> editorForValidation;
-	private Supplier<ElementEditor<E>> elementEditorSupplier;
+	private @Getter ValueComponent<E> editorForValidation;
+	private Supplier<ValueComponent<E>> elementEditorSupplier;
 	protected JPanel listPanel = new JPanel();
 	protected JButton addButton;
 	protected JButton removeButton;
 
-	public ListEditor(Supplier<ElementEditor<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+	public ListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
 		this.elementEditorSupplier = elementEditorSupplier;
 		editorForValidation = elementEditorSupplier.get();
 		addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));
@@ -44,7 +44,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		});
 	}
 
-	protected abstract void addEditor(ElementEditor<E> editor);
+	protected abstract void addEditor(ValueComponent<E> editor);
 
 	protected abstract void removeLast();
 
@@ -91,15 +91,15 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void forEachEditors(Consumer<ElementEditor<E>> action) {
+	public void forEachEditors(Consumer<ValueComponent<E>> action) {
 		for (Component component : listPanel.getComponents()) {
 			action.accept((ElementEditor<E>) component);
 		}
 		action.accept(editorForValidation);
 	}
 
-	private ElementEditor<E> addComponent(int index, E value) {
-		ElementEditor<E> elementEditor = elementEditorSupplier.get();
+	private ValueComponent<E> addComponent(int index, E value) {
+		ValueComponent<E> elementEditor = elementEditorSupplier.get();
 		if (value != null) {
 			elementEditor.setValue(value);
 		}

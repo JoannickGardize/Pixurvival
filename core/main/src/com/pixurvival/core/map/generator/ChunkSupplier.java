@@ -8,6 +8,7 @@ import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.EmptyTile;
+import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 
 public class ChunkSupplier {
@@ -36,10 +37,7 @@ public class ChunkSupplier {
 		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
 			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
 				chunk.set(cx, cy,
-						map.getMapTilesById()[mapGenerator
-								.getTileAt(chunk.getPosition().getX() * GameConstants.CHUNK_SIZE + cx,
-										chunk.getPosition().getY() * GameConstants.CHUNK_SIZE + cy)
-								.getId()]);
+						map.getMapTilesById()[mapGenerator.getTileAt(chunk.getPosition().getX() * GameConstants.CHUNK_SIZE + cx, chunk.getPosition().getY() * GameConstants.CHUNK_SIZE + cy).getId()]);
 			}
 		}
 	}
@@ -50,15 +48,12 @@ public class ChunkSupplier {
 		Random chunkRandom = new Random(seed << 32 ^ x << 16 ^ y);
 		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
 			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
-				if (chunk.tileAtLocal(cx, cy) instanceof EmptyTile) {
-					Structure structure = mapGenerator.getStructureAt(x * GameConstants.CHUNK_SIZE + cx,
-							y * GameConstants.CHUNK_SIZE + cy, chunkRandom);
-					if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth()
-							&& cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
-							&& chunk.isEmptyLocal(cx, cy, structure.getDimensions().getWidth(),
-									structure.getDimensions().getHeight())) {
-						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx,
-								y * GameConstants.CHUNK_SIZE + cy, false);
+				MapTile mapTile = chunk.tileAtLocal(cx, cy);
+				if (mapTile instanceof EmptyTile) {
+					Structure structure = mapGenerator.getStructureAt(x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, mapTile.getTileDefinition(), chunkRandom);
+					if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth() && cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
+							&& chunk.isEmptyLocal(cx, cy, structure.getDimensions().getWidth(), structure.getDimensions().getHeight())) {
+						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, false);
 					}
 				}
 			}

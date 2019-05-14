@@ -50,10 +50,10 @@ public class MapGenerator extends IdentifiedElement implements Serializable {
 		return defaultTile;
 	}
 
-	public Structure getStructureAt(int x, int y, Random random) {
+	public Structure getStructureAt(int x, int y, Tile tile, Random random) {
 		for (StructureGenerator structureGenerator : structureGenerators) {
 			if (structureGenerator.test(x, y)) {
-				return structureGenerator.next(random);
+				return structureGenerator.next(tile, random);
 			}
 		}
 		return null;
