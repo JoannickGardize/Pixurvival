@@ -1,5 +1,6 @@
 package com.pixurvival.core;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ public abstract class EngineThread extends Thread {
 	private int maxUpdatePerFrame = 5;
 
 	private @Setter(AccessLevel.NONE) double load;
+	private double warnLoadTrigger = 100;
 
 	public EngineThread(String name) {
 		super(name);
@@ -61,6 +63,9 @@ public abstract class EngineThread extends Thread {
 			}
 			double currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;
 			load = MathUtils.linearInterpolate(load, currentLoad, 0.7);
+			if (load >= warnLoadTrigger) {
+				Log.warn("Thread " + getName() + ", critical load : " + load);
+			}
 		}
 	}
 

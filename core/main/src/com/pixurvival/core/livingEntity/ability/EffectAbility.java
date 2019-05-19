@@ -35,7 +35,7 @@ public class EffectAbility extends CooldownAbility {
 				return;
 			}
 			if (selfAlterations != null) {
-				selfAlterations.forEach(a -> a.apply(this, entity));
+				selfAlterations.forEach(a -> a.apply(entity, entity));
 			}
 			for (Effect effect : effects) {
 				EffectEntity effectEntity = new EffectEntity(effect, entity);

@@ -2,13 +2,17 @@ package com.pixurvival.core.map;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.entity.EntityCollection;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +25,7 @@ public class Chunk {
 
 	private MapTile[] tiles;
 
-	private List<MapStructure> structures = new ArrayList<>();
+	private Map<Integer, List<MapStructure>> structures = new HashMap<>();
 
 	private ChunkPosition position;
 
@@ -29,15 +33,17 @@ public class Chunk {
 
 	private int offsetY;
 
-	private SoftReference<CompressedChunk> compressedChunkRef = new SoftReference<>(null);
+	private @Getter(AccessLevel.NONE) SoftReference<CompressedChunk> compressedChunkRef = new SoftReference<>(null);
 
 	private @Setter long updateTimestamp;
 
-	private long lastCheckTimestamp;
+	private @Setter long lastCheckTimestamp;
 
 	private @Setter boolean fileSync = false;
 
 	private EntityCollection entities = new EntityCollection();
+
+	private @Setter boolean newlyCreated = false;
 
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
@@ -50,11 +56,11 @@ public class Chunk {
 	}
 
 	public void check() {
-		lastCheckTimestamp = System.currentTimeMillis();
+		lastCheckTimestamp = map.getWorld().getTime().getTimeMillis();
 	}
 
 	public boolean isTimeout() {
-		return System.currentTimeMillis() - lastCheckTimestamp >= KEEP_ALIVE_MILLIS;
+		return map.getWorld().getTime().getTimeMillis() - lastCheckTimestamp >= KEEP_ALIVE_MILLIS;
 	}
 
 	public void updateTimestamp() {
@@ -74,6 +80,10 @@ public class Chunk {
 		fileSync = false;
 	}
 
+	public void forEachStructure(Consumer<MapStructure> action) {
+		structures.values().forEach(list -> list.forEach(action));
+	}
+
 	public MapStructure addStructure(Structure structure, int x, int y) {
 		return addStructure(structure, x, y, true);
 	}
@@ -89,7 +99,7 @@ public class Chunk {
 				set(cx, cy, tileAndStructure);
 			}
 		}
-		structures.add(mapStructure);
+		structures.computeIfAbsent(structure.getId(), id -> new ArrayList<>()).add(mapStructure);
 		if (notify) {
 			getMap().notifyListeners(l -> l.structureAdded(mapStructure));
 			fileSync = false;
@@ -126,7 +136,7 @@ public class Chunk {
 					set(sx, sy, map.getMapTilesById()[tile.getTileDefinition().getId()]);
 				}
 			}
-			structures.remove(structure);
+			structures.get(structure.getDefinition().getId()).remove(structure);
 			getMap().notifyListeners(l -> l.structureRemoved(structure));
 			fileSync = false;
 		}

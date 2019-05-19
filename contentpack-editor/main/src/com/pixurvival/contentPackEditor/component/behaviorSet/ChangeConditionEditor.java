@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangin
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoubleComparison;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.PlayerDistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
@@ -48,10 +48,10 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		// PlayerDistanceCondition
 		EnumChooser<DoubleComparison> testChooser = new EnumChooser<>(DoubleComparison.class);
 		DoubleInput targetDistanceInput = new DoubleInput(Bounds.positive());
-		bind(testChooser, PlayerDistanceCondition::getTest, PlayerDistanceCondition::setTest, PlayerDistanceCondition.class);
-		bind(targetDistanceInput, PlayerDistanceCondition::getTargetDistance, PlayerDistanceCondition::setTargetDistance, PlayerDistanceCondition.class);
+		bind(testChooser, EnnemyDistanceCondition::getTest, EnnemyDistanceCondition::setTest, EnnemyDistanceCondition.class);
+		bind(targetDistanceInput, EnnemyDistanceCondition::getTargetDistance, EnnemyDistanceCondition::setTargetDistance, EnnemyDistanceCondition.class);
 		Component testComponent = LayoutUtils.labelled("generic.distance", testChooser);
-		classEntries.add(new ClassEntry(PlayerDistanceCondition.class, LayoutUtils.createHorizontalBox(testComponent, targetDistanceInput)));
+		classEntries.add(new ClassEntry(EnnemyDistanceCondition.class, LayoutUtils.createHorizontalBox(testComponent, targetDistanceInput)));
 
 		// TimeCondition
 		DoubleInput timeInput = new DoubleInput(Bounds.positive());

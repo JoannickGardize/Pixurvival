@@ -18,7 +18,7 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.PlayerDistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 
@@ -30,7 +30,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		ChangeConditionEditor editor = new ChangeConditionEditor();
 		editor.setBorder(LayoutUtils.createBorder());
 		return editor;
-	}, PlayerDistanceCondition::new, ListEditor.HORIZONTAL, false);
+	}, EnnemyDistanceCondition::new, ListEditor.HORIZONTAL, false);
 
 	public BehaviorEditor() {
 		super("behaviorType");

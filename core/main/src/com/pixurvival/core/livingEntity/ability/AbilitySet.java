@@ -6,18 +6,21 @@ import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
-public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
+import lombok.Getter;
+import lombok.Setter;
+
+public class AbilitySet<T extends Ability> extends IdentifiedElement implements Iterable<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Ability> abilities = new ArrayList<>();
+	private @Getter @Setter List<T> abilities = new ArrayList<>();
 
-	public void add(Ability ability) {
+	public void add(T ability) {
 		ability.setId((byte) abilities.size());
 		abilities.add(ability);
 	}
 
-	public Ability get(int id) {
+	public T get(int id) {
 		return abilities.get(id);
 	}
 
@@ -26,7 +29,7 @@ public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
 	}
 
 	@Override
-	public Iterator<Ability> iterator() {
+	public Iterator<T> iterator() {
 		return abilities.iterator();
 	}
 }

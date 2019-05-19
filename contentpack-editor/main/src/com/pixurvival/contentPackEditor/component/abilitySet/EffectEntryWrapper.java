@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.item;
+package com.pixurvival.contentPackEditor.component.abilitySet;
 
 import java.awt.BorderLayout;
 import java.util.Collection;

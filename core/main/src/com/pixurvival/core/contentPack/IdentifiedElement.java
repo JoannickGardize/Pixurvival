@@ -26,6 +26,10 @@ public abstract class IdentifiedElement implements Serializable {
 	@Bounds(min = 0)
 	private int id;
 
+	public void initialize() {
+
+	}
+
 	@Override
 	public String toString() {
 		return name;

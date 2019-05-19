@@ -41,10 +41,10 @@ public class StructureGenerator implements Serializable {
 	}
 
 	public Structure next(Tile tile, Random random) {
-		if (!bannedTiles.contains(tile)) {
-			return structureProducer.next(random);
-		} else {
+		if (bannedTiles.contains(tile) || random.nextDouble() >= density) {
 			return null;
+		} else {
+			return structureProducer.next(random);
 		}
 	}
 }

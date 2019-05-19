@@ -23,6 +23,7 @@ import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemReward;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.ability.EffectAbility;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 
@@ -35,7 +36,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
 	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>();
 	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(false);
-	private ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton<>(false);
+	private ElementChooserButton<AbilitySet<EffectAbility>> abilitySetChooser = new ElementChooserButton<>(false);
 
 	private StatSet statSet = new StatSet();
 	private FloatInput strengthInput = new FloatInput();
@@ -108,6 +109,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
 		behaviorSetChooser.setItems(event.getContentPack().getBehaviorSets());
 		itemRewardChooser.setItems(event.getContentPack().getItemRewards());
+		abilitySetChooser.setItems(event.getContentPack().getAbilitySets());
 	}
 
 	@Override

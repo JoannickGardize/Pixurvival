@@ -8,15 +8,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import com.pixurvival.core.World;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public class EntityCollection {
 
-	private Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
+	private @Getter(AccessLevel.PROTECTED) Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 
 	public Collection<Entity> get(EntityGroup group) {
 		Map<Long, Entity> groupMap = entities.get(group);
 		return groupMap == null ? Collections.emptyList() : groupMap.values();
+	}
+
+	protected Map<Long, Entity> getMap(EntityGroup group) {
+		Map<Long, Entity> groupMap = entities.get(group);
+		return groupMap == null ? Collections.emptyMap() : groupMap;
 	}
 
 	public void add(Entity entity) {
@@ -33,6 +44,14 @@ public class EntityCollection {
 
 	public void foreach(Consumer<Entity> action) {
 		entities.values().forEach(map -> map.values().forEach(action));
+	}
+
+	public void foreach(BiConsumer<? super EntityGroup, ? super Map<Long, Entity>> action) {
+		entities.forEach(action);
+	}
+
+	public Entity get(EntityGroup group, long id) {
+		return getMap(group).get(id);
 	}
 
 	public void clear() {
@@ -82,6 +101,40 @@ public class EntityCollection {
 			byteBuffer.putShort((short) entityMap.size());
 			for (Entity e : entityMap.values()) {
 				byteBuffer.putLong(e.getId());
+			}
+		}
+	}
+
+	public void applyUpdate(ByteBuffer byteBuffer, World world) {
+		byte groupId;
+		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
+			EntityGroup group = EntityGroup.values()[groupId];
+			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
+			short size = byteBuffer.getShort();
+			for (int i = 0; i < size; i++) {
+				long entityId = byteBuffer.getLong();
+				Entity e = groupMap.get(entityId);
+				if (e == null) {
+					e = group.getEntitySupplier().get();
+					e.setId(entityId);
+					e.setWorld(world);
+					e.applyUpdate(byteBuffer);
+					add(e);
+				} else {
+					e.applyUpdate(byteBuffer);
+				}
+			}
+		}
+		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
+			EntityGroup group = EntityGroup.values()[groupId];
+			Map<Long, Entity> groupMap = entities.get(group);
+			short size = byteBuffer.getShort();
+			for (int i = 0; i < size; i++) {
+				long entityId = byteBuffer.getLong();
+				Entity e = groupMap.get(entityId);
+				if (e != null) {
+					e.setAlive(false);
+				}
 			}
 		}
 	}

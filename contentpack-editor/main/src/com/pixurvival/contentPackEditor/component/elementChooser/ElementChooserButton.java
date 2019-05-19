@@ -95,11 +95,12 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public void paint(Graphics g) {
-		updateDisplay();
+		// updateDisplay();
 		super.paint(g);
 	}
 
 	private void updateDisplay() {
+
 		if (isValueValid()) {
 			setIcon(iconProvider.apply(value));
 			setForeground(Color.BLACK);

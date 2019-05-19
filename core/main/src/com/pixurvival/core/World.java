@@ -6,12 +6,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -56,6 +56,7 @@ public class World {
 	private long id;
 	private UUID uid;
 	private ContentPack contentPack;
+	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
 	private File saveDirectory;
 	private List<PlayerData> playerDataList = new ArrayList<>();
@@ -64,13 +65,14 @@ public class World {
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
 
-	private World(long id, Type type, ContentPack contentPack) {
+	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		this.id = id;
 		this.type = type;
 		this.contentPack = contentPack;
+		contentPack.initialize();
+		this.gameMode = contentPack.getGameModes().get(gameModeId);
 		map = new TiledMap(this);
-		// TODO Choix du mapGenerator en fonction du gameMode
-		chunkSupplier = new ChunkSupplier(this, contentPack.getMapGenerators().get(0), new Random().nextLong());
+		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
 		uid = UUID.randomUUID();
 		saveDirectory = new File(GlobalSettings.getSaveDirectory(), uid.toString());
 		FileUtils.delete(saveDirectory);
@@ -84,19 +86,19 @@ public class World {
 	public static World createClientWorld(CreateWorld createWorld, ContentPackLoader loader) throws ContentPackException {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
-		World world = new World(createWorld.getId(), Type.CLIENT, pack);
+		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
-	public static World createServerWorld(ContentPack contentPack) {
-		World world = new World(nextId++, Type.SERVER, contentPack);
+	public static World createServerWorld(ContentPack contentPack, int gameModeId) {
+		World world = new World(nextId++, Type.SERVER, contentPack, gameModeId);
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
-	public static World createLocalWorld(ContentPack contentPack) {
-		World world = new World(nextId++, Type.LOCAL, contentPack);
+	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
+		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
 		worlds.put(world.getId(), world);
 		return world;
 	}

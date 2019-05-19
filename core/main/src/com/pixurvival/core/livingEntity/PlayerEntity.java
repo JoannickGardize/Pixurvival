@@ -7,6 +7,7 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.item.ItemCraft;
+import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
@@ -40,7 +41,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public static final int ACCESSORY1_SPECIAL_ABILITY_ID = 4;
 	public static final int ACCESSORY2_SPECIAL_ABILITY_ID = 5;
 
-	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
+	private static final AbilitySet<Ability> PLAYER_ABILITY_SET = new AbilitySet<>();
 
 	static {
 		PLAYER_ABILITY_SET.add(new CraftAbility());
@@ -72,6 +73,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 				((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
 		});
+		setTeam(TeamSet.PLAYERS_TEAM);
 	}
 
 	public void setInventory(PlayerInventory inventory) {
@@ -173,7 +175,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
-	public AbilitySet getAbilitySet() {
+	public AbilitySet<? extends Ability> getAbilitySet() {
 		return PLAYER_ABILITY_SET;
 	}
 

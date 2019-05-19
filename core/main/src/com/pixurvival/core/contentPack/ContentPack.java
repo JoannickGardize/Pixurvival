@@ -9,7 +9,9 @@ import java.util.Map;
 
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.effect.Effect;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -22,6 +24,8 @@ import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.ability.EffectAbility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -72,6 +76,8 @@ public class ContentPack implements Serializable {
 	@ElementCollection(BehaviorSet.class)
 	private List<BehaviorSet> behaviorSets = new ArrayList<>();
 
+	private List<AbilitySet<EffectAbility>> abilitySets = new ArrayList<>();
+
 	@Valid
 	@ElementCollection(Creature.class)
 	private List<Creature> creatures = new ArrayList<>();
@@ -91,6 +97,10 @@ public class ContentPack implements Serializable {
 	@Valid
 	@ElementCollection(MapGenerator.class)
 	private List<MapGenerator> mapGenerators = new ArrayList<>();
+
+	private List<Ecosystem> ecosystems = new ArrayList<>();
+
+	private List<GameMode> gameModes = new ArrayList<>();
 
 	public byte[] getResource(String resource) {
 		if (resources == null) {
@@ -116,5 +126,9 @@ public class ContentPack implements Serializable {
 
 	public boolean isResourcePresent(String resource) {
 		return resources.containsKey(resource);
+	}
+
+	public void initialize() {
+		ecosystems.forEach(Ecosystem::initialize);
 	}
 }

@@ -1,15 +1,11 @@
 package com.pixurvival.core.map;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
-import com.pixurvival.core.util.FileUtils;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -34,7 +30,6 @@ public class ChunkManager extends EngineThread {
 		TiledMap map;
 		List<ChunkPosition> requestedPositions = new ArrayList<>();
 		ChunkPosition checkPosition = new ChunkPosition(0, 0);
-		Map<String, File> allFiles = new HashMap<>();
 
 		void nextCheckPosition() {
 			int nextX = checkPosition.getX() + 1;
@@ -47,14 +42,6 @@ public class ChunkManager extends EngineThread {
 				}
 			}
 			checkPosition = new ChunkPosition(nextX, nextY);
-		}
-
-		void refreshList() {
-			allFiles.clear();
-			File saveDir = map.getWorld().getSaveDirectory();
-			for (File file : saveDir.listFiles()) {
-				allFiles.put(file.getName(), file);
-			}
 		}
 	}
 
@@ -73,14 +60,9 @@ public class ChunkManager extends EngineThread {
 
 	public void requestChunk(TiledMap map, ChunkPosition position) {
 		synchronized (map) {
-			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, m -> {
-				TiledMapEntry result = new TiledMapEntry(m);
-				result.refreshList();
-				return result;
-			});
+			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, m -> new TiledMapEntry(m));
 			entry.requestedPositions.add(position);
 		}
-
 	}
 
 	public void stopManaging(final TiledMap map) {
@@ -106,22 +88,13 @@ public class ChunkManager extends EngineThread {
 			}
 			tmpChunks.clear();
 			tmpPositions.forEach(p -> {
-				File file = entry.allFiles.get(p.fileName());
-				Chunk chunk = null;
-				if (file == null) {
-					if (entry.map.getWorld().isServer()) {
-						chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
-						tmpChunks.add(chunk);
-					}
-				} else {
-					try {
-						byte[] data = FileUtils.readBytes(file);
-						chunk = new CompressedChunk(entry.map, data).buildChunk();
-						chunk.setFileSync(true);
-						tmpChunks.add(chunk);
-					} catch (IOException e) {
-						Log.error("Error when reading chunk file", e);
-					}
+				Chunk chunk = entry.map.getRepository().load(p);
+				if (chunk == null && entry.map.getWorld().isServer()) {
+					chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
+					chunk.setNewlyCreated(true);
+				}
+				if (chunk != null) {
+					tmpChunks.add(chunk);
 				}
 			});
 
@@ -137,30 +110,15 @@ public class ChunkManager extends EngineThread {
 		}
 		tiledMaps.values().forEach(entry -> {
 			int unloadTry = (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE);
-			tmpChunks.clear();
 			synchronized (entry.map) {
 				for (int i = 0; i < unloadTry; i++) {
 					entry.nextCheckPosition();
 					Chunk chunk = entry.map.chunkAt(entry.checkPosition);
 					if (chunk != null && chunk.isTimeout()) {
-						tmpChunks.add(chunk);
 						entry.map.removeChunk(chunk);
 					}
 				}
 			}
-			tmpChunks.forEach(chunk -> {
-				CompressedChunk compressedChunk = chunk.getCompressed();
-				try {
-					String fileName = chunk.getPosition().fileName();
-					File file = new File(entry.map.getWorld().getSaveDirectory(), fileName);
-					if (!file.exists() || !chunk.isFileSync()) {
-						FileUtils.writeBytes(file, compressedChunk.getData());
-						entry.allFiles.put(fileName, file);
-					}
-				} catch (IOException e) {
-					Log.error("Error when writing chunk file", e);
-				}
-			});
 		});
 	}
 

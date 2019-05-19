@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class LifeBarDrawer implements OverlayStackElementDrawer<LivingEntity> {
@@ -16,7 +17,12 @@ public class LifeBarDrawer implements OverlayStackElementDrawer<LivingEntity> {
 		tmpRectangle.height = OverlaySettings.LIFE_BAR_HEIGHT * infos.getScaleY();
 		tmpRectangle.x = infos.getReferencePosition().x - tmpRectangle.width / 2;
 		tmpRectangle.y = infos.getReferencePosition().y;
-		DrawUtils.drawPercentBar(batch, tmpRectangle, e.getHealth() / e.getMaxHealth(), Color.GREEN);
+		PlayerEntity myPlayer = e.getWorld().getMyPlayer();
+		Color color = Color.RED;
+		if (myPlayer != null && myPlayer.getTeam().equals(e.getTeam())) {
+			color = Color.GREEN;
+		}
+		DrawUtils.drawPercentBar(batch, tmpRectangle, e.getHealth() / e.getMaxHealth(), color);
 		return tmpRectangle.height;
 	}
 }

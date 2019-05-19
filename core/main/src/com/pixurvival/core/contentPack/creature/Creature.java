@@ -7,6 +7,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.item.ItemReward;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.ability.EffectAbility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,5 +37,5 @@ public class Creature extends IdentifiedElement {
 	private ItemReward itemReward;
 
 	@ElementReference
-	private AbilitySet abilitySet;
+	private AbilitySet<EffectAbility> abilitySet;
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PlayerDistanceCondition extends ChangeCondition {
+public class EnnemyDistanceCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +24,7 @@ public class PlayerDistanceCondition extends ChangeCondition {
 	@Override
 	public boolean test(CreatureEntity creature) {
 		BehaviorData data = creature.getBehaviorData();
-		double distance = data.getClosestDistanceSquaredToPlayer();
+		double distance = data.getClosestDistanceSquaredToEnnemy();
 		return test.test(distance, targetDistance * targetDistance);
 	}
 

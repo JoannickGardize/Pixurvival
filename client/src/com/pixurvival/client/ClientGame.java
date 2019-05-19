@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
+import com.pixurvival.core.World.Type;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -114,7 +115,8 @@ public class ClientGame {
 			e.printStackTrace();
 			return;
 		}
-		this.world = World.createLocalWorld(localGamePack);
+		// TODO Choix du gameMode
+		this.world = World.createLocalWorld(localGamePack, 0);
 		PlayerEntity playerEntity = new PlayerEntity();
 		// TODO
 		playerEntity.getPosition().set(0, 0);
@@ -161,17 +163,19 @@ public class ClientGame {
 		for (IClientGamePlugin plugin : plugins) {
 			plugin.update(this);
 		}
-		synchronized (playerActionRequests) {
-			playerActionRequests.forEach(r -> r.apply(getMyPlayer()));
-			playerActionRequests.clear();
-		}
 		clientListener.consumeReceivedObjects();
 		if (world != null) {
+			if (getMyPlayer() != null) {
+				synchronized (playerActionRequests) {
+					playerActionRequests.forEach(r -> r.apply(getMyPlayer()));
+					playerActionRequests.clear();
+				}
+			}
 			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
 				getMyPlayer().setInventory(myInventory);
 			}
 			world.update(deltaTimeMillis);
-			if (world.isClient()) {
+			if (world.getType() == Type.CLIENT) {
 				timeRequestTimer -= deltaTimeMillis;
 				if (timeRequestTimer <= 0) {
 					timeRequestTimer = timeRequestFrequencyMillis;

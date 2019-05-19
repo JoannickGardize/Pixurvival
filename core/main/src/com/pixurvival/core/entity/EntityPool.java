@@ -3,11 +3,10 @@ package com.pixurvival.core.entity;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
 
@@ -18,95 +17,79 @@ import com.pixurvival.core.World;
  * @author SharkHendirx
  *
  */
-public class EntityPool {
+public class EntityPool extends EntityCollection {
 	private World world;
-	private Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
 
 	public EntityPool(World world) {
 		this.world = world;
-		for (EntityGroup group : EntityGroup.values()) {
-			entities.put(group, new HashMap<>());
-		}
 	}
 
 	public void addListener(EntityPoolListener l) {
 		listeners.add(l);
 	}
 
+	@Override
 	public void add(Entity e) {
 		if (world.isServer()) {
 			e.setWorld(world);
 			e.setId(nextId++);
 		}
-		entities.get(e.getGroup()).put(e.getId(), e);
+		super.add(e);
 		e.initialize();
 		listeners.forEach(l -> l.entityAdded(e));
 	}
 
+	/**
+	 * For future entity persistence
+	 * 
+	 * @param collection
+	 */
+	@Deprecated
+	public void sneakyAddAll(EntityCollection collection) {
+		collection.foreach((group, map) -> {
+			Map<Long, Entity> groupMap = getMap(group);
+			for (Entry<Long, Entity> entry : map.entrySet()) {
+				groupMap.put(entry.getKey(), entry.getValue());
+				entry.getValue().initialize();
+			}
+		});
+	}
+
+	public void removeAll(EntityCollection collection) {
+		collection.foreach((group, map) -> {
+			Map<Long, Entity> groupMap = getMap(group);
+			for (Entry<Long, Entity> entry : map.entrySet()) {
+				groupMap.remove(entry.getKey());
+				listeners.forEach(l -> l.entityRemoved(entry.getValue()));
+			}
+		});
+	}
+
 	public void update() {
-		for (Map<Long, Entity> groupMap : entities.values()) {
+		for (Map<Long, Entity> groupMap : getEntities().values()) {
 			Collection<Entity> groupCollection = groupMap.values();
-			groupCollection.removeIf(e -> {
-				if (!e.isAlive()) {
-					e.onDeath();
-					listeners.forEach(l -> l.entityRemoved(e));
-					if (e.getChunk() != null) {
-						e.getChunk().getEntities().remove(e);
+			Iterator<Entity> it = groupCollection.iterator();
+			while (it.hasNext()) {
+				Entity entity = it.next();
+				if (entity.isAlive()) {
+					entity.update();
+				} else {
+					entity.onDeath();
+					if (entity.getChunk() != null) {
+						entity.getChunk().getEntities().remove(entity);
 					}
-					return true;
+					it.remove();
+					listeners.forEach(l -> l.entityRemoved(entity));
 				}
-				return false;
-			});
-			groupCollection.forEach(Entity::update);
+
+			}
 		}
-	}
-
-	public Entity get(EntityGroup group, long id) {
-		return entities.get(group).get(id);
-	}
-
-	public Collection<Entity> get(EntityGroup group) {
-		return entities.get(group).values();
-	}
-
-	public void foreach(Consumer<Entity> action) {
-		entities.values().forEach(m -> m.values().forEach(action));
 	}
 
 	public void applyUpdate(ByteBuffer byteBuffer) {
-		byte groupId;
-		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
-			EntityGroup group = EntityGroup.values()[groupId];
-			Map<Long, Entity> groupMap = entities.get(group);
-			short size = byteBuffer.getShort();
-			for (int i = 0; i < size; i++) {
-				long entityId = byteBuffer.getLong();
-				Entity e = groupMap.get(entityId);
-				if (e == null) {
-					e = group.getEntitySupplier().get();
-					e.setId(entityId);
-					e.setWorld(world);
-					e.applyUpdate(byteBuffer);
-					add(e);
-				} else {
-					e.applyUpdate(byteBuffer);
-				}
-			}
-		}
-		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
-			EntityGroup group = EntityGroup.values()[groupId];
-			Map<Long, Entity> groupMap = entities.get(group);
-			short size = byteBuffer.getShort();
-			for (int i = 0; i < size; i++) {
-				long entityId = byteBuffer.getLong();
-				Entity e = groupMap.get(entityId);
-				if (e != null) {
-					e.setAlive(false);
-				}
-			}
-		}
+		applyUpdate(byteBuffer, world);
 	}
 
 	public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
@@ -116,6 +99,6 @@ public class EntityPool {
 
 	public Entity readEntityReference(ByteBuffer byteBuffer) {
 		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
-		return entities.get(group).get(byteBuffer.getLong());
+		return getEntities().get(group).get(byteBuffer.getLong());
 	}
 }

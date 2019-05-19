@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.item;
+package com.pixurvival.contentPackEditor.component.abilitySet;
 
 import javax.swing.JPanel;
 
@@ -12,7 +12,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.item.Item;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
@@ -21,15 +20,15 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Effect> effectsEditor = new VerticalListEditor<>(EffectEntryWrapper::new, () -> null);
+	private ListEditor<Effect> effectsEditor;
 	private ElementChooserButton<Item> ammunitionChooser = new ElementChooserButton<>(IconService.getInstance()::get, false);
 
-	public EffectAbilityEditor() {
-		EventManager.getInstance().register(this);
+	public EffectAbilityEditor(boolean showAmmunitionChooser, boolean useScrollPane) {
 
 		// Construction
 
 		DoubleInput cooldownInput = new DoubleInput(Bounds.positive());
+		effectsEditor = new VerticalListEditor<>(EffectEntryWrapper::new, () -> null, VerticalListEditor.HORIZONTAL, useScrollPane);
 
 		// Binding
 
@@ -40,7 +39,12 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 		// Layouting
 
 		effectsEditor.setBorder(LayoutUtils.createGroupBorder("effectAbilityEditor.effects"));
-		JPanel headerPanel = LayoutUtils.createHorizontalLabelledBox("effectAbilityEditor.cooldown", cooldownInput, "effectAbilityEditor.ammunition", ammunitionChooser);
+		JPanel headerPanel;
+		if (showAmmunitionChooser) {
+			headerPanel = LayoutUtils.createHorizontalLabelledBox("effectAbilityEditor.cooldown", cooldownInput, "effectAbilityEditor.ammunition", ammunitionChooser);
+		} else {
+			headerPanel = LayoutUtils.labelled("effectAbilityEditor.cooldown", cooldownInput);
+		}
 		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 1, headerPanel, effectsEditor);
 
 	}

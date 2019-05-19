@@ -206,6 +206,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return searchResult;
 	}
 
+	/**
+	 * @param group
+	 * @param maxSquareDistance
+	 *            The maximum distance between this entity and any point of
+	 *            checked chunks.
+	 * @param action
+	 */
 	public void foreachEntities(EntityGroup group, double maxSquareDistance, Consumer<Entity> action) {
 		TiledMap map = world.getMap();
 		map.forEachChunk(position, maxSquareDistance, c -> c.getEntities().get(group).forEach(action::accept));

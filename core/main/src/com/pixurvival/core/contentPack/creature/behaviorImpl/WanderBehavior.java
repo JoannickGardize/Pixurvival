@@ -2,24 +2,32 @@ package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.WorldRandom;
 
 public class WanderBehavior extends Behavior {
 
-	public static final double MOVE_PROBABILITY = 0.5;
-	public static final double MEAN_TIME = 800;
+	public static final double MOVE_PROBABILITY = 0.3;
+	public static final double MEAN_TIME = 700;
 	public static final double DEVIATON_TIME = 500;
+	public static final double MIN_TIME = 200;
+	public static final double MAX_TIME = 1200;
+	private static final double MAX_ANCHOR_DISTANCE = 10;
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void step(CreatureEntity creature) {
 		WorldRandom random = creature.getWorld().getRandom();
-		if (random.nextDouble() < MOVE_PROBABILITY) {
-			creature.move(random.nextAngle());
+		if (creature.getPosition().distanceSquared(creature.getAnchorPosition()) >= MAX_ANCHOR_DISTANCE * MAX_ANCHOR_DISTANCE) {
+			creature.move(creature.getPosition().angleToward(creature.getAnchorPosition()));
 		} else {
-			creature.setForward(false);
+			if (random.nextDouble() < MOVE_PROBABILITY) {
+				creature.move(random.nextAngle());
+			} else {
+				creature.setForward(false);
+			}
 		}
-		creature.getBehaviorData().setNextUpdateDelayMillis((long) (MEAN_TIME + random.nextGaussian() * DEVIATON_TIME));
+		creature.getBehaviorData().setNextUpdateDelayMillis((long) (MathUtils.clamp(MEAN_TIME + random.nextGaussian() * DEVIATON_TIME, MIN_TIME, MAX_TIME)));
 	}
 }

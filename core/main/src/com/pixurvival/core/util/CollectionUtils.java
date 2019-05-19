@@ -24,4 +24,8 @@ public class CollectionUtils {
 		}
 		return true;
 	}
+
+	public static boolean isNullOrEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
+	}
 }

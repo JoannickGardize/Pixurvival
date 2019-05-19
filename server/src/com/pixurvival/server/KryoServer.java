@@ -6,7 +6,7 @@ import com.esotericsoftware.kryonet.Server;
 public class KryoServer extends Server {
 
 	public KryoServer() {
-		super(16384, 8192);
+		super(16384, 16384);
 	}
 
 	@Override

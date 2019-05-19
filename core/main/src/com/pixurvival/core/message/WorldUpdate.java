@@ -25,7 +25,7 @@ public class WorldUpdate implements Poolable {
 	private @Setter long updateId;
 	private @Setter long worldId;
 	private @Setter int entityUpdateLength;
-	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(4096);
+	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(16384);
 	private List<StructureUpdate> structureUpdates = new ArrayList<>();
 	private List<PlayerData> playerData = new ArrayList<>();
 	private List<CompressedChunk> compressedChunks = new ArrayList<>();

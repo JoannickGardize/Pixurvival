@@ -1,10 +1,12 @@
 package com.pixurvival.core.contentPack.gameMode.mapBounds;
 
+import java.io.Serializable;
+
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.Rectangle;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
-public interface MapBounds {
+public interface MapBounds extends Serializable {
 
 	/**
 	 * @return The Rectangle representing the bounds of the map, or null if

@@ -9,4 +9,5 @@ public class CreateWorld {
 
 	private long id;
 	private ContentPackIdentifier contentPackIdentifier;
+	private int gameModeId;
 }

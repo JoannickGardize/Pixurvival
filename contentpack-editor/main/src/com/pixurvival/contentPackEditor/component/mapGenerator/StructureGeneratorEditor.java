@@ -37,7 +37,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 	}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
 	private ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
-		ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>();
+		ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(IconService.getInstance()::get, true);
 		tileChooser.setBorder(LayoutUtils.createBorder());
 		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
 		if (currentPack != null) {
@@ -66,7 +66,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		JPanel wrapper = new JPanel();
 		wrapper.add(LayoutUtils.labelled("structureGeneratorEditor.density", densityInput));
 		heightmapConditionsEditor.setBorder(LayoutUtils.createGroupBorder("generic.conditions"));
-		bannedTilesEditor.setBorder(LayoutUtils.createGroupBorder("generic.bannedTiles"));
+		bannedTilesEditor.setBorder(LayoutUtils.createGroupBorder("structureGeneratorEditor.bannedTiles"));
 		topPanel.add(LayoutUtils.createVerticalBox(heightmapConditionsEditor, bannedTilesEditor), BorderLayout.CENTER);
 		topPanel.add(wrapper, BorderLayout.EAST);
 		add(topPanel, BorderLayout.CENTER);

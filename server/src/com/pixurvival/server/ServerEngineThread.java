@@ -29,6 +29,7 @@ public class ServerEngineThread extends EngineThread {
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
 		this.game = game;
+		// setWarnLoadTrigger(0.8);
 	}
 
 	public void add(GameSession worldSession) {

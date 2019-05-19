@@ -10,13 +10,13 @@ import lombok.Value;
 @EqualsAndHashCode(of = "id")
 public class Team {
 
-	private short id;
+	private int id;
 	private String name;
 
 	private Set<PlayerEntity> aliveMembers = new HashSet<>();
 	private Set<PlayerEntity> deadMembers = new HashSet<>();
 
-	public Team(short id, String name) {
+	public Team(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}

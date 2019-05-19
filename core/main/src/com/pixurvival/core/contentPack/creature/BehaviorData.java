@@ -2,8 +2,8 @@ package com.pixurvival.core.contentPack.creature;
 
 import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
@@ -28,8 +28,8 @@ public class BehaviorData {
 
 	private @Getter CreatureEntity creature;
 
-	private Entity closestPlayer;
-	private double closestDistanceSquaredToPlayer;
+	private Entity closestEnnemy;
+	private double closestDistanceSquaredToEnnemy;
 
 	/**
 	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur
@@ -51,14 +51,14 @@ public class BehaviorData {
 		return time.getTimeMillis() - beginTimeMillis;
 	}
 
-	public Entity getClosestPlayer() {
-		findClosestPlayer();
-		return closestPlayer;
+	public Entity getClosestEnnemy() {
+		findClosestEnnemy();
+		return closestEnnemy;
 	}
 
-	public double getClosestDistanceSquaredToPlayer() {
-		findClosestPlayer();
-		return closestDistanceSquaredToPlayer;
+	public double getClosestDistanceSquaredToEnnemy() {
+		findClosestEnnemy();
+		return closestDistanceSquaredToEnnemy;
 	}
 
 	public void setNextUpdateDelayMillis(long delayMillis) {
@@ -90,14 +90,14 @@ public class BehaviorData {
 	}
 
 	void beforeStep() {
-		closestPlayer = null;
+		closestEnnemy = null;
 	}
 
-	private void findClosestPlayer() {
-		if (closestPlayer == null) {
-			EntitySearchResult result = creature.findClosest(EntityGroup.PLAYER, TARGET_SEARCH_RADIUS);
-			closestPlayer = result.getEntity();
-			closestDistanceSquaredToPlayer = result.getDistanceSquared();
+	private void findClosestEnnemy() {
+		if (closestEnnemy == null) {
+			EntitySearchResult result = creature.findClosest(TargetType.ALL_ENEMIES, TARGET_SEARCH_RADIUS);
+			closestEnnemy = result.getEntity();
+			closestDistanceSquaredToEnnemy = result.getDistanceSquared();
 		}
 	}
 }

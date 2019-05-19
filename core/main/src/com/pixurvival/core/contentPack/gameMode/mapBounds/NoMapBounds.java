@@ -6,6 +6,8 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 
 public class NoMapBounds implements MapBounds {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public Rectangle getRectangle(World world) {
 		return null;

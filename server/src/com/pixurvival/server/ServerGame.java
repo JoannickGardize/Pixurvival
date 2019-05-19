@@ -79,7 +79,8 @@ public class ServerGame {
 	}
 
 	public void startTestGame() {
-		World world = World.createServerWorld(selectedContentPack);
+		// TODO choix du contentPack
+		World world = World.createServerWorld(selectedContentPack, 0);
 		GameSession session = new GameSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());

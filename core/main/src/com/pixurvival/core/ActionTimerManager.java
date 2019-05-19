@@ -1,6 +1,7 @@
 package com.pixurvival.core;
 
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -9,15 +10,15 @@ import lombok.RequiredArgsConstructor;
 public class ActionTimerManager {
 
 	private @NonNull World world;
-	private PriorityQueue<ActionTimer> actionTimerQueue = new PriorityQueue<>();
+	private Queue<ActionTimer> actionTimerQueue = new PriorityQueue<>();
 
 	public void addActionTimer(Action action, long timeMillis) {
 		actionTimerQueue.add(new ActionTimer(action, world.getTime().getTimeMillis() + timeMillis));
 	}
 
 	public void update() {
-		boolean actionConsumed = false;
-		do {
+		boolean actionConsumed = true;
+		while (actionConsumed) {
 			ActionTimer actionTimer = actionTimerQueue.peek();
 			if (actionTimer != null && world.getTime().getTimeMillis() >= actionTimer.getActionTimeMillis()) {
 				actionConsumed = true;
@@ -26,6 +27,6 @@ public class ActionTimerManager {
 			} else {
 				actionConsumed = false;
 			}
-		} while (actionConsumed);
+		}
 	}
 }

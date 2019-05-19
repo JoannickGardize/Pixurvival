@@ -7,8 +7,6 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,16 +31,9 @@ public class WeightedValueProducer<E extends Serializable> implements Serializab
 
 	private transient NavigableMap<Double, E> chooseMap;
 
-	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private double density;
-
 	public E next(Random random) {
-		if (random.nextDouble() < density) {
-			ensureChooseMapBuilt();
-			return chooseMap.ceilingEntry(random.nextDouble() * probabilityWeight).getValue();
-		} else {
-			return null;
-		}
+		ensureChooseMapBuilt();
+		return chooseMap.ceilingEntry(random.nextDouble() * probabilityWeight).getValue();
 	}
 
 	private void ensureChooseMapBuilt() {

@@ -3,6 +3,7 @@ package com.pixurvival.core.livingEntity.alteration;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.CollectionUtils;
 
@@ -28,7 +29,7 @@ public abstract class PersistentAlteration implements Alteration {
 	private StackPolicy stackPolicy = StackPolicy.IGNORE;
 
 	@Override
-	public void apply(Object source, LivingEntity entity) {
+	public void apply(SourceProvider source, LivingEntity entity) {
 		entity.applyPersistentAlteration(source, this);
 	}
 

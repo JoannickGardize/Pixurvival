@@ -26,14 +26,7 @@ public class OverlaysActor extends Actor implements EventListener {
 	public OverlaysActor(Viewport worldViewport) {
 		this.worldViewport = worldViewport;
 		entityOverlayDrawers.put(EntityGroup.PLAYER, new PlayerEntityOverlayDrawer());
-		// entityOverlayDrawers.put(EntityGroup.CREATURE, new
-		// LivingEntityOverlayDrawer<LivingEntity>());
-	}
-
-	@Override
-	public void act(float delta) {
-		// TODO Auto-generated method stub
-		super.act(delta);
+		entityOverlayDrawers.put(EntityGroup.CREATURE, new CreatureEntityOverlayDrawer());
 	}
 
 	@Override

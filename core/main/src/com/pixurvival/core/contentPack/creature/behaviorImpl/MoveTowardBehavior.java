@@ -20,13 +20,15 @@ public class MoveTowardBehavior extends Behavior {
 
 	@Override
 	protected void step(CreatureEntity creature) {
-		Entity player = creature.getBehaviorData().getClosestPlayer();
-		if (creature.getBehaviorData().getClosestDistanceSquaredToPlayer() > minDistance * minDistance) {
-			creature.moveToward(player);
+		Entity target = creature.getBehaviorData().getClosestEnnemy();
+		if (target != null && creature.getBehaviorData().getClosestDistanceSquaredToEnnemy() > minDistance * minDistance) {
+			creature.moveToward(target);
 			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
+			creature.getTargetPosition().set(target.getPosition());
 		} else {
 			creature.setForward(false);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 		}
+		creature.setTargetEntity(target);
 	}
 }

@@ -14,6 +14,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.CharacterUI;
+import com.pixurvival.gdxcore.ui.DebugInfosActors;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
@@ -34,6 +35,7 @@ public class WorldScreen implements Screen {
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private EntitiesActor entitiesActor;
+	private DebugInfosActors debugInfosActors;
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -61,12 +63,19 @@ public class WorldScreen implements Screen {
 		characterUI.initialize();
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
+		debugInfosActors = new DebugInfosActors();
+		debugInfosActors.setVisible(false);
+		hudStage.addActor(debugInfosActors);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 
 	}
 
 	public void switchShowCollisionBoxes() {
 		entitiesActor.setDebug(!entitiesActor.getDebug());
+	}
+
+	public void switchShowDebugInfos() {
+		debugInfosActors.setVisible(!debugInfosActors.isVisible());
 	}
 
 	@Override

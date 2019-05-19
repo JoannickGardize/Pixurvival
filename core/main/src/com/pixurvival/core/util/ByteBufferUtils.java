@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class ByteBufferUtils {
 
 	private static ThreadLocal<ByteBuffer> bufferLocal = ThreadLocal.withInitial(() -> {
-		ByteBuffer buffer = ByteBuffer.allocate(4096);
+		ByteBuffer buffer = ByteBuffer.allocate(8192);
 		buffer.mark();
 		return buffer;
 	});

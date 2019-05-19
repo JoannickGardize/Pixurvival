@@ -9,9 +9,6 @@ import java.util.function.Predicate;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.pixurvival.core.contentPack.WeightedValueProducer;
-import com.pixurvival.core.contentPack.map.StructureGenerator;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -39,11 +36,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(E value) {
-		this.value=value;
-		if (value instanceof StructureGenerator) {
-			((StructureGenerator) value).setStructureProducer(new WeightedValueProducer<>());
-		}
-		System.out.println(this.getClass().getSimpleName() + " : " + value);
+		this.value = value;
 		subValues.forEach(entry -> {
 			if (entry.getCondition().test(value)) {
 				entry.getComponent().setValue(entry.getGetter().apply(value));

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -63,6 +64,7 @@ public class EntitiesActor extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		objectsToDraw.clear();
+		// TODO utiliser le pool des chunks
 		PixurvivalGame.getWorld().getEntityPool().foreach(e -> objectsToDraw.add(e));
 		Vector3 camPos = getStage().getCamera().position;
 		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
@@ -78,22 +80,40 @@ public class EntitiesActor extends Actor {
 				if (chunk == null) {
 					continue;
 				}
-				for (MapStructure s : chunk.getStructures()) {
-					objectsToDraw.add(s);
-				}
+				chunk.forEachStructure(objectsToDraw::add);
 			}
 		}
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
+
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).topDraw(batch, e));
+
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void drawDebug(ShapeRenderer shapes) {
+		drawChunksBorders(shapes);
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawDebug(shapes, e));
+	}
+
+	private void drawChunksBorders(ShapeRenderer shapes) {
+		Vector3 camPos = getStage().getCamera().position;
+		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
+		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
+		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
+		int startX = MathUtils.floor((camPos.x - width / 2 - 3) / GameConstants.CHUNK_SIZE);
+		int startY = MathUtils.floor((camPos.y - height / 2 - 3) / GameConstants.CHUNK_SIZE);
+		int endX = MathUtils.ceil((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
+		int endY = MathUtils.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
+		shapes.setColor(Color.GRAY);
+		for (int x = startX; x <= endX; x++) {
+			for (int y = startY; y <= endY; y++) {
+				shapes.rect(x * GameConstants.CHUNK_SIZE, y * GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE);
+			}
+		}
 	}
 
 	private void manageGhostStructure() {

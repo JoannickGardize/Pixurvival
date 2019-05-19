@@ -120,7 +120,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	@Override
 	public void entityRemoved(Entity e) {
 		if (e.getChunk() != null) {
-			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new ArrayList()).add(e);
+			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new ArrayList<>()).add(e);
 		}
 	}
 

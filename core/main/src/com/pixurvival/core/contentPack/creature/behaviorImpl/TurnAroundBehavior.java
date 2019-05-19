@@ -23,22 +23,23 @@ public class TurnAroundBehavior extends Behavior {
 
 	@Override
 	protected void step(CreatureEntity creature) {
-		Entity player = creature.getBehaviorData().getClosestPlayer();
-		if (player == null) {
+		Entity target = creature.getBehaviorData().getClosestEnnemy();
+		if (target == null) {
 			creature.setForward(false);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
-			return;
-		}
-		double closestDistanceSquared = creature.getBehaviorData().getClosestDistanceSquaredToPlayer();
-		if (closestDistanceSquared > maxDistance * maxDistance) {
-			creature.moveToward(player);
-		} else if (closestDistanceSquared < minDistance * minDistance) {
-			creature.getAwayFrom(player);
 		} else {
-			double aroundAngle = creature.getWorld().getRandom().nextBoolean() ? Math.PI / 2 : -Math.PI / 2;
-			creature.move(creature.angleToward(player) + aroundAngle);
+			double closestDistanceSquared = creature.getBehaviorData().getClosestDistanceSquaredToEnnemy();
+			if (closestDistanceSquared > maxDistance * maxDistance) {
+				creature.moveToward(target);
+			} else if (closestDistanceSquared < minDistance * minDistance) {
+				creature.getAwayFrom(target);
+			} else {
+				double aroundAngle = creature.getWorld().getRandom().nextBoolean() ? Math.PI / 2 : -Math.PI / 2;
+				creature.move(creature.angleToward(target) + aroundAngle);
+			}
+			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
 		}
-		creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
+		creature.setTargetEntity(target);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class InstantDamageAlteration extends UniqueAlteration {
 	private float amount;
 
 	@Override
-	public void uniqueApply(Object source, LivingEntity entity) {
+	public void uniqueApply(SourceProvider source, LivingEntity entity) {
 		entity.takeDamage(amount);
 	}
 }

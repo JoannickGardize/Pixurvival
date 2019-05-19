@@ -17,6 +17,7 @@ public class KeyMapping {
 		bind(KeyAction.MOVE_RIGHT, Keys.RIGHT);
 		bind(KeyAction.MOVE_UP, Keys.UP);
 		bind(KeyAction.SWITCH_DEBUG_MODE, Keys.F1);
+		bind(KeyAction.SWITCH_DEBUG_INFOS, Keys.F2);
 	}
 
 	public int getKey(KeyAction action) {

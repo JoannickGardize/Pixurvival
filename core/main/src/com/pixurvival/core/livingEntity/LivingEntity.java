@@ -11,6 +11,8 @@ import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntitySearchResult;
+import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -24,7 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class LivingEntity extends Entity implements Damageable {
+public abstract class LivingEntity extends Entity implements Damageable, SourceProvider {
 
 	private float health;
 
@@ -47,7 +49,7 @@ public abstract class LivingEntity extends Entity implements Damageable {
 			}
 		});
 		health = getMaxHealth();
-		AbilitySet abilitySet = getAbilitySet();
+		AbilitySet<? extends Ability> abilitySet = getAbilitySet();
 		abilityData = new AbilityData[abilitySet.size()];
 		for (int i = 0; i < abilitySet.size(); i++) {
 			abilityData[i] = abilitySet.get(i).createAbilityData();
@@ -208,9 +210,9 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		}
 	}
 
-	public abstract AbilitySet getAbilitySet();
+	public abstract AbilitySet<? extends Ability> getAbilitySet();
 
-	public void foreach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
+	public void forEach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
 		BiPredicate<LivingEntity, LivingEntity> teamPredicate;
 		switch (targetType) {
 		case ALL_ALLIES:
@@ -233,5 +235,22 @@ public abstract class LivingEntity extends Entity implements Damageable {
 		};
 		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, actionFilter);
 		foreachEntities(EntityGroup.CREATURE, maxSquareDistance, actionFilter);
+	}
+
+	public EntitySearchResult findClosest(TargetType targetType, double maxSquareDistance) {
+		EntitySearchResult searchResult = new EntitySearchResult();
+		forEach(targetType, maxSquareDistance, e -> {
+			double distance = distanceSquared(e);
+			if (distance < searchResult.getDistanceSquared()) {
+				searchResult.setDistanceSquared(distance);
+				searchResult.setEntity(e);
+			}
+		});
+		return searchResult;
+	}
+
+	@Override
+	public Object getSource() {
+		return this;
 	}
 }

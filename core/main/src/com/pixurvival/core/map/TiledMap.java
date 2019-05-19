@@ -41,6 +41,8 @@ public class TiledMap {
 
 	private Map<ChunkPosition, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
 
+	private @Getter ChunkRepository repository = new ChunkRepository();
+
 	public TiledMap(World world) {
 		this.world = world;
 
@@ -53,6 +55,9 @@ public class TiledMap {
 			mapTilesById[i] = new EmptyTile(tilesById.get(i));
 		}
 		addListener(limits);
+		if (world.isServer()) {
+			addListener(new NaturalSpawnManager());
+		}
 	}
 
 	public void addListener(TiledMapListener listener) {
@@ -96,7 +101,7 @@ public class TiledMap {
 		toRemoveChunks.add(chunk);
 	}
 
-	public void addChunk(CompressedChunk compressed) {
+	private void addChunk(CompressedChunk compressed) {
 		Chunk chunk = compressed.buildChunk();
 		insertChunk(chunk);
 	}
@@ -111,6 +116,7 @@ public class TiledMap {
 		Chunk existingChunk = chunks.get(chunk.getPosition());
 		if (existingChunk == null || chunk.getUpdateTimestamp() > existingChunk.getUpdateTimestamp()) {
 			chunks.put(chunk.getPosition(), chunk);
+			// world.getEntityPool().sneakyAddAll(chunk.getEntities());
 			List<StructureUpdate> updates = pollStructureUpdates(chunk.getPosition());
 			if (updates != null) {
 				updates.forEach(u -> u.perform(chunk));
@@ -120,7 +126,9 @@ public class TiledMap {
 	}
 
 	private void unloadChunk(Chunk chunk) {
+		repository.save(chunk);
 		chunks.remove(chunk.getPosition());
+		world.getEntityPool().removeAll(chunk.getEntities());
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
 	}
 
@@ -151,34 +159,37 @@ public class TiledMap {
 			newChunks.forEach(this::insertChunk);
 			newChunks.clear();
 		}
-		world.getEntityPool().get(EntityGroup.PLAYER).forEach(p -> {
-			if (world.isServer() || world.getMyPlayerId() == p.getId()) {
-				if (p.getChunk() == null) {
-					ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(p.getPosition());
-					if (!chunks.containsKey(chunkPosition)) {
-						requestChunk(chunkPosition);
-					}
-				} else {
-					checkChunkToRequest(p);
-				}
+		if (world.isServer()) {
+			world.getEntityPool().get(EntityGroup.PLAYER).forEach(this::checkPlayerChunks);
+		} else {
+			PlayerEntity myPlayer = world.getMyPlayer();
+			if (myPlayer != null) {
+				checkPlayerChunks(myPlayer);
 			}
-		});
+		}
 	}
 
-	private void checkChunkToRequest(Entity e) {
-		ChunkPosition.forEachChunkPosition(e.getPosition(), chunkDistance, position -> {
-			if (!chunks.containsKey(position)) {
-				// Putting the position key is very important, it
-				// prevent the chunk to be
-				// requested every frame until it is generated.
-				requestChunk(position);
-			} else {
-				Chunk chunk = chunks.get(position);
-				if (chunk != null) {
-					chunk.check();
-				}
+	private void checkPlayerChunks(Entity e) {
+		if (e.getChunk() == null) {
+			ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(e.getPosition());
+			if (!chunks.containsKey(chunkPosition)) {
+				requestChunk(chunkPosition);
 			}
-		});
+		} else {
+			ChunkPosition.forEachChunkPosition(e.getPosition(), chunkDistance, position -> {
+				if (!chunks.containsKey(position)) {
+					// Putting the position key is very important, it
+					// prevent the chunk to be
+					// requested every frame until it is generated.
+					requestChunk(position);
+				} else {
+					Chunk chunk = chunks.get(position);
+					if (chunk != null) {
+						chunk.check();
+					}
+				}
+			});
+		}
 	}
 
 	private void requestChunk(ChunkPosition position) {
@@ -191,6 +202,17 @@ public class TiledMap {
 			Chunk chunk = chunks.get(position);
 			if (chunk != null) {
 				action.accept(chunk);
+			}
+		});
+	}
+
+	public void forEachEntities(EntityGroup group, Vector2 center, double radius, Consumer<Entity> action) {
+		forEachChunk(center, radius, chunk -> {
+			double radiusSquared = radius * radius;
+			for (Entity e : chunk.getEntities().get(group)) {
+				if (e.distanceSquared(center) <= radiusSquared) {
+					action.accept(e);
+				}
 			}
 		});
 	}

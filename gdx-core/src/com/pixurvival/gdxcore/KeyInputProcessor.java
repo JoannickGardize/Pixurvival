@@ -38,6 +38,11 @@ public class KeyInputProcessor extends InputAdapter {
 					((WorldScreen) screen).switchShowCollisionBoxes();
 				}
 				break;
+			case SWITCH_DEBUG_INFOS:
+				screen = PixurvivalGame.getInstance().getScreen();
+				if (screen instanceof WorldScreen) {
+					((WorldScreen) screen).switchShowDebugInfos();
+				}
 			default:
 				break;
 			}

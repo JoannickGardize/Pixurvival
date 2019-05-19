@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class EffectEntity extends Entity implements CheckListHolder {
+public class EffectEntity extends Entity implements CheckListHolder, SourceProvider {
 
 	private @Getter Effect definition;
 
@@ -62,7 +62,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 
 	private void processEffectTarget() {
 		for (EffectTarget effectTarget : definition.getTargets()) {
-			source.foreach(effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
+			source.forEach(effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
 					if (effectTarget.isDestroyWhenCollide()) {
@@ -117,7 +117,7 @@ public class EffectEntity extends Entity implements CheckListHolder {
 	@Override
 	public Collection<Object> getCheckList() {
 		if (checkList == null) {
-			checkList = new ArrayList<>();
+			checkList = new ArrayList<>(3);
 		}
 		return checkList;
 	}

@@ -75,6 +75,9 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 	}
 
 	private void build() {
+		if (itemCraft == null) {
+			return;
+		}
 		Inventory inv = PixurvivalGame.getClient().getMyInventory();
 		float maxWidth = 0;
 		lines.clear();

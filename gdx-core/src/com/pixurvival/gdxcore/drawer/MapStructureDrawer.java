@@ -1,5 +1,6 @@
 package com.pixurvival.gdxcore.drawer;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -49,6 +50,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	@Override
 	public void drawDebug(ShapeRenderer renderer, MapStructure e) {
+		renderer.setColor(Color.WHITE);
 		renderer.rect((float) (e.getX() - e.getHalfWidth()), (float) (e.getY() - e.getHalfHeight()), (float) (e.getHalfWidth() * 2), (float) (e.getHalfHeight() * 2));
 	}
 

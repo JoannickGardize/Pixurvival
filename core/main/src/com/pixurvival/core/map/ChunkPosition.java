@@ -32,8 +32,8 @@ public class ChunkPosition {
 	/**
 	 * Convert the world position into chunk coordinates. Return this instance
 	 * if this is the result of the conversion. The purpose of this method is
-	 * for performance, to avoid new allocations, in the context of entities
-	 * checking every ticks their chunk positions.
+	 * for performance, to avoid new allocations, for example in the context of
+	 * entities checking every ticks their chunk positions.
 	 * 
 	 * @param position
 	 *            the position to convert
