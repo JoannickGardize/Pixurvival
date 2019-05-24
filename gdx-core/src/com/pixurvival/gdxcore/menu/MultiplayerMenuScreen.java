@@ -57,8 +57,7 @@ public class MultiplayerMenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				connectionMessageWindow.showWaitingMessage();
-				new Thread(() -> PixurvivalGame.getClient().connectToServer(ipField.getText(),
-						Integer.valueOf(portField.getText()), nameField.getText())).start();
+				new Thread(() -> PixurvivalGame.getClient().connectToServer(ipField.getText(), Integer.valueOf(portField.getText()), nameField.getText())).start();
 			}
 		});
 
@@ -91,20 +90,14 @@ public class MultiplayerMenuScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -99,7 +99,10 @@ public class ChunkManager extends EngineThread {
 			});
 
 			synchronized (entry.map) {
-				tmpChunks.forEach(c -> entry.map.addChunk(c));
+				tmpChunks.forEach(c -> {
+					entry.map.addChunk(c);
+					entry.map.notifyChunkAvailable(c.getPosition());
+				});
 			}
 		});
 	}

@@ -25,6 +25,8 @@ public class Effect extends IdentifiedElement {
 	@Required
 	private OrientationType orientation;
 
+	private boolean loopAnimation;
+
 	private boolean solid;
 
 	@Bounds(min = 0)

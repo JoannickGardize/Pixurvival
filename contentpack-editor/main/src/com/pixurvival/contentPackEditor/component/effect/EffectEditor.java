@@ -30,6 +30,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
+		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
 		DoubleInput durationInput = new DoubleInput(Bounds.positive());
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
@@ -40,6 +41,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(spriteSheetChooser, Effect::getSpriteSheet, Effect::setSpriteSheet);
 		bind(orientationTypeChooser, Effect::getOrientation, Effect::setOrientation);
 		bind(solidCheckbox, Effect::isSolid, Effect::setSolid);
+		bind(loopAnimationCheckbox, Effect::isLoopAnimation, Effect::setLoopAnimation);
 		bind(durationInput, Effect::getDuration, Effect::setDuration);
 		bind(collisionRadiusInput, Effect::getCollisionRadius, Effect::setCollisionRadius);
 		bind(effectMovementEditor, Effect::getMovement, Effect::setMovement);
@@ -47,12 +49,14 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 		// Layouting
 
-		JPanel propertiesPanel = LayoutUtils.createHorizontalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "generic.solid",
-				solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
+		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
+				loopAnimationCheckbox);
+		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
+		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 		effectMovementEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.movement"));
 		effectTargetsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.targets"));
-		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, propertiesPanel, effectMovementEditor, effectTargetsEditor);
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor, effectTargetsEditor);
 	}
 
 	@EventListener

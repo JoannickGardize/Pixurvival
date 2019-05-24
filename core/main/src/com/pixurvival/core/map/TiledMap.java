@@ -5,10 +5,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -40,6 +43,8 @@ public class TiledMap {
 	private Map<ChunkPosition, Chunk> chunks = new HashMap<>();
 
 	private Map<ChunkPosition, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
+
+	private Map<ChunkPosition, ChunkPosition> waitingPositions = new ConcurrentHashMap<>();
 
 	private @Getter ChunkRepository repository = new ChunkRepository();
 
@@ -84,6 +89,12 @@ public class TiledMap {
 		return tileAt(MathUtils.floor(position.getX()), MathUtils.floor(position.getY()));
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 * @return The tile at the given position. If the chunk of the tile is not
+	 *         generated, returns the default tile of the {@link MapGenerator}.
+	 */
 	public MapTile tileAt(int x, int y) {
 		Chunk chunk = chunkAt(x, y);
 		if (chunk == null) {
@@ -137,6 +148,10 @@ public class TiledMap {
 		return chunks.get(position);
 	}
 
+	/**
+	 * @param position
+	 * @return The chunk at the given position, or null if still not generated.
+	 */
 	public Chunk chunkAt(ChunkPosition position) {
 		return chunks.get(position);
 	}
@@ -153,12 +168,7 @@ public class TiledMap {
 	}
 
 	public void update() {
-		synchronized (this) {
-			toRemoveChunks.forEach(this::unloadChunk);
-			toRemoveChunks.clear();
-			newChunks.forEach(this::insertChunk);
-			newChunks.clear();
-		}
+		flushChunks();
 		if (world.isServer()) {
 			world.getEntityPool().get(EntityGroup.PLAYER).forEach(this::checkPlayerChunks);
 		} else {
@@ -166,6 +176,15 @@ public class TiledMap {
 			if (myPlayer != null) {
 				checkPlayerChunks(myPlayer);
 			}
+		}
+	}
+
+	private void flushChunks() {
+		synchronized (this) {
+			toRemoveChunks.forEach(this::unloadChunk);
+			toRemoveChunks.clear();
+			newChunks.forEach(this::insertChunk);
+			newChunks.clear();
 		}
 	}
 
@@ -192,9 +211,52 @@ public class TiledMap {
 		}
 	}
 
-	private void requestChunk(ChunkPosition position) {
-		chunks.put(position, null);
-		ChunkManager.getInstance().requestChunk(this, position);
+	public void requestChunk(ChunkPosition position) {
+		if (!chunks.containsKey(position)) {
+			chunks.put(position, null);
+			ChunkManager.getInstance().requestChunk(this, position);
+		}
+	}
+
+	public void notifyChunkAvailable(ChunkPosition position) {
+		ChunkPosition positionLock = waitingPositions.remove(position);
+		if (positionLock != null) {
+			synchronized (positionLock) {
+				positionLock.notifyAll();
+			}
+		}
+	}
+
+	/**
+	 * Returns the chunk at the given position, waiting for it if necessary.
+	 * 
+	 * @param position
+	 *            The position of the requested chunk
+	 * @return The chunk at the given position
+	 */
+	public Chunk chunkAtStrict(ChunkPosition position) {
+		requestChunk(position);
+		flushChunks();
+		ChunkPosition positionLock = new ChunkPosition(position);
+		synchronized (positionLock) {
+			Chunk chunk = chunkAt(position);
+			if (chunk != null) {
+				return chunk;
+			}
+			waitingPositions.put(positionLock, positionLock);
+			while ((chunk = chunkAt(position)) == null) {
+				try {
+					Log.info("Waiting for chunk at " + position);
+					positionLock.wait(500);
+				} catch (InterruptedException e) {
+					Log.error("Error when waiting chunk", e);
+					Thread.currentThread().interrupt();
+					return null;
+				}
+				flushChunks();
+			}
+			return chunk;
+		}
 	}
 
 	public void forEachChunk(Vector2 center, double halfSquareLength, Consumer<Chunk> action) {

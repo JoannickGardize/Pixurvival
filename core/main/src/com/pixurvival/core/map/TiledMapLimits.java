@@ -79,25 +79,17 @@ public class TiledMapLimits implements TiledMapListener {
 
 	@Override
 	public void structureChanged(MapStructure mapStructure) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void structureAdded(MapStructure mapStructure) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void structureRemoved(MapStructure mapStructure) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
-		// TODO Auto-generated method stub
-
 	}
 }

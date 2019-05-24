@@ -21,8 +21,11 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
 		TextureAnimation textureAnimation = textureAnimationSet.get(ActionAnimation.NONE);
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
-		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
-		DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.NONE, index, drawPosition, e.getOrientation() * MathUtils.radDeg);
+		DrawData data = (DrawData) e.getCustomData();
+		if (data.isFirstLoop() || e.getDefinition().isLoopAnimation()) {
+			Vector2 drawPosition = data.getDrawPosition();
+			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.NONE, index, drawPosition, e.getOrientation() * MathUtils.radDeg);
+		}
 	}
 
 	@Override

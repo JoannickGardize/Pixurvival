@@ -27,24 +27,20 @@ public class TextureAnimationSet {
 	private @Getter float shadowWidth;
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
-	public TextureAnimationSet(ContentPack pack, SpriteSheet spriteSheet, PixelTextureBuilder transform)
-			throws ContentPackException {
+	public TextureAnimationSet(ContentPack pack, SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackException {
 		double truePixelWidth = 1.0 / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
 		shadowWidth = (float) ((double) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT);
 		width = (float) (shadowWidth + truePixelWidth * 2);
-		height = (float) ((float) ((double) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT)
-				+ truePixelWidth * 2);
-		yOffset = (float) -truePixelWidth;
+		height = (float) ((float) ((double) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT) + truePixelWidth * 2);
+		yOffset = (float) -truePixelWidth - (float) spriteSheet.getHeightOffset() / 8;
 
-		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()),
-				spriteSheet.getWidth(), spriteSheet.getHeight());
+		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()), spriteSheet.getWidth(), spriteSheet.getHeight());
 		TextureSheet textureSheet = new TextureSheet(sheetPixmap, transform);
 
 		AnimationTemplate template = spriteSheet.getAnimationTemplate();
 		for (Entry<ActionAnimation, Animation> entries : template.getAnimations().entrySet()) {
 			Animation animation = entries.getValue();
-			TextureAnimation textureAnimation = new TextureAnimation(textureSheet, animation,
-					animation.getFrameDuration(), spriteSheet.getEquipmentOffset());
+			TextureAnimation textureAnimation = new TextureAnimation(textureSheet, animation, animation.getFrameDuration(), spriteSheet.getEquipmentOffset());
 			map.put(animation.getAction(), textureAnimation);
 		}
 	}

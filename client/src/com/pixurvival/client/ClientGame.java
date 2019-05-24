@@ -21,6 +21,10 @@ import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.map.analytics.AreaSearchCriteria;
+import com.pixurvival.core.map.analytics.GameAreaConfiguration;
+import com.pixurvival.core.map.analytics.MapAnalytics;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.InitializeGame;
@@ -38,10 +42,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+// TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame {
 
 	private Client client = new Client(8192, 8192);
-	private ClientListener clientListener;
+	private NetworkMessageHander clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
@@ -56,7 +61,7 @@ public class ClientGame {
 	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
-		clientListener = new ClientListener(this);
+		clientListener = new NetworkMessageHander(this);
 		clientArgs.apply(client, clientListener);
 	}
 
@@ -118,8 +123,15 @@ public class ClientGame {
 		// TODO Choix du gameMode
 		this.world = World.createLocalWorld(localGamePack, 0);
 		PlayerEntity playerEntity = new PlayerEntity();
+
+		MapAnalytics mapAnalytics = new MapAnalytics(world.getRandom());
+		try {
+			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), new AreaSearchCriteria());
+			playerEntity.getPosition().set(config.getSpawnSpots()[0]);
+		} catch (MapAnalyticsException e) {
+			Log.error("MapAnalyticsException");
+		}
 		// TODO
-		playerEntity.getPosition().set(0, 0);
 		world.getEntityPool().add(playerEntity);
 
 		CreatureEntity creature = new CreatureEntity(localGamePack.getCreatures().get(0));

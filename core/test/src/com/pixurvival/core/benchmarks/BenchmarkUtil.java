@@ -9,6 +9,6 @@ public class BenchmarkUtil {
 		long beginTime = System.currentTimeMillis();
 		task.run();
 		long time = System.currentTimeMillis() - beginTime;
-		System.out.println(title + " : " + time);
+		System.out.println(title + " : " + time + " ms");
 	}
 }

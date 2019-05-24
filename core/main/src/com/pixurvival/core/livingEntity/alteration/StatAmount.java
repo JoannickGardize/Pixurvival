@@ -8,6 +8,11 @@ import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class StatAmount implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +26,7 @@ public class StatAmount implements Serializable {
 		for (StatMultiplier multiplier : statMultipliers) {
 			result += statSet.getValue(multiplier.getStatType()) * multiplier.getMultiplier();
 		}
-		return result;
+		return Math.max(result, 0);
 	}
 
 	public float getValue(SourceProvider sourceProvider) {

@@ -30,7 +30,7 @@ import lombok.SneakyThrows;
 public class ServerGame {
 
 	private KryoServer server = new KryoServer();
-	private ServerListener serverListener = new ServerListener(this);
+	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
 	// private @Getter ContentPacksContext contentPacksContext = new

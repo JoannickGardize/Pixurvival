@@ -6,20 +6,14 @@ public class ClientGameAdapter implements ClientGameListener {
 
 	@Override
 	public void loginResponse(LoginResponse response) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void initializeGame() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void error(Throwable e) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

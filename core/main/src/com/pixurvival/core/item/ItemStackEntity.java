@@ -2,6 +2,7 @@ package com.pixurvival.core.item;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
@@ -52,6 +53,15 @@ public class ItemStackEntity extends Entity {
 
 	public void spawn(double angle) {
 		spawn(INHIBITION_DISTANCE, angle);
+	}
+
+	public static void spawn(World world, ItemStack[] items, Vector2 position) {
+		for (ItemStack itemStack : items) {
+			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
+			itemStackEntity.getPosition().set(position.getX(), position.getY());
+			world.getEntityPool().add(itemStackEntity);
+			itemStackEntity.spawnRandom();
+		}
 	}
 
 	public void spawnRandom() {

@@ -75,6 +75,12 @@ public class Chunk {
 		return tileAtLocal(x - offsetX, y - offsetY);
 	}
 
+	public boolean containsTile(int x, int y) {
+		int localX = x - offsetX;
+		int localY = y - offsetY;
+		return localX >= 0 && localX < GameConstants.CHUNK_SIZE && localY >= 0 && localY < GameConstants.CHUNK_SIZE;
+	}
+
 	public void set(int x, int y, MapTile tile) {
 		tiles[y * GameConstants.CHUNK_SIZE + x] = tile;
 		fileSync = false;

@@ -68,6 +68,10 @@ public class Inventory {
 		return totalOf(itemStack.getItem()) >= itemStack.getQuantity();
 	}
 
+	public boolean contains(Item item, int quantity) {
+		return totalOf(item) >= quantity;
+	}
+
 	public int totalOf(Item item) {
 		if (quantities == null || quantities.length <= item.getId()) {
 			return 0;
@@ -77,15 +81,13 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is
-	 * not available nothing happen. The items are taken in priority from the
-	 * end.
+	 * Try to take the given collection of item with the given quantity. If the
+	 * quantity is not available nothing happen. The items are taken in priority
+	 * from the end.
 	 * 
-	 * @param item
-	 *            The item to take.
-	 * @param quantity
-	 *            the quantity of the item to take.
-	 * @return True if the itemStacks were available and has been removed, false
+	 * @param itemStacks
+	 *            The collection of ItemStack to remove
+	 * @return True if the ItemStacks were available and has been removed, false
 	 *         overwise.
 	 */
 	public boolean remove(Collection<ItemStack> itemStacks) {
@@ -99,12 +101,46 @@ public class Inventory {
 		return true;
 	}
 
+	/**
+	 * Try to take the given item with the given quantity. If the quantity is not
+	 * available nothing happen. The items are taken in priority from the end.
+	 * 
+	 * @param itemStack
+	 *            The ItemStack to remove
+	 * @return True if the ItemStack were available and has been removed, false
+	 *         overwise.
+	 */
+	public boolean remove(ItemStack itemStack) {
+		if (!contains(itemStack)) {
+			return false;
+		}
+		unsafeRemove(itemStack);
+		return true;
+	}
+
+	public boolean remove(Item item, int quantity) {
+		if (!contains(item, quantity)) {
+			return false;
+		}
+		unsafeRemove(item, quantity);
+		return true;
+	}
+
 	public boolean unsafeRemove(ItemStack itemStack) {
 		return unsafeRemove(itemStack.getItem(), itemStack.getQuantity());
 	}
 
-	public boolean unsafeRemove(Item item, int quantity) {
-		int remainingQuantity = quantity;
+	/**
+	 * Remove the maximum of quantity of the given item, in the limit of the
+	 * maximumQuantity parameter. Used after a call to
+	 * {@link Inventory#contains(ItemStack)}.
+	 * 
+	 * @param item
+	 * @param maximumQuantity
+	 * @return
+	 */
+	public boolean unsafeRemove(Item item, int maximumQuantity) {
+		int remainingQuantity = maximumQuantity;
 		for (int i = slots.length - 1; i >= 0; i--) {
 			ItemStack slot = slots[i];
 			if (slot != null && slot.getItem() == item) {
@@ -125,8 +161,8 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to add the maximum quantity of the given ItemStack to this inventory,
-	 * it will be stacked with similar items if possible. It can be spited into
+	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
+	 * will be stacked with similar items if possible. It can be splited into
 	 * different slots if necessary.
 	 * 
 	 * @param itemStack

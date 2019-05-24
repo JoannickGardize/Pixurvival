@@ -36,6 +36,7 @@ public class DrawUtils {
 		timer += Gdx.graphics.getRawDeltaTime();
 		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
 			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
+			data.setFirstLoop(false);
 		}
 		data.setTimer(timer);
 		return (int) (timer / textureAnimation.getFrameDuration());

@@ -32,4 +32,6 @@ public class SpriteSheet extends IdentifiedElement {
 	@ElementReference
 	private EquipmentOffset equipmentOffset;
 
+	private double heightOffset;
+
 }

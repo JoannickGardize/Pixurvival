@@ -43,6 +43,10 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
+		// MapAnalyticsDebugActor mapAnalyticsDebugActor = new
+		// MapAnalyticsDebugActor();
+		// mapAnalyticsDebugActor.setDebug(true);
+		// worldStage.addActor(mapAnalyticsDebugActor);
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
@@ -126,26 +130,18 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void updateMouseTarget() {

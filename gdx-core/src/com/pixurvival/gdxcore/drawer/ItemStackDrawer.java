@@ -15,8 +15,6 @@ public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, ItemStackEntity e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -46,8 +44,6 @@ public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
 
 	@Override
 	public void topDraw(Batch batch, ItemStackEntity e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void draw(Batch batch, ContentPackTextures contentPackTextures, Texture texture, TextureMetrics metrics, float x, float y) {

@@ -1,5 +1,7 @@
 package com.pixurvival.core.map;
 
+import java.util.function.Consumer;
+
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
@@ -36,5 +38,13 @@ public class ChunkGroupRectangle {
 			return true;
 		}
 		return false;
+	}
+
+	public void forEachChunkPosition(Consumer<ChunkPosition> action) {
+		for (int x = xStart; x <= xEnd; x++) {
+			for (int y = yStart; y <= yEnd; y++) {
+				action.accept(new ChunkPosition(x, y));
+			}
+		}
 	}
 }

@@ -12,11 +12,11 @@ public class InstantHealAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
-	private float amount;
+	private StatAmount amount = new StatAmount();
 
 	@Override
 	public void uniqueApply(SourceProvider source, LivingEntity entity) {
-		entity.takeHeal(amount);
+		entity.takeHeal(amount.getValue(source));
 	}
 
 }

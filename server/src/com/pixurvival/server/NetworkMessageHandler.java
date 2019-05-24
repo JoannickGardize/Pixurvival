@@ -1,7 +1,7 @@
 package com.pixurvival.server;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -27,12 +27,12 @@ import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UpdateTargetPositionRequest;
 
-class ServerListener extends Listener {
+class NetworkMessageHandler extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
-	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new HashMap<>();
+	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(14);
 
-	public ServerListener(ServerGame game) {
+	public NetworkMessageHandler(ServerGame game) {
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {

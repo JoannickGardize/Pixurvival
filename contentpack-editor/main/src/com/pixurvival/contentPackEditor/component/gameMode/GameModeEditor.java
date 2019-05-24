@@ -1,7 +1,15 @@
 package com.pixurvival.contentPackEditor.component.gameMode;
 
+import java.awt.Container;
+
+import javax.swing.JPanel;
+
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
+import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -18,14 +26,30 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 	public GameModeEditor() {
 
+		IntegerIntervalEditor teamNumberInterval = new IntegerIntervalEditor("gameMode.teamNumber");
+		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
+		DoubleInput spawnSquareSizeInput = new DoubleInput(Bounds.positive());
+		BooleanCheckBox mapLimitEnabledInput = new BooleanCheckBox();
+		DoubleInput mapLimitSizeInput = new DoubleInput(Bounds.positive());
+
 		// Binding
 
+		bind(teamNumberInterval, GameMode::getTeamNumberInterval, GameMode::setTeamNumberInterval);
+		bind(teamSizeInterval, GameMode::getTeamSizeInterval, GameMode::setTeamSizeInterval);
 		bind(ecosystemChooser, GameMode::getEcosystem, GameMode::setEcosystem);
 		bind(mapGeneratorChooser, GameMode::getMapGenerator, GameMode::setMapGenerator);
+		bind(spawnSquareSizeInput, GameMode::getSpawnSquareSize, GameMode::setSpawnSquareSize);
+		bind(mapLimitEnabledInput, GameMode::isMapLimitEnabled, GameMode::setMapLimitEnabled);
+		bind(mapLimitSizeInput, GameMode::getMapLimitSize, GameMode::setMapLimitSize);
 
 		// Layouting
 
-		add(LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapGenerator", mapGeneratorChooser));
+		Container teamPanel = LayoutUtils.sideBySide(teamNumberInterval, teamSizeInterval);
+		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapGenerator", mapGeneratorChooser);
+		JPanel mapConfigPanel = LayoutUtils.createHorizontalLabelledBox("gameMode.spawnSquareSize", spawnSquareSizeInput, "gameMode.mapLimitEnabled", mapLimitEnabledInput, "gameMode.mapLimitSize",
+				mapLimitSizeInput);
+
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 3, teamPanel, elementLinksPanel, mapConfigPanel, new JPanel());
 	}
 
 	@EventListener

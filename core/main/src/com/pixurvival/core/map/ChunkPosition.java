@@ -16,8 +16,17 @@ public class ChunkPosition {
 	private int x;
 	private int y;
 
+	public ChunkPosition(ChunkPosition other) {
+		x = other.x;
+		y = other.y;
+	}
+
 	public static ChunkPosition fromWorldPosition(Vector2 position) {
 		return new ChunkPosition(MathUtils.floor(position.getX() / GameConstants.CHUNK_SIZE), MathUtils.floor(position.getY() / GameConstants.CHUNK_SIZE));
+	}
+
+	public static ChunkPosition fromWorldPosition(int x, int y) {
+		return new ChunkPosition(MathUtils.floor((double) x / GameConstants.CHUNK_SIZE), MathUtils.floor((double) y / GameConstants.CHUNK_SIZE));
 	}
 
 	public boolean insideSquare(Vector2 center, double halfSquareLength) {
@@ -61,19 +70,6 @@ public class ChunkPosition {
 	@Override
 	public int hashCode() {
 		return x << 16 ^ y;
-	}
-
-	public static void forEachChunkPosition(ChunkGroupRectangle rectangle, Consumer<ChunkPosition> action) {
-		int x = rectangle.getXStart();
-		int yStart = rectangle.getYStart();
-		int xEnd = rectangle.getXEnd();
-		int yEnd = rectangle.getYEnd();
-		for (; x <= xEnd; x++) {
-			for (int y = yStart; y <= yEnd; y++) {
-				ChunkPosition position = new ChunkPosition(x, y);
-				action.accept(position);
-			}
-		}
 	}
 
 	public static void forEachChunkPosition(Vector2 center, double halfSquareLength, Consumer<ChunkPosition> action) {

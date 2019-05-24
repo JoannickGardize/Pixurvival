@@ -20,7 +20,7 @@ public class ChunkGroupChangeHelper {
 		Set<ChunkPosition> currentSet = chunkPositions.getCurrentValue();
 		Set<ChunkPosition> previousSet = chunkPositions.getPreviousValue();
 		currentSet.clear();
-		ChunkPosition.forEachChunkPosition(rectangle, position -> {
+		rectangle.forEachChunkPosition(position -> {
 			currentSet.add(position);
 			if (!previousSet.remove(position)) {
 				newPositionAction.accept(position);

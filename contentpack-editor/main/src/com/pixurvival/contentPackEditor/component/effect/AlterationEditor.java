@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
@@ -25,14 +23,14 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		List<ClassEntry> entries = new ArrayList<>();
 
 		// InstantDamageAlteration
-		FloatInput damageAmountInput = new FloatInput(Bounds.positive());
-		bind(damageAmountInput, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
-		entries.add(new ClassEntry(InstantDamageAlteration.class, LayoutUtils.labelled("alterationEditor.amount", damageAmountInput)));
+		StatAmountEditor damageAmountEditor = new StatAmountEditor();
+		bind(damageAmountEditor, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
+		entries.add(new ClassEntry(InstantDamageAlteration.class, LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor)));
 
 		// InstantHealAlteration
-		FloatInput healAmountInput = new FloatInput(Bounds.positive());
-		bind(healAmountInput, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
-		entries.add(new ClassEntry(InstantHealAlteration.class, LayoutUtils.labelled("alterationEditor.amount", healAmountInput)));
+		StatAmountEditor healAmountEditor = new StatAmountEditor();
+		bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
+		entries.add(new ClassEntry(InstantHealAlteration.class, LayoutUtils.labelled("alterationEditor.amount", healAmountEditor)));
 
 		return entries;
 	}

@@ -26,18 +26,14 @@ public class FixedTermStructure extends MapStructure {
 
 	@Override
 	public void writeData(ByteBuffer buffer) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void applyData(ByteBuffer buffer) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public StructureUpdate getUpdate() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

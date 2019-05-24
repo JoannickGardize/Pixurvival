@@ -1,7 +1,7 @@
 package com.pixurvival.client;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -19,13 +19,13 @@ import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldUpdate;
 
-class ClientListener extends Listener {
+class NetworkMessageHander extends Listener {
 
-	private Map<Class<?>, Consumer<?>> messageActions = new HashMap<>();
+	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>(8);
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
-	public ClientListener(ClientGame game) {
+	public NetworkMessageHander(ClientGame game) {
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
 		messageActions.put(InitializeGame.class, s -> game.initializeNetworkGame((InitializeGame) s));
 		messageActions.put(CreateWorld.class, s -> game.initializeNetworkWorld((CreateWorld) s));
@@ -46,7 +46,6 @@ class ClientListener extends Listener {
 
 	@Override
 	public void disconnected(Connection connection) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

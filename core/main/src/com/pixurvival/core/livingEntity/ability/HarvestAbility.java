@@ -38,12 +38,7 @@ public class HarvestAbility extends WorkAbility {
 				return;
 			}
 			ItemStack[] items = structure.harvest(world.getRandom());
-			for (ItemStack itemStack : items) {
-				ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-				itemStackEntity.getPosition().set(structure.getX(), structure.getY());
-				world.getEntityPool().add(itemStackEntity);
-				itemStackEntity.spawnRandom();
-			}
+			ItemStackEntity.spawn(world, items, structure.getPosition());
 		}
 	}
 }

@@ -7,6 +7,8 @@ import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
@@ -59,6 +61,14 @@ public class CreatureEntity extends LivingEntity {
 			}
 		}
 		super.update();
+	}
+
+	@Override
+	protected void onDeath() {
+		if (getWorld().isServer() && definition.getItemReward() != null) {
+			ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());
+			ItemStackEntity.spawn(getWorld(), items, getPosition());
+		}
 	}
 
 	public void move(double direction) {

@@ -166,8 +166,6 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void loginResponse(LoginResponse response) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -197,7 +195,5 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void error(Throwable e) {
-		// TODO Auto-generated method stub
-
 	}
 }
