@@ -72,6 +72,7 @@ project(":server") {
     dependencies {
     	compile project(":core")
     	compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	testCompile 'junit:junit:4.12'
     }
 }
 

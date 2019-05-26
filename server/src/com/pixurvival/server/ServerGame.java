@@ -3,25 +3,23 @@ package com.pixurvival.server;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.Team;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.message.CreateWorld;
-import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
-import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.util.CommonMainArgs;
 
 import lombok.Getter;
@@ -37,6 +35,7 @@ public class ServerGame {
 	// ContentPacksContext("contentPacks");
 	private @Getter ContentPack selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
+	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 
 	@SneakyThrows
 	public ServerGame(CommonMainArgs serverArgs) {
@@ -47,11 +46,19 @@ public class ServerGame {
 		// TODO selection dynamique des packs
 		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("1.0"));
 
-		try {
-			setSelectedContentPack(new ContentPackLoader(new File("contentPacks")).load(id));
-		} catch (ContentPackException e) {
-			e.printStackTrace();
-		}
+		setSelectedContentPack(new ContentPackLoader(new File("contentPacks")).load(id));
+	}
+
+	public void addPlayerConnection(PlayerConnection playerConnection) {
+		connectionsByName.put(playerConnection.toString(), playerConnection);
+	}
+
+	public void removePlayerConnection(String name) {
+		connectionsByName.remove(name);
+	}
+
+	public PlayerConnection getPlayerConnection(String name) {
+		return connectionsByName.get(name);
 	}
 
 	public void setSelectedContentPack(ContentPack contentPack) {
@@ -78,41 +85,41 @@ public class ServerGame {
 		World.getWorlds().forEach(World::unload);
 	}
 
-	public void startTestGame() {
+	public void startGame(int gameModeId) {
 		// TODO choix du contentPack
-		World world = World.createServerWorld(selectedContentPack, 0);
+		World world = World.createServerWorld(selectedContentPack, gameModeId);
 		GameSession session = new GameSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getIdentifier()));
-		List<PlayerData> playerDataList = new ArrayList<>();
-		foreachPlayers(playerConnection -> playerConnection.sendTCP(createWorld));
+		createWorld.setGameModeId(gameModeId);
 		foreachPlayers(playerConnection -> {
-			PlayerEntity playerEntity = new PlayerEntity();
-			playerEntity.setName(playerConnection.toString());
-			Random random = new Random();
-			world.getEntityPool().add(playerEntity);
-			playerConnection.setPlayerEntity(playerEntity);
-			playerEntity.getInventory().addListener(playerConnection);
-			playerEntity.getEquipment().addListener(playerConnection);
-			playerDataList.add(playerEntity.getData());
-			session.addPlayer(playerConnection);
-			for (int i = 0; i < 20; i++) {
-				playerEntity.getInventory().setSlot(i, new ItemStack(selectedContentPack.getItems().get(random.nextInt(selectedContentPack.getItems().size())), random.nextInt(10) + 1));
+			Team team = world.getTeamSet().get(playerConnection.getRequestedTeamName());
+			if (team == null) {
+				team = world.getTeamSet().createTeam(playerConnection.getRequestedTeamName());
 			}
 		});
+		createWorld.setTeamNames(world.getTeamSet().getNames());
+		foreachPlayers(playerConnection -> {
+			PlayerEntity playerEntity = new PlayerEntity();
+			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));
+			playerEntity.setName(playerConnection.toString());
+			playerEntity.getInventory().addListener(playerConnection);
+			playerEntity.getEquipment().addListener(playerConnection);
+			world.getEntityPool().add(playerEntity);
+			playerConnection.setPlayerEntity(playerEntity);
+			createWorld.setMyPlayerId(playerEntity.getId());
+			createWorld.setInventory(playerEntity.getInventory());
+			playerConnection.sendTCP(createWorld);
+			session.addPlayer(playerConnection);
+		});
+		world.initializeGame();
 
-		// TODO Retirer
-		CreatureEntity creatureEntity = new CreatureEntity(selectedContentPack.getCreatures().get(0));
-		world.getEntityPool().add(creatureEntity);
-
-		PlayerData[] playerData = playerDataList.toArray(new PlayerData[playerDataList.size()]);
 		foreachPlayers(playerConnection -> {
 			boolean messageSent = false;
 			while (!messageSent) {
 				if (playerConnection.isWorldReady()) {
 					messageSent = true;
-					playerConnection.sendTCP(new InitializeGame(playerConnection.getPlayerEntity().getId(), playerConnection.getPlayerEntity().getInventory(), playerData));
 				} else {
 					try {
 						Thread.sleep(500);
@@ -122,6 +129,7 @@ public class ServerGame {
 				}
 			}
 		});
+		foreachPlayers(playerConnection -> playerConnection.sendTCP(new StartGame()));
 		engineThread.add(session);
 	}
 

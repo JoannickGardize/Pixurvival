@@ -13,4 +13,6 @@ public class PlayerData {
 	private float agility;
 	private float intelligence;
 	private Equipment equipment;
+
+	// TODO Custom Serializer for performance
 }

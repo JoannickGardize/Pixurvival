@@ -31,8 +31,10 @@ class NetworkMessageHandler extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(14);
+	private ServerGame game;
 
 	public NetworkMessageHandler(ServerGame game) {
+		this.game = game;
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {
@@ -40,6 +42,7 @@ class NetworkMessageHandler extends Listener {
 			}
 			connection.setLogged(true);
 			connection.setName(((LoginRequest) m.getObject()).getPlayerName());
+			game.addPlayerConnection(connection);
 			game.notify(l -> l.playerLoggedIn(connection));
 		});
 		messageActions.put(PlayerMovementRequest.class, this::handlePlayerActionRequest);
@@ -81,7 +84,7 @@ class NetworkMessageHandler extends Listener {
 
 	@Override
 	public void disconnected(Connection connection) {
-
+		game.removePlayerConnection(connection.toString());
 	}
 
 	@Override

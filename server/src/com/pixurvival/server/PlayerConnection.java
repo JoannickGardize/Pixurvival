@@ -23,6 +23,7 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 	private boolean worldReady = false;
 	private boolean inventoryChanged = true;
 	private boolean playerDataChanged = true;
+	private String requestedTeamName = "Default";
 
 	@Override
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
@@ -36,7 +37,7 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 
 	@Override
 	public void statChanged(StatValue statValue) {
-
+		playerDataChanged = true;
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public abstract class EngineThread extends Thread {
 		double timeToConsume = 0;
 		long startTime = System.currentTimeMillis();
 		long lastUpdate = startTime;
-		long now = startTime;
+		long now;
 		while (running) {
 			now = System.currentTimeMillis();
 			timeToConsume += now - lastUpdate;
@@ -58,6 +58,7 @@ public abstract class EngineThread extends Thread {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 						running = false;
+						Thread.currentThread().interrupt();
 					}
 				}
 			}

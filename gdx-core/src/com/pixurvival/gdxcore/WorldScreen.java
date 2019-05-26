@@ -14,6 +14,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.CharacterUI;
+import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.DebugInfosActors;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
@@ -65,13 +66,13 @@ public class WorldScreen implements Screen {
 		CharacterUI characterUI = new CharacterUI();
 		hudStage.addActor(characterUI);
 		characterUI.initialize();
+		hudStage.addActor(new ChatUI());
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		debugInfosActors = new DebugInfosActors();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
-
 	}
 
 	public void switchShowCollisionBoxes() {

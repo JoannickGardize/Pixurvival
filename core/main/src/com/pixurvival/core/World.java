@@ -1,13 +1,12 @@
 package com.pixurvival.core;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
@@ -15,13 +14,20 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.Team;
 import com.pixurvival.core.livingEntity.TeamSet;
 import com.pixurvival.core.map.ChunkManager;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.analytics.AreaSearchCriteria;
+import com.pixurvival.core.map.analytics.CardinalDirection;
+import com.pixurvival.core.map.analytics.GameAreaConfiguration;
+import com.pixurvival.core.map.analytics.MapAnalytics;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
-import com.pixurvival.core.message.PlayerData;
-import com.pixurvival.core.util.FileUtils;
+import com.pixurvival.core.util.PluginHolder;
+import com.pixurvival.core.util.Rectangle;
+import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
 import lombok.AllArgsConstructor;
@@ -30,8 +36,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@EqualsAndHashCode(of = "id")
-public class World {
+@EqualsAndHashCode(of = "id", callSuper = false)
+public class World extends PluginHolder<World> {
 
 	@Getter
 	@AllArgsConstructor
@@ -59,13 +65,15 @@ public class World {
 	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
 	private File saveDirectory;
-	private List<PlayerData> playerDataList = new ArrayList<>();
-	private SyncWorldUpdateManager syncWorldUpdateManager = new SyncWorldUpdateManager(this);
+
 	private @Setter long myPlayerId = -1;
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
+		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
+			throw new IllegalArgumentException("No game mode with id " + gameModeId);
+		}
 		this.id = id;
 		this.type = type;
 		this.contentPack = contentPack;
@@ -74,9 +82,11 @@ public class World {
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
 		uid = UUID.randomUUID();
-		saveDirectory = new File(GlobalSettings.getSaveDirectory(), uid.toString());
-		FileUtils.delete(saveDirectory);
-		saveDirectory.mkdirs();
+		// TODO make the world persistence great again
+		// saveDirectory = new File(GlobalSettings.getSaveDirectory(),
+		// uid.toString());
+		// FileUtils.delete(saveDirectory);
+		// saveDirectory.mkdirs();
 	}
 
 	public static World getWorld(long id) {
@@ -87,6 +97,7 @@ public class World {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
+		world.addPlugin(new WorldUpdateManager());
 		worlds.put(world.getId(), world);
 		return world;
 	}
@@ -115,25 +126,8 @@ public class World {
 		return type.isServer();
 	}
 
-	public void addPlayerData(Collection<PlayerData> playerData) {
-		playerDataList.addAll(playerData);
-	}
-
 	public synchronized void update(double deltaTimeMillis) {
-		if (!type.isServer()) {
-			syncWorldUpdateManager.update();
-			if (!playerDataList.isEmpty()) {
-				for (int i = 0; i < playerDataList.size(); i++) {
-					PlayerData playerData = playerDataList.get(i);
-					PlayerEntity e = (PlayerEntity) entityPool.get(EntityGroup.PLAYER, playerData.getId());
-					if (e != null) {
-						e.applyData(playerData);
-						playerDataList.remove(i);
-						i--;
-					}
-				}
-			}
-		}
+		updatePlugins(this);
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();
 		entityPool.update();
@@ -143,11 +137,47 @@ public class World {
 	public void unload() {
 		synchronized (map) {
 			ChunkManager.getInstance().stopManaging(map);
-			FileUtils.delete(saveDirectory);
+			// FileUtils.delete(saveDirectory);
 		}
 	}
 
 	public PlayerEntity getMyPlayer() {
 		return (PlayerEntity) entityPool.get(EntityGroup.PLAYER, myPlayerId);
+	}
+
+	/**
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
+	 */
+	public void initializeGame() {
+		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
+		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.size());
+		areaSearchCriteria.setSquareSize((int) gameMode.getSpawnSquareSize());
+		MapAnalytics mapAnalytics = new MapAnalytics(random);
+		try {
+			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(map, areaSearchCriteria);
+			for (int i = 0; i < teamSet.size(); i++) {
+				Team team = teamSet.get(i);
+				Vector2 spawnPosition = config.getSpawnSpots()[i];
+				CardinalDirection currentDirection = CardinalDirection.EAST;
+				for (PlayerEntity player : team) {
+					player.getPosition().set(spawnPosition);
+					for (int j = 0; j < 4; j++) {
+						if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
+							currentDirection = currentDirection.getNext();
+						} else {
+							spawnPosition.addX(currentDirection.getNormalX());
+							spawnPosition.addY(currentDirection.getNormalY());
+						}
+					}
+				}
+			}
+			if (gameMode.isMapLimitEnabled()) {
+				Vector2 center = config.getArea().center();
+				addPlugin(new MapLimitsManager(new Rectangle(center, gameMode.getMapLimitSize()), gameMode.getMapLimitDamagePerSecond()));
+			}
+		} catch (MapAnalyticsException e) {
+			Log.error("MapAnalyticsException");
+		}
 	}
 }

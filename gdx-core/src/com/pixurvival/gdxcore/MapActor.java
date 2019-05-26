@@ -21,7 +21,7 @@ public class MapActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		animationCounter += Gdx.graphics.getRawDeltaTime() * 5;
+		animationCounter += Gdx.graphics.getDeltaTime() * 5;
 		if (animationCounter >= 1) {
 			animationCounter -= 1;
 			animationNumber++;

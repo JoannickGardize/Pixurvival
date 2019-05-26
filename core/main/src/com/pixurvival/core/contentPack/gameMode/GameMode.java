@@ -42,4 +42,6 @@ public class GameMode extends IdentifiedElement {
 
 	private double mapLimitSize = 500;
 
+	private float mapLimitDamagePerSecond = 5;
+
 }

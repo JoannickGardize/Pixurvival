@@ -25,7 +25,7 @@ public class HarvestAbility extends WorkAbility {
 			return null;
 		} else {
 			double angle = entity.angleToward(structure);
-			return ActionAnimation.getMoveFromDirection(Direction.closestCardinal(angle));
+			return ActionAnimation.getMoveFromDirection(Direction.closestCardinalDirection(angle));
 		}
 	}
 

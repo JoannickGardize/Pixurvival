@@ -5,36 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Getter;
-
 public class BooleanExtensibleGrid {
-
-	@Getter
-	private enum Direction {
-		NORTH(0, 1),
-		EAST(1, 0),
-		SOUTH(0, -1),
-		WEST(-1, 0);
-		static {
-			for (Direction value : values()) {
-				value.next = values()[Math.floorMod(value.ordinal() + 1, 4)];
-				value.previous = values()[Math.floorMod(value.ordinal() - 1, 4)];
-				value.opposite = values()[Math.floorMod(value.ordinal() + 2, 4)];
-			}
-		}
-
-		private int normalX;
-		private int normalY;
-		private Direction next;
-		private Direction previous;
-		private Direction opposite;
-
-		private Direction(int normalX, int normalY) {
-			this.normalX = normalX;
-			this.normalY = normalY;
-		}
-
-	}
 
 	private static Position tmpPosition = new Position();
 
@@ -120,9 +91,9 @@ public class BooleanExtensibleGrid {
 		List<Position> externalPositions = new ArrayList<>();
 		externalPositions.add(startPosition);
 		Position currentPosition = startPosition.copy();
-		Direction currentDirection = Direction.NORTH;
+		CardinalDirection currentDirection = CardinalDirection.NORTH;
 		do {
-			Direction nextDirection = currentDirection.getPrevious();
+			CardinalDirection nextDirection = currentDirection.getPrevious();
 			while (!get(currentPosition.getX() + nextDirection.getNormalX(), currentPosition.getY() + nextDirection.getNormalY())) {
 				nextDirection = nextDirection.getNext();
 			}

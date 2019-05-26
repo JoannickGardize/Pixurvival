@@ -184,7 +184,7 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 		buffer.putDouble(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putFloat(getHealth());
-
+		buffer.putShort((short) getTeam().getId());
 		if (getCurrentAbility() == null) {
 			buffer.put(Ability.NONE_ID);
 		} else {
@@ -200,7 +200,7 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 		setMovingAngle(buffer.getDouble());
 		setForward(buffer.get() == 1);
 		setHealth(buffer.getFloat());
-
+		setTeam(getWorld().getTeamSet().get(buffer.getShort()));
 		byte abilityId = buffer.get();
 		if (abilityId == Ability.NONE_ID) {
 			stopCurrentAbility();

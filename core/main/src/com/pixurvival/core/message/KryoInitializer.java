@@ -31,6 +31,7 @@ import lombok.experimental.UtilityClass;
 public class KryoInitializer {
 
 	public static void apply(Kryo kryo) {
+		register(kryo, String[].class);
 		register(kryo, Direction.class);
 		register(kryo, Vector2.class);
 		register(kryo, PlayerMovementRequest.class);
@@ -40,13 +41,13 @@ public class KryoInitializer {
 		register(kryo, LoginResponse.class);
 		register(kryo, WorldUpdate.class);
 		register(kryo, CreateWorld.class);
-		register(kryo, InitializeGame.class);
 		register(kryo, byte[].class);
 		register(kryo, Version.class);
 		kryo.register(UUID.class, new UUIDSerializer());
 		register(kryo, ContentPackIdentifier.class);
 		register(kryo, ContentPackIdentifier[].class);
 		register(kryo, WorldReady.class);
+		register(kryo, StartGame.class);
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
 		register(kryo, GameReady.class);

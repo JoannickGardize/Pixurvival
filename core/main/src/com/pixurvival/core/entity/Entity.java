@@ -20,8 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Classe abstraite de tout objet du monde : joueur, créatures, items,
- * projectiles...
+ * Classe mère de tout objet du monde : joueur, créatures, items, projectiles...
  * 
  * 
  * @author SharkHendrix

@@ -30,7 +30,7 @@ public class AutoRunTestServer implements ServerGameListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			game.startTestGame();
+			game.startGame(0);
 		}).start();
 	}
 

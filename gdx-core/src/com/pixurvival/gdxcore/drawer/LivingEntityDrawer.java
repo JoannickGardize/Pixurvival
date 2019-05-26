@@ -59,7 +59,7 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 				return animation;
 			}
 		}
-		Direction aimingDirection = Direction.closestCardinal(e.getMovingAngle());
+		Direction aimingDirection = Direction.closestCardinalDirection(e.getMovingAngle());
 		if (e.isForward()) {
 			return ActionAnimation.getMoveFromDirection(aimingDirection);
 		} else {

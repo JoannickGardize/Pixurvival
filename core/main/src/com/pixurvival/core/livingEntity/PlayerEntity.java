@@ -73,7 +73,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 				((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
 		});
-		setTeam(TeamSet.PLAYERS_TEAM);
 	}
 
 	public void setInventory(PlayerInventory inventory) {
@@ -102,7 +101,19 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(INVENTORY_SIZE));
 		}
-		getTeam().addAlive(this);
+	}
+
+	@Override
+	public void setTeam(Team team) {
+		if (getTeam() == team) {
+			return;
+		}
+		super.setTeam(team);
+		if (isAlive()) {
+			team.addAlive(this);
+		} else {
+			team.addDead(this);
+		}
 	}
 
 	@Override
@@ -175,7 +186,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
-	public AbilitySet<? extends Ability> getAbilitySet() {
+	public AbilitySet<Ability> getAbilitySet() {
 		return PLAYER_ABILITY_SET;
 	}
 

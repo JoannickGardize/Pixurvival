@@ -10,4 +10,5 @@ public class Preconditions {
 			throw new IllegalArgumentException(fieldName + " cannot be null or empty.");
 		}
 	}
+
 }

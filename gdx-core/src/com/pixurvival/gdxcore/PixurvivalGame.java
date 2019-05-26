@@ -131,8 +131,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void render() {
-		frameCounter += Gdx.graphics.getRawDeltaTime() * 1000;
-		interpolationTime += Gdx.graphics.getRawDeltaTime();
+		frameCounter += Gdx.graphics.getDeltaTime() * 1000;
+		interpolationTime += Gdx.graphics.getDeltaTime();
 		while (frameCounter >= frameDurationMillis) {
 			client.update(frameDurationMillis);
 			frameCounter -= frameDurationMillis;

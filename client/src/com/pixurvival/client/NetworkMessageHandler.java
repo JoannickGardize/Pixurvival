@@ -13,21 +13,20 @@ import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
-import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldUpdate;
 
-class NetworkMessageHander extends Listener {
+class NetworkMessageHandler extends Listener {
 
 	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>(8);
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
-	public NetworkMessageHander(ClientGame game) {
+	public NetworkMessageHandler(ClientGame game) {
 		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
-		messageActions.put(InitializeGame.class, s -> game.initializeNetworkGame((InitializeGame) s));
 		messageActions.put(CreateWorld.class, s -> game.initializeNetworkWorld((CreateWorld) s));
 		messageActions.put(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
 
@@ -40,8 +39,9 @@ class NetworkMessageHander extends Listener {
 			game.synchronizeTime(t);
 		});
 		messageActions.put(PlayerInventory.class, i -> game.getMyInventory().set((Inventory) i));
-		messageActions.put(PlayerData[].class, d -> game.addPlayerData((PlayerData[]) d));
-		messageActions.put(WorldUpdate.class, u -> game.getWorld().getSyncWorldUpdateManager().add((WorldUpdate) u));
+		messageActions.put(PlayerData[].class, d -> game.offer((PlayerData[]) d));
+		messageActions.put(WorldUpdate.class, u -> game.offer((WorldUpdate) u));
+		messageActions.put(StartGame.class, g -> game.addPlugin(new WorldUpdater()));
 	}
 
 	@Override

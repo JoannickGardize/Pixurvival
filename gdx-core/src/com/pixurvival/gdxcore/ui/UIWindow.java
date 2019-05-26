@@ -11,6 +11,10 @@ public class UIWindow extends Window implements EventListener {
 	public UIWindow(String name) {
 		super(PixurvivalGame.getString("hud." + name + ".title"), PixurvivalGame.getSkin());
 		setName(name);
+		// Remove default capture listeners, it contains a listener to click
+		// that push the window to the front of the overs, this default behavior
+		// totally break the use wee need of it, for example the "item in hand"
+		// actor must always be in front.
 		getCaptureListeners().clear();
 		setResizable(false);
 	}

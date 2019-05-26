@@ -61,4 +61,8 @@ public class Area {
 	public int height() {
 		return endY - startY;
 	}
+
+	public Vector2 center() {
+		return new Vector2((startX + endX) / 2.0, (startY + endY) / 2.0);
+	}
 }

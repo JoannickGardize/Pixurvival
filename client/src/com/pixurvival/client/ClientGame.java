@@ -2,32 +2,24 @@ package com.pixurvival.client;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
+import com.pixurvival.core.WorldUpdateManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
-import com.pixurvival.core.map.analytics.AreaSearchCriteria;
-import com.pixurvival.core.map.analytics.GameAreaConfiguration;
-import com.pixurvival.core.map.analytics.MapAnalytics;
-import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
-import com.pixurvival.core.message.InitializeGame;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
@@ -35,33 +27,35 @@ import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
+import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.core.util.PluginHolder;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
-public class ClientGame {
+public class ClientGame extends PluginHolder<ClientGame> {
 
 	private Client client = new Client(8192, 8192);
-	private NetworkMessageHander clientListener;
+	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private @Getter PlayerInventory myInventory;
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
-	private List<IClientGamePlugin> plugins = new ArrayList<>();
 
 	private long timeRequestFrequencyMillis = 1000;
 	private double timeRequestTimer = 0;
+	private double deltaTimeMillis = 0;
 
 	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
-		clientListener = new NetworkMessageHander(this);
+		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
 	}
 
@@ -95,24 +89,23 @@ public class ClientGame {
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			setWorld(World.createClientWorld(createWorld, contentPackLoader));
+			removeAllPlugins();
+			world.setMyPlayerId(createWorld.getMyPlayerId());
+			createWorld.getInventory().computeQuantities();
+			myInventory = createWorld.getInventory();
+			for (String teamName : createWorld.getTeamNames()) {
+				world.getTeamSet().createTeam(teamName);
+			}
+			notify(ClientGameListener::initializeGame);
+			addPlugin(new TargetPositionUpdateManager());
 			client.sendTCP(new WorldReady());
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void initializeNetworkGame(InitializeGame initGame) {
-		world.setMyPlayerId(initGame.getMyPlayerId());
-		initGame.getInventory().computeQuantities();
-		myInventory = initGame.getInventory();
-		world.addPlayerData(Arrays.asList(initGame.getPlayerData()));
-		notify(ClientGameListener::initializeGame);
-		plugins.clear();
-		plugins.add(new TargetPositionUpdateManager());
-		initializePlugins();
-	}
-
-	public void startLocalGame() {
+	public void startLocalGame(int gameModeId) {
+		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
 			localGamePack = contentPackLoader.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
@@ -120,38 +113,19 @@ public class ClientGame {
 			e.printStackTrace();
 			return;
 		}
-		// TODO Choix du gameMode
-		this.world = World.createLocalWorld(localGamePack, 0);
+		world = World.createLocalWorld(localGamePack, gameModeId);
+		GameMode gameMode = world.getGameMode();
+		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
+			throw new IllegalStateException("The GameMode + " + gameMode.getName() + " cannot be played in solo.");
+		}
 		PlayerEntity playerEntity = new PlayerEntity();
-
-		MapAnalytics mapAnalytics = new MapAnalytics(world.getRandom());
-		try {
-			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), new AreaSearchCriteria());
-			playerEntity.getPosition().set(config.getSpawnSpots()[0]);
-		} catch (MapAnalyticsException e) {
-			Log.error("MapAnalyticsException");
-		}
-		// TODO
+		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
 		world.getEntityPool().add(playerEntity);
-
-		CreatureEntity creature = new CreatureEntity(localGamePack.getCreatures().get(0));
-		creature.getPosition().set(15, 15);
-		world.getEntityPool().add(creature);
-
-		Random random = new Random();
-		for (int i = 0; i < 20; i++) {
-			playerEntity.getInventory().setSlot(i, new ItemStack(localGamePack.getItems().get(random.nextInt(localGamePack.getItems().size())), random.nextInt(10) + 1));
-		}
 		world.setMyPlayerId(playerEntity.getId());
 		myInventory = playerEntity.getInventory();
-
-		ItemStackEntity itemStackEntity = new ItemStackEntity(new ItemStack(localGamePack.getItems().get(0)));
-		itemStackEntity.getPosition().set(10, 10);
-		world.getEntityPool().add(itemStackEntity);
-
-		initializePlugins();
-
+		world.initializeGame();
 		notify(ClientGameListener::initializeGame);
+		addPlugin(new WorldUpdater());
 	}
 
 	public void sendAction(IPlayerActionRequest request) {
@@ -172,10 +146,12 @@ public class ClientGame {
 	}
 
 	public void update(double deltaTimeMillis) {
-		for (IClientGamePlugin plugin : plugins) {
-			plugin.update(this);
-		}
+		this.deltaTimeMillis = deltaTimeMillis;
 		clientListener.consumeReceivedObjects();
+		updatePlugins(this);
+	}
+
+	public void updateWorld() {
 		if (world != null) {
 			if (getMyPlayer() != null) {
 				synchronized (playerActionRequests) {
@@ -224,15 +200,12 @@ public class ClientGame {
 		client.sendTCP(new GameReady());
 	}
 
-	public void addPlayerData(PlayerData[] data) {
-		if (world != null) {
-			world.addPlayerData(Arrays.asList(data));
-		}
+	public void offer(PlayerData[] data) {
+		world.getPlugin(WorldUpdateManager.class).offer(data);
 	}
 
-	private void initializePlugins() {
-		for (IClientGamePlugin plugin : plugins) {
-			plugin.initialize(this);
-		}
+	public void offer(WorldUpdate worldUpdate) {
+		world.getPlugin(WorldUpdateManager.class).offer(worldUpdate);
 	}
+
 }

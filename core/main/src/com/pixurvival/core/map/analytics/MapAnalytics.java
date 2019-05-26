@@ -25,6 +25,18 @@ public class MapAnalytics {
 
 	private @NonNull Random random;
 
+	/**
+	 * Analyzes the given map, to find an initial game configuration according
+	 * to the given criteria.
+	 * 
+	 * @param map
+	 *            the map to analyze
+	 * @param criteria
+	 *            the wanted criteria
+	 * @return the GameAreaConfiguration containing the choosen area, and spawn
+	 *         positions for player teams.
+	 * @throws MapAnalyticsException
+	 */
 	public GameAreaConfiguration buildGameAreaConfiguration(TiledMap map, AreaSearchCriteria criteria) throws MapAnalyticsException {
 		AreaAnalysisResult areaAnalysisResult = findArea(new TiledMapCursor(map), criteria);
 		if (areaAnalysisResult == null) {

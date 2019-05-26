@@ -14,6 +14,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.message.ContentPackPart;
 
+// TODO
 public class ContentPackDownloadManager {
 
 	private List<ContentPackIdentifier> missingList = new ArrayList<>();

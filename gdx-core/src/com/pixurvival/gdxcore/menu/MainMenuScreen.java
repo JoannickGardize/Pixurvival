@@ -40,7 +40,8 @@ public class MainMenuScreen implements Screen {
 		singleplayerButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				PixurvivalGame.getClient().startLocalGame();
+				// TODO Choix du GameMode
+				PixurvivalGame.getClient().startLocalGame(0);
 			}
 		});
 

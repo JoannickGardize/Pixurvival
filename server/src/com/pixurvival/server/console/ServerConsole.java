@@ -1,6 +1,10 @@
 package com.pixurvival.server.console;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import com.esotericsoftware.minlog.Log;
@@ -14,10 +18,44 @@ public class ServerConsole implements Runnable, ServerGameListener {
 
 	private boolean running = true;
 	private ServerGame game;
+	private CommandMultiplexer rootCommandProcessor = new CommandMultiplexer();
 
 	public ServerConsole(CommonMainArgs mainArgs) {
 		game = new ServerGame(mainArgs);
 		game.addListener(this);
+
+		CommandMultiplexer teamCommandMultiplexer = new CommandMultiplexer();
+		teamCommandMultiplexer.addProcessor("set", new SimpleCommandProcessor(2, args -> {
+			PlayerConnection player = game.getPlayerConnection(args[0]);
+			if (player == null) {
+				Log.warn("No player with name " + args[0]);
+			} else {
+				player.setRequestedTeamName(args[1]);
+			}
+		}));
+		teamCommandMultiplexer.addProcessor("recap", new SimpleCommandProcessor(0, args -> {
+			Map<String, List<String>> teamMap = new HashMap<>();
+			game.foreachPlayers(p -> teamMap.computeIfAbsent(p.getRequestedTeamName(), name -> new ArrayList<>()).add(p.toString()));
+			for (Entry<String, List<String>> entry : teamMap.entrySet()) {
+				System.out.print(entry.getKey());
+				System.out.print(" -> [");
+				String separator = "";
+				for (String name : entry.getValue()) {
+					System.out.print(name);
+					System.out.print(separator);
+					separator = ", ";
+				}
+				System.out.println("]");
+			}
+		}));
+
+		rootCommandProcessor.addProcessor("bind", new SimpleCommandProcessor(1, args -> game.startServer(Integer.parseInt(args[0]))));
+		rootCommandProcessor.addProcessor("start", new SimpleCommandProcessor(1, args -> game.startGame(Integer.parseInt(args[0]))));
+		rootCommandProcessor.addProcessor("exit", new SimpleCommandProcessor(1, args -> {
+			game.stopServer();
+			running = false;
+		}));
+		rootCommandProcessor.addProcessor("team", teamCommandMultiplexer);
 	}
 
 	@Override
@@ -29,31 +67,12 @@ public class ServerConsole implements Runnable, ServerGameListener {
 	public void run() {
 		Scanner reader = new Scanner(System.in);
 		while (running) {
-			System.out.print("-> ");
-			CommandInput commandInput = new CommandInput(reader.nextLine());
-			switch (commandInput.getName()) {
-			case "bind":
-				if (commandInput.argsLength() == 1) {
-					try {
-						game.startServer(Integer.parseInt(commandInput.getArg(0)));
-					} catch (NumberFormatException | IOException e) {
-						e.printStackTrace();
-					}
-				}
-				break;
-			case "start":
-				game.startTestGame();
-				break;
-			// TODO
-			// case "ls-pack":
-			// for (ContentPackIdentifier identifier :
-			// game.getContentPacksContext().list()) {
-			// System.out.println(identifier);
-			// }
-			// break;
-			case "exit":
-				game.stopServer();
-				running = false;
+			System.out.print(" -> ");
+			String[] args = ConsoleArgsUtils.splitArgs(reader.nextLine());
+			try {
+				rootCommandProcessor.process(args);
+			} catch (Exception e) {
+				Log.error("Command execution fail", e);
 			}
 		}
 		reader.close();
@@ -63,5 +82,4 @@ public class ServerConsole implements Runnable, ServerGameListener {
 		new ServerConsole(ArgsUtils.readArgs(args, CommonMainArgs.class)).run();
 		System.exit(0);
 	}
-
 }

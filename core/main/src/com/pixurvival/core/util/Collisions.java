@@ -5,12 +5,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Collisions {
 
-	public static boolean pointCircle(Vector2 c, Vector2 p, double r) {
-		double dx = c.getX() - p.getX();
-		double dy = c.getY() - p.getY();
-		return dx * dx + dy * dy <= r * r;
-	}
-
 	public static boolean circleCircle(Vector2 center1, double radius1, Vector2 center2, double radius2) {
 		double dx = center1.getX() - center2.getX();
 		double dy = center1.getY() - center2.getY();
@@ -19,26 +13,24 @@ public class Collisions {
 	}
 
 	public static boolean dynamicCircleCircle(Vector2 center1, double radius1, Vector2 velocity1, Vector2 center2, double radius2) {
-		Vector2 endPosition = new Vector2(center1).add(velocity1);
-		Vector2 closestPoint = closestPointOnSegment(center1, endPosition, center2);
-
+		Vector2 closestPoint = closestPointOnSegment(center1, velocity1, center2);
 		return circleCircle(closestPoint, radius1, center2, radius2);
 	}
 
-	public static Vector2 closestPointOnSegment(Vector2 s1, Vector2 s2, Vector2 p) {
-		double dx = s2.getX() - s1.getX();
-		double dy = s2.getY() - s1.getY();
+	private static Vector2 closestPointOnSegment(Vector2 startPoint, Vector2 delta, Vector2 p) {
+		double dx = delta.getX();
+		double dy = delta.getY();
 
 		if (dx == 0 && dy == 0) {
-			return new Vector2(s1);
+			return new Vector2(startPoint);
 		} else {
-			double u = ((p.getX() - s1.getX()) * dx + (p.getY() - s1.getY()) * dy) / (dx * dx + dy * dy);
+			double u = ((p.getX() - startPoint.getX()) * dx + (p.getY() - startPoint.getY()) * dy) / (dx * dx + dy * dy);
 			if (u < 0) {
-				return new Vector2(s1);
+				return new Vector2(startPoint);
 			} else if (u > 1) {
-				return new Vector2(s2);
+				return new Vector2(delta);
 			} else {
-				return new Vector2(s1.getX() + u * dx, s1.getY() + u * dy);
+				return new Vector2(startPoint.getX() + u * dx, startPoint.getY() + u * dy);
 			}
 		}
 	}
