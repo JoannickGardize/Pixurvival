@@ -16,6 +16,7 @@ import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
+import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
@@ -30,7 +31,7 @@ import com.pixurvival.core.message.playerRequest.UpdateTargetPositionRequest;
 class NetworkMessageHandler extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
-	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(14);
+	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(15);
 	private ServerGame game;
 
 	public NetworkMessageHandler(ServerGame game) {
@@ -54,6 +55,7 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(CraftItemRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(PlayerEquipmentAbilityRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(UpdateTargetPositionRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(ChatRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
@@ -100,7 +102,6 @@ class NetworkMessageHandler extends Listener {
 		PlayerConnection connection = m.getConnection();
 		PlayerEntity entity = connection.getPlayerEntity();
 		if (entity != null) {
-
 			((IPlayerActionRequest) m.getObject()).apply(entity);
 		}
 	}

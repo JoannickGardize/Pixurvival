@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class ChatUI extends UIWindow {
@@ -22,10 +23,12 @@ public class ChatUI extends UIWindow {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
 				if (keycode == Keys.ENTER) {
-					chatHistory.push(new ChatEntry(inputArea.getText()));
+					// chatHistory.push(new ChatEntry(inputArea.getText()));
+					// inputArea.setText("");
+					// validate();
+					// displayAreScrollPane.setScrollPercentY(1);
+					PixurvivalGame.getClient().sendAction(new ChatRequest(inputArea.getText()));
 					inputArea.setText("");
-					validate();
-					displayAreScrollPane.setScrollPercentY(1);
 				} else if (keycode == Keys.ESCAPE) {
 					getStage().unfocusAll();
 				}

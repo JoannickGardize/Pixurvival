@@ -14,6 +14,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.CompressedChunk;
+import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
@@ -69,6 +70,7 @@ public class KryoInitializer {
 		register(kryo, PlaceStructureRequest.class);
 		register(kryo, PlayerEquipmentAbilityRequest.class);
 		register(kryo, UpdateTargetPositionRequest.class);
+		register(kryo, ChatRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

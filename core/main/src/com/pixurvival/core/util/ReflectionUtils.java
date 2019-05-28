@@ -1,5 +1,6 @@
 package com.pixurvival.core.util;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,6 +36,22 @@ public class ReflectionUtils {
 			currentClass = currentClass.getSuperclass();
 		}
 		return list.toArray(new Field[list.size()]);
+	}
+
+	public static Field[] getAnnotedFields(Class<?> clazz, Class<? extends Annotation> annotation) {
+		List<Field> list = new ArrayList<>();
+		for (Field field : clazz.getDeclaredFields()) {
+			if (field.isAnnotationPresent(annotation)) {
+				list.add(field);
+			}
+		}
+		return list.toArray(new Field[list.size()]);
+
+	}
+
+	@SneakyThrows
+	public static Object getByGetter(Object object, Field field) {
+		return object.getClass().getMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1)).invoke(object);
 	}
 
 	public static Map<String, Field> getAllFieldsMap(Class<?> clazz) {
