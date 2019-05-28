@@ -168,6 +168,7 @@ public class World extends PluginHolder<World> {
 						} else {
 							spawnPosition.addX(currentDirection.getNormalX());
 							spawnPosition.addY(currentDirection.getNormalY());
+							break;
 						}
 					}
 				}

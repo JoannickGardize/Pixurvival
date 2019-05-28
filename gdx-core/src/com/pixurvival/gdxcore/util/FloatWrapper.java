@@ -1,4 +1,4 @@
-package com.pixurvival.core.util;
+package com.pixurvival.gdxcore.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,14 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntWrapper {
-	private int value;
-
-	public void increment() {
-		++value;
-	}
-
-	public void decrement() {
-		--value;
-	}
+public class FloatWrapper {
+	private float value;
 }

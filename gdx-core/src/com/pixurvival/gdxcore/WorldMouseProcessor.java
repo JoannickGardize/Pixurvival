@@ -31,6 +31,7 @@ public class WorldMouseProcessor extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		if (myPlayer == null) {
 			return false;

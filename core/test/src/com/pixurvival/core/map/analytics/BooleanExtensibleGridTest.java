@@ -52,30 +52,6 @@ public class BooleanExtensibleGridTest {
 		Assert.assertEquals(expectedResult.length, actualResult.length);
 	}
 
-	private static void printPoints(Position[] positions) {
-		List<List<Integer>> points = new ArrayList<>();
-		for (Position position : positions) {
-			while (position.getY() >= points.size()) {
-				points.add(new ArrayList<>());
-			}
-			List<Integer> xList = points.get(position.getY());
-			while (position.getX() >= xList.size()) {
-				xList.add(0);
-			}
-			xList.set(position.getX(), xList.get(position.getX()) + 1);
-		}
-		for (List<Integer> xList : points) {
-			for (int i : xList) {
-				if (i == 0) {
-					System.out.print(' ');
-				} else {
-					System.out.print(i);
-				}
-			}
-			System.out.println();
-		}
-	}
-
 	private static void readPointsCloud(String fileName, PositionConsumer action) throws IOException {
 		InputStream stream = BooleanExtensibleGridTest.class.getClassLoader().getResourceAsStream(fileName);
 		int character;

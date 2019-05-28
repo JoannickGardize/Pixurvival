@@ -113,6 +113,7 @@ project(":gdx-core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompile 'junit:junit:4.12'
     }
 }
 

@@ -6,6 +6,8 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.util.Vector2;
+
 public class PositionTest {
 
 	@Test
@@ -46,8 +48,12 @@ public class PositionTest {
 	public void getXGroupTest() {
 		Assert.assertEquals(-1, new Position(-5, 2).getXGroup(16));
 		Assert.assertEquals(0, new Position(0, 0).getXGroup(16));
+		Assert.assertEquals(1, new Position(16, 0).getXGroup(16));
+		Assert.assertEquals(-1, new Position(-1, -2).getXGroup(16));
 		Assert.assertEquals(-1, new Position(-16, 2).getXGroup(16));
 		Assert.assertEquals(-2, new Position(-17, 2).getXGroup(16));
+		Assert.assertEquals(-2, new Position(-32, 2).getXGroup(16));
+		Assert.assertEquals(-3, new Position(-33, 2).getXGroup(16));
 	}
 
 	@Test
@@ -56,6 +62,13 @@ public class PositionTest {
 		Assert.assertEquals(0, new Position(0, 0).getYGroup(16));
 		Assert.assertEquals(-1, new Position(30, -16).getYGroup(16));
 		Assert.assertEquals(-2, new Position(-30, -17).getYGroup(16));
+	}
+
+	@Test
+	public void toVector2Test() {
+		Position position = new Position(-1, -1);
+
+		Assert.assertTrue("expected : " + new Vector2(-15.5, -15.5) + ", actual : " + position.toVector2(16), new Vector2(-15.5, -15.5).epsilonEquals(position.toVector2(16), 0.00001));
 	}
 
 }

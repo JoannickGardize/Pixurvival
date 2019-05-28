@@ -20,7 +20,7 @@ public class MapAnalytics {
 	public static GameAreaConfiguration LAST_GAME_AREA_CONFIGURATION = null;
 
 	private static final int MAX_FAIL_POSITION_CHECK = 5;
-	private static final int POINTS_INTERVAL = 16;
+	private static final int POINTS_INTERVAL = 8;
 	private static final int MAX_START_POINT_TRY = 15;
 
 	private @NonNull Random random;
@@ -75,15 +75,16 @@ public class MapAnalytics {
 	}
 
 	static AreaAnalysisResult analyzeArea(TiledMapCursor cursor, Vector2 startPoint, int maxSquareSize) {
-		Position startPosition = Position.fromWorldPosition(startPoint);
-		Area area = new Area(startPosition);
+		Position startPosition = Position.fromWorldPosition(startPoint, POINTS_INTERVAL);
 		BooleanExtensibleGrid exploredGrid = new BooleanExtensibleGrid();
 		for (int i = 0; i < 5; i++) {
 			if (!cursor.tileAt(startPosition).isSolid()) {
 				break;
 			}
-			startPosition.addX(1);
+			Log.debug("Bad Start position");
+			startPosition.addX(POINTS_INTERVAL);
 		}
+		Area area = new Area(startPosition);
 		if (cursor.tileAt(startPosition).isSolid()) {
 			return new AreaAnalysisResult(area, exploredGrid, POINTS_INTERVAL);
 		}
@@ -111,8 +112,8 @@ public class MapAnalytics {
 	}
 
 	/**
-	 * Simple pathfinding to check if position1 and position2 are connected by a
-	 * simple path.
+	 * Simple path finding to check if position1 and position2 are connected by
+	 * a simple path.
 	 * 
 	 * @param cursor
 	 *            cursor for accessing tile data

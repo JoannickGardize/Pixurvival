@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
@@ -11,11 +12,11 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.ChatUI;
-import com.pixurvival.gdxcore.ui.DebugInfosActors;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
@@ -29,14 +30,13 @@ public class WorldScreen implements Screen {
 	public static final double CAMERA_BOUNDS = GameConstants.PLAYER_VIEW_DISTANCE - 5;
 	public static final float VIEWPORT_WORLD_WIDTH = (float) (CAMERA_BOUNDS * 2 * 0.75);
 
-	@Getter
-	private World world;
+	private @Getter World world;
 	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private EntitiesActor entitiesActor;
-	private DebugInfosActors debugInfosActors;
+	private DebugInfosActor debugInfosActors;
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -44,10 +44,7 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
-		// MapAnalyticsDebugActor mapAnalyticsDebugActor = new
-		// MapAnalyticsDebugActor();
-		// mapAnalyticsDebugActor.setDebug(true);
-		// worldStage.addActor(mapAnalyticsDebugActor);
+		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
@@ -69,7 +66,7 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(new ChatUI());
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
-		debugInfosActors = new DebugInfosActors();
+		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
@@ -87,6 +84,16 @@ public class WorldScreen implements Screen {
 	public void show() {
 		InputMultiplexer im = new InputMultiplexer();
 		im.addProcessor(hudStage);
+		im.addProcessor(new InputAdapter() {
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				// Forces to remove focus of ChatUI TextField, or any other
+				// focus-grabber
+				// widgets
+				hudStage.unfocusAll();
+				return false;
+			}
+		});
 		im.addProcessor(keyboardInputProcessor);
 		im.addProcessor(cameraControlProcessor);
 		im.addProcessor(new WorldMouseProcessor(worldStage));

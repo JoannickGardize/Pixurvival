@@ -129,6 +129,11 @@ public class Vector2 {
 		return dx * dx + dy * dy;
 	}
 
+	public boolean epsilonEquals(Vector2 other, double epsilon) {
+		return other != null && Math.abs(other.x - x) <= epsilon && Math.abs(other.y - y) <= epsilon;
+
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -1,6 +1,5 @@
 package com.pixurvival.core.map.analytics;
 
-import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -59,8 +58,8 @@ public class Position {
 		return new Vector2(x * scale + 0.5, y * scale + 0.5);
 	}
 
-	public static Position fromWorldPosition(Vector2 position) {
-		return new Position(MathUtils.floor(position.getX() / GameConstants.CHUNK_SIZE), MathUtils.floor(position.getY() / GameConstants.CHUNK_SIZE));
+	public static Position fromWorldPosition(Vector2 position, int interval) {
+		return new Position(MathUtils.floor(position.getX() / interval) * interval, MathUtils.floor(position.getY() / interval) * interval);
 	}
 
 	public static Position relativeTo(Position origin, int dx, int dy) {
