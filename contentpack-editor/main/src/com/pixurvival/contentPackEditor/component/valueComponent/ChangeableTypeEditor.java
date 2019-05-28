@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.util.BeanUtils;
 
+@Deprecated
 public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T> {
 
 	private static final long serialVersionUID = 1L;

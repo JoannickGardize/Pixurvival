@@ -13,8 +13,8 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 import lombok.Getter;
@@ -49,9 +49,14 @@ public class Item extends IdentifiedElement implements Serializable {
 
 	}
 
+	@Getter
+	@Setter
 	public static class Edible implements Details {
 
 		private static final long serialVersionUID = 1L;
+
+		private double duration;
+		private List<Alteration> alterations = new ArrayList<>();
 
 	}
 
@@ -61,7 +66,7 @@ public class Item extends IdentifiedElement implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		private Ability specialAbility;
+		private EffectAbility specialAbility;
 
 	}
 

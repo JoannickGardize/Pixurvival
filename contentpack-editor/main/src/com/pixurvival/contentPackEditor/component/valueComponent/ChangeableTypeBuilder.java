@@ -10,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
 
 import lombok.Getter;
 
+@Deprecated
 public class ChangeableTypeBuilder<T> {
 
 	private @Getter ChangeableTypeEditor<T> editor;

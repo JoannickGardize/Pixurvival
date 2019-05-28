@@ -5,8 +5,6 @@ import java.awt.Container;
 import java.io.File;
 
 import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypeChooser;
@@ -36,11 +34,12 @@ public class ContentPackEditor extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		// } catch (ClassNotFoundException | InstantiationException |
+		// IllegalAccessException | UnsupportedLookAndFeelException e) {
+		// e.printStackTrace();
+		// }
 		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
 
 		ContentPackEditor editor = new ContentPackEditor();
