@@ -8,6 +8,8 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.chat.ChatEntry;
+import com.pixurvival.core.chat.ChatListener;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -22,7 +24,7 @@ import com.pixurvival.core.message.StructureUpdate;
 
 import lombok.Getter;
 
-public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener {
+public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener {
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
@@ -34,6 +36,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		world.getMap().addListener(this);
 		world.getMap().addPlayerMapEventListener(this);
 		world.getEntityPool().addListener(this);
+		world.getChatManager().addListener(this);
 	}
 
 	public void addPlayer(PlayerConnection player) {
@@ -129,5 +132,10 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		if (previousPosition != null) {
 			chunkChangedEntities.computeIfAbsent(previousPosition, position -> new ArrayList<>()).add(e);
 		}
+	}
+
+	@Override
+	public void received(ChatEntry chatEntry) {
+		players.values().forEach(p -> p.getConnection().sendTCP(chatEntry));
 	}
 }

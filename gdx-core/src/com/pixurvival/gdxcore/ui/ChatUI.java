@@ -1,18 +1,26 @@
 package com.pixurvival.gdxcore.ui;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.pixurvival.core.chat.ChatEntry;
+import com.pixurvival.core.chat.ChatListener;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
-public class ChatUI extends UIWindow {
+public class ChatUI extends UIWindow implements ChatListener {
 
 	private ChatHistory chatHistory = new ChatHistory(30);
 	private TextField inputArea;
 	private ScrollPane displayAreScrollPane;
+
+	private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	public ChatUI() {
 		super("chat");
@@ -40,6 +48,20 @@ public class ChatUI extends UIWindow {
 		row();
 		add(inputArea).fill();
 		pack();
+	}
+
+	@Override
+	public void received(ChatEntry chatEntry) {
+		StringBuilder sb = new StringBuilder("[");
+		sb.append(dateFormat.format(new Date(chatEntry.getDateMillis())));
+		sb.append("] ");
+		sb.append(chatEntry.getSender().getName());
+		sb.append(" : ");
+		sb.append(chatEntry.getText());
+		chatHistory.push(new ChatTextEntry(sb.toString()));
+		inputArea.setText("");
+		validate();
+		displayAreScrollPane.setScrollPercentY(1);
 	}
 
 }

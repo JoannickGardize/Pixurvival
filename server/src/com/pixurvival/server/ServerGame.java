@@ -102,11 +102,11 @@ public class ServerGame {
 		createWorld.setTeamNames(world.getTeamSet().getNames());
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
+			world.getEntityPool().add(playerEntity);
 			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));
 			playerEntity.setName(playerConnection.toString());
 			playerEntity.getInventory().addListener(playerConnection);
 			playerEntity.getEquipment().addListener(playerConnection);
-			world.getEntityPool().add(playerEntity);
 			playerConnection.setPlayerEntity(playerEntity);
 			createWorld.setMyPlayerId(playerEntity.getId());
 			createWorld.setInventory(playerEntity.getInventory());

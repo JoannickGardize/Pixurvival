@@ -77,7 +77,7 @@ public class CommandArgsUtils {
 
 	public static void checkArgsLength(String[] args, int min, int max) throws CommandExecutionException {
 		if (args.length < min || args.length > max) {
-			throw new CommandExecutionException("Wrong number of args : " + args.length + ", must be in range [" + min + ", " + "]");
+			throw new CommandExecutionException("Wrong number of args : " + args.length + ", must be in range [" + min + ", " + max + "]");
 		}
 	}
 }

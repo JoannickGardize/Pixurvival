@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
@@ -71,6 +72,7 @@ public class KryoInitializer {
 		register(kryo, PlayerEquipmentAbilityRequest.class);
 		register(kryo, UpdateTargetPositionRequest.class);
 		register(kryo, ChatRequest.class);
+		register(kryo, ChatEntry.class);
 	}
 
 	@SuppressWarnings("unchecked")

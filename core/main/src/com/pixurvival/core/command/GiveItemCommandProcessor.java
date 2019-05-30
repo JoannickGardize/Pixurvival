@@ -10,7 +10,7 @@ public class GiveItemCommandProcessor extends CommandProcessor {
 	}
 
 	@Override
-	protected void execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
+	protected String execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
 		CommandArgsUtils.checkArgsLength(args, 2, 3);
 		ItemStack itemStack = CommandArgsUtils.getItemStack(executor, args[1]);
 		PlayerEntity target;
@@ -23,6 +23,7 @@ public class GiveItemCommandProcessor extends CommandProcessor {
 			target = CommandArgsUtils.getPlayer(executor, args[2]);
 		}
 		target.getInventory().add(itemStack);
+		return new StringBuilder("Given ").append(itemStack.toMessageString()).append(" to ").append(target.getName()).toString();
 	}
 
 }

@@ -63,7 +63,9 @@ public class WorldScreen implements Screen {
 		CharacterUI characterUI = new CharacterUI();
 		hudStage.addActor(characterUI);
 		characterUI.initialize();
-		hudStage.addActor(new ChatUI());
+		ChatUI chatUI = new ChatUI();
+		world.getChatManager().addListener(chatUI);
+		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		debugInfosActors = new DebugInfosActor();

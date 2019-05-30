@@ -72,6 +72,10 @@ public class ItemStack implements Serializable {
 		return new ItemStack(item, this.quantity + quantity);
 	}
 
+	public String toMessageString() {
+		return quantity + " " + item.getName();
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<ItemStack> {
 
 		@Override

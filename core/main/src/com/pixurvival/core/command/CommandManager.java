@@ -17,8 +17,7 @@ public class CommandManager {
 			return "Unknown command " + args[0];
 		}
 		try {
-			processor.process(executor, args);
-			return null;
+			return processor.process(executor, args);
 		} catch (CommandExecutionException e) {
 			return e.getMessage();
 		}

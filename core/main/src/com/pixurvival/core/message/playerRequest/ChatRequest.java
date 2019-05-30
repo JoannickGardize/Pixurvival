@@ -1,14 +1,16 @@
 package com.pixurvival.core.message.playerRequest;
 
-import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ChatRequest implements IPlayerActionRequest {
 
 	private String text;
@@ -19,11 +21,11 @@ public class ChatRequest implements IPlayerActionRequest {
 			if (text.length() > 1) {
 				String returnText = player.getWorld().getCommandManager().process(player, CommandArgsUtils.splitArgs(text.substring(1)));
 				if (returnText != null) {
-					Log.info(returnText);
+					player.getWorld().getChatManager().received(new ChatEntry(player.getWorld(), returnText));
 				}
 			}
 		} else {
-			// TODO Chat
+			player.getWorld().getChatManager().received(new ChatEntry(player, text));
 		}
 	}
 

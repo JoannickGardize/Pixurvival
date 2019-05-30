@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.chat.ChatManager;
+import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -37,7 +39,7 @@ import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class World extends PluginHolder<World> {
+public class World extends PluginHolder<World> implements ChatSender {
 
 	@Getter
 	@AllArgsConstructor
@@ -68,6 +70,7 @@ public class World extends PluginHolder<World> {
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
 	private @Getter CommandManager commandManager = new CommandManager();
+	private @Getter ChatManager chatManager = new ChatManager();
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -178,5 +181,10 @@ public class World extends PluginHolder<World> {
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "World";
 	}
 }
