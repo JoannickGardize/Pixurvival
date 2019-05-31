@@ -16,9 +16,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
-import com.pixurvival.core.item.Edible;
+import com.pixurvival.core.item.EdibleItem;
 import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.Weapon;
+import com.pixurvival.core.item.WeaponItem;
 
 public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 
@@ -80,7 +80,8 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 	// @Override
 	// protected void valueChanged(ValueComponent<?> source) {
 	// // if (source == this) {
-	// // getTypeChooser().setSelectedItem(((Item) source.getValue()).getClass());
+	// // getTypeChooser().setSelectedItem(((Item)
+	// source.getValue()).getClass());
 	// // }
 	//
 	// itemPreview.setImage(getValue().getImage());
@@ -92,10 +93,10 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		WeaponEditor weaponEditor = new WeaponEditor();
-		entries.add(new ClassEntry(Weapon.class, weaponEditor));
+		entries.add(new ClassEntry(WeaponItem.class, weaponEditor));
 
 		EdibleEditor edibleEditor = new EdibleEditor();
-		entries.add(new ClassEntry(Edible.class, edibleEditor));
+		entries.add(new ClassEntry(EdibleItem.class, edibleEditor));
 
 		// AccessoryEditor accessoryEditor = new AccessoryEditor();
 		// entries.add(new ClassEntry(Accessory.class, accessoryEditor));
@@ -108,6 +109,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 
 	@Override
 	protected void initialize(Item oldInstance, Item newInstance) {
+		newInstance.setId(oldInstance.getId());
 		newInstance.setName(oldInstance.getName());
 		newInstance.setFrame(oldInstance.getFrame());
 		newInstance.setMaxStackSize(oldInstance.getMaxStackSize());

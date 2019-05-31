@@ -5,8 +5,10 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
 
+import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
 public class InstanceChangingRootElementEditor<E extends IdentifiedElement> extends InstanceChangingElementEditor<E> {
@@ -14,7 +16,7 @@ public class InstanceChangingRootElementEditor<E extends IdentifiedElement> exte
 	public InstanceChangingRootElementEditor(String translationPreffix) {
 		super(translationPreffix);
 		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
-		// EventManager.getInstance().register(this);
+		EventManager.getInstance().register(this);
 	}
 
 	/**
@@ -25,8 +27,7 @@ public class InstanceChangingRootElementEditor<E extends IdentifiedElement> exte
 	@Override
 	public void notifyValueChanged() {
 		super.notifyValueChanged();
-		// EventManager.getInstance().fire(new ElementChangedEvent(getValue(),
-		// isValueValid()));
+		EventManager.getInstance().fire(new ElementChangedEvent(getValue(), isValueValid()));
 	}
 
 	@EventListener

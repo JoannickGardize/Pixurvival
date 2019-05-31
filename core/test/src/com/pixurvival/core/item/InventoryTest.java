@@ -16,13 +16,13 @@ public class InventoryTest {
 
 	@Before
 	public void beforeTest() {
-		itemA = new Item("fake 1", 0);
+		itemA = new ResourceItem("fake 1", 0);
 		itemA.setMaxStackSize(5);
 		itemA.setId((short) 0);
-		itemB = new Item("fake 2", 1);
+		itemB = new ResourceItem("fake 2", 1);
 		itemB.setMaxStackSize(1);
 		itemB.setId((short) 1);
-		itemC = new Item("fake 3", 2);
+		itemC = new ResourceItem("fake 3", 2);
 		itemC.setMaxStackSize(10);
 		itemC.setId((short) 2);
 		inventory = new Inventory(4);

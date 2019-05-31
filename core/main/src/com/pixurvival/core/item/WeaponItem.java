@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Weapon extends EquipableItem {
+public class WeaponItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 

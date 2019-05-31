@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.pixurvival.contentPackEditor.component.RootElementList;
@@ -60,10 +60,11 @@ public enum ElementType {
 	ECOSYSTEM(Ecosystem.class, new EcosystemEditor()),
 	GAME_MODE(GameMode.class, new GameModeEditor());
 
-	private static Map<Class<? extends IdentifiedElement>, ElementType> classToType = new HashMap<>();
+	private static Map<Class<? extends IdentifiedElement>, ElementType> classToType = new IdentityHashMap<>(15);
 
 	static {
 		for (ElementType type : ElementType.values()) {
+
 			classToType.put(type.getElementClass(), type);
 			type.elementList = new RootElementList<>(type);
 		}
@@ -79,7 +80,14 @@ public enum ElementType {
 		return TranslationService.getInstance().getString("elementType." + CaseUtils.upperToCamelCase(name()));
 	}
 
+	@SuppressWarnings("unchecked")
 	public static ElementType of(IdentifiedElement element) {
-		return classToType.get(element.getClass());
+		// Find the class under "IdentifiedElement", because of hierachy under
+		// item and structures
+		Class<? extends IdentifiedElement> type = element.getClass();
+		while (type.getSuperclass() != IdentifiedElement.class) {
+			type = (Class<? extends IdentifiedElement>) type.getSuperclass();
+		}
+		return classToType.get(type);
 	}
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Edible extends Item {
+public class EdibleItem extends Item {
 
 	private static final long serialVersionUID = 1L;
 
