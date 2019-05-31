@@ -44,7 +44,7 @@ public class ChatUI extends UIWindow implements ChatListener {
 			}
 		});
 
-		add(displayAreScrollPane).expand().fill().size(300, 200);
+		add(displayAreScrollPane).expand().fill();
 		row();
 		add(inputArea).fill();
 		pack();
