@@ -24,8 +24,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> defaultCharacterChooser = new ElementChooserButton<>(
-			LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<SpriteSheet> defaultCharacterChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
 	private ElementChooserButton<Tile> outsideTileChooser = new ElementChooserButton<>(IconService.getInstance()::get);
 
 	public ConstantsEditor() {
@@ -56,10 +55,8 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 	}
 
 	@Override
-	protected <T> void bind(ValueComponent<T> component, Function<Constants, T> getter,
-			BiConsumer<Constants, T> setter) {
-		component.addValueChangeListener(
-				v -> EventManager.getInstance().fire(new ContentPackConstantChangedEvent(getValue())));
+	public <T> void bind(ValueComponent<T> component, Function<Constants, T> getter, BiConsumer<Constants, T> setter) {
+		component.addValueChangeListener(v -> EventManager.getInstance().fire(new ContentPackConstantChangedEvent(getValue())));
 		super.bind(component, getter, setter);
 	}
 }

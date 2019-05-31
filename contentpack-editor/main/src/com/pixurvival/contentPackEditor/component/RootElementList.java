@@ -154,20 +154,27 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	@EventListener
 	@SuppressWarnings("unchecked")
 	public void elementAdded(ElementAddedEvent event) {
-		if (elementType.getElementClass() == event.getElement().getClass()) {
+		if (elementType.getElementClass().isInstance(event.getElement())) {
 			DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 			model.addElement(new ElementEntry((E) event.getElement(), ElementType.of(event.getElement()).getElementEditor().isValueValid(event.getElement())));
 			list.setSelectedIndex(model.getSize() - 1);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@EventListener
 	public void elementChanged(ElementChangedEvent event) {
-		if (elementType.getElementClass() == event.getElement().getClass()) {
+		if (elementType.getElementClass().isInstance(event.getElement())) {
 			DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 			int index = event.getElement().getId();
 			if (index < model.getSize()) {
-				model.get(index).setValid(event.isValid());
+				ElementEntry entry = model.get(index);
+				if (entry.getElement() == event.getElement()) {
+					entry.setValid(event.isValid());
+				} else {
+
+					model.set(index, new ElementEntry((E) event.getElement(), event.isValid()));
+				}
 			}
 			list.repaint();
 		}
@@ -177,7 +184,7 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	@SuppressWarnings("unchecked")
 	public void elementRemoved(ElementRemovedEvent event) {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
-		if (elementType.getElementClass() == event.getElement().getClass()) {
+		if (elementType.getElementClass().isInstance(event.getElement())) {
 			for (int i = 0; i < model.size(); i++) {
 				if (model.elementAt(i).getElement().equals(event.getElement())) {
 					model.remove(i);
@@ -185,6 +192,8 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 				}
 			}
 		}
+		// Revalidate all elements because they maybe point to the removed
+		// element
 		for (int i = 0; i < model.size(); i++) {
 			ElementEntry entry = model.get(i);
 			ElementEditor<IdentifiedElement> editor = ElementType.of(entry.getElement()).getElementEditor();

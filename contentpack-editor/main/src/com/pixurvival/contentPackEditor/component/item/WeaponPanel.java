@@ -5,29 +5,27 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.item.WeaponItem;
 
-public class WeaponEditor extends EquipableEditor<WeaponItem> {
+public class WeaponPanel extends EquipablePanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public WeaponEditor() {
+	private EffectAbilityEditor baseAbilityEditor = new EffectAbilityEditor(true, true);
+	private EffectAbilityEditor specialAbilityEditor = new EffectAbilityEditor(true, true);
 
-		// Construction
-
-		EffectAbilityEditor baseAbilityEditor = new EffectAbilityEditor(true, true);
+	public WeaponPanel() {
 		EventManager.getInstance().register(baseAbilityEditor);
-		EffectAbilityEditor specialAbilityEditor = new EffectAbilityEditor(true, true);
 		EventManager.getInstance().register(specialAbilityEditor);
-
-		// Binding
-
-		bind(baseAbilityEditor, WeaponItem::getBaseAbility, WeaponItem::setBaseAbility);
-		bind(specialAbilityEditor, WeaponItem::getSpecialAbility, WeaponItem::setSpecialAbility);
-
-		// Layouting
 
 		baseAbilityEditor.setBorder(LayoutUtils.createGroupBorder("weaponEditor.baseAbility"));
 		specialAbilityEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.specialAbility"));
-		LayoutUtils.addVertically(getRightPanel(), baseAbilityEditor, specialAbilityEditor);
-		finalizeLayouting();
+		finalizeLayout(LayoutUtils.createVerticalBox(baseAbilityEditor, specialAbilityEditor));
+
+	}
+
+	@Override
+	public void bindTo(ItemEditor itemEditor) {
+		super.bindTo(itemEditor);
+		itemEditor.bind(baseAbilityEditor, WeaponItem::getBaseAbility, WeaponItem::setBaseAbility, WeaponItem.class);
+		itemEditor.bind(specialAbilityEditor, WeaponItem::getSpecialAbility, WeaponItem::setSpecialAbility, WeaponItem.class);
 	}
 }

@@ -48,11 +48,11 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		if (newInstance == null) {
 			return;
 		}
-		setValue(newInstance);
 		E oldInstance = getValue();
 		if (oldInstance != null) {
 			initialize(oldInstance, newInstance);
 		}
+		setValue(newInstance);
 		notifyValueChanged();
 	}
 

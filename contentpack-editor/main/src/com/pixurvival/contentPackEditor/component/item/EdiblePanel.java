@@ -2,16 +2,20 @@ package com.pixurvival.contentPackEditor.component.item;
 
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.core.item.EdibleItem;
 
-public class EdibleEditor extends ElementEditor<EdibleItem> {
+public class EdiblePanel extends ItemTypePropertiesPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public EdibleEditor() {
+	public EdiblePanel() {
 
 		DoubleInput durationField = new DoubleInput(Bounds.min(0));
+
+	}
+
+	@Override
+	public void bindTo(ItemEditor itemEditor) {
+		// TODO Auto-generated method stub
 
 	}
 

@@ -16,8 +16,13 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.core.item.AccessoryItem;
+import com.pixurvival.core.item.ClothingItem;
 import com.pixurvival.core.item.EdibleItem;
 import com.pixurvival.core.item.Item;
+import com.pixurvival.core.item.ResourceItem;
+import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.item.WeaponItem;
 
 public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
@@ -77,41 +82,47 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		propertiesPanel.add(getSpecificPartPanel(), gbc);
 	}
 
-	// @Override
-	// protected void valueChanged(ValueComponent<?> source) {
-	// // if (source == this) {
-	// // getTypeChooser().setSelectedItem(((Item)
-	// source.getValue()).getClass());
-	// // }
-	//
-	// itemPreview.setImage(getValue().getImage());
-	// itemPreview.setFrame(getValue().getFrame());
-	// }
+	@Override
+	protected void valueChanged(ValueComponent<?> source) {
+		super.valueChanged(source);
+		itemPreview.setImage(getValue().getImage());
+		itemPreview.setFrame(getValue().getFrame());
+	}
 
 	@Override
 	protected List<ClassEntry> getClassEntries() {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		WeaponEditor weaponEditor = new WeaponEditor();
-		entries.add(new ClassEntry(WeaponItem.class, weaponEditor));
+		entries.add(new ClassEntry(ResourceItem.class, new JPanel()));
 
-		EdibleEditor edibleEditor = new EdibleEditor();
-		entries.add(new ClassEntry(EdibleItem.class, edibleEditor));
+		EdiblePanel ediblePanel = new EdiblePanel();
+		ediblePanel.bindTo(this);
+		entries.add(new ClassEntry(EdibleItem.class, ediblePanel));
 
-		// AccessoryEditor accessoryEditor = new AccessoryEditor();
-		// entries.add(new ClassEntry(Accessory.class, accessoryEditor));
-		//
-		// ResourceEditor resourceEditor = new ResourceEditor();
-		// entries.add(new ClassEntry(Item.class, resourceEditor));
+		WeaponPanel weaponPanel = new WeaponPanel();
+		weaponPanel.bindTo(this);
+		entries.add(new ClassEntry(WeaponItem.class, weaponPanel));
+
+		AccessoryPanel accessoryPanel = new AccessoryPanel();
+		accessoryPanel.bindTo(this);
+		entries.add(new ClassEntry(AccessoryItem.class, accessoryPanel));
+
+		ClothingPanel clothingPanel = new ClothingPanel();
+		clothingPanel.bindTo(this);
+		entries.add(new ClassEntry(ClothingItem.class, clothingPanel));
+
+		StructurePanel structurePanel = new StructurePanel();
+		structurePanel.bindTo(this);
+		entries.add(new ClassEntry(StructureItem.class, structurePanel));
 
 		return entries;
 	}
 
 	@Override
 	protected void initialize(Item oldInstance, Item newInstance) {
-		newInstance.setId(oldInstance.getId());
-		newInstance.setName(oldInstance.getName());
+		super.initialize(oldInstance, newInstance);
 		newInstance.setFrame(oldInstance.getFrame());
 		newInstance.setMaxStackSize(oldInstance.getMaxStackSize());
+		newInstance.setImage(oldInstance.getImage());
 	}
 }

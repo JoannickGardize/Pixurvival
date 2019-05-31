@@ -11,6 +11,6 @@ public class AccessoryItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 
-	private EffectAbility specialAbility;
+	private EffectAbility ability;
 
 }

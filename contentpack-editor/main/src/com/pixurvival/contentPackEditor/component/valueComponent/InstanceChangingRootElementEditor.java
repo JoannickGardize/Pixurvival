@@ -5,13 +5,15 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
 
+import com.pixurvival.contentPackEditor.ContentPackEditionService;
+import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
-public class InstanceChangingRootElementEditor<E extends IdentifiedElement> extends InstanceChangingElementEditor<E> {
+public abstract class InstanceChangingRootElementEditor<E extends IdentifiedElement> extends InstanceChangingElementEditor<E> {
 
 	public InstanceChangingRootElementEditor(String translationPreffix) {
 		super(translationPreffix);
@@ -19,9 +21,6 @@ public class InstanceChangingRootElementEditor<E extends IdentifiedElement> exte
 		EventManager.getInstance().register(this);
 	}
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -38,14 +37,13 @@ public class InstanceChangingRootElementEditor<E extends IdentifiedElement> exte
 	}
 
 	@Override
-	protected List<InstanceChangingElementEditor<E>.ClassEntry> getClassEntries() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+	@SuppressWarnings("unchecked")
 	protected void initialize(E oldInstance, E newInstance) {
-		// TODO Auto-generated method stub
+		newInstance.setId(oldInstance.getId());
+		newInstance.setName(oldInstance.getName());
+		// The instance changed, so set the element on the list of the
+		// ContentPack
+		((List<E>) ContentPackEditionService.getInstance().listOf(ElementType.of(newInstance))).set(newInstance.getId(), newInstance);
 	}
 
 }

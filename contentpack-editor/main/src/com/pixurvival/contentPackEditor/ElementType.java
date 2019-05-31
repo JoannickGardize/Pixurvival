@@ -82,7 +82,7 @@ public enum ElementType {
 
 	@SuppressWarnings("unchecked")
 	public static ElementType of(IdentifiedElement element) {
-		// Find the class under "IdentifiedElement", because of hierachy under
+		// Find the class under "IdentifiedElement", because of hierarchy under
 		// item and structures
 		Class<? extends IdentifiedElement> type = element.getClass();
 		while (type.getSuperclass() != IdentifiedElement.class) {
