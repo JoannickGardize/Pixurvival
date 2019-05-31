@@ -41,7 +41,7 @@ public class ContentPackEditionService {
 		initializers.put(ElementType.ITEM, o -> {
 			Item item = (Item) o;
 			item.setFrame(new Frame());
-			item.setDetails(new Item.Resource());
+			// item.setDetails(new Item.Resource());
 			item.setMaxStackSize(1);
 		});
 

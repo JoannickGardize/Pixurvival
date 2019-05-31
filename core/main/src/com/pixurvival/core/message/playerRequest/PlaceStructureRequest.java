@@ -5,7 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.Item.StructureDetails;
+import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.MapStructure;
 
@@ -25,7 +25,7 @@ public class PlaceStructureRequest implements IPlayerActionRequest {
 		if (heldItemStack == null) {
 			return;
 		}
-		Structure structure = ((StructureDetails) player.getInventory().getHeldItemStack().getItem().getDetails()).getStructure();
+		Structure structure = ((StructureItem) player.getInventory().getHeldItemStack().getItem()).getStructure();
 		if (MapStructure.canPlace(player, player.getWorld().getMap(), structure, x, y)) {
 			if (heldItemStack.getQuantity() == 1) {
 				player.getInventory().setHeldItemStack(null);

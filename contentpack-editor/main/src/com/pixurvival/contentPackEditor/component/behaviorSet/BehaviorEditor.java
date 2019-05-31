@@ -16,9 +16,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 

@@ -5,8 +5,8 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.World;
-import com.pixurvival.core.item.Item.StructureDetails;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.map.HarvestableStructure;
@@ -38,11 +38,11 @@ public class WorldMouseProcessor extends InputAdapter {
 		}
 		ItemStack heldItemStack = myPlayer.getInventory().getHeldItemStack();
 		if (button == Input.Buttons.RIGHT) {
-			if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof StructureDetails) {
+			if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
 				Vector2 worldPoint = screenToWorld(screenX, screenY);
 				int x = MathUtils.floor(worldPoint.x);
 				int y = MathUtils.floor(worldPoint.y);
-				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(), ((StructureDetails) heldItemStack.getItem().getDetails()).getStructure(), x, y)) {
+				if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(), ((StructureItem) heldItemStack.getItem()).getStructure(), x, y)) {
 					PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
 				}
 			} else {

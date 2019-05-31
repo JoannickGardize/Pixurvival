@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.core.item.Item.Accessory;
+import com.pixurvival.core.item.Accessory;
 
 public class AccessoryEditor extends EquipableEditor<Accessory> {
 

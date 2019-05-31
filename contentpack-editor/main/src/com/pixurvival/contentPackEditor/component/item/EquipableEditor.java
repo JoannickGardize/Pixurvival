@@ -11,12 +11,12 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item.Equipable;
+import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 import lombok.Getter;
 
-public abstract class EquipableEditor<T extends Equipable> extends ElementEditor<T> {
+public abstract class EquipableEditor<T extends EquipableItem> extends ElementEditor<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,8 +34,8 @@ public abstract class EquipableEditor<T extends Equipable> extends ElementEditor
 
 		// Binding
 
-		bind(spriteSheetChooser, Equipable::getSpriteSheet, Equipable::setSpriteSheet);
-		bind(alterationListEditor, Equipable::getStatModifiers, Equipable::setStatModifiers);
+		bind(spriteSheetChooser, EquipableItem::getSpriteSheet, EquipableItem::setSpriteSheet);
+		bind(alterationListEditor, EquipableItem::getStatModifiers, EquipableItem::setStatModifiers);
 
 		// Layouting
 

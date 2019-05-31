@@ -4,8 +4,8 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -67,10 +67,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
 			if (previousItemStack != null) {
-				((Equipable) previousItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
 			}
 			if (newItemStack != null) {
-				((Equipable) newItemStack.getItem().getDetails()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+				((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
 		});
 	}

@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item.Clothing;
-import com.pixurvival.core.item.Item.Weapon;
+import com.pixurvival.core.item.Clothing;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.Weapon;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.WorkAbility;
 import com.pixurvival.core.livingEntity.ability.WorkAbilityData;
@@ -40,7 +40,7 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 	protected TextureAnimationSet getBodyTextureAnimationSet(PlayerEntity e) {
 		ItemStack clothing = e.getEquipment().getClothing();
 		if (clothing != null) {
-			return PixurvivalGame.getContentPackTextures().getAnimationSet(((Clothing) clothing.getItem().getDetails()).getSpriteSheet());
+			return PixurvivalGame.getContentPackTextures().getAnimationSet(((Clothing) clothing.getItem()).getSpriteSheet());
 		}
 		return defaultBody;
 	}
@@ -58,7 +58,7 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 	protected void drawWeapon(boolean back, Batch batch, PlayerEntity e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {
 		ItemStack weapon = e.getEquipment().getWeapon();
 		if (weapon != null) {
-			SpriteSheet spriteSheet = ((Weapon) weapon.getItem().getDetails()).getSpriteSheet();
+			SpriteSheet spriteSheet = ((Weapon) weapon.getItem()).getSpriteSheet();
 			TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
 			TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
 			if (weaponAnimation.isBack(index) == back) {

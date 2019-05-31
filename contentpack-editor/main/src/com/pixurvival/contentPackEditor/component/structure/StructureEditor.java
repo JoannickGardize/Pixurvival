@@ -26,6 +26,7 @@ public class StructureEditor extends RootElementEditor<Structure> {
 	private JComboBox<Class<? extends Structure.Details>> typeChooser;
 
 	public StructureEditor() {
+
 		// Contruction
 		ChangeableTypeEditor<Structure.Details> detailsEditor;
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
