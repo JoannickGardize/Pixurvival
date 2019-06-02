@@ -1,4 +1,4 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 public class ClothingItem extends EquipableItem {
 

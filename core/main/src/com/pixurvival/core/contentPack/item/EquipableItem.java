@@ -1,4 +1,4 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 import java.util.ArrayList;
 import java.util.List;

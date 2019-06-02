@@ -9,11 +9,11 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
-public abstract class EquipablePanel extends ItemTypePropertiesPanel {
+public abstract class EquipablePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 

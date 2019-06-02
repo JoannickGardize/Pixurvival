@@ -1,4 +1,4 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 
@@ -7,10 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AccessoryItem extends EquipableItem {
+public class WeaponItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 
-	private EffectAbility ability;
+	private EffectAbility baseAbility;
+	private EffectAbility specialAbility;
 
 }

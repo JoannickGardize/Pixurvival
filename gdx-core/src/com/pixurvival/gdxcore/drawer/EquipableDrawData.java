@@ -1,6 +1,6 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.pixurvival.core.item.EquipableItem;
+import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.EquipmentHolder;

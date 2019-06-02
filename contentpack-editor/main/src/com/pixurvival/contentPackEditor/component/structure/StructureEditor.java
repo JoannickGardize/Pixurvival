@@ -2,49 +2,45 @@ package com.pixurvival.contentPackEditor.component.structure;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.ChangeableTypeBuilder;
-import com.pixurvival.contentPackEditor.component.valueComponent.ChangeableTypeEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.structure.HarvestableStructure;
+import com.pixurvival.core.contentPack.structure.OrnamentalStructure;
+import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
+import com.pixurvival.core.contentPack.structure.Structure;
 
-public class StructureEditor extends RootElementEditor<Structure> {
+public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
-	private JComboBox<Class<? extends Structure.Details>> typeChooser;
 
 	public StructureEditor() {
+		super("structureType");
 
 		// Contruction
-		ChangeableTypeEditor<Structure.Details> detailsEditor;
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
-		ChangeableTypeBuilder<Structure.Details> builder = new ChangeableTypeBuilder<>(Structure.class, getClass().getPackage().getName(), "structure.type");
-		typeChooser = builder.getChooser();
-		detailsEditor = builder.getEditor();
 
 		// Binding
 
 		bind(solidCheckBox, Structure::isSolid, Structure::setSolid);
 		bind(spriteSheetChooser, Structure::getSpriteSheet, Structure::setSpriteSheet);
 		bind(dimensionsEditor, Structure::getDimensions, Structure::setDimensions);
-		bind(detailsEditor, Structure::getDetails, Structure::setDetails);
 
 		// Layouting
 		setLayout(new GridBagLayout());
-		detailsEditor.setBorder(LayoutUtils.createGroupBorder("generic.typeProperties"));
+		getSpecificPartPanel().setBorder(LayoutUtils.createGroupBorder("generic.typeProperties"));
 
 		JPanel northPanel = new JPanel(new GridBagLayout());
 		northPanel.setBorder(LayoutUtils.createGroupBorder("generic.generalProperties"));
@@ -59,7 +55,7 @@ public class StructureEditor extends RootElementEditor<Structure> {
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
-		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", typeChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
 
 		gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -67,19 +63,28 @@ public class StructureEditor extends RootElementEditor<Structure> {
 		add(northPanel, gbc);
 		gbc.gridy++;
 		gbc.weighty = 1;
-		add(detailsEditor, gbc);
-
-	}
-
-	@Override
-	protected void valueChanged(ValueComponent<?> source) {
-		if (source == this) {
-			typeChooser.setSelectedItem(((Structure) source.getValue()).getDetails().getClass());
-		}
+		add(getSpecificPartPanel(), gbc);
 	}
 
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
+	}
+
+	@Override
+	protected List<ClassEntry> getClassEntries() {
+		List<ClassEntry> entries = new ArrayList<>();
+
+		entries.add(new ClassEntry(OrnamentalStructure.class, new JPanel()));
+
+		HarvestablePanel harvestablePanel = new HarvestablePanel();
+		harvestablePanel.bindTo(this);
+		entries.add(new ClassEntry(HarvestableStructure.class, harvestablePanel));
+
+		ShortLivedPanel shortLivedPanel = new ShortLivedPanel();
+		shortLivedPanel.bindTo(this);
+		entries.add(new ClassEntry(ShortLivedStructure.class, shortLivedPanel));
+
+		return entries;
 	}
 }

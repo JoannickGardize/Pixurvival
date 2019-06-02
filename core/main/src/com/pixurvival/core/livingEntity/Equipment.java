@@ -7,10 +7,10 @@ import java.util.Objects;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.item.AccessoryItem;
-import com.pixurvival.core.item.ClothingItem;
+import com.pixurvival.core.contentPack.item.AccessoryItem;
+import com.pixurvival.core.contentPack.item.ClothingItem;
+import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.WeaponItem;
 
 public class Equipment {
 

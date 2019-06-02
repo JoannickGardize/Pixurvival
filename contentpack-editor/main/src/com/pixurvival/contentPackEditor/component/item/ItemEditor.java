@@ -17,13 +17,13 @@ import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.core.item.AccessoryItem;
-import com.pixurvival.core.item.ClothingItem;
-import com.pixurvival.core.item.EdibleItem;
-import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ResourceItem;
-import com.pixurvival.core.item.StructureItem;
-import com.pixurvival.core.item.WeaponItem;
+import com.pixurvival.core.contentPack.item.AccessoryItem;
+import com.pixurvival.core.contentPack.item.ClothingItem;
+import com.pixurvival.core.contentPack.item.EdibleItem;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ResourceItem;
+import com.pixurvival.core.contentPack.item.StructureItem;
+import com.pixurvival.core.contentPack.item.WeaponItem;
 
 public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 
@@ -69,17 +69,13 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "itemEditor.maxStackSize", maxStackSizeInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
 
-		JPanel propertiesPanel = new JPanel(new GridBagLayout());
-		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.typeProperties"));
-		LayoutUtils.addVertically(this, northPanel, propertiesPanel);
+		getSpecificPartPanel().setBorder(LayoutUtils.createGroupBorder("generic.typeProperties"));
+		LayoutUtils.addVertically(this, northPanel, getSpecificPartPanel());
 
 		gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		add(northPanel, gbc);
-		gbc.gridy++;
-		gbc.weighty = 1;
-		propertiesPanel.add(getSpecificPartPanel(), gbc);
 	}
 
 	@Override

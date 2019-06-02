@@ -3,10 +3,10 @@ package com.pixurvival.core.livingEntity;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.item.EquipableItem;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.item.EquipableItem;
 import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.ItemCraft;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -18,7 +18,7 @@ import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkGroupChangeHelper;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.util.MathUtils;
 
@@ -140,7 +140,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		startAbility(CRAFT_ABILITY_ID);
 	}
 
-	public void harvest(HarvestableStructure harvestableStructure) {
+	public void harvest(HarvestableMapStructure harvestableStructure) {
 		((HarvestAbilityData) getAbilityData(HARVEST_ABILITY_ID)).setStructure(harvestableStructure);
 		startAbility(HARVEST_ABILITY_ID);
 	}

@@ -7,6 +7,7 @@ import java.util.NavigableMap;
 import java.util.Random;
 
 import com.pixurvival.core.contentPack.WeightedValueProducer;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 

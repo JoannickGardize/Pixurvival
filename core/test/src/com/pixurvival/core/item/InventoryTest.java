@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ResourceItem;
+
 public class InventoryTest {
 
 	private Item itemA;

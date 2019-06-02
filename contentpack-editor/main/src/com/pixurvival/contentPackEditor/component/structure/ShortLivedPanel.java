@@ -6,20 +6,23 @@ import java.awt.GridBagLayout;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.core.contentPack.map.Structure.ShortLived;
+import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
 
-public class ShortLivedEditor extends ElementEditor<ShortLived> {
+public class ShortLivedPanel extends StructureSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public ShortLivedEditor() {
-		DoubleInput durationInput = new DoubleInput(Bounds.positive());
+	private DoubleInput durationInput = new DoubleInput(Bounds.positive());
 
-		bind(durationInput, ShortLived::getDuration, ShortLived::setDuration);
+	public ShortLivedPanel() {
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.duration", durationInput, gbc);
+	}
+
+	@Override
+	public void bindTo(StructureEditor structureEditor) {
+		structureEditor.bind(durationInput, ShortLivedStructure::getDuration, ShortLivedStructure::setDuration, ShortLivedStructure.class);
 	}
 }

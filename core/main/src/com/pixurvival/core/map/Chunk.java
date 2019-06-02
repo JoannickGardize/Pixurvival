@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EntityCollection;
 
 import lombok.AccessLevel;
@@ -95,7 +95,7 @@ public class Chunk {
 	}
 
 	public MapStructure addStructure(Structure structure, int x, int y, boolean notify) {
-		MapStructure mapStructure = MapStructure.newInstance(this, structure, x, y);
+		MapStructure mapStructure = structure.newMapStructure(this, x, y);
 		int localX = x - offsetX;
 		int localY = y - offsetY;
 		for (int cx = localX; cx < localX + structure.getDimensions().getWidth(); cx++) {

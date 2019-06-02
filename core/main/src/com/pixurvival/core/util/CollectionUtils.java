@@ -28,4 +28,13 @@ public class CollectionUtils {
 	public static boolean isNullOrEmpty(Collection<?> collection) {
 		return collection == null || collection.isEmpty();
 	}
+
+	public static boolean containsIdentity(Collection<?> collection, Object o) {
+		for (Object element : collection) {
+			if (o == element) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

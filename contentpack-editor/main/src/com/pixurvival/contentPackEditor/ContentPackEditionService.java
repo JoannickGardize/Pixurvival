@@ -9,15 +9,16 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
+import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ResourceItem;
+import com.pixurvival.core.contentPack.structure.OrnamentalStructure;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
@@ -46,11 +47,7 @@ public class ContentPackEditionService {
 			return item;
 		});
 
-		initializers.put(ElementType.STRUCTURE, () -> {
-			Structure structure = new Structure();
-			structure.setDetails(new Structure.ShortLived());
-			return structure;
-		});
+		initializers.put(ElementType.STRUCTURE, OrnamentalStructure::new);
 	}
 
 	@SneakyThrows
@@ -81,9 +78,16 @@ public class ContentPackEditionService {
 		EventManager.getInstance().fire(new ElementRemovedEvent(element));
 	}
 
+	public void changeInstance(IdentifiedElement element) {
+		ElementType type = ElementType.of(element);
+		List<IdentifiedElement> list = listOf(type);
+		list.set(element.getId(), element);
+		EventManager.getInstance().fire(new ElementInstanceChangedEvent(element));
+	}
+
 	@SuppressWarnings("unchecked")
 	@SneakyThrows
-	public List<? extends IdentifiedElement> listOf(ElementType type) {
+	public List<IdentifiedElement> listOf(ElementType type) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
 			return Collections.emptyList();

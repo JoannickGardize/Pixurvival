@@ -6,7 +6,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEdit
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.contentPack.item.ItemReward;
 
 public class ItemRewardEditor extends RootElementEditor<ItemReward> {
 

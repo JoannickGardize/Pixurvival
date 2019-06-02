@@ -1,12 +1,9 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.border.EtchedBorder;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
-import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -37,13 +34,12 @@ public abstract class InstanceChangingRootElementEditor<E extends IdentifiedElem
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void initialize(E oldInstance, E newInstance) {
 		newInstance.setId(oldInstance.getId());
 		newInstance.setName(oldInstance.getName());
 		// The instance changed, so set the element on the list of the
 		// ContentPack
-		((List<E>) ContentPackEditionService.getInstance().listOf(ElementType.of(newInstance))).set(newInstance.getId(), newInstance);
+		ContentPackEditionService.getInstance().changeInstance(newInstance);
 	}
 
 }

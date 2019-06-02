@@ -19,9 +19,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValuePr
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
-import com.pixurvival.core.contentPack.map.Structure;
 import com.pixurvival.core.contentPack.map.StructureGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.structure.Structure;
 
 public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> {
 

@@ -4,7 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapTile;
 
 import lombok.Getter;
@@ -22,8 +22,8 @@ public class HarvestableStructureUpdate extends StructureUpdate {
 	@Override
 	public void perform(Chunk chunk) {
 		MapTile mapTile = chunk.tileAt(getX(), getY());
-		if (mapTile.getStructure() instanceof HarvestableStructure) {
-			((HarvestableStructure) mapTile.getStructure()).setHarvested(harvested);
+		if (mapTile.getStructure() instanceof HarvestableMapStructure) {
+			((HarvestableMapStructure) mapTile.getStructure()).setHarvested(harvested);
 		}
 	}
 

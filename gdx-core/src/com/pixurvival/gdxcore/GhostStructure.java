@@ -2,7 +2,7 @@ package com.pixurvival.gdxcore;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.message.StructureUpdate;
 

@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.util.CollectionUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -90,7 +91,7 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public boolean isValueValid(T value) {
-		return !required && value == null || searchPopup.getItems() != null && searchPopup.getItems().contains(value);
+		return !required && value == null || searchPopup.getItems() != null && CollectionUtils.containsIdentity(searchPopup.getItems(), value);
 	}
 
 	@Override

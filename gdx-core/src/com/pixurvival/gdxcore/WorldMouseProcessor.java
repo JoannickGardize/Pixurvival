@@ -5,11 +5,11 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.StructureItem;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
@@ -47,7 +47,7 @@ public class WorldMouseProcessor extends InputAdapter {
 				}
 			} else {
 				MapStructure structure = findClosest(screenX, screenY, 1);
-				if (structure instanceof HarvestableStructure && structure.canInteract(myPlayer)) {
+				if (structure instanceof HarvestableMapStructure && structure.canInteract(myPlayer)) {
 					PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 				}
 			}

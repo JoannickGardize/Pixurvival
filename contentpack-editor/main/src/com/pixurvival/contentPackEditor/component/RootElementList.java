@@ -29,6 +29,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
+import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
@@ -181,7 +182,6 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	}
 
 	@EventListener
-	@SuppressWarnings("unchecked")
 	public void elementRemoved(ElementRemovedEvent event) {
 		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
 		if (elementType.getElementClass().isInstance(event.getElement())) {
@@ -194,12 +194,7 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 		}
 		// Revalidate all elements because they maybe point to the removed
 		// element
-		for (int i = 0; i < model.size(); i++) {
-			ElementEntry entry = model.get(i);
-			ElementEditor<IdentifiedElement> editor = ElementType.of(entry.getElement()).getElementEditor();
-			entry.setValid(editor.isValueValid(entry.getElement()));
-		}
-		list.repaint();
+		validateAllElements();
 	}
 
 	@EventListener
@@ -209,6 +204,22 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 		model.clear();
 		List<? extends IdentifiedElement> elementList = ContentPackEditionService.getInstance().listOf(elementType);
 		elementList.forEach(e -> model.addElement(new ElementEntry((E) e, ElementType.of(e).getElementEditor().isValueValid(e))));
+	}
+
+	@EventListener
+	public void elementInstanceChangedEvent(ElementInstanceChangedEvent event) {
+		validateAllElements();
+	}
+
+	@SuppressWarnings("unchecked")
+	private void validateAllElements() {
+		DefaultListModel<ElementEntry> model = (DefaultListModel<ElementEntry>) list.getModel();
+		for (int i = 0; i < model.size(); i++) {
+			ElementEntry entry = model.get(i);
+			ElementEditor<IdentifiedElement> editor = ElementType.of(entry.getElement()).getElementEditor();
+			entry.setValid(editor.isValueValid(entry.getElement()));
+		}
+		list.repaint();
 	}
 
 	private String showChooseNameDialog() {

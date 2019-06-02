@@ -6,8 +6,8 @@ import java.util.Random;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.contentPack.map.Structure.Harvestable;
+import com.pixurvival.core.contentPack.structure.HarvestableStructure;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.HarvestableStructureUpdate;
@@ -17,9 +17,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class HarvestableStructure extends MapStructure {
+public class HarvestableMapStructure extends MapStructure {
 
-	public HarvestableStructure(Chunk chunk, Structure definition, int x, int y) {
+	public HarvestableMapStructure(Chunk chunk, Structure definition, int x, int y) {
 		super(chunk, definition, x, y);
 	}
 
@@ -38,8 +38,8 @@ public class HarvestableStructure extends MapStructure {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
 			getChunk().updateTimestamp();
-		}, Time.secToMillis(((Harvestable) getDefinition().getDetails()).getRespawnTime().next(world.getRandom())));
-		return ((Harvestable) getDefinition().getDetails()).getItemReward().produce(random);
+		}, Time.secToMillis(((HarvestableStructure) getDefinition()).getRespawnTime().next(world.getRandom())));
+		return ((HarvestableStructure) getDefinition()).getItemReward().produce(random);
 	}
 
 	@Override

@@ -2,8 +2,8 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.util.function.Function;
 
-import com.pixurvival.core.item.AccessoryItem;
-import com.pixurvival.core.item.WeaponItem;
+import com.pixurvival.core.contentPack.item.AccessoryItem;
+import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.livingEntity.Equipment;
 
 import lombok.AllArgsConstructor;

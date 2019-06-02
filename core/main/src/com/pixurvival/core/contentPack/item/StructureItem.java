@@ -1,6 +1,6 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 

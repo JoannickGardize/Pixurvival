@@ -2,6 +2,8 @@ package com.pixurvival.contentPackEditor.util;
 
 import java.lang.reflect.Method;
 
+import com.pixurvival.core.contentPack.IdentifiedElement;
+
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
@@ -12,7 +14,7 @@ public class BeanUtils {
 	public static <T> T newFilledInstance(Class<T> clazz) {
 		T instance = clazz.newInstance();
 		for (Method method : clazz.getMethods()) {
-			if (method.getName().startsWith("get") && method.getParameterCount() == 0) {
+			if (method.getName().startsWith("get") && method.getParameterCount() == 0 && !IdentifiedElement.class.isAssignableFrom(method.getReturnType())) {
 				Object object = method.invoke(instance);
 				if (object == null) {
 					Object attributeValue = newInstanceIfPossible(method.getReturnType());

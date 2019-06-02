@@ -6,10 +6,10 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.item.StructureItem;
+import com.pixurvival.core.contentPack.item.StructureItem;
+import com.pixurvival.core.contentPack.structure.Structure;
 
-public class StructurePanel extends ItemTypePropertiesPanel {
+public class StructurePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 

@@ -3,10 +3,10 @@ package com.pixurvival.core.livingEntity.ability;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.effect.Effect;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.Item;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 
