@@ -55,15 +55,13 @@ public class WorldUpdateManager implements Plugin<World> {
 		while (history.size() > HISTORY_SIZE) {
 			ObjectPools.getWorldUpdatePool().offer(history.pollFirstEntry().getValue());
 		}
-		if (!playerDataList.isEmpty()) {
-			for (int i = 0; i < playerDataList.size(); i++) {
-				PlayerData playerData = playerDataList.get(i);
-				PlayerEntity e = (PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, playerData.getId());
-				if (e != null) {
-					e.applyData(playerData);
-					playerDataList.remove(i);
-					i--;
-				}
+		for (int i = 0; i < playerDataList.size(); i++) {
+			PlayerData playerData = playerDataList.get(i);
+			PlayerEntity e = (PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, playerData.getId());
+			if (e != null) {
+				e.applyData(playerData);
+				playerDataList.remove(i);
+				i--;
 			}
 		}
 	}

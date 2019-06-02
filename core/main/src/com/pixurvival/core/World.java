@@ -4,9 +4,11 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.chat.ChatManager;
+import com.pixurvival.core.chat.ChatSender;
+import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
@@ -37,7 +39,7 @@ import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class World extends PluginHolder<World> {
+public class World extends PluginHolder<World> implements ChatSender {
 
 	@Getter
 	@AllArgsConstructor
@@ -60,15 +62,15 @@ public class World extends PluginHolder<World> {
 	private WorldRandom random = new WorldRandom();
 	private ActionTimerManager actionTimerManager = new ActionTimerManager(this);
 	private long id;
-	private UUID uid;
 	private ContentPack contentPack;
 	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
 	private File saveDirectory;
-
 	private @Setter long myPlayerId = -1;
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
+	private @Getter CommandManager commandManager = new CommandManager();
+	private @Getter ChatManager chatManager = new ChatManager();
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -81,7 +83,6 @@ public class World extends PluginHolder<World> {
 		this.gameMode = contentPack.getGameModes().get(gameModeId);
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
-		uid = UUID.randomUUID();
 		// TODO make the world persistence great again
 		// saveDirectory = new File(GlobalSettings.getSaveDirectory(),
 		// uid.toString());
@@ -180,5 +181,10 @@ public class World extends PluginHolder<World> {
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "World";
 	}
 }

@@ -3,6 +3,8 @@ package com.pixurvival.core.livingEntity;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.chat.ChatSender;
+import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.entity.EntityGroup;
@@ -26,7 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder {
+public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder, CommandExecutor, ChatSender {
 
 	public static final float MAX_HUNGER = 100;
 	public static final float HUNGER_DECREASE = 100f / (60 * 10);
@@ -51,6 +53,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
+
+	private @Getter @Setter boolean operator = true;
 
 	private @Setter String name = "Unknown";
 

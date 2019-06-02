@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
@@ -14,6 +15,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.CompressedChunk;
+import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
@@ -69,6 +71,8 @@ public class KryoInitializer {
 		register(kryo, PlaceStructureRequest.class);
 		register(kryo, PlayerEquipmentAbilityRequest.class);
 		register(kryo, UpdateTargetPositionRequest.class);
+		register(kryo, ChatRequest.class);
+		register(kryo, ChatEntry.class);
 	}
 
 	@SuppressWarnings("unchecked")

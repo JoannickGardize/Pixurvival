@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.server.PlayerConnection;
@@ -68,7 +69,7 @@ public class ServerConsole implements Runnable, ServerGameListener {
 		Scanner reader = new Scanner(System.in);
 		while (running) {
 			System.out.print(" -> ");
-			String[] args = ConsoleArgsUtils.splitArgs(reader.nextLine());
+			String[] args = CommandArgsUtils.splitArgs(reader.nextLine());
 			try {
 				rootCommandProcessor.process(args);
 			} catch (Exception e) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.command.CommandArgsUtils;
 
 public class CommandMultiplexer implements CommandProcessor {
 
@@ -23,7 +24,7 @@ public class CommandMultiplexer implements CommandProcessor {
 		if (processor == null) {
 			Log.warn("Unknown command : " + args[0]);
 		} else {
-			processor.process(ConsoleArgsUtils.subArgs(args));
+			processor.process(CommandArgsUtils.subArgs(args));
 		}
 	}
 }

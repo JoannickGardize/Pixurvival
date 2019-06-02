@@ -1,12 +1,10 @@
 package com.pixurvival.gdxcore.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ScreenResizeEvent;
 
-public class UIWindow extends Window implements EventListener {
+public class UIWindow extends Window {
 
 	public UIWindow(String name) {
 		super(PixurvivalGame.getString("hud." + name + ".title"), PixurvivalGame.getSkin());
@@ -17,18 +15,7 @@ public class UIWindow extends Window implements EventListener {
 		// actor must always be in front.
 		getCaptureListeners().clear();
 		setResizable(false);
-	}
-
-	public void initialize() {
-		getStage().addListener(this);
-	}
-
-	@Override
-	public boolean handle(Event event) {
-		if (event instanceof ScreenResizeEvent && getParent() == getStage().getRoot()) {
-			moveOnScreenResize((ScreenResizeEvent) event);
-		}
-		return false;
+		setMovable(false);
 	}
 
 	public float getCenterX() {

@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
@@ -21,27 +21,28 @@ import com.pixurvival.core.message.WorldUpdate;
 
 class NetworkMessageHandler extends Listener {
 
-	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>(8);
+	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>(9);
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
 	public NetworkMessageHandler(ClientGame game) {
-		messageActions.put(LoginResponse.class, r -> game.notify(l -> l.loginResponse((LoginResponse) r)));
-		messageActions.put(CreateWorld.class, s -> game.initializeNetworkWorld((CreateWorld) s));
-		messageActions.put(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept((ContentPackPart) p));
+		putMessageAction(LoginResponse.class, r -> game.notify(l -> l.loginResponse(r)));
+		putMessageAction(CreateWorld.class, game::initializeNetworkWorld);
+		putMessageAction(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept(p));
 
 		// TODO Download system
 		// messageActions.put(RequestContentPacks.class, r -> {
 		// game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
 		// });
-		messageActions.put(TimeResponse.class, o -> {
-			TimeResponse t = (TimeResponse) o;
+		putMessageAction(TimeResponse.class, o -> {
+			TimeResponse t = o;
 			game.synchronizeTime(t);
 		});
-		messageActions.put(PlayerInventory.class, i -> game.getMyInventory().set((Inventory) i));
-		messageActions.put(PlayerData[].class, d -> game.offer((PlayerData[]) d));
-		messageActions.put(WorldUpdate.class, u -> game.offer((WorldUpdate) u));
-		messageActions.put(StartGame.class, g -> game.addPlugin(new WorldUpdater()));
+		putMessageAction(PlayerInventory.class, i -> game.getMyInventory().set(i));
+		putMessageAction(PlayerData[].class, game::offer);
+		putMessageAction(WorldUpdate.class, game::offer);
+		putMessageAction(StartGame.class, g -> game.addPlugin(new WorldUpdater()));
+		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 	}
 
 	@Override
@@ -70,5 +71,9 @@ class NetworkMessageHandler extends Listener {
 			}
 			receivedObjects.clear();
 		}
+	}
+
+	private <T> void putMessageAction(Class<T> type, Consumer<T> action) {
+		messageActions.put(type, action);
 	}
 }

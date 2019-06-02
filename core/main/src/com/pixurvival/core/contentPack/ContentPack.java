@@ -1,6 +1,7 @@
 package com.pixurvival.core.contentPack;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +27,10 @@ import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.util.ReflectionUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,11 +38,20 @@ import lombok.Setter;
 @Setter
 public class ContentPack implements Serializable {
 
+	@AllArgsConstructor
+	@EqualsAndHashCode
+	private static class ElementByNameKey {
+		Class<? extends IdentifiedElement> type;
+		String name;
+	}
+
 	public static final String SERIALIZATION_ENTRY_NAME = "contentPack";
 
 	private static final long serialVersionUID = 1L;
 
 	private transient Map<String, byte[]> resources;
+
+	private transient Map<ElementByNameKey, IdentifiedElement> elementsByName;
 
 	@Valid
 	@Required
@@ -76,6 +89,7 @@ public class ContentPack implements Serializable {
 	@ElementCollection(BehaviorSet.class)
 	private List<BehaviorSet> behaviorSets = new ArrayList<>();
 
+	@ElementCollection(AbilitySet.class)
 	private List<AbilitySet<EffectAbility>> abilitySets = new ArrayList<>();
 
 	@Valid
@@ -98,8 +112,10 @@ public class ContentPack implements Serializable {
 	@ElementCollection(MapGenerator.class)
 	private List<MapGenerator> mapGenerators = new ArrayList<>();
 
+	@ElementCollection(Ecosystem.class)
 	private List<Ecosystem> ecosystems = new ArrayList<>();
 
+	@ElementCollection(GameMode.class)
 	private List<GameMode> gameModes = new ArrayList<>();
 
 	public byte[] getResource(String resource) {
@@ -128,7 +144,20 @@ public class ContentPack implements Serializable {
 		return resources.containsKey(resource);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initialize() {
+		elementsByName = new HashMap<>();
+		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
+			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
+			for (IdentifiedElement element : list) {
+				elementsByName.put(new ElementByNameKey(field.getAnnotation(ElementCollection.class).value(), element.getName()), element);
+			}
+		}
 		ecosystems.forEach(Ecosystem::initialize);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends IdentifiedElement> T get(Class<T> type, String name) {
+		return (T) elementsByName.get(new ElementByNameKey(type, name));
 	}
 }

@@ -20,6 +20,7 @@ import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
+import com.pixurvival.gdxcore.ui.UILayoutManager;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class WorldScreen implements Screen {
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private EntitiesActor entitiesActor;
 	private DebugInfosActor debugInfosActors;
+	private UILayoutManager uiLayoutManager = new UILayoutManager();
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -53,7 +55,6 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(overlayActor);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
-		miniMapUI.initialize();
 		// InventoryUI inventoryUI = new InventoryUI();
 		// hudStage.addActor(inventoryUI);
 		// inventoryUI.initialize();
@@ -62,13 +63,17 @@ public class WorldScreen implements Screen {
 		// craftUI.initialize();
 		CharacterUI characterUI = new CharacterUI();
 		hudStage.addActor(characterUI);
-		characterUI.initialize();
-		hudStage.addActor(new ChatUI());
+		ChatUI chatUI = new ChatUI();
+		world.getChatManager().addListener(chatUI);
+		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
+		uiLayoutManager.add(chatUI, UILayoutManager.LEFT_SIDE, 30);
+		uiLayoutManager.add(characterUI, UILayoutManager.LEFT_SIDE, 70);
+		uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 	}
 
@@ -134,6 +139,7 @@ public class WorldScreen implements Screen {
 		if (event.isValid()) {
 			hudStage.getRoot().fire(event);
 		}
+		uiLayoutManager.resize(width, height, ((FitViewport) worldStage.getViewport()).getLeftGutterWidth());
 	}
 
 	@Override

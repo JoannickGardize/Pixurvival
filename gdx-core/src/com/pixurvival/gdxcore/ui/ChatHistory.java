@@ -12,7 +12,7 @@ import com.pixurvival.gdxcore.util.TruncatingQueue;
 
 public class ChatHistory extends Widget implements Cullable {
 
-	private TruncatingQueue<ChatEntry> queue;
+	private TruncatingQueue<ChatTextEntry> queue;
 	private int drawStartIndex;
 	private int drawSize;
 
@@ -24,7 +24,7 @@ public class ChatHistory extends Widget implements Cullable {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void push(ChatEntry chatEntry) {
+	public void push(ChatTextEntry chatEntry) {
 		queue.push(chatEntry);
 		invalidateHierarchy();
 	}
