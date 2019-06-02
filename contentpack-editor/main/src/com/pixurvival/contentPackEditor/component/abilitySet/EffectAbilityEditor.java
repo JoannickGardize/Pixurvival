@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.effect.Effect;
-import com.pixurvival.core.item.Item;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 
 public class EffectAbilityEditor extends ElementEditor<EffectAbility> {

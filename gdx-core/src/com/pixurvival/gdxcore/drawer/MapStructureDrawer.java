@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
@@ -21,7 +21,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	public void drawShadow(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
 		ActionAnimation action = ActionAnimation.NONE;
-		if (e instanceof HarvestableStructure && ((HarvestableStructure) e).isHarvested()) {
+		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);
@@ -36,7 +36,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
 		float y = (float) e.getY();
 		ActionAnimation action = ActionAnimation.NONE;
-		if (e instanceof HarvestableStructure && ((HarvestableStructure) e).isHarvested()) {
+		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);

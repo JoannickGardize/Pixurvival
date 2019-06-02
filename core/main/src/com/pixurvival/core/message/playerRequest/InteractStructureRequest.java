@@ -4,7 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapTile;
 
 import lombok.AllArgsConstructor;
@@ -20,8 +20,8 @@ public class InteractStructureRequest implements IPlayerActionRequest {
 	@Override
 	public void apply(PlayerEntity player) {
 		MapTile mapTile = player.getWorld().getMap().tileAt(x, y);
-		if (mapTile.getStructure() instanceof HarvestableStructure && mapTile.getStructure().canInteract(player)) {
-			HarvestableStructure structure = (HarvestableStructure) mapTile.getStructure();
+		if (mapTile.getStructure() instanceof HarvestableMapStructure && mapTile.getStructure().canInteract(player)) {
+			HarvestableMapStructure structure = (HarvestableMapStructure) mapTile.getStructure();
 			player.harvest(structure);
 		}
 	}

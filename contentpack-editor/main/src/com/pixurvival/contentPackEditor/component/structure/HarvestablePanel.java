@@ -8,30 +8,24 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleIntervalEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.map.Structure.Harvestable;
-import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.contentPack.item.ItemReward;
+import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 
-public class HarvestableEditor extends ElementEditor<Harvestable> {
+public class HarvestablePanel extends StructureSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<ItemReward> rewardChooser = new ElementChooserButton<>();
+	private DoubleInput harvestingTimeInput = new DoubleInput(Bounds.positive());
+	private DoubleIntervalEditor respawnTimeEditor = new DoubleIntervalEditor("structureEditor.harvestable.respawnTime");
 
-	public HarvestableEditor() {
+	public HarvestablePanel() {
 		EventManager.getInstance().register(this);
 
-		// Construction
-		DoubleInput harvestingTimeInput = new DoubleInput(Bounds.positive());
-		DoubleIntervalEditor respawnTimeEditor = new DoubleIntervalEditor("structureEditor.harvestable.respawnTime");
-
 		// Binding
-		bind(harvestingTimeInput, Harvestable::getHarvestingTime, Harvestable::setHarvestingTime);
-		bind(rewardChooser, Harvestable::getItemReward, Harvestable::setItemReward);
-		bind(respawnTimeEditor, Harvestable::getRespawnTime, Harvestable::setRespawnTime);
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -48,5 +42,12 @@ public class HarvestableEditor extends ElementEditor<Harvestable> {
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		rewardChooser.setItems(event.getContentPack().getItemRewards());
+	}
+
+	@Override
+	public void bindTo(StructureEditor structureEditor) {
+		structureEditor.bind(harvestingTimeInput, HarvestableStructure::getHarvestingTime, HarvestableStructure::setHarvestingTime, HarvestableStructure.class);
+		structureEditor.bind(rewardChooser, HarvestableStructure::getItemReward, HarvestableStructure::setItemReward, HarvestableStructure.class);
+		structureEditor.bind(respawnTimeEditor, HarvestableStructure::getRespawnTime, HarvestableStructure::setRespawnTime, HarvestableStructure.class);
 	}
 }

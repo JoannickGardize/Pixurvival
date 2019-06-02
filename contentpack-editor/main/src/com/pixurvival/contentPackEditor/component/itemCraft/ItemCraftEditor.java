@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEdit
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.core.item.ItemCraft;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 
 public class ItemCraftEditor extends RootElementEditor<ItemCraft> {

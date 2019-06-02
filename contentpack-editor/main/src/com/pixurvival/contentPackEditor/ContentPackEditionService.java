@@ -6,17 +6,19 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
+import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item;
+import com.pixurvival.core.contentPack.structure.OrnamentalStructure;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
@@ -28,7 +30,7 @@ public class ContentPackEditionService {
 
 	private Map<ElementType, Method> listGetters = new EnumMap<>(ElementType.class);
 	private Map<ElementType, Method> listSetters = new EnumMap<>(ElementType.class);
-	private Map<ElementType, Consumer<IdentifiedElement>> initializers = new EnumMap<>(ElementType.class);
+	private Map<ElementType, Supplier<IdentifiedElement>> initializers = new EnumMap<>(ElementType.class);
 
 	@SneakyThrows
 	private ContentPackEditionService() {
@@ -38,17 +40,14 @@ public class ContentPackEditionService {
 			methodName = "set" + CaseUtils.upperToPascalCase(type.name()) + "s";
 			listSetters.put(type, ContentPack.class.getMethod(methodName, List.class));
 		}
-		initializers.put(ElementType.ITEM, o -> {
-			Item item = (Item) o;
+		initializers.put(ElementType.ITEM, () -> {
+			Item item = new ResourceItem();
 			item.setFrame(new Frame());
-			item.setDetails(new Item.Resource());
 			item.setMaxStackSize(1);
+			return item;
 		});
 
-		initializers.put(ElementType.STRUCTURE, o -> {
-			Structure structure = (Structure) o;
-			structure.setDetails(new Structure.ShortLived());
-		});
+		initializers.put(ElementType.STRUCTURE, OrnamentalStructure::new);
 	}
 
 	@SneakyThrows
@@ -58,13 +57,15 @@ public class ContentPackEditionService {
 			return;
 		}
 		List list = listOf(type);
-		IdentifiedElement newElement = type.getElementClass().newInstance();
+		Supplier<IdentifiedElement> initializer = initializers.get(type);
+		IdentifiedElement newElement;
+		if (initializer == null) {
+			newElement = type.getElementClass().newInstance();
+		} else {
+			newElement = initializer.get();
+		}
 		newElement.setName(name);
 		newElement.setId(list.size());
-		Consumer<IdentifiedElement> initializer = initializers.get(type);
-		if (initializer != null) {
-			initializer.accept(newElement);
-		}
 		list.add(newElement);
 		EventManager.getInstance().fire(new ElementAddedEvent(newElement));
 	}
@@ -77,9 +78,16 @@ public class ContentPackEditionService {
 		EventManager.getInstance().fire(new ElementRemovedEvent(element));
 	}
 
+	public void changeInstance(IdentifiedElement element) {
+		ElementType type = ElementType.of(element);
+		List<IdentifiedElement> list = listOf(type);
+		list.set(element.getId(), element);
+		EventManager.getInstance().fire(new ElementInstanceChangedEvent(element));
+	}
+
 	@SuppressWarnings("unchecked")
 	@SneakyThrows
-	public List<? extends IdentifiedElement> listOf(ElementType type) {
+	public List<IdentifiedElement> listOf(ElementType type) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
 			return Collections.emptyList();

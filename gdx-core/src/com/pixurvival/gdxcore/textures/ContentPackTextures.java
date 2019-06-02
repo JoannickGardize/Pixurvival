@@ -14,10 +14,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
 import lombok.AllArgsConstructor;

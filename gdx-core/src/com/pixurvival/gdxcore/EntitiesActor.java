@@ -15,19 +15,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.item.StructureItem;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.item.Item;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkPosition;
-import com.pixurvival.core.map.FixedTermStructure;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.OrnamentalMapStructure;
+import com.pixurvival.core.map.ShortLivedMapStructure;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.EffectDrawer;
@@ -45,8 +46,9 @@ public class EntitiesActor extends Actor {
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
 		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
-		drawers.put(HarvestableStructure.class, mapStructureDrawer);
-		drawers.put(FixedTermStructure.class, mapStructureDrawer);
+		drawers.put(HarvestableMapStructure.class, mapStructureDrawer);
+		drawers.put(ShortLivedMapStructure.class, mapStructureDrawer);
+		drawers.put(OrnamentalMapStructure.class, mapStructureDrawer);
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());
@@ -122,11 +124,11 @@ public class EntitiesActor extends Actor {
 			return;
 		}
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
-		if (heldItemStack != null && heldItemStack.getItem().getDetails() instanceof Item.StructureDetails) {
+		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 			int x = MathUtils.floor(mousePos.x);
 			int y = MathUtils.floor(mousePos.y);
-			Structure structure = ((Item.StructureDetails) heldItemStack.getItem().getDetails()).getStructure();
+			Structure structure = ((StructureItem) heldItemStack.getItem()).getStructure();
 			boolean valid = MapStructure.canPlace(myPlayer, myPlayer.getWorld().getMap(), structure, x, y);
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);
 			objectsToDraw.add(ghostStructure);

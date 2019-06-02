@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
+import com.pixurvival.contentPackEditor.util.BeanUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,11 +36,7 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 
 		typeChooser.addItemListener(e -> {
 			if (typeChooser.isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
-				try {
-					changeInstance(((Class<? extends E>) e.getItem()).newInstance());
-				} catch (InstantiationException | IllegalAccessException e1) {
-					e1.printStackTrace();
-				}
+				changeInstance(BeanUtils.newFilledInstance(((Class<? extends E>) e.getItem())));
 			}
 		});
 		for (ClassEntry classEntry : classEntries) {
@@ -51,11 +48,11 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		if (newInstance == null) {
 			return;
 		}
-		setValue(newInstance);
 		E oldInstance = getValue();
 		if (oldInstance != null) {
 			initialize(oldInstance, newInstance);
 		}
+		setValue(newInstance);
 		notifyValueChanged();
 	}
 

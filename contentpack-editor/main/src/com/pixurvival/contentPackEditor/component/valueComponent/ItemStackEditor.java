@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.core.item.Item;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.item.ItemStack;
 
 public class ItemStackEditor extends ElementEditor<ItemStack> {

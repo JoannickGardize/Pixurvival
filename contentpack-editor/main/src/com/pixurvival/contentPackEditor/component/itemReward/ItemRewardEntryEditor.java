@@ -9,8 +9,8 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
-import com.pixurvival.core.item.Item;
-import com.pixurvival.core.item.ItemReward;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ItemReward;
 
 import lombok.Getter;
 

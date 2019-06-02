@@ -6,7 +6,7 @@ import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.map.HarvestableStructure;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 
 public class HarvestAbility extends WorkAbility {
@@ -33,7 +33,7 @@ public class HarvestAbility extends WorkAbility {
 	public void workFinished(LivingEntity entity) {
 		World world = entity.getWorld();
 		if (world.isServer()) {
-			HarvestableStructure structure = ((HarvestAbilityData) getAbilityData(entity)).getStructure();
+			HarvestableMapStructure structure = ((HarvestAbilityData) getAbilityData(entity)).getStructure();
 			if (structure.isHarvested()) {
 				return;
 			}

@@ -1,14 +1,11 @@
 package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.map.Structure;
-import com.pixurvival.core.contentPack.map.Structure.Details;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
@@ -24,13 +21,6 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 		MapStructure apply(Chunk chunk, Structure structure, int x, int y);
 	}
 
-	private static Map<Class<? extends Details>, StructureSupplier> mapStructureCreator = new HashMap<>();
-
-	static {
-		mapStructureCreator.put(Structure.Harvestable.class, HarvestableStructure::new);
-		mapStructureCreator.put(Structure.ShortLived.class, FixedTermStructure::new);
-	}
-
 	private Chunk chunk;
 	private Structure definition;
 	private int tileX;
@@ -44,10 +34,6 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 		tileX = x;
 		tileY = y;
 		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0, y + definition.getDimensions().getHeight() / 2.0);
-	}
-
-	public static MapStructure newInstance(Chunk chunk, Structure structure, int x, int y) {
-		return mapStructureCreator.get(structure.getDetails().getClass()).apply(chunk, structure, x, y);
 	}
 
 	@Override

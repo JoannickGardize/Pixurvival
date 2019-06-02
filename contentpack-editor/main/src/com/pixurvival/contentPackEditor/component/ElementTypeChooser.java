@@ -13,6 +13,8 @@ import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
+import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
+import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
@@ -39,8 +41,7 @@ public class ElementTypeChooser extends JList<ElementType> {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 				Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				if (!validMap.get(value)) {
 					component.setForeground(Color.RED);
@@ -67,6 +68,20 @@ public class ElementTypeChooser extends JList<ElementType> {
 
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
+		revalidateAll();
+	}
+
+	@EventListener
+	public void elementInstanceChangedEvent(ElementInstanceChangedEvent event) {
+		revalidateAll();
+	}
+
+	@EventListener
+	public void elementRemovedEvent(ElementRemovedEvent event) {
+		revalidateAll();
+	}
+
+	private void revalidateAll() {
 		for (ElementType type : ElementType.values()) {
 			validMap.put(type, type.getElementList().isListValid());
 		}

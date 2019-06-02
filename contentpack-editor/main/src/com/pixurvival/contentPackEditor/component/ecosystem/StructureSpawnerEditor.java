@@ -18,7 +18,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValuePr
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.structure.Structure;
 
 public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 

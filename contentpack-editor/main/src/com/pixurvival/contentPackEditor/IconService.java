@@ -13,11 +13,11 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item;
+import com.pixurvival.core.contentPack.structure.Structure;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

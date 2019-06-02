@@ -4,43 +4,40 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.item.Item.Equipable;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
-import lombok.Getter;
-
-public abstract class EquipableEditor<T extends Equipable> extends ElementEditor<T> {
+public abstract class EquipablePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
+	private ListEditor<StatModifier> statModifiersEditor = new VerticalListEditor<>(StatModifierEditor::new, StatModifier::new);
+	private JPanel parentPanel;
 
-	private JPanel leftPanel;
-	private @Getter JPanel rightPanel = new JPanel();
-
-	public EquipableEditor() {
+	public EquipablePanel() {
 		EventManager.getInstance().register(this);
 
 		// Construction
 
-		ListEditor<StatModifier> alterationListEditor = new VerticalListEditor<>(StatModifierEditor::new, StatModifier::new);
-
 		// Binding
-
-		bind(spriteSheetChooser, Equipable::getSpriteSheet, Equipable::setSpriteSheet);
-		bind(alterationListEditor, Equipable::getStatModifiers, Equipable::setStatModifiers);
 
 		// Layouting
 
-		alterationListEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.statModifiers"));
-		leftPanel = LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), alterationListEditor);
+		statModifiersEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.statModifiers"));
+		parentPanel = LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), statModifiersEditor);
+	}
+
+	@Override
+	public void bindTo(ItemEditor itemEditor) {
+		itemEditor.bind(spriteSheetChooser, EquipableItem::getSpriteSheet, EquipableItem::setSpriteSheet, EquipableItem.class);
+		itemEditor.bind(statModifiersEditor, EquipableItem::getStatModifiers, EquipableItem::setStatModifiers, EquipableItem.class);
 	}
 
 	@EventListener
@@ -48,8 +45,8 @@ public abstract class EquipableEditor<T extends Equipable> extends ElementEditor
 		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
 	}
 
-	protected void finalizeLayouting() {
-		LayoutUtils.addSideBySide(this, leftPanel, rightPanel);
+	protected void finalizeLayout(JPanel childPanel) {
+		LayoutUtils.addSideBySide(this, parentPanel, childPanel);
 	}
 
 }

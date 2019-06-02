@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.creature.Creature;
-import com.pixurvival.core.contentPack.map.Structure;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.map.Chunk;

@@ -3,7 +3,7 @@ package com.pixurvival.core.livingEntity.ability;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.Time;
-import com.pixurvival.core.item.ItemCraft;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
 import lombok.Data;

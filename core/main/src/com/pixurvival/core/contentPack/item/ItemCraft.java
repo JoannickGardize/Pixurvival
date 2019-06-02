@@ -1,4 +1,4 @@
-package com.pixurvival.core.item;
+package com.pixurvival.core.contentPack.item;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
