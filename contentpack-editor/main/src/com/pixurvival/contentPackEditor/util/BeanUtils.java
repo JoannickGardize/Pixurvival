@@ -1,6 +1,10 @@
 package com.pixurvival.contentPackEditor.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.function.BiConsumer;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
@@ -13,28 +17,48 @@ public class BeanUtils {
 	@SneakyThrows
 	public static <T> T newFilledInstance(Class<T> clazz) {
 		T instance = clazz.newInstance();
-		for (Method method : clazz.getMethods()) {
-			if (method.getName().startsWith("get") && method.getParameterCount() == 0 && !IdentifiedElement.class.isAssignableFrom(method.getReturnType())) {
-				Object object = method.invoke(instance);
+		fill(instance);
+		return instance;
+	}
+
+	public static void fill(Object instance) {
+		Class<?> clazz = instance.getClass();
+		forEachPropertyMethods(clazz, (getter, setter) -> {
+			try {
+				Object object = getter.invoke(instance);
 				if (object == null) {
-					Object attributeValue = newInstanceIfPossible(method.getReturnType());
-					try {
-						Method setter = clazz.getMethod("set" + method.getName().substring(3), method.getReturnType());
-						if (setter.getParameterCount() == 1 && setter.getParameters()[0].getType() == method.getReturnType()) {
-							setter.invoke(instance, attributeValue);
-						}
-					} catch (NoSuchMethodException e) {
-						// Nothing
+					Object attributeValue = newInstanceIfPossible(getter.getReturnType());
+					if (attributeValue != null) {
+						fill(attributeValue);
+						setter.invoke(instance, attributeValue);
 					}
+				}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private static void forEachPropertyMethods(Class<?> clazz, BiConsumer<Method, Method> action) {
+		for (Method getter : clazz.getMethods()) {
+			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !IdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
+				try {
+					Method setter = clazz.getMethod("set" + getter.getName().substring(3), getter.getReturnType());
+					if (setter.getParameterCount() == 1 && setter.getParameters()[0].getType() == getter.getReturnType()) {
+						action.accept(getter, setter);
+					}
+				} catch (NoSuchMethodException e) {
+					// Nothing
 				}
 			}
 		}
-		return instance;
 	}
 
 	public static Object newInstanceIfPossible(Class<?> type) {
 		if (type == String.class) {
 			return null;
+		} else if (Collection.class.isAssignableFrom(type)) {
+			return new ArrayList<>();
 		}
 		try {
 			return type.newInstance();
