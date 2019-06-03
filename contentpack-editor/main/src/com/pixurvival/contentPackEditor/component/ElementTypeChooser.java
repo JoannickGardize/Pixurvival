@@ -18,6 +18,7 @@ import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
 
 public class ElementTypeChooser extends JList<ElementType> {
 
@@ -78,6 +79,11 @@ public class ElementTypeChooser extends JList<ElementType> {
 
 	@EventListener
 	public void elementRemovedEvent(ElementRemovedEvent event) {
+		revalidateAll();
+	}
+
+	@EventListener
+	public void resourceRemovedEvent(ResourceRemovedEvent event) {
 		revalidateAll();
 	}
 
