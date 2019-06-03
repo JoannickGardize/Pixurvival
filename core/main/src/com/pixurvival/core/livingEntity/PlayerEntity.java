@@ -71,10 +71,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
 			if (previousItemStack != null) {
-				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
 			if (newItemStack != null) {
-				((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+				((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
 			}
 		});
 	}

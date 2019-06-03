@@ -14,8 +14,8 @@ public class DesktopLauncher {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.foregroundFPS = 60;
-		config.width = 1600;
-		config.height = 900;
+		config.width = 960;
+		config.height = 540;
 		// DisplayMode desktopMode =
 		// LwjglApplicationConfiguration.getDesktopDisplayMode();
 		// config.setFromDisplayMode(desktopMode);

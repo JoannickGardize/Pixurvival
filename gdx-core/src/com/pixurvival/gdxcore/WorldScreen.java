@@ -15,9 +15,11 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
-import com.pixurvival.gdxcore.ui.CharacterUI;
 import com.pixurvival.gdxcore.ui.ChatUI;
+import com.pixurvival.gdxcore.ui.CraftUI;
+import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
+import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
@@ -61,8 +63,12 @@ public class WorldScreen implements Screen {
 		// CraftUI craftUI = new CraftUI();
 		// hudStage.addActor(craftUI);
 		// craftUI.initialize();
-		CharacterUI characterUI = new CharacterUI();
-		hudStage.addActor(characterUI);
+		EquipmentUI equipmentUI = new EquipmentUI();
+		hudStage.addActor(equipmentUI);
+		InventoryUI inventoryUI = new InventoryUI();
+		hudStage.addActor(inventoryUI);
+		CraftUI craftUI = new CraftUI();
+		hudStage.addActor(craftUI);
 		ChatUI chatUI = new ChatUI();
 		world.getChatManager().addListener(chatUI);
 		hudStage.addActor(chatUI);
@@ -72,8 +78,10 @@ public class WorldScreen implements Screen {
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
 		uiLayoutManager.add(chatUI, UILayoutManager.LEFT_SIDE, 30);
-		uiLayoutManager.add(characterUI, UILayoutManager.LEFT_SIDE, 70);
+		uiLayoutManager.add(inventoryUI, UILayoutManager.LEFT_SIDE, 55);
+		uiLayoutManager.add(equipmentUI, UILayoutManager.LEFT_SIDE, 70);
 		uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
+		uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 100);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 	}
 

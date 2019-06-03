@@ -49,19 +49,22 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 		if (targetEntity == null) {
 			return;
 		}
-		double worldStartX = targetEntity.getPosition().getX() - worldViewSize / 2;
-		double worldStartY = targetEntity.getPosition().getY() - worldViewSize / 2;
-		double worldEndX = targetEntity.getPosition().getX() + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
-		double worldEndY = targetEntity.getPosition().getY() + worldViewSize / 2 + GameConstants.CHUNK_SIZE;
-		float drawWidth = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getWidth());
-		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * getHeight());
+		double worldViewSizeX = getWidth() > getHeight() ? worldViewSize * getWidth() / getHeight() : worldViewSize;
+		double worldViewSizeY = getWidth() > getHeight() ? worldViewSize : worldViewSize * getHeight() / getWidth();
+		double worldStartX = targetEntity.getPosition().getX() - worldViewSizeX / 2;
+		double worldStartY = targetEntity.getPosition().getY() - worldViewSizeY / 2;
+		double worldEndX = targetEntity.getPosition().getX() + worldViewSizeX / 2 + GameConstants.CHUNK_SIZE;
+		double worldEndY = targetEntity.getPosition().getY() + worldViewSizeY / 2 + GameConstants.CHUNK_SIZE;
+		float minSize = Math.min(getWidth(), getHeight());
+		float drawWidth = (float) (GameConstants.CHUNK_SIZE / worldViewSize * minSize);
+		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * minSize);
 		for (double worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
 			for (double worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
 				ChunkPosition position = new ChunkPosition(MathUtils.floor(worldX / GameConstants.CHUNK_SIZE), MathUtils.floor(worldY / GameConstants.CHUNK_SIZE));
 				Texture texture = chunkTextures.get(position);
 				if (texture != null) {
-					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * getWidth()) + getX();
-					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * getHeight()) + getY();
+					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * minSize) + getX();
+					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * minSize) + getY();
 					batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
 				}
 			}
