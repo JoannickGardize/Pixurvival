@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.util.FileUtils;
 
@@ -122,5 +123,37 @@ public class ResourcesService {
 	private void putResource(String name, byte[] data) {
 		resources.put(name, new ResourceEntry(name, data));
 		FileService.getInstance().getCurrentContentPack().addResource(name, data);
+	}
+
+	private void removeResource(String name) {
+		resources.remove(name);
+		FileService.getInstance().getCurrentContentPack().removeResource(name);
+	}
+
+	public void deleteResource(String name) {
+		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
+		if (contentPack == null) {
+			return;
+		}
+
+		if (containsResource(name)) {
+			removeResource(name);
+			EventManager.getInstance().fire(new ResourceListChangedEvent());
+			EventManager.getInstance().fire(new ResourceRemovedEvent());
+		}
+	}
+
+	public void renameResource(String name) {
+		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
+		if (contentPack == null) {
+			return;
+		}
+
+		String newName = JOptionPane.showInputDialog(TranslationService.getInstance().getString("resources.name.renameNameMessage"), name);
+
+		if (newName == null || newName.equals(name)) {
+			return;
+		}
+
 	}
 }

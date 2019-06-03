@@ -132,6 +132,10 @@ public class ContentPack implements Serializable {
 		resources.put(resource, data);
 	}
 
+	public void removeResource(String resource) {
+		resources.remove(resource);
+	}
+
 	public Map<String, byte[]> getResources() {
 		if (resources == null) {
 			return Collections.emptyMap();
