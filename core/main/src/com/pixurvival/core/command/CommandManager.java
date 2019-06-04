@@ -3,12 +3,17 @@ package com.pixurvival.core.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pixurvival.core.command.impl.GiveItemCommandProcessor;
+import com.pixurvival.core.command.impl.TeleportCommandProcessor;
+
 public class CommandManager {
 
 	private Map<String, CommandProcessor> commands = new HashMap<>();
 
 	public CommandManager() {
 		commands.put("give", new GiveItemCommandProcessor());
+		commands.put("teleport", new TeleportCommandProcessor());
+		commands.put("tp", new TeleportCommandProcessor());
 	}
 
 	public String process(CommandExecutor executor, String[] args) {

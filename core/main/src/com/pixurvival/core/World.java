@@ -1,9 +1,13 @@
 package com.pixurvival.core;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatManager;
@@ -31,11 +35,6 @@ import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -65,7 +64,6 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private ContentPack contentPack;
 	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
-	private File saveDirectory;
 	private @Setter long myPlayerId = -1;
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
@@ -164,7 +162,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 				for (PlayerEntity player : team) {
 					player.getPosition().set(spawnPosition);
 					for (int j = 0; j < 4; j++) {
-						if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
+						if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY())
+								.isSolid()) {
 							currentDirection = currentDirection.getNext();
 						} else {
 							spawnPosition.addX(currentDirection.getNormalX());

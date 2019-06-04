@@ -175,8 +175,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
 			// Gdx.graphics.getHeight());
-			// int pixelWidth = Math.round(screenWidth /
-			// (WorldScreen.VIEWPORT_WORLD_WIDTH *
+			// int pixelWidth = Math.round(screenWidth / (WorldScreen.VIEWPORT_WORLD_WIDTH *
 			// GameConstants.PIXEL_PER_UNIT));
 			// Seems better :
 			int pixelWidth = 3;
@@ -184,7 +183,6 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			contentPackTextures.load(client.getWorld().getContentPack(), pixelWidth);
 		} catch (ContentPackException e) {
 			Log.error("Error when loading contentPack.", e);
-			e.printStackTrace();
 		}
 		worldScreen.setWorld(client.getWorld());
 		setScreen(worldScreen);

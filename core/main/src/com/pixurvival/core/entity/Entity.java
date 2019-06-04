@@ -3,6 +3,11 @@ package com.pixurvival.core.entity;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.World;
@@ -13,11 +18,6 @@ import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
-
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Classe mère de tout objet du monde : joueur, créatures, items, projectiles...
@@ -205,6 +205,27 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return searchResult;
 	}
 
+/**
+	 * Used to find the closest in all the world.
+	 * to avoid looping over all entities, 
+	 * prefer the use of {@link Entity#findClosest(EntityGroup, double)
+	 * @param group
+	 * @param position
+	 * @return
+	 */
+	public Entity findClosest(EntityGroup group) {
+		double closestDistanceSquared = Double.POSITIVE_INFINITY;
+		Entity closestEntity = null;
+		for (Entity e : getWorld().getEntityPool().get(group)) {
+			double distanceSquared = e.distanceSquared(this);
+			if (e != this && distanceSquared < closestDistanceSquared) {
+				closestDistanceSquared = distanceSquared;
+				closestEntity = e;
+			}
+		}
+		return closestEntity;
+	}
+
 	/**
 	 * @param group
 	 * @param maxSquareDistance
@@ -238,7 +259,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getCollisionRadius());
+		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position,
+				other.getCollisionRadius());
 	}
 
 	public ChunkPosition chunkPosition() {

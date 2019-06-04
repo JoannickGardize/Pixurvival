@@ -31,10 +31,14 @@ import lombok.RequiredArgsConstructor;
 public class WorldScreen implements Screen {
 
 	public static final double CAMERA_BOUNDS = GameConstants.PLAYER_VIEW_DISTANCE - 5;
-	public static final float VIEWPORT_WORLD_WIDTH = (float) (CAMERA_BOUNDS * 2 * 0.75);
+	public static final float VIEWPORT_WORLD_WIDTH = (float) (CAMERA_BOUNDS * 2);
 
 	private @Getter World world;
-	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
+	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
+
+	// private Stage worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH
+	// * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH,
+	// VIEWPORT_WORLD_WIDTH));
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());

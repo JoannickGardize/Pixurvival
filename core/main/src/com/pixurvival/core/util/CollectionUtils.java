@@ -37,4 +37,18 @@ public class CollectionUtils {
 		}
 		return false;
 	}
+
+	public static String toString(Collection<?> collection) {
+		if (collection.size() == 1) {
+			return collection.iterator().next().toString();
+		}
+		StringBuilder sb = new StringBuilder("[");
+		String separator = "";
+		for (Object o : collection) {
+			sb.append(separator).append(o);
+			separator = ", ";
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }

@@ -1,6 +1,5 @@
 package com.pixurvival.gdxcore.ui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -30,7 +29,6 @@ public class ItemStackDrawer {
 					actor.getScaleX(), actor.getScaleY(), actor.getRotation(), 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			if (itemStack.getQuantity() > 1) {
 				GlyphLayout layout = Caches.overlayGlyphLayout.get(String.valueOf(itemStack.getQuantity()));
-				PixurvivalGame.getOverlayFont().setColor(Color.WHITE);
 				PixurvivalGame.getOverlayFont().draw(batch, layout, actor.getX() + actor.getWidth() - layout.width - padding, actor.getY() + actor.getHeight() - padding * 2);
 			}
 		}

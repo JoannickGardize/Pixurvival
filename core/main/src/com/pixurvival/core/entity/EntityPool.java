@@ -101,4 +101,5 @@ public class EntityPool extends EntityCollection {
 		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
 		return getEntities().get(group).get(byteBuffer.getLong());
 	}
+
 }

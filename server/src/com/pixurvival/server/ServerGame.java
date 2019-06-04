@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import lombok.Getter;
+import lombok.SneakyThrows;
+
 import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -21,9 +24,6 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.util.CommonMainArgs;
-
-import lombok.Getter;
-import lombok.SneakyThrows;
 
 public class ServerGame {
 
@@ -46,7 +46,13 @@ public class ServerGame {
 		// TODO selection dynamique des packs
 		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("1.0"));
 
-		setSelectedContentPack(new ContentPackLoader(new File("contentPacks")).load(id));
+		File defaultContentPack;
+		if (serverArgs.getContentPackDirectory() == null) {
+			defaultContentPack = new File("contentPacks");
+		} else {
+			defaultContentPack = new File(serverArgs.getContentPackDirectory());
+		}
+		setSelectedContentPack(new ContentPackLoader(defaultContentPack).load(id));
 	}
 
 	public void addPlayerConnection(PlayerConnection playerConnection) {

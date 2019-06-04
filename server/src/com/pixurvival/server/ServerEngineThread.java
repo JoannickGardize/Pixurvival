@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.NonNull;
+
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
@@ -13,8 +15,6 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
-
-import lombok.NonNull;
 
 public class ServerEngineThread extends EngineThread {
 
@@ -32,12 +32,12 @@ public class ServerEngineThread extends EngineThread {
 		// setWarnLoadTrigger(0.8);
 	}
 
-	public void add(GameSession worldSession) {
+	public synchronized void add(GameSession worldSession) {
 		sessions.add(worldSession);
 	}
 
 	@Override
-	public void update(double deltaTimeMillis) {
+	public synchronized void update(double deltaTimeMillis) {
 		game.consumeReceivedObjects();
 		sessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
 		sendUpdateTimer += deltaTimeMillis;

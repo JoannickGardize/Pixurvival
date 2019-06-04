@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.gdxcore.PixurvivalGame;
@@ -18,7 +17,8 @@ import com.pixurvival.gdxcore.ScreenResizeEvent;
 
 public class OverlaysActor extends Actor implements EventListener {
 
-	private Map<EntityGroup, OverlayDrawer<? extends Entity>> entityOverlayDrawers = new EnumMap<>(EntityGroup.class);
+	@SuppressWarnings("rawtypes")
+	private Map<EntityGroup, OverlayDrawer> entityOverlayDrawers = new EnumMap<>(EntityGroup.class);
 	private Viewport worldViewport;
 
 	private Rectangle scissors = new Rectangle();
@@ -30,12 +30,12 @@ public class OverlaysActor extends Actor implements EventListener {
 	}
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public void draw(Batch batch, float parentAlpha) {
 		ScissorStack.pushScissors(scissors);
 		batch.setColor(1, 1, 1, 0.75f);
 		EntityPool entityPool = PixurvivalGame.getWorld().getEntityPool();
-		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> ((EntityOverlayStackDrawer) drawer).draw(batch, worldViewport, e)));
+		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
 		batch.flush(); // Make sure nothing is clipped before we want it to.
 		ScissorStack.popScissors();
 	}

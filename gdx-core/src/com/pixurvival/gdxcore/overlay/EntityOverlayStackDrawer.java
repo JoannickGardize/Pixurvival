@@ -21,16 +21,19 @@ public class EntityOverlayStackDrawer<E extends Entity> implements OverlayDrawer
 	public void draw(Batch batch, Viewport worldViewport, E e) {
 		computeValues(worldViewport, e);
 		for (OverlayStackElementDrawer<? super E> stackElement : stack) {
-			infos.getReferencePosition().y += stackElement.draw(batch, infos, e) + OverlaySettings.ENTITY_OVERLAY_MARGIN * infos.getScaleY();
+			infos.getReferencePosition().y += stackElement.draw(batch, infos, e) + OverlaySettings.ENTITY_OVERLAY_MARGIN;
 		}
 	}
 
 	private void computeValues(Viewport worldViewport, E e) {
-		infos.setScaleX(worldViewport.getScreenWidth() / worldViewport.getWorldWidth());
-		infos.setScaleY(worldViewport.getScreenHeight() / worldViewport.getWorldHeight());
+		// infos.setScaleX(worldViewport.getScreenWidth() /
+		// worldViewport.getWorldWidth());
+		// infos.setScaleY(worldViewport.getScreenHeight() /
+		// worldViewport.getWorldHeight());
 		DrawData data = (DrawData) e.getCustomData();
 		infos.getReferencePosition().x = (float) data.getDrawPosition().getX();
-		infos.getReferencePosition().y = (float) data.getDrawPosition().getY() + data.getOverlayOffsetY() + OverlaySettings.ENTITY_OVERLAY_MARGIN;
+		infos.getReferencePosition().y = (float) data.getDrawPosition().getY() + data.getOverlayOffsetY();
 		worldViewport.project(infos.getReferencePosition());
+		infos.getReferencePosition().y += OverlaySettings.ENTITY_OVERLAY_MARGIN;
 	}
 }

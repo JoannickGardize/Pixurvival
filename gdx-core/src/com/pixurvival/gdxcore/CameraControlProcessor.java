@@ -60,8 +60,8 @@ public class CameraControlProcessor extends InputAdapter {
 		// }
 		double xFactor = MathUtils.clamp((screenViewportX - w) / (w * 0.8), -1, 1);
 		double yFactor = MathUtils.clamp((screenViewportY - h) / (h * 0.8), -1, 1);
-		double worldDiffX = WorldScreen.CAMERA_BOUNDS - viewport.getWorldWidth() / 2.0;
-		double worldDiffY = WorldScreen.CAMERA_BOUNDS - viewport.getWorldHeight() / 2.0;
+		double worldDiffX = Math.max(0, WorldScreen.CAMERA_BOUNDS - viewport.getWorldWidth() / 2.0);
+		double worldDiffY = Math.max(0, WorldScreen.CAMERA_BOUNDS - viewport.getWorldHeight() / 2.0);
 		relativeCameraPosition.set(worldDiffX * xFactor, worldDiffY * yFactor);
 	}
 }

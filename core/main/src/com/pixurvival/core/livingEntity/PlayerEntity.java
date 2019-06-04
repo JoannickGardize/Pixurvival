@@ -2,6 +2,9 @@ package com.pixurvival.core.livingEntity;
 
 import java.util.function.Consumer;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
@@ -23,9 +26,6 @@ import com.pixurvival.core.map.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.util.MathUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder, CommandExecutor, ChatSender {
@@ -54,6 +54,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
 
+	// TODO false par défaut et créer le système pour op un joueur coté serveur
 	private @Getter @Setter boolean operator = true;
 
 	private @Setter String name = "Unknown";
@@ -198,4 +199,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		getWorld().getMap().forEachChunk(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, action);
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
 }

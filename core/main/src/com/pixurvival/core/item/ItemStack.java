@@ -2,6 +2,8 @@ package com.pixurvival.core.item;
 
 import java.io.Serializable;
 
+import lombok.Data;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -11,8 +13,6 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
-
-import lombok.Data;
 
 @Data
 public class ItemStack implements Serializable {
@@ -45,6 +45,10 @@ public class ItemStack implements Serializable {
 	}
 
 	public ItemStack copy(int quantity) {
+		return new ItemStack(item, quantity);
+	}
+
+	public ItemStack copy() {
 		return new ItemStack(item, quantity);
 	}
 

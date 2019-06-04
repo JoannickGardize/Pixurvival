@@ -13,8 +13,8 @@ public class LifeBarDrawer implements OverlayStackElementDrawer<LivingEntity> {
 
 	@Override
 	public float draw(Batch batch, OverlayInfos infos, LivingEntity e) {
-		tmpRectangle.width = OverlaySettings.LIFE_BAR_WIDTH * infos.getScaleX();
-		tmpRectangle.height = OverlaySettings.LIFE_BAR_HEIGHT * infos.getScaleY();
+		tmpRectangle.width = OverlaySettings.LIFE_BAR_WIDTH;
+		tmpRectangle.height = OverlaySettings.LIFE_BAR_HEIGHT;
 		tmpRectangle.x = infos.getReferencePosition().x - tmpRectangle.width / 2;
 		tmpRectangle.y = infos.getReferencePosition().y;
 		PlayerEntity myPlayer = e.getWorld().getMyPlayer();
