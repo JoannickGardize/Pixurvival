@@ -155,5 +155,9 @@ public class ResourcesService {
 			return;
 		}
 
+		newName = newName.trim();
+		putResource(newName, getResource(name).getData());
+		removeResource(name);
+		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}
 }
