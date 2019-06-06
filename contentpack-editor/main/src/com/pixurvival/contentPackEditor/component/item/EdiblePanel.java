@@ -17,7 +17,7 @@ public class EdiblePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantDamageAlteration::new, ListEditor.HORIZONTAL, false);
+	private ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantDamageAlteration::new, ListEditor.HORIZONTAL, true);
 	private DoubleInput durationField = new DoubleInput(Bounds.min(0));
 
 	public EdiblePanel() {
@@ -28,7 +28,7 @@ public class EdiblePanel extends ItemSpecificPartPanel {
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 
 		alterationsEditor.setBorder(LayoutUtils.createGroupBorder("effectTargetEditor.alterations"));
-		LayoutUtils.addVertically(this, propertiesPanel, alterationsEditor);
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 1, propertiesPanel, alterationsEditor);
 
 	}
 
