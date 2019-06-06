@@ -1,0 +1,59 @@
+
+pixurvival.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Button-gray
+  rotate: false
+  xy: 35, 94
+  size: 32, 32
+  split: 5, 5, 5, 5
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Button-gray-reverted
+  rotate: false
+  xy: 1, 11
+  size: 32, 32
+  split: 5, 5, 5, 5
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Button-white
+  rotate: false
+  xy: 1, 45
+  size: 32, 32
+  split: 5, 5, 5, 5
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Window
+  rotate: false
+  xy: 1, 79
+  size: 32, 47
+  split: 8, 8, 34, 8
+  orig: 32, 47
+  offset: 0, 0
+  index: -1
+accessory-icon
+  rotate: false
+  xy: 69, 120
+  size: 6, 6
+  orig: 6, 6
+  offset: 0, 0
+  index: -1
+clothing-icon
+  rotate: false
+  xy: 35, 84
+  size: 7, 8
+  orig: 7, 8
+  offset: 0, 0
+  index: -1
+weapon-icon
+  rotate: false
+  xy: 1, 1
+  size: 5, 8
+  orig: 5, 8
+  offset: 0, 0
+  index: -1

@@ -1,5 +1,7 @@
 package com.pixurvival.core.contentPack.effect;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
@@ -17,14 +19,15 @@ public class AnchorEffectMovement implements EffectMovement {
 	@Override
 	public void initialize(EffectEntity entity) {
 		LivingEntity source = entity.getSource();
-		// TODO Trouver une solution pour synchroniser cette donnée entre client
-		// et serveur :
 		entity.setMovementData(source.getPosition().angleToward(source.getTargetPosition()));
 		updatePosition(entity);
 	}
 
 	@Override
 	public void update(EffectEntity entity) {
+		if (entity.getSource() == null) {
+			return;
+		}
 		updatePosition(entity);
 		entity.setForward(entity.getSource().isForward());
 		entity.setMovingAngle(entity.getSource().getMovingAngle());
@@ -41,5 +44,17 @@ public class AnchorEffectMovement implements EffectMovement {
 		} else {
 			return entity.getSource().getSpeed();
 		}
+	}
+
+	@Override
+	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
+		entity.getWorld().getEntityPool().writeEntityReference(buffer, entity.getSource());
+		buffer.putDouble((double) entity.getMovementData());
+	}
+
+	@Override
+	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
+		entity.setSource((LivingEntity) entity.getWorld().getEntityPool().readEntityReference(buffer));
+		entity.setMovementData(buffer.getDouble());
 	}
 }

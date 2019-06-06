@@ -56,7 +56,7 @@ public class WorldScreen implements Screen {
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
-		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
+		OverlaysActor overlayActor = new OverlaysActor();
 		hudStage.addListener(overlayActor);
 		hudStage.addActor(overlayActor);
 		hudStage.addActor(miniMapUI);

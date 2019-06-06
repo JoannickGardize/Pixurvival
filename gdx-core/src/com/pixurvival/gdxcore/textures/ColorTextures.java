@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import lombok.experimental.UtilityClass;
 
@@ -15,6 +18,7 @@ import lombok.experimental.UtilityClass;
 public class ColorTextures {
 
 	private static Map<Color, Texture> textures = new HashMap<>();
+	private static Map<Color, Drawable> drawables = new HashMap<>();
 
 	public static Texture get(Color color) {
 		return textures.computeIfAbsent(color, c -> {
@@ -24,6 +28,20 @@ public class ColorTextures {
 			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			textures.put(c, texture);
 			return texture;
+		});
+	}
+
+	public static Drawable getAsDrawable(Color color) {
+		return drawables.computeIfAbsent(color, c -> {
+			return new BaseDrawable() {
+
+				private Texture texture = get(c);
+
+				@Override
+				public void draw(Batch batch, float x, float y, float width, float height) {
+					batch.draw(texture, x, y, width, height);
+				}
+			};
 		});
 	}
 }

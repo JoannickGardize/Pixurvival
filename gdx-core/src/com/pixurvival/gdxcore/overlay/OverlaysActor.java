@@ -19,12 +19,13 @@ public class OverlaysActor extends Actor implements EventListener {
 
 	@SuppressWarnings("rawtypes")
 	private Map<EntityGroup, OverlayDrawer> entityOverlayDrawers = new EnumMap<>(EntityGroup.class);
-	private Viewport worldViewport;
 
+	/**
+	 * Area where overlay elements can be drawn (on top of the world)
+	 */
 	private Rectangle scissors = new Rectangle();
 
-	public OverlaysActor(Viewport worldViewport) {
-		this.worldViewport = worldViewport;
+	public OverlaysActor() {
 		entityOverlayDrawers.put(EntityGroup.PLAYER, new PlayerEntityOverlayDrawer());
 		entityOverlayDrawers.put(EntityGroup.CREATURE, new CreatureEntityOverlayDrawer());
 	}
@@ -35,7 +36,8 @@ public class OverlaysActor extends Actor implements EventListener {
 		ScissorStack.pushScissors(scissors);
 		batch.setColor(1, 1, 1, 0.75f);
 		EntityPool entityPool = PixurvivalGame.getWorld().getEntityPool();
-		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
+		Viewport viewport = getStage().getViewport();
+		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, viewport, e)));
 		batch.flush(); // Make sure nothing is clipped before we want it to.
 		ScissorStack.popScissors();
 	}

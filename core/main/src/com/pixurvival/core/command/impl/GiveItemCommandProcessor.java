@@ -7,6 +7,7 @@ import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutionException;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.command.CommandProcessor;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.CollectionUtils;
@@ -34,6 +35,18 @@ public class GiveItemCommandProcessor extends CommandProcessor {
 			player.getInventory().add(itemStack.copy());
 		}
 		return "Given " + itemStack.toMessageString() + " to " + CollectionUtils.toString(targets);
+	}
+
+	@Override
+	public Class<?> getArgType(int argIndex) {
+		switch (argIndex) {
+		case 1:
+			return Item.class;
+		case 2:
+			return PlayerEntity.class;
+		default:
+			return null;
+		}
 	}
 
 }

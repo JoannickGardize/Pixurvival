@@ -18,6 +18,8 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class EquipmentUI extends UIWindow {
 
+	private static final Color agilityColor = new Color(0x0BBC0BFF);
+
 	private Label strengthLabel;
 	private Label agilityLabel;
 	private Label intelligenceLabel;
@@ -27,7 +29,7 @@ public class EquipmentUI extends UIWindow {
 	public EquipmentUI() {
 		super("equipment");
 		Inventory inventory = new Inventory(4);
-		InventoryTable equipmentTable = new InventoryTable(inventory, 2) {
+		InventoryTable equipmentTable = new InventoryTable(inventory, 4) {
 			@Override
 			public Actor newSlot(Inventory inventory, int index) {
 				switch (index) {

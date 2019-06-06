@@ -1,5 +1,7 @@
 package com.pixurvival.core.contentPack.effect;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.MathUtils;
@@ -33,5 +35,13 @@ public class StaticEffectMovement implements EffectMovement {
 	@Override
 	public double getSpeedPotential(EffectEntity entity) {
 		return 0;
+	}
+
+	@Override
+	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
+	}
+
+	@Override
+	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
 	}
 }

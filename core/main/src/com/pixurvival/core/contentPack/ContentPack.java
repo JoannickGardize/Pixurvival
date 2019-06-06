@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -29,8 +30,6 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 import com.pixurvival.core.util.ReflectionUtils;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,20 +37,13 @@ import lombok.Setter;
 @Setter
 public class ContentPack implements Serializable {
 
-	@AllArgsConstructor
-	@EqualsAndHashCode
-	private static class ElementByNameKey {
-		Class<? extends IdentifiedElement> type;
-		String name;
-	}
-
 	public static final String SERIALIZATION_ENTRY_NAME = "contentPack";
 
 	private static final long serialVersionUID = 1L;
 
 	private transient Map<String, byte[]> resources;
 
-	private transient Map<ElementByNameKey, IdentifiedElement> elementsByName;
+	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
 
 	@Valid
 	@Required
@@ -153,8 +145,10 @@ public class ContentPack implements Serializable {
 		elementsByName = new HashMap<>();
 		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
 			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
+			Map<String, IdentifiedElement> typeMap = new HashMap<>();
+			elementsByName.put(field.getAnnotation(ElementCollection.class).value(), typeMap);
 			for (IdentifiedElement element : list) {
-				elementsByName.put(new ElementByNameKey(field.getAnnotation(ElementCollection.class).value(), element.getName()), element);
+				typeMap.put(element.getName(), element);
 			}
 		}
 		ecosystems.forEach(Ecosystem::initialize);
@@ -162,6 +156,20 @@ public class ContentPack implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public <T extends IdentifiedElement> T get(Class<T> type, String name) {
-		return (T) elementsByName.get(new ElementByNameKey(type, name));
+		Map<String, IdentifiedElement> typeMap = elementsByName.get(type);
+		if (typeMap == null) {
+			return null;
+		} else {
+			return (T) typeMap.get(name);
+		}
+	}
+
+	public Set<String> allNamesOf(Class<? extends IdentifiedElement> type) {
+		Map<String, IdentifiedElement> typeMap = elementsByName.get(type);
+		if (typeMap == null) {
+			return Collections.emptySet();
+		} else {
+			return typeMap.keySet();
+		}
 	}
 }

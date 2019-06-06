@@ -16,4 +16,6 @@ public abstract class CommandProcessor {
 	}
 
 	protected abstract String execute(CommandExecutor executor, String[] args) throws CommandExecutionException;
+
+	public abstract Class<?> getArgType(int argIndex);
 }

@@ -26,4 +26,16 @@ public class TeleportCommandProcessor extends CommandProcessor {
 		}
 		return "Teleported " + CollectionUtils.toString(players);
 	}
+
+	@Override
+	public Class<?> getArgType(int argIndex) {
+		switch (argIndex) {
+		case 1:
+			return PlayerEntity.class;
+		case 2:
+			return PlayerEntity.class;
+		default:
+			return null;
+		}
+	}
 }

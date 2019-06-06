@@ -22,8 +22,7 @@ public class PixelTextureBuilder implements Function<Region, Pixmap> {
 
 	@Override
 	public Pixmap apply(Region region) {
-		Pixmap result = new Pixmap(region.getWidth() * pixelWidth + 2, region.getHeight() * pixelWidth + 2,
-				region.getFormat());
+		Pixmap result = new Pixmap(region.getWidth() * pixelWidth + 2, region.getHeight() * pixelWidth + 2, region.getFormat());
 		for (int px = 0; px < region.getWidth(); px++) {
 			for (int py = 0; py < region.getHeight(); py++) {
 				result.setColor(region.getPixel(px, py));
@@ -55,8 +54,7 @@ public class PixelTextureBuilder implements Function<Region, Pixmap> {
 					if (px == region.getWidth() - 1 || py == 0 || isTransparent(region.getPixel(px + 1, py - 1))) {
 						result.drawPixel((px + 1) * pixelWidth + 1, py * pixelWidth);
 					}
-					if (px == region.getWidth() - 1 || py == region.getHeight() - 1
-							|| isTransparent(region.getPixel(px + 1, py + 1))) {
+					if (px == region.getWidth() - 1 || py == region.getHeight() - 1 || isTransparent(region.getPixel(px + 1, py + 1))) {
 						result.drawPixel((px + 1) * pixelWidth + 1, (py + 1) * pixelWidth + 1);
 					}
 				}

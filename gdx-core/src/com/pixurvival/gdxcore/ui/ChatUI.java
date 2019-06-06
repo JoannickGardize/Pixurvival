@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatListener;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
@@ -30,15 +31,21 @@ public class ChatUI extends UIWindow implements ChatListener {
 		inputArea.addCaptureListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
-				if (keycode == Keys.ENTER) {
-					// chatHistory.push(new ChatEntry(inputArea.getText()));
-					// inputArea.setText("");
-					// validate();
-					// displayAreScrollPane.setScrollPercentY(1);
+				switch (keycode) {
+				case Keys.ENTER:
 					PixurvivalGame.getClient().sendAction(new ChatRequest(inputArea.getText()));
 					inputArea.setText("");
-				} else if (keycode == Keys.ESCAPE) {
+					break;
+				case Keys.ESCAPE:
 					getStage().unfocusAll();
+					break;
+				case Keys.TAB:
+					PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+					if (myPlayer != null) {
+						inputArea.setText(myPlayer.getWorld().getCommandManager().autocomplete(myPlayer, inputArea.getText()));
+						inputArea.setCursorPosition(inputArea.getText().length());
+					}
+					break;
 				}
 				return true;
 			}

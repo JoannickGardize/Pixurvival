@@ -91,7 +91,7 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 		buffer.putFloat(orientation);
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putDouble(getMovingAngle());
-		getWorld().getEntityPool().writeEntityReference(buffer, source);
+
 	}
 
 	@Override
@@ -101,7 +101,6 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 		orientation = buffer.getFloat();
 		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getDouble());
-		source = (LivingEntity) getWorld().getEntityPool().readEntityReference(buffer);
 	}
 
 	@Override

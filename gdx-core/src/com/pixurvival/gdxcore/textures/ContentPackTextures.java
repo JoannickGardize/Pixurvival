@@ -9,8 +9,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -20,23 +18,16 @@ import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public class ContentPackTextures {
 
 	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
-	private TextureRegion[][] tileMapTextures;
+	private Texture[][] tileMapTextures;
 	private ItemTexture[] itemTextures;
 	private int[] tileAvgColors;
 	private @Getter double truePixelWidth;
-
-	@AllArgsConstructor
-	private class ImageEntry {
-		SpriteSheetPixmap spriteSheetPixmap;
-		Texture texture;
-	}
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
 		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
@@ -50,8 +41,8 @@ public class ContentPackTextures {
 		return animationSet.get(spriteSheet);
 	}
 
-	public TextureRegion getTile(int id, long frame) {
-		TextureRegion[] frames = tileMapTextures[id];
+	public Texture getTile(int id, long frame) {
+		Texture[] frames = tileMapTextures[id];
 		return frames[(int) (frame % frames.length)];
 	}
 
@@ -106,28 +97,24 @@ public class ContentPackTextures {
 
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
 		List<Tile> tilesbyId = pack.getTiles();
-		tileMapTextures = new TextureRegion[tilesbyId.size()][];
+		tileMapTextures = new Texture[tilesbyId.size()][];
 		tileAvgColors = new int[tilesbyId.size()];
-		Map<String, ImageEntry> images = new HashMap<>();
+		Map<String, SpriteSheetPixmap> images = new HashMap<>();
 		for (int i = 0; i < tilesbyId.size(); i++) {
 			Tile tile = tilesbyId.get(i);
-			ImageEntry image = images.get(tile.getImage());
-			if (image == null) {
-				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-				Texture texture = new Texture(spriteSheetPixmap);
-				texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-				image = new ImageEntry(spriteSheetPixmap, texture);
-				images.put(tile.getImage(), image);
+			SpriteSheetPixmap pixmap = images.get(tile.getImage());
+			if (pixmap == null) {
+				pixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
+				images.put(tile.getImage(), pixmap);
 			}
 			List<Frame> frames = tile.getFrames();
-			TextureRegion[] textures = new TextureRegion[frames.size()];
+			Texture[] textures = new Texture[frames.size()];
 			for (int j = 0; j < frames.size(); j++) {
 				Frame frame = frames.get(j);
-				textures[j] = new TextureRegion(image.texture, frame.getX() * GameConstants.PIXEL_PER_UNIT, frame.getY() * GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT,
-						GameConstants.PIXEL_PER_UNIT);
+				textures[j] = AddPaddingUtil.apply(pixmap.getRegion(frame.getX(), frame.getY()));
 			}
 			tileMapTextures[i] = textures;
-			tileAvgColors[i] = getAverageColor(image.spriteSheetPixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
+			tileAvgColors[i] = getAverageColor(pixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
 		}
 	}
 

@@ -32,6 +32,10 @@ public class SpriteSheetPixmap extends Pixmap {
 		public int getHeight() {
 			return spriteHeight;
 		}
+
+		public void drawTo(Pixmap pixmap, int x, int y) {
+			pixmap.drawPixmap(SpriteSheetPixmap.this, x, y, xIndex * spriteWidth, yIndex * spriteHeight, spriteWidth, spriteHeight);
+		}
 	}
 
 	private int spriteWidth;

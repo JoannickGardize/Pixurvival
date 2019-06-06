@@ -19,7 +19,7 @@ public class InventoryTable extends Table {
 		if (size % rowLength > 0) {
 			rowCount++;
 		}
-		defaults().fill().minSize(10).maxSize(60).prefSize(60);
+		defaults().fill().minSize(10).maxSize(60).prefSize(60).padLeft(-1).padTop(-1);
 		for (int i = 0; i < rowCount; i++) {
 			for (int j = 0; j < rowLength; j++) {
 				int index = i * rowLength + j;
@@ -29,7 +29,6 @@ public class InventoryTable extends Table {
 			}
 			row();
 		}
-		setRound(false);
 	}
 
 	@Override
@@ -43,7 +42,6 @@ public class InventoryTable extends Table {
 		float slotSize = Math.min(width / rowLength, height / rowCount);
 		for (Cell<Actor> cell : getCells()) {
 			cell.prefSize(slotSize);
-			// cell.maxSize(slotSize);
 		}
 	}
 
