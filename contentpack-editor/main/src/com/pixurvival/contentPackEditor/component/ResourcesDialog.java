@@ -37,7 +37,7 @@ public class ResourcesDialog extends EditorDialog {
 		JScrollPane scrollPane = new JScrollPane(resourceList);
 		JPanel listPanel = (JPanel) LayoutUtils.addBorder(scrollPane, 0, 0, 0, 0);
 		JPanel buttonPanel = new JPanel();
-		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, importButton, deleteButton, renameButton);
+		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, importButton, renameButton, deleteButton);
 		listPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		content.add(listPanel, BorderLayout.WEST);
