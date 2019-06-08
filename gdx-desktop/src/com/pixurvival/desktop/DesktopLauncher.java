@@ -1,7 +1,5 @@
 package com.pixurvival.desktop;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.pixurvival.core.util.ArgsUtils;
@@ -10,8 +8,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class DesktopLauncher {
 
-	public static void main(String[] args) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
+	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.foregroundFPS = 60;
 		config.width = 960;

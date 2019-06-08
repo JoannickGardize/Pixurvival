@@ -12,8 +12,13 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.input.CameraControlProcessor;
+import com.pixurvival.gdxcore.input.InputManager;
+import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
+import com.pixurvival.gdxcore.input.WorldMouseProcessor;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
@@ -34,13 +39,14 @@ public class WorldScreen implements Screen {
 	public static final float VIEWPORT_WORLD_WIDTH = (float) (CAMERA_BOUNDS * 2);
 
 	private @Getter World world;
-	private Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
+	private static @Getter Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
 
-	// private Stage worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH
+	// private Stage worldStage = new Stage(new
+	// ExtendViewport(VIEWPORT_WORLD_WIDTH
 	// * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH,
 	// VIEWPORT_WORLD_WIDTH));
 	private Stage hudStage = new Stage(new ScreenViewport());
-	private KeyInputProcessor keyboardInputProcessor = new KeyInputProcessor(new KeyMapping());
+	private WorldKeyboardProcessor keyboardInputProcessor = new WorldKeyboardProcessor();
 	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 	private EntitiesActor entitiesActor;
 	private DebugInfosActor debugInfosActors;
@@ -113,14 +119,15 @@ public class WorldScreen implements Screen {
 		});
 		im.addProcessor(keyboardInputProcessor);
 		im.addProcessor(cameraControlProcessor);
-		im.addProcessor(new WorldMouseProcessor(worldStage));
+		im.addProcessor(new WorldMouseProcessor());
 		Gdx.input.setInputProcessor(im);
 	}
 
 	@Override
 	public void render(float delta) {
-		if (keyboardInputProcessor.update()) {
-			PixurvivalGame.getClient().sendAction(keyboardInputProcessor.getPlayerAction());
+		PlayerMovementRequest request = InputManager.getInstance().updatePlayerMovement();
+		if (request != null) {
+			PixurvivalGame.getClient().sendAction(request);
 		}
 		worldStage.getViewport().apply();
 		updateMouseTarget();

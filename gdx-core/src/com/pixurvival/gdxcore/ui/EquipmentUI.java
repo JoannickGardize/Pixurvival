@@ -18,8 +18,6 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class EquipmentUI extends UIWindow {
 
-	private static final Color agilityColor = new Color(0x0BBC0BFF);
-
 	private Label strengthLabel;
 	private Label agilityLabel;
 	private Label intelligenceLabel;

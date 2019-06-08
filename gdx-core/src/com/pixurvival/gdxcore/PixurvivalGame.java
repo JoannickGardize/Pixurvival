@@ -24,6 +24,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 
@@ -78,7 +79,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
 	private ClientGame client;
 	private AssetManager assetManager;
-	private @Getter KeyMapping keyMapping;
+	private @Getter InputMapping keyMapping;
 	private double frameDurationMillis = 1000.0 / 30;
 	private double frameCounter;
 	private float interpolationTime = 0;

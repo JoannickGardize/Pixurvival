@@ -4,9 +4,11 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Direction {
 
 	EAST(0),
@@ -19,10 +21,6 @@ public enum Direction {
 	SOUTH_EAST(-Math.PI / 4.0);
 
 	private double angle;
-
-	private Direction(double angle) {
-		this.angle = angle;
-	}
 
 	/**
 	 * Returns the closest cardinal direction of the given angle.

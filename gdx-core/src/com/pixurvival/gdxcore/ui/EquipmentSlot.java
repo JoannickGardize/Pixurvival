@@ -6,18 +6,35 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.input.InputAction;
 
 public class EquipmentSlot extends ImageButton {
 
 	private int equipmentIndex;
 
 	private ItemStackDrawer itemStackDrawer = new ItemStackDrawer(this, 2);
+	private ShortcutDrawer bottomShortcutDrawer;
+	private ShortcutDrawer topShortcutDrawer;
 
 	public EquipmentSlot(int equipmentIndex) {
 		super(getStyleFor(equipmentIndex));
 		this.equipmentIndex = equipmentIndex;
 		addListener(new EquipmentSlotInputListener(equipmentIndex));
 		getImageCell().expand().fill();
+
+		switch (equipmentIndex) {
+		case Equipment.WEAPON_INDEX:
+			bottomShortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_SPECIAL, ShortcutDrawer.BOTTOM);
+			topShortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_BASE_OR_DROP_ITEM, ShortcutDrawer.TOP);
+			break;
+		case Equipment.ACCESSORY1_INDEX:
+			bottomShortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY1_SPECIAL, ShortcutDrawer.BOTTOM);
+			break;
+		case Equipment.ACCESSORY2_INDEX:
+			bottomShortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY2_SPECIAL, ShortcutDrawer.BOTTOM);
+			break;
+		default:
+		}
 	}
 
 	@Override
@@ -28,6 +45,12 @@ public class EquipmentSlot extends ImageButton {
 			ItemStack equipmentItem = player.getEquipment().get(equipmentIndex);
 			itemStackDrawer.setItemStack(equipmentItem);
 			itemStackDrawer.draw(batch);
+		}
+		if (bottomShortcutDrawer != null) {
+			bottomShortcutDrawer.draw(batch);
+		}
+		if (topShortcutDrawer != null) {
+			topShortcutDrawer.draw(batch);
 		}
 	}
 

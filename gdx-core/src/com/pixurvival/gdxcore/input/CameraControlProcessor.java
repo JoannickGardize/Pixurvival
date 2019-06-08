@@ -1,4 +1,4 @@
-package com.pixurvival.gdxcore;
+package com.pixurvival.gdxcore.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.WorldScreen;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
