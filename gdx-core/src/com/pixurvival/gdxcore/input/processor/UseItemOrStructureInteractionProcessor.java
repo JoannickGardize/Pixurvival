@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore.input.processor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -14,7 +15,7 @@ import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
 
-public class StructureInteractionProcessor implements InputActionProcessor {
+public class UseItemOrStructureInteractionProcessor implements InputActionProcessor {
 
 	public static final int FIND_STRUCTURE_RADIUS = 1;
 
@@ -32,6 +33,8 @@ public class StructureInteractionProcessor implements InputActionProcessor {
 			if (MapStructure.canPlace(myPlayer, PixurvivalGame.getWorld().getMap(), ((StructureItem) heldItemStack.getItem()).getStructure(), x, y)) {
 				PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
 			}
+		} else if (heldItemStack != null && heldItemStack.getItem() instanceof EdibleItem) {
+			// TODO
 		} else {
 			MapStructure structure = findClosestStructure();
 			if (structure instanceof HarvestableMapStructure && structure.canInteract(myPlayer)) {

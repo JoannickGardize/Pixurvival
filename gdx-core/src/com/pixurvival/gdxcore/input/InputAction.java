@@ -4,7 +4,7 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.gdxcore.input.processor.EquipmentAbilityProcessor;
 import com.pixurvival.gdxcore.input.processor.InputActionProcessor;
 import com.pixurvival.gdxcore.input.processor.MoveProcessor;
-import com.pixurvival.gdxcore.input.processor.StructureInteractionProcessor;
+import com.pixurvival.gdxcore.input.processor.UseItemOrStructureInteractionProcessor;
 import com.pixurvival.gdxcore.input.processor.SwitchDebugInfosProcessor;
 import com.pixurvival.gdxcore.input.processor.SwitchDebugModeProcessor;
 import com.pixurvival.gdxcore.input.processor.WeaponBaseOrDropItemProcessor;
@@ -18,7 +18,7 @@ public enum InputAction {
 	MOVE_LEFT(new MoveProcessor()),
 	MOVE_RIGHT(new MoveProcessor()),
 	MOVE_DOWN(new MoveProcessor()),
-	USE_ITEM_OR_STRUCTURE_INTERACTION(new StructureInteractionProcessor()),
+	USE_ITEM_OR_STRUCTURE_INTERACTION(new UseItemOrStructureInteractionProcessor()),
 	WEAPON_BASE_OR_DROP_ITEM(new WeaponBaseOrDropItemProcessor()),
 	WEAPON_SPECIAL(new EquipmentAbilityProcessor(EquipmentAbilityType.WEAPON_SPECIAL)),
 	ACCESSORY1_SPECIAL(new EquipmentAbilityProcessor(EquipmentAbilityType.WEAPON_SPECIAL)),
