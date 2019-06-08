@@ -7,6 +7,7 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
+import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
 
 public class AlterationEditor extends InstanceChangingElementEditor<Alteration> {
@@ -31,6 +32,11 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		StatAmountEditor healAmountEditor = new StatAmountEditor();
 		bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
 		entries.add(new ClassEntry(InstantHealAlteration.class, LayoutUtils.labelled("alterationEditor.amount", healAmountEditor)));
+
+		// InstantEatAlteration
+		StatAmountEditor eatAmountEditor = new StatAmountEditor();
+		bind(eatAmountEditor, InstantEatAlteration::getAmount, InstantEatAlteration::setAmount, InstantEatAlteration.class);
+		entries.add(new ClassEntry(InstantEatAlteration.class, LayoutUtils.labelled("alterationEditor.amount", eatAmountEditor)));
 
 		return entries;
 	}
