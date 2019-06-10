@@ -42,7 +42,7 @@ public class CompressedChunk {
 		}
 		buffer.put(currentLength);
 		buffer.put((byte) currentTile.getTileDefinition().getId());
-		buffer.putShort((short) chunk.getStructures().size());
+		buffer.putShort(chunk.getStructureCount());
 		chunk.forEachStructure(structure -> {
 			buffer.put((byte) structure.getDefinition().getId());
 			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));

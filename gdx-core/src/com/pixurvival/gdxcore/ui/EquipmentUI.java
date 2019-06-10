@@ -68,12 +68,10 @@ public class EquipmentUI extends UIWindow {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		if (PixurvivalGame.getClient().getMyPlayer() != null) {
-			StatSet stats = PixurvivalGame.getClient().getMyPlayer().getStats();
-			strengthLabel.setText(decimalFormat.format(stats.getValue(StatType.STRENGTH)));
-			agilityLabel.setText(decimalFormat.format(stats.getValue(StatType.AGILITY)));
-			intelligenceLabel.setText(decimalFormat.format(stats.getValue(StatType.INTELLIGENCE)));
-		}
+		StatSet stats = PixurvivalGame.getClient().getMyPlayer().getStats();
+		strengthLabel.setText(decimalFormat.format(stats.getValue(StatType.STRENGTH)));
+		agilityLabel.setText(decimalFormat.format(stats.getValue(StatType.AGILITY)));
+		intelligenceLabel.setText(decimalFormat.format(stats.getValue(StatType.INTELLIGENCE)));
 		super.draw(batch, parentAlpha);
 	}
 

@@ -30,7 +30,7 @@ public class NaturalSpawnManager implements TiledMapListener {
 		@Override
 		public void perform() {
 			Chunk chunk = world.getMap().chunkAt(chunkPosition);
-			if (chunk != null && !CollectionUtils.isNullOrEmpty(chunk.getStructures().get(structureSpawner.getStructure().getId()))) {
+			if (chunk != null && !CollectionUtils.isNullOrEmpty(chunk.getStructures(structureSpawner.getStructure().getId()))) {
 				structureSpawner.spawn(chunk);
 				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, structureSpawner), Time.secToMillis(structureSpawner.getRespawnTimePerChunk()));
 			} else {
@@ -76,7 +76,7 @@ public class NaturalSpawnManager implements TiledMapListener {
 	private void forEachStructureSpawner(Chunk chunk, Consumer<StructureSpawner> action) {
 		World world = chunk.getMap().getWorld();
 		Ecosystem ecosystem = world.getGameMode().getEcosystem();
-		for (Entry<Integer, List<MapStructure>> entry : chunk.getStructures().entrySet()) {
+		for (Entry<Integer, List<MapStructure>> entry : chunk.getStructures()) {
 			List<StructureSpawner> structureSpawners = ecosystem.getStructureSpawnersPerStructure().get(entry.getKey());
 			if (structureSpawners == null || structureSpawners.isEmpty()) {
 				continue;

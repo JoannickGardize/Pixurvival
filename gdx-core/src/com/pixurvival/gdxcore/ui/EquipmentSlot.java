@@ -41,11 +41,9 @@ public class EquipmentSlot extends ImageButton {
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		PlayerEntity player = PixurvivalGame.getClient().getMyPlayer();
-		if (player != null) {
-			ItemStack equipmentItem = player.getEquipment().get(equipmentIndex);
-			itemStackDrawer.setItemStack(equipmentItem);
-			itemStackDrawer.draw(batch);
-		}
+		ItemStack equipmentItem = player.getEquipment().get(equipmentIndex);
+		itemStackDrawer.setItemStack(equipmentItem);
+		itemStackDrawer.draw(batch);
 		if (bottomShortcutDrawer != null) {
 			bottomShortcutDrawer.draw(batch);
 		}

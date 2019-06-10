@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
@@ -65,7 +65,7 @@ public class ItemCraftTooltip extends Actor implements InventoryListener {
 		getStage().getViewport().unproject(tmpVec);
 		setX(tmpVec.x + OFFSET);
 		setY(tmpVec.y + OFFSET);
-		PixurvivalGame.getSkin().get(TextFieldStyle.class).background.draw(batch, getX(), getY(), getWidth(), getHeight());
+		PixurvivalGame.getSkin().get("panel", Drawable.class).draw(batch, getX(), getY(), getWidth(), getHeight());
 		float y = getY() + getHeight() - MARGIN - ITEM_WIDTH;
 		for (Line line : lines) {
 			batch.draw(line.itemTexture, getX() + MARGIN, y, ITEM_WIDTH, ITEM_WIDTH);

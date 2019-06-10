@@ -16,14 +16,14 @@ public class LinearEffectMovement implements EffectMovement {
 
 	private double speed;
 
+	private boolean relative;
+
 	@Override
 	public void initialize(EffectEntity entity) {
-		if (entity.getWorld().isServer()) {
-			LivingEntity source = entity.getSource();
-			entity.getPosition().set(source.getPosition());
-			entity.setMovingAngle(source.getPosition().angleToward(source.getTargetPosition()));
-			entity.setForward(true);
-		}
+		LivingEntity source = entity.getSource();
+		entity.getPosition().set(source.getPosition());
+		entity.setMovingAngle(source.getPosition().angleToward(source.getTargetPosition()));
+		entity.setForward(true);
 	}
 
 	@Override

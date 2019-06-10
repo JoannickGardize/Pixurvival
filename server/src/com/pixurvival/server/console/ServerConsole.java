@@ -42,8 +42,8 @@ public class ServerConsole implements Runnable, ServerGameListener {
 				System.out.print(" -> [");
 				String separator = "";
 				for (String name : entry.getValue()) {
-					System.out.print(name);
 					System.out.print(separator);
+					System.out.print(name);
 					separator = ", ";
 				}
 				System.out.println("]");

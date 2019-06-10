@@ -4,8 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.NonNull;
-
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
@@ -15,6 +13,8 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
+
+import lombok.NonNull;
 
 public class ServerEngineThread extends EngineThread {
 
@@ -86,6 +86,7 @@ public class ServerEngineThread extends EngineThread {
 					boolean onlyChanged = !session.isNewPosition(chunk.getPosition());
 					chunk.getEntities().writeUpdate(byteBuffer, onlyChanged);
 				});
+
 				byteBuffer.put(EntityGroup.END_MARKER);
 				tmpRemoveEntityCollection.clear();
 				session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> tmpRemoveEntityCollection.addAll(chunk.getEntities())));

@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -37,6 +38,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	// public static final String SKIN = "skin/pixurvival.json";
 	public static final String DEFAULT_FONT = "default_font.ttf";
 	public static final String OVERLAY_FONT = "overlay_font.ttf";
+	public static final String ARROW = "arrow.png";
 
 	public static Skin getSkin() {
 		return instance.skin;
@@ -78,7 +80,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
 	private ClientGame client;
-	private AssetManager assetManager;
+	private @Getter AssetManager assetManager;
 	private @Getter InputMapping keyMapping;
 	private double frameDurationMillis = 1000.0 / 30;
 	private double frameCounter;
@@ -120,6 +122,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.load(OVERLAY_FONT, BitmapFont.class, overlayFontParams);
 
 		assetManager.load(I18N_BUNDLE, I18NBundle.class);
+		assetManager.load(ARROW, Texture.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
 		getDefaultFont().getData().markupEnabled = true;

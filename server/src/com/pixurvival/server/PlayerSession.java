@@ -41,8 +41,7 @@ public class PlayerSession {
 	}
 
 	public void addChunkIfNotKnown(Chunk chunk) {
-		if (!knownPositions.contains(chunk.getPosition())) {
-			knownPositions.add(chunk.getPosition());
+		if (knownPositions.add(chunk.getPosition())) {
 			chunksToSend.add(chunk.getCompressed());
 		}
 	}

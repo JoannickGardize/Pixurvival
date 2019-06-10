@@ -21,6 +21,7 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 			selfDrawer.draw(batch, worldViewport, e);
 		} else {
 			othersDrawer.draw(batch, worldViewport, e);
+			new FarAllyMarkerDrawer().draw(batch, worldViewport, e);
 		}
 	}
 }

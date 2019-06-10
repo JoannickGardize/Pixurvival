@@ -118,8 +118,8 @@ public class EntityCollection {
 					e = group.getEntitySupplier().get();
 					e.setId(entityId);
 					e.setWorld(world);
-					e.applyUpdate(byteBuffer);
 					add(e);
+					e.applyUpdate(byteBuffer);
 				} else {
 					e.applyUpdate(byteBuffer);
 				}

@@ -2,9 +2,12 @@ package com.pixurvival.core.map;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
@@ -25,7 +28,7 @@ public class Chunk {
 
 	private MapTile[] tiles;
 
-	private Map<Integer, List<MapStructure>> structures = new HashMap<>();
+	private @Getter(AccessLevel.NONE) Map<Integer, List<MapStructure>> structures = new HashMap<>();
 
 	private ChunkPosition position;
 
@@ -45,6 +48,8 @@ public class Chunk {
 
 	private @Setter boolean newlyCreated = false;
 
+	private short structureCount = 0;
+
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
 		this.position = new ChunkPosition(x, y);
@@ -53,6 +58,19 @@ public class Chunk {
 		offsetY = position.getY() * GameConstants.CHUNK_SIZE;
 		tiles = new MapTile[GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE];
 		check();
+	}
+
+	public List<MapStructure> getStructures(int typeId) {
+		List<MapStructure> list = structures.get(typeId);
+		if (list == null) {
+			return Collections.emptyList();
+		} else {
+			return list;
+		}
+	}
+
+	public Set<Entry<Integer, List<MapStructure>>> getStructures() {
+		return structures.entrySet();
 	}
 
 	public void check() {
@@ -106,6 +124,7 @@ public class Chunk {
 			}
 		}
 		structures.computeIfAbsent(structure.getId(), id -> new ArrayList<>()).add(mapStructure);
+		structureCount++;
 		if (notify) {
 			getMap().notifyListeners(l -> l.structureAdded(mapStructure));
 			fileSync = false;
@@ -143,6 +162,7 @@ public class Chunk {
 				}
 			}
 			structures.get(structure.getDefinition().getId()).remove(structure);
+			structureCount--;
 			getMap().notifyListeners(l -> l.structureRemoved(structure));
 			fileSync = false;
 		}

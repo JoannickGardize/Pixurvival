@@ -21,9 +21,6 @@ public class EquipmentAbilityProcessor implements InputActionProcessor {
 	@Override
 	public void buttonDown() {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer == null) {
-			return;
-		}
 		World world = PixurvivalGame.getClient().getWorld();
 		com.pixurvival.core.util.Vector2 targetPosition = world.getType().isClient() ? myPlayer.getTargetPosition() : null;
 		PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(equipmentAbilityType, targetPosition));

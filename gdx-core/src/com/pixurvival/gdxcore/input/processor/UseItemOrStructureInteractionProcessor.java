@@ -22,9 +22,6 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 	@Override
 	public void buttonDown() {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer == null) {
-			return;
-		}
 		ItemStack heldItemStack = myPlayer.getInventory().getHeldItemStack();
 		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
 			Vector2 worldPoint = getWorldCursorPosition();

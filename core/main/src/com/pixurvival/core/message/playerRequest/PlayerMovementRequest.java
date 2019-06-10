@@ -10,11 +10,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = "id")
 @NoArgsConstructor
+@ToString
 public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	private long id;

@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class AddPaddingUtil {
 
 	public static Texture apply(Region region) {

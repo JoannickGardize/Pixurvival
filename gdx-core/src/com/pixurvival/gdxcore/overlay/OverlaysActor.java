@@ -25,7 +25,10 @@ public class OverlaysActor extends Actor implements EventListener {
 	 */
 	private Rectangle scissors = new Rectangle();
 
-	public OverlaysActor() {
+	private Viewport worldViewport;
+
+	public OverlaysActor(Viewport worldViewport) {
+		this.worldViewport = worldViewport;
 		entityOverlayDrawers.put(EntityGroup.PLAYER, new PlayerEntityOverlayDrawer());
 		entityOverlayDrawers.put(EntityGroup.CREATURE, new CreatureEntityOverlayDrawer());
 	}
@@ -36,15 +39,14 @@ public class OverlaysActor extends Actor implements EventListener {
 		ScissorStack.pushScissors(scissors);
 		batch.setColor(1, 1, 1, 0.75f);
 		EntityPool entityPool = PixurvivalGame.getWorld().getEntityPool();
-		Viewport viewport = getStage().getViewport();
-		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, viewport, e)));
+		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
 		batch.flush(); // Make sure nothing is clipped before we want it to.
 		ScissorStack.popScissors();
 	}
 
 	@Override
 	public boolean handle(Event event) {
-		if (event instanceof ScreenResizeEvent && getParent() == getStage().getRoot()) {
+		if (event instanceof ScreenResizeEvent) {
 			ScreenResizeEvent screenResizeEvent = (ScreenResizeEvent) event;
 			int width = screenResizeEvent.getNewScreenWidth();
 			int height = screenResizeEvent.getNewScreenHeight();

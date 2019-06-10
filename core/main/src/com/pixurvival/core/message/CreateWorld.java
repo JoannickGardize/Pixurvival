@@ -14,4 +14,5 @@ public class CreateWorld {
 	private long myPlayerId;
 	private PlayerInventory inventory;
 	private String[] teamNames;
+	private int myTeamId;
 }

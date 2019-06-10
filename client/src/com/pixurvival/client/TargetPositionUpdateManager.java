@@ -15,7 +15,7 @@ public class TargetPositionUpdateManager implements Plugin<ClientGame> {
 	public void update(ClientGame client) {
 		PlayerEntity myPlayer = client.getMyPlayer();
 		long currentTime = client.getWorld().getTime().getTimeMillis();
-		if (myPlayer != null && myPlayer.getCurrentAbility() instanceof EquipmentAbilityProxy && currentTime - previousTargetPositionUpdateTime >= TARGET_POSITION_UPDATE_TIME_INTERVAL) {
+		if (myPlayer.getCurrentAbility() instanceof EquipmentAbilityProxy && currentTime - previousTargetPositionUpdateTime >= TARGET_POSITION_UPDATE_TIME_INTERVAL) {
 			client.sendAction(new UpdateTargetPositionRequest(myPlayer.getTargetPosition()));
 			previousTargetPositionUpdateTime = currentTime;
 		}

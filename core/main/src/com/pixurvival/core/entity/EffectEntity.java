@@ -38,8 +38,8 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 
 	@Override
 	public void initialize() {
-		definition.getMovement().initialize(this);
 		if (getWorld().isServer()) {
+			definition.getMovement().initialize(this);
 			if (definition.getOrientation() == OrientationType.FROM_SOURCE) {
 				orientation = (float) source.getPosition().angleToward(source.getTargetPosition());
 			}
@@ -91,6 +91,7 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 		buffer.putFloat(orientation);
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putDouble(getMovingAngle());
+		definition.getMovement().writeUpdate(buffer, this);
 
 	}
 
@@ -101,6 +102,7 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 		orientation = buffer.getFloat();
 		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getDouble());
+		definition.getMovement().applyUpdate(buffer, this);
 	}
 
 	@Override

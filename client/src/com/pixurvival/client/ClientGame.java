@@ -44,7 +44,6 @@ public class ClientGame extends PluginHolder<ClientGame> {
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private @Getter PlayerInventory myInventory;
 	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
@@ -71,6 +70,10 @@ public class ClientGame extends PluginHolder<ClientGame> {
 		return world.getMyPlayer();
 	}
 
+	public PlayerInventory getMyInventory() {
+		return world.getMyPlayer().getInventory();
+	}
+
 	public void connectToServer(String address, int port, String playerName) {
 		try {
 			if (client.isConnected()) {
@@ -88,14 +91,9 @@ public class ClientGame extends PluginHolder<ClientGame> {
 
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
+			createWorld.getInventory().computeQuantities();
 			setWorld(World.createClientWorld(createWorld, contentPackLoader));
 			removeAllPlugins();
-			world.setMyPlayerId(createWorld.getMyPlayerId());
-			createWorld.getInventory().computeQuantities();
-			myInventory = createWorld.getInventory();
-			for (String teamName : createWorld.getTeamNames()) {
-				world.getTeamSet().createTeam(teamName);
-			}
 			notify(ClientGameListener::initializeGame);
 			addPlugin(new TargetPositionUpdateManager());
 			client.sendTCP(new WorldReady());
@@ -118,11 +116,6 @@ public class ClientGame extends PluginHolder<ClientGame> {
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new IllegalStateException("The GameMode + " + gameMode.getName() + " cannot be played in solo.");
 		}
-		PlayerEntity playerEntity = new PlayerEntity();
-		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
-		world.getEntityPool().add(playerEntity);
-		world.setMyPlayerId(playerEntity.getId());
-		myInventory = playerEntity.getInventory();
 		world.initializeGame();
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
@@ -158,9 +151,6 @@ public class ClientGame extends PluginHolder<ClientGame> {
 					playerActionRequests.forEach(r -> r.apply(getMyPlayer()));
 					playerActionRequests.clear();
 				}
-			}
-			if (getMyPlayer() != null && getMyPlayer().getInventory() == null) {
-				getMyPlayer().setInventory(myInventory);
 			}
 			world.update(deltaTimeMillis);
 			if (world.getType() == Type.CLIENT) {

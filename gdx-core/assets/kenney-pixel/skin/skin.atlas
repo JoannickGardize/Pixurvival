@@ -276,3 +276,18 @@ Button-gray-reversed
   orig: 32, 32
   offset: 0, 0
   index: -1
+panel
+  rotate: false
+  xy: 100, 32
+  size: 9, 9
+  split: 3, 3, 3, 3
+  orig: 9, 9
+  offset: 0, 0
+  index: -1
+arrow
+  rotate: false
+  xy: 104, 43
+  size: 14, 13
+  orig: 7, 6
+  offset: 0, 0
+  index: -1

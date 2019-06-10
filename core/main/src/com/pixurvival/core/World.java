@@ -4,11 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatManager;
 import com.pixurvival.core.chat.ChatSender;
@@ -17,7 +12,6 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackLoader;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.Team;
@@ -35,6 +29,11 @@ import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -64,11 +63,11 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private ContentPack contentPack;
 	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
-	private @Setter long myPlayerId = -1;
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
 	private @Getter CommandManager commandManager = new CommandManager();
 	private @Getter ChatManager chatManager = new ChatManager();
+	private PlayerEntity myPlayer;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -96,6 +95,15 @@ public class World extends PluginHolder<World> implements ChatSender {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
+		for (String teamName : createWorld.getTeamNames()) {
+			world.teamSet.createTeam(teamName);
+		}
+		PlayerEntity myPlayer = new PlayerEntity();
+		myPlayer.setWorld(world);
+		myPlayer.setId(createWorld.getId());
+		myPlayer.setInventory(createWorld.getInventory());
+		world.myPlayer = myPlayer;
+		world.getEntityPool().add(myPlayer);
 		world.addPlugin(new WorldUpdateManager());
 		worlds.put(world.getId(), world);
 		return world;
@@ -109,6 +117,10 @@ public class World extends PluginHolder<World> implements ChatSender {
 
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
+		PlayerEntity playerEntity = new PlayerEntity();
+		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
+		world.getEntityPool().add(playerEntity);
+		world.myPlayer = playerEntity;
 		worlds.put(world.getId(), world);
 		return world;
 	}
@@ -140,10 +152,6 @@ public class World extends PluginHolder<World> implements ChatSender {
 		}
 	}
 
-	public PlayerEntity getMyPlayer() {
-		return (PlayerEntity) entityPool.get(EntityGroup.PLAYER, myPlayerId);
-	}
-
 	/**
 	 * Called after all players are added in the EntityPool and Teams are sets.
 	 * This will place players and set the map limit if present.
@@ -158,20 +166,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 			for (int i = 0; i < teamSet.size(); i++) {
 				Team team = teamSet.get(i);
 				Vector2 spawnPosition = config.getSpawnSpots()[i];
-				CardinalDirection currentDirection = CardinalDirection.EAST;
-				for (PlayerEntity player : team) {
-					player.getPosition().set(spawnPosition);
-					for (int j = 0; j < 4; j++) {
-						if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY())
-								.isSolid()) {
-							currentDirection = currentDirection.getNext();
-						} else {
-							spawnPosition.addX(currentDirection.getNormalX());
-							spawnPosition.addY(currentDirection.getNormalY());
-							break;
-						}
-					}
-				}
+				spawnTeam(team, spawnPosition);
 			}
 			if (gameMode.isMapLimitEnabled()) {
 				Vector2 center = config.getArea().center();
@@ -179,6 +174,22 @@ public class World extends PluginHolder<World> implements ChatSender {
 			}
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");
+		}
+	}
+
+	private void spawnTeam(Team team, Vector2 spawnPosition) {
+		CardinalDirection currentDirection = CardinalDirection.EAST;
+		for (PlayerEntity player : team) {
+			player.getPosition().set(spawnPosition);
+			for (int j = 0; j < 4; j++) {
+				if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
+					currentDirection = currentDirection.getNext();
+				} else {
+					spawnPosition.addX(currentDirection.getNormalX());
+					spawnPosition.addY(currentDirection.getNormalY());
+					break;
+				}
+			}
 		}
 	}
 

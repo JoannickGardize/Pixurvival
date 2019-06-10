@@ -2,9 +2,6 @@ package com.pixurvival.core.livingEntity;
 
 import java.util.function.Consumer;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
@@ -26,6 +23,9 @@ import com.pixurvival.core.map.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.util.MathUtils;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder, CommandExecutor, ChatSender {

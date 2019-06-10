@@ -61,8 +61,8 @@ public class WorldScreen implements Screen {
 		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
-		MiniMapUI miniMapUI = new MiniMapUI(world.getMyPlayerId());
-		OverlaysActor overlayActor = new OverlaysActor();
+		MiniMapUI miniMapUI = new MiniMapUI();
+		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
 		hudStage.addListener(overlayActor);
 		hudStage.addActor(overlayActor);
 		hudStage.addActor(miniMapUI);
@@ -179,9 +179,7 @@ public class WorldScreen implements Screen {
 
 	private void updateMouseTarget() {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer != null) {
-			Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-			myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
-		}
+		Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+		myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
 	}
 }

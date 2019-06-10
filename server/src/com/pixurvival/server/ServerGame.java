@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -24,6 +21,9 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.util.CommonMainArgs;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
 
 public class ServerGame {
 
@@ -115,6 +115,7 @@ public class ServerGame {
 			playerEntity.getEquipment().addListener(playerConnection);
 			playerConnection.setPlayerEntity(playerEntity);
 			createWorld.setMyPlayerId(playerEntity.getId());
+			createWorld.setMyTeamId(playerEntity.getTeam().getId());
 			createWorld.setInventory(playerEntity.getInventory());
 			playerConnection.sendTCP(createWorld);
 			session.addPlayer(playerConnection);

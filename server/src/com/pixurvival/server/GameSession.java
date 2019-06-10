@@ -118,6 +118,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void entityAdded(Entity e) {
+		// THIS ONE TOO
 	}
 
 	@Override

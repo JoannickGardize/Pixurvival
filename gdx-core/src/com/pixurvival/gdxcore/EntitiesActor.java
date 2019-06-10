@@ -91,7 +91,6 @@ public class EntitiesActor extends Actor {
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).topDraw(batch, e));
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -120,9 +119,6 @@ public class EntitiesActor extends Actor {
 
 	private void manageGhostStructure() {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		if (myPlayer == null) {
-			return;
-		}
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
 		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
 			Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));

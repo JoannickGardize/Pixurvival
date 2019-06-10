@@ -41,10 +41,8 @@ public class ChatUI extends UIWindow implements ChatListener {
 					break;
 				case Keys.TAB:
 					PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-					if (myPlayer != null) {
-						inputArea.setText(myPlayer.getWorld().getCommandManager().autocomplete(myPlayer, inputArea.getText()));
-						inputArea.setCursorPosition(inputArea.getText().length());
-					}
+					inputArea.setText(myPlayer.getWorld().getCommandManager().autocomplete(myPlayer, inputArea.getText()));
+					inputArea.setCursorPosition(inputArea.getText().length());
 					break;
 				}
 				return true;

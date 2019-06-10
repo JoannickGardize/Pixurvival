@@ -6,9 +6,9 @@ public class MiniMapUI extends UIWindow {
 
 	private MiniMapActor mapActor;
 
-	public MiniMapUI(long myPlayerId) {
+	public MiniMapUI() {
 		super("miniMap");
-		mapActor = new MiniMapActor(myPlayerId);
+		mapActor = new MiniMapActor();
 		add(mapActor).fill().expand();
 	}
 

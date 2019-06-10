@@ -43,7 +43,7 @@ public class StructureSpawner implements Serializable {
 
 	public void spawn(Chunk chunk) {
 		ensureCreatureSetBuilt();
-		List<MapStructure> structures = chunk.getStructures().get(structure.getId());
+		List<MapStructure> structures = chunk.getStructures(structure.getId());
 		if (structures == null || structures.isEmpty()) {
 			return;
 		}
