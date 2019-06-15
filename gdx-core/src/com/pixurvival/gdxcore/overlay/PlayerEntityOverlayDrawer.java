@@ -7,21 +7,28 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 
 	private EntityOverlayStackDrawer<PlayerEntity> selfDrawer = new EntityOverlayStackDrawer<>();
-	private EntityOverlayStackDrawer<PlayerEntity> othersDrawer = new EntityOverlayStackDrawer<>();
+	private EntityOverlayStackDrawer<PlayerEntity> alliesDrawer = new EntityOverlayStackDrawer<>();
+	private DistantAllyMarkerDrawer distantAlliesDrawer = new DistantAllyMarkerDrawer();
+	private EntityOverlayStackDrawer<PlayerEntity> ennemiesDrawer = new EntityOverlayStackDrawer<>();
 
 	public PlayerEntityOverlayDrawer() {
 		selfDrawer.add(new LifeHungerBarDrawer());
-		othersDrawer.add(new LifeBarDrawer());
-		othersDrawer.add(new NameDrawer());
+		alliesDrawer.add(new LifeBarDrawer(OverlayConstants.ALLY_LIFE_BAR_COLOR));
+		alliesDrawer.add(new NameDrawer());
+		ennemiesDrawer.add(new LifeBarDrawer(OverlayConstants.ENNEMY_LIFE_BAR_COLOR));
+		ennemiesDrawer.add(new NameDrawer());
 	}
 
 	@Override
 	public void draw(Batch batch, Viewport worldViewport, PlayerEntity e) {
-		if (e.equals(e.getWorld().getMyPlayer())) {
+		PlayerEntity myPlayer = e.getWorld().getMyPlayer();
+		if (e.getId() == myPlayer.getId()) {
 			selfDrawer.draw(batch, worldViewport, e);
+		} else if (e.getTeam().getId() == myPlayer.getTeam().getId()) {
+			alliesDrawer.draw(batch, worldViewport, e);
+			distantAlliesDrawer.draw(batch, worldViewport, e);
 		} else {
-			othersDrawer.draw(batch, worldViewport, e);
-			new FarAllyMarkerDrawer().draw(batch, worldViewport, e);
+			ennemiesDrawer.draw(batch, worldViewport, myPlayer);
 		}
 	}
 }

@@ -12,13 +12,13 @@ public class LifeHungerBarDrawer implements OverlayStackElementDrawer<PlayerEnti
 
 	@Override
 	public float draw(Batch batch, OverlayInfos infos, PlayerEntity e) {
-		tmpRectangle.width = OverlaySettings.LIFE_BAR_WIDTH;
-		tmpRectangle.height = OverlaySettings.LIFE_BAR_HEIGHT;
+		tmpRectangle.width = OverlayConstants.LIFE_BAR_WIDTH;
+		tmpRectangle.height = OverlayConstants.LIFE_BAR_HEIGHT;
 		tmpRectangle.x = infos.getReferencePosition().x - tmpRectangle.width / 2;
 		tmpRectangle.y = infos.getReferencePosition().y;
 		DrawUtils.drawPercentBar(batch, tmpRectangle, e.getHunger() / PlayerEntity.MAX_HUNGER, Color.YELLOW, false);
-		tmpRectangle.y += tmpRectangle.height - OverlaySettings.BAR_BORDER_SIZE;
+		tmpRectangle.y += tmpRectangle.height - OverlayConstants.BAR_BORDER_SIZE;
 		DrawUtils.drawPercentBar(batch, tmpRectangle, e.getHealth() / e.getMaxHealth(), Color.GREEN);
-		return tmpRectangle.height * 2 - OverlaySettings.BAR_BORDER_SIZE;
+		return tmpRectangle.height * 2 - OverlayConstants.BAR_BORDER_SIZE;
 	}
 }

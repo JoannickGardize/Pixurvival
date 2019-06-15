@@ -51,7 +51,19 @@ public class TiledMap {
 	public TiledMap(World world) {
 		this.world = world;
 
-		outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
+		if (world.isServer()) {
+			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
+		} else {
+			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile()) {
+				@Override
+				public boolean isSolid() {
+					// Force outside tile to not be solid, so distant allies players
+					// will move correctly.
+					return false;
+				}
+			};
+
+		}
 
 		chunkDistance = world.isServer() ? GameConstants.KEEP_ALIVE_DISTANCE : GameConstants.PLAYER_VIEW_DISTANCE;
 		List<Tile> tilesById = world.getContentPack().getTiles();
@@ -139,7 +151,9 @@ public class TiledMap {
 	private void unloadChunk(Chunk chunk) {
 		repository.save(chunk);
 		chunks.remove(chunk.getPosition());
-		world.getEntityPool().removeAll(chunk.getEntities());
+		if (world.isServer()) {
+			world.getEntityPool().removeAll(chunk.getEntities());
+		}
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
 	}
 

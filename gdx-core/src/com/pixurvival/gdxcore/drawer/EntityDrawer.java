@@ -26,13 +26,12 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 
 	@Override
 	public void update(E e) {
-		Object o = e.getCustomData();
-		if (o == null) {
-			o = new DrawData();
-			((DrawData) o).getDrawPosition().set(e.getPosition());
-			e.setCustomData(o);
+		DrawData data = (DrawData) e.getCustomData();
+		if (data == null) {
+			data = new DrawData();
+			data.getDrawPosition().set(e.getPosition());
+			e.setCustomData(data);
 		}
-		DrawData data = (DrawData) o;
 		Vector2 drawPos = data.getDrawPosition();
 		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
 		double distance = drawPos.distanceSquared(position);

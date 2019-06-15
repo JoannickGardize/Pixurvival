@@ -68,4 +68,5 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 			}
 		}
 	}
+
 }

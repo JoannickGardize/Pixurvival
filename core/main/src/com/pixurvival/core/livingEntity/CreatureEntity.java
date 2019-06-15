@@ -49,7 +49,6 @@ public class CreatureEntity extends LivingEntity {
 		if (definition.getAbilitySet() == null) {
 			definition.setAbilitySet(EMPTY_ABILITY_SET);
 		}
-		super.initialize();
 	}
 
 	@Override

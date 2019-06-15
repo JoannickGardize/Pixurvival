@@ -2,17 +2,21 @@ package com.pixurvival.server;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.Team;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.NonNull;
 
@@ -78,37 +82,17 @@ public class ServerEngineThread extends EngineThread {
 		gs.foreachPlayers(session -> {
 			PlayerConnection connection = session.getConnection();
 			PlayerEntity playerEntity = connection.getPlayerEntity();
-			TiledMap map = playerEntity.getWorld().getMap();
 			if (connection.isGameReady() && playerEntity != null) {
 				worldUpdate.clear();
 				ByteBuffer byteBuffer = worldUpdate.getEntityUpdateByteBuffer();
-				playerEntity.foreachChunkInView(chunk -> {
-					boolean onlyChanged = !session.isNewPosition(chunk.getPosition());
-					chunk.getEntities().writeUpdate(byteBuffer, onlyChanged);
-				});
-
+				writeEntityUpdate(session, playerEntity, byteBuffer);
 				byteBuffer.put(EntityGroup.END_MARKER);
-				tmpRemoveEntityCollection.clear();
-				session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> tmpRemoveEntityCollection.addAll(chunk.getEntities())));
-				gs.getRemovedEntities().forEach((position, entityCollection) -> {
-					if (position.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
-						tmpRemoveEntityCollection.addAll(entityCollection);
-					}
-				});
-				gs.getChunkChangedEntities().forEach((previousPosition, entityList) -> {
-					if (previousPosition.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
-						entityList.forEach(e -> {
-							if (!playerEntity.getChunkVision().contains(e.getChunk().getPosition())) {
-								tmpRemoveEntityCollection.addAll(entityList);
-							}
-						});
-					}
-				});
-				tmpRemoveEntityCollection.writeAllIds(byteBuffer);
+				writeRemoveEntity(gs, session, byteBuffer);
 				byteBuffer.put(EntityGroup.END_MARKER);
+				writeDistantAllyPositions(playerEntity, byteBuffer);
 				session.extractStructureUpdatesToSend(worldUpdate.getStructureUpdates());
 				session.extractChunksToSend(worldUpdate.getCompressedChunks());
-				if (byteBuffer.position() > 2 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
+				if (byteBuffer.position() > 4 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
 					connection.sendUDP(worldUpdate);
 				}
 				if (connection.isInventoryChanged()) {
@@ -121,6 +105,71 @@ public class ServerEngineThread extends EngineThread {
 			}
 			session.clearPositionChanges();
 		});
+	}
+
+	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
+		playerEntity.foreachChunkInView(chunk -> {
+			boolean onlyChanged = !session.isNewPosition(chunk.getPosition());
+			chunk.getEntities().writeUpdate(byteBuffer, onlyChanged);
+		});
+	}
+
+	private void writeRemoveEntity(GameSession gs, PlayerSession session, ByteBuffer byteBuffer) {
+		PlayerConnection connection = session.getConnection();
+		PlayerEntity playerEntity = connection.getPlayerEntity();
+		TiledMap map = playerEntity.getWorld().getMap();
+		tmpRemoveEntityCollection.clear();
+		session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> tmpRemoveEntityCollection.addAll(chunk.getEntities())));
+		gs.getRemovedEntities().forEach((position, entityCollection) -> {
+			if (position.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+				tmpRemoveEntityCollection.addAll(entityCollection);
+			}
+		});
+		gs.getChunkChangedEntities().forEach((previousPosition, entityList) -> {
+			if (previousPosition.insideSquare(playerEntity.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+				entityList.forEach(e -> {
+					if (!playerEntity.getChunkVision().contains(e.getChunk().getPosition())) {
+						tmpRemoveEntityCollection.addAll(entityList);
+					}
+				});
+			}
+		});
+		ignoreTeamMembers(playerEntity);
+		tmpRemoveEntityCollection.writeAllIds(byteBuffer);
+	}
+
+	/**
+	 * Ignore team members from the remove entity list so the client can see
+	 * positions of allies.
+	 * 
+	 * @param playerEntity
+	 */
+	private void ignoreTeamMembers(PlayerEntity playerEntity) {
+		Team team = playerEntity.getTeam();
+		Iterator<Entity> playerIterator = tmpRemoveEntityCollection.get(EntityGroup.PLAYER).iterator();
+		while (playerIterator.hasNext()) {
+			Entity e = playerIterator.next();
+			if (team.getAliveMembers().contains(e)) {
+				playerIterator.remove();
+			}
+		}
+	}
+
+	private void writeDistantAllyPositions(PlayerEntity player, ByteBuffer byteBuffer) {
+		int lengthPosition = byteBuffer.position();
+		byteBuffer.position(byteBuffer.position() + 2);
+		short length = 0;
+		for (PlayerEntity ally : player.getTeam().getAliveMembers()) {
+			if (ally != player && ally.getChunk() != null && !ally.getChunk().getPosition().insideSquare(player.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+				byteBuffer.putLong(ally.getId());
+				byteBuffer.putDouble(ally.getPosition().getX());
+				byteBuffer.putDouble(ally.getPosition().getY());
+				ByteBufferUtils.putBoolean(byteBuffer, ally.isForward());
+				byteBuffer.putDouble(ally.getMovingAngle());
+				length++;
+			}
+		}
+		byteBuffer.putShort(lengthPosition, length);
 	}
 
 	@Override

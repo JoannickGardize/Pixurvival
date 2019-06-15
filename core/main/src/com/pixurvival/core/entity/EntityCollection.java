@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -115,8 +116,7 @@ public class EntityCollection {
 				long entityId = byteBuffer.getLong();
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
-					e = group.getEntitySupplier().get();
-					e.setId(entityId);
+					e = createEntity(group, entityId);
 					e.setWorld(world);
 					add(e);
 					e.applyUpdate(byteBuffer);
@@ -137,6 +137,27 @@ public class EntityCollection {
 				}
 			}
 		}
+		short length = byteBuffer.getShort();
+		Map<Long, Entity> groupMap = entities.get(EntityGroup.PLAYER);
+		for (int i = 0; i < length; i++) {
+			long id = byteBuffer.getLong();
+			Entity e = groupMap.get(id);
+			if (e != null) {
+				e.getPosition().set(byteBuffer.getDouble(), byteBuffer.getDouble());
+				e.setForward(ByteBufferUtils.getBoolean(byteBuffer));
+				e.setMovingAngle(byteBuffer.getDouble());
+			} else {
+				byteBuffer.getDouble();
+				byteBuffer.getDouble();
+				byteBuffer.get();
+				byteBuffer.getDouble();
+			}
+		}
 	}
 
+	protected Entity createEntity(EntityGroup group, long id) {
+		Entity e = group.getEntitySupplier().get();
+		e.setId(id);
+		return e;
+	}
 }

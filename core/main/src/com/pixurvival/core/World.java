@@ -99,8 +99,9 @@ public class World extends PluginHolder<World> implements ChatSender {
 			world.teamSet.createTeam(teamName);
 		}
 		PlayerEntity myPlayer = new PlayerEntity();
+		myPlayer.setTeam(world.teamSet.get(createWorld.getMyTeamId()));
 		myPlayer.setWorld(world);
-		myPlayer.setId(createWorld.getId());
+		myPlayer.setId(createWorld.getMyPlayerId());
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);

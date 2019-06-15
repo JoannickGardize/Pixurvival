@@ -14,12 +14,14 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum EntityGroup {
-	PLAYER(PlayerEntity::new),
-	ITEM_STACK(ItemStackEntity::new),
-	CREATURE(CreatureEntity::new),
-	EFFECT(EffectEntity::new);
+	PLAYER(true, PlayerEntity::new),
+	ITEM_STACK(false, ItemStackEntity::new),
+	CREATURE(false, CreatureEntity::new),
+	EFFECT(false, EffectEntity::new);
 
 	public static final byte END_MARKER = -1;
+
+	private @Getter boolean persistentInstance;
 
 	private @Getter Supplier<Entity> entitySupplier;
 

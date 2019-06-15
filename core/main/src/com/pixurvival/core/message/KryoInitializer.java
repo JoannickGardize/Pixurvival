@@ -73,7 +73,6 @@ public class KryoInitializer {
 		register(kryo, UpdateTargetPositionRequest.class);
 		register(kryo, ChatRequest.class);
 		register(kryo, ChatEntry.class);
-		register(kryo, EntityMovement.class);
 	}
 
 	@SuppressWarnings("unchecked")

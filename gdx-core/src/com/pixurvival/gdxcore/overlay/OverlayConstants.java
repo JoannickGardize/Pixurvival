@@ -1,9 +1,11 @@
 package com.pixurvival.gdxcore.overlay;
 
+import com.badlogic.gdx.graphics.Color;
+
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class OverlaySettings {
+public class OverlayConstants {
 
 	public static final float BAR_BORDER_SIZE = 2f;
 
@@ -12,4 +14,8 @@ public class OverlaySettings {
 	public static final float LIFE_BAR_WIDTH = 40f;
 
 	public static final float LIFE_BAR_HEIGHT = 10f;
+
+	public static final Color ENNEMY_LIFE_BAR_COLOR = Color.RED;
+
+	public static final Color ALLY_LIFE_BAR_COLOR = Color.GREEN;
 }

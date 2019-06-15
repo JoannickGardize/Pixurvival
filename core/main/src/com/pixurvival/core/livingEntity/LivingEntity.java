@@ -41,8 +41,7 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 
 	private @Setter Team team = TeamSet.WILD_TEAM;
 
-	@Override
-	public void initialize() {
+	public LivingEntity() {
 		stats.get(StatType.MAX_HEALTH).addListener(s -> {
 			if (getHealth() > s.getValue()) {
 				setHealth(s.getValue());

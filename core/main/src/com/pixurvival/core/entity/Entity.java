@@ -32,7 +32,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter World world;
-	private Chunk chunk;
+	private @Setter Chunk chunk;
 	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
@@ -46,10 +46,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server
-	 * will send data of this entity at the next data send tick to clients that
-	 * view this entity. Must be true at initialization to send the new entity
-	 * data.
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -82,7 +81,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 			setSpeed(0);
 			velocity.set(0, 0);
 		}
+		updateChunk();
+	}
 
+	private void updateChunk() {
 		// Update current chunk
 		if (chunk == null) {
 			chunk = getWorld().getMap().chunkAt(position.getX(), position.getY());
@@ -207,8 +209,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of
-	 * {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position
@@ -230,8 +231,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	/**
 	 * @param group
 	 * @param maxSquareDistance
-	 *            The maximum distance between this entity and any point of
-	 *            checked chunks.
+	 *            The maximum distance between this entity and any point of checked
+	 *            chunks.
 	 * @param action
 	 */
 	public void foreachEntities(EntityGroup group, double maxSquareDistance, Consumer<Entity> action) {

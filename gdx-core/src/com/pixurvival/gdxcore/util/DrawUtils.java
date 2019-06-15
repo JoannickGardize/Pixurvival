@@ -10,7 +10,7 @@ import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.drawer.DrawData;
-import com.pixurvival.gdxcore.overlay.OverlaySettings;
+import com.pixurvival.gdxcore.overlay.OverlayConstants;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
@@ -64,21 +64,21 @@ public class DrawUtils {
 	}
 
 	public static void drawPercentBar(Batch batch, Rectangle rectangle, float percent, Color color, boolean topBorder) {
-		tmpRectangle.set(rectangle.x, rectangle.y, rectangle.width, OverlaySettings.BAR_BORDER_SIZE);
+		tmpRectangle.set(rectangle.x, rectangle.y, rectangle.width, OverlayConstants.BAR_BORDER_SIZE);
 		drawRectangle(batch, tmpRectangle, Color.BLACK);
 		if (topBorder) {
-			tmpRectangle.y = rectangle.y + rectangle.height - OverlaySettings.BAR_BORDER_SIZE;
+			tmpRectangle.y = rectangle.y + rectangle.height - OverlayConstants.BAR_BORDER_SIZE;
 			drawRectangle(batch, tmpRectangle, Color.BLACK);
 		}
-		tmpRectangle.set(rectangle.x, rectangle.y + OverlaySettings.BAR_BORDER_SIZE, OverlaySettings.BAR_BORDER_SIZE, rectangle.height - OverlaySettings.BAR_BORDER_SIZE * 2);
+		tmpRectangle.set(rectangle.x, rectangle.y + OverlayConstants.BAR_BORDER_SIZE, OverlayConstants.BAR_BORDER_SIZE, rectangle.height - OverlayConstants.BAR_BORDER_SIZE * 2);
 		drawRectangle(batch, tmpRectangle, Color.BLACK);
-		tmpRectangle.x = rectangle.x + rectangle.width - OverlaySettings.BAR_BORDER_SIZE;
+		tmpRectangle.x = rectangle.x + rectangle.width - OverlayConstants.BAR_BORDER_SIZE;
 		drawRectangle(batch, tmpRectangle, Color.BLACK);
-		tmpRectangle.set(rectangle.x + OverlaySettings.BAR_BORDER_SIZE, rectangle.y + OverlaySettings.BAR_BORDER_SIZE, (rectangle.width - OverlaySettings.BAR_BORDER_SIZE * 2) * percent,
-				rectangle.height - OverlaySettings.BAR_BORDER_SIZE * 2);
+		tmpRectangle.set(rectangle.x + OverlayConstants.BAR_BORDER_SIZE, rectangle.y + OverlayConstants.BAR_BORDER_SIZE, (rectangle.width - OverlayConstants.BAR_BORDER_SIZE * 2) * percent,
+				rectangle.height - OverlayConstants.BAR_BORDER_SIZE * 2);
 		drawRectangle(batch, tmpRectangle, color);
 		tmpRectangle.x += tmpRectangle.width;
-		tmpRectangle.width = (rectangle.width - OverlaySettings.BAR_BORDER_SIZE * 2) * (1 - percent);
+		tmpRectangle.width = (rectangle.width - OverlayConstants.BAR_BORDER_SIZE * 2) * (1 - percent);
 		drawRectangle(batch, tmpRectangle, Color.BLACK);
 	}
 

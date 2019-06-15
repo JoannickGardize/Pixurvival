@@ -36,4 +36,12 @@ public class ByteBufferUtils {
 			return elementList.get(id);
 		}
 	}
+
+	public static void putBoolean(ByteBuffer buffer, boolean b) {
+		buffer.put(b ? (byte) 1 : 0);
+	}
+
+	public static boolean getBoolean(ByteBuffer buffer) {
+		return buffer.get() == 1;
+	}
 }

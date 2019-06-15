@@ -123,6 +123,10 @@ public class Vector2 {
 		return dx * dx + dy * dy;
 	}
 
+	public double distance(Vector2 v) {
+		return Math.sqrt(distanceSquared(v));
+	}
+
 	public double distanceSquared(double x, double y) {
 		double dx = this.x - x;
 		double dy = this.y - y;

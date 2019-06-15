@@ -21,6 +21,7 @@ public class EntityPool extends EntityCollection {
 	private World world;
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
+	private EntityCollection persistentInstances = new EntityCollection();
 
 	public EntityPool(World world) {
 		this.world = world;
@@ -102,4 +103,23 @@ public class EntityPool extends EntityCollection {
 		return getEntities().get(group).get(byteBuffer.getLong());
 	}
 
+	@Override
+	public void remove(Entity entity) {
+		super.remove(entity);
+	}
+
+	@Override
+	protected Entity createEntity(EntityGroup group, long id) {
+		Entity e = persistentInstances.get(group, id);
+		if (e == null) {
+			e = super.createEntity(group, id);
+			if (group.isPersistentInstance()) {
+				persistentInstances.add(e);
+			}
+		} else {
+			e.setChunk(null);
+			e.setAlive(true);
+		}
+		return e;
+	}
 }
