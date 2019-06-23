@@ -17,6 +17,7 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
+import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkGroupChangeHelper;
@@ -42,6 +43,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public static final int WEAPON_SPECIAL_ABILITY_ID = 3;
 	public static final int ACCESSORY1_SPECIAL_ABILITY_ID = 4;
 	public static final int ACCESSORY2_SPECIAL_ABILITY_ID = 5;
+	public static final int USE_ITEM_ABILITY_ID = 6;
 
 	private static final AbilitySet<Ability> PLAYER_ABILITY_SET = new AbilitySet<>();
 
@@ -52,6 +54,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
+		PLAYER_ABILITY_SET.add(new UseItemAbility());
 	}
 
 	// TODO false par défaut et créer le système pour op un joueur coté serveur
@@ -148,6 +151,11 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public void harvest(HarvestableMapStructure harvestableStructure) {
 		((HarvestAbilityData) getAbilityData(HARVEST_ABILITY_ID)).setStructure(harvestableStructure);
 		startAbility(HARVEST_ABILITY_ID);
+	}
+
+	public void useItem() {
+		// TODO
+		startAbility(USE_ITEM_ABILITY_ID);
 	}
 
 	public void startEquipmentAbility(EquipmentAbilityType type) {
