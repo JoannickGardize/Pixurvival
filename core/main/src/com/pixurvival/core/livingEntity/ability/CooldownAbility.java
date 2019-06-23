@@ -1,6 +1,5 @@
 package com.pixurvival.core.livingEntity.ability;
 
-import com.pixurvival.core.Time;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
 import lombok.Getter;
@@ -12,7 +11,7 @@ public abstract class CooldownAbility extends Ability {
 
 	private static final long serialVersionUID = 1L;
 
-	private double cooldown;
+	private long cooldown;
 
 	@Override
 	public boolean start(LivingEntity entity) {
@@ -32,7 +31,7 @@ public abstract class CooldownAbility extends Ability {
 		long currentTimeMillis = entity.getWorld().getTime().getTimeMillis();
 		if (currentTimeMillis >= readyTimeMillis) {
 			fire(entity);
-			cooldownData.setReadyTimeMillis(currentTimeMillis + Time.secToMillis(cooldown));
+			cooldownData.setReadyTimeMillis(currentTimeMillis + cooldown);
 		}
 		return false;
 	}

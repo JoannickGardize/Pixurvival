@@ -66,6 +66,7 @@ public class FileService {
 		}
 	}
 
+	@Deprecated
 	public void save() {
 		if (currentContentPack == null) {
 			return;

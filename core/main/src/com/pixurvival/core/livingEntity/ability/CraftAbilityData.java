@@ -2,7 +2,6 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
@@ -17,7 +16,7 @@ public class CraftAbilityData extends WorkAbilityData {
 
 	public void setItemCraft(ItemCraft itemCraft) {
 		this.itemCraft = itemCraft;
-		setDurationMillis(Time.secToMillis(itemCraft.getDuration()));
+		setDurationMillis(itemCraft.getDuration());
 	}
 
 	@Override

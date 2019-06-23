@@ -8,9 +8,8 @@ import java.util.function.Function;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
@@ -32,7 +31,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 		defaultCharacterChooser.getSearchPopup().setModal(true);
 		outsideTileChooser.getSearchPopup().setModal(true);
 		// Construction
-		DoubleInput tileAnimationSpeedInput = new DoubleInput(Bounds.positive());
+		TimeInput tileAnimationSpeedInput = new TimeInput();
 
 		// Binding
 		bind(defaultCharacterChooser, Constants::getDefaultCharacter, Constants::setDefaultCharacter);

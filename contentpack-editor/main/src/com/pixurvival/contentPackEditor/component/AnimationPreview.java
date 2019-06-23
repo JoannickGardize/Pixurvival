@@ -36,8 +36,7 @@ public class AnimationPreview extends JPanel {
 		g.setColor(getBackground());
 		g.fillRect(0, 0, getWidth(), getHeight());
 		synchronized (syncLock) {
-			if (animation == null || !ContentPackEditionService.getInstance().isValidForPreview(spriteSheet)
-					|| currentIndex >= animation.getFrames().size()) {
+			if (animation == null || !ContentPackEditionService.getInstance().isValidForPreview(spriteSheet) || currentIndex >= animation.getFrames().size()) {
 				return;
 			}
 			ResourceEntry resource = ResourcesService.getInstance().getResource(spriteSheet.getImage());
@@ -45,13 +44,11 @@ public class AnimationPreview extends JPanel {
 				return;
 			}
 			Image image = (Image) resource.getPreview();
-			Rectangle rec = LayoutUtils.getCenteredKeepRatioRectangle(getWidth(), getHeight(), spriteSheet.getWidth(),
-					spriteSheet.getHeight());
+			Rectangle rec = LayoutUtils.getCenteredKeepRatioRectangle(getWidth(), getHeight(), spriteSheet.getWidth(), spriteSheet.getHeight());
 			Frame frame = animation.getFrames().get(currentIndex);
 			int imageX = frame.getX() * spriteSheet.getWidth();
 			int imageY = frame.getY() * spriteSheet.getHeight();
-			g.drawImage(image, rec.x, rec.y, rec.x + rec.width, rec.y + rec.height, imageX, imageY,
-					imageX + spriteSheet.getWidth(), imageY + spriteSheet.getHeight(), null);
+			g.drawImage(image, rec.x, rec.y, rec.x + rec.width, rec.y + rec.height, imageX, imageY, imageX + spriteSheet.getWidth(), imageY + spriteSheet.getHeight(), null);
 		}
 	}
 
@@ -63,7 +60,7 @@ public class AnimationPreview extends JPanel {
 
 	private void runAnimation() {
 		try {
-			double frameDuration = 1;
+			long frameDuration = 1000;
 			long previousTime = System.currentTimeMillis();
 			while (true) {
 				synchronized (syncLock) {
@@ -71,16 +68,16 @@ public class AnimationPreview extends JPanel {
 						frameDuration = animation.getFrameDuration();
 						long currentTime = System.currentTimeMillis();
 						long elapsed = currentTime - previousTime;
-						if (!animation.getFrames().isEmpty() && elapsed >= frameDuration * 1000) {
+						if (!animation.getFrames().isEmpty() && elapsed >= frameDuration) {
 							previousTime = currentTime;
 							currentIndex = (currentIndex + 1) % animation.getFrames().size();
 						}
 					} else {
-						frameDuration = 1;
+						frameDuration = 1000;
 					}
 					SwingUtilities.invokeLater(this::repaint);
 				}
-				long sleep = (int) (frameDuration * 1000);
+				long sleep = (int) (frameDuration);
 				if (sleep > 500) {
 					Thread.sleep(500);
 				} else if (sleep > 50) {

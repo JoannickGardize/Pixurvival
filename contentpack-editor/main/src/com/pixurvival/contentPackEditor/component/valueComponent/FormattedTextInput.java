@@ -88,9 +88,14 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 		listeners.add(listener);
 	}
 
+	/**
+	 * @param text
+	 * @return the value represented by text, or null if the text is invalid
+	 *         format.
+	 */
 	protected abstract T parse(String text);
 
-	protected abstract String format(T number);
+	protected abstract String format(T value);
 
 	private void updateValue() {
 		if (settingValue) {

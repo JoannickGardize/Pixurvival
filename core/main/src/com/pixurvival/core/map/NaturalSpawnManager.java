@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.Action;
-import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
@@ -32,7 +31,7 @@ public class NaturalSpawnManager implements TiledMapListener {
 			Chunk chunk = world.getMap().chunkAt(chunkPosition);
 			if (chunk != null && !CollectionUtils.isNullOrEmpty(chunk.getStructures(structureSpawner.getStructure().getId()))) {
 				structureSpawner.spawn(chunk);
-				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, structureSpawner), Time.secToMillis(structureSpawner.getRespawnTimePerChunk()));
+				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, structureSpawner), structureSpawner.getRespawnTimePerChunk());
 			} else {
 				Set<StructureSpawner> spawnerSet = actionMemory.get(chunkPosition);
 				if (spawnerSet != null) {
@@ -69,7 +68,7 @@ public class NaturalSpawnManager implements TiledMapListener {
 
 	private void addSpawnerActionTimer(Chunk chunk, StructureSpawner spawner) {
 		World world = chunk.getMap().getWorld();
-		world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunk.getPosition(), spawner), Time.secToMillis(spawner.getRespawnTimePerChunk()));
+		world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunk.getPosition(), spawner), spawner.getRespawnTimePerChunk());
 		actionMemory.computeIfAbsent(chunk.getPosition(), p -> new HashSet<>()).add(spawner);
 	}
 

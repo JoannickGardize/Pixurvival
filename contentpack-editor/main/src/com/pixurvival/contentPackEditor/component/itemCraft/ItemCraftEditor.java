@@ -6,10 +6,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -25,7 +24,7 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 
 	public ItemCraftEditor() {
 
-		DoubleInput durationField = new DoubleInput(Bounds.min(0));
+		TimeInput durationField = new TimeInput();
 
 		bind(recipesList, ItemCraft::getRecipes, ItemCraft::setRecipes);
 		bind(resultEditor, ItemCraft::getResult, ItemCraft::setResult);

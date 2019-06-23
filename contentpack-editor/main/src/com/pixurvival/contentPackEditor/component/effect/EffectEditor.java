@@ -10,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -31,7 +32,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
-		DoubleInput durationInput = new DoubleInput(Bounds.positive());
+		TimeInput durationInput = new TimeInput();
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);

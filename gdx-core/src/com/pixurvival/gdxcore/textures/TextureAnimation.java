@@ -26,8 +26,8 @@ public class TextureAnimation {
 	private @Getter float worldShadowWidth;
 	private @Getter @Setter Texture shadow;
 
-	public TextureAnimation(TextureSheet textureSheet, Animation animation, double frameDuration, EquipmentOffset equipmentOffset) {
-		this.frameDuration = frameDuration;
+	public TextureAnimation(TextureSheet textureSheet, Animation animation, long frameDuration, EquipmentOffset equipmentOffset) {
+		this.frameDuration = (double) frameDuration / 1000;
 		List<Frame> frames = animation.getFrames();
 		textures = new Texture[frames.size()];
 		textureRegions = new TextureRegion[frames.size()];

@@ -5,9 +5,8 @@ import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleIntervalEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
@@ -19,8 +18,8 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<ItemReward> rewardChooser = new ElementChooserButton<>();
-	private DoubleInput harvestingTimeInput = new DoubleInput(Bounds.positive());
-	private DoubleIntervalEditor respawnTimeEditor = new DoubleIntervalEditor("structureEditor.harvestable.respawnTime");
+	private TimeInput harvestingTimeInput = new TimeInput();
+	private TimeIntervalInput respawnTimeEditor = new TimeIntervalInput("structureEditor.harvestable.respawnTime");
 
 	public HarvestablePanel() {
 		EventManager.getInstance().register(this);

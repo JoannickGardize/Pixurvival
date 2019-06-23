@@ -5,10 +5,9 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -27,7 +26,7 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 
 		// Construction
 
-		DoubleInput cooldownInput = new DoubleInput(Bounds.positive());
+		TimeInput cooldownInput = new TimeInput();
 		effectsEditor = new VerticalListEditor<>(EffectEntryWrapper::new, () -> null, VerticalListEditor.HORIZONTAL, useScrollPane);
 
 		// Binding

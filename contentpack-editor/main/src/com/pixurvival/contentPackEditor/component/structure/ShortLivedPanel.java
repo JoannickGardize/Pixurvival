@@ -4,15 +4,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
 
 public class ShortLivedPanel extends StructureSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private DoubleInput durationInput = new DoubleInput(Bounds.positive());
+	private TimeInput durationInput = new TimeInput();
 
 	public ShortLivedPanel() {
 

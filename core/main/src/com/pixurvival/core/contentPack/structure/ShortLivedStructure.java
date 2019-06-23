@@ -2,8 +2,8 @@ package com.pixurvival.core.contentPack.structure;
 
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ShortLivedMapStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.ShortLivedMapStructure;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class ShortLivedStructure extends Structure {
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 0)
-	private double duration;
+	private long duration;
 
 	@Override
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {

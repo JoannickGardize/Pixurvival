@@ -23,9 +23,10 @@ public class MapActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		animationCounter += Gdx.graphics.getDeltaTime() * 5;
-		if (animationCounter >= 1) {
-			animationCounter -= 1;
+		animationCounter += Gdx.graphics.getDeltaTime();
+		float tileAnimationSpeed = PixurvivalGame.getClient().getWorld().getContentPack().getConstants().getTileAnimationSpeed() / 1000f;
+		if (animationCounter >= tileAnimationSpeed) {
+			animationCounter -= tileAnimationSpeed;
 			animationNumber++;
 		}
 		Vector3 camPos = getStage().getCamera().position;

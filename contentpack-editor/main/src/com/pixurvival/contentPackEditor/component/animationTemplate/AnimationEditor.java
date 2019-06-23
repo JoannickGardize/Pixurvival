@@ -12,11 +12,11 @@ import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooser
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.sprite.Animation;
 import com.pixurvival.core.contentPack.sprite.Frame;
@@ -33,8 +33,7 @@ public class AnimationEditor extends ElementEditor<Animation> {
 		EventManager.getInstance().register(this);
 
 		previewPanel.addTab(TranslationService.getInstance().getString("generic.animation"), animationPreview);
-		DoubleInput frameDurationInput = new DoubleInput(Bounds.positive());
-		frameDurationInput.setValueBounds(Bounds.min(Animation.MIN_FRAME_DURATION));
+		TimeInput frameDurationInput = new TimeInput(Bounds.min(Animation.MIN_FRAME_DURATION));
 		frameList.setBorder(LayoutUtils.createGroupBorder("animationTemplateEditor.frames"));
 
 		previewPanel.getSpriteSheetChooser().addValueChangeListener(s -> {
@@ -54,8 +53,7 @@ public class AnimationEditor extends ElementEditor<Animation> {
 		JPanel editionPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.insets.top = 5;
-		LayoutUtils.addHorizontalLabelledItem(editionPanel, "animationTemplateEditor.frameDuration", frameDurationInput,
-				gbc);
+		LayoutUtils.addHorizontalLabelledItem(editionPanel, "animationTemplateEditor.frameDuration", frameDurationInput, gbc);
 		gbc.gridwidth = 2;
 		gbc.weighty = 1;
 		gbc.weightx = 1;

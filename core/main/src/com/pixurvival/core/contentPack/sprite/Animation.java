@@ -18,12 +18,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Animation implements Serializable {
 
-	public static final double MIN_FRAME_DURATION = 0.01;
+	public static final double MIN_FRAME_DURATION = 30;
 
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 0)
-	private double frameDuration = 1;
+	private long frameDuration = 1000;
 
 	@NonNull
 	@Required

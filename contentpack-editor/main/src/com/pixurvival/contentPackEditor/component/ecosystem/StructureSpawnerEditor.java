@@ -14,6 +14,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -41,7 +42,7 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		DoubleInput managedRadiusInput = new DoubleInput(Bounds.positive());
 		IntegerInput initialSpawnPerChunkInput = new IntegerInput(Bounds.positive());
 		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
-		DoubleInput respawnTimePerChunk = new DoubleInput(Bounds.positive());
+		TimeInput respawnTimePerChunk = new TimeInput();
 
 		// Binding
 

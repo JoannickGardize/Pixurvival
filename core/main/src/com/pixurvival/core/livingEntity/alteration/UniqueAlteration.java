@@ -2,9 +2,17 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.Collection;
 
+import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
+/**
+ * An alteration that can be applied only one time per entity from the same
+ * source (e.g. {@link EffectEntity}).
+ * 
+ * @author SharkHendrix
+ *
+ */
 public abstract class UniqueAlteration implements Alteration {
 
 	private static final long serialVersionUID = 1L;

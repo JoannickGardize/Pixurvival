@@ -1,6 +1,6 @@
 package com.pixurvival.core.contentPack.structure;
 
-import com.pixurvival.core.contentPack.DoubleInterval;
+import com.pixurvival.core.contentPack.LongInterval;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
@@ -20,7 +20,7 @@ public class HarvestableStructure extends Structure {
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 0)
-	private double harvestingTime;
+	private long harvestingTime;
 
 	@Required
 	@ElementReference
@@ -28,7 +28,7 @@ public class HarvestableStructure extends Structure {
 
 	@Valid
 	@Required
-	private DoubleInterval respawnTime = new DoubleInterval();
+	private LongInterval respawnTime = new LongInterval();
 
 	@Override
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {

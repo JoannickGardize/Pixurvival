@@ -10,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoubleComparison;
@@ -54,7 +55,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		classEntries.add(new ClassEntry(EnnemyDistanceCondition.class, LayoutUtils.createHorizontalBox(testComponent, targetDistanceInput)));
 
 		// TimeCondition
-		DoubleInput timeInput = new DoubleInput(Bounds.positive());
+		TimeInput timeInput = new TimeInput();
 		bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
 		classEntries.add(new ClassEntry(TimeCondition.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput))));
 

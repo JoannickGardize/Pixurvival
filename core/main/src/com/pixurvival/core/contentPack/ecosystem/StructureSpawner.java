@@ -37,7 +37,7 @@ public class StructureSpawner implements Serializable {
 
 	private int maximumCreatures;
 
-	private double respawnTimePerChunk;
+	private long respawnTimePerChunk;
 
 	private transient Set<Creature> creatureSet;
 

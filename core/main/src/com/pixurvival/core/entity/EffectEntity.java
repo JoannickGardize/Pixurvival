@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.OrientationType;
@@ -43,7 +42,7 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 			if (definition.getOrientation() == OrientationType.FROM_SOURCE) {
 				orientation = (float) source.getPosition().angleToward(source.getTargetPosition());
 			}
-			termTimeMillis = getWorld().getTime().getTimeMillis() + Time.secToMillis(definition.getDuration());
+			termTimeMillis = getWorld().getTime().getTimeMillis() + definition.getDuration();
 		}
 	}
 

@@ -26,5 +26,5 @@ public class Constants implements Serializable {
 	private Tile outsideTile;
 
 	@Bounds(min = 0)
-	private double tileAnimationSpeed = 0.3;
+	private long tileAnimationSpeed = 300;
 }
