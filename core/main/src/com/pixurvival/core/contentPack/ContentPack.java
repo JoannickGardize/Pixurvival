@@ -37,8 +37,6 @@ import lombok.Setter;
 @Setter
 public class ContentPack implements Serializable {
 
-	public static final String SERIALIZATION_ENTRY_NAME = "contentPack";
-
 	private static final long serialVersionUID = 1L;
 
 	private transient Map<String, byte[]> resources;

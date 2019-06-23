@@ -44,6 +44,7 @@ project(":core") {
     	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
     	testCompile 'junit:junit:4.12'
+    	compile "org.yaml:snakeyaml:1.24"
     }
 }
 

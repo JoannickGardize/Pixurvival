@@ -5,12 +5,10 @@ import java.io.Serializable;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
-@EqualsAndHashCode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Version implements Comparable<Version>, Serializable {

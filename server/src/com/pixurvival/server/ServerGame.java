@@ -12,7 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.ContentPackSerializer;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.Team;
@@ -52,7 +52,7 @@ public class ServerGame {
 		} else {
 			defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		}
-		setSelectedContentPack(new ContentPackLoader(defaultContentPack).load(id));
+		setSelectedContentPack(new ContentPackSerializer(defaultContentPack).load(id));
 	}
 
 	public void addPlayerConnection(PlayerConnection playerConnection) {

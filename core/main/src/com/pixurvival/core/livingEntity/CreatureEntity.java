@@ -38,6 +38,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		if (getWorld().isServer()) {
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);

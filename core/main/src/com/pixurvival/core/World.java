@@ -10,7 +10,7 @@ import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.ContentPackSerializer;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -91,7 +91,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPackLoader loader) throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPackSerializer loader) throws ContentPackException {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());

@@ -13,7 +13,7 @@ import com.pixurvival.core.WorldUpdateManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.ContentPackSerializer;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -44,7 +44,7 @@ public class ClientGame extends PluginHolder<ClientGame> {
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private ContentPackLoader contentPackLoader = new ContentPackLoader(new File("contentPacks"));
+	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
 	private long timeRequestFrequencyMillis = 1000;
@@ -92,7 +92,7 @@ public class ClientGame extends PluginHolder<ClientGame> {
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			createWorld.getInventory().computeQuantities();
-			setWorld(World.createClientWorld(createWorld, contentPackLoader));
+			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
 			removeAllPlugins();
 			notify(ClientGameListener::initializeGame);
 			addPlugin(new TargetPositionUpdateManager());
@@ -106,7 +106,7 @@ public class ClientGame extends PluginHolder<ClientGame> {
 		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
-			localGamePack = contentPackLoader.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
+			localGamePack = contentPackSerializer.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 			return;

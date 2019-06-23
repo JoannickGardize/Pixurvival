@@ -102,11 +102,15 @@ public class AnimationList extends JPanel {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void add() {
 		ActionAnimation actionAnimation = (ActionAnimation) JOptionPane.showInputDialog(SwingUtilities.getRoot(this),
 				TranslationService.getInstance().getString("animationTemplateEditor.addAnimationMessage"), TranslationService.getInstance().getString("generic.add"), JOptionPane.PLAIN_MESSAGE, null,
 				ActionAnimation.values(), ActionAnimation.MOVE_RIGHT);
+		add(actionAnimation);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void add(ActionAnimation actionAnimation) {
 		if (actionAnimation != null) {
 			EnumMapListModel<ActionAnimation, Animation> listModel = (EnumMapListModel<ActionAnimation, Animation>) list.getModel();
 			int index = listModel.put(actionAnimation, new Animation(actionAnimation));

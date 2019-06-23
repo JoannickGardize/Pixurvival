@@ -1,12 +1,7 @@
 package com.pixurvival.contentPackEditor;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -16,7 +11,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPackLoader;
+import com.pixurvival.core.contentPack.ContentPackSerializer;
 
 import lombok.Getter;
 
@@ -31,6 +26,7 @@ public class FileService {
 	private @Getter ContentPack currentContentPack;
 	private @Getter File currentFile;
 	private JFileChooser fileChooser = new JFileChooser();
+	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer();
 
 	public void newContentPack() {
 		if (!savePrevious()) {
@@ -54,9 +50,8 @@ public class FileService {
 	}
 
 	public void open(File file) {
-		ContentPackLoader loader = new ContentPackLoader();
 		try {
-			currentContentPack = loader.load(file);
+			currentContentPack = contentPackSerializer.load(file);
 			currentFile = file;
 			ResourcesService.getInstance().loadContentPack(currentContentPack);
 			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
@@ -66,7 +61,6 @@ public class FileService {
 		}
 	}
 
-	@Deprecated
 	public void save() {
 		if (currentContentPack == null) {
 			return;
@@ -78,16 +72,7 @@ public class FileService {
 			if (!currentFile.exists()) {
 				currentFile.createNewFile();
 			}
-			try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(currentFile))) {
-				zipOutputStream.putNextEntry(new ZipEntry(ContentPack.SERIALIZATION_ENTRY_NAME));
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(zipOutputStream);
-				objectOutputStream.writeObject(currentContentPack);
-				for (Entry<String, byte[]> resource : currentContentPack.getResources().entrySet()) {
-					zipOutputStream.putNextEntry(new ZipEntry(resource.getKey()));
-					zipOutputStream.write(resource.getValue());
-				}
-				zipOutputStream.closeEntry();
-			}
+			contentPackSerializer.save(currentFile, currentContentPack);
 		} catch (IOException e) {
 			Utils.showErrorDialog(e);
 		}

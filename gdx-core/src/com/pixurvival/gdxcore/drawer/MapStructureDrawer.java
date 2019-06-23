@@ -20,7 +20,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	@Override
 	public void drawShadow(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
-		ActionAnimation action = ActionAnimation.NONE;
+		ActionAnimation action = ActionAnimation.DEFAULT;
 		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
 		}
@@ -35,7 +35,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
 		float x = (float) (e.getX() - animationSet.getWidth() / 2);
 		float y = (float) e.getY();
-		ActionAnimation action = ActionAnimation.NONE;
+		ActionAnimation action = ActionAnimation.DEFAULT;
 		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
 		}
