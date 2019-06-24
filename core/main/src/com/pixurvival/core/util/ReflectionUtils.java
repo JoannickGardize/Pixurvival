@@ -26,14 +26,23 @@ public class ReflectionUtils {
 		return list.toArray(new Method[list.size()]);
 	}
 
+	/**
+	 * @param clazz
+	 * @return All the field of the class and superclasses, with superclasses fields
+	 *         first.
+	 */
 	public static Field[] getAllFields(Class<?> clazz) {
 		List<Field> list = new ArrayList<>();
 		Class<?> currentClass = clazz;
+		List<Class<?>> classHierarchy = new ArrayList<>();
 		while (currentClass != Object.class) {
-			for (Field field : currentClass.getDeclaredFields()) {
+			classHierarchy.add(currentClass);
+			currentClass = currentClass.getSuperclass();
+		}
+		for (int i = classHierarchy.size() - 1; i >= 0; i--) {
+			for (Field field : classHierarchy.get(i).getDeclaredFields()) {
 				list.add(field);
 			}
-			currentClass = currentClass.getSuperclass();
 		}
 		return list.toArray(new Field[list.size()]);
 	}

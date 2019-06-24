@@ -11,7 +11,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPackSerializer;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
 
 import lombok.Getter;
 

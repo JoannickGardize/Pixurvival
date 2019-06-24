@@ -48,20 +48,20 @@ public class ContentPack implements Serializable {
 	private ContentPackIdentifier identifier = new ContentPackIdentifier();
 
 	@Valid
-	@Required
-	private Constants constants = new Constants();
-
-	@Valid
-	@ElementCollection(SpriteSheet.class)
-	private List<SpriteSheet> spriteSheets = new ArrayList<>();
-
-	@Valid
 	@ElementCollection(AnimationTemplate.class)
 	private List<AnimationTemplate> animationTemplates = new ArrayList<>();
 
 	@Valid
 	@ElementCollection(EquipmentOffset.class)
 	private List<EquipmentOffset> equipmentOffsets = new ArrayList<>();
+
+	@Valid
+	@ElementCollection(SpriteSheet.class)
+	private List<SpriteSheet> spriteSheets = new ArrayList<>();
+
+	@Valid
+	@ElementCollection(Effect.class)
+	private List<Effect> effects = new ArrayList<>();
 
 	@Valid
 	@ElementCollection(Item.class)
@@ -87,10 +87,6 @@ public class ContentPack implements Serializable {
 	private List<Creature> creatures = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Effect.class)
-	private List<Effect> effects = new ArrayList<>();
-
-	@Valid
 	@ElementCollection(Tile.class)
 	private List<Tile> tiles = new ArrayList<>();
 
@@ -107,6 +103,10 @@ public class ContentPack implements Serializable {
 
 	@ElementCollection(GameMode.class)
 	private List<GameMode> gameModes = new ArrayList<>();
+
+	@Valid
+	@Required
+	private Constants constants = new Constants();
 
 	public byte[] getResource(String resource) {
 		if (resources == null) {
