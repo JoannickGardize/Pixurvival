@@ -6,11 +6,13 @@ import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
+import com.pixurvival.core.message.playerRequest.UseItemRequest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
@@ -32,6 +34,8 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 			}
 		} else if (heldItemStack != null && heldItemStack.getItem() instanceof EdibleItem) {
 			// TODO
+			PixurvivalGame.getClient().sendAction(new UseItemRequest(PlayerInventory.HELD_ITEM_STACK_INDEX));
+		
 		} else {
 			MapStructure structure = findClosestStructure();
 			if (structure instanceof HarvestableMapStructure && structure.canInteract(myPlayer)) {

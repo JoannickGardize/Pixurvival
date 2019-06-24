@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -18,6 +19,7 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
+import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.ChunkGroupChangeHelper;
@@ -153,8 +155,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		startAbility(HARVEST_ABILITY_ID);
 	}
 
-	public void useItem() {
+	public void useItem(ItemStack itemStack, int slotIndex) {
 		// TODO
+		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setItemStack(itemStack);
 		startAbility(USE_ITEM_ABILITY_ID);
 	}
 

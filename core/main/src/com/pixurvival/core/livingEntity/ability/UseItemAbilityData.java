@@ -17,35 +17,31 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UseItemAbilityData extends WorkAbilityData {
 
-	private EdibleItem edibleItem;
+	private ItemStack itemStack;
 	private short slotIndex;
-
-	public void setEdibleItem(EdibleItem edibleItem) {
-		this.edibleItem = edibleItem;
-		setDurationMillis(Time.secToMillis(edibleItem.getDuration()));
+	
+	public void setItemStack(ItemStack itemStack) {
+		this.itemStack = itemStack;
+		if(itemStack.getItem() instanceof EdibleItem) {
+			setDurationMillis(Time.secToMillis(((EdibleItem) itemStack.getItem()).getDuration()));
+		}
 	}
 
-	public void setIndex(LivingEntity entity) {
-		// TODO
-		Inventory inventory = ((InventoryHolder) entity).getInventory();
-		if (entity instanceof PlayerEntity) {
-			ItemStack heldItemStack = ((PlayerEntity) entity).getInventory().getHeldItemStack();
-		}
-
+	public void setIndex(int slotIndex) {
+		this.slotIndex = (short) slotIndex;
 	}
 
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
-		buffer.putShort((short) edibleItem.getId());
+		//buffer.putShort(slotIndex);
+		//buffer.putShort((short) itemStack.getItem().getId());
 		buffer.putLong(getStartTimeMillis());
-		buffer.putShort(slotIndex);
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		setEdibleItem((EdibleItem) entity.getWorld().getContentPack().getItems().get(buffer.getShort()));
+		//TODO
 		setStartTimeMillis(buffer.getLong());
-		setIndex(entity);
 	}
 
 }
