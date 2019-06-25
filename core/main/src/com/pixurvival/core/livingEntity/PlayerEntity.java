@@ -156,8 +156,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	public void useItem(ItemStack itemStack, int slotIndex) {
-		// TODO
 		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setItemStack(itemStack);
+		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setIndex(slotIndex);
 		startAbility(USE_ITEM_ABILITY_ID);
 	}
 
