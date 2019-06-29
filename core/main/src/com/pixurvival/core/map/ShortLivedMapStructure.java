@@ -2,7 +2,6 @@ package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -20,7 +19,7 @@ public class ShortLivedMapStructure extends MapStructure {
 				if (tile instanceof TileAndStructure && ((TileAndStructure) tile).getStructure() == ShortLivedMapStructure.this) {
 					chunk.removeStructure(x, y);
 				}
-			}, Time.secToMillis(((ShortLivedStructure) definition).getDuration()));
+			}, ((ShortLivedStructure) definition).getDuration());
 		}
 	}
 

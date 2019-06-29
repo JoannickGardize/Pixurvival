@@ -61,7 +61,11 @@ public class LayoutUtils {
 		gbc.gridy++;
 
 		if (toolTipKey != null) {
-			label.setToolTipText(TranslationService.getInstance().getString(toolTipKey));
+			String tooltipText = TranslationService.getInstance().getString(toolTipKey);
+			label.setToolTipText(tooltipText);
+			if (component instanceof JComponent) {
+				((JComponent) component).setToolTipText(tooltipText);
+			}
 		}
 	}
 
@@ -165,13 +169,32 @@ public class LayoutUtils {
 	}
 
 	public static JPanel createHorizontalLabelledBox(Object... labelAndComponents) {
-		Component[] components = new Component[labelAndComponents.length / 2];
-		for (int i = 0; i < labelAndComponents.length; i += 2) {
-			String labelKey = (String) labelAndComponents[i];
-			Component component = (Component) labelAndComponents[i + 1];
-			components[i / 2] = LayoutUtils.labelled(labelKey, component);
+		boolean nextIsLabel = true;
+		JPanel result = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = createGridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.insets.right = DEFAULT_GAP;
+		gbc.insets.left = DEFAULT_GAP;
+		String nextLabelKey = null;
+		for (int i = 0; i < labelAndComponents.length; i++) {
+			Object nextEntry = labelAndComponents[i];
+			if (nextEntry instanceof LayoutPropertyMarker) {
+				((LayoutPropertyMarker) nextEntry).apply(gbc);
+			} else {
+				if (nextIsLabel) {
+					nextLabelKey = (String) labelAndComponents[i];
+				} else {
+					Component component = (Component) labelAndComponents[i];
+					result.add(LayoutUtils.labelled(nextLabelKey, component), gbc);
+					gbc.insets.left = 0;
+					gbc.gridx++;
+				}
+				nextIsLabel = !nextIsLabel;
+			}
 		}
-		return createHorizontalBox(components);
+		return result;
 	}
 
 	public static JPanel createVerticalLabelledBox(Object... labelAndComponents) {

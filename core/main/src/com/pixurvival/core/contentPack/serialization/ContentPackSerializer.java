@@ -32,6 +32,8 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.StaticEffectMovement;
+import com.pixurvival.core.contentPack.gameMode.DayNightCycle;
+import com.pixurvival.core.contentPack.gameMode.EternalDayCycle;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamCondition;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
@@ -166,6 +168,8 @@ public class ContentPackSerializer {
 		addClassTag(representer, EffectAbility.class);
 		addClassTag(representer, NoEndCondition.class);
 		addClassTag(representer, RemainingTeamCondition.class);
+		addClassTag(representer, EternalDayCycle.class);
+		addClassTag(representer, DayNightCycle.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

@@ -25,6 +25,7 @@ import com.pixurvival.core.map.analytics.MapAnalytics;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.time.Time;
 import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.Vector2;
@@ -54,7 +55,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private static Map<Long, World> worlds = new HashMap<>();
 	private static @Getter ContentPack currentContentPack;
 	private Type type;
-	private Time time = new Time();
+	private Time time;
 	private TiledMap map;
 	private EntityPool entityPool = new EntityPool(this);
 	private WorldRandom random = new WorldRandom();
@@ -78,6 +79,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 		this.contentPack = contentPack;
 		contentPack.initialize();
 		this.gameMode = contentPack.getGameModes().get(gameModeId);
+		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
 		// TODO make the world persistence great again
@@ -154,8 +156,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();

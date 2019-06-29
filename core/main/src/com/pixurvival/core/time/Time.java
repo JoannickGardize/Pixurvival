@@ -1,16 +1,20 @@
-package com.pixurvival.core;
+package com.pixurvival.core.time;
 
 import com.pixurvival.core.message.TimeResponse;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class Time {
 
 	private @Getter long timeMillis = 0;
+	private double decimalAccumulator = 0;
+	private @Getter @NonNull DayCycleRun dayCycle;
 
 	private @Getter double deltaTime = 0;
 	private @Getter double deltaTimeMillis = 0;
-	private double decimalAccumulator = 0;
 	private long synchronizeTimeCounter = 0;
 
 	public void update(double deltaTimeMillis) {
@@ -24,6 +28,7 @@ public class Time {
 			decimalAccumulator--;
 		}
 		timeMillis += integerPart;
+		dayCycle.update(timeMillis);
 	}
 
 	public long synchronizeTime(TimeResponse timeResponse) {

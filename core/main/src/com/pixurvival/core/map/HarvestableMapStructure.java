@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -38,7 +37,7 @@ public class HarvestableMapStructure extends MapStructure {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
 			getChunk().updateTimestamp();
-		}, Time.secToMillis(((HarvestableStructure) getDefinition()).getRespawnTime().next(world.getRandom())));
+		}, ((HarvestableStructure) getDefinition()).getRespawnTime().next(world.getRandom()));
 		return ((HarvestableStructure) getDefinition()).getItemReward().produce(random);
 	}
 

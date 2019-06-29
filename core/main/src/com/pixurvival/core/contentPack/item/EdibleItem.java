@@ -14,7 +14,7 @@ public class EdibleItem extends Item {
 
 	private static final long serialVersionUID = 1L;
 
-	private double duration;
+	private long duration;
 	private List<Alteration> alterations = new ArrayList<>();
 
 }

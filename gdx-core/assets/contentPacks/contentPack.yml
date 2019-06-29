@@ -472,7 +472,13 @@ items:
   maxStackSize: 1
   frame: {x: 5, y: 1}
   image: images/items.png
-  structure: *campfire02
+  structure: &campfire02 !!ShortLivedStructure
+    name: campfire
+    id: 3
+    solid: false
+    spriteSheet: *campfire
+    dimensions: {width: 1, height: 1}
+    duration: 60000
 - &arrow !!ResourceItem
   name: arrow
   id: 10
@@ -814,13 +820,7 @@ structures:
   harvestingTime: 6000
   itemReward: *rock02
   respawnTime: {min: 480000, max: 540000}
-- &campfire02 !!ShortLivedStructure
-  name: campfire
-  id: 3
-  solid: false
-  spriteSheet: *campfire
-  dimensions: {width: 1, height: 1}
-  duration: 60000
+- *campfire02
 - &dead_tree02 !!OrnamentalStructure
   name: dead_tree
   id: 4
@@ -967,6 +967,7 @@ gameModes:
   teamSizeInterval: {min: 1, max: 4}
   mapGenerator: *test
   ecosystem: *test02
+  dayCycleDefinition: !!DayNightCycle {dayDuration: 10000, nightDuration: 10000}
   endGameCondition: !!NoEndCondition {}
   spawnSquareSize: 490.0
   mapLimitEnabled: false

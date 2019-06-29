@@ -1,11 +1,11 @@
 package com.pixurvival.core.contentPack.creature;
 
-import com.pixurvival.core.Time;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.time.Time;
 
 import lombok.Getter;
 import lombok.Setter;

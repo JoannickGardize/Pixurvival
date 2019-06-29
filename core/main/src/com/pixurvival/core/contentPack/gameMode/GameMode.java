@@ -33,6 +33,8 @@ public class GameMode extends IdentifiedElement {
 	@ElementReference
 	private Ecosystem ecosystem;
 
+	private DayCycle dayCycle = new EternalDayCycle();
+
 	@Valid
 	private EndGameCondition endGameCondition = new NoEndCondition();
 

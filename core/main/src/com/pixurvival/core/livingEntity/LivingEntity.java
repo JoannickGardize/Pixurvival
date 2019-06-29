@@ -7,7 +7,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.Damageable;
-import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -117,7 +116,7 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 	public void applyPersistentAlteration(Object source, PersistentAlteration alteration) {
 		PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
 		if (alteration.getStackPolicy().getProcessor().test(persistentAlterationEntries, entry)) {
-			entry.setTermTimeMillis(Time.secToMillis(alteration.getDuration()) + getWorld().getTime().getTimeMillis());
+			entry.setTermTimeMillis(alteration.getDuration() + getWorld().getTime().getTimeMillis());
 			entry.getAlteration().begin(this);
 		}
 	}

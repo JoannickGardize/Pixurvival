@@ -30,5 +30,7 @@ public abstract class Structure extends IdentifiedElement implements Serializabl
 	@Required
 	private Dimensions dimensions = new Dimensions(1, 1);
 
+	private double lightEmissionRadius = 0;
+
 	public abstract MapStructure newMapStructure(Chunk chunk, int x, int y);
 }

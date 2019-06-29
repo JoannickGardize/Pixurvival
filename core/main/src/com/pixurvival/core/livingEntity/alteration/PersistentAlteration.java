@@ -25,7 +25,7 @@ public abstract class PersistentAlteration implements Alteration {
 		private BiPredicate<List<PersistentAlterationEntry>, PersistentAlterationEntry> processor;
 	}
 
-	private double duration;
+	private long duration;
 	private StackPolicy stackPolicy = StackPolicy.IGNORE;
 
 	@Override

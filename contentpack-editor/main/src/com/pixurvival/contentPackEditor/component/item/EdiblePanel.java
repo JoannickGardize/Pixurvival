@@ -4,9 +4,8 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.effect.AlterationEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.item.EdibleItem;
@@ -18,7 +17,7 @@ public class EdiblePanel extends ItemSpecificPartPanel {
 	private static final long serialVersionUID = 1L;
 
 	private ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantDamageAlteration::new, ListEditor.HORIZONTAL, true);
-	private DoubleInput durationField = new DoubleInput(Bounds.min(0));
+	private TimeInput durationField = new TimeInput();
 
 	public EdiblePanel() {
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -16,6 +17,7 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 
 import lombok.Getter;
@@ -24,10 +26,12 @@ public class ContentPackTextures {
 
 	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
+	private Map<Double, Texture> lightTextures;
 	private Texture[][] tileMapTextures;
 	private ItemTexture[] itemTextures;
 	private int[] tileAvgColors;
 	private @Getter double truePixelWidth;
+	private @Getter double largestLightRadius;
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
 		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
@@ -35,6 +39,7 @@ public class ContentPackTextures {
 		loadAnimationSet(pack, pixelWidth);
 		loadTileMapTextures(pack);
 		loadItemTextures(pack, pixelWidth);
+		loadLights(pack);
 	}
 
 	public TextureAnimationSet getAnimationSet(SpriteSheet spriteSheet) {
@@ -52,6 +57,10 @@ public class ContentPackTextures {
 
 	public ItemTexture getItem(int id) {
 		return itemTextures[id];
+	}
+
+	public Texture getLightTexture(double radius) {
+		return lightTextures.get(radius);
 	}
 
 	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackException {
@@ -154,5 +163,34 @@ public class ContentPackTextures {
 			itemTexture.setShadow(getShadow(metric.getWidth()));
 			itemTextures[i] = itemTexture;
 		}
+	}
+
+	private void loadLights(ContentPack pack) {
+		largestLightRadius = 0;
+		lightTextures = new HashMap<>();
+		for (Structure structure : pack.getStructures()) {
+			double radius = structure.getLightEmissionRadius();
+			if (radius > 0) {
+				lightTextures.put(radius, createLightTexture(radius));
+				if (largestLightRadius < radius) {
+					largestLightRadius = radius;
+				}
+			}
+		}
+	}
+
+	private Texture createLightTexture(double radius) {
+		int size = (int) Math.round(radius * GameConstants.PIXEL_PER_UNIT * 2);
+		Pixmap pixmap = new Pixmap(size, size, Format.RGBA8888);
+		pixmap.setColor(Color.rgba8888(1, 1, 1, 0));
+		pixmap.fill();
+		pixmap.setColor(Color.WHITE);
+		pixmap.fillCircle(pixmap.getWidth() / 2, pixmap.getHeight() / 2 - 1, pixmap.getWidth() / 2 - 1);
+		pixmap.setColor(new Color(1, 1, 1, 0.5f));
+		pixmap.drawCircle(pixmap.getWidth() / 2, pixmap.getHeight() / 2 - 1, pixmap.getWidth() / 2 - 1);
+
+		Texture texture = new Texture(pixmap);
+		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		return texture;
 	}
 }

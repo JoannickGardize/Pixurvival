@@ -1,14 +1,24 @@
 package com.pixurvival.gdxcore.util;
 
+import java.util.function.Consumer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.CustomDataHolder;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.overlay.OverlayConstants;
 import com.pixurvival.gdxcore.textures.ColorTextures;
@@ -84,5 +94,25 @@ public class DrawUtils {
 
 	public static void drawRectangle(Batch batch, Rectangle rectangle, Color color) {
 		batch.draw(ColorTextures.get(color), rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+	}
+
+	public static void foreachChunksInScreen(Stage worldStage, double margin, Consumer<Chunk> action) {
+		OrthographicCamera camera = (OrthographicCamera) worldStage.getCamera();
+		Vector3 camPos = camera.position;
+		float width = worldStage.getViewport().getWorldWidth() * camera.zoom;
+		float height = worldStage.getViewport().getWorldHeight() * camera.zoom;
+		int startX = MathUtils.floor((camPos.x - width / 2 - margin) / GameConstants.CHUNK_SIZE);
+		int startY = MathUtils.floor((camPos.y - height / 2 - margin) / GameConstants.CHUNK_SIZE);
+		int endX = MathUtils.ceil((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
+		int endY = MathUtils.ceil((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
+		for (int x = startX; x <= endX; x++) {
+			for (int y = startY; y <= endY; y++) {
+				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
+				if (chunk == null) {
+					continue;
+				}
+				action.accept(chunk);
+			}
+		}
 	}
 }

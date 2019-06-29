@@ -28,6 +28,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 		IntegerIntervalEditor teamNumberInterval = new IntegerIntervalEditor("gameMode.teamNumber");
 		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
+		DayCycleEditor dayCycleDefinitionEditor = new DayCycleEditor();
 		DoubleInput spawnSquareSizeInput = new DoubleInput(Bounds.positive());
 		BooleanCheckBox mapLimitEnabledInput = new BooleanCheckBox();
 		DoubleInput mapLimitSizeInput = new DoubleInput(Bounds.positive());
@@ -36,6 +37,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 		bind(teamNumberInterval, GameMode::getTeamNumberInterval, GameMode::setTeamNumberInterval);
 		bind(teamSizeInterval, GameMode::getTeamSizeInterval, GameMode::setTeamSizeInterval);
+		bind(dayCycleDefinitionEditor, GameMode::getDayCycle, GameMode::setDayCycle);
 		bind(ecosystemChooser, GameMode::getEcosystem, GameMode::setEcosystem);
 		bind(mapGeneratorChooser, GameMode::getMapGenerator, GameMode::setMapGenerator);
 		bind(spawnSquareSizeInput, GameMode::getSpawnSquareSize, GameMode::setSpawnSquareSize);
@@ -44,12 +46,13 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 		// Layouting
 
+		dayCycleDefinitionEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.dayCycle"));
 		Container teamPanel = LayoutUtils.sideBySide(teamNumberInterval, teamSizeInterval);
 		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapGenerator", mapGeneratorChooser);
 		JPanel mapConfigPanel = LayoutUtils.createHorizontalLabelledBox("gameMode.spawnSquareSize", spawnSquareSizeInput, "gameMode.mapLimitEnabled", mapLimitEnabledInput, "gameMode.mapLimitSize",
 				mapLimitSizeInput);
 
-		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 3, teamPanel, elementLinksPanel, mapConfigPanel, new JPanel());
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 4, teamPanel, dayCycleDefinitionEditor, elementLinksPanel, mapConfigPanel, new JPanel());
 	}
 
 	@EventListener

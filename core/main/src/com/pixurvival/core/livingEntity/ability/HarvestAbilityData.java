@@ -2,7 +2,6 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.nio.ByteBuffer;
 
-import com.pixurvival.core.Time;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
@@ -19,7 +18,7 @@ public class HarvestAbilityData extends WorkAbilityData {
 
 	public void setStructure(HarvestableMapStructure structure) {
 		this.structure = structure;
-		setDurationMillis(Time.secToMillis(((HarvestableStructure) structure.getDefinition()).getHarvestingTime()));
+		setDurationMillis(((HarvestableStructure) structure.getDefinition()).getHarvestingTime());
 	}
 
 	@Override

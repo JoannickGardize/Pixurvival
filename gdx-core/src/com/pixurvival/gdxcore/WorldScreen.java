@@ -15,6 +15,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.drawer.LightDrawer;
 import com.pixurvival.gdxcore.input.CameraControlProcessor;
 import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
@@ -51,6 +52,7 @@ public class WorldScreen implements Screen {
 	private EntitiesActor entitiesActor;
 	private DebugInfosActor debugInfosActors;
 	private UILayoutManager uiLayoutManager = new UILayoutManager();
+	private LightDrawer lightDrawer = new LightDrawer();
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -141,6 +143,8 @@ public class WorldScreen implements Screen {
 			}
 		}
 		worldStage.draw();
+		lightDrawer.draw(worldStage);
+
 		hudStage.getViewport().apply();
 		hudStage.act();
 		hudStage.draw();
@@ -159,6 +163,7 @@ public class WorldScreen implements Screen {
 			hudStage.getRoot().fire(event);
 		}
 		uiLayoutManager.resize(width, height, ((FitViewport) worldStage.getViewport()).getLeftGutterWidth());
+		lightDrawer.resize(width, height);
 	}
 
 	@Override

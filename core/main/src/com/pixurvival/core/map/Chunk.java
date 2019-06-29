@@ -2,6 +2,7 @@ package com.pixurvival.core.map;
 
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,8 @@ public class Chunk {
 
 	private EntityCollection entities = new EntityCollection();
 
+	private Map<Object, Light> lights = new HashMap<>();
+
 	private @Setter boolean newlyCreated = false;
 
 	private short structureCount = 0;
@@ -67,6 +70,10 @@ public class Chunk {
 		} else {
 			return list;
 		}
+	}
+
+	public Collection<Light> getLights() {
+		return lights.values();
 	}
 
 	public Set<Entry<Integer, List<MapStructure>>> getStructures() {
@@ -113,7 +120,11 @@ public class Chunk {
 	}
 
 	public MapStructure addStructure(Structure structure, int x, int y, boolean notify) {
+		// TODO ajouter les structure sur tout les chunks plutôt qu'un seul
 		MapStructure mapStructure = structure.newMapStructure(this, x, y);
+		if (structure.getLightEmissionRadius() > 0) {
+			lights.put(mapStructure, new Light(mapStructure.getPosition(), structure.getLightEmissionRadius()));
+		}
 		int localX = x - offsetX;
 		int localY = y - offsetY;
 		for (int cx = localX; cx < localX + structure.getDimensions().getWidth(); cx++) {
@@ -154,6 +165,9 @@ public class Chunk {
 		MapTile tile = tileAt(x, y);
 		if (tile.getStructure() != null) {
 			MapStructure structure = tile.getStructure();
+			if (structure.getDefinition().getLightEmissionRadius() > 0) {
+				lights.remove(structure);
+			}
 			int localX = structure.getTileX() - offsetX;
 			int localY = structure.getTileY() - offsetY;
 			for (int sx = localX; sx < localX + structure.getWidth(); sx++) {

@@ -23,8 +23,6 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.OrnamentalMapStructure;
@@ -37,6 +35,7 @@ import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
+import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class EntitiesActor extends Actor {
 
@@ -68,23 +67,8 @@ public class EntitiesActor extends Actor {
 		objectsToDraw.clear();
 		// TODO utiliser le pool des chunks
 		PixurvivalGame.getWorld().getEntityPool().foreach(e -> objectsToDraw.add(e));
-		Vector3 camPos = getStage().getCamera().position;
-		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
-		float width = getStage().getViewport().getWorldWidth() * camera.zoom;
-		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
-		int startX = MathUtils.floor((camPos.x - width / 2 - 3) / GameConstants.CHUNK_SIZE);
-		int startY = MathUtils.floor((camPos.y - height / 2 - 3) / GameConstants.CHUNK_SIZE);
-		int endX = MathUtils.ceil((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
-		int endY = MathUtils.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
-		for (int x = startX; x <= endX; x++) {
-			for (int y = startY; y <= endY; y++) {
-				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
-				if (chunk == null) {
-					continue;
-				}
-				chunk.forEachStructure(objectsToDraw::add);
-			}
-		}
+
+		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> chunk.forEachStructure(objectsToDraw::add));
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
 
 		manageGhostStructure();

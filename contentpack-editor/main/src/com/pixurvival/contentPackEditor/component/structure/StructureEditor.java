@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
+import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -31,12 +33,14 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		// Contruction
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
+		DoubleInput lightEmissionRadiusInput = new DoubleInput(Bounds.positive());
 
 		// Binding
 
 		bind(solidCheckBox, Structure::isSolid, Structure::setSolid);
 		bind(spriteSheetChooser, Structure::getSpriteSheet, Structure::setSpriteSheet);
 		bind(dimensionsEditor, Structure::getDimensions, Structure::setDimensions);
+		bind(lightEmissionRadiusInput, Structure::getLightEmissionRadius, Structure::setLightEmissionRadius);
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -45,7 +49,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		JPanel northPanel = new JPanel(new GridBagLayout());
 		northPanel.setBorder(LayoutUtils.createGroupBorder("generic.generalProperties"));
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
-		gbc.gridheight = 3;
+		gbc.gridheight = 4;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weighty = 1;
 		gbc.weightx = 1;
@@ -55,6 +59,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.lightEmissionRadius", "structureEditor.lightEmissionRadius.tooltip", lightEmissionRadiusInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
 
 		gbc = LayoutUtils.createGridBagConstraints();
