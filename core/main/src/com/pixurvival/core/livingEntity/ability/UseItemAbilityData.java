@@ -3,6 +3,7 @@ package com.pixurvival.core.livingEntity.ability;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.item.EdibleItem;
+import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
@@ -29,14 +30,13 @@ public class UseItemAbilityData extends WorkAbilityData {
 
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
-		// buffer.putShort(slotIndex);
-		// buffer.putShort((short) itemStack.getItem().getId());
+		buffer.putShort(slotIndex);
 		buffer.putLong(getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		// TODO
+		setItemStack(((InventoryHolder) entity).getInventory().getSlot(buffer.getShort()));
 		setStartTimeMillis(buffer.getLong());
 	}
 
