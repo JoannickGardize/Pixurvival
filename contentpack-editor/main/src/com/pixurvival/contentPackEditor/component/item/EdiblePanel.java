@@ -10,13 +10,13 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
+import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 
 public class EdiblePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantDamageAlteration::new, ListEditor.HORIZONTAL, true);
+	private ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantEatAlteration::new, ListEditor.HORIZONTAL, true);
 	private TimeInput durationField = new TimeInput();
 
 	public EdiblePanel() {

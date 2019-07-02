@@ -15,7 +15,8 @@ public enum ActionAnimation {
 	STAND_LEFT,
 	STAND_DOWN,
 	DEFAULT,
-	HARVESTED;
+	HARVESTED,
+	USE_ITEM;
 
 	private static Map<Direction, ActionAnimation> moveByDirection = new EnumMap<>(Direction.class);
 	private static Map<Direction, ActionAnimation> standByDirection = new EnumMap<>(Direction.class);

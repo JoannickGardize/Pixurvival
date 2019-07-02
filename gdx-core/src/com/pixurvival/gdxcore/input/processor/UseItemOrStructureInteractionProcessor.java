@@ -33,9 +33,7 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 				PixurvivalGame.getClient().sendAction(new PlaceStructureRequest(x, y));
 			}
 		} else if (heldItemStack != null && heldItemStack.getItem() instanceof EdibleItem) {
-			// TODO
 			PixurvivalGame.getClient().sendAction(new UseItemRequest(PlayerInventory.HELD_ITEM_STACK_INDEX));
-		
 		} else {
 			MapStructure structure = findClosestStructure();
 			if (structure instanceof HarvestableMapStructure && structure.canInteract(myPlayer)) {

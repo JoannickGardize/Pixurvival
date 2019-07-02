@@ -3,8 +3,6 @@ package com.pixurvival.core.livingEntity.ability;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.item.EdibleItem;
-import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
 import lombok.Data;
@@ -14,14 +12,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UseItemAbilityData extends WorkAbilityData {
 
-	private ItemStack itemStack;
+	private EdibleItem edibleItem;
 	private short slotIndex;
 
-	public void setItemStack(ItemStack itemStack) {
-		this.itemStack = itemStack;
-		if (itemStack.getItem() instanceof EdibleItem) {
-			setDurationMillis(((EdibleItem) itemStack.getItem()).getDuration());
-		}
+	public void setEdibleItem(EdibleItem edibleItem) {
+		this.edibleItem = edibleItem;
+		setDurationMillis(edibleItem.getDuration());
 	}
 
 	public void setIndex(int slotIndex) {
@@ -30,13 +26,15 @@ public class UseItemAbilityData extends WorkAbilityData {
 
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
+		buffer.putShort((short) edibleItem.getId());
 		buffer.putShort(slotIndex);
 		buffer.putLong(getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		setItemStack(((InventoryHolder) entity).getInventory().getSlot(buffer.getShort()));
+		setEdibleItem((EdibleItem) entity.getWorld().getContentPack().getItems().get(buffer.getShort()));
+		setIndex(buffer.getShort());
 		setStartTimeMillis(buffer.getLong());
 	}
 

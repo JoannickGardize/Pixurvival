@@ -5,11 +5,11 @@ import java.util.function.Consumer;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
+import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -155,8 +155,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		startAbility(HARVEST_ABILITY_ID);
 	}
 
-	public void useItem(ItemStack itemStack, int slotIndex) {
-		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setItemStack(itemStack);
+	public void useItem(EdibleItem edibleItem, int slotIndex) {
+		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setEdibleItem(edibleItem);
 		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setIndex(slotIndex);
 		startAbility(USE_ITEM_ABILITY_ID);
 	}
