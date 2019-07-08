@@ -67,6 +67,12 @@ public class Vector2 {
 		return this;
 	}
 
+	public Vector2 add(double x, double y) {
+		this.x += x;
+		this.y += y;
+		return this;
+	}
+
 	public Vector2 addEuclidean(double length, double direction) {
 		x += Math.cos(direction) * length;
 		y += Math.sin(direction) * length;

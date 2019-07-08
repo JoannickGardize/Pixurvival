@@ -14,6 +14,7 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, EffectEntity e) {
+		// TODO
 	}
 
 	@Override

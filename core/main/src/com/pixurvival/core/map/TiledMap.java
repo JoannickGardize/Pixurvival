@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
@@ -73,7 +74,7 @@ public class TiledMap {
 		}
 		addListener(limits);
 		if (world.isServer()) {
-			addListener(new NaturalSpawnManager());
+			addListener(new ChunkSpawnManager());
 		}
 	}
 
@@ -282,6 +283,16 @@ public class TiledMap {
 		});
 	}
 
+	public boolean forEachChunk(Vector2 center, double halfSquareLength, Predicate<Chunk> action) {
+		return ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
+			Chunk chunk = chunks.get(position);
+			if (chunk != null && action.test(chunk)) {
+				return true;
+			}
+			return false;
+		});
+	}
+
 	public void forEachEntities(EntityGroup group, Vector2 center, double radius, Consumer<Entity> action) {
 		forEachChunk(center, radius, chunk -> {
 			double radiusSquared = radius * radius;
@@ -345,4 +356,14 @@ public class TiledMap {
 		return false;
 	}
 
+	public boolean isInAnyLight(Vector2 position) {
+		return forEachChunk(position, getWorld().getContentPack().getMaxLightRadius(), chunk -> {
+			for (Light light : chunk.getLights()) {
+				if (position.distanceSquared(light.getPosition()) <= light.getRadius() * light.getRadius()) {
+					return true;
+				}
+			}
+			return false;
+		});
+	}
 }

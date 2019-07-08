@@ -12,6 +12,7 @@ import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -38,6 +39,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 	public SpriteSheetEditor() {
 		// Contruction
 		DoubleInput heightOffsetInput = new DoubleInput(Bounds.none());
+		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
 		imageField.setItems(ResourcesService.getInstance().getResources());
 		previewTabs.setBorder(LayoutUtils.createGroupBorder("generic.preview"));
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
@@ -49,6 +51,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		bind(animationTemplateField, SpriteSheet::getAnimationTemplate, SpriteSheet::setAnimationTemplate);
 		bind(equipmentOffsetField, SpriteSheet::getEquipmentOffset, SpriteSheet::setEquipmentOffset);
 		bind(heightOffsetInput, SpriteSheet::getHeightOffset, SpriteSheet::setHeightOffset);
+		bind(shadowCheckBox, SpriteSheet::isShadow, SpriteSheet::setShadow);
 
 		// Layouting
 		JPanel propertiesPanel = new JPanel(new GridBagLayout());
@@ -60,6 +63,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.width", widthField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.height", heightField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.heightOffset", heightOffsetInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.shadow", shadowCheckBox, gbc);
 		LayoutUtils.addHorizontalSeparator(propertiesPanel, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.animationTemplate", animationTemplateField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.equipmentOffset", equipmentOffsetField, gbc);

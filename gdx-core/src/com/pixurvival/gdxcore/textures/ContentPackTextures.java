@@ -68,7 +68,9 @@ public class ContentPackTextures {
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
 		for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
 			TextureAnimationSet set = new TextureAnimationSet(pack, spriteSheet, transform);
-			set.setShadow(getShadow(spriteSheet.getWidth()));
+			if (spriteSheet.isShadow()) {
+				set.setShadow(getShadow(spriteSheet.getWidth()));
+			}
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
 			animationSet.put(spriteSheet, set);
 		}
@@ -184,10 +186,11 @@ public class ContentPackTextures {
 		Pixmap pixmap = new Pixmap(size, size, Format.RGBA8888);
 		pixmap.setColor(Color.rgba8888(1, 1, 1, 0));
 		pixmap.fill();
-		pixmap.setColor(Color.WHITE);
-		pixmap.fillCircle(pixmap.getWidth() / 2, pixmap.getHeight() / 2 - 1, pixmap.getWidth() / 2 - 1);
-		pixmap.setColor(new Color(1, 1, 1, 0.5f));
-		pixmap.drawCircle(pixmap.getWidth() / 2, pixmap.getHeight() / 2 - 1, pixmap.getWidth() / 2 - 1);
+		int halfWidth = pixmap.getWidth() / 2;
+		for (int i = halfWidth - 1; i >= 0; i -= 1) {
+			pixmap.setColor(new Color(1, 1, 1, 1f - ((float) i / halfWidth)));
+			pixmap.fillCircle(halfWidth, halfWidth, i);
+		}
 
 		Texture texture = new Texture(pixmap);
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);

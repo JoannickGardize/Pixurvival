@@ -15,21 +15,27 @@ public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, ItemStackEntity e) {
+		ContentPackTextures contentPackTextures = PixurvivalGame.getContentPackTextures();
+		ItemTexture itemTexture = contentPackTextures.getItem(e.getItemStack().getItem().getId());
+		Texture shadow = itemTexture.getShadow();
+		TextureMetrics metrics = itemTexture.getMetrics();
+		DrawData data = (DrawData) e.getCustomData();
+		Vector2 drawPosition = data.getDrawPosition();
+		float x = (float) (drawPosition.getX() - metrics.getWorldWidth() / 2);
+		float y = (float) (drawPosition.getY());
+		batch.draw(shadow, x, y - metrics.getWorldWidth() / 4, metrics.getWorldWidth(), metrics.getWorldWidth() / 2);
 	}
 
 	@Override
 	public void draw(Batch batch, ItemStackEntity e) {
 		ContentPackTextures contentPackTextures = PixurvivalGame.getContentPackTextures();
 		ItemTexture itemTexture = contentPackTextures.getItem(e.getItemStack().getItem().getId());
-		Texture shadow = itemTexture.getShadow();
 		Texture texture = itemTexture.getTexture();
 		TextureMetrics metrics = itemTexture.getMetrics();
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.getX() - metrics.getWorldWidth() / 2);
-		float y = (float) ((drawPosition.getY()));
-		batch.draw(shadow, x, y - metrics.getWorldWidth() / 4, metrics.getWorldWidth(), metrics.getWorldWidth() / 2);
-
+		float y = (float) (drawPosition.getY());
 		if (e.getItemStack().getQuantity() == 1) {
 			draw(batch, contentPackTextures, texture, metrics, x, y);
 		} else if (e.getItemStack().getQuantity() == 2) {

@@ -19,11 +19,16 @@ public class Ecosystem extends IdentifiedElement {
 
 	private List<StructureSpawner> structureSpawners = new ArrayList<>();
 
+	private ChunkSpawner darknessSpawner = new ChunkSpawner();
+
 	private transient @Setter(AccessLevel.NONE) Map<Integer, List<StructureSpawner>> structureSpawnersPerStructure;
 
 	@Override
 	public void initialize() {
 		structureSpawnersPerStructure = new HashMap<>();
-		structureSpawners.forEach(s -> structureSpawnersPerStructure.computeIfAbsent(s.getStructure().getId(), ArrayList::new).add(s));
+		structureSpawners.forEach(s -> {
+			s.buildCreatureSet();
+			structureSpawnersPerStructure.computeIfAbsent(s.getStructure().getId(), ArrayList::new).add(s);
+		});
 	}
 }

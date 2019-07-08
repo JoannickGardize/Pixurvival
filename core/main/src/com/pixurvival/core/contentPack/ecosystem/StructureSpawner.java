@@ -1,12 +1,7 @@
 package com.pixurvival.core.contentPack.ecosystem;
 
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.pixurvival.core.contentPack.WeightedValueProducer;
-import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
@@ -21,58 +16,40 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StructureSpawner implements Serializable {
+public class StructureSpawner extends ChunkSpawner {
 
 	private static final long serialVersionUID = 1L;
 
 	private Structure structure;
 
-	private WeightedValueProducer<Creature> creatureChooser = new WeightedValueProducer<>();
-
 	private double spawnRadius;
 
 	private double managedRadius;
 
-	private int initialSpawnPerChunk;
-
-	private int maximumCreatures;
-
-	private long respawnTimePerChunk;
-
-	private transient Set<Creature> creatureSet;
-
-	public void spawn(Chunk chunk) {
-		ensureCreatureSetBuilt();
+	@Override
+	protected Object beginSpawn(Chunk chunk) {
 		List<MapStructure> structures = chunk.getStructures(structure.getId());
-		if (structures == null || structures.isEmpty()) {
-			return;
+		if (structures.isEmpty()) {
+			return null;
 		}
 		WorldRandom random = chunk.getMap().getWorld().getRandom();
-		Vector2 position = structures.get(random.nextInt(structures.size())).getPosition();
+		return structures.get(random.nextInt(structures.size())).getPosition();
+	}
+
+	@Override
+	protected Vector2 nextSpawnPosition(Chunk chunk, Object data) {
+		WorldRandom random = chunk.getMap().getWorld().getRandom();
+		return random.nextVector2InCircle((Vector2) data, spawnRadius);
+	}
+
+	@Override
+	protected int countCreatures(Chunk chunk, Object data) {
 		IntWrapper counter = new IntWrapper();
-		chunk.getMap().forEachEntities(EntityGroup.CREATURE, position, managedRadius, entity -> {
-			if (creatureSet.contains(((CreatureEntity) entity).getDefinition())) {
+		chunk.getMap().forEachEntities(EntityGroup.CREATURE, (Vector2) data, managedRadius, entity -> {
+			if (getCreatureSet().contains(((CreatureEntity) entity).getDefinition())) {
 				counter.increment();
 			}
 		});
-		if (counter.getValue() >= maximumCreatures) {
-			return;
-		}
-		Vector2 randomPosition = Vector2.fromEuclidean(random.nextDouble() * spawnRadius, random.nextAngle()).add(position);
-		Creature creature = creatureChooser.next(random);
-		if (creature == null || chunk.getMap().collide(randomPosition.getX(), randomPosition.getY(), creature.getCollisionRadius())) {
-			return;
-		}
-		CreatureEntity entity = new CreatureEntity(creature);
-		entity.getPosition().set(randomPosition);
-		chunk.getMap().getWorld().getEntityPool().add(entity);
+		return counter.getValue();
 	}
-
-	private void ensureCreatureSetBuilt() {
-		if (creatureSet == null) {
-			creatureSet = new HashSet<>();
-			creatureChooser.getBackingArray().forEach(entry -> creatureSet.add(entry.getElement()));
-		}
-	}
-
 }

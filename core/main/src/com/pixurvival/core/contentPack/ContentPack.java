@@ -43,6 +43,8 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
 
+	private transient double maxLightRadius;
+
 	@Valid
 	@Required
 	private ContentPackIdentifier identifier = new ContentPackIdentifier();
@@ -150,6 +152,11 @@ public class ContentPack implements Serializable {
 			}
 		}
 		ecosystems.forEach(Ecosystem::initialize);
+		for (Structure structure : structures) {
+			if (structure.getLightEmissionRadius() > maxLightRadius) {
+				maxLightRadius = structure.getLightEmissionRadius();
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")

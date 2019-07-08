@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
@@ -54,6 +55,8 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
 		armorField.setEditable(false);
+		BooleanCheckBox shadowCheckbox = new BooleanCheckBox();
+		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 
 		// Actions
 		strengthInput.addValueChangeListener(v -> statSet.get(StatType.STRENGTH).setBase(v));
@@ -74,6 +77,8 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		bind(strengthInput, Creature::getStrength, Creature::setStrength);
 		bind(agilityInput, Creature::getAgility, Creature::setAgility);
 		bind(intelligenceInput, Creature::getIntelligence, Creature::setIntelligence);
+		bind(shadowCheckbox, Creature::isDark, Creature::setDark);
+		bind(solidCheckbox, Creature::isSolid, Creature::setSolid);
 
 		// Layouting
 
@@ -87,6 +92,8 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.abilitySet", abilitySetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.itemReward", itemRewardChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.solid", solidCheckbox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.dark", shadowCheckbox, gbc);
 
 		JPanel statsPanel = new JPanel(new GridBagLayout());
 		statsPanel.setBorder(LayoutUtils.createGroupBorder("creatureEditor.stats"));

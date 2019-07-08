@@ -20,7 +20,7 @@ import lombok.ToString;
 public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	private long id;
-	private Direction direction;
+	private Direction direction = Direction.SOUTH;
 	private boolean forward;
 
 	public PlayerMovementRequest(PlayerMovementRequest other) {

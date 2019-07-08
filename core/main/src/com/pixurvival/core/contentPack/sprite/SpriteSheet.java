@@ -34,4 +34,6 @@ public class SpriteSheet extends IdentifiedElement {
 
 	private double heightOffset;
 
+	private boolean shadow = true;
+
 }

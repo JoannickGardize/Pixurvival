@@ -40,9 +40,9 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 
 		DoubleInput spawnRadiusInput = new DoubleInput(Bounds.positive());
 		DoubleInput managedRadiusInput = new DoubleInput(Bounds.positive());
-		IntegerInput initialSpawnPerChunkInput = new IntegerInput(Bounds.positive());
+		IntegerInput initialSpawnInput = new IntegerInput(Bounds.positive());
 		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
-		TimeInput respawnTimePerChunk = new TimeInput();
+		TimeInput respawnTimeInput = new TimeInput();
 
 		// Binding
 
@@ -50,9 +50,9 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		bind(creatureChooser, StructureSpawner::getCreatureChooser, StructureSpawner::setCreatureChooser);
 		bind(spawnRadiusInput, StructureSpawner::getSpawnRadius, StructureSpawner::setSpawnRadius);
 		bind(managedRadiusInput, StructureSpawner::getManagedRadius, StructureSpawner::setManagedRadius);
-		bind(initialSpawnPerChunkInput, StructureSpawner::getInitialSpawnPerChunk, StructureSpawner::setInitialSpawnPerChunk);
+		bind(initialSpawnInput, StructureSpawner::getInitialSpawn, StructureSpawner::setInitialSpawn);
 		bind(maximumCreaturesInput, StructureSpawner::getMaximumCreatures, StructureSpawner::setMaximumCreatures);
-		bind(respawnTimePerChunk, StructureSpawner::getRespawnTimePerChunk, StructureSpawner::setRespawnTimePerChunk);
+		bind(respawnTimeInput, StructureSpawner::getRespawnTime, StructureSpawner::setRespawnTime);
 
 		// Layouting
 
@@ -64,9 +64,9 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.spawnRadius", spawnRadiusInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.managedRadius", managedRadiusInput, gbc);
 		LayoutUtils.nextColumn(gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.initialSpawnPerChunk", initialSpawnPerChunkInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.initialSpawnPerChunk", initialSpawnInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.maximumCreatures", maximumCreaturesInput, gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.respawnTimePerChunk", respawnTimePerChunk, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.respawnTimePerChunk", respawnTimeInput, gbc);
 		add(topPanel, BorderLayout.NORTH);
 		creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
 		add(creatureChooser, BorderLayout.SOUTH);

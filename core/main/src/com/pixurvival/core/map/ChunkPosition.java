@@ -1,6 +1,7 @@
 package com.pixurvival.core.map;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.util.MathUtils;
@@ -39,15 +40,15 @@ public class ChunkPosition {
 	}
 
 	/**
-	 * Convert the world position into chunk coordinates. Return this instance
-	 * if this is the result of the conversion. The purpose of this method is
-	 * for performance, to avoid new allocations, for example in the context of
-	 * entities checking every ticks their chunk positions.
+	 * Convert the world position into chunk coordinates. Return this instance if
+	 * this is the result of the conversion. The purpose of this method is for
+	 * performance, to avoid new allocations, for example in the context of entities
+	 * checking every ticks their chunk positions.
 	 * 
 	 * @param position
 	 *            the position to convert
-	 * @return the ChunkPosition corresponding to the paramter position, reuse
-	 *         this instance if this is the same.
+	 * @return the ChunkPosition corresponding to the paramter position, reuse this
+	 *         instance if this is the same.
 	 */
 	public ChunkPosition createIfDifferent(Vector2 position) {
 		int positionX = MathUtils.floor(position.getX() / GameConstants.CHUNK_SIZE);
@@ -83,5 +84,21 @@ public class ChunkPosition {
 				action.accept(position);
 			}
 		}
+	}
+
+	public static boolean forEachChunkPosition(Vector2 center, double halfSquareLength, Predicate<ChunkPosition> action) {
+		int x = MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int yStart = MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int xEnd = MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);
+		int yEnd = MathUtils.floor((center.getY() + halfSquareLength) / GameConstants.CHUNK_SIZE);
+		for (; x <= xEnd; x++) {
+			for (int y = yStart; y <= yEnd; y++) {
+				ChunkPosition position = new ChunkPosition(x, y);
+				if (action.test(position)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
