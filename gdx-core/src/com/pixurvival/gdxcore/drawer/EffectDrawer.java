@@ -19,6 +19,9 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 
 	@Override
 	public void draw(Batch batch, EffectEntity e) {
+		if (e.getDefinition().getSpriteSheet() == null) {
+			return;
+		}
 		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
 		TextureAnimation textureAnimation = textureAnimationSet.get(ActionAnimation.DEFAULT);
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);

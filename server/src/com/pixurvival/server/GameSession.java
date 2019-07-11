@@ -13,14 +13,14 @@ import com.pixurvival.core.chat.ChatListener;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
-import com.pixurvival.core.message.AddStructureUpdate;
-import com.pixurvival.core.message.RemoveStructureUpdate;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
+import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 

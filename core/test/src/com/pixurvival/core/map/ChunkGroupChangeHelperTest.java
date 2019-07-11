@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.util.Vector2;
 
 public class ChunkGroupChangeHelperTest {

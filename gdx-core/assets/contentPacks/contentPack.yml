@@ -165,6 +165,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *character02
   heightOffset: 0.0
+  shadow: true
 - &leather_armor
   name: leather_armor
   id: 1
@@ -174,6 +175,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *character02
   heightOffset: 0.0
+  shadow: true
 - &hard_leather_armor
   name: hard_leather_armor
   id: 2
@@ -183,6 +185,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *character02
   heightOffset: 0.0
+  shadow: true
 - name: iron
   id: 3
   width: 7
@@ -191,6 +194,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *character02
   heightOffset: 0.0
+  shadow: true
 - &cotton_bush
   name: cotton_bush
   id: 4
@@ -200,6 +204,7 @@ spriteSheets:
   animationTemplate: *harvestable_structure
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &rock
   name: rock
   id: 5
@@ -209,6 +214,7 @@ spriteSheets:
   animationTemplate: *harvestable_structure
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &tree
   name: tree
   id: 6
@@ -218,6 +224,7 @@ spriteSheets:
   animationTemplate: *harvestable_structure
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &wood_sword
   name: wood_sword
   id: 7
@@ -227,6 +234,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *sword
   heightOffset: 0.0
+  shadow: true
 - &campfire
   name: campfire
   id: 8
@@ -236,6 +244,7 @@ spriteSheets:
   animationTemplate: *animated2
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &pixie
   name: pixie
   id: 9
@@ -245,6 +254,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &sword_hit02
   name: sword_hit
   id: 10
@@ -254,6 +264,7 @@ spriteSheets:
   animationTemplate: *sword_hit
   equipmentOffset: null
   heightOffset: 6.0
+  shadow: true
 - &wood_bow
   name: wood_bow
   id: 11
@@ -263,6 +274,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: *bow
   heightOffset: 0.0
+  shadow: true
 - &bow_hit
   name: bow_hit
   id: 12
@@ -272,6 +284,7 @@ spriteSheets:
   animationTemplate: *single_image
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &dead_tree
   name: dead_tree
   id: 13
@@ -281,6 +294,7 @@ spriteSheets:
   animationTemplate: *single_image
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &tombstone
   name: tombstone
   id: 14
@@ -290,6 +304,7 @@ spriteSheets:
   animationTemplate: *single_image
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &ninja_pig
   name: ninja_pig
   id: 15
@@ -299,6 +314,7 @@ spriteSheets:
   animationTemplate: *character
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &rock_projectile
   name: rock_projectile
   id: 16
@@ -308,6 +324,7 @@ spriteSheets:
   animationTemplate: *single_image
   equipmentOffset: null
   heightOffset: 0.0
+  shadow: true
 - &sword_hit2
   name: sword_hit2
   id: 17
@@ -317,6 +334,17 @@ spriteSheets:
   animationTemplate: *single_image
   equipmentOffset: null
   heightOffset: 4.0
+  shadow: true
+- &ghost
+  name: ghost
+  id: 18
+  width: 7
+  height: 9
+  image: images/ghost.png
+  animationTemplate: *character
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
 effects:
 - &wood_sword_hit
   name: wood_sword_hit
@@ -478,6 +506,7 @@ items:
     solid: false
     spriteSheet: *campfire
     dimensions: {width: 1, height: 1}
+    lightEmissionRadius: 8.0
     duration: 60000
 - &arrow !!ResourceItem
   name: arrow
@@ -696,6 +725,51 @@ behaviorSets:
     id: 0
     changeConditions: []
     abilityToUseId: -1
+- &ghost_behavior
+  name: ghost_behavior
+  id: 2
+  behaviors:
+  - &Wander02 !!WanderBehavior
+    name: Wander
+    id: 0
+    changeConditions:
+    - !!com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition
+      name: null
+      id: 0
+      nextBehavior: &Get_Away_from_light !!com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior
+        name: Get Away from light
+        id: 0
+        changeConditions:
+        - !!TimeCondition
+          name: null
+          id: 0
+          nextBehavior: *Wander02
+          targetTime: 6000
+        abilityToUseId: -1
+    - !!EnnemyDistanceCondition
+      name: null
+      id: 1
+      nextBehavior: &Attack !!MoveTowardBehavior
+        name: Attack
+        id: 1
+        changeConditions:
+        - !!com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition
+          name: null
+          id: 0
+          nextBehavior: *Get_Away_from_light
+        - !!EnnemyDistanceCondition
+          name: null
+          id: 1
+          nextBehavior: *Wander02
+          test: GREATER_THAN
+          targetDistance: 20.0
+        abilityToUseId: -1
+        minDistance: 0.0
+      test: LESS_THAN
+      targetDistance: 12.0
+    abilityToUseId: -1
+  - *Attack
+  - *Get_Away_from_light
 abilitySets:
 - &ninja_pig02
   name: ninja_pig
@@ -716,6 +790,8 @@ creatures:
   strength: -6.0
   agility: -2.0
   intelligence: 0.0
+  solid: true
+  dark: false
   behaviorSet: *get_away
   itemReward: *pixie02
   abilitySet: null
@@ -726,9 +802,23 @@ creatures:
   strength: -3.0
   agility: -2.0
   intelligence: 0.0
+  solid: true
+  dark: false
   behaviorSet: *ranged_attack
   itemReward: null
   abilitySet: *ninja_pig02
+- name: night_ghost
+  id: 2
+  spriteSheet: *ghost
+  collisionRadius: 0.42
+  strength: 1000.0
+  agility: 8.0
+  intelligence: 0.0
+  solid: true
+  dark: true
+  behaviorSet: *ghost_behavior
+  itemReward: null
+  abilitySet: null
 tiles:
 - &grass
   name: grass
@@ -799,6 +889,7 @@ structures:
   solid: true
   spriteSheet: *tree
   dimensions: {width: 1, height: 1}
+  lightEmissionRadius: 0.0
   harvestingTime: 4000
   itemReward: *tree02
   respawnTime: {min: 240000, max: 300000}
@@ -808,6 +899,7 @@ structures:
   solid: true
   spriteSheet: *cotton_bush
   dimensions: {width: 1, height: 1}
+  lightEmissionRadius: 0.0
   harvestingTime: 2000
   itemReward: *cotton02
   respawnTime: {min: 120000, max: 180000}
@@ -817,6 +909,7 @@ structures:
   solid: true
   spriteSheet: *rock
   dimensions: {width: 2, height: 1}
+  lightEmissionRadius: 0.0
   harvestingTime: 6000
   itemReward: *rock02
   respawnTime: {min: 480000, max: 540000}
@@ -827,12 +920,14 @@ structures:
   solid: true
   spriteSheet: *dead_tree
   dimensions: {width: 1, height: 1}
+  lightEmissionRadius: 0.0
 - &tombstone02 !!OrnamentalStructure
   name: tombstone
   id: 5
   solid: true
   spriteSheet: *tombstone
   dimensions: {width: 1, height: 1}
+  lightEmissionRadius: 0.0
 mapGenerators:
 - &test
   name: test
@@ -951,15 +1046,21 @@ ecosystems:
   name: test
   id: 0
   structureSpawners:
-  - structure: *tree03
-    creatureChooser:
+  - creatureChooser:
       backingArray:
       - {probability: 1.0, element: null}
+    initialSpawn: 1
+    maximumCreatures: 1
+    respawnTime: {min: 10000, max: 10000}
+    structure: *tree03
     spawnRadius: 10.0
     managedRadius: 60.0
-    initialSpawnPerChunk: 1
-    maximumCreatures: 1
-    respawnTimePerChunk: 10000
+  darknessSpawner:
+    creatureChooser:
+      backingArray: []
+    initialSpawn: 0
+    maximumCreatures: 0
+    respawnTime: {min: 10000, max: 10000}
 gameModes:
 - name: test
   id: 0
@@ -967,7 +1068,7 @@ gameModes:
   teamSizeInterval: {min: 1, max: 4}
   mapGenerator: *test
   ecosystem: *test02
-  dayCycleDefinition: !!DayNightCycle {dayDuration: 10000, nightDuration: 10000}
+  dayCycle: !!DayNightCycle {dayDuration: 10000, nightDuration: 10000}
   endGameCondition: !!NoEndCondition {}
   spawnSquareSize: 490.0
   mapLimitEnabled: false

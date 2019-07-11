@@ -5,8 +5,9 @@ import java.util.List;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
@@ -34,6 +35,11 @@ public class StructureSpawner extends ChunkSpawner {
 		}
 		WorldRandom random = chunk.getMap().getWorld().getRandom();
 		return structures.get(random.nextInt(structures.size())).getPosition();
+	}
+
+	@Override
+	public boolean isChunkEligible(Chunk chunk) {
+		return !CollectionUtils.isNullOrEmpty(chunk.getStructures(structure.getId()));
 	}
 
 	@Override

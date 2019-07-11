@@ -144,6 +144,10 @@ public class Vector2 {
 
 	}
 
+	public boolean insideSquare(Vector2 center, double halfLength) {
+		return Math.abs(x - center.x) <= halfLength && Math.abs(y - center.y) <= halfLength;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

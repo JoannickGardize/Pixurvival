@@ -1,6 +1,8 @@
 package com.pixurvival.core.map;
 
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 public interface TiledMapListener {
 

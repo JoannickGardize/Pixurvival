@@ -6,9 +6,9 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
 import lombok.Setter;

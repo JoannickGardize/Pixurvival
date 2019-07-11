@@ -84,6 +84,9 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		if (value instanceof IdentifiedElement) {
 			((IdentifiedElement) value).setId(getValue().size());
 		}
+		if (getValue() == null) {
+			setValue(new ArrayList<>());
+		}
 		getValue().add(addComponent(getValue().size(), value).getValue());
 		notifyValueChanged();
 		listPanel.revalidate();

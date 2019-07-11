@@ -88,7 +88,11 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 
 	@Override
 	public double getSpeedPotential() {
-		return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		if (isSolid()) {
+			return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
+		} else {
+			return stats.getValue(StatType.SPEED);
+		}
 	}
 
 	@Override

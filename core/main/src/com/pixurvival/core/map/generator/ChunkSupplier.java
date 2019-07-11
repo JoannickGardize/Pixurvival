@@ -6,10 +6,10 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.EmptyTile;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.chunk.Chunk;
 
 public class ChunkSupplier {
 

@@ -19,7 +19,7 @@ public class Ecosystem extends IdentifiedElement {
 
 	private List<StructureSpawner> structureSpawners = new ArrayList<>();
 
-	private ChunkSpawner darknessSpawner = new ChunkSpawner();
+	private DarknessSpawner darknessSpawner = new DarknessSpawner();
 
 	private transient @Setter(AccessLevel.NONE) Map<Integer, List<StructureSpawner>> structureSpawnersPerStructure;
 
@@ -30,5 +30,6 @@ public class Ecosystem extends IdentifiedElement {
 			s.buildCreatureSet();
 			structureSpawnersPerStructure.computeIfAbsent(s.getStructure().getId(), ArrayList::new).add(s);
 		});
+		darknessSpawner.buildCreatureSet();
 	}
 }

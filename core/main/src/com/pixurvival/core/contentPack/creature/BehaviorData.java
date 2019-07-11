@@ -28,17 +28,22 @@ public class BehaviorData {
 
 	private @Getter CreatureEntity creature;
 
+	private boolean closestEnnemyComputed = false;
 	private Entity closestEnnemy;
 	private double closestDistanceSquaredToEnnemy;
 
 	/**
-	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur
-	 * n'est pas modifié, ou est inférieur ou temps actuel du {@link World}, il
-	 * en résultera une mise à jour du behavior à chaque frame.
+	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur n'est
+	 * pas modifié, ou est inférieur ou temps actuel du {@link World}, il en
+	 * résultera une mise à jour du behavior à chaque frame.
 	 */
 	@Getter
 	@Setter
 	private long nextUpdateTimeMillis;
+
+	@Getter
+	@Setter
+	private Object customData = null;
 
 	public BehaviorData(CreatureEntity creature) {
 		this.creature = creature;
@@ -66,10 +71,9 @@ public class BehaviorData {
 	}
 
 	/**
-	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière
-	 * à ce qu'elle corresponde au temps qu'il faut pour que la créature
-	 * parcourt la distance passé en paramètre, relatif donc à la vitesse de la
-	 * créature.
+	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière à ce
+	 * qu'elle corresponde au temps qu'il faut pour que la créature parcourt la
+	 * distance passé en paramètre, relatif donc à la vitesse de la créature.
 	 * 
 	 * @param targetDistance
 	 *            La distance à parcourir utilisé pour calculer le temps de la
@@ -77,7 +81,7 @@ public class BehaviorData {
 	 */
 	public void setNextUpdateDelayRelativeToSpeed(double targetDistance) {
 		double speed = creature.getSpeed();
-		long delayMillis = Math.min(Time.secToMillis(speed > 0 ? targetDistance / speed : 0), MAX_UPDATE_DELAY_RELATIVE_TO_SPEED);
+		long delayMillis = Math.min(Time.secToMillis(speed > 0 ? targetDistance / speed : DEFAULT_STANDBY_DELAY), MAX_UPDATE_DELAY_RELATIVE_TO_SPEED);
 		setNextUpdateDelayMillis(delayMillis);
 	}
 
@@ -91,13 +95,15 @@ public class BehaviorData {
 
 	void beforeStep() {
 		closestEnnemy = null;
+		closestEnnemyComputed = false;
 	}
 
 	private void findClosestEnnemy() {
-		if (closestEnnemy == null) {
+		if (!closestEnnemyComputed) {
 			EntitySearchResult result = creature.findClosest(TargetType.ALL_ENEMIES, TARGET_SEARCH_RADIUS);
 			closestEnnemy = result.getEntity();
 			closestDistanceSquaredToEnnemy = result.getDistanceSquared();
+			closestEnnemyComputed = true;
 		}
 	}
 }

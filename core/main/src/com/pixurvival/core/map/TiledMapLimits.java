@@ -5,6 +5,8 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 public class TiledMapLimits implements TiledMapListener {
 

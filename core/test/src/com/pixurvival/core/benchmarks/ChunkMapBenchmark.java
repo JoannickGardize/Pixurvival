@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Random;
 
 import com.esotericsoftware.kryo.util.IntMap;
-import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 /**
  * <b>HashMap of ChunkPosition vs IntMap of IntMap</b>

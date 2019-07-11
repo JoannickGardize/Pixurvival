@@ -15,6 +15,11 @@ public class LongInterval implements Serializable {
 	private long max;
 
 	public long next(Random random) {
-		return random.nextInt() * (max - min) + min;
+		int randomRange = (int) (max - min);
+		if (randomRange > 0) {
+			return random.nextInt(randomRange) + min;
+		} else {
+			return min;
+		}
 	}
 }

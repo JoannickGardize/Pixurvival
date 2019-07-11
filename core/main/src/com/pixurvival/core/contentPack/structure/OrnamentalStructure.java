@@ -1,8 +1,8 @@
 package com.pixurvival.core.contentPack.structure;
 
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.OrnamentalMapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
 
 public class OrnamentalStructure extends Structure {
 

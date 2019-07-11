@@ -11,32 +11,34 @@ import java.util.function.Consumer;
 import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
+import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.util.CollectionUtils;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 import lombok.AllArgsConstructor;
 
-public class ChunkSpawnManager implements TiledMapListener {
+public class ChunkCreatureSpawnManager implements TiledMapListener {
 
 	@AllArgsConstructor
 	private class SpawnAction implements Action {
 
 		private World world;
 		private ChunkPosition chunkPosition;
-		private StructureSpawner structureSpawner;
+		private ChunkSpawner spawner;
 
 		@Override
 		public void perform() {
 			Chunk chunk = world.getMap().chunkAt(chunkPosition);
-			if (chunk != null && !CollectionUtils.isNullOrEmpty(chunk.getStructures(structureSpawner.getStructure().getId()))) {
-				structureSpawner.spawn(chunk);
-				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, structureSpawner), structureSpawner.getRespawnTime().next(world.getRandom()));
+			if (chunk != null && spawner.isChunkEligible(chunk)) {
+				spawner.spawn(chunk);
+				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, spawner), spawner.getRespawnTime().next(world.getRandom()));
 			} else {
-				Set<StructureSpawner> spawnerSet = actionMemory.get(chunkPosition);
+				Set<ChunkSpawner> spawnerSet = actionMemory.get(chunkPosition);
 				if (spawnerSet != null) {
-					spawnerSet.remove(structureSpawner);
+					spawnerSet.remove(spawner);
 					if (spawnerSet.isEmpty()) {
 						actionMemory.remove(chunkPosition);
 					}
@@ -45,30 +47,39 @@ public class ChunkSpawnManager implements TiledMapListener {
 		}
 	}
 
-	private Map<ChunkPosition, Set<StructureSpawner>> actionMemory = new HashMap<>();
+	private Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
+		ChunkSpawner darknessSpawner = chunk.getMap().getWorld().getGameMode().getEcosystem().getDarknessSpawner();
 		if (chunk.isNewlyCreated()) {
-			forEachStructureSpawner(chunk, spawner -> {
-				for (int i = 0; i < spawner.getInitialSpawn(); i++) {
-					spawner.spawn(chunk);
-				}
-				addSpawnerActionTimer(chunk, spawner);
-			});
+			forEachStructureSpawner(chunk, spawner -> spawn(chunk, spawner));
+			spawn(chunk, darknessSpawner);
 		} else {
-			forEachStructureSpawner(chunk, spawner -> {
-				Set<StructureSpawner> spawnerSet = actionMemory.get(chunk.getPosition());
-				if (spawnerSet == null || !spawnerSet.contains(spawner)) {
-					spawner.spawn(chunk);
-					addSpawnerActionTimer(chunk, spawner);
-				}
-			});
+			forEachStructureSpawner(chunk, spawner -> respawn(chunk, spawner));
+			respawn(chunk, darknessSpawner);
 		}
 	}
 
-	private void addSpawnerActionTimer(Chunk chunk, StructureSpawner spawner) {
+	private void spawn(Chunk chunk, ChunkSpawner spawner) {
+		for (int i = 0; i < spawner.getInitialSpawn(); i++) {
+			spawner.spawn(chunk);
+		}
+		addSpawnerActionTimer(chunk, spawner);
+	}
+
+	private void respawn(Chunk chunk, ChunkSpawner spawner) {
+		Set<ChunkSpawner> spawnerSet = actionMemory.get(chunk.getPosition());
+		if (spawnerSet == null || !spawnerSet.contains(spawner)) {
+			spawner.spawn(chunk);
+			addSpawnerActionTimer(chunk, spawner);
+		}
+	}
+
+	private void addSpawnerActionTimer(Chunk chunk, ChunkSpawner spawner) {
 		World world = chunk.getMap().getWorld();
+		if (spawner instanceof DarknessSpawner) {
+		}
 		world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunk.getPosition(), spawner), spawner.getRespawnTime().next(world.getRandom()));
 		actionMemory.computeIfAbsent(chunk.getPosition(), p -> new HashSet<>()).add(spawner);
 	}

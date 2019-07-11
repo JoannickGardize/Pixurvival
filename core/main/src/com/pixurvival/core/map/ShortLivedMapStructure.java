@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public class ShortLivedMapStructure extends MapStructure {
 

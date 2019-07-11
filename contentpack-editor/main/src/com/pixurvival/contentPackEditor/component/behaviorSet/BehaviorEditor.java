@@ -1,12 +1,15 @@
 package com.pixurvival.contentPackEditor.component.behaviorSet;
 
 import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
@@ -18,8 +21,10 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 
 public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
@@ -81,8 +86,26 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		classEntries.add(new ClassEntry(TurnAroundBehavior.class,
 				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput), LayoutUtils.labelled("generic.maxDistance", maxDistanceInput))));
 
-		// WANDER_BEHAVIOR
-		classEntries.add(new ClassEntry(WanderBehavior.class, new JPanel()));
+		// WANDER
+		BooleanCheckBox anchorCheckBox = new BooleanCheckBox();
+		DoubleInput moveRateInput = new DoubleInput(Bounds.positive());
+		DoubleInput forwardFactorInput = new DoubleInput(Bounds.positive());
+		bind(anchorCheckBox, WanderBehavior::isAnchor, WanderBehavior::setAnchor, WanderBehavior.class);
+		bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);
+		bind(forwardFactorInput, WanderBehavior::getForwardFactor, WanderBehavior::setForwardFactor, WanderBehavior.class);
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", anchorCheckBox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.moveRate", moveRateInput, gbc);
+		LayoutUtils.nextColumn(gbc);
+		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.forwardFactor", forwardFactorInput, gbc);
+		classEntries.add(new ClassEntry(WanderBehavior.class, panel));
+
+		// GET_AWAY_FROM_LIGHT
+		classEntries.add(new ClassEntry(GetAwayFromLightBehavior.class, new JPanel()));
+
+		// VANISH
+		classEntries.add(new ClassEntry(VanishBehavior.class, new JPanel()));
 
 		return classEntries;
 	}

@@ -53,8 +53,8 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 			for (int dy = y - FIND_STRUCTURE_RADIUS; dy <= y + FIND_STRUCTURE_RADIUS; dy++) {
 				MapStructure structure = map.tileAt(dx, dy).getStructure();
 				if (structure != null) {
-					double diffX = structure.getX() - worldPoint.x;
-					double diffY = structure.getY() - worldPoint.y;
+					double diffX = structure.getPosition().getX() - worldPoint.x;
+					double diffY = structure.getPosition().getY() - worldPoint.y;
 					double dist = diffX * diffX + diffY * diffY;
 					if (dist < closestDist) {
 						closestDist = dist;

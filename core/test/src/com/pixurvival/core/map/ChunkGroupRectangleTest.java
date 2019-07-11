@@ -3,6 +3,7 @@ package com.pixurvival.core.map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pixurvival.core.map.chunk.ChunkGroupRectangle;
 import com.pixurvival.core.util.Vector2;
 
 public class ChunkGroupRectangleTest {

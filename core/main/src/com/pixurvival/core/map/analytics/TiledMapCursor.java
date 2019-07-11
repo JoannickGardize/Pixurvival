@@ -1,9 +1,9 @@
 package com.pixurvival.core.map.analytics;
 
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 /**
  * This class is a purpose for a fast synchronized exploration of a

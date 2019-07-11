@@ -14,7 +14,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -42,7 +42,7 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		DoubleInput managedRadiusInput = new DoubleInput(Bounds.positive());
 		IntegerInput initialSpawnInput = new IntegerInput(Bounds.positive());
 		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
-		TimeInput respawnTimeInput = new TimeInput();
+		TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");
 
 		// Binding
 
@@ -66,8 +66,7 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.initialSpawnPerChunk", initialSpawnInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.maximumCreatures", maximumCreaturesInput, gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.respawnTimePerChunk", respawnTimeInput, gbc);
-		add(topPanel, BorderLayout.NORTH);
+		add(LayoutUtils.createVerticalBox(topPanel, respawnTimeInput), BorderLayout.NORTH);
 		creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
 		add(creatureChooser, BorderLayout.SOUTH);
 	}

@@ -7,7 +7,8 @@ import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -52,16 +53,6 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 
 	public int getHeight() {
 		return definition.getDimensions().getHeight();
-	}
-
-	@Override
-	public double getX() {
-		return position.getX();
-	}
-
-	@Override
-	public double getY() {
-		return position.getY();
 	}
 
 	public abstract StructureUpdate getUpdate();

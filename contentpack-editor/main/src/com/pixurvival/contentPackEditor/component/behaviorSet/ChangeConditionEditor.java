@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JPanel;
+
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
@@ -15,6 +17,8 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoubleComparison;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
@@ -58,6 +62,12 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		TimeInput timeInput = new TimeInput();
 		bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
 		classEntries.add(new ClassEntry(TimeCondition.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput))));
+
+		// InLightCondition
+		classEntries.add(new ClassEntry(InLightCondition.class, new JPanel()));
+
+		// IsDayCondition
+		classEntries.add(new ClassEntry(IsDayCondition.class, new JPanel()));
 
 		return classEntries;
 	}

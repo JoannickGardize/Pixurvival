@@ -17,7 +17,12 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkManager;
+import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.ChunkRepository;
+import com.pixurvival.core.map.chunk.CompressedChunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -49,6 +54,8 @@ public class TiledMap {
 
 	private @Getter ChunkRepository repository = new ChunkRepository();
 
+	private Light tmpResult;
+
 	public TiledMap(World world) {
 		this.world = world;
 
@@ -74,7 +81,7 @@ public class TiledMap {
 		}
 		addListener(limits);
 		if (world.isServer()) {
-			addListener(new ChunkSpawnManager());
+			addListener(new ChunkCreatureSpawnManager());
 		}
 	}
 
@@ -143,7 +150,7 @@ public class TiledMap {
 			// world.getEntityPool().sneakyAddAll(chunk.getEntities());
 			List<StructureUpdate> updates = pollStructureUpdates(chunk.getPosition());
 			if (updates != null) {
-				updates.forEach(u -> u.perform(chunk));
+				updates.forEach(u -> u.apply(chunk));
 			}
 			listeners.forEach(l -> l.chunkLoaded(chunk));
 		}
@@ -286,10 +293,7 @@ public class TiledMap {
 	public boolean forEachChunk(Vector2 center, double halfSquareLength, Predicate<Chunk> action) {
 		return ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
 			Chunk chunk = chunks.get(position);
-			if (chunk != null && action.test(chunk)) {
-				return true;
-			}
-			return false;
+			return chunk != null && action.test(chunk);
 		});
 	}
 
@@ -312,7 +316,7 @@ public class TiledMap {
 				List<StructureUpdate> waitingList = waitingStructureUpdates.computeIfAbsent(position, p -> new ArrayList<>());
 				waitingList.add(structureUpdate);
 			} else {
-				structureUpdate.perform(chunk);
+				structureUpdate.apply(chunk);
 			}
 		}
 	}
@@ -357,13 +361,20 @@ public class TiledMap {
 	}
 
 	public boolean isInAnyLight(Vector2 position) {
-		return forEachChunk(position, getWorld().getContentPack().getMaxLightRadius(), chunk -> {
+		return getAnyCollidingLight(position) != null;
+	}
+
+	public Light getAnyCollidingLight(Vector2 position) {
+		tmpResult = null;
+		forEachChunk(position, getWorld().getContentPack().getMaxLightRadius(), chunk -> {
 			for (Light light : chunk.getLights()) {
 				if (position.distanceSquared(light.getPosition()) <= light.getRadius() * light.getRadius()) {
+					tmpResult = light;
 					return true;
 				}
 			}
 			return false;
 		});
+		return tmpResult;
 	}
 }

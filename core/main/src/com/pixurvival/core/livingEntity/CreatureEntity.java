@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -38,17 +39,17 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void initialize() {
+		if (definition.getAbilitySet() == null) {
+			definition.setAbilitySet(EMPTY_ABILITY_SET);
+		}
+		getStats().get(StatType.STRENGTH).setBase(definition.getStrength());
+		getStats().get(StatType.AGILITY).setBase(definition.getAgility());
+		getStats().get(StatType.INTELLIGENCE).setBase(definition.getIntelligence());
 		super.initialize();
 		if (getWorld().isServer()) {
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 			anchorPosition = getPosition().copy();
-		}
-		getStats().get(StatType.STRENGTH).setBase(definition.getStrength());
-		getStats().get(StatType.AGILITY).setBase(definition.getAgility());
-		getStats().get(StatType.INTELLIGENCE).setBase(definition.getIntelligence());
-		if (definition.getAbilitySet() == null) {
-			definition.setAbilitySet(EMPTY_ABILITY_SET);
 		}
 	}
 
@@ -71,12 +72,21 @@ public class CreatureEntity extends LivingEntity {
 		}
 	}
 
-	public void move(double direction) {
-		setMovingAngle(MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
+	public void move(double direction, double forwardFactor) {
+		setForwardFactor(forwardFactor);
+		if (isSolid()) {
+			setMovingAngle(MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
+		} else {
+			setMovingAngle(direction);
+		}
 		setForward(true);
 	}
 
-	public void moveIfNotNull(Entity entity, double direction) {
+	public void move(double direction) {
+		move(direction, 1);
+	}
+
+	public void moveIfNotNull(Positionnable entity, double direction) {
 		if (entity == null) {
 			setForward(false);
 		} else {
@@ -84,11 +94,11 @@ public class CreatureEntity extends LivingEntity {
 		}
 	}
 
-	public void getAwayFrom(Entity target) {
-		moveIfNotNull(target, target.angleToward(this));
+	public void getAwayFrom(Positionnable target) {
+		moveIfNotNull(target, target.getPosition().angleToward(this.getPosition()));
 	}
 
-	public void moveToward(Entity target) {
+	public void moveToward(Positionnable target) {
 		moveIfNotNull(target, this.angleToward(target));
 	}
 
@@ -109,7 +119,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public boolean isSolid() {
-		return true;
+		return definition.isSolid();
 	}
 
 	@Override

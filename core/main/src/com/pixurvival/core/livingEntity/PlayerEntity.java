@@ -21,9 +21,9 @@ import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.util.MathUtils;
 

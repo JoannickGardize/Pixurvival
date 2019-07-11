@@ -5,11 +5,11 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
+import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.World;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
-import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
@@ -47,10 +47,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean velocityChanged = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server
-	 * will send data of this entity at the next data send tick to clients that
-	 * view this entity. Must be true at initialization to send the new entity
-	 * data.
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -66,6 +65,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 	public void setForward(boolean forward) {
 		if (this.forward != forward) {
 			this.forward = forward;
+			velocityChanged = true;
+		}
+	}
+
+	public void setForwardFactor(double forwardFactor) {
+		if (forwardFactor != this.forwardFactor) {
+			this.forwardFactor = forwardFactor;
 			velocityChanged = true;
 		}
 	}
@@ -158,16 +164,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 	public abstract boolean isSolid();
 
 	@Override
-	public double getX() {
-		return position.getX();
-	}
-
-	@Override
-	public double getY() {
-		return position.getY();
-	}
-
-	@Override
 	public double getHalfWidth() {
 		return getCollisionRadius();
 	}
@@ -211,8 +207,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of
-	 * {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position
@@ -234,8 +229,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	/**
 	 * @param group
 	 * @param maxSquareDistance
-	 *            The maximum distance between this entity and any point of
-	 *            checked chunks.
+	 *            The maximum distance between this entity and any point of checked
+	 *            chunks.
 	 * @param action
 	 */
 	public void foreachEntities(EntityGroup group, double maxSquareDistance, Consumer<Entity> action) {
@@ -251,12 +246,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return this.position.distanceSquared(position);
 	}
 
-	public double angleToward(Entity other) {
-		return position.angleToward(other.position);
-	}
-
-	public double angleToward(MapStructure structure) {
-		return position.angleToward(new Vector2(structure.getX(), structure.getY()));
+	public double angleToward(Positionnable other) {
+		return position.angleToward(other.getPosition());
 	}
 
 	public boolean collide(Entity other) {

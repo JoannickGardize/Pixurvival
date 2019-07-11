@@ -1,7 +1,7 @@
 package com.pixurvival.core.contentPack.ecosystem;
 
 import com.pixurvival.core.contentPack.creature.Creature;
-import com.pixurvival.core.map.Chunk;
+import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.Vector2;
 
 public class DarknessSpawner extends ChunkSpawner {
@@ -11,7 +11,8 @@ public class DarknessSpawner extends ChunkSpawner {
 	@Override
 	protected boolean isSpawnValid(Chunk chunk, Creature creature, Vector2 position) {
 		boolean isDay = chunk.getMap().getWorld().getTime().getDayCycle().isDay();
-		return !isDay && super.isSpawnValid(chunk, creature, position) && !chunk.getMap().isInAnyLight(position);
+		boolean result = !isDay && super.isSpawnValid(chunk, creature, position) && !chunk.getMap().isInAnyLight(position);
+		return result;
 	}
 
 }

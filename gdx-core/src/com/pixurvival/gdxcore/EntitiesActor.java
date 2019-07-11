@@ -69,7 +69,7 @@ public class EntitiesActor extends Actor {
 		PixurvivalGame.getWorld().getEntityPool().foreach(e -> objectsToDraw.add(e));
 
 		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> chunk.forEachStructure(objectsToDraw::add));
-		objectsToDraw.sort((e1, e2) -> (int) ((e2.getY() - e1.getY()) * 10000));
+		objectsToDraw.sort((e1, e2) -> (int) ((e2.getPosition().getY() - e1.getPosition().getY()) * 10000));
 
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));

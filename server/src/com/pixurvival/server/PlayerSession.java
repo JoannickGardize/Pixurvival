@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
-import com.pixurvival.core.map.CompressedChunk;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.CompressedChunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 import lombok.NonNull;

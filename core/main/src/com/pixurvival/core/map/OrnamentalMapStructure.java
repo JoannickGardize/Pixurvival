@@ -3,7 +3,8 @@ package com.pixurvival.core.map;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public class OrnamentalMapStructure extends MapStructure {
 

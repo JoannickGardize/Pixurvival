@@ -25,6 +25,9 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
@@ -170,6 +173,9 @@ public class ContentPackSerializer {
 		addClassTag(representer, RemainingTeamCondition.class);
 		addClassTag(representer, EternalDayCycle.class);
 		addClassTag(representer, DayNightCycle.class);
+		addClassTag(representer, GetAwayFromLightBehavior.class);
+		addClassTag(representer, InLightCondition.class);
+		addClassTag(representer, IsDayCondition.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

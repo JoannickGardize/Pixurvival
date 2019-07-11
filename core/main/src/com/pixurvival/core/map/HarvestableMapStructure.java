@@ -9,8 +9,9 @@ import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.message.HarvestableStructureUpdate;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class HarvestableMapStructure extends MapStructure {
 
 	public ItemStack[] harvest(Random random) {
 		if (harvested) {
-			Log.warn("warning, trying to harvest already harvested structure at " + getX() + ", " + getY());
+			Log.warn("warning, trying to harvest already harvested structure at " + getPosition().getX() + ", " + getPosition().getY());
 			return new ItemStack[0];
 		}
 		harvested = true;

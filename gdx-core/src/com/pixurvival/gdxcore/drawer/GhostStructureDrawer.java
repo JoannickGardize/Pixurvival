@@ -21,8 +21,8 @@ public class GhostStructureDrawer implements ElementDrawer<GhostStructure> {
 	@Override
 	public void draw(Batch batch, GhostStructure e) {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
-		float x = (float) (e.getX() - animationSet.getWidth() / 2);
-		float y = (float) e.getY();
+		float x = (float) (e.getPosition().getX() - animationSet.getWidth() / 2);
+		float y = (float) e.getPosition().getY();
 		ActionAnimation action = ActionAnimation.DEFAULT;
 		TextureAnimation animation = animationSet.get(action);
 		batch.setColor(e.isValid() ? Color.GREEN : Color.RED);

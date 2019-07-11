@@ -1,9 +1,9 @@
 package com.pixurvival.core.contentPack.structure;
 
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-import com.pixurvival.core.map.Chunk;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.ShortLivedMapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -9,17 +9,7 @@ package com.pixurvival.core;
  * @author SharkHendrix
  *
  */
-public interface Body {
-
-	/**
-	 * @return Centre du body dans l'axe des abscisses
-	 */
-	double getX();
-
-	/**
-	 * @return Centre du body dans l'axe des ordonnées
-	 */
-	double getY();
+public interface Body extends Positionnable {
 
 	/**
 	 * @return Moitié de la largeur de la bounding box

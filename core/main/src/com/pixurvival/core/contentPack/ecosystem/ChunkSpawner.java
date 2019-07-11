@@ -5,15 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.LongInterval;
 import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.map.Chunk;
-import com.pixurvival.core.map.ChunkPosition;
+import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
@@ -34,7 +32,7 @@ public class ChunkSpawner implements Serializable {
 
 	private int maximumCreatures;
 
-	private LongInterval respawnTime;
+	private LongInterval respawnTime = new LongInterval();
 
 	private transient Set<Creature> creatureSet;
 
@@ -58,8 +56,15 @@ public class ChunkSpawner implements Serializable {
 		creatureChooser.getBackingArray().forEach(entry -> creatureSet.add(entry.getElement()));
 	}
 
-	public void addActionTimer(World world, ChunkPosition chunkPosition) {
-
+	/**
+	 * For override
+	 * 
+	 * @param chunk
+	 *            The chunk
+	 * @return true if the chunk is eligible for this spawner.
+	 */
+	public boolean isChunkEligible(Chunk chunk) {
+		return true;
 	}
 
 	/**

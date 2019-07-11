@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.message.StructureUpdate;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 import lombok.Setter;

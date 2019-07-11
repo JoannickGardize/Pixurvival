@@ -1,4 +1,4 @@
-package com.pixurvival.core.map;
+package com.pixurvival.core.map.chunk;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
