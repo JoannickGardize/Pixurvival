@@ -23,15 +23,15 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 
 	private static final long serialVersionUID = 1L;
 
-	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<? extends E> valueSupplier) {
 		this(elementEditorSupplier, valueSupplier, VERTICAL);
 	}
 
-	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<? extends E> valueSupplier, int buttonAlignment) {
 		this(elementEditorSupplier, valueSupplier, buttonAlignment, true);
 	}
 
-	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier, int buttonAlignment, boolean useScrollPane) {
+	public VerticalListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<? extends E> valueSupplier, int buttonAlignment, boolean useScrollPane) {
 		super(elementEditorSupplier, valueSupplier);
 		// setMinimumSize(new Dimension(100, 50));
 		// setPreferredSize(new Dimension(100, 50));

@@ -28,7 +28,7 @@ public class HarvestableStructure extends Structure {
 
 	@Valid
 	@Required
-	private LongInterval respawnTime = new LongInterval();
+	private LongInterval regrowthTime = new LongInterval();
 
 	@Override
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {

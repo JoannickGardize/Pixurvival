@@ -2,8 +2,8 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.team.TeamMember;
 
 public interface Alteration extends Serializable {
 
@@ -14,5 +14,5 @@ public interface Alteration extends Serializable {
 	 *            The source chain of this alteration.
 	 * @param entity
 	 */
-	void apply(SourceProvider source, LivingEntity entity);
+	void apply(TeamMember source, LivingEntity entity);
 }

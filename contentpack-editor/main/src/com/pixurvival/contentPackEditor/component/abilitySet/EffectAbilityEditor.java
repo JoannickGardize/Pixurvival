@@ -11,7 +11,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.core.contentPack.effect.Effect;
+import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 
@@ -19,7 +19,7 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Effect> effectsEditor;
+	private ListEditor<OffsetAngleEffect> effectsEditor;
 	private ElementChooserButton<Item> ammunitionChooser = new ElementChooserButton<>(IconService.getInstance()::get, false);
 
 	public EffectAbilityEditor(boolean showAmmunitionChooser, boolean useScrollPane) {
@@ -27,13 +27,13 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 		// Construction
 
 		TimeInput cooldownInput = new TimeInput();
-		effectsEditor = new VerticalListEditor<>(EffectEntryWrapper::new, () -> null, VerticalListEditor.HORIZONTAL, useScrollPane);
+		effectsEditor = new VerticalListEditor<>(OffsetAngleEffectEditor::new, OffsetAngleEffect::new, VerticalListEditor.HORIZONTAL, useScrollPane);
 
 		// Binding
 
 		bind(cooldownInput, EffectAbility::getCooldown, EffectAbility::setCooldown);
 		bind(ammunitionChooser, EffectAbility::getAmmunition, EffectAbility::setAmmunition);
-		bind(effectsEditor, EffectAbility::getEffects, EffectAbility::setEffects);
+		bind(effectsEditor, EffectAbility::getOffsetAngleEffects, EffectAbility::setOffsetAngleEffects);
 
 		// Layouting
 
@@ -50,7 +50,7 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		((EffectEntryWrapper) effectsEditor.getEditorForValidation()).setItems(event.getContentPack().getEffects());
+		((OffsetAngleEffectEditor) effectsEditor.getEditorForValidation()).setItems(event.getContentPack().getEffects());
 		ammunitionChooser.setItems(event.getContentPack().getItems());
 	}
 }

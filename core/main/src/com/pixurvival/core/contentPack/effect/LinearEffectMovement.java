@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.effect;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +20,8 @@ public class LinearEffectMovement implements EffectMovement {
 
 	@Override
 	public void initialize(EffectEntity entity) {
-		LivingEntity source = entity.getSource();
-		entity.getPosition().set(source.getPosition());
-		entity.setMovingAngle(source.getPosition().angleToward(source.getTargetPosition()));
+		TeamMember ancestor = entity.getAncestor();
+		entity.getPosition().set(ancestor.getPosition());
 		entity.setForward(true);
 	}
 

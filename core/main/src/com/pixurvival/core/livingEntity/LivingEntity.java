@@ -3,15 +3,9 @@ package com.pixurvival.core.livingEntity;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 
 import com.pixurvival.core.Damageable;
-import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.entity.EntitySearchResult;
-import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -19,13 +13,16 @@ import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.team.Team;
+import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class LivingEntity extends Entity implements Damageable, SourceProvider {
+public abstract class LivingEntity extends Entity implements Damageable, TeamMember {
 
 	private float health;
 
@@ -117,7 +114,7 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 		setStateChanged(true);
 	}
 
-	public void applyPersistentAlteration(Object source, PersistentAlteration alteration) {
+	public void applyPersistentAlteration(TeamMember source, PersistentAlteration alteration) {
 		PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
 		if (alteration.getStackPolicy().getProcessor().test(persistentAlterationEntries, entry)) {
 			entry.setTermTimeMillis(alteration.getDuration() + getWorld().getTime().getTimeMillis());
@@ -217,46 +214,4 @@ public abstract class LivingEntity extends Entity implements Damageable, SourceP
 	}
 
 	public abstract AbilitySet<? extends Ability> getAbilitySet();
-
-	public void forEach(TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
-		BiPredicate<LivingEntity, LivingEntity> teamPredicate;
-		switch (targetType) {
-		case ALL_ALLIES:
-			teamPredicate = (self, other) -> self.getTeam() == other.getTeam();
-			break;
-		case ALL_ENEMIES:
-			teamPredicate = (self, other) -> self.getTeam() != other.getTeam();
-			break;
-		case OTHER_ALLIES:
-			teamPredicate = (self, other) -> self.getTeam() == other.getTeam() && self != other;
-			break;
-		default:
-			throw new IllegalArgumentException();
-		}
-		Consumer<Entity> actionFilter = e -> {
-			LivingEntity livingEntity = (LivingEntity) e;
-			if (teamPredicate.test(this, livingEntity)) {
-				action.accept(livingEntity);
-			}
-		};
-		foreachEntities(EntityGroup.PLAYER, maxSquareDistance, actionFilter);
-		foreachEntities(EntityGroup.CREATURE, maxSquareDistance, actionFilter);
-	}
-
-	public EntitySearchResult findClosest(TargetType targetType, double maxSquareDistance) {
-		EntitySearchResult searchResult = new EntitySearchResult();
-		forEach(targetType, maxSquareDistance, e -> {
-			double distance = distanceSquared(e);
-			if (distance < searchResult.getDistanceSquared()) {
-				searchResult.setDistanceSquared(distance);
-				searchResult.setEntity(e);
-			}
-		});
-		return searchResult;
-	}
-
-	@Override
-	public Object getSource() {
-		return this;
-	}
 }

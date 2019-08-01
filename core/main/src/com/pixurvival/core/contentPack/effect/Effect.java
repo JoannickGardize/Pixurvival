@@ -42,4 +42,19 @@ public class Effect extends IdentifiedElement {
 	@Valid
 	@Required
 	private List<EffectTarget> targets = new ArrayList<>();
+
+	/**
+	 * Must be ascending by delay.
+	 */
+	private List<FollowingElement> followingElements = new ArrayList<>();
+
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		super.initialize();
+	}
+
+	public int foo() {
+		return 0;
+	}
 }

@@ -19,7 +19,7 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 
 	private ElementChooserButton<ItemReward> rewardChooser = new ElementChooserButton<>();
 	private TimeInput harvestingTimeInput = new TimeInput();
-	private TimeIntervalInput respawnTimeEditor = new TimeIntervalInput("structureEditor.harvestable.respawnTime");
+	private TimeIntervalInput regrowthTimeEditor = new TimeIntervalInput("structureEditor.harvestable.regrowthTime");
 
 	public HarvestablePanel() {
 		EventManager.getInstance().register(this);
@@ -34,7 +34,7 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
-		add(respawnTimeEditor, gbc);
+		add(regrowthTimeEditor, gbc);
 
 	}
 
@@ -47,6 +47,6 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 	public void bindTo(StructureEditor structureEditor) {
 		structureEditor.bind(harvestingTimeInput, HarvestableStructure::getHarvestingTime, HarvestableStructure::setHarvestingTime, HarvestableStructure.class);
 		structureEditor.bind(rewardChooser, HarvestableStructure::getItemReward, HarvestableStructure::setItemReward, HarvestableStructure.class);
-		structureEditor.bind(respawnTimeEditor, HarvestableStructure::getRespawnTime, HarvestableStructure::setRespawnTime, HarvestableStructure.class);
+		structureEditor.bind(regrowthTimeEditor, HarvestableStructure::getRegrowthTime, HarvestableStructure::setRegrowthTime, HarvestableStructure.class);
 	}
 }

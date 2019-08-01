@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.effect;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
@@ -20,11 +20,10 @@ public class StaticEffectMovement implements EffectMovement {
 
 	@Override
 	public void initialize(EffectEntity entity) {
-		LivingEntity source = entity.getSource();
-		double angle = source.getPosition().angleToward(source.getTargetPosition());
-		double distance = source.getPosition().distanceSquared(source.getTargetPosition());
+		TeamMember ancestor = entity.getAncestor();
+		double distance = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
 		distance = MathUtils.clamp(distance, minDistance, maxDistance);
-		entity.getPosition().set(source.getPosition()).addEuclidean(distance, angle);
+		entity.getPosition().set(ancestor.getPosition()).addEuclidean(distance, entity.getMovingAngle());
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package com.pixurvival.core.livingEntity.alteration;
 import java.util.Collection;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.entity.SourceProvider;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.team.TeamMember;
 
 /**
  * An alteration that can be applied only one time per entity from the same
@@ -18,7 +18,7 @@ public abstract class UniqueAlteration implements Alteration {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void apply(SourceProvider source, LivingEntity entity) {
+	public void apply(TeamMember source, LivingEntity entity) {
 		Collection<Object> checkList = ((CheckListHolder) source).getCheckList();
 		if (!checkList.contains(entity)) {
 			checkList.add(entity);
@@ -26,5 +26,5 @@ public abstract class UniqueAlteration implements Alteration {
 		}
 	}
 
-	public abstract void uniqueApply(SourceProvider source, LivingEntity entity);
+	public abstract void uniqueApply(TeamMember source, LivingEntity entity);
 }

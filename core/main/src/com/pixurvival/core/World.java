@@ -14,8 +14,6 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.Team;
-import com.pixurvival.core.livingEntity.TeamSet;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.AreaSearchCriteria;
 import com.pixurvival.core.map.analytics.CardinalDirection;
@@ -25,6 +23,8 @@ import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.team.Team;
+import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
 import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Rectangle;
@@ -146,6 +146,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 		actionTimerManager.update();
 		entityPool.update();
 		map.update();
+		gameMode.getEndGameCondition().update(this);
 	}
 
 	public void unload() {
@@ -156,8 +157,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();

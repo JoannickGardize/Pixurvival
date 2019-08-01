@@ -12,10 +12,10 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.Team;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.NonNull;

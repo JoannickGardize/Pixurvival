@@ -1,7 +1,6 @@
 package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
@@ -47,9 +46,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean velocityChanged = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server will
-	 * send data of this entity at the next data send tick to clients that view this
-	 * entity. Must be true at initialization to send the new entity data.
+	 * Indicate if the state of this entity has changed, if true, the server
+	 * will send data of this entity at the next data send tick to clients that
+	 * view this entity. Must be true at initialization to send the new entity
+	 * data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -207,7 +207,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of
+	 * {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position
@@ -224,18 +225,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 			}
 		}
 		return closestEntity;
-	}
-
-	/**
-	 * @param group
-	 * @param maxSquareDistance
-	 *            The maximum distance between this entity and any point of checked
-	 *            chunks.
-	 * @param action
-	 */
-	public void foreachEntities(EntityGroup group, double maxSquareDistance, Consumer<Entity> action) {
-		TiledMap map = world.getMap();
-		map.forEachChunk(position, maxSquareDistance, c -> c.getEntities().get(group).forEach(action::accept));
 	}
 
 	public double distanceSquared(Entity other) {

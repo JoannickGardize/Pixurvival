@@ -7,61 +7,68 @@ import java.util.Collection;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
-import com.pixurvival.core.contentPack.effect.OrientationType;
-import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.contentPack.effect.FollowingElement;
+import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
+import com.pixurvival.core.livingEntity.stats.StatSet;
+import com.pixurvival.core.team.Team;
+import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
-public class EffectEntity extends Entity implements CheckListHolder, SourceProvider {
+public class EffectEntity extends Entity implements CheckListHolder, TeamMember {
 
-	private @Getter Effect definition;
+	private @Getter OffsetAngleEffect definition;
 
-	private @Getter @Setter LivingEntity source;
+	private @Getter @Setter TeamMember ancestor;
 
 	private @Getter @Setter Object movementData;
 
-	private @Getter float orientation;
+	private long creationTime;
 
-	private long termTimeMillis;
+	private int nextFollowingElementIndex = 0;
 
 	private Collection<Object> checkList;
 
-	public EffectEntity(Effect definition, LivingEntity source) {
+	public EffectEntity(OffsetAngleEffect definition, TeamMember ancestor) {
 		this.definition = definition;
-		this.source = source;
+		this.ancestor = ancestor;
+	}
+
+	public EffectEntity() {
+		definition = new OffsetAngleEffect();
 	}
 
 	@Override
 	public void initialize() {
 		if (getWorld().isServer()) {
-			definition.getMovement().initialize(this);
-			if (definition.getOrientation() == OrientationType.FROM_SOURCE) {
-				orientation = (float) source.getPosition().angleToward(source.getTargetPosition());
-			}
-			termTimeMillis = getWorld().getTime().getTimeMillis() + definition.getDuration();
+			setMovingAngle(ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + definition.getOffsetAngle() + getWorld().getRandom().nextAngle(definition.getRandomAngle()));
+			definition.getEffect().getMovement().initialize(this);
+			creationTime = getWorld().getTime().getTimeMillis();
 		}
 	}
 
 	@Override
 	public void update() {
-		definition.getMovement().update(this);
+		Effect effect = definition.getEffect();
+		effect.getMovement().update(this);
 		if (getWorld().isServer()) {
-			if (getWorld().getTime().getTimeMillis() >= termTimeMillis || definition.isSolid() && getWorld().getMap().collide(this)) {
+			long age = getWorld().getTime().getTimeMillis() - creationTime;
+			if (age >= effect.getDuration() || effect.isSolid() && getWorld().getMap().collide(this)) {
 				setAlive(false);
 				return;
 			}
+			processFollowingElements(age);
 			processEffectTarget();
 		}
 		super.update();
 	}
 
 	private void processEffectTarget() {
-		for (EffectTarget effectTarget : definition.getTargets()) {
-			source.forEach(effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
+		for (EffectTarget effectTarget : definition.getEffect().getTargets()) {
+			EntitySearchUtils.forEach(this, effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
 					if (effectTarget.isDestroyWhenCollide()) {
@@ -72,6 +79,17 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 		}
 	}
 
+	private void processFollowingElements(long age) {
+		Effect effect = definition.getEffect();
+		if (nextFollowingElementIndex < effect.getFollowingElements().size()) {
+			FollowingElement nextFollowingElement;
+			while (age >= (nextFollowingElement = effect.getFollowingElements().get(nextFollowingElementIndex)).getDelay()) {
+				nextFollowingElement.apply(this);
+				nextFollowingElementIndex++;
+			}
+		}
+	}
+
 	@Override
 	public EntityGroup getGroup() {
 		return EntityGroup.EFFECT;
@@ -79,34 +97,32 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 
 	@Override
 	public double getCollisionRadius() {
-		return definition.getCollisionRadius();
+		return definition.getEffect().getCollisionRadius();
 	}
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer) {
-		buffer.putShort((short) definition.getId());
+		buffer.putShort((short) definition.getEffect().getId());
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
-		buffer.putFloat(orientation);
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putDouble(getMovingAngle());
-		definition.getMovement().writeUpdate(buffer, this);
+		definition.getEffect().getMovement().writeUpdate(buffer, this);
 
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		definition = getWorld().getContentPack().getEffects().get(buffer.getShort());
+		definition.setEffect(getWorld().getContentPack().getEffects().get(buffer.getShort()));
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
-		orientation = buffer.getFloat();
 		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getDouble());
-		definition.getMovement().applyUpdate(buffer, this);
+		definition.getEffect().getMovement().applyUpdate(buffer, this);
 	}
 
 	@Override
 	public double getSpeedPotential() {
-		return definition.getMovement().getSpeedPotential(this);
+		return definition.getEffect().getMovement().getSpeedPotential(this);
 	}
 
 	@Override
@@ -120,5 +136,20 @@ public class EffectEntity extends Entity implements CheckListHolder, SourceProvi
 			checkList = new ArrayList<>(3);
 		}
 		return checkList;
+	}
+
+	@Override
+	public Vector2 getTargetPosition() {
+		return Vector2.fromEuclidean(1, getMovingAngle()).add(getPosition());
+	}
+
+	@Override
+	public Team getTeam() {
+		return ancestor.getTeam();
+	}
+
+	@Override
+	public StatSet getStats() {
+		return ancestor.getStats();
 	}
 }

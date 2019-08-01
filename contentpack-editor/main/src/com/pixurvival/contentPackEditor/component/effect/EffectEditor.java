@@ -14,8 +14,11 @@ import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.util.BeanUtils;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
+import com.pixurvival.core.contentPack.effect.FollowingEffect;
+import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
@@ -24,6 +27,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider(), false);
+	private ListEditor<FollowingElement> followingElementsEditor = new VerticalListEditor<>(FollowingElementEditor::new, BeanUtils.filledSupplier(FollowingEffect.class), VerticalListEditor.HORIZONTAL,
+			false);
 
 	public EffectEditor() {
 
@@ -47,6 +52,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(collisionRadiusInput, Effect::getCollisionRadius, Effect::setCollisionRadius);
 		bind(effectMovementEditor, Effect::getMovement, Effect::setMovement);
 		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
+		bind(followingElementsEditor, Effect::getFollowingElements, Effect::setFollowingElements);
 
 		// Layouting
 
@@ -57,7 +63,9 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 		effectMovementEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.movement"));
 		effectTargetsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.targets"));
-		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor, effectTargetsEditor);
+		followingElementsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.followingElements"));
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor, effectTargetsEditor, followingElementsEditor);
+
 	}
 
 	@EventListener

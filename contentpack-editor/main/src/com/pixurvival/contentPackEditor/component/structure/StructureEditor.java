@@ -14,12 +14,11 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
-import com.pixurvival.core.contentPack.structure.OrnamentalStructure;
-import com.pixurvival.core.contentPack.structure.ShortLivedStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
@@ -34,12 +33,14 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
 		DoubleInput lightEmissionRadiusInput = new DoubleInput(Bounds.positive());
+		TimeInput durationInput = new TimeInput();
 
 		// Binding
 
 		bind(solidCheckBox, Structure::isSolid, Structure::setSolid);
 		bind(spriteSheetChooser, Structure::getSpriteSheet, Structure::setSpriteSheet);
 		bind(dimensionsEditor, Structure::getDimensions, Structure::setDimensions);
+		bind(durationInput, Structure::getDuration, Structure::setDuration);
 		bind(lightEmissionRadiusInput, Structure::getLightEmissionRadius, Structure::setLightEmissionRadius);
 
 		// Layouting
@@ -59,6 +60,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.duration", "structureEditor.duration.tooltip", durationInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.lightEmissionRadius", "structureEditor.lightEmissionRadius.tooltip", lightEmissionRadiusInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
 
@@ -80,15 +82,11 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 	protected List<ClassEntry> getClassEntries() {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		entries.add(new ClassEntry(OrnamentalStructure.class, new JPanel()));
+		entries.add(new ClassEntry(Structure.class, new JPanel()));
 
 		HarvestablePanel harvestablePanel = new HarvestablePanel();
 		harvestablePanel.bindTo(this);
 		entries.add(new ClassEntry(HarvestableStructure.class, harvestablePanel));
-
-		ShortLivedPanel shortLivedPanel = new ShortLivedPanel();
-		shortLivedPanel.bindTo(this);
-		entries.add(new ClassEntry(ShortLivedStructure.class, shortLivedPanel));
 
 		return entries;
 	}

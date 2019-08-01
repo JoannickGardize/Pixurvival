@@ -98,6 +98,10 @@ public class CreatureEntity extends LivingEntity {
 		moveIfNotNull(target, target.getPosition().angleToward(this.getPosition()));
 	}
 
+	public void getAwayFrom(Vector2 position) {
+		move(position.angleToward(this.getPosition()));
+	}
+
 	public void moveToward(Positionnable target) {
 		moveIfNotNull(target, this.angleToward(target));
 	}

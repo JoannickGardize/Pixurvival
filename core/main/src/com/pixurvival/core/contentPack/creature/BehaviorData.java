@@ -4,6 +4,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntitySearchResult;
+import com.pixurvival.core.entity.EntitySearchUtils;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.time.Time;
 
@@ -100,7 +101,7 @@ public class BehaviorData {
 
 	private void findClosestEnnemy() {
 		if (!closestEnnemyComputed) {
-			EntitySearchResult result = creature.findClosest(TargetType.ALL_ENEMIES, TARGET_SEARCH_RADIUS);
+			EntitySearchResult result = EntitySearchUtils.findClosest(creature, TargetType.ALL_ENEMIES, TARGET_SEARCH_RADIUS);
 			closestEnnemy = result.getEntity();
 			closestDistanceSquaredToEnnemy = result.getDistanceSquared();
 			closestEnnemyComputed = true;

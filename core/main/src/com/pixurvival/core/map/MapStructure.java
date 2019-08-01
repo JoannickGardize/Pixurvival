@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -15,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class MapStructure implements Body, CustomDataHolder {
+public class MapStructure implements Body, CustomDataHolder {
 
 	@FunctionalInterface
 	private static interface StructureSupplier {
@@ -29,12 +30,24 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 	private Vector2 position;
 	private @Setter Object customData;
 
-	protected MapStructure(Chunk chunk, Structure definition, int x, int y) {
+	public MapStructure(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
 		this.definition = definition;
 		tileX = x;
 		tileY = y;
 		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0, y + definition.getDimensions().getHeight() / 2.0);
+
+		if (chunk != null) {
+			World world = chunk.getMap().getWorld();
+			if (world.isServer() && definition.getDuration() > 0) {
+				world.getActionTimerManager().addActionTimer(() -> {
+					MapTile tile = chunk.tileAt(x, y);
+					if (tile instanceof TileAndStructure && ((TileAndStructure) tile).getStructure() == this) {
+						chunk.removeStructure(x, y);
+					}
+				}, definition.getDuration());
+			}
+		}
 	}
 
 	@Override
@@ -54,8 +67,6 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 	public int getHeight() {
 		return definition.getDimensions().getHeight();
 	}
-
-	public abstract StructureUpdate getUpdate();
 
 	public boolean canInteract(PlayerEntity entity) {
 		return entity.getCurrentAbility() == null && entity.distanceSquared(getPosition()) <= GameConstants.MAX_HARVEST_DISTANCE * GameConstants.MAX_HARVEST_DISTANCE;
@@ -80,7 +91,33 @@ public abstract class MapStructure implements Body, CustomDataHolder {
 		return true;
 	}
 
-	public abstract void writeData(ByteBuffer buffer);
+	/**
+	 * Override this to write data that must be sent to the client
+	 * 
+	 * @param buffer
+	 */
+	public void writeData(ByteBuffer buffer) {
+	}
 
-	public abstract void applyData(ByteBuffer buffer);
+	/**
+	 * Override this to read data sent by the server
+	 * 
+	 * @param buffer
+	 */
+	public void applyData(ByteBuffer buffer) {
+	}
+
+	/**
+	 * Override this to return a structure update
+	 * 
+	 * @return
+	 */
+	public StructureUpdate getUpdate() {
+		return null;
+	}
+
+	@Override
+	public World getWorld() {
+		return getChunk().getMap().getWorld();
+	}
 }

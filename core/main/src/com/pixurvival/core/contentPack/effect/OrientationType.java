@@ -2,6 +2,6 @@ package com.pixurvival.core.contentPack.effect;
 
 public enum OrientationType {
 
-	FROM_SOURCE,
+	MOVING_ANGLE,
 	STATIC;
 }

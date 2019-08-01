@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity;
+package com.pixurvival.core.team;
 
 import java.util.HashMap;
 import java.util.Iterator;

@@ -10,6 +10,19 @@ public class WorldRandom extends Random {
 		return nextDouble() * Math.PI * 2;
 	}
 
+	/**
+	 * @param range
+	 * @return random value in range [-range / 2 ; range / 2]
+	 */
+	public double nextAngle(double range) {
+		if (range == 0) {
+			// Avoid the cost of nextDouble()
+			return 0;
+		} else {
+			return nextDouble() * range - range / 2;
+		}
+	}
+
 	public Vector2 nextVector2InRectangle(double x, double y, double width, double height) {
 		return new Vector2(nextDouble() * width, nextDouble() * height).add(x, y);
 	}

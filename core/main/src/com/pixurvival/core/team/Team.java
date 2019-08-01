@@ -1,8 +1,10 @@
-package com.pixurvival.core.livingEntity;
+package com.pixurvival.core.team;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

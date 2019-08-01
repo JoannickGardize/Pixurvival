@@ -15,11 +15,11 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.Team;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.StartGame;
+import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.CommonMainArgs;
 
 import lombok.Getter;

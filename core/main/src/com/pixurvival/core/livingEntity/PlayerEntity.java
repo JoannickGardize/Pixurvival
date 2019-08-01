@@ -25,6 +25,7 @@ import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;

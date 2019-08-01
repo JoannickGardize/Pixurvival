@@ -2,7 +2,7 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.util.List;
 
-import com.pixurvival.core.contentPack.effect.Effect;
+import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.item.Inventory;
@@ -20,7 +20,7 @@ public class EffectAbility extends CooldownAbility {
 	private static final long serialVersionUID = 1L;
 
 	private List<Alteration> selfAlterations;
-	private List<Effect> effects;
+	private List<OffsetAngleEffect> offsetAngleEffects;
 	private Item ammunition;
 
 	@Override
@@ -32,8 +32,8 @@ public class EffectAbility extends CooldownAbility {
 			if (selfAlterations != null) {
 				selfAlterations.forEach(a -> a.apply(entity, entity));
 			}
-			for (Effect effect : effects) {
-				EffectEntity effectEntity = new EffectEntity(effect, entity);
+			for (OffsetAngleEffect offsetAngleEffect : offsetAngleEffects) {
+				EffectEntity effectEntity = new EffectEntity(offsetAngleEffect, entity);
 				entity.getWorld().getEntityPool().add(effectEntity);
 			}
 		}

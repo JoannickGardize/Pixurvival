@@ -18,7 +18,7 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.contentPack.structure.OrnamentalStructure;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
@@ -47,7 +47,7 @@ public class ContentPackEditionService {
 			return item;
 		});
 
-		initializers.put(ElementType.STRUCTURE, OrnamentalStructure::new);
+		initializers.put(ElementType.STRUCTURE, Structure::new);
 	}
 
 	@SneakyThrows

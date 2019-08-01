@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
@@ -19,6 +20,10 @@ public class BeanUtils {
 		T instance = clazz.newInstance();
 		fill(instance);
 		return instance;
+	}
+
+	public static <T> Supplier<T> filledSupplier(Class<T> clazz) {
+		return () -> newFilledInstance(clazz);
 	}
 
 	public static void fill(Object instance) {

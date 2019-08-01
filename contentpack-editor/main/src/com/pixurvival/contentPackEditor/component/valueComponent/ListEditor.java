@@ -29,7 +29,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	protected JButton addButton;
 	protected JButton removeButton;
 
-	public ListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<E> valueSupplier) {
+	public ListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<? extends E> valueSupplier) {
 		this.elementEditorSupplier = elementEditorSupplier;
 		editorForValidation = elementEditorSupplier.get();
 		addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));

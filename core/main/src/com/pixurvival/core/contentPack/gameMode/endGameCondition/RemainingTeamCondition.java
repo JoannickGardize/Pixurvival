@@ -4,7 +4,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.Team;
+import com.pixurvival.core.team.Team;
 
 import lombok.Data;
 

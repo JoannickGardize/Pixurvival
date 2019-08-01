@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TemporalSpawner implements Serializable {
+public class CreaturesWave implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,13 +21,17 @@ public class TemporalSpawner implements Serializable {
 
 	private LongInterval countdown = new LongInterval();
 
-	private boolean repeat = true;
+	private double maxDistanceToPlayer;
 
-	private boolean multiplyByNumberOfPlayers = true;
+	private long individualInterval;
 
 	private IntegerInterval initialNumberOfCreature = new IntegerInterval();
 
+	private boolean repeat = true;
+
 	private double numberOfCreatureIncrement = 1;
+
+	private boolean multiplyByNumberOfPlayers = true;
 
 	private WeightedValueProducer<Creature> creatureChooser = new WeightedValueProducer<>();
 

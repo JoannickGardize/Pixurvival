@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.entity.SourceProvider;
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.stats.StatSet;
+import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +28,7 @@ public class StatAmount implements Serializable {
 		return Math.max(result, 0);
 	}
 
-	public float getValue(SourceProvider sourceProvider) {
-		Object source = sourceProvider.getSource();
-		if (source instanceof LivingEntity) {
-			return getValue(((LivingEntity) source).getStats());
-		} else {
-			return base;
-		}
+	public float getValue(TeamMember sourceProvider) {
+		return getValue(sourceProvider.getStats());
 	}
 }

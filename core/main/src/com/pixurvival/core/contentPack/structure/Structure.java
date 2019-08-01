@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class Structure extends IdentifiedElement implements Serializable {
+public class Structure extends IdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,11 @@ public abstract class Structure extends IdentifiedElement implements Serializabl
 	@Required
 	private Dimensions dimensions = new Dimensions(1, 1);
 
+	private long duration = 0;
+
 	private double lightEmissionRadius = 0;
 
-	public abstract MapStructure newMapStructure(Chunk chunk, int x, int y);
+	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
+		return new MapStructure(chunk, this, x, y);
+	}
 }

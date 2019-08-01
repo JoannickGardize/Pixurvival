@@ -38,7 +38,7 @@ public class HarvestableMapStructure extends MapStructure {
 			harvested = false;
 			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
 			getChunk().updateTimestamp();
-		}, ((HarvestableStructure) getDefinition()).getRespawnTime().next(world.getRandom()));
+		}, ((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));
 		return ((HarvestableStructure) getDefinition()).getItemReward().produce(random);
 	}
 
