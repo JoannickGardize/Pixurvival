@@ -33,6 +33,7 @@ public class FileService {
 			return;
 		}
 		currentContentPack = new ContentPack();
+		ResourcesService.getInstance().clear();
 		currentFile = null;
 		EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 		EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));

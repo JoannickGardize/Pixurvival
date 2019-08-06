@@ -80,11 +80,14 @@ public enum ElementType {
 		return TranslationService.getInstance().getString("elementType." + CaseUtils.upperToCamelCase(name()));
 	}
 
-	@SuppressWarnings("unchecked")
 	public static ElementType of(IdentifiedElement element) {
+		return of(element.getClass());
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ElementType of(Class<? extends IdentifiedElement> type) {
 		// Find the class under "IdentifiedElement", because of hierarchy under
 		// item and structures
-		Class<? extends IdentifiedElement> type = element.getClass();
 		while (type.getSuperclass() != IdentifiedElement.class) {
 			type = (Class<? extends IdentifiedElement>) type.getSuperclass();
 		}

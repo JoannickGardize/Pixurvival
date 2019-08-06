@@ -10,6 +10,8 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldUpdateManager;
+import com.pixurvival.core.command.CommandArgsUtils;
+import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -37,7 +39,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
-public class ClientGame extends PluginHolder<ClientGame> {
+public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor {
 
 	private Client client = new Client(8192, 8192);
 	private NetworkMessageHandler clientListener;
@@ -50,12 +52,18 @@ public class ClientGame extends PluginHolder<ClientGame> {
 	private long timeRequestFrequencyMillis = 1000;
 	private double timeRequestTimer = 0;
 	private double deltaTimeMillis = 0;
+	private String[] gameBeginningCommands;
 
 	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
+		if (clientArgs.getOnGameBeginning() != null) {
+			gameBeginningCommands = clientArgs.getOnGameBeginning().split(";");
+		} else {
+			gameBeginningCommands = new String[0];
+		}
 	}
 
 	public void addListener(ClientGameListener listener) {
@@ -119,6 +127,9 @@ public class ClientGame extends PluginHolder<ClientGame> {
 		world.initializeGame();
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
+		for (String command : gameBeginningCommands) {
+			world.getCommandManager().process(this, CommandArgsUtils.splitArgs(command));
+		}
 	}
 
 	public void sendAction(IPlayerActionRequest request) {
@@ -196,6 +207,11 @@ public class ClientGame extends PluginHolder<ClientGame> {
 
 	public void offer(WorldUpdate worldUpdate) {
 		world.getPlugin(WorldUpdateManager.class).offer(worldUpdate);
+	}
+
+	@Override
+	public boolean isOperator() {
+		return true;
 	}
 
 }

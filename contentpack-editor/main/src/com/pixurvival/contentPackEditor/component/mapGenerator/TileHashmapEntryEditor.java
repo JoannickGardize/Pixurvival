@@ -1,7 +1,5 @@
 package com.pixurvival.contentPackEditor.component.mapGenerator;
 
-import java.util.Collection;
-
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
@@ -14,7 +12,7 @@ public class TileHashmapEntryEditor extends ElementEditor<TileHashmapEntry> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(IconService.getInstance()::get);
+	private ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get);
 	private DoubleInput nextInput = new DoubleInput(new Bounds(0, 1));
 
 	public TileHashmapEntryEditor() {
@@ -26,7 +24,4 @@ public class TileHashmapEntryEditor extends ElementEditor<TileHashmapEntry> {
 		add(nextInput);
 	}
 
-	public void setTileCollection(Collection<Tile> collection) {
-		tileChooser.setItems(collection);
-	}
 }

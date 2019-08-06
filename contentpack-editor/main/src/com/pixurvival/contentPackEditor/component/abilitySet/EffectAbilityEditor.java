@@ -9,8 +9,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
@@ -20,7 +18,7 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 	private static final long serialVersionUID = 1L;
 
 	private ListEditor<OffsetAngleEffect> effectsEditor;
-	private ElementChooserButton<Item> ammunitionChooser = new ElementChooserButton<>(IconService.getInstance()::get, false);
+	private ElementChooserButton<Item> ammunitionChooser = new ElementChooserButton<>(Item.class, IconService.getInstance()::get, false);
 
 	public EffectAbilityEditor(boolean showAmmunitionChooser, boolean useScrollPane) {
 
@@ -46,11 +44,5 @@ public class EffectAbilityEditor extends ElementEditor<EffectAbility> {
 		}
 		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 1, headerPanel, effectsEditor);
 
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		((OffsetAngleEffectEditor) effectsEditor.getEditorForValidation()).setItems(event.getContentPack().getEffects());
-		ammunitionChooser.setItems(event.getContentPack().getItems());
 	}
 }

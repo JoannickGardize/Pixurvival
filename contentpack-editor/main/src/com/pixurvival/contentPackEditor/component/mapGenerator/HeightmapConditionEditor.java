@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.mapGenerator;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -16,12 +17,11 @@ public class HeightmapConditionEditor extends ElementEditor<HeightmapCondition> 
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Heightmap> heightmapChooser = new ElementChooserButton<>();
-
-	public HeightmapConditionEditor() {
+	public HeightmapConditionEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
 
 		// Construction
 
+		ElementChooserButton<Heightmap> heightmapChooser = new ElementChooserButton<>(heightmapCollectionSupplier);
 		DoubleInput minInput = new DoubleInput(new Bounds(0, 1));
 		DoubleInput maxInput = new DoubleInput(new Bounds(0, 1));
 
@@ -42,9 +42,5 @@ public class HeightmapConditionEditor extends ElementEditor<HeightmapCondition> 
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.minimum", minInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.maximum", maxInput, gbc);
-	}
-
-	public void setHeightmapCollection(Collection<Heightmap> collection) {
-		heightmapChooser.setItems(collection);
 	}
 }

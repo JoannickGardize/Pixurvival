@@ -39,7 +39,11 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		this.value = value;
 		for (SubValueEntry entry : subValues) {
 			if (entry.getCondition().test(value)) {
-				entry.getComponent().setValue(entry.getGetter().apply(value));
+				if (value != null) {
+					entry.getComponent().setValue(entry.getGetter().apply(value));
+				} else {
+					entry.getComponent().setValue(null);
+				}
 			}
 		}
 		valueChanged(this);
@@ -115,8 +119,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields has
-	 * been updated.
+	 * Called after the value of this editor has been changed and all sub fields
+	 * has been updated.
 	 * 
 	 * @param value
 	 */

@@ -1,11 +1,10 @@
 package com.pixurvival.contentPackEditor.component.behaviorSet;
 
 import java.awt.BorderLayout;
-import java.util.List;
+import java.util.Collections;
 
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
@@ -15,7 +14,13 @@ public class BehaviorSetEditor extends RootElementEditor<BehaviorSet> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Behavior> behaviorEditors = new VerticalListEditor<>(BehaviorEditor::new, MoveTowardBehavior::new);
+	private ListEditor<Behavior> behaviorEditors = new VerticalListEditor<>(() -> new BehaviorEditor(() -> {
+		if (getValue() == null) {
+			return Collections.emptyList();
+		} else {
+			return getValue().getBehaviors();
+		}
+	}), MoveTowardBehavior::new);
 
 	public BehaviorSetEditor() {
 
@@ -30,24 +35,10 @@ public class BehaviorSetEditor extends RootElementEditor<BehaviorSet> {
 		if (value == null) {
 			return false;
 		}
-		List<Behavior> previousList = null;
-		if (getValue() != null) {
-			previousList = getValue().getBehaviors();
-		}
-		setBehaviorList(value.getBehaviors());
+		BehaviorSet previousValue = getValue();
+		setValue(value);
 		boolean result = super.isValueValid(value);
-		setBehaviorList(previousList);
+		setValue(previousValue);
 		return result;
-	}
-
-	@Override
-	protected void valueChanged(ValueComponent<?> source) {
-		if (source == this) {
-			setBehaviorList(getValue().getBehaviors());
-		}
-	}
-
-	private void setBehaviorList(List<Behavior> list) {
-		behaviorEditors.forEachEditors(e -> ((BehaviorEditor) e).setBehaviorList(list));
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -31,6 +32,10 @@ public class ResourcesService {
 
 	public Collection<ResourceEntry> getResources() {
 		return resources.values();
+	}
+
+	public Supplier<Collection<ResourceEntry>> getResourcesSupplier() {
+		return this::getResources;
 	}
 
 	public ResourceEntry getResource(String name) {
@@ -118,6 +123,10 @@ public class ResourcesService {
 			resources.put(name, new ResourceEntry(name, data));
 		}
 		EventManager.getInstance().fire(new ResourceListChangedEvent());
+	}
+
+	public void clear() {
+		resources.clear();
 	}
 
 	private void putResource(String name, byte[] data) {

@@ -18,8 +18,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -28,11 +26,11 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
+	private ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
 	private IntegerInput widthField = new IntegerInput(Bounds.min(1));
 	private IntegerInput heightField = new IntegerInput(Bounds.min(1));
-	private ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(e -> null);
-	private ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(e -> null, false);
+	private ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(AnimationTemplate.class);
+	private ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(EquipmentOffset.class, false);
 	private JTabbedPane previewTabs = new JTabbedPane();
 	private SpriteSheetPreview preview = new SpriteSheetPreview();
 
@@ -40,7 +38,6 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		// Contruction
 		DoubleInput heightOffsetInput = new DoubleInput(Bounds.none());
 		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
-		imageField.setItems(ResourcesService.getInstance().getResources());
 		previewTabs.setBorder(LayoutUtils.createGroupBorder("generic.preview"));
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
@@ -72,12 +69,6 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		setLayout(new BorderLayout(10, 0));
 		add(propertiesPanel, BorderLayout.WEST);
 		add(previewTabs, BorderLayout.CENTER);
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		animationTemplateField.setItems(event.getContentPack().getAnimationTemplates());
-		equipmentOffsetField.setItems(event.getContentPack().getEquipmentOffsets());
 	}
 
 	@Override

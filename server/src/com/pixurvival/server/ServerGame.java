@@ -109,6 +109,7 @@ public class ServerGame {
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
 			world.getEntityPool().add(playerEntity);
+			world.getEntityPool().flushNewEntities();
 			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));
 			playerEntity.setName(playerConnection.toString());
 			playerEntity.getInventory().addListener(playerConnection);

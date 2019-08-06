@@ -2,10 +2,10 @@ package com.pixurvival.contentPackEditor.component.mapGenerator;
 
 import java.awt.BorderLayout;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -27,29 +27,20 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 
 	private static final long serialVersionUID = 1L;
 
-	private Collection<Heightmap> heightmapCollection;
+	public StructureGeneratorEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
 
-	private ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(() -> {
-		HeightmapConditionEditor result = new HeightmapConditionEditor();
-		result.setHeightmapCollection(heightmapCollection);
-		result.setBorder(LayoutUtils.createBorder());
-		return result;
-	}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
+		ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(() -> {
+			HeightmapConditionEditor result = new HeightmapConditionEditor(heightmapCollectionSupplier);
+			result.setBorder(LayoutUtils.createBorder());
+			return result;
+		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
-	private ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
-		ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(IconService.getInstance()::get, true);
-		tileChooser.setBorder(LayoutUtils.createBorder());
-		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
-		if (currentPack != null) {
-			tileChooser.setItems(currentPack.getTiles());
-		}
-		return tileChooser;
-	}, () -> null);
-
-	private WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(IconService.getInstance()::get, ContentPack::getStructures);
-
-	public StructureGeneratorEditor() {
-
+		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
+			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get, true);
+			tileChooser.setBorder(LayoutUtils.createBorder());
+			return tileChooser;
+		}, () -> null);
+		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class, IconService.getInstance()::get, ContentPack::getStructures);
 		DoubleInput densityInput = new DoubleInput(new Bounds(0, 1));
 
 		// Binding
@@ -75,19 +66,4 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		LayoutUtils.setMinimumSize(heightmapConditionsEditor, 1, 120);
 		// LayoutUtils.setMinimumSize(tileHashmapEditor, 1, 140);
 	}
-
-	public void setHeightmapCollection(Collection<Heightmap> collection) {
-		heightmapCollection = collection;
-		heightmapConditionsEditor.forEachEditors(e -> ((HeightmapConditionEditor) e).setHeightmapCollection(collection));
-	}
-
-	public void setStructureCollection(Collection<Structure> structures) {
-		structureProducerEditor.setAllItems(structures);
-	}
-
-	// @Override
-	// protected void valueChanged(ValueComponent<?> source) {
-	// LayoutUtils.setMinimumSize(this, 1, (int)
-	// getLayout().preferredLayoutSize(this).getHeight());
-	// }
 }

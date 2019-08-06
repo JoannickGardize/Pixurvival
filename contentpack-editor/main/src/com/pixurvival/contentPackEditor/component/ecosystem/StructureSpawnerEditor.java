@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -25,16 +24,12 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(IconService.getInstance()::get, true);
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class, IconService.getInstance()::get, true);
 
-	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(c -> null, ContentPack::getCreatures);
+	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class, c -> null, ContentPack::getCreatures);
 
 	public StructureSpawnerEditor() {
 		setBorder(LayoutUtils.createBorder());
-		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
-		if (currentPack != null) {
-			setItems(currentPack);
-		}
 
 		// Construction
 
@@ -69,10 +64,5 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 		add(LayoutUtils.createVerticalBox(topPanel, respawnTimeInput), BorderLayout.NORTH);
 		creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
 		add(creatureChooser, BorderLayout.SOUTH);
-	}
-
-	public void setItems(ContentPack contentPack) {
-		structureChooser.setItems(contentPack.getStructures());
-		creatureChooser.setAllItems(contentPack.getCreatures());
 	}
 }

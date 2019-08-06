@@ -35,8 +35,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		super("itemType");
 
 		// Contruction
-		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
-		imageField.setItems(ResourcesService.getInstance().getResources());
+		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
 		FrameEditor frameEditor = new FrameEditor();
 		IntegerInput maxStackSizeInput = new IntegerInput(Bounds.min(1));
 

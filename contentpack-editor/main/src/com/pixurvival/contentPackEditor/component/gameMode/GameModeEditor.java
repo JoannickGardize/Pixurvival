@@ -11,8 +11,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.map.MapGenerator;
@@ -21,8 +19,8 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Ecosystem> ecosystemChooser = new ElementChooserButton<>();
-	private ElementChooserButton<MapGenerator> mapGeneratorChooser = new ElementChooserButton<>();
+	private ElementChooserButton<Ecosystem> ecosystemChooser = new ElementChooserButton<>(Ecosystem.class);
+	private ElementChooserButton<MapGenerator> mapGeneratorChooser = new ElementChooserButton<>(MapGenerator.class);
 
 	public GameModeEditor() {
 
@@ -53,11 +51,5 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 				mapLimitSizeInput);
 
 		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 4, teamPanel, dayCycleDefinitionEditor, elementLinksPanel, mapConfigPanel, new JPanel());
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		ecosystemChooser.setItems(event.getContentPack().getEcosystems());
-		mapGeneratorChooser.setItems(event.getContentPack().getMapGenerators());
 	}
 }

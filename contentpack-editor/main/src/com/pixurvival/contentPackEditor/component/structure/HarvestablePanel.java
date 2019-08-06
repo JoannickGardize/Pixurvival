@@ -7,9 +7,6 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
-import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 
@@ -17,13 +14,11 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<ItemReward> rewardChooser = new ElementChooserButton<>();
+	private ElementChooserButton<ItemReward> rewardChooser = new ElementChooserButton<>(ItemReward.class);
 	private TimeInput harvestingTimeInput = new TimeInput();
 	private TimeIntervalInput regrowthTimeEditor = new TimeIntervalInput("structureEditor.harvestable.regrowthTime");
 
 	public HarvestablePanel() {
-		EventManager.getInstance().register(this);
-
 		// Binding
 
 		// Layouting
@@ -36,11 +31,6 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 		gbc.weightx = 1;
 		add(regrowthTimeEditor, gbc);
 
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		rewardChooser.setItems(event.getContentPack().getItemRewards());
 	}
 
 	@Override

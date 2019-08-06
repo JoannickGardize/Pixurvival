@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -33,7 +34,6 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 
@@ -57,14 +57,15 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 
 	private JTextField searchField = new JTextField(20);
 	private JPanel resultPanel = new JPanel(new GridBagLayout());
-	private @Getter @Setter Collection<T> items;
+	private Supplier<Collection<T>> itemsSupplier;
 	private List<ItemMatchEntry> sortedList = new ArrayList<>();
 	private Function<T, Icon> iconProvider;
 	private SearchPopupSelectionModel selectionModel;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 
-	public SearchPopup(Function<T, Icon> iconProvider) {
+	public SearchPopup(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider) {
 		super(JOptionPane.getRootFrame());
+		this.itemsSupplier = itemsSupplier;
 		this.iconProvider = iconProvider;
 		setUndecorated(true);
 		getRootPane().setBorder((Border) UIManager.get("PopupMenu.border"));
@@ -117,6 +118,10 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 		pack();
 	}
 
+	public Collection<T> getItems() {
+		return itemsSupplier.get();
+	}
+
 	public void addItemSelectionListener(ValueChangeListener<T> l) {
 		listeners.add(l);
 	}
@@ -133,6 +138,7 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 	}
 
 	private void updateSearchList() {
+		Collection<T> items = itemsSupplier.get();
 		if (items == null) {
 			return;
 		}

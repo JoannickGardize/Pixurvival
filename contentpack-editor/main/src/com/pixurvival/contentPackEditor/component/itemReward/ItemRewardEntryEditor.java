@@ -2,14 +2,12 @@ package com.pixurvival.contentPackEditor.component.itemReward;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Collection;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
-import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemReward;
 
 import lombok.Getter;
@@ -36,9 +34,4 @@ public class ItemRewardEntryEditor extends ElementEditor<ItemReward.Entry> {
 		gbc.insets.left = 10;
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.probability", probabilityInput, gbc);
 	}
-
-	public void setItemList(Collection<Item> items) {
-		itemStackEditor.setItemList(items);
-	}
-
 }

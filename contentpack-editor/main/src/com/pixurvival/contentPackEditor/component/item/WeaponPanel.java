@@ -2,7 +2,6 @@ package com.pixurvival.contentPackEditor.component.item;
 
 import com.pixurvival.contentPackEditor.component.abilitySet.EffectAbilityEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 
 public class WeaponPanel extends EquipablePanel {
@@ -13,9 +12,6 @@ public class WeaponPanel extends EquipablePanel {
 	private EffectAbilityEditor specialAbilityEditor = new EffectAbilityEditor(true, true);
 
 	public WeaponPanel() {
-		EventManager.getInstance().register(baseAbilityEditor);
-		EventManager.getInstance().register(specialAbilityEditor);
-
 		baseAbilityEditor.setBorder(LayoutUtils.createGroupBorder("weaponEditor.baseAbility"));
 		specialAbilityEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.specialAbility"));
 		finalizeLayout(LayoutUtils.createVerticalBox(baseAbilityEditor, specialAbilityEditor));

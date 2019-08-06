@@ -2,7 +2,9 @@ package com.pixurvival.contentPackEditor.component.behaviorSet;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
@@ -25,11 +27,13 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Behavior> nextBehaviorChooser = new ElementChooserButton<>();
+	private ElementChooserButton<Behavior> nextBehaviorChooser;
 
-	public ChangeConditionEditor() {
+	public ChangeConditionEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
 		super("changeConditionType");
 		// Construction
+
+		nextBehaviorChooser = new ElementChooserButton<>(behaviorCollectionSupplier);
 
 		// Binding
 		bind(nextBehaviorChooser, ChangeCondition::getNextBehavior, ChangeCondition::setNextBehavior);
@@ -40,10 +44,6 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		Component topBox = LayoutUtils.createHorizontalBox(typeChooserComp, nextBehaviorComp);
 		LayoutUtils.addVertically(this, topBox, getSpecificPartPanel());
 
-	}
-
-	public void setBehaviorList(List<Behavior> list) {
-		nextBehaviorChooser.setItems(list);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.pixurvival.core.entity;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.Effect;
@@ -56,9 +57,8 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		effect.getMovement().update(this);
 		if (getWorld().isServer()) {
 			long age = getWorld().getTime().getTimeMillis() - creationTime;
-			if (age >= effect.getDuration() || effect.isSolid() && getWorld().getMap().collide(this)) {
+			if (age > effect.getDuration() || effect.isSolid() && getWorld().getMap().collide(this)) {
 				setAlive(false);
-				return;
 			}
 			processFollowingElements(age);
 			processEffectTarget();
@@ -83,7 +83,8 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		Effect effect = definition.getEffect();
 		if (nextFollowingElementIndex < effect.getFollowingElements().size()) {
 			FollowingElement nextFollowingElement;
-			while (age >= (nextFollowingElement = effect.getFollowingElements().get(nextFollowingElementIndex)).getDelay()) {
+			List<FollowingElement> followingElements = effect.getFollowingElements();
+			while (nextFollowingElementIndex < followingElements.size() && age >= (nextFollowingElement = followingElements.get(nextFollowingElementIndex)).getDelay()) {
 				nextFollowingElement.apply(this);
 				nextFollowingElementIndex++;
 			}

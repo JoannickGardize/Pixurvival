@@ -17,8 +17,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.item.ItemReward;
@@ -34,10 +32,11 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(Locale.US));
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
-	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>();
-	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(false);
-	private ElementChooserButton<AbilitySet<EffectAbility>> abilitySetChooser = new ElementChooserButton<>(false);
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
+	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class, false);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private ElementChooserButton<AbilitySet<EffectAbility>> abilitySetChooser = new ElementChooserButton(AbilitySet.class, false);
 
 	private StatSet statSet = new StatSet();
 	private FloatInput strengthInput = new FloatInput();
@@ -109,14 +108,6 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 		setLayout(new GridBagLayout());
 		LayoutUtils.addVertically(this, topPanel, statsPanel);
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
-		behaviorSetChooser.setItems(event.getContentPack().getBehaviorSets());
-		itemRewardChooser.setItems(event.getContentPack().getItemRewards());
-		abilitySetChooser.setItems(event.getContentPack().getAbilitySets());
 	}
 
 	@Override

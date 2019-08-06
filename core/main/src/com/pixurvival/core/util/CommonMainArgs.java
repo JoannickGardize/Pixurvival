@@ -1,11 +1,11 @@
 package com.pixurvival.core.util;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
 
 @Getter
 public class CommonMainArgs {
@@ -19,6 +19,8 @@ public class CommonMainArgs {
 	private int maxSimulateLag = 50;
 
 	private String contentPackDirectory = null;
+
+	private String onGameBeginning = null;
 
 	@SneakyThrows
 	public void apply(EndPoint endPoint, Listener listener) {

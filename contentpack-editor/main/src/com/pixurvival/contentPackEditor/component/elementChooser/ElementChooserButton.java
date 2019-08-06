@@ -4,16 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import com.pixurvival.contentPackEditor.ContentPackEditionService;
+import com.pixurvival.contentPackEditor.ElementType;
+import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.util.CollectionUtils;
 
@@ -31,24 +37,52 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 	private @Getter T value;
 	private @Getter @Setter boolean required;
 
-	public ElementChooserButton() {
-		this(e -> null);
+	public ElementChooserButton(Class<T> elementType) {
+		this(createItemsSupplier(elementType), e -> null);
 	}
 
-	public ElementChooserButton(boolean required) {
-		this(e -> null, required);
+	public ElementChooserButton(Class<T> elementType, boolean required) {
+		this(createItemsSupplier(elementType), e -> null, required);
 	}
 
-	public ElementChooserButton(Function<T, Icon> iconProvider) {
-		this(iconProvider, true);
+	public ElementChooserButton(Class<T> elementType, Function<T, Icon> iconProvider) {
+		this(createItemsSupplier(elementType), iconProvider, true);
 	}
 
-	public ElementChooserButton(Function<T, Icon> iconProvider, boolean required) {
+	public ElementChooserButton(Class<T> elementType, Function<T, Icon> iconProvider, boolean required) {
+		this(createItemsSupplier(elementType), iconProvider, required);
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T extends IdentifiedElement> Supplier<Collection<T>> createItemsSupplier(Class<T> elementType) {
+		return () -> {
+			ContentPack pack = FileService.getInstance().getCurrentContentPack();
+			if (pack == null) {
+				return Collections.emptyList();
+			} else {
+				return (Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(elementType));
+			}
+		};
+	}
+
+	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier) {
+		this(itemsSupplier, e -> null);
+	}
+
+	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, boolean required) {
+		this(itemsSupplier, e -> null, required);
+	}
+
+	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider) {
+		this(itemsSupplier, iconProvider, true);
+	}
+
+	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider, boolean required) {
 		super(TranslationService.getInstance().getString("elementChooserButton.none"));
 		this.required = required;
 
 		this.iconProvider = iconProvider;
-		searchPopup = new SearchPopup<>(iconProvider);
+		searchPopup = new SearchPopup<>(itemsSupplier, iconProvider);
 		addActionListener(e -> {
 			searchPopup.setSearchText("");
 			searchPopup.show(this);
@@ -71,10 +105,6 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 		updateDisplay();
 	}
 
-	public void setItems(Collection<T> items) {
-		searchPopup.setItems(items);
-	}
-
 	@Override
 	public void setForeground(Color fg) {
 		if (associatedLabel != null) {
@@ -91,7 +121,11 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public boolean isValueValid(T value) {
-		return !required && value == null || searchPopup.getItems() != null && CollectionUtils.containsIdentity(searchPopup.getItems(), value);
+		if (!required && value == null) {
+			return true;
+		}
+		Collection<T> items = searchPopup.getItems();
+		return items != null && CollectionUtils.containsIdentity(items, value);
 	}
 
 	@Override

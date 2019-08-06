@@ -2,7 +2,6 @@ package com.pixurvival.contentPackEditor.component.abilitySet;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -17,7 +16,7 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(true);
+	private ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class, true);
 
 	public OffsetAngleEffectEditor() {
 		AngleInput offsetAngleInput = new AngleInput();
@@ -28,10 +27,6 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 		bind(effectChooser, OffsetAngleEffect::getEffect, OffsetAngleEffect::setEffect);
 
 		setupPanel(this, effectChooser, offsetAngleInput, randomAngleInput);
-	}
-
-	public void setItems(List<Effect> items) {
-		effectChooser.setItems(items);
 	}
 
 	public static void setupPanel(JPanel panel, ElementChooserButton<Effect> effectChooser, AngleInput offsetAngleInput, AngleInput randomAngleInput) {

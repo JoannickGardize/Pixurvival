@@ -15,9 +15,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
@@ -36,8 +36,7 @@ public class TileEditor extends RootElementEditor<Tile> {
 	public TileEditor() {
 
 		// Construction
-		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourceEntry::getIcon);
-		imageField.setItems(ResourcesService.getInstance().getResources());
+		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
 		EventManager.getInstance().register(this);
 		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new);
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();

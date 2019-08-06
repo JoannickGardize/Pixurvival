@@ -22,6 +22,7 @@ public class EntityPool extends EntityCollection {
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
 	private EntityCollection persistentInstances = new EntityCollection();
+	private List<Entity> newEntities = new ArrayList<>();
 
 	public EntityPool(World world) {
 		this.world = world;
@@ -33,13 +34,7 @@ public class EntityPool extends EntityCollection {
 
 	@Override
 	public void add(Entity e) {
-		if (world.isServer()) {
-			e.setWorld(world);
-			e.setId(nextId++);
-		}
-		super.add(e);
-		e.initialize();
-		listeners.forEach(l -> l.entityAdded(e));
+		newEntities.add(e);
 	}
 
 	/**
@@ -84,9 +79,9 @@ public class EntityPool extends EntityCollection {
 					it.remove();
 					listeners.forEach(l -> l.entityRemoved(entity));
 				}
-
 			}
 		}
+		flushNewEntities();
 	}
 
 	public void applyUpdate(ByteBuffer byteBuffer) {
@@ -108,6 +103,13 @@ public class EntityPool extends EntityCollection {
 		super.remove(entity);
 	}
 
+	public void flushNewEntities() {
+		for (Entity e : newEntities) {
+			internalAdd(e);
+		}
+		newEntities.clear();
+	}
+
 	@Override
 	protected Entity createEntity(EntityGroup group, long id) {
 		Entity e = persistentInstances.get(group, id);
@@ -121,5 +123,15 @@ public class EntityPool extends EntityCollection {
 			e.setAlive(true);
 		}
 		return e;
+	}
+
+	private void internalAdd(Entity e) {
+		if (world.isServer()) {
+			e.setWorld(world);
+			e.setId(nextId++);
+		}
+		super.add(e);
+		e.initialize();
+		listeners.forEach(l -> l.entityAdded(e));
 	}
 }

@@ -9,8 +9,6 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
@@ -36,8 +34,4 @@ public class EcosystemEditor extends RootElementEditor<Ecosystem> {
 		tabbedPane.addTab(t.getString("ecosystemEditor.darknessSpawner"), darknessSpawnerEditor);
 	}
 
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		((StructureSpawnerEditor) structureSpawnersEditor.getEditorForValidation()).setItems(event.getContentPack());
-	}
 }

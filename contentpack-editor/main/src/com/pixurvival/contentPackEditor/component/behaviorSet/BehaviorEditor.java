@@ -4,7 +4,9 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
@@ -31,14 +33,16 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<ChangeCondition> changeConditionsEditor = new VerticalListEditor<>(() -> {
-		ChangeConditionEditor editor = new ChangeConditionEditor();
-		editor.setBorder(LayoutUtils.createBorder());
-		return editor;
-	}, EnnemyDistanceCondition::new, ListEditor.HORIZONTAL, false);
+	private ListEditor<ChangeCondition> changeConditionsEditor;
 
-	public BehaviorEditor() {
+	public BehaviorEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
 		super("behaviorType");
+
+		changeConditionsEditor = new VerticalListEditor<>(() -> {
+			ChangeConditionEditor editor = new ChangeConditionEditor(behaviorCollectionSupplier);
+			editor.setBorder(LayoutUtils.createBorder());
+			return editor;
+		}, EnnemyDistanceCondition::new, ListEditor.HORIZONTAL, false);
 
 		// Construction
 
@@ -60,10 +64,6 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		changeConditionsEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.changeConditions"));
 		LayoutUtils.addVertically(this, topPanel, getSpecificPartPanel(), changeConditionsEditor);
 
-	}
-
-	public void setBehaviorList(List<Behavior> list) {
-		changeConditionsEditor.forEachEditors(e -> ((ChangeConditionEditor) e).setBehaviorList(list));
 	}
 
 	@Override

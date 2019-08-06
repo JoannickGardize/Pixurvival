@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 import javax.swing.Icon;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
@@ -18,14 +17,10 @@ public class WeightedValueProducerEditor<E extends IdentifiedElement> extends El
 
 	private ListEditor<Entry<E>> structureGeneratorEntriesEditor;
 
-	public WeightedValueProducerEditor(Function<E, Icon> iconProvider, Function<ContentPack, Collection<E>> itemsGetter) {
+	public WeightedValueProducerEditor(Class<E> elementType, Function<E, Icon> iconProvider, Function<ContentPack, Collection<E>> itemsGetter) {
 		structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
-			WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(iconProvider);
+			WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(elementType, iconProvider);
 			editor.setBorder(LayoutUtils.createBorder());
-			ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
-			if (currentPack != null) {
-				editor.setCollection(itemsGetter.apply(currentPack));
-			}
 			return editor;
 
 		}, Entry::new);
@@ -34,9 +29,4 @@ public class WeightedValueProducerEditor<E extends IdentifiedElement> extends El
 
 		LayoutUtils.fill(this, structureGeneratorEntriesEditor);
 	}
-
-	public void setAllItems(Collection<E> items) {
-		structureGeneratorEntriesEditor.forEachEditors(e -> ((WeightedValueEntryEditor<E>) e).setCollection(items));
-	}
-
 }

@@ -3,13 +3,11 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -20,14 +18,10 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(
-			item -> IconService.getInstance().get(item));
+	private ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, IconService.getInstance()::get);
 
 	public ItemStackEditor() {
 		IntegerInput quantityInput = new IntegerInput(Bounds.min(1));
-		if (FileService.getInstance().getCurrentContentPack() != null) {
-			itemChooser.setItems(FileService.getInstance().getCurrentContentPack().getItems());
-		}
 
 		bind(itemChooser, ItemStack::getItem, ItemStack::setItem);
 		bind(quantityInput, ItemStack::getQuantity, ItemStack::setQuantity);
@@ -47,7 +41,4 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 		add(quantityInput, gbc);
 	}
 
-	public void setItemList(Collection<Item> itemList) {
-		itemChooser.setItems(itemList);
-	}
 }

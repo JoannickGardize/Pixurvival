@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.abilitySet.OffsetAngleEffectEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
@@ -33,7 +32,6 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 		List<ClassEntry> entries = new ArrayList<>();
 
 		OffsetAngleEffectEditor offsetAngleEffectEditor = new OffsetAngleEffectEditor();
-		offsetAngleEffectEditor.setItems(FileService.getInstance().getCurrentContentPack().getEffects());
 
 		bind(offsetAngleEffectEditor, FollowingEffect::getOffsetAngleEffect, FollowingEffect::setOffsetAngleEffect, FollowingEffect.class);
 		entries.add(new ClassEntry(FollowingEffect.class, offsetAngleEffectEditor));

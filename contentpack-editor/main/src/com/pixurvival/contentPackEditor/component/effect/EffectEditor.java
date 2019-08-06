@@ -12,8 +12,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.util.BeanUtils;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
@@ -26,7 +24,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider(), false);
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
 	private ListEditor<FollowingElement> followingElementsEditor = new VerticalListEditor<>(FollowingElementEditor::new, BeanUtils.filledSupplier(FollowingEffect.class), VerticalListEditor.HORIZONTAL,
 			false);
 
@@ -66,10 +64,5 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		followingElementsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.followingElements"));
 		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor, effectTargetsEditor, followingElementsEditor);
 
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
 	}
 }

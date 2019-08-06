@@ -311,11 +311,10 @@ public class LayoutUtils {
 		parent.add(child, BorderLayout.CENTER);
 	}
 
-	@Deprecated
-	public static <T extends JComponent> Supplier<T> bordered(Supplier<T> supplier) {
+	public static <T> Supplier<T> bordered(Supplier<T> supplier) {
 		return () -> {
 			T result = supplier.get();
-			result.setBorder(createBorder());
+			((JComponent) result).setBorder(createBorder());
 			return result;
 		};
 	}

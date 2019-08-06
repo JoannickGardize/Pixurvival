@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
@@ -21,14 +20,10 @@ public class DarknessSpawnerEditor<T extends ChunkSpawner> extends ElementEditor
 
 	private static final long serialVersionUID = 1L;
 
-	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(c -> null, ContentPack::getCreatures);
+	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class, c -> null, ContentPack::getCreatures);
 
 	public DarknessSpawnerEditor() {
 		setBorder(LayoutUtils.createBorder());
-		ContentPack currentPack = FileService.getInstance().getCurrentContentPack();
-		if (currentPack != null) {
-			setItems(currentPack);
-		}
 
 		// Construction
 
@@ -54,9 +49,5 @@ public class DarknessSpawnerEditor<T extends ChunkSpawner> extends ElementEditor
 		add(LayoutUtils.createVerticalBox(topPanel, respawnTimeInput), BorderLayout.NORTH);
 		creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
 		add(creatureChooser, BorderLayout.SOUTH);
-	}
-
-	public void setItems(ContentPack contentPack) {
-		creatureChooser.setAllItems(contentPack.getCreatures());
 	}
 }

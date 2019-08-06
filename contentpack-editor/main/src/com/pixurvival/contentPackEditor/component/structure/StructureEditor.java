@@ -15,8 +15,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEdito
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -24,7 +22,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
 
 	public StructureEditor() {
 		super("structureType");
@@ -71,11 +69,6 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		gbc.gridy++;
 		gbc.weighty = 1;
 		add(getSpecificPartPanel(), gbc);
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		spriteSheetChooser.setItems(event.getContentPack().getSpriteSheets());
 	}
 
 	@Override

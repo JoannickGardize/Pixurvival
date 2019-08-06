@@ -2,34 +2,26 @@ package com.pixurvival.contentPackEditor.component.mapGenerator;
 
 import java.awt.BorderLayout;
 import java.util.Collection;
+import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
-import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.map.TileGenerator;
 
 public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 
 	private static final long serialVersionUID = 1L;
 
-	private Collection<Heightmap> heightmapCollection = null;
+	public TileGeneratorEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
 
-	private ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(() -> {
-		HeightmapConditionEditor result = new HeightmapConditionEditor();
-		result.setBorder(LayoutUtils.createBorder());
-		result.setHeightmapCollection(heightmapCollection);
-		return result;
-	}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
+		ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(() -> new HeightmapConditionEditor(heightmapCollectionSupplier)),
+				HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
-	private TileHashmapEditor tileHashmapEditor = new TileHashmapEditor();
-
-	public TileGeneratorEditor() {
+		TileHashmapEditor tileHashmapEditor = new TileHashmapEditor(heightmapCollectionSupplier);
 
 		// Binding
 
@@ -46,26 +38,4 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 		LayoutUtils.setMinimumSize(heightmapConditionsEditor, 1, 120);
 		// LayoutUtils.setMinimumSize(tileHashmapEditor, 1, 140);
 	}
-
-	public void setHeightmapCollection(Collection<Heightmap> collection) {
-		heightmapCollection = collection;
-		heightmapConditionsEditor
-				.forEachEditors(e -> ((HeightmapConditionEditor) e).setHeightmapCollection(collection));
-		tileHashmapEditor.setHeightmapCollection(collection);
-	}
-
-	public void setTileCollection(Collection<Tile> tiles) {
-		tileHashmapEditor.setTileCollection(tiles);
-	}
-
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-
-	}
-
-	// @Override
-	// protected void valueChanged(ValueComponent<?> source) {
-	// LayoutUtils.setMinimumSize(this, 1, (int)
-	// getLayout().preferredLayoutSize(this).getHeight());
-	// }
 }
