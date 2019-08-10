@@ -119,6 +119,14 @@ public class Inventory {
 		return true;
 	}
 
+	/**
+	 * Try to take the given item with the given quantity. If the quantity is not
+	 * available nothing happen. The items are taken in priority from the end.
+	 * 
+	 * @param item
+	 * @param quantity
+	 * @return true if the quantity was successfully removed
+	 */
 	public boolean remove(Item item, int quantity) {
 		if (!contains(item, quantity)) {
 			return false;

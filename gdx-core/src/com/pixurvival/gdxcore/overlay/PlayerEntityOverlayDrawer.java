@@ -28,7 +28,7 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 			alliesDrawer.draw(batch, worldViewport, e);
 			distantAlliesDrawer.draw(batch, worldViewport, e);
 		} else {
-			ennemiesDrawer.draw(batch, worldViewport, myPlayer);
+			ennemiesDrawer.draw(batch, worldViewport, e);
 		}
 	}
 }

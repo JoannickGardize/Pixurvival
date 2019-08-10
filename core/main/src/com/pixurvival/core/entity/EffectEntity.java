@@ -153,4 +153,9 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public StatSet getStats() {
 		return ancestor.getStats();
 	}
+
+	@Override
+	public TeamMember getOrigin() {
+		return ancestor.getOrigin();
+	}
 }

@@ -15,6 +15,8 @@ public class TurnAroundBehavior extends Behavior {
 
 	private static final long serialVersionUID = 1L;
 
+	private BehaviorTarget targetType;
+
 	@Bounds(min = 0)
 	private double minDistance;
 
@@ -23,15 +25,15 @@ public class TurnAroundBehavior extends Behavior {
 
 	@Override
 	protected void step(CreatureEntity creature) {
-		Entity target = creature.getBehaviorData().getClosestEnnemy();
+		Entity target = targetType.getEntityGetter().apply(creature);
 		if (target == null) {
 			creature.setForward(false);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 		} else {
-			double closestDistanceSquared = creature.getBehaviorData().getClosestDistanceSquaredToEnnemy();
-			if (closestDistanceSquared > maxDistance * maxDistance) {
+			double distanceSquared = creature.distanceSquared(target);
+			if (distanceSquared > maxDistance * maxDistance) {
 				creature.moveToward(target);
-			} else if (closestDistanceSquared < minDistance * minDistance) {
+			} else if (distanceSquared < minDistance * minDistance) {
 				creature.getAwayFrom(target);
 			} else {
 				double aroundAngle = creature.getWorld().getRandom().nextBoolean() ? Math.PI / 2 : -Math.PI / 2;

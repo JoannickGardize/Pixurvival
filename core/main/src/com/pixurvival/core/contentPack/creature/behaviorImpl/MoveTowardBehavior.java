@@ -15,13 +15,15 @@ public class MoveTowardBehavior extends Behavior {
 
 	private static final long serialVersionUID = 1L;
 
+	private BehaviorTarget targetType;
+
 	@Bounds(min = 0)
 	private double minDistance;
 
 	@Override
 	protected void step(CreatureEntity creature) {
-		Entity target = creature.getBehaviorData().getClosestEnnemy();
-		if (target != null && creature.getBehaviorData().getClosestDistanceSquaredToEnnemy() > minDistance * minDistance) {
+		Entity target = targetType.getEntityGetter().apply(creature);
+		if (target != null && creature.distanceSquared(target) > minDistance * minDistance) {
 			creature.moveToward(target);
 			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
 			creature.getTargetPosition().set(target.getPosition());

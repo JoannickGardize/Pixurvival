@@ -54,7 +54,6 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
 		armorField.setEditable(false);
-		BooleanCheckBox shadowCheckbox = new BooleanCheckBox();
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 
 		// Actions
@@ -76,7 +75,6 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		bind(strengthInput, Creature::getStrength, Creature::setStrength);
 		bind(agilityInput, Creature::getAgility, Creature::setAgility);
 		bind(intelligenceInput, Creature::getIntelligence, Creature::setIntelligence);
-		bind(shadowCheckbox, Creature::isDark, Creature::setDark);
 		bind(solidCheckbox, Creature::isSolid, Creature::setSolid);
 
 		// Layouting
@@ -92,7 +90,6 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.abilitySet", abilitySetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.itemReward", itemRewardChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.solid", solidCheckbox, gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.dark", shadowCheckbox, gbc);
 
 		JPanel statsPanel = new JPanel(new GridBagLayout());
 		statsPanel.setBorder(LayoutUtils.createGroupBorder("creatureEditor.stats"));

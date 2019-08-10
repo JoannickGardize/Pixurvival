@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.Inventory;
@@ -30,7 +31,13 @@ public class CraftAbility extends WorkAbility {
 
 	@Override
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
-		return ActionAnimation.MOVE_DOWN;
+		return ActionAnimation.WORK_DOWN;
+	}
+
+	@Override
+	public Item getAnimationItem(LivingEntity entity) {
+		CraftAbilityData data = (CraftAbilityData) getAbilityData(entity);
+		return data.getItemCraft().getResult().getItem();
 	}
 
 	@Override

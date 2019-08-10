@@ -30,7 +30,6 @@ public class Creature extends IdentifiedElement {
 	private float intelligence;
 
 	private boolean solid = true;
-	private boolean dark;
 
 	@Required
 	@ElementReference

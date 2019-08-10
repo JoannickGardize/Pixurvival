@@ -2,8 +2,6 @@ package com.pixurvival.core.item;
 
 import java.io.Serializable;
 
-import lombok.Data;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -13,6 +11,8 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
+
+import lombok.Data;
 
 @Data
 public class ItemStack implements Serializable {
@@ -53,8 +53,8 @@ public class ItemStack implements Serializable {
 	}
 
 	/**
-	 * Return the overflowing quantity if added to the quantity of this item
-	 * stack, according to {@link Item#getMaxStackSize()}.
+	 * Return the overflowing quantity if added to the quantity of this item stack,
+	 * according to {@link Item#getMaxStackSize()}.
 	 * 
 	 * @param quantity
 	 *            the quantity to add.
@@ -69,8 +69,22 @@ public class ItemStack implements Serializable {
 		}
 	}
 
+	/**
+	 * Substract one from this ItemStack and returns the result as a new ItemStack.
+	 * if the quantity become zero, null is returned.
+	 * 
+	 * @param quantity
+	 * @return
+	 */
 	public ItemStack sub(int quantity) {
-		return new ItemStack(item, this.quantity - quantity);
+		int newQuantity = this.quantity - quantity;
+		if (newQuantity > 0) {
+			return new ItemStack(item, newQuantity);
+		} else if (newQuantity == 0) {
+			return null;
+		} else {
+			throw new IllegalStateException("Not enough quantity in the ItemStack");
+		}
 	}
 
 	public ItemStack add(int quantity) {

@@ -31,7 +31,6 @@ public class BehaviorData {
 
 	private boolean closestEnnemyComputed = false;
 	private Entity closestEnnemy;
-	private double closestDistanceSquaredToEnnemy;
 
 	/**
 	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur n'est
@@ -60,11 +59,6 @@ public class BehaviorData {
 	public Entity getClosestEnnemy() {
 		findClosestEnnemy();
 		return closestEnnemy;
-	}
-
-	public double getClosestDistanceSquaredToEnnemy() {
-		findClosestEnnemy();
-		return closestDistanceSquaredToEnnemy;
 	}
 
 	public void setNextUpdateDelayMillis(long delayMillis) {
@@ -103,7 +97,6 @@ public class BehaviorData {
 		if (!closestEnnemyComputed) {
 			EntitySearchResult result = EntitySearchUtils.findClosest(creature, TargetType.ALL_ENEMIES, TARGET_SEARCH_RADIUS);
 			closestEnnemy = result.getEntity();
-			closestDistanceSquaredToEnnemy = result.getDistanceSquared();
 			closestEnnemyComputed = true;
 		}
 	}

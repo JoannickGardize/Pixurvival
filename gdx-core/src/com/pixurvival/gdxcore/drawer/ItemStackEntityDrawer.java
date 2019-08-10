@@ -9,7 +9,7 @@ import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.textures.ItemTexture;
 import com.pixurvival.gdxcore.textures.TextureMetrics;
 
-public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
+public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 
 	public static final float STACK_OFFSET = 0.1f;
 
@@ -37,24 +37,19 @@ public class ItemStackDrawer extends EntityDrawer<ItemStackEntity> {
 		float x = (float) (drawPosition.getX() - metrics.getWorldWidth() / 2);
 		float y = (float) (drawPosition.getY());
 		if (e.getItemStack().getQuantity() == 1) {
-			draw(batch, contentPackTextures, texture, metrics, x, y);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x, y);
 		} else if (e.getItemStack().getQuantity() == 2) {
-			draw(batch, contentPackTextures, texture, metrics, x - STACK_OFFSET / 2, y + STACK_OFFSET / 2);
-			draw(batch, contentPackTextures, texture, metrics, x + STACK_OFFSET / 2, y - STACK_OFFSET / 2);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x - STACK_OFFSET / 2, y + STACK_OFFSET / 2);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x + STACK_OFFSET / 2, y - STACK_OFFSET / 2);
 		} else {
-			draw(batch, contentPackTextures, texture, metrics, x - STACK_OFFSET, y + STACK_OFFSET);
-			draw(batch, contentPackTextures, texture, metrics, x, y);
-			draw(batch, contentPackTextures, texture, metrics, x + STACK_OFFSET, y - STACK_OFFSET);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x - STACK_OFFSET, y + STACK_OFFSET);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x, y);
+			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x + STACK_OFFSET, y - STACK_OFFSET);
 		}
 	}
 
 	@Override
 	public void topDraw(Batch batch, ItemStackEntity e) {
-	}
-
-	private void draw(Batch batch, ContentPackTextures contentPackTextures, Texture texture, TextureMetrics metrics, float x, float y) {
-		batch.draw(texture, (float) (x - metrics.getWorldOffsetX() - contentPackTextures.getTruePixelWidth()), (float) (y - contentPackTextures.getTruePixelWidth() - metrics.getWorldOffsetY()),
-				(float) (1 + contentPackTextures.getTruePixelWidth() * 2), (float) (1 + contentPackTextures.getTruePixelWidth() * 2));
 	}
 
 }

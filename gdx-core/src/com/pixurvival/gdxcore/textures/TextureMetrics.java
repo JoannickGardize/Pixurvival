@@ -11,7 +11,11 @@ public class TextureMetrics {
 	private int width;
 	private int height;
 
+	// beginning of the image from the left, ignoring transparent part, in world
+	// scale
 	private float worldOffsetX;
+	// beginning of the image from the bottom, ignoring transparent part, in world
+	// scale
 	private float worldOffsetY;
 	private float worldWidth;
 	private float worldHeight;

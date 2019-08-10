@@ -27,23 +27,9 @@ public class EntitySearchUtils {
 	}
 
 	public static void forEach(TeamMember searcher, TargetType targetType, double maxSquareDistance, Consumer<LivingEntity> action) {
-		BiPredicate<TeamMember, LivingEntity> teamPredicate;
-		switch (targetType) {
-		case ALL_ALLIES:
-			teamPredicate = (self, other) -> self.getTeam() == other.getTeam();
-			break;
-		case ALL_ENEMIES:
-			teamPredicate = (self, other) -> self.getTeam() != other.getTeam();
-			break;
-		case OTHER_ALLIES:
-			teamPredicate = (self, other) -> self.getTeam() == other.getTeam() && self != other;
-			break;
-		default:
-			throw new IllegalArgumentException();
-		}
 		Consumer<Entity> actionFilter = e -> {
 			LivingEntity livingEntity = (LivingEntity) e;
-			if (teamPredicate.test(searcher, livingEntity)) {
+			if (targetType.getTest().test(searcher, livingEntity)) {
 				action.accept(livingEntity);
 			}
 		};

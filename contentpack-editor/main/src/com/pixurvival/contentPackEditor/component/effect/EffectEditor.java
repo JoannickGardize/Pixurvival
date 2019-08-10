@@ -1,7 +1,9 @@
 package com.pixurvival.contentPackEditor.component.effect;
 
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
@@ -25,8 +27,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
-	private ListEditor<FollowingElement> followingElementsEditor = new VerticalListEditor<>(FollowingElementEditor::new, BeanUtils.filledSupplier(FollowingEffect.class), VerticalListEditor.HORIZONTAL,
-			false);
+	private ListEditor<FollowingElement> followingElementsEditor = new VerticalListEditor<>(FollowingElementEditor::new, BeanUtils.filledSupplier(FollowingEffect.class),
+			VerticalListEditor.HORIZONTAL);
 
 	public EffectEditor() {
 
@@ -53,16 +55,18 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(followingElementsEditor, Effect::getFollowingElements, Effect::setFollowingElements);
 
 		// Layouting
-
+		JTabbedPane tabbedPane = new JTabbedPane();
 		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
 				loopAnimationCheckbox);
 		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
 		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 		effectMovementEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.movement"));
-		effectTargetsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.targets"));
-		followingElementsEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.followingElements"));
-		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor, effectTargetsEditor, followingElementsEditor);
 
+		tabbedPane.addTab(TranslationService.getInstance().getString("generic.generalProperties"),
+				LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor));
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.targets"), effectTargetsEditor);
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.followingElements"), followingElementsEditor);
+		LayoutUtils.fill(this, tabbedPane);
 	}
 }

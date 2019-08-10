@@ -23,7 +23,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
@@ -33,6 +33,8 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
+import com.pixurvival.core.contentPack.effect.FollowingCreature;
+import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.StaticEffectMovement;
 import com.pixurvival.core.contentPack.gameMode.DayNightCycle;
@@ -112,7 +114,6 @@ public class ContentPackSerializer {
 			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
 			ContentPack contentPack = null;
 			contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
-
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
 				entry = enumeration.nextElement();
@@ -161,7 +162,7 @@ public class ContentPackSerializer {
 		addClassTag(representer, TurnAroundBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, GetAwayBehavior.class);
-		addClassTag(representer, EnnemyDistanceCondition.class);
+		addClassTag(representer, DistanceCondition.class);
 		addClassTag(representer, TimeCondition.class);
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
@@ -174,6 +175,8 @@ public class ContentPackSerializer {
 		addClassTag(representer, GetAwayFromLightBehavior.class);
 		addClassTag(representer, InLightCondition.class);
 		addClassTag(representer, IsDayCondition.class);
+		addClassTag(representer, FollowingEffect.class);
+		addClassTag(representer, FollowingCreature.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

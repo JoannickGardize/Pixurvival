@@ -25,7 +25,9 @@ public class UseItemRequest implements IPlayerActionRequest {
 		} else {
 			itemStack = player.getInventory().getSlot(slotIndex);
 		}
-		player.useItem((EdibleItem) itemStack.getItem(), slotIndex);
+		if (itemStack != null && itemStack.getItem() instanceof EdibleItem) {
+			player.useItem((EdibleItem) itemStack.getItem(), slotIndex);
+		}
 	}
 
 	@Override

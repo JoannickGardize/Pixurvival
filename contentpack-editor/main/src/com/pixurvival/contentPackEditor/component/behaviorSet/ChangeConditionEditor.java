@@ -17,8 +17,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangin
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoubleComparison;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
@@ -50,13 +51,15 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 	protected List<ClassEntry> getClassEntries() {
 		List<ClassEntry> classEntries = new ArrayList<>();
 
-		// PlayerDistanceCondition
-		EnumChooser<DoubleComparison> testChooser = new EnumChooser<>(DoubleComparison.class);
+		// DistanceCondition
+		EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+		EnumChooser<DoubleComparison> operatorChooser = new EnumChooser<>(DoubleComparison.class);
 		DoubleInput targetDistanceInput = new DoubleInput(Bounds.positive());
-		bind(testChooser, EnnemyDistanceCondition::getTest, EnnemyDistanceCondition::setTest, EnnemyDistanceCondition.class);
-		bind(targetDistanceInput, EnnemyDistanceCondition::getTargetDistance, EnnemyDistanceCondition::setTargetDistance, EnnemyDistanceCondition.class);
-		Component testComponent = LayoutUtils.labelled("generic.distance", testChooser);
-		classEntries.add(new ClassEntry(EnnemyDistanceCondition.class, LayoutUtils.createHorizontalBox(testComponent, targetDistanceInput)));
+		bind(targetChooser, DistanceCondition::getTargetType, DistanceCondition::setTargetType, DistanceCondition.class);
+		bind(operatorChooser, DistanceCondition::getOperator, DistanceCondition::setOperator, DistanceCondition.class);
+		bind(targetDistanceInput, DistanceCondition::getTargetDistance, DistanceCondition::setTargetDistance, DistanceCondition.class);
+		Component testComponent = LayoutUtils.labelled("generic.distance", operatorChooser);
+		classEntries.add(new ClassEntry(DistanceCondition.class, LayoutUtils.createHorizontalBox(targetChooser, testComponent, targetDistanceInput)));
 
 		// TimeCondition
 		TimeInput timeInput = new TimeInput();

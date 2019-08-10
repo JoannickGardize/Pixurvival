@@ -12,4 +12,6 @@ public interface TeamMember extends Positionnable {
 
 	Vector2 getTargetPosition();
 
+	TeamMember getOrigin();
+
 }

@@ -14,6 +14,7 @@ import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.MoveUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -35,21 +36,24 @@ public class CreatureEntity extends LivingEntity {
 	private @Getter @Setter BehaviorData behaviorData;
 	private @Getter @NonNull Creature definition;
 	private @Getter @Setter Entity targetEntity;
-	private @Getter Vector2 anchorPosition;
+	private @Getter Vector2 spawnPosition;
+	private @Getter TeamMember master = this;
 
 	@Override
 	public void initialize() {
 		if (definition.getAbilitySet() == null) {
 			definition.setAbilitySet(EMPTY_ABILITY_SET);
 		}
-		getStats().get(StatType.STRENGTH).setBase(definition.getStrength());
-		getStats().get(StatType.AGILITY).setBase(definition.getAgility());
-		getStats().get(StatType.INTELLIGENCE).setBase(definition.getIntelligence());
+		// Add instead of setting base for the case that bonuses are applied at
+		// creation.
+		getStats().get(StatType.STRENGTH).addToBase(definition.getStrength());
+		getStats().get(StatType.AGILITY).addToBase(definition.getAgility());
+		getStats().get(StatType.INTELLIGENCE).addToBase(definition.getIntelligence());
 		super.initialize();
 		if (getWorld().isServer()) {
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
-			anchorPosition = getPosition().copy();
+			spawnPosition = getPosition().copy();
 		}
 	}
 
@@ -136,5 +140,15 @@ public class CreatureEntity extends LivingEntity {
 	public void applyUpdate(ByteBuffer buffer) {
 		super.applyUpdate(buffer);
 		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
+	}
+
+	@Override
+	public TeamMember getOrigin() {
+		return master;
+	}
+
+	public void setMaster(TeamMember master) {
+		this.master = master;
+		setTeam(master.getTeam());
 	}
 }

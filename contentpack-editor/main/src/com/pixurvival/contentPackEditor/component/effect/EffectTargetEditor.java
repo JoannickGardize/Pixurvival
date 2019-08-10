@@ -32,7 +32,7 @@ public class EffectTargetEditor extends ElementEditor<EffectTarget> {
 		// Layouting
 		alterationsEditor.setBorder(LayoutUtils.createGroupBorder("effectTargetEditor.alterations"));
 		setLayout(new BorderLayout());
-		add(LayoutUtils.createHorizontalLabelledBox("effectTargetEditor.targetType", targetTypeChooser, "effectTargetEditor.destroyWhenCollide", destroyCheckBox), BorderLayout.NORTH);
+		add(LayoutUtils.createHorizontalLabelledBox("generic.target", targetTypeChooser, "effectTargetEditor.destroyWhenCollide", destroyCheckBox), BorderLayout.NORTH);
 		add(alterationsEditor, BorderLayout.SOUTH);
 	}
 

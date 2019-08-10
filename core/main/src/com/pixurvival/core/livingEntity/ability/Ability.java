@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
@@ -54,6 +55,15 @@ public abstract class Ability implements Serializable {
 	 * @return The animation to play, or null if no special animation is required.
 	 */
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
+		return null;
+	}
+
+	/**
+	 * @param entity
+	 *            the entity using this ability
+	 * @return The item to draw on top of the animation, or null if none to draw.
+	 */
+	public Item getAnimationItem(LivingEntity entity) {
 		return null;
 	}
 

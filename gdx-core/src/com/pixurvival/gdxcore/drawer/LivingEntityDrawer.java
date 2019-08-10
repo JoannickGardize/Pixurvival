@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.Vector2;
@@ -43,6 +44,7 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		float equipmentY = y + yOffset;
 		drawBeforeBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 		DrawUtils.drawStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset);
+		drawAbilityItem(batch, e, textureAnimation, index, x, equipmentY);
 		drawAfterBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 	}
 
@@ -66,6 +68,13 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 			return ActionAnimation.getMoveFromDirection(aimingDirection);
 		} else {
 			return ActionAnimation.getStandFromDirection(aimingDirection);
+		}
+	}
+
+	private void drawAbilityItem(Batch batch, E e, TextureAnimation currentAnimation, int index, float x, float y) {
+		Item item;
+		if (e.getCurrentAbility() != null && (item = e.getCurrentAbility().getAnimationItem(e)) != null) {
+			ItemDrawer.draw(batch, item, x + currentAnimation.getOffsetX(index), y + currentAnimation.getOffsetY(index));
 		}
 	}
 }

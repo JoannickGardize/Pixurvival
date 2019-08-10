@@ -14,12 +14,16 @@ public enum ActionAnimation {
 	STAND_UP,
 	STAND_LEFT,
 	STAND_DOWN,
+	WORK_RIGHT,
+	WORK_UP,
+	WORK_DOWN,
+	WORK_LEFT,
 	DEFAULT,
-	HARVESTED,
-	USE_ITEM;
+	HARVESTED;
 
 	private static Map<Direction, ActionAnimation> moveByDirection = new EnumMap<>(Direction.class);
 	private static Map<Direction, ActionAnimation> standByDirection = new EnumMap<>(Direction.class);
+	private static Map<Direction, ActionAnimation> workByDirection = new EnumMap<>(Direction.class);
 
 	static {
 		moveByDirection.put(Direction.EAST, MOVE_RIGHT);
@@ -31,6 +35,11 @@ public enum ActionAnimation {
 		standByDirection.put(Direction.NORTH, STAND_UP);
 		standByDirection.put(Direction.SOUTH, STAND_DOWN);
 		standByDirection.put(Direction.WEST, STAND_LEFT);
+
+		workByDirection.put(Direction.EAST, WORK_RIGHT);
+		workByDirection.put(Direction.NORTH, WORK_UP);
+		workByDirection.put(Direction.SOUTH, WORK_DOWN);
+		workByDirection.put(Direction.WEST, WORK_LEFT);
 	}
 
 	public static ActionAnimation getMoveFromDirection(Direction direction) {
@@ -39,5 +48,9 @@ public enum ActionAnimation {
 
 	public static ActionAnimation getStandFromDirection(Direction direction) {
 		return standByDirection.get(direction);
+	}
+
+	public static ActionAnimation getWorkFromDirection(Direction direction) {
+		return workByDirection.get(direction);
 	}
 }

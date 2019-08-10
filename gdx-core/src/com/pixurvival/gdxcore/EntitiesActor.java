@@ -30,7 +30,7 @@ import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.EffectDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
-import com.pixurvival.gdxcore.drawer.ItemStackDrawer;
+import com.pixurvival.gdxcore.drawer.ItemStackEntityDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
 import com.pixurvival.gdxcore.util.DrawUtils;
@@ -46,7 +46,7 @@ public class EntitiesActor extends Actor {
 		drawers.put(HarvestableMapStructure.class, mapStructureDrawer);
 		drawers.put(MapStructure.class, mapStructureDrawer);
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
-		drawers.put(ItemStackEntity.class, new ItemStackDrawer());
+		drawers.put(ItemStackEntity.class, new ItemStackEntityDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());
 		drawers.put(EffectEntity.class, new EffectDrawer());
 	}

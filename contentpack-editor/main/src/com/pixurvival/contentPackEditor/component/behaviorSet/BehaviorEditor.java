@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -21,12 +21,14 @@ import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.EnnemyDistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderAnchor;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 
 public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
@@ -42,7 +44,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 			ChangeConditionEditor editor = new ChangeConditionEditor(behaviorCollectionSupplier);
 			editor.setBorder(LayoutUtils.createBorder());
 			return editor;
-		}, EnnemyDistanceCondition::new, ListEditor.HORIZONTAL, false);
+		}, DistanceCondition::new, ListEditor.HORIZONTAL, false);
 
 		// Construction
 
@@ -71,31 +73,37 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// GET_AWAY
-		classEntries.add(new ClassEntry(GetAwayBehavior.class, new JPanel()));
+		EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+		bind(targetChooser, GetAwayBehavior::getTargetType, GetAwayBehavior::setTargetType, GetAwayBehavior.class);
+		classEntries.add(new ClassEntry(GetAwayBehavior.class, LayoutUtils.createHorizontalBox(targetChooser)));
 
 		// MOVE_TOWARD
+		targetChooser = new EnumChooser<>(BehaviorTarget.class);
 		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
 		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
-		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput))));
+		bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
+		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput)));
 
 		// TURN_AROUND
+		targetChooser = new EnumChooser<>(BehaviorTarget.class);
 		minDistanceInput = new DoubleInput(Bounds.positive());
 		DoubleInput maxDistanceInput = new DoubleInput(Bounds.positive());
 		bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
 		bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
+		bind(targetChooser, TurnAroundBehavior::getTargetType, TurnAroundBehavior::setTargetType, TurnAroundBehavior.class);
 		classEntries.add(new ClassEntry(TurnAroundBehavior.class,
-				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput), LayoutUtils.labelled("generic.maxDistance", maxDistanceInput))));
+				LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput)));
 
 		// WANDER
-		BooleanCheckBox anchorCheckBox = new BooleanCheckBox();
 		DoubleInput moveRateInput = new DoubleInput(Bounds.positive());
 		DoubleInput forwardFactorInput = new DoubleInput(Bounds.positive());
-		bind(anchorCheckBox, WanderBehavior::isAnchor, WanderBehavior::setAnchor, WanderBehavior.class);
+		EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
+		bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
 		bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);
 		bind(forwardFactorInput, WanderBehavior::getForwardFactor, WanderBehavior::setForwardFactor, WanderBehavior.class);
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
-		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", anchorCheckBox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", wanderAnchorChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.moveRate", moveRateInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.forwardFactor", forwardFactorInput, gbc);
