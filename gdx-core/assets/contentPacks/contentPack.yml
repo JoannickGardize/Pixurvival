@@ -130,6 +130,18 @@ animationTemplates:
       action: DEFAULT
       frames:
       - {x: 0, y: 0}
+- &summon_holemon
+  name: summon_holemon
+  id: 5
+  animations:
+    DEFAULT:
+      frameDuration: 200
+      action: DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 2, y: 0}
+      - {x: 3, y: 0}
 equipmentOffsets:
 - &character02
   name: character
@@ -179,6 +191,22 @@ equipmentOffsets:
   - {x: 0, y: 3, offsetX: 2, offsetY: 2, back: false}
   - {x: 1, y: 3, offsetX: 2, offsetY: 2, back: false}
   - {x: 2, y: 3, offsetX: 2, offsetY: 2, back: false}
+- &warlock_wand
+  name: warlock_wand
+  id: 3
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 1, offsetY: 2, back: false}
+  - {x: 1, y: 0, offsetX: 1, offsetY: 2, back: false}
+  - {x: 2, y: 0, offsetX: 1, offsetY: 2, back: false}
+  - {x: 0, y: 1, offsetX: 1, offsetY: 2, back: false}
+  - {x: 1, y: 1, offsetX: 1, offsetY: 2, back: false}
+  - {x: 2, y: 1, offsetX: 1, offsetY: 2, back: false}
+  - {x: 0, y: 2, offsetX: 1, offsetY: 2, back: false}
+  - {x: 1, y: 2, offsetX: 1, offsetY: 2, back: false}
+  - {x: 2, y: 2, offsetX: 1, offsetY: 2, back: false}
+  - {x: 0, y: 3, offsetX: 1, offsetY: 2, back: false}
+  - {x: 1, y: 3, offsetX: 1, offsetY: 2, back: false}
+  - {x: 2, y: 3, offsetX: 1, offsetY: 2, back: false}
 spriteSheets:
 - &character03
   name: character
@@ -329,7 +357,7 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &ninja_pig
+- &ninja_pig02
   name: ninja_pig
   id: 15
   width: 7
@@ -369,6 +397,56 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
+- &holemon
+  name: holemon
+  id: 19
+  width: 11
+  height: 11
+  image: images/holemon.png
+  animationTemplate: *character
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &warlock_projectile
+  name: warlock_projectile
+  id: 20
+  width: 5
+  height: 5
+  image: images/warlock_projectile.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &warlock_wand02
+  name: warlock_wand
+  id: 21
+  width: 3
+  height: 8
+  image: images/warlock_wand.png
+  animationTemplate: *character
+  equipmentOffset: *warlock_wand
+  heightOffset: 0.0
+  shadow: true
+- &piece_of_soul
+  name: piece_of_soul
+  id: 22
+  width: 9
+  height: 5
+  image: images/piece_of_soul_effect.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &summon_holemon02
+  name: summon_holemon
+  id: 23
+  width: 15
+  height: 15
+  image: images/summoning_effect.png
+  animationTemplate: *summon_holemon
+  equipmentOffset: null
+  heightOffset: 7.5
+  shadow: false
 effects:
 - name: wood_sword_hit
   id: 0
@@ -388,17 +466,20 @@ effects:
         base: 15.0
         statMultipliers:
         - {statType: STRENGTH, multiplier: 1.0}
-  followingElements: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
 - &wood_bow_hit
   name: wood_bow_hit
   id: 1
   spriteSheet: *bow_hit
   orientation: MOVING_ANGLE
-  loopAnimation: false
+  loopAnimation: true
   solid: true
   duration: 1000
   collisionRadius: 0.5
-  movement: !!LinearEffectMovement {speed: 20.0, relative: false}
+  movement: !!LinearEffectMovement {speed: 20.0, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -408,93 +489,32 @@ effects:
         base: 8.0
         statMultipliers:
         - {statType: AGILITY, multiplier: 1.0}
-  followingElements:
-  - !!FollowingCreature
-    delay: 1000
-    creature: &ninja_pig03
-      name: ninja_pig
-      id: 1
-      spriteSheet: *ninja_pig
-      collisionRadius: 0.42
-      strength: -3.0
-      agility: -2.0
-      intelligence: 0.0
-      solid: true
-      dark: false
-      behaviorSet: &ranged_attack
-        name: ranged_attack
-        id: 0
-        behaviors:
-        - &Wander !!WanderBehavior
-          name: Wander
-          id: 0
-          changeConditions:
-          - !!DistanceCondition
-            name: null
-            id: 0
-            nextBehavior: &Turn_around !!TurnAroundBehavior
-              name: Turn around
-              id: 0
-              changeConditions:
-              - !!DistanceCondition
-                name: null
-                id: 0
-                nextBehavior: *Wander
-                test: GREATER_THAN
-                targetDistance: 45.0
-              abilityToUseId: 0
-              minDistance: 5.0
-              maxDistance: 15.0
-            test: LESS_THAN
-            targetDistance: 18.0
-          abilityToUseId: -1
-          anchor: true
-          moveRate: 0.3
-          forwardFactor: 1.0
-        - *Turn_around
-      itemReward: null
-      abilitySet: &ninja_pig02
-        name: ninja_pig
-        id: 0
-        abilities:
-        - !!EffectAbility
-          id: 0
-          cooldown: 2000
-          selfAlterations: null
-          offsetAngleEffects:
-          - offsetAngle: 0.0
-            randomAngle: 0.0
-            effect: &rock_projectile02
-              name: rock_projectile
-              id: 2
-              spriteSheet: *rock_projectile
-              orientation: STATIC
-              loopAnimation: false
-              solid: true
-              duration: 1000
-              collisionRadius: 0.3
-              movement: !!LinearEffectMovement {speed: 18.0, relative: false}
-              targets:
-              - targetType: ALL_ENEMIES
-                destroyWhenCollide: true
-                alterations:
-                - !!InstantDamageAlteration
-                  amount:
-                    base: 8.0
-                    statMultipliers: []
-              followingElements: []
-          ammunition: null
-    owned: true
-    strengthBonus:
-      base: 0.0
-      statMultipliers: []
-    agilityBonus:
-      base: 10.0
-      statMultipliers: []
-    intelligenceBonus:
-      base: 0.0
-      statMultipliers: []
-- *rock_projectile02
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+- &rock_projectile02
+  name: rock_projectile
+  id: 2
+  spriteSheet: *rock_projectile
+  orientation: STATIC
+  loopAnimation: true
+  solid: true
+  duration: 1000
+  collisionRadius: 0.3
+  movement: !!LinearEffectMovement {speed: 18.0, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      amount:
+        base: 8.0
+        statMultipliers: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
 - name: wood_sword_hit2
   id: 3
   spriteSheet: *sword_hit2
@@ -503,7 +523,7 @@ effects:
   solid: false
   duration: 300
   collisionRadius: 0.8
-  movement: !!LinearEffectMovement {speed: 15.0, relative: false}
+  movement: !!LinearEffectMovement {speed: 15.0, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
@@ -513,7 +533,10 @@ effects:
         base: 15.0
         statMultipliers:
         - {statType: STRENGTH, multiplier: 1.0}
-  followingElements: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
 - &ghost_hit
   name: ghost_hit
   id: 4
@@ -532,7 +555,151 @@ effects:
       amount:
         base: 10.0
         statMultipliers: []
-  followingElements: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+- &warlock_projectile02
+  name: warlock_projectile
+  id: 5
+  spriteSheet: *warlock_projectile
+  orientation: STATIC
+  loopAnimation: true
+  solid: true
+  duration: 800
+  collisionRadius: 0.35
+  movement: !!LinearEffectMovement {speed: 20.0, destroyAtTargetPosition: true}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      amount:
+        base: 5.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 1.0}
+    - !!FollowingElementAlteration
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: &piece_of_soul02
+            name: piece_of_soul
+            id: 6
+            spriteSheet: *piece_of_soul
+            orientation: MOVING_ANGLE
+            loopAnimation: true
+            solid: false
+            duration: 20000
+            collisionRadius: 0.5
+            movement: !!BackToOriginEffectMovement {speed: 30.0}
+            targets:
+            - targetType: ORIGIN
+              destroyWhenCollide: true
+              alterations:
+              - !!AddItemAlteration
+                itemStack:
+                  item: &piece_of_soul03 !!ResourceItem
+                    name: piece_of_soul
+                    id: 17
+                    maxStackSize: 10
+                    frame: {x: 1, y: 4}
+                    image: images/items.png
+                  quantity: 1
+                dropRemainder: false
+            repeatFollowingElements:
+              base: 0.0
+              statMultipliers: []
+            delayedFollowingElements: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+- *piece_of_soul02
+- &summon_holemon03
+  name: summon_holemon
+  id: 7
+  spriteSheet: *summon_holemon02
+  orientation: STATIC
+  loopAnimation: false
+  solid: false
+  duration: 800
+  collisionRadius: 0.0
+  movement: !!LinearEffectMovement {speed: 7.0, destroyAtTargetPosition: false}
+  targets: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements:
+  - delay: 800
+    followingElement: !!FollowingCreature
+      creature: &holemon02
+        name: holemon
+        id: 3
+        spriteSheet: *holemon
+        collisionRadius: 0.54
+        strength: 0.0
+        agility: 0.0
+        intelligence: 0.0
+        solid: true
+        behaviorSet: &ranged_minion
+          name: ranged_minion
+          id: 3
+          behaviors:
+          - &Wander !!WanderBehavior
+            name: Wander
+            id: 0
+            changeConditions:
+            - !!DistanceCondition
+              name: null
+              id: 0
+              nextBehavior: &Attack !!TurnAroundBehavior
+                name: Attack
+                id: 0
+                changeConditions:
+                - !!DistanceCondition
+                  name: null
+                  id: 0
+                  nextBehavior: *Wander
+                  targetType: CLOSEST_ENNEMY
+                  operator: GREATER_THAN
+                  targetDistance: 30.0
+                abilityToUseId: 0
+                targetType: CLOSEST_ENNEMY
+                minDistance: 5.0
+                maxDistance: 10.0
+              targetType: CLOSEST_ENNEMY
+              operator: LESS_THAN
+              targetDistance: 20.0
+            abilityToUseId: -1
+            anchorType: MASTER
+            moveRate: 0.3
+            forwardFactor: 0.7
+          - *Attack
+        itemReward: null
+        abilitySet: &ninja_pig
+          name: ninja_pig
+          id: 0
+          abilities:
+          - !!EffectAbility
+            id: 0
+            cooldown: 2000
+            selfAlterations: null
+            offsetAngleEffects:
+            - offsetAngle: 0.0
+              randomAngle: 0.0
+              effect: *rock_projectile02
+            ammunition: {item: null, quantity: 1}
+      owned: true
+      strengthBonus:
+        base: 0.0
+        statMultipliers: []
+      agilityBonus:
+        base: 0.0
+        statMultipliers: []
+      intelligenceBonus:
+        base: 0.0
+        statMultipliers: []
 items:
 - &wood_sword02 !!WeaponItem
   name: wood_sword
@@ -547,13 +714,13 @@ items:
     cooldown: 1000
     selfAlterations: []
     offsetAngleEffects: []
-    ammunition: null
+    ammunition: {item: null, quantity: 1}
   specialAbility: !!EffectAbility
     id: 0
     cooldown: 0
     selfAlterations: []
     offsetAngleEffects: []
-    ammunition: null
+    ammunition: {item: null, quantity: 1}
 - &wood !!ResourceItem
   name: wood
   id: 1
@@ -682,13 +849,44 @@ items:
     - offsetAngle: -0.2617993877991494
       randomAngle: 0.0
       effect: *wood_bow_hit
-    ammunition: *arrow
+    ammunition:
+      item: *arrow
+      quantity: 1
   specialAbility: !!EffectAbility
     id: 0
     cooldown: 0
     selfAlterations: []
     offsetAngleEffects: []
-    ammunition: null
+    ammunition: {item: null, quantity: 1}
+- !!WeaponItem
+  name: warlock_wand
+  id: 16
+  maxStackSize: 1
+  frame: {x: 0, y: 4}
+  image: images/items.png
+  spriteSheet: *warlock_wand02
+  statModifiers: []
+  baseAbility: !!EffectAbility
+    id: 0
+    cooldown: 1000
+    selfAlterations: []
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *warlock_projectile02
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!EffectAbility
+    id: 0
+    cooldown: 30000
+    selfAlterations: []
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *summon_holemon03
+    ammunition:
+      item: *piece_of_soul03
+      quantity: 10
+- *piece_of_soul03
 itemCrafts:
 - name: wood_sword
   id: 0
@@ -814,7 +1012,40 @@ itemRewards:
       quantity: 1
     probability: 0.5
 behaviorSets:
-- *ranged_attack
+- &ranged_attack
+  name: ranged_attack
+  id: 0
+  behaviors:
+  - &Wander02 !!WanderBehavior
+    name: Wander
+    id: 0
+    changeConditions:
+    - !!DistanceCondition
+      name: null
+      id: 0
+      nextBehavior: &Turn_around !!TurnAroundBehavior
+        name: Turn around
+        id: 0
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: *Wander02
+          targetType: CLOSEST_ENNEMY
+          operator: GREATER_THAN
+          targetDistance: 45.0
+        abilityToUseId: 0
+        targetType: CLOSEST_ENNEMY
+        minDistance: 5.0
+        maxDistance: 15.0
+      targetType: CLOSEST_ENNEMY
+      operator: LESS_THAN
+      targetDistance: 18.0
+    abilityToUseId: -1
+    anchorType: SPAWN_POSITION
+    moveRate: 0.3
+    forwardFactor: 1.0
+  - *Turn_around
 - &get_away
   name: get_away
   id: 1
@@ -824,14 +1055,14 @@ behaviorSets:
     id: 0
     changeConditions: []
     abilityToUseId: -1
-    anchor: true
+    anchorType: SPAWN_POSITION
     moveRate: 0.3
     forwardFactor: 1.0
 - &ghost_behavior
   name: ghost_behavior
   id: 2
   behaviors:
-  - &Wander02 !!WanderBehavior
+  - &Wander03 !!WanderBehavior
     name: Wander
     id: 0
     changeConditions:
@@ -845,12 +1076,12 @@ behaviorSets:
         - !!TimeCondition
           name: null
           id: 0
-          nextBehavior: *Wander02
+          nextBehavior: *Wander03
           targetTime: 1500
         - !!IsDayCondition
           name: null
           id: 0
-          nextBehavior: &Disappear !!com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior
+          nextBehavior: &Disappear !!VanishBehavior
             name: Disappear
             id: 0
             changeConditions: []
@@ -859,7 +1090,7 @@ behaviorSets:
     - !!DistanceCondition
       name: null
       id: 1
-      nextBehavior: &Attack !!MoveTowardBehavior
+      nextBehavior: &Attack02 !!MoveTowardBehavior
         name: Attack
         id: 1
         changeConditions:
@@ -870,30 +1101,34 @@ behaviorSets:
         - !!DistanceCondition
           name: null
           id: 1
-          nextBehavior: *Wander02
-          test: GREATER_THAN
+          nextBehavior: *Wander03
+          targetType: CLOSEST_ENNEMY
+          operator: GREATER_THAN
           targetDistance: 20.0
         - !!IsDayCondition
           name: null
           id: 0
           nextBehavior: *Disappear
         abilityToUseId: 0
+        targetType: CLOSEST_ENNEMY
         minDistance: 0.0
-      test: LESS_THAN
+      targetType: CLOSEST_ENNEMY
+      operator: LESS_THAN
       targetDistance: 12.0
     - !!IsDayCondition
       name: null
       id: 0
       nextBehavior: *Disappear
     abilityToUseId: -1
-    anchor: false
+    anchorType: SPAWN_POSITION
     moveRate: 0.9
     forwardFactor: 0.4
-  - *Attack
+  - *Attack02
   - *Get_Away_from_light
   - *Disappear
+- *ranged_minion
 abilitySets:
-- *ninja_pig02
+- *ninja_pig
 - &night_ghost
   name: night_ghost
   id: 1
@@ -906,7 +1141,7 @@ abilitySets:
     - offsetAngle: 0.0
       randomAngle: 0.0
       effect: *ghost_hit
-    ammunition: null
+    ammunition: {item: null, quantity: 1}
 creatures:
 - name: pixie
   id: 0
@@ -916,11 +1151,21 @@ creatures:
   agility: -2.0
   intelligence: 0.0
   solid: true
-  dark: false
   behaviorSet: *get_away
   itemReward: *pixie02
   abilitySet: null
-- *ninja_pig03
+- &ninja_pig03
+  name: ninja_pig
+  id: 1
+  spriteSheet: *ninja_pig02
+  collisionRadius: 0.42
+  strength: -3.0
+  agility: -2.0
+  intelligence: 0.0
+  solid: true
+  behaviorSet: *ranged_attack
+  itemReward: null
+  abilitySet: *ninja_pig
 - &night_ghost02
   name: night_ghost
   id: 2
@@ -930,10 +1175,10 @@ creatures:
   agility: 4.0
   intelligence: 0.0
   solid: false
-  dark: true
   behaviorSet: *ghost_behavior
   itemReward: null
   abilitySet: *night_ghost
+- *holemon02
 tiles:
 - &grass
   name: grass
@@ -1168,10 +1413,11 @@ ecosystems:
   structureSpawners:
   - creatureChooser:
       backingArray:
-      - {probability: 1.0, element: null}
+      - probability: 1.0
+        element: *ninja_pig03
     initialSpawn: 1
     maximumCreatures: 1
-    respawnTime: {min: 10000, max: 10000}
+    respawnTime: {min: 30000, max: 60000}
     structure: *tree03
     spawnRadius: 10.0
     managedRadius: 60.0

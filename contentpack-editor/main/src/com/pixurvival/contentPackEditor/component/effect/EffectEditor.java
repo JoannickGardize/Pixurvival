@@ -1,8 +1,11 @@
 package com.pixurvival.contentPackEditor.component.effect;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -14,11 +17,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.util.BeanUtils;
+import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
-import com.pixurvival.core.contentPack.effect.FollowingEffect;
-import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
@@ -26,14 +27,13 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
-	private ListEditor<FollowingElement> followingElementsEditor = new VerticalListEditor<>(FollowingElementEditor::new, BeanUtils.filledSupplier(FollowingEffect.class),
-			VerticalListEditor.HORIZONTAL);
-
 	public EffectEditor() {
 
 		// Construction
 
+		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
+		ListEditor<DelayedFollowingElement> followingElementsEditor = new VerticalListEditor<>(DelayedFollowingElementEditor::new, BeanFactory.newInstanceSupplier(DelayedFollowingElement.class),
+				VerticalListEditor.HORIZONTAL);
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
@@ -41,6 +41,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
+		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
 
 		// Binding
 
@@ -52,7 +53,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(collisionRadiusInput, Effect::getCollisionRadius, Effect::setCollisionRadius);
 		bind(effectMovementEditor, Effect::getMovement, Effect::setMovement);
 		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
-		bind(followingElementsEditor, Effect::getFollowingElements, Effect::setFollowingElements);
+		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
+		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -66,7 +68,10 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		tabbedPane.addTab(TranslationService.getInstance().getString("generic.generalProperties"),
 				LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 2, LayoutUtils.sideBySide(displayPanel, propertiesPanel), effectMovementEditor));
 		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.targets"), effectTargetsEditor);
-		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.followingElements"), followingElementsEditor);
+		JPanel followingElementsPanel = new JPanel(new BorderLayout());
+		followingElementsPanel.add(LayoutUtils.single(LayoutUtils.labelled("generic.repeat", repeatFollowingElementsEditor)), BorderLayout.NORTH);
+		followingElementsPanel.add(followingElementsEditor, BorderLayout.CENTER);
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.followingElements"), followingElementsPanel);
 		LayoutUtils.fill(this, tabbedPane);
 	}
 }

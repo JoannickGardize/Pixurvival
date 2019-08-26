@@ -81,6 +81,7 @@ public class EntityCollection {
 				if (!onlyChanged || e.isStateChanged()) {
 					size++;
 					byteBuffer.putLong(e.getId());
+					e.writeInitialization(byteBuffer);
 					e.writeUpdate(byteBuffer);
 				}
 			}
@@ -108,6 +109,7 @@ public class EntityCollection {
 
 	public void applyUpdate(ByteBuffer byteBuffer, World world) {
 		byte groupId;
+		// Entity updates
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			EntityGroup group = EntityGroup.values()[groupId];
 			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
@@ -118,13 +120,18 @@ public class EntityCollection {
 				if (e == null) {
 					e = createEntity(group, entityId);
 					e.setWorld(world);
+					e.applyInitialization(byteBuffer);
 					add(e);
-					e.applyUpdate(byteBuffer);
 				} else {
-					e.applyUpdate(byteBuffer);
+					// Du fait de l'UDP, les données d'initialisation sont quand
+					// même envoyés pour éponger les problèmes de paquets
+					// perdus.
+					e.applyInitialization(byteBuffer);
 				}
+				e.applyUpdate(byteBuffer);
 			}
 		}
+		// Entity removes
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			EntityGroup group = EntityGroup.values()[groupId];
 			Map<Long, Entity> groupMap = entities.get(group);
@@ -137,6 +144,7 @@ public class EntityCollection {
 				}
 			}
 		}
+		// Far allies positions update
 		short length = byteBuffer.getShort();
 		Map<Long, Entity> groupMap = entities.get(EntityGroup.PLAYER);
 		for (int i = 0; i < length; i++) {

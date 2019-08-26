@@ -11,6 +11,8 @@ import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.gameMode.event.Event;
+import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -69,6 +71,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private @Getter CommandManager commandManager = new CommandManager();
 	private @Getter ChatManager chatManager = new ChatManager();
 	private PlayerEntity myPlayer;
+	private @Getter Vector2 spawnCenter;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -157,30 +160,40 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();
+		initializeSpawns();
+		initializeEvents();
+	}
+
+	private void initializeSpawns() {
 		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
 		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.size());
 		areaSearchCriteria.setSquareSize((int) gameMode.getSpawnSquareSize());
 		MapAnalytics mapAnalytics = new MapAnalytics(random);
 		try {
 			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(map, areaSearchCriteria);
+			spawnCenter = config.getArea().center();
 			for (int i = 0; i < teamSet.size(); i++) {
 				Team team = teamSet.get(i);
 				Vector2 spawnPosition = config.getSpawnSpots()[i];
 				spawnTeam(team, spawnPosition);
 			}
 			if (gameMode.isMapLimitEnabled()) {
-				Vector2 center = config.getArea().center();
-				addPlugin(new MapLimitsManager(new Rectangle(center, gameMode.getMapLimitSize()), gameMode.getMapLimitDamagePerSecond()));
+				addPlugin(new MapLimitsManager(new Rectangle(spawnCenter, gameMode.getMapLimitSize()), gameMode.getMapLimitDamagePerSecond()));
 			}
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");
 		}
+	}
 
+	private void initializeEvents() {
+		for (Event event : gameMode.getEvents()) {
+			actionTimerManager.addActionTimer(new EventAction(this, event), event.getTime());
+		}
 	}
 
 	private void spawnTeam(Team team, Vector2 spawnPosition) {

@@ -6,14 +6,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.experimental.UtilityClass;
-
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.Vector2;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class CommandArgsUtils {
@@ -53,14 +53,14 @@ public class CommandArgsUtils {
 	}
 
 	public static PlayerEntity asPlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
-		if (executor instanceof PlayerEntity) {
+		if (executor instanceof Entity) {
 			return (PlayerEntity) executor;
 		} else {
 			throw new CommandExecutionException("Invalid call to " + arg + " : you are not a player");
 		}
 	}
 
-	public static PlayerEntity singlePlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
+	public static Entity singlePlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
 		Collection<PlayerEntity> collection = playerCollection(executor, arg);
 		if (collection.size() == 1) {
 			return collection.iterator().next();

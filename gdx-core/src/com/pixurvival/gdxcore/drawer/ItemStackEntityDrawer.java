@@ -34,7 +34,7 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 		TextureMetrics metrics = itemTexture.getMetrics();
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.getX() - metrics.getWorldWidth() / 2);
+		float x = (float) (drawPosition.getX());
 		float y = (float) (drawPosition.getY());
 		if (e.getItemStack().getQuantity() == 1) {
 			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x, y);

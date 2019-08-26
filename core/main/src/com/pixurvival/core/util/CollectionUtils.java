@@ -51,4 +51,19 @@ public class CollectionUtils {
 		sb.append("]");
 		return sb.toString();
 	}
+
+	public static <T> T get(Collection<T> collection, int index) {
+		if (collection instanceof List) {
+			return ((List<T>) collection).get(index);
+		} else {
+			int i = 0;
+			for (T e : collection) {
+				if (i == index) {
+					return e;
+				}
+				i++;
+			}
+			throw new IndexOutOfBoundsException();
+		}
+	}
 }

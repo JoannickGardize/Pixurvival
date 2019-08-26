@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.livingEntity.alteration.StatAmount;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,17 +45,14 @@ public class Effect extends IdentifiedElement {
 	private List<EffectTarget> targets = new ArrayList<>();
 
 	/**
+	 * Number of loop to do of delayedFollowingElements list
+	 */
+	private StatAmount repeatFollowingElements = new StatAmount();
+
+	/**
 	 * Must be ascending by delay.
 	 */
-	private List<FollowingElement> followingElements = new ArrayList<>();
+	private List<DelayedFollowingElement> delayedFollowingElements = new ArrayList<>();
 
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
-		super.initialize();
-	}
-
-	public int foo() {
-		return 0;
-	}
+	private transient int numberOfDelayedFollowingElements;
 }

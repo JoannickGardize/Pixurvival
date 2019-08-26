@@ -48,6 +48,10 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			}
 		});
 		health = getMaxHealth();
+		initializeAbilityData();
+	}
+
+	private void initializeAbilityData() {
 		AbilitySet<? extends Ability> abilitySet = getAbilitySet();
 		abilityData = new AbilityData[abilitySet.size()];
 		for (int i = 0; i < abilitySet.size(); i++) {

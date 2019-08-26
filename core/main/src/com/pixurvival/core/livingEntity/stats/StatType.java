@@ -15,7 +15,7 @@ public enum StatType {
 	AGILITY,
 	INTELLIGENCE,
 	MAX_HEALTH(s -> Math.max(100 + s.getValue(STRENGTH) * 10, 1), STRENGTH),
-	SPEED(s -> Math.max(8 + s.getValue(AGILITY) * 0.5f, 0), AGILITY),
+	SPEED(s -> Math.max(5 + s.getValue(AGILITY) * 0.4f, 0), AGILITY),
 	ARMOR(s -> s.getValue(STRENGTH) > 0 ? MathUtils.clamp(s.getValue(STRENGTH) / (s.getValue(STRENGTH) + 30), 0, 0.9f) : 0, STRENGTH);
 
 	private Function<StatSet, Float> formula = s -> 0f;
@@ -24,9 +24,5 @@ public enum StatType {
 	private StatType(Function<StatSet, Float> formula, StatType... dependencies) {
 		this.formula = formula;
 		this.dependencies = dependencies;
-	}
-
-	public StatType[] primaryStats() {
-		return new StatType[] { STRENGTH, AGILITY, INTELLIGENCE };
 	}
 }

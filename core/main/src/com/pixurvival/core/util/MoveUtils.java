@@ -8,12 +8,13 @@ import lombok.experimental.UtilityClass;
 public class MoveUtils {
 
 	/**
-	 * Recherche un angle ou l'entité passé en paramètre ne devrait pas entrer en
-	 * collision avec un obstacle, l'angle se veut le plus proche de l'angle cible
-	 * passé en paramètre. Cette méthode se veut peut gourmande en calcul, de ce
-	 * fait, elle peut parfois ne pas s'en sortir. Dans le pire des cas, elle
-	 * retourne un angle aléatoire. Le test de collision se fait par avancement
-	 * unité par unité, et peut donc ne pas voir un obstacle dans certains cas.
+	 * Recherche un angle ou l'entité passé en paramètre ne devrait pas entrer
+	 * en collision avec un obstacle, l'angle se veut le plus proche de l'angle
+	 * cible passé en paramètre. Cette méthode se veut peut gourmande en calcul,
+	 * de ce fait, elle peut parfois ne pas s'en sortir. Dans le pire des cas,
+	 * elle retourne un angle aléatoire. Le test de collision se fait par
+	 * avancement unité par unité, et peut donc ne pas voir un obstacle dans
+	 * certains cas.
 	 * 
 	 * @param entity
 	 *            L'entité que l'on souhaite déplacer
@@ -22,8 +23,8 @@ public class MoveUtils {
 	 * @param viewDistance
 	 *            La distance qui sera testé en ligne droite pour les collisions
 	 * @param angleGranularity
-	 *            Le changement d'angle qui sera effectué après un échec sur l'angle
-	 *            en cours.
+	 *            Le changement d'angle qui sera effectué après un échec sur
+	 *            l'angle en cours.
 	 * @return un angle de déplacement, se voulant le plus proche possible de
 	 *         l'angle souhaité, sans entrer en collision.
 	 */
@@ -36,7 +37,7 @@ public class MoveUtils {
 		for (int i = 1; i < maxLoop; i++) {
 			double currentAngle = targetMovingAngle + angleGranularity * (i / 2) * orientation;
 			if (!collideInDirection(entity, currentAngle, viewDistance)) {
-				return currentAngle;
+				return MathUtils.normalizeAngle(currentAngle);
 			}
 			orientation *= -1;
 		}

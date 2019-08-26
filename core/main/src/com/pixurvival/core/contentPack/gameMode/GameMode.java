@@ -1,10 +1,14 @@
 package com.pixurvival.core.contentPack.gameMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.IntegerInterval;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
+import com.pixurvival.core.contentPack.gameMode.event.Event;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
@@ -37,6 +41,8 @@ public class GameMode extends IdentifiedElement {
 
 	@Valid
 	private EndGameCondition endGameCondition = new NoEndCondition();
+
+	private List<Event> events = new ArrayList<>();
 
 	private double spawnSquareSize = 490;
 

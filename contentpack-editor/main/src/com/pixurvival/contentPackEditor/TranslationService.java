@@ -3,6 +3,8 @@ package com.pixurvival.contentPackEditor;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import com.pixurvival.core.util.CaseUtils;
+
 import lombok.Getter;
 
 public class TranslationService {
@@ -21,5 +23,9 @@ public class TranslationService {
 		} catch (MissingResourceException e) {
 			return "??" + key + "??";
 		}
+	}
+
+	public String getString(Enum<?> enumValue) {
+		return getString(CaseUtils.pascalToCamelCase(enumValue.getClass().getSimpleName()) + "." + CaseUtils.upperToCamelCase(enumValue.toString()));
 	}
 }

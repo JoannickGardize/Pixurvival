@@ -3,16 +3,20 @@ package com.pixurvival.contentPackEditor.component.gameMode;
 import java.awt.Container;
 
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.gameMode.event.Event;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 
 public class GameModeEditor extends RootElementEditor<GameMode> {
@@ -30,6 +34,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		DoubleInput spawnSquareSizeInput = new DoubleInput(Bounds.positive());
 		BooleanCheckBox mapLimitEnabledInput = new BooleanCheckBox();
 		DoubleInput mapLimitSizeInput = new DoubleInput(Bounds.positive());
+		ListEditor<Event>
 
 		// Binding
 
@@ -50,6 +55,9 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		JPanel mapConfigPanel = LayoutUtils.createHorizontalLabelledBox("gameMode.spawnSquareSize", spawnSquareSizeInput, "gameMode.mapLimitEnabled", mapLimitEnabledInput, "gameMode.mapLimitSize",
 				mapLimitSizeInput);
 
-		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 4, teamPanel, dayCycleDefinitionEditor, elementLinksPanel, mapConfigPanel, new JPanel());
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.addTab(TranslationService.getInstance().getString("generic.general"),
+				LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 4, teamPanel, dayCycleDefinitionEditor, elementLinksPanel, mapConfigPanel, new JPanel()));
+
 	}
 }

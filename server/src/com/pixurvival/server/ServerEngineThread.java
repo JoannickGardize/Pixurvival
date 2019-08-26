@@ -94,6 +94,7 @@ public class ServerEngineThread extends EngineThread {
 				session.extractChunksToSend(worldUpdate.getCompressedChunks());
 				if (byteBuffer.position() > 4 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
 					connection.sendUDP(worldUpdate);
+					game.notifyNetworkListeners(l -> l.sent(worldUpdate));
 				}
 				if (connection.isInventoryChanged()) {
 					connection.setInventoryChanged(false);
@@ -159,7 +160,7 @@ public class ServerEngineThread extends EngineThread {
 		int lengthPosition = byteBuffer.position();
 		byteBuffer.position(byteBuffer.position() + 2);
 		short length = 0;
-		for (PlayerEntity ally : player.getTeam().getAliveMembers()) {
+		for (Entity ally : player.getTeam().getAliveMembers()) {
 			if (ally != player && ally.getChunk() != null && !ally.getChunk().getPosition().insideSquare(player.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				byteBuffer.putLong(ally.getId());
 				byteBuffer.putDouble(ally.getPosition().getX());

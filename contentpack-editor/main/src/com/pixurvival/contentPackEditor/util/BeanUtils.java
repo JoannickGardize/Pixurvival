@@ -7,12 +7,19 @@ import java.util.Collection;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
+/**
+ * @author SharkHendrix
+ *
+ * @deprecated replaced by {@link BeanFactory}
+ */
 @UtilityClass
+@Deprecated
 public class BeanUtils {
 
 	@SneakyThrows

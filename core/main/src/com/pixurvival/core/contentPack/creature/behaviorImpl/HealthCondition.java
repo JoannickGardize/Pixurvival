@@ -5,6 +5,7 @@ import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
+// TODO ContentPackEditor
 public class HealthCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;

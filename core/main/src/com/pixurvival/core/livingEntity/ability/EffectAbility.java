@@ -3,10 +3,10 @@ package com.pixurvival.core.livingEntity.ability;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
-import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 
@@ -21,12 +21,12 @@ public class EffectAbility extends CooldownAbility {
 
 	private List<Alteration> selfAlterations;
 	private List<OffsetAngleEffect> offsetAngleEffects;
-	private Item ammunition;
+	private ItemStack ammunition = new ItemStack();
 
 	@Override
 	public void fire(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
-			if (!removeAmmunition(entity)) {
+			if (ammunition.getItem() != null && !removeAmmunition(entity)) {
 				return;
 			}
 			if (selfAlterations != null) {
@@ -42,7 +42,7 @@ public class EffectAbility extends CooldownAbility {
 	private boolean removeAmmunition(LivingEntity entity) {
 		if (ammunition != null && entity instanceof InventoryHolder) {
 			Inventory inventory = ((InventoryHolder) entity).getInventory();
-			return inventory.remove(ammunition, 1);
+			return inventory.remove(ammunition);
 		}
 		return true;
 	}

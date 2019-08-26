@@ -65,7 +65,8 @@ public class TiledMap {
 			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile()) {
 				@Override
 				public boolean isSolid() {
-					// Force outside tile to not be solid, so distant allies players
+					// Force outside tile to not be solid, so distant allies
+					// players
 					// will move correctly.
 					return false;
 				}
@@ -194,7 +195,7 @@ public class TiledMap {
 		if (world.isServer()) {
 			world.getEntityPool().get(EntityGroup.PLAYER).forEach(this::checkPlayerChunks);
 		} else {
-			PlayerEntity myPlayer = world.getMyPlayer();
+			Entity myPlayer = world.getMyPlayer();
 			if (myPlayer != null) {
 				checkPlayerChunks(myPlayer);
 			}

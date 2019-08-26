@@ -13,7 +13,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-// TODO Remettre en état le systeme de pack upload
+// TODO Remettre en ï¿½tat le systeme de pack upload
 @RequiredArgsConstructor
 public class ContentPackUploadManager extends Thread implements ServerGameListener {
 

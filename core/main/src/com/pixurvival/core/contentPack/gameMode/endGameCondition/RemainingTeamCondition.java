@@ -33,7 +33,7 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 
 	@Override
 	public void entityRemoved(Entity e) {
-		if (!(e instanceof PlayerEntity)) {
+		if (!(e instanceof Entity)) {
 			return;
 		}
 		World world = e.getWorld();

@@ -38,13 +38,18 @@ public class LayoutUtils {
 	}
 
 	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
+		addHorizontalLabelledItem(parent, labelKey, true, toolTipKey, component, gbc);
+	}
+
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
+
 		int previousAnchor = gbc.anchor;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		gbc.weightx = 0;
-		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
+		JLabel label = new JLabel(useTranslation ? TranslationService.getInstance().getString(labelKey) : labelKey);
 		parent.add(label, gbc);
 		gbc.anchor = previousAnchor;
 		gbc.gridx++;
@@ -134,15 +139,15 @@ public class LayoutUtils {
 		return BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
 	}
 
-	public static void addHorizontally(JPanel panel, Component... components) {
+	public static void addHorizontally(Container panel, Component... components) {
 		addHorizontally(panel, -1, components);
 	}
 
-	public static void addHorizontally(JPanel panel, int fillIndex, Component... components) {
+	public static void addHorizontally(Container panel, int fillIndex, Component... components) {
 		addHorizontally(panel, fillIndex, DEFAULT_GAP, components);
 	}
 
-	public static void addHorizontally(JPanel panel, int fillIndex, int gap, Component... components) {
+	public static void addHorizontally(Container panel, int fillIndex, int gap, Component... components) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -317,6 +322,13 @@ public class LayoutUtils {
 			((JComponent) result).setBorder(createBorder());
 			return result;
 		};
+	}
+
+	public static JPanel single(Component component) {
+		JPanel wrapper = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+		wrapper.add(component, gbc);
+		return wrapper;
 	}
 
 }

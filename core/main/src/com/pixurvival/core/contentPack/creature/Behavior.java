@@ -27,9 +27,9 @@ public abstract class Behavior extends IdentifiedElement {
 	public void update(CreatureEntity creature) {
 		BehaviorData behaviorData = creature.getBehaviorData();
 		if (creature.getWorld().getTime().getTimeMillis() >= behaviorData.getNextUpdateTimeMillis()) {
+			nextBehavior(creature);
 			behaviorData.beforeStep();
 			step(creature);
-			nextBehavior(creature);
 		}
 		if (behaviorData.mustCheckChangeCondition()) {
 			nextBehavior(creature);

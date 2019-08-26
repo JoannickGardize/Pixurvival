@@ -37,5 +37,4 @@ public class EquipmentAbilityProxy extends Ability {
 	private Ability getCurrentAbility(LivingEntity entity) {
 		return type.getAbilityGetter().apply(((PlayerEntity) entity).getEquipment());
 	}
-
 }

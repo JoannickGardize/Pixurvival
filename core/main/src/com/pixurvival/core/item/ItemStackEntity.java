@@ -139,9 +139,22 @@ public class ItemStackEntity extends Entity {
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
+	public void writeInitialization(ByteBuffer buffer) {
 		buffer.putShort((short) itemStack.getItem().getId());
 		buffer.putShort((short) itemStack.getQuantity());
+	}
+
+	@Override
+	public void applyInitialization(ByteBuffer buffer) {
+		short itemId = buffer.getShort();
+		short quantity = buffer.getShort();
+		if (itemStack == null) {
+			itemStack = new ItemStack(getWorld().getContentPack().getItems().get(itemId), quantity);
+		}
+	}
+
+	@Override
+	public void writeUpdate(ByteBuffer buffer) {
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
 		buffer.put((byte) state.ordinal());
@@ -167,11 +180,6 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		short itemId = buffer.getShort();
-		short quantity = buffer.getShort();
-		if (itemStack == null) {
-			itemStack = new ItemStack(getWorld().getContentPack().getItems().get(itemId), quantity);
-		}
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		state = State.values()[buffer.get()];
 		switch (state) {

@@ -46,9 +46,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean velocityChanged = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server will
-	 * send data of this entity at the next data send tick to clients that view this
-	 * entity. Must be true at initialization to send the new entity data.
+	 * Indicate if the state of this entity has changed, if true, the server
+	 * will send data of this entity at the next data send tick to clients that
+	 * view this entity. Must be true at initialization to send the new entity
+	 * data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -154,6 +155,29 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract double getCollisionRadius();
 
+	/**
+	 * Write data required before a call to {@link this#initialize()}.
+	 * 
+	 * @param buffer
+	 */
+	public void writeInitialization(ByteBuffer buffer) {
+		// Nothing by default
+	}
+
+	/**
+	 * Apply data required before a call to {@link this#initialize()}.
+	 * 
+	 * @param buffer
+	 */
+	public void applyInitialization(ByteBuffer buffer) {
+		// Nothing by default
+	}
+
+	/**
+	 * Write data that prequisites a call {@link this#initialize()}.
+	 * 
+	 * @param buffer
+	 */
 	public abstract void writeUpdate(ByteBuffer buffer);
 
 	public abstract void applyUpdate(ByteBuffer buffer);
@@ -206,7 +230,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of
+	 * {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position

@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,8 @@ public class EquipmentActionRequest implements IPlayerActionRequest {
 
 	@Override
 	public void apply(PlayerEntity player) {
-		if (player.getInventory().getHeldItemStack() == null || Equipment.canEquip(index, player.getInventory().getHeldItemStack())) {
+		if ((player.getInventory().getHeldItemStack() == null || Equipment.canEquip(index, player.getInventory().getHeldItemStack()))
+				&& !(player.getCurrentAbility() instanceof EquipmentAbilityProxy)) {
 			ItemStack previousEquipment = player.getEquipment().get(index);
 			player.getEquipment().set(index, player.getInventory().getHeldItemStack());
 			player.getInventory().setHeldItemStack(previousEquipment);

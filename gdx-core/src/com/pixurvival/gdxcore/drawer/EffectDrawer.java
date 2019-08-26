@@ -16,7 +16,14 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, EffectEntity e) {
-		// TODO
+		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getEffect().getSpriteSheet());
+		if (textureAnimationSet.getShadow() != null) {
+			DrawData data = (DrawData) e.getCustomData();
+			Vector2 drawPosition = data.getDrawPosition();
+			float x = (float) (drawPosition.getX() - textureAnimationSet.getShadowWidth() / 2);
+			float y = (float) drawPosition.getY();
+			batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
+		}
 	}
 
 	@Override
@@ -39,5 +46,4 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 	@Override
 	public void topDraw(Batch batch, EffectEntity e) {
 	}
-
 }

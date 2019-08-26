@@ -45,7 +45,8 @@ public class WorldUpdate implements Poolable {
 		public void write(Kryo kryo, Output output, WorldUpdate object) {
 			output.writeLong(object.worldId);
 			output.writeLong(object.updateId);
-			output.writeInt(object.entityUpdateByteBuffer.position());
+			object.entityUpdateLength = object.entityUpdateByteBuffer.position();
+			output.writeInt(object.entityUpdateLength);
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
 			KryoUtils.writeUnspecifiedClassList(kryo, output, object.structureUpdates);
 			KryoUtils.writeUniqueClassList(kryo, output, object.playerData);

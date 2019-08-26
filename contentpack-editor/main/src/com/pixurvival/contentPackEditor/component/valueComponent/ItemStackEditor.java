@@ -18,9 +18,12 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, IconService.getInstance()::get);
-
 	public ItemStackEditor() {
+		this(true);
+	}
+
+	public ItemStackEditor(boolean itemRequired) {
+		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, IconService.getInstance()::get, itemRequired);
 		IntegerInput quantityInput = new IntegerInput(Bounds.min(1));
 
 		bind(itemChooser, ItemStack::getItem, ItemStack::setItem);

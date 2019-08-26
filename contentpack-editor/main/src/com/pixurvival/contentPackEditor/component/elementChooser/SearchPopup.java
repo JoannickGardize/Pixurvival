@@ -5,12 +5,9 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,23 +16,20 @@ import java.util.function.Supplier;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 
 import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
+import com.pixurvival.contentPackEditor.component.util.RelativePopup;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class SearchPopup<T extends IdentifiedElement> extends JDialog {
+public class SearchPopup<T extends IdentifiedElement> extends RelativePopup {
 
 	public static final String ELEMENT_SELECTED_ACTION = "ELEMENT_SELECTED_ACTION";
 
@@ -64,11 +58,8 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 
 	public SearchPopup(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider) {
-		super(JOptionPane.getRootFrame());
 		this.itemsSupplier = itemsSupplier;
 		this.iconProvider = iconProvider;
-		setUndecorated(true);
-		getRootPane().setBorder((Border) UIManager.get("PopupMenu.border"));
 		Container content = getContentPane();
 		selectionModel = new SearchPopupSelectionModel(resultPanel);
 		JButton removeButton = new JButton("X");
@@ -78,17 +69,6 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 		content.setLayout(new BorderLayout(0, 2));
 		content.add(searchBar, BorderLayout.NORTH);
 		content.add(resultPanel, BorderLayout.CENTER);
-		addWindowFocusListener(new WindowFocusListener() {
-
-			@Override
-			public void windowLostFocus(WindowEvent e) {
-				setVisible(false);
-			}
-
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-			}
-		});
 		searchField.getDocument().addDocumentListener(new DocumentAdapter(e -> updateSearchList()));
 		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), SearchPopupSelectionModel.NEXT_SELECTION_ACTION);
 		searchField.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), SearchPopupSelectionModel.PREVIOUS_SELECTION_ACTION);
@@ -126,10 +106,9 @@ public class SearchPopup<T extends IdentifiedElement> extends JDialog {
 		listeners.add(l);
 	}
 
+	@Override
 	public void show(Component relativeTo) {
-		Point p = relativeTo.getLocationOnScreen();
-		setLocation(p.x, p.y + relativeTo.getHeight());
-		setVisible(true);
+		super.show(relativeTo);
 		searchField.requestFocus();
 	}
 

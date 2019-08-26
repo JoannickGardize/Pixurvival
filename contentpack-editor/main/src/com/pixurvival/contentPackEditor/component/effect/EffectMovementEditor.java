@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
+import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
 import com.pixurvival.core.contentPack.effect.EffectMovement;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.StaticEffectMovement;
@@ -40,8 +42,16 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 
 		// LinearEffectMovement
 		DoubleInput speedInput = new DoubleInput(Bounds.positive());
+		BooleanCheckBox destroyAtTargetPositionCheckBox = new BooleanCheckBox();
 		bind(speedInput, LinearEffectMovement::getSpeed, LinearEffectMovement::setSpeed, LinearEffectMovement.class);
-		list.add(new ClassEntry(LinearEffectMovement.class, LayoutUtils.labelled("statType.speed", speedInput)));
+		bind(destroyAtTargetPositionCheckBox, LinearEffectMovement::isDestroyAtTargetPosition, LinearEffectMovement::setDestroyAtTargetPosition, LinearEffectMovement.class);
+		list.add(new ClassEntry(LinearEffectMovement.class,
+				LayoutUtils.createHorizontalLabelledBox("effectMovementEditor.destroyAtTargetPosition", destroyAtTargetPositionCheckBox, "statType.speed", speedInput)));
+
+		// BackToOriginEffectMovement
+		speedInput = new DoubleInput(Bounds.positive());
+		bind(speedInput, BackToOriginEffectMovement::getSpeed, BackToOriginEffectMovement::setSpeed, BackToOriginEffectMovement.class);
+		list.add(new ClassEntry(BackToOriginEffectMovement.class, LayoutUtils.labelled("statType.speed", speedInput)));
 
 		return list;
 	}

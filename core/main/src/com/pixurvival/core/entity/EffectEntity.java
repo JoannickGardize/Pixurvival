@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.List;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
-import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -33,6 +33,10 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	private Collection<Object> checkList;
 
+	private int numberOfDelayedFollowingElements;
+
+	private long duration;
+
 	public EffectEntity(OffsetAngleEffect definition, TeamMember ancestor) {
 		this.definition = definition;
 		this.ancestor = ancestor;
@@ -48,7 +52,16 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			setMovingAngle(ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + definition.getOffsetAngle() + getWorld().getRandom().nextAngle(definition.getRandomAngle()));
 			definition.getEffect().getMovement().initialize(this);
 			creationTime = getWorld().getTime().getTimeMillis();
+			List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
+			if (!delayedFollowingElements.isEmpty()) {
+				int repeat = (int) definition.getEffect().getRepeatFollowingElements().getValue(this);
+				numberOfDelayedFollowingElements = delayedFollowingElements.size() * repeat + 1;
+				duration = Math.max(definition.getEffect().getDuration(), delayedFollowingElements.get(delayedFollowingElements.size() - 1).getDelay() * repeat);
+			} else {
+				duration = definition.getEffect().getDuration();
+			}
 		}
+
 	}
 
 	@Override
@@ -57,7 +70,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		effect.getMovement().update(this);
 		if (getWorld().isServer()) {
 			long age = getWorld().getTime().getTimeMillis() - creationTime;
-			if (age > effect.getDuration() || effect.isSolid() && getWorld().getMap().collide(this)) {
+			if (age > duration || effect.isSolid() && getWorld().getMap().collide(this)) {
 				setAlive(false);
 			}
 			processFollowingElements(age);
@@ -81,12 +94,17 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	private void processFollowingElements(long age) {
 		Effect effect = definition.getEffect();
-		if (nextFollowingElementIndex < effect.getFollowingElements().size()) {
-			FollowingElement nextFollowingElement;
-			List<FollowingElement> followingElements = effect.getFollowingElements();
-			while (nextFollowingElementIndex < followingElements.size() && age >= (nextFollowingElement = followingElements.get(nextFollowingElementIndex)).getDelay()) {
-				nextFollowingElement.apply(this);
+		if (nextFollowingElementIndex < numberOfDelayedFollowingElements) {
+			DelayedFollowingElement nextDelayedFollowingElement;
+			List<DelayedFollowingElement> followingElements = effect.getDelayedFollowingElements();
+			int currentIndex = nextFollowingElementIndex % followingElements.size();
+			int repeatCount = nextFollowingElementIndex / followingElements.size();
+			long maxDelay = followingElements.get(followingElements.size() - 1).getDelay();
+			while (nextFollowingElementIndex < numberOfDelayedFollowingElements && age >= (nextDelayedFollowingElement = followingElements.get(currentIndex)).getDelay() + repeatCount * maxDelay) {
+				nextDelayedFollowingElement.getFollowingElement().apply(this);
 				nextFollowingElementIndex++;
+				currentIndex = nextFollowingElementIndex % followingElements.size();
+				repeatCount = nextFollowingElementIndex / followingElements.size();
 			}
 		}
 	}
@@ -102,8 +120,17 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
+	public void writeInitialization(ByteBuffer buffer) {
 		buffer.putShort((short) definition.getEffect().getId());
+	}
+
+	@Override
+	public void applyInitialization(ByteBuffer buffer) {
+		definition.setEffect(getWorld().getContentPack().getEffects().get(buffer.getShort()));
+	}
+
+	@Override
+	public void writeUpdate(ByteBuffer buffer) {
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
@@ -114,7 +141,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		definition.setEffect(getWorld().getContentPack().getEffects().get(buffer.getShort()));
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
 		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getDouble());

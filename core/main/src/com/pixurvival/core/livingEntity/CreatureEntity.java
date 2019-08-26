@@ -131,14 +131,12 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
-		super.writeUpdate(buffer);
+	public void writeInitialization(ByteBuffer buffer) {
 		buffer.putShort((short) definition.getId());
 	}
 
 	@Override
-	public void applyUpdate(ByteBuffer buffer) {
-		super.applyUpdate(buffer);
+	public void applyInitialization(ByteBuffer buffer) {
 		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
 	}
 

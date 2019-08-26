@@ -31,8 +31,10 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
+import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
 import com.pixurvival.core.contentPack.effect.FollowingCreature;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
@@ -50,6 +52,8 @@ import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
+import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
@@ -177,6 +181,10 @@ public class ContentPackSerializer {
 		addClassTag(representer, IsDayCondition.class);
 		addClassTag(representer, FollowingEffect.class);
 		addClassTag(representer, FollowingCreature.class);
+		addClassTag(representer, AddItemAlteration.class);
+		addClassTag(representer, BackToOriginEffectMovement.class);
+		addClassTag(representer, VanishBehavior.class);
+		addClassTag(representer, FollowingElementAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

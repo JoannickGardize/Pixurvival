@@ -13,7 +13,5 @@ public abstract class FollowingElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private long delay;
-
 	public abstract void apply(EffectEntity effectEntity);
 }

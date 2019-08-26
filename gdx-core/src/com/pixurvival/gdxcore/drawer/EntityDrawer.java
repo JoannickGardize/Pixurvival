@@ -51,5 +51,7 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 	public void drawDebug(ShapeRenderer renderer, E e) {
 		renderer.setColor(Color.WHITE);
 		renderer.circle((float) e.getPosition().getX(), (float) e.getPosition().getY(), (float) e.getCollisionRadius(), 16);
+		renderer.line((float) e.getPosition().getX(), (float) e.getPosition().getY(), (float) e.getPosition().getX() + (float) Math.cos(e.getMovingAngle()),
+				(float) e.getPosition().getY() + (float) Math.sin(e.getMovingAngle()));
 	}
 }

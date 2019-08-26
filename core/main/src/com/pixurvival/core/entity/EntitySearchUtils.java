@@ -1,6 +1,5 @@
 package com.pixurvival.core.entity;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.Positionnable;

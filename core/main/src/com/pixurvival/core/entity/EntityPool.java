@@ -35,6 +35,11 @@ public class EntityPool extends EntityCollection {
 	@Override
 	public void add(Entity e) {
 		newEntities.add(e);
+		if (world.isServer()) {
+			e.setWorld(world);
+			e.setId(nextId++);
+		}
+		e.initialize();
 	}
 
 	/**
@@ -103,9 +108,13 @@ public class EntityPool extends EntityCollection {
 		super.remove(entity);
 	}
 
+	/**
+	 * Force adding the pending new entities without a call to update().
+	 */
 	public void flushNewEntities() {
 		for (Entity e : newEntities) {
-			internalAdd(e);
+			super.add(e);
+			listeners.forEach(l -> l.entityAdded(e));
 		}
 		newEntities.clear();
 	}
@@ -125,13 +134,4 @@ public class EntityPool extends EntityCollection {
 		return e;
 	}
 
-	private void internalAdd(Entity e) {
-		if (world.isServer()) {
-			e.setWorld(world);
-			e.setId(nextId++);
-		}
-		super.add(e);
-		e.initialize();
-		listeners.forEach(l -> l.entityAdded(e));
-	}
 }

@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum TargetType {
 	ALL_ENEMIES((self, other) -> self.getTeam() != other.getTeam()),
 	ALL_ALLIES((self, other) -> self.getTeam() == other.getTeam()),
-	OTHER_ALLIES((self, other) -> self.getTeam() == other.getTeam() && self != other);
+	OTHER_ALLIES((self, other) -> self.getTeam() == other.getTeam() && self != other),
+	ORIGIN((self, other) -> other == self.getOrigin());
 
 	private @Getter BiPredicate<TeamMember, LivingEntity> test;
 }

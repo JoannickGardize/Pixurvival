@@ -7,19 +7,19 @@ public class WorldRandom extends Random {
 	private static final long serialVersionUID = 1L;
 
 	public double nextAngle() {
-		return nextDouble() * Math.PI * 2;
+		return nextDouble() * Math.PI * 2 - Math.PI;
 	}
 
 	/**
-	 * @param range
-	 * @return random value in range [-range / 2 ; range / 2]
+	 * @param halfRange
+	 * @return random value in range [-range ; range]
 	 */
-	public double nextAngle(double range) {
-		if (range == 0) {
+	public double nextAngle(double halfRange) {
+		if (halfRange == 0) {
 			// Avoid the cost of nextDouble()
 			return 0;
 		} else {
-			return nextDouble() * range - range / 2;
+			return nextDouble() * halfRange * 2 - halfRange;
 		}
 	}
 

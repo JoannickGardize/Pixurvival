@@ -10,7 +10,7 @@ import lombok.Setter;
 /**
  * @author SharkHendrix
  * @deprecated l'existence de ce type d'EffectMovement est remise en cause, elle
- *             pause des problèmes depuis l'existance des EffectAncestor, et
+ *             pause des problèmes depuis l'existance des Effect Ancestors, et
  *             n'est peut être pas cohérente dans le style de jeu recherché.
  */
 @Deprecated
