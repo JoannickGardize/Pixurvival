@@ -149,7 +149,10 @@ public class World extends PluginHolder<World> implements ChatSender {
 		actionTimerManager.update();
 		entityPool.update();
 		map.update();
-		gameMode.getEndGameCondition().update(this);
+		if (gameMode.getEndGameCondition().update(this)) {
+			// TODO
+			Log.info("END OF GAME !");
+		}
 	}
 
 	public void unload() {

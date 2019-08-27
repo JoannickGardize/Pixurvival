@@ -13,7 +13,7 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 
 	private static final long serialVersionUID = 1L;
 
-	private int remainingTeamCondition;
+	private int remainingTeamCondition = 1;
 
 	@Override
 	public void initialize(World world) {
@@ -33,7 +33,7 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 
 	@Override
 	public void entityRemoved(Entity e) {
-		if (!(e instanceof Entity)) {
+		if (!(e instanceof PlayerEntity)) {
 			return;
 		}
 		World world = e.getWorld();
@@ -43,7 +43,7 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 				remainingTeam++;
 			}
 		}
-		if (remainingTeam == remainingTeamCondition) {
+		if (remainingTeam <= remainingTeamCondition) {
 			world.setEndGameConditionData(true);
 		}
 	}

@@ -7,6 +7,11 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.Vector2;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class PlayerProximityEventPosition implements EventPosition {
 
 	private double distance;

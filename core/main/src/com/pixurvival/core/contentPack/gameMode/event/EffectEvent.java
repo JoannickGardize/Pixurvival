@@ -11,6 +11,11 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.Team;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class EffectEvent extends Event {
 
 	private static final long serialVersionUID = 1L;

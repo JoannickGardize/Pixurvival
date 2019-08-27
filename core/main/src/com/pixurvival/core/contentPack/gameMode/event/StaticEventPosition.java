@@ -6,6 +6,11 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.Vector2;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class StaticEventPosition implements EventPosition {
 
 	/**
