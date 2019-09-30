@@ -103,8 +103,9 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is not
-	 * available nothing happen. The items are taken in priority from the end.
+	 * Try to take the given item with the given quantity. If the quantity is
+	 * not available nothing happen. The items are taken in priority from the
+	 * end.
 	 * 
 	 * @param itemStack
 	 *            The ItemStack to remove
@@ -120,8 +121,9 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is not
-	 * available nothing happen. The items are taken in priority from the end.
+	 * Try to take the given item with the given quantity. If the quantity is
+	 * not available nothing happen. The items are taken in priority from the
+	 * end.
 	 * 
 	 * @param item
 	 * @param quantity
@@ -170,9 +172,9 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
-	 * will be stacked with similar items if possible. It can be splited into
-	 * different slots if necessary.
+	 * Try to add the maximum quantity of the given ItemStack to this inventory,
+	 * it will be stacked in priority with similar items if possible. It can be
+	 * split into different slots if necessary.
 	 * 
 	 * @param itemStack
 	 *            The ItemStack to add.
@@ -193,10 +195,14 @@ public class Inventory {
 				remainingQuantity = overflow;
 			}
 		}
-		int emptySlot = findEmptySlot();
-		if (emptySlot != -1) {
-			setSlot(emptySlot, itemStack.copy(remainingQuantity));
-			return null;
+		int emptySlot = 0;
+		while ((emptySlot = findEmptySlot(emptySlot)) != -1) {
+			int maxQuantity = Math.min(remainingQuantity, itemStack.getItem().getMaxStackSize());
+			setSlot(emptySlot, itemStack.copy(maxQuantity));
+			remainingQuantity -= maxQuantity;
+			if (remainingQuantity <= 0) {
+				return null;
+			}
 		}
 		return itemStack.copy(remainingQuantity);
 	}
@@ -211,7 +217,11 @@ public class Inventory {
 	}
 
 	public int findEmptySlot() {
-		for (int i = 0; i < slots.length; i++) {
+		return findEmptySlot(0);
+	}
+
+	public int findEmptySlot(int startIndex) {
+		for (int i = startIndex; i < slots.length; i++) {
 			if (slots[i] == null) {
 				return i;
 			}

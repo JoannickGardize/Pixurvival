@@ -37,6 +37,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	public static final String SKIN = "kenney-pixel/skin/skin.json";
 	// public static final String SKIN = "skin/pixurvival.json";
 	public static final String DEFAULT_FONT = "default_font.ttf";
+	public static final String DEFAULT_ITALIC_FONT = "default_italic_font.ttf";
 	public static final String OVERLAY_FONT = "overlay_font.ttf";
 	public static final String ARROW = "arrow.png";
 
@@ -66,6 +67,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	public static BitmapFont getDefaultFont() {
 		return instance.assetManager.get(DEFAULT_FONT, BitmapFont.class);
+	}
+
+	public static BitmapFont getDefaultItalicFont() {
+		return instance.assetManager.get(DEFAULT_ITALIC_FONT, BitmapFont.class);
 	}
 
 	public static ContentPackTextures getContentPackTextures() {
@@ -114,6 +119,11 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 		assetManager.load(DEFAULT_FONT, BitmapFont.class, defaultFontParams);
 
+		FreeTypeFontLoaderParameter defaultItalicFontParams = new FreeTypeFontLoaderParameter();
+		defaultItalicFontParams.fontFileName = "OpenSans-Italic.ttf";
+		defaultItalicFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 25);
+		assetManager.load(DEFAULT_ITALIC_FONT, BitmapFont.class, defaultItalicFontParams);
+
 		FreeTypeFontLoaderParameter overlayFontParams = new FreeTypeFontLoaderParameter();
 		overlayFontParams.fontFileName = "OpenSans-Bold.ttf";
 		overlayFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 20);
@@ -128,6 +138,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		getDefaultFont().getData().markupEnabled = true;
 		skin = new Skin();
 		skin.add("default", getDefaultFont(), BitmapFont.class);
+		skin.add("default-italic", getDefaultItalicFont(), BitmapFont.class);
 		skin.addRegions(new TextureAtlas(Gdx.files.internal("kenney-pixel/skin/skin.atlas")));
 		skin.load(Gdx.files.internal(SKIN));
 
@@ -151,7 +162,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private void setScreenInternal(Class<? extends Screen> screenClass) {
 		Screen screen = screens.computeIfAbsent(screenClass, k -> {
 			try {
-				return (Screen) k.newInstance();
+				return k.newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException e) {
 				Log.error("Error when trying to instantiate new Screen", e);
 				return null;

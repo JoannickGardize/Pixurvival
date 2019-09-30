@@ -1,12 +1,12 @@
 package com.pixurvival.gdxcore.ui;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.gdxcore.PixurvivalGame;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class InventorySlot extends Button {
 
@@ -22,7 +22,7 @@ public class InventorySlot extends Button {
 
 		itemStackDrawer = new ItemStackDrawer(this, 2);
 
-		this.addListener(new InventorySlotInputListener(slotIndex));
+		this.addListener(new InventorySlotInputListener(inventory, slotIndex));
 	}
 
 	@Override

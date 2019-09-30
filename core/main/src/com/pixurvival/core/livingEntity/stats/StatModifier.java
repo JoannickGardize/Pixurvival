@@ -16,8 +16,8 @@ public class StatModifier implements Serializable {
 		RELATIVE;
 	}
 
-	private OperationType operationType;
 	private StatType statType;
+	private OperationType operationType;
 	private float value;
 
 }

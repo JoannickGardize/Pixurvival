@@ -1,17 +1,21 @@
 package com.pixurvival.gdxcore.ui;
 
+import lombok.AllArgsConstructor;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
-
-import lombok.AllArgsConstructor;
+import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 
 @AllArgsConstructor
 public class InventorySlotInputListener extends InputListener {
 
+	private Inventory inventory;
 	private int slotIndex;
 
 	@Override
@@ -33,6 +37,18 @@ public class InventorySlotInputListener extends InputListener {
 				PixurvivalGame.getClient().sendAction(new InventoryActionRequest(type, (short) ((InventorySlot) actor).getSlotIndex()));
 			}
 		}
+	}
+
+	@Override
+	public boolean mouseMoved(InputEvent event, float x, float y) {
+		ItemStack itemStack = inventory.getSlot(slotIndex);
+		if (itemStack == null) {
+			ItemTooltip.getInstance().setVisible(false);
+		} else {
+			ItemTooltip.getInstance().setItem(itemStack.getItem());
+			ItemTooltip.getInstance().setVisible(true);
+		}
+		return true;
 	}
 
 	private InventoryActionRequest.Type getButtonActionType(int button) {

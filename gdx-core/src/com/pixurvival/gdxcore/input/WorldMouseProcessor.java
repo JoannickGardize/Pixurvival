@@ -2,7 +2,8 @@ package com.pixurvival.gdxcore.input;
 
 import com.badlogic.gdx.InputAdapter;
 import com.pixurvival.gdxcore.input.InputButton.Type;
-import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
+import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
+import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 
 public class WorldMouseProcessor extends InputAdapter {
 
@@ -32,5 +33,6 @@ public class WorldMouseProcessor extends InputAdapter {
 
 	private void processMouseMoved() {
 		ItemCraftTooltip.getInstance().setVisible(false);
+		ItemTooltip.getInstance().setVisible(false);
 	}
 }

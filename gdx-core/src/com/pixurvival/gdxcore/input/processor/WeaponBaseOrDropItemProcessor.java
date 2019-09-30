@@ -18,6 +18,7 @@ public class WeaponBaseOrDropItemProcessor implements InputActionProcessor {
 	public void buttonDown() {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		ItemStack heldItemStack = myPlayer.getInventory().getHeldItemStack();
+		System.out.println("held" + heldItemStack);
 		if (heldItemStack != null) {
 			DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, Gdx.input.getX(), Gdx.input.getY()));
 			PixurvivalGame.getClient().sendAction(request);

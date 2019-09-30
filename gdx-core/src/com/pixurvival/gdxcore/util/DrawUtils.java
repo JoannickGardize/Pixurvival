@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.GameConstants;
@@ -29,6 +30,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DrawUtils {
+
+	public static final float TOOLTIP_OFFSET = 10;
 
 	private static final Rectangle tmpRectangle = new Rectangle();
 
@@ -113,6 +116,21 @@ public class DrawUtils {
 				}
 				action.accept(chunk);
 			}
+		}
+	}
+
+	public static void setTooltipPosition(Actor actor) {
+		int x = Gdx.input.getX();
+		int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+		if (x < Gdx.graphics.getWidth() / 2) {
+			actor.setX(Math.min(x + TOOLTIP_OFFSET, Gdx.graphics.getWidth() - actor.getWidth()));
+		} else {
+			actor.setX(Math.max(x - TOOLTIP_OFFSET - actor.getWidth(), 0));
+		}
+		if (y < Gdx.graphics.getHeight() / 2) {
+			actor.setY(Math.min(y + TOOLTIP_OFFSET, Gdx.graphics.getHeight() - actor.getHeight()));
+		} else {
+			actor.setY(Math.max(y - TOOLTIP_OFFSET - actor.getHeight(), 0));
 		}
 	}
 }

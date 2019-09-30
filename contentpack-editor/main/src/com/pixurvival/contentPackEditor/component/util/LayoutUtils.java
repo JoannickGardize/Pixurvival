@@ -20,13 +20,13 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
+import lombok.experimental.UtilityClass;
+
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class LayoutUtils {
@@ -41,8 +41,11 @@ public class LayoutUtils {
 		addHorizontalLabelledItem(parent, labelKey, true, toolTipKey, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
-
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component,
+			GridBagConstraints gbc) {
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets.top = 2;
+		gbc.insets.bottom = 1;
 		int previousAnchor = gbc.anchor;
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE;

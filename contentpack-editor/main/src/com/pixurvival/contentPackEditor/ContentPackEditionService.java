@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import lombok.Getter;
+import lombok.SneakyThrows;
+
+import com.pixurvival.contentPackEditor.component.translation.TranslationUpdateManager;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
@@ -20,9 +24,6 @@ import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.util.CaseUtils;
-
-import lombok.Getter;
-import lombok.SneakyThrows;
 
 public class ContentPackEditionService {
 
@@ -48,6 +49,9 @@ public class ContentPackEditionService {
 		});
 
 		initializers.put(ElementType.STRUCTURE, Structure::new);
+
+		// Register translation related events
+		new TranslationUpdateManager();
 	}
 
 	@SneakyThrows

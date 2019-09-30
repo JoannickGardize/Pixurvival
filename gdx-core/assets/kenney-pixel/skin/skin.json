@@ -1,6 +1,7 @@
 {
   com.badlogic.gdx.graphics.Color: {
     white: { r: 1, g: 1, b: 1, a: 1 },
+    red: { r: 1, g: 0, b: 0, a: 1 },
     gray: { r: 0.5, g: 0.5, b: 0.5, a: 1 },
     black: { r: 0, g: 0, b: 0, a: 1 },
     dark: { r: 0.2, g: 0.2, b: 0.2, a: 1 },
@@ -120,7 +121,10 @@
   },
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
     default: { font: default, fontColor: font },
-    white: { font: default, fontColor: white }
+    white: { font: default, fontColor: white },
+    white-italic: { font: default-italic, fontColor: white },
+    red: { font: default, fontColor: red },
+    green: { font: default, fontColor: green }
   },
   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
     default: { fontColorUnselected: font, selection: selection, fontColorSelected: fontDown, font: default },

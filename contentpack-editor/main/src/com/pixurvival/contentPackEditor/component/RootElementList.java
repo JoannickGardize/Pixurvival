@@ -19,6 +19,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.TranslationService;
@@ -31,13 +35,10 @@ import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
+import com.pixurvival.contentPackEditor.event.ElementRenamedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 public class RootElementList<E extends IdentifiedElement> extends JPanel {
 
@@ -82,10 +83,12 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 		JButton renameButton = new CPEButton("generic.rename", () -> {
 			ElementEntry entry = list.getSelectedValue();
 			if (entry != null) {
-				String name = showChooseNameDialog();
+				String oldName = entry.getElement().getName();
+				String name = showChooseNameDialog(oldName);
 				if (name != null) {
 					entry.getElement().setName(name);
 					repaint();
+					EventManager.getInstance().fire(new ElementRenamedEvent(oldName, entry.getElement()));
 				}
 			}
 		});
@@ -114,7 +117,7 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	}
 
 	private void addClick() {
-		String name = showChooseNameDialog();
+		String name = showChooseNameDialog("");
 		if (name != null) {
 			ContentPackEditionService.getInstance().addElement(elementType, name);
 		}
@@ -222,8 +225,9 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 		list.repaint();
 	}
 
-	private String showChooseNameDialog() {
-		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this), TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), "");
+	private String showChooseNameDialog(String defaultName) {
+		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this),
+				TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), defaultName);
 		if (name == null) {
 			return null;
 		}

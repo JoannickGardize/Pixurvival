@@ -7,14 +7,18 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -32,6 +36,11 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
 		DoubleInput lightEmissionRadiusInput = new DoubleInput(Bounds.positive());
 		TimeInput durationInput = new TimeInput();
+		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
+			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get, true);
+			tileChooser.setBorder(LayoutUtils.createBorder());
+			return tileChooser;
+		}, () -> null);
 
 		// Binding
 
@@ -39,6 +48,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		bind(spriteSheetChooser, Structure::getSpriteSheet, Structure::setSpriteSheet);
 		bind(dimensionsEditor, Structure::getDimensions, Structure::setDimensions);
 		bind(durationInput, Structure::getDuration, Structure::setDuration);
+		bind(bannedTilesEditor, Structure::getBannedTiles, Structure::setBannedTiles);
 		bind(lightEmissionRadiusInput, Structure::getLightEmissionRadius, Structure::setLightEmissionRadius);
 
 		// Layouting
@@ -62,13 +72,8 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.lightEmissionRadius", "structureEditor.lightEmissionRadius.tooltip", lightEmissionRadiusInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
 
-		gbc = LayoutUtils.createGridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 1;
-		add(northPanel, gbc);
-		gbc.gridy++;
-		gbc.weighty = 1;
-		add(getSpecificPartPanel(), gbc);
+		bannedTilesEditor.setBorder(LayoutUtils.createGroupBorder("structureEditor.bannedTiles"));
+		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 2, northPanel, bannedTilesEditor, getSpecificPartPanel());
 	}
 
 	@Override

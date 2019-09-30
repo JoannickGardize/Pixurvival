@@ -23,8 +23,6 @@ public class StructureGenerator implements Serializable {
 	@Valid
 	private List<HeightmapCondition> heightmapConditions = new ArrayList<>();
 
-	private List<Tile> bannedTiles = new ArrayList<>();
-
 	private transient double probabilityWeight;
 
 	private transient NavigableMap<Double, Structure> structureChooseMap;
@@ -42,10 +40,15 @@ public class StructureGenerator implements Serializable {
 	}
 
 	public Structure next(Tile tile, Random random) {
-		if (bannedTiles.contains(tile) || random.nextDouble() >= density) {
+		if (random.nextDouble() >= density) {
 			return null;
 		} else {
-			return structureProducer.next(random);
+			Structure structure = structureProducer.next(random);
+			if (structure.getBannedTiles().contains(tile)) {
+				return null;
+			} else {
+				return structure;
+			}
 		}
 	}
 }

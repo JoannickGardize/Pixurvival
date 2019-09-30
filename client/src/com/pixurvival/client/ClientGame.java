@@ -3,7 +3,12 @@ package com.pixurvival.client;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
@@ -32,11 +37,8 @@ import com.pixurvival.core.message.WorldReady;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor {
@@ -53,6 +55,8 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private double timeRequestTimer = 0;
 	private double deltaTimeMillis = 0;
 	private String[] gameBeginningCommands;
+	private @Getter @Setter List<Locale> localePriorityList = new ArrayList<>();
+	private @Getter Locale currentLocale;
 
 	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
@@ -63,6 +67,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			gameBeginningCommands = clientArgs.getOnGameBeginning().split(";");
 		} else {
 			gameBeginningCommands = new String[0];
+		}
+		localePriorityList.add(Locale.getDefault());
+		if (!Locale.getDefault().equals(Locale.US)) {
+			localePriorityList.add(Locale.US);
 		}
 	}
 
@@ -101,6 +109,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		try {
 			createWorld.getInventory().computeQuantities();
 			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
+			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());
 			removeAllPlugins();
 			notify(ClientGameListener::initializeGame);
 			addPlugin(new TargetPositionUpdateManager());
@@ -119,6 +128,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			e.printStackTrace();
 			return;
 		}
+		currentLocale = LocaleUtils.findBestMatch(localePriorityList, localGamePack.getTranslations().keySet());
 		world = World.createLocalWorld(localGamePack, gameModeId);
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {

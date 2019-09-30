@@ -5,13 +5,16 @@ import java.util.function.Consumer;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
+import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.ItemCraft;
+import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
@@ -43,10 +46,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final int CRAFT_ABILITY_ID = 0;
 	public static final int HARVEST_ABILITY_ID = 1;
-	public static final int WEAPON_BASE_ABILITY_ID = 2;
-	public static final int WEAPON_SPECIAL_ABILITY_ID = 3;
-	public static final int ACCESSORY1_SPECIAL_ABILITY_ID = 4;
-	public static final int ACCESSORY2_SPECIAL_ABILITY_ID = 5;
 	public static final int USE_ITEM_ABILITY_ID = 6;
 
 	private static final AbilitySet<Ability> PLAYER_ABILITY_SET = new AbilitySet<>();
@@ -83,6 +82,21 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 			}
 			if (newItemStack != null) {
 				((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+				if (equipmentIndex == Equipment.WEAPON_INDEX) {
+					WeaponItem weaponItem = (WeaponItem) newItemStack.getItem();
+					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId());
+					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getBaseAbility().getCooldown());
+					abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId());
+					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getSpecialAbility().getCooldown());
+				} else if (equipmentIndex == Equipment.ACCESSORY1_INDEX) {
+					AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
+					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId());
+					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
+				} else if (equipmentIndex == Equipment.ACCESSORY2_INDEX) {
+					AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
+					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId());
+					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
+				}
 			}
 		});
 	}
@@ -168,20 +182,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 			stopCurrentAbility();
 			return;
 		}
-		switch (type) {
-		case WEAPON_BASE:
-			startAbility(WEAPON_BASE_ABILITY_ID);
-			break;
-		case WEAPON_SPECIAL:
-			startAbility(WEAPON_SPECIAL_ABILITY_ID);
-			break;
-		case ACCESSORY1_SPECIAL:
-			startAbility(ACCESSORY1_SPECIAL_ABILITY_ID);
-			break;
-		case ACCESSORY2_SPECIAL:
-			startAbility(ACCESSORY2_SPECIAL_ABILITY_ID);
-			break;
-		}
+		startAbility(type.getAbilityId());
 	}
 
 	public PlayerData getData() {

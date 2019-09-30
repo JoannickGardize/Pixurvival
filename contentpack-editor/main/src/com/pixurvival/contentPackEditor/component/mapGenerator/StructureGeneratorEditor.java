@@ -7,12 +7,10 @@ import java.util.function.Supplier;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.IconService;
-import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
@@ -20,7 +18,6 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
 import com.pixurvival.core.contentPack.map.StructureGenerator;
-import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.structure.Structure;
 
 public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> {
@@ -35,11 +32,6 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 			return result;
 		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
-		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
-			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get, true);
-			tileChooser.setBorder(LayoutUtils.createBorder());
-			return tileChooser;
-		}, () -> null);
 		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class, IconService.getInstance()::get, ContentPack::getStructures);
 		DoubleInput densityInput = new DoubleInput(new Bounds(0, 1));
 
@@ -47,7 +39,6 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 
 		bind(densityInput, StructureGenerator::getDensity, StructureGenerator::setDensity);
 		bind(heightmapConditionsEditor, StructureGenerator::getHeightmapConditions, StructureGenerator::setHeightmapConditions);
-		bind(bannedTilesEditor, StructureGenerator::getBannedTiles, StructureGenerator::setBannedTiles);
 		bind(structureProducerEditor, StructureGenerator::getStructureProducer, StructureGenerator::setStructureProducer);
 
 		// Layouting
@@ -57,8 +48,6 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		JPanel wrapper = new JPanel();
 		wrapper.add(LayoutUtils.labelled("structureGeneratorEditor.density", densityInput));
 		heightmapConditionsEditor.setBorder(LayoutUtils.createGroupBorder("generic.conditions"));
-		bannedTilesEditor.setBorder(LayoutUtils.createGroupBorder("structureGeneratorEditor.bannedTiles"));
-		topPanel.add(LayoutUtils.createVerticalBox(heightmapConditionsEditor, bannedTilesEditor), BorderLayout.CENTER);
 		topPanel.add(wrapper, BorderLayout.EAST);
 		add(topPanel, BorderLayout.CENTER);
 		structureProducerEditor.setBorder(LayoutUtils.createGroupBorder("elementType.structure"));

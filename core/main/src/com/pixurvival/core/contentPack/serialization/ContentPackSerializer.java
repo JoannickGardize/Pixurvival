@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -70,6 +72,10 @@ public class ContentPackSerializer {
 
 	public static final String SERIALIZATION_ENTRY_NAME = "contentPack.yml";
 
+	private static final String RESOURCES_ROOT = "resources/";
+
+	private static final String TRANSLATIONS_ROOT = "translations/";
+
 	private File workingDirectory;
 	private Yaml yaml;
 	private NameAnchorGenerator nameAnchorGenerator = new NameAnchorGenerator();
@@ -121,10 +127,17 @@ public class ContentPackSerializer {
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
 				entry = enumeration.nextElement();
-				if (entry.getName().equals(SERIALIZATION_ENTRY_NAME)) {
+				if (entry.isDirectory()) {
 					continue;
 				}
-				contentPack.addResource(entry.getName(), FileUtils.readBytes(zipFile.getInputStream(entry)));
+				if (entry.getName().startsWith(RESOURCES_ROOT)) {
+					contentPack.addResource(entry.getName().substring(10), FileUtils.readBytes(zipFile.getInputStream(entry)));
+				} else if (entry.getName().startsWith(TRANSLATIONS_ROOT)) {
+					Properties properties = new Properties();
+					properties.load(zipFile.getInputStream(entry));
+					Locale locale = Locale.forLanguageTag(entry.getName().substring(25).split("\\.")[0]);
+					contentPack.addTranslation(locale, properties);
+				}
 			}
 
 			return contentPack;
@@ -139,8 +152,12 @@ public class ContentPackSerializer {
 			nameAnchorGenerator.reset();
 			yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream));
 			for (Entry<String, byte[]> resource : contentPack.getResources().entrySet()) {
-				zipOutputStream.putNextEntry(new ZipEntry(resource.getKey()));
+				zipOutputStream.putNextEntry(new ZipEntry(RESOURCES_ROOT + resource.getKey()));
 				zipOutputStream.write(resource.getValue());
+			}
+			for (Entry<Locale, Properties> translation : contentPack.getTranslations().entrySet()) {
+				zipOutputStream.putNextEntry(new ZipEntry(TRANSLATIONS_ROOT + "translation_" + translation.getKey().toLanguageTag() + ".properties"));
+				translation.getValue().store(zipOutputStream, null);
 			}
 			zipOutputStream.closeEntry();
 		}

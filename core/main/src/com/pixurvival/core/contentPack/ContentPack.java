@@ -3,10 +3,13 @@ package com.pixurvival.core.contentPack;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
@@ -14,9 +17,11 @@ import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
+import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
@@ -44,6 +49,8 @@ public class ContentPack implements Serializable {
 	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
 
 	private transient double maxLightRadius;
+
+	private transient Map<Locale, Properties> translations = new HashMap<>();
 
 	@Valid
 	@Required
@@ -124,6 +131,11 @@ public class ContentPack implements Serializable {
 		resources.put(resource, data);
 	}
 
+	public void addTranslation(Locale locale, Properties file) {
+		translations.put(locale, file);
+
+	}
+
 	public void removeResource(String resource) {
 		resources.remove(resource);
 	}
@@ -177,4 +189,51 @@ public class ContentPack implements Serializable {
 			return typeMap.keySet();
 		}
 	}
+
+	public List<String> getAllTranslationKeys() {
+		List<String> result = new ArrayList<>();
+		for (Item item : items) {
+			getAllTranslationKeys(result, item);
+		}
+		return result;
+	}
+
+	public static void getAllTranslationKeys(Collection<String> resultStore, Item item) {
+		getAllTranslationKeys(resultStore, item, false);
+
+	}
+
+	public static void getAllTranslationKeys(Collection<String> resultStore, Item item, boolean allPotential) {
+		resultStore.add(TranslationKey.ITEM_NAME.getKey(item));
+		resultStore.add(TranslationKey.ITEM_DESCRIPTION.getKey(item));
+		if (item instanceof WeaponItem || allPotential) {
+			resultStore.add(TranslationKey.ITEM_BASE_ABILITY_NAME.getKey(item));
+			resultStore.add(TranslationKey.ITEM_BASE_ABILITY_DESCRIPTION.getKey(item));
+		}
+		if (item instanceof WeaponItem || item instanceof AccessoryItem || allPotential) {
+			resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_NAME.getKey(item));
+			resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_DESCRIPTION.getKey(item));
+		}
+	}
+
+	public static List<String> getAllTranslationKeys(Item item) {
+		List<String> result = new ArrayList<>();
+		getAllTranslationKeys(result, item);
+		return result;
+	}
+
+	public static List<String> getAllTranslationKeys(Item item, boolean allPotential) {
+		List<String> result = new ArrayList<>();
+		getAllTranslationKeys(result, item, allPotential);
+		return result;
+	}
+
+	public String getTranslation(Locale locale, Item item, TranslationKey key) {
+		return translations.get(locale).getProperty(key.getKey(item));
+	}
+
+	public String getTranslation(Locale locale, String key) {
+		return translations.get(locale).getProperty(key);
+	}
+
 }

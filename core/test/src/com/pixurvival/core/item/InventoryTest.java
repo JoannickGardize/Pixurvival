@@ -47,6 +47,15 @@ public class InventoryTest {
 	}
 
 	@Test
+	public void add2() {
+		Assert.assertNull(inventory.add(new ItemStack(itemB, 3)));
+		Assert.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(0));
+		Assert.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(1));
+		Assert.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(2));
+		Assert.assertNull(inventory.getSlot(3));
+	}
+
+	@Test
 	public void remove() {
 		inventory.setSlot(0, new ItemStack(itemB, 1));
 		inventory.setSlot(1, new ItemStack(itemA, 5));

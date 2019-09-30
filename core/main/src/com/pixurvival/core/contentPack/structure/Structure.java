@@ -1,9 +1,12 @@
 package com.pixurvival.core.contentPack.structure;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.Dimensions;
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
@@ -31,6 +34,8 @@ public class Structure extends IdentifiedElement implements Serializable {
 	private Dimensions dimensions = new Dimensions(1, 1);
 
 	private long duration = 0;
+
+	private List<Tile> bannedTiles = new ArrayList<>();
 
 	private double lightEmissionRadius = 0;
 

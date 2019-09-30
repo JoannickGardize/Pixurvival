@@ -10,6 +10,7 @@ import javax.swing.JMenuItem;
 
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.translation.TranslationDialog;
 
 public class CPEMenuBar extends JMenuBar {
 
@@ -20,6 +21,7 @@ public class CPEMenuBar extends JMenuBar {
 		final ResourcesDialog resourcesDialog = new ResourcesDialog();
 		final IdentifierDialog identifierDialog = new IdentifierDialog();
 		final ConstantsDialog constantsDialog = new ConstantsDialog();
+		final TranslationDialog translationDialog = TranslationDialog.getInstance();
 
 		addItem("file.new", fs::newContentPack);
 		addItem("file.open", fs::open);
@@ -28,6 +30,7 @@ public class CPEMenuBar extends JMenuBar {
 		addItem("contentPack.identifier", () -> identifierDialog.setVisible(true));
 		addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
 		addItem("contentPack.constants", () -> constantsDialog.setVisible(true));
+		addItem("contentPack.translations", () -> translationDialog.setVisible(true));
 	}
 
 	private void addItem(String path, Runnable action) {
@@ -61,8 +64,7 @@ public class CPEMenuBar extends JMenuBar {
 		} else {
 			JMenu item = new JMenu();
 			item.setName(currentName);
-			item.setText(TranslationService.getInstance()
-					.getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
+			item.setText(TranslationService.getInstance().getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
 			addTo(component, item);
 			return findOrCreate(item, split, index + 1);
 		}

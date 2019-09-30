@@ -26,9 +26,10 @@ import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
-import com.pixurvival.gdxcore.ui.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
+import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
+import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -86,6 +87,7 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
+		hudStage.addActor(ItemTooltip.getInstance());
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
@@ -95,6 +97,7 @@ public class WorldScreen implements Screen {
 		uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
 		uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 100);
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
+		world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
 	}
 
 	public void switchShowCollisionBoxes() {

@@ -7,11 +7,11 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
-import com.pixurvival.contentPackEditor.util.BeanUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
+import com.pixurvival.contentPackEditor.util.BeanUtils;
 
 public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> {
 

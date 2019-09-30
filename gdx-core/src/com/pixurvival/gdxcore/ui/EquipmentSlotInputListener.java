@@ -7,6 +7,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 
 import lombok.AllArgsConstructor;
 
@@ -27,4 +28,15 @@ public class EquipmentSlotInputListener extends InputListener {
 		return true;
 	}
 
+	@Override
+	public boolean mouseMoved(InputEvent event, float x, float y) {
+		ItemStack itemStack = PixurvivalGame.getClient().getMyPlayer().getEquipment().get(index);
+		if (itemStack == null) {
+			ItemTooltip.getInstance().setVisible(false);
+		} else {
+			ItemTooltip.getInstance().setItem(itemStack.getItem());
+			ItemTooltip.getInstance().setVisible(true);
+		}
+		return true;
+	}
 }

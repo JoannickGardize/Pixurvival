@@ -8,15 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.SwingUtilities;
 
-import com.pixurvival.core.util.ReflectionUtils;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import com.pixurvival.core.util.ReflectionUtils;
 
 public class EventManager {
 
@@ -36,7 +34,6 @@ public class EventManager {
 
 	private static @Getter EventManager instance = new EventManager();
 
-	private BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<>();
 	private Set<Object> registeredObjects = new HashSet<>();
 	private Map<Class<? extends Event>, List<MethodRegistration>> registrations = new HashMap<>();
 
@@ -50,7 +47,8 @@ public class EventManager {
 		}
 		registeredObjects.add(object);
 		for (Method method : ReflectionUtils.getAllMethods(object.getClass())) {
-			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
+			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1
+					&& Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
 				List<MethodRegistration> list = registrations.get(method.getParameterTypes()[0]);
 				if (list == null) {
 					list = new ArrayList<>();
@@ -72,11 +70,6 @@ public class EventManager {
 				}
 			}
 		});
-		try {
-			eventQueue.put(event);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void run() {

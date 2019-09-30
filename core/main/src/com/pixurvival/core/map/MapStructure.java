@@ -83,7 +83,7 @@ public class MapStructure implements Body, CustomDataHolder {
 		for (int xi = x; xi < x2; xi++) {
 			for (int yi = y; yi < y2; yi++) {
 				MapTile mapTile = map.tileAt(x, y);
-				if (mapTile.isSolid() || mapTile.getStructure() != null) {
+				if (mapTile.isSolid() || mapTile.getStructure() != null || structure.getBannedTiles().contains(mapTile.getTileDefinition())) {
 					return false;
 				}
 			}
