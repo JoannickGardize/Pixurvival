@@ -27,6 +27,7 @@ import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
+import com.pixurvival.gdxcore.ui.StatusUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
@@ -54,6 +55,7 @@ public class WorldScreen implements Screen {
 	private DebugInfosActor debugInfosActors;
 	private UILayoutManager uiLayoutManager = new UILayoutManager();
 	private LightDrawer lightDrawer = new LightDrawer();
+	private StatusUI statusUI = new StatusUI();
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -88,6 +90,8 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		hudStage.addActor(ItemTooltip.getInstance());
+		hudStage.addActor(statusUI);
+		statusUI.updatePosition();
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
@@ -167,6 +171,7 @@ public class WorldScreen implements Screen {
 		}
 		uiLayoutManager.resize(width, height, ((FitViewport) worldStage.getViewport()).getLeftGutterWidth());
 		lightDrawer.resize(width, height);
+		statusUI.updatePosition();
 	}
 
 	@Override

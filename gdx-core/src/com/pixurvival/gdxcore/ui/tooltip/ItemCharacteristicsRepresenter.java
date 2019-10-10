@@ -98,7 +98,7 @@ public class ItemCharacteristicsRepresenter {
 		Table table = equipable(weaponItem);
 
 		appendAbility(locale, contentPack, true, item, weaponItem.getBaseAbility(), table);
-		if (!weaponItem.getSpecialAbility().getOffsetAngleEffects().isEmpty()) {
+		if (!weaponItem.getSpecialAbility().isEmpty()) {
 			appendAbility(locale, contentPack, false, item, weaponItem.getSpecialAbility(), table);
 		}
 

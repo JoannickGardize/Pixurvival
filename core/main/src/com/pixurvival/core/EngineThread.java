@@ -12,7 +12,7 @@ import lombok.Setter;
 public abstract class EngineThread extends Thread {
 
 	private boolean running = true;
-	private double frameDurationMillis = 1000.0 / 30;
+	private double frameDurationMillis = 1000.0 / GameConstants.FPS;
 	private int maxUpdatePerFrame = 5;
 
 	private @Setter(AccessLevel.NONE) double load;

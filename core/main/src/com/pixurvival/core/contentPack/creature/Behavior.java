@@ -40,7 +40,7 @@ public abstract class Behavior extends IdentifiedElement {
 		creature.setBehaviorData(new BehaviorData(creature));
 		creature.startAbility(abilityToUseId);
 	}
-
+ 
 	protected abstract void step(CreatureEntity creature);
 
 	protected void end(CreatureEntity creature) {

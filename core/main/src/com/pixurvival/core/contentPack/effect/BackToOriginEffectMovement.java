@@ -31,7 +31,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public double getSpeedPotential(EffectEntity entity) {
-		return speed;
+		return entity.isAlive() ? speed : 0;
 	}
 
 	@Override

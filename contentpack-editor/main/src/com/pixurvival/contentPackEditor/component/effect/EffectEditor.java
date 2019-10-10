@@ -20,6 +20,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
+import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
@@ -42,6 +43,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
+		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.newInstanceSupplier(FollowingElement.class));
 
 		// Binding
 
@@ -55,6 +57,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
 		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
 		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
+		bind(deathFollowingElements, Effect::getDeathFollowingElements, Effect::setDeathFollowingElements);
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -71,7 +74,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		JPanel followingElementsPanel = new JPanel(new BorderLayout());
 		followingElementsPanel.add(LayoutUtils.single(LayoutUtils.labelled("generic.repeat", repeatFollowingElementsEditor)), BorderLayout.NORTH);
 		followingElementsPanel.add(followingElementsEditor, BorderLayout.CENTER);
-		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.followingElements"), followingElementsPanel);
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.delayedFollowingElements"), followingElementsPanel);
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.deathFollowingElements"), deathFollowingElements);
 		LayoutUtils.fill(this, tabbedPane);
 	}
 }

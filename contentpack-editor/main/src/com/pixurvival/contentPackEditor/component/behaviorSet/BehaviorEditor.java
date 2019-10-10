@@ -23,6 +23,7 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DoNothingBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
@@ -114,6 +115,9 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// VANISH
 		classEntries.add(new ClassEntry(VanishBehavior.class, new JPanel()));
+
+		// Do nothing
+		classEntries.add(new ClassEntry(DoNothingBehavior.class, new JPanel()));
 
 		return classEntries;
 	}

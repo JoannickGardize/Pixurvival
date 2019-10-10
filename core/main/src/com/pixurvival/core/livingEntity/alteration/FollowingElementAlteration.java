@@ -10,14 +10,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FollowingElementAlteration implements Alteration {
+public class FollowingElementAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
 	private FollowingElement followingElement;
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
+	public void uniqueApply(TeamMember source, LivingEntity entity) {
 		if (source instanceof EffectEntity) {
 			followingElement.apply((EffectEntity) source);
 		}

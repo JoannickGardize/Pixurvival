@@ -22,12 +22,14 @@ public class TextureAnimation {
 	private boolean[] back;
 	@Getter
 	private double frameDuration;
+	private @Getter float rotationPerSecond;
 	private @Getter int shadowWidth;
 	private @Getter float worldShadowWidth;
 	private @Getter @Setter Texture shadow;
 
-	public TextureAnimation(TextureSheet textureSheet, Animation animation, long frameDuration, EquipmentOffset equipmentOffset) {
-		this.frameDuration = (double) frameDuration / 1000;
+	public TextureAnimation(TextureSheet textureSheet, Animation animation, EquipmentOffset equipmentOffset) {
+		frameDuration = (double) animation.getFrameDuration() / 1000;
+		rotationPerSecond = animation.getRotationPerSecond();
 		List<Frame> frames = animation.getFrames();
 		textures = new Texture[frames.size()];
 		textureRegions = new TextureRegion[frames.size()];

@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 public class PlayerMovementRequest implements IPlayerActionRequest {
 
-	private long id;
+	private long id = -1;
 	private Direction direction = Direction.SOUTH;
 	private boolean forward;
 
@@ -37,10 +37,10 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	@Override
 	public void apply(PlayerEntity player) {
-		if (id > player.getPreviousMovementId()) {
+		if (id >= player.getLastPlayerMovementRequest().getId()) {
 			player.setMovingAngle(direction.getAngle());
 			player.setForward(forward);
-			player.setPreviousMovementId(id);
+			player.setLastPlayerMovementRequest(this);
 		}
 	}
 

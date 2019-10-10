@@ -1,5 +1,6 @@
 package com.pixurvival.core.command.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -21,7 +22,7 @@ public class GiveItemCommandProcessor extends CommandProcessor {
 	@Override
 	protected String execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
 		CommandArgsUtils.checkArgsLength(args, 2, 3);
-		ItemStack itemStack = CommandArgsUtils.itemStack(executor, args[1]);
+		ItemStack[] itemStacks = CommandArgsUtils.itemStacks(executor, args[1]);
 		Collection<PlayerEntity> targets;
 		if (args.length < 3) {
 			if (!(executor instanceof PlayerEntity)) {
@@ -31,10 +32,12 @@ public class GiveItemCommandProcessor extends CommandProcessor {
 		} else {
 			targets = CommandArgsUtils.playerCollection(executor, args[2]);
 		}
-		for (PlayerEntity player : targets) {
-			player.getInventory().add(itemStack.copy());
+		for (ItemStack itemStack : itemStacks) {
+			for (PlayerEntity player : targets) {
+				player.getInventory().add(itemStack.copy());
+			}
 		}
-		return "Given " + itemStack.toMessageString() + " to " + CollectionUtils.toString(targets);
+		return "Given " + Arrays.toString(itemStacks) + " to " + CollectionUtils.toString(targets);
 	}
 
 	@Override

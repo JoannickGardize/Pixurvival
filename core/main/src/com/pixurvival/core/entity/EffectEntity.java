@@ -9,6 +9,7 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
+import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -32,6 +33,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	private int nextFollowingElementIndex = 0;
 
 	private Collection<Object> checkList;
+	private Object tmpChecked;
 
 	private int numberOfDelayedFollowingElements;
 
@@ -49,7 +51,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	public void initialize() {
 		if (getWorld().isServer()) {
-			setMovingAngle(ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + definition.getOffsetAngle() + getWorld().getRandom().nextAngle(definition.getRandomAngle()));
 			definition.getEffect().getMovement().initialize(this);
 			creationTime = getWorld().getTime().getTimeMillis();
 			List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
@@ -61,7 +62,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 				duration = definition.getEffect().getDuration();
 			}
 		}
-
 	}
 
 	@Override
@@ -84,6 +84,10 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			EntitySearchUtils.forEach(this, effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
+					if (tmpChecked != null) {
+						checkList.add(tmpChecked);
+						tmpChecked = null;
+					}
 					if (effectTarget.isDestroyWhenCollide()) {
 						setAlive(false);
 					}
@@ -105,6 +109,15 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 				nextFollowingElementIndex++;
 				currentIndex = nextFollowingElementIndex % followingElements.size();
 				repeatCount = nextFollowingElementIndex / followingElements.size();
+			}
+		}
+	}
+
+	@Override
+	protected void onDeath() {
+		if (getWorld().isServer()) {
+			for (FollowingElement followingElement : definition.getEffect().getDeathFollowingElements()) {
+				followingElement.apply(this);
 			}
 		}
 	}
@@ -158,11 +171,18 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public Collection<Object> getCheckList() {
+	public boolean isChecked(Object object) {
 		if (checkList == null) {
 			checkList = new ArrayList<>(3);
+			return false;
+		} else {
+			return checkList.contains(object);
 		}
-		return checkList;
+	}
+
+	@Override
+	public void check(Object object) {
+		tmpChecked = object;
 	}
 
 	@Override

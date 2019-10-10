@@ -93,6 +93,7 @@ public class ServerEngineThread extends EngineThread {
 				session.extractStructureUpdatesToSend(worldUpdate.getStructureUpdates());
 				session.extractChunksToSend(worldUpdate.getCompressedChunks());
 				if (byteBuffer.position() > 4 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
+					Log.debug("sendUDP to " + connection + " worldUpdate of size " + byteBuffer.position());
 					connection.sendUDP(worldUpdate);
 					game.notifyNetworkListeners(l -> l.sent(worldUpdate));
 				}

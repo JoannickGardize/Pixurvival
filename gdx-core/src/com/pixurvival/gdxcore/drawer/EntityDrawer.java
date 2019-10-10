@@ -42,7 +42,6 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 		} else {
 			double step = speed + (distance / (5 * 5)) * (speed * 3);
 			double angle = drawPos.angleToward(position);
-			// reuse of position instance
 			drawPos.add(position.setFromEuclidean(step * Gdx.graphics.getDeltaTime(), angle));
 		}
 	}

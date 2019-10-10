@@ -59,13 +59,21 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void update() {
-		if (getWorld().isServer()) {
-			currentBehavior.update(this);
-			if (targetEntity != null) {
-				getTargetPosition().set(targetEntity.getPosition());
-			}
-		}
+		currentBehavior.update(this);
+		updateTargetPosition();
 		super.update();
+	}
+
+	@Override
+	public void startAbility(int abilityId) {
+		updateTargetPosition();
+		super.startAbility(abilityId);
+	}
+
+	private void updateTargetPosition() {
+		if (getWorld().isServer() && targetEntity != null) {
+			getTargetPosition().set(targetEntity.getPosition());
+		}
 	}
 
 	@Override

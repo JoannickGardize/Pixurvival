@@ -61,10 +61,12 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 			SpriteSheet spriteSheet = ((WeaponItem) weapon.getItem()).getSpriteSheet();
 			TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
 			TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);
-			if (weaponAnimation.isBack(index) == back) {
-				Texture weaponTexture = weaponAnimation.getTexture(index);
-				batch.draw(weaponTexture, x + textureAnimation.getOffsetX(index) - weaponAnimation.getOffsetX(index),
-						y + weaponAnimationSet.getYOffset() + textureAnimation.getOffsetY(index) - weaponAnimation.getOffsetY(index), weaponAnimationSet.getWidth(), weaponAnimationSet.getHeight());
+			int weaponIndex = index % weaponAnimation.size();
+			if (textureAnimation.isBack(index) == back) {
+				Texture weaponTexture = weaponAnimation.getTexture(weaponIndex);
+				batch.draw(weaponTexture, x + textureAnimation.getOffsetX(index) - weaponAnimation.getOffsetX(weaponIndex),
+						y + weaponAnimationSet.getYOffset() + textureAnimation.getOffsetY(index) - weaponAnimation.getOffsetY(weaponIndex), weaponAnimationSet.getWidth(),
+						weaponAnimationSet.getHeight());
 			}
 		}
 	}

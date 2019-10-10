@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 public class WorldUpdate implements Poolable {
 
-	public static final int BUFFER_SIZE = 4096;
+	public static final int BUFFER_SIZE = 8192;
 
 	private @Setter long updateId;
 	private @Setter long worldId;

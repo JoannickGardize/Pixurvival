@@ -39,7 +39,7 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 		if (data.isFirstLoop() || effect.isLoopAnimation()) {
 			Vector2 drawPosition = data.getDrawPosition();
 			float angle = effect.getOrientation() == OrientationType.MOVING_ANGLE ? (float) e.getMovingAngle() : 0;
-			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.DEFAULT, index, drawPosition, angle * MathUtils.radDeg);
+			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.DEFAULT, index, drawPosition, angle * MathUtils.radDeg + data.getAngle());
 		}
 	}
 

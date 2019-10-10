@@ -62,7 +62,7 @@ public class MathUtils {
 	}
 
 	/**
-	 * This method is <b>a lot</b> faster than {@link Math#floor(double)}
+	 * This method is <b>a lot</b> faster than {@link Math#ceil(double)}
 	 * 
 	 * @param x
 	 * @return

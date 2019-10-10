@@ -21,6 +21,7 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
+import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
@@ -28,6 +29,7 @@ import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.MathUtils;
@@ -44,20 +46,21 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final int INVENTORY_SIZE = 32;
 
-	public static final int CRAFT_ABILITY_ID = 0;
-	public static final int HARVEST_ABILITY_ID = 1;
-	public static final int USE_ITEM_ABILITY_ID = 6;
+	public static final int CRAFT_ABILITY_ID = 1;
+	public static final int HARVEST_ABILITY_ID = 2;
+	public static final int USE_ITEM_ABILITY_ID = 3;
 
 	private static final AbilitySet<Ability> PLAYER_ABILITY_SET = new AbilitySet<>();
 
 	static {
+		PLAYER_ABILITY_SET.add(new SilenceAbility());
 		PLAYER_ABILITY_SET.add(new CraftAbility());
 		PLAYER_ABILITY_SET.add(new HarvestAbility());
+		PLAYER_ABILITY_SET.add(new UseItemAbility());
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_BASE));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
-		PLAYER_ABILITY_SET.add(new UseItemAbility());
 	}
 
 	// TODO false par défaut et créer le système pour op un joueur coté serveur
@@ -71,9 +74,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private @Getter float hunger = MAX_HUNGER;
 
-	private @Getter @Setter long previousMovementId = -1;
-
 	private ChunkGroupChangeHelper chunkVision = new ChunkGroupChangeHelper();
+
+	private @Setter PlayerMovementRequest lastPlayerMovementRequest = new PlayerMovementRequest();
 
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
@@ -221,5 +224,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public TeamMember getOrigin() {
 		return this;
+	}
+
+	@Override
+	protected void fixedMovementEnded() {
+		lastPlayerMovementRequest.apply(this);
 	}
 }

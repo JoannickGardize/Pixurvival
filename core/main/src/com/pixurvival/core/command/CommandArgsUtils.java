@@ -139,6 +139,15 @@ public class CommandArgsUtils {
 		}
 	}
 
+	public static ItemStack[] itemStacks(CommandExecutor executor, String arg) throws CommandExecutionException {
+		String[] split = arg.split("\\,");
+		ItemStack[] result = new ItemStack[split.length];
+		for (int i = 0; i < split.length; i++) {
+			result[i] = itemStack(executor, split[i]);
+		}
+		return result;
+	}
+
 	public static void checkArgsLength(String[] args, int min, int max) throws CommandExecutionException {
 		if (args.length < min || args.length > max) {
 			throw new CommandExecutionException("Wrong number of args : " + args.length + ", must be in range [" + min + ", " + max + "]");

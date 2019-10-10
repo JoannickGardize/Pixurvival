@@ -39,10 +39,4 @@ public class PlayerConnection extends Connection implements InventoryListener, E
 	public void statChanged(StatValue statValue) {
 		playerDataChanged = true;
 	}
-
-	@Override
-	public void baseStatChanged(StatValue statValue) {
-		playerDataChanged = true;
-	}
-
 }

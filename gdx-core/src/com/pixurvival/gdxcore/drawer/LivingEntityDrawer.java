@@ -6,6 +6,7 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 import com.pixurvival.gdxcore.util.DrawUtils;
@@ -34,16 +35,18 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 	@Override
 	public void draw(Batch batch, E e) {
 		ActionAnimation actionAnimation = getActionAnimation(e);
-		TextureAnimationSet textureAnimationSet = getBodyTextureAnimationSet(e);
+		TextureAnimationSet textureAnimationSet = getBodyTextureAnimationSetOrAbility(e);
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
-		Vector2 drawPosition = ((DrawData) e.getCustomData()).getDrawPosition();
+		DrawData data = (DrawData) e.getCustomData();
+		Vector2 drawPosition = data.getDrawPosition();
 		float x = (float) (drawPosition.getX() - textureAnimationSet.getWidth() / 2);
 		float y = (float) drawPosition.getY();
-		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 ? -textureAnimationSet.getHeight() * 0.3f : 0;
-		float equipmentY = y + yOffset;
+		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 && textureAnimation.getRotationPerSecond() == 0 ? textureAnimationSet.getHeight() * 0.3f
+				: 0;
+		float equipmentY = y - yOffset;
 		drawBeforeBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
-		DrawUtils.drawStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset);
+		DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, yOffset, data.getAngleOrReset(textureAnimation));
 		drawAbilityItem(batch, e, textureAnimation, index, x, equipmentY);
 		drawAfterBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 	}
@@ -55,6 +58,14 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 	}
 
 	protected abstract TextureAnimationSet getBodyTextureAnimationSet(E e);
+
+	private TextureAnimationSet getBodyTextureAnimationSetOrAbility(E e) {
+		if (e.getOverridingSpriteSheet() != null) {
+			return PixurvivalGame.getContentPackTextures().getAnimationSet(e.getOverridingSpriteSheet());
+		} else {
+			return getBodyTextureAnimationSet(e);
+		}
+	}
 
 	private ActionAnimation getActionAnimation(E e) {
 		if (e.getCurrentAbility() != null) {

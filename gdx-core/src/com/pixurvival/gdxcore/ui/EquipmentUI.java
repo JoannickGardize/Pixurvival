@@ -54,15 +54,15 @@ public class EquipmentUI extends UIWindow {
 		agilityLabel = new UILabel(UIConstants.AGILITY_COLOR);
 		statTable.add(agilityLabel);
 		statTable.row();
-		statTable.add(new UILabel("statType.intelligence", " ", UIConstants.INTELLIGENCE_COLOR));
+		statTable.add(new UILabel("statType.intel", " ", UIConstants.INTELLIGENCE_COLOR));
 		intelligenceLabel = new UILabel(UIConstants.INTELLIGENCE_COLOR);
 		statTable.add(intelligenceLabel);
 		statTable.row();
 
 		Table mainTable = new Table();
 		mainTable.add(equipmentTable).expand().fill();
-		mainTable.add(statTable).expand().fill();
-		add(mainTable).expand().fill();
+		mainTable.add(statTable).fill();
+		add(mainTable).expand().fill().padRight(5);
 	}
 
 	@Override

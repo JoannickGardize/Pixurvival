@@ -52,6 +52,7 @@ public class DrawUtils {
 			data.setFirstLoop(false);
 		}
 		data.setTimer(timer);
+		data.setAngle(data.getAngle() + Gdx.graphics.getDeltaTime() * textureAnimation.getRotationPerSecond());
 		return (int) (timer / textureAnimation.getFrameDuration());
 	}
 
@@ -70,6 +71,16 @@ public class DrawUtils {
 		float y = (float) position.getY() + textureAnimationSet.getYOffset();
 		batch.draw(texture, x, y, textureAnimationSet.getWidth() / 2f, textureAnimationSet.getHeight() / 2f, textureAnimationSet.getWidth(), textureAnimationSet.getHeight(), 1, 1, rotation, 0, 0,
 				texture.getWidth(), texture.getHeight(), false, false);
+	}
+
+	public static void drawRotatedStandUpStyleTexture(Batch batch, TextureAnimationSet textureAnimationSet, ActionAnimation actionAnimation, int index, Vector2 position, float yOffset,
+			float rotation) {
+		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
+		Texture texture = textureAnimation.getTexture(index);
+		float x = (float) (position.getX() - textureAnimationSet.getWidth() / 2);
+		float y = (float) position.getY() + textureAnimationSet.getYOffset();
+		batch.draw(texture, x, y, textureAnimationSet.getWidth() / 2f, textureAnimationSet.getHeight() / 2f, textureAnimationSet.getWidth(), textureAnimationSet.getHeight() - yOffset, 1, 1, rotation,
+				0, 0, texture.getWidth(), texture.getHeight() - (int) (yOffset * texture.getHeight() / textureAnimationSet.getHeight()), false, false);
 	}
 
 	public static void drawPercentBar(Batch batch, Rectangle rectangle, float percent, Color color) {

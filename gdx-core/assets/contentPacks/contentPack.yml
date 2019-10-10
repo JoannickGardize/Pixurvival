@@ -107,8 +107,7 @@ animationTemplates:
       frames:
       - {x: 0, y: 0}
       - {x: 1, y: 0}
-- &sword_hit
-  name: sword_hit
+- name: sword_hit
   id: 3
   animations:
     DEFAULT:
@@ -142,17 +141,92 @@ animationTemplates:
       - {x: 1, y: 0}
       - {x: 2, y: 0}
       - {x: 3, y: 0}
+- &warlock_projectile_explosion
+  name: warlock_projectile_explosion
+  id: 6
+  animations:
+    DEFAULT:
+      frameDuration: 200
+      action: DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 2, y: 0}
+- &single_image_equipment
+  name: single_image_equipment
+  id: 7
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 1000
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+    MOVE_UP:
+      frameDuration: 1000
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+    MOVE_LEFT:
+      frameDuration: 1000
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 0}
+    MOVE_DOWN:
+      frameDuration: 1000
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 0}
+    STAND_RIGHT:
+      frameDuration: 1000
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+    STAND_UP:
+      frameDuration: 1000
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+    STAND_LEFT:
+      frameDuration: 1000
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+    STAND_DOWN:
+      frameDuration: 1000
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+    WORK_RIGHT:
+      frameDuration: 1000
+      action: WORK_RIGHT
+      frames:
+      - {x: 0, y: 0}
+    WORK_UP:
+      frameDuration: 1000
+      action: WORK_UP
+      frames:
+      - {x: 0, y: 0}
+    WORK_DOWN:
+      frameDuration: 1000
+      action: WORK_DOWN
+      frames:
+      - {x: 0, y: 0}
+    WORK_LEFT:
+      frameDuration: 1000
+      action: WORK_LEFT
+      frames:
+      - {x: 0, y: 0}
 equipmentOffsets:
 - &character02
   name: character
   id: 0
   frameOffsets:
   - {x: 0, y: 0, offsetX: 0, offsetY: 2, back: false}
-  - {x: 1, y: 0, offsetX: 0, offsetY: 3, back: false}
+  - {x: 1, y: 0, offsetX: 0, offsetY: 3, back: true}
   - {x: 2, y: 0, offsetX: 1, offsetY: 1, back: false}
   - {x: 0, y: 1, offsetX: 6, offsetY: 2, back: false}
-  - {x: 1, y: 1, offsetX: 6, offsetY: 2, back: false}
-  - {x: 2, y: 1, offsetX: 6, offsetY: 3, back: false}
+  - {x: 1, y: 1, offsetX: 6, offsetY: 1, back: false}
+  - {x: 2, y: 1, offsetX: 6, offsetY: 3, back: true}
   - {x: 0, y: 2, offsetX: 4, offsetY: 2, back: false}
   - {x: 1, y: 2, offsetX: 5, offsetY: 2, back: false}
   - {x: 2, y: 2, offsetX: 2, offsetY: 2, back: false}
@@ -196,17 +270,6 @@ equipmentOffsets:
   id: 3
   frameOffsets:
   - {x: 0, y: 0, offsetX: 1, offsetY: 2, back: false}
-  - {x: 1, y: 0, offsetX: 1, offsetY: 2, back: false}
-  - {x: 2, y: 0, offsetX: 1, offsetY: 2, back: false}
-  - {x: 0, y: 1, offsetX: 1, offsetY: 2, back: false}
-  - {x: 1, y: 1, offsetX: 1, offsetY: 2, back: false}
-  - {x: 2, y: 1, offsetX: 1, offsetY: 2, back: false}
-  - {x: 0, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 1, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 2, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 0, y: 3, offsetX: 1, offsetY: 2, back: false}
-  - {x: 1, y: 3, offsetX: 1, offsetY: 2, back: false}
-  - {x: 2, y: 3, offsetX: 1, offsetY: 2, back: false}
 spriteSheets:
 - &character03
   name: character
@@ -283,7 +346,7 @@ spriteSheets:
   width: 5
   height: 7
   image: images/wood_sword.png
-  animationTemplate: *character
+  animationTemplate: *single_image_equipment
   equipmentOffset: *sword
   heightOffset: 0.0
   shadow: true
@@ -307,19 +370,9 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &sword_hit02
-  name: sword_hit
-  id: 10
-  width: 12
-  height: 15
-  image: images/sword_hit.png
-  animationTemplate: *sword_hit
-  equipmentOffset: null
-  heightOffset: 6.0
-  shadow: true
 - &wood_bow
   name: wood_bow
-  id: 11
+  id: 10
   width: 5
   height: 8
   image: images/wood_bow.png
@@ -329,7 +382,7 @@ spriteSheets:
   shadow: true
 - &bow_hit
   name: bow_hit
-  id: 12
+  id: 11
   width: 6
   height: 3
   image: images/wood_bow_hit.png
@@ -339,7 +392,7 @@ spriteSheets:
   shadow: true
 - &dead_tree
   name: dead_tree
-  id: 13
+  id: 12
   width: 15
   height: 22
   image: images/dead_tree.png
@@ -349,7 +402,7 @@ spriteSheets:
   shadow: true
 - &tombstone
   name: tombstone
-  id: 14
+  id: 13
   width: 10
   height: 11
   image: images/tombstone.png
@@ -359,7 +412,7 @@ spriteSheets:
   shadow: true
 - &ninja_pig02
   name: ninja_pig
-  id: 15
+  id: 14
   width: 7
   height: 8
   image: images/ninja_pig.png
@@ -369,7 +422,7 @@ spriteSheets:
   shadow: true
 - &rock_projectile
   name: rock_projectile
-  id: 16
+  id: 15
   width: 4
   height: 4
   image: images/rock_projectile.png
@@ -377,19 +430,19 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &sword_hit2
-  name: sword_hit2
-  id: 17
-  width: 7
-  height: 11
-  image: images/sword_hit2.png
+- &sword_hit
+  name: sword_hit
+  id: 16
+  width: 8
+  height: 17
+  image: images/wood_sword_hit.png
   animationTemplate: *single_image
   equipmentOffset: null
-  heightOffset: 4.0
-  shadow: true
+  heightOffset: 6.0
+  shadow: false
 - &ghost
   name: ghost
-  id: 18
+  id: 17
   width: 7
   height: 9
   image: images/ghost.png
@@ -399,7 +452,7 @@ spriteSheets:
   shadow: true
 - &holemon
   name: holemon
-  id: 19
+  id: 18
   width: 11
   height: 11
   image: images/holemon.png
@@ -409,7 +462,7 @@ spriteSheets:
   shadow: true
 - &warlock_projectile
   name: warlock_projectile
-  id: 20
+  id: 19
   width: 5
   height: 5
   image: images/warlock_projectile.png
@@ -419,17 +472,17 @@ spriteSheets:
   shadow: true
 - &warlock_wand02
   name: warlock_wand
-  id: 21
+  id: 20
   width: 3
   height: 8
   image: images/warlock_wand.png
-  animationTemplate: *character
+  animationTemplate: *single_image_equipment
   equipmentOffset: *warlock_wand
   heightOffset: 0.0
   shadow: true
 - &piece_of_soul
   name: piece_of_soul
-  id: 22
+  id: 21
   width: 9
   height: 5
   image: images/piece_of_soul_effect.png
@@ -439,7 +492,7 @@ spriteSheets:
   shadow: true
 - &summon_holemon02
   name: summon_holemon
-  id: 23
+  id: 22
   width: 15
   height: 15
   image: images/summoning_effect.png
@@ -447,39 +500,27 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 7.5
   shadow: false
+- &warlock_projectile_explosion02
+  name: warlock_projectile_explosion
+  id: 23
+  width: 19
+  height: 19
+  image: images/warlock_projectile_explosion.png
+  animationTemplate: *warlock_projectile_explosion
+  equipmentOffset: null
+  heightOffset: 9.5
+  shadow: false
 effects:
-- name: wood_sword_hit
-  id: 0
-  spriteSheet: *sword_hit02
-  orientation: MOVING_ANGLE
-  loopAnimation: false
-  solid: false
-  duration: 240
-  collisionRadius: 0.7
-  movement: !!AnchorEffectMovement {distance: 0.9}
-  targets:
-  - targetType: ALL_ENEMIES
-    destroyWhenCollide: false
-    alterations:
-    - !!InstantDamageAlteration
-      amount:
-        base: 15.0
-        statMultipliers:
-        - {statType: STRENGTH, multiplier: 1.0}
-  repeatFollowingElements:
-    base: 0.0
-    statMultipliers: []
-  delayedFollowingElements: []
 - &wood_bow_hit
   name: wood_bow_hit
-  id: 1
+  id: 0
   spriteSheet: *bow_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
   solid: true
-  duration: 1000
-  collisionRadius: 0.5
-  movement: !!LinearEffectMovement {speed: 20.0, destroyAtTargetPosition: false}
+  duration: 750
+  collisionRadius: 0.6
+  movement: !!LinearEffectMovement {speed: 24.0, relative: false, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -493,16 +534,17 @@ effects:
     base: 0.0
     statMultipliers: []
   delayedFollowingElements: []
+  deathFollowingElements: []
 - &rock_projectile02
   name: rock_projectile
-  id: 2
+  id: 1
   spriteSheet: *rock_projectile
   orientation: STATIC
   loopAnimation: true
   solid: true
   duration: 1000
   collisionRadius: 0.3
-  movement: !!LinearEffectMovement {speed: 18.0, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {speed: 18.0, relative: false, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -515,15 +557,17 @@ effects:
     base: 0.0
     statMultipliers: []
   delayedFollowingElements: []
-- name: wood_sword_hit2
-  id: 3
-  spriteSheet: *sword_hit2
+  deathFollowingElements: []
+- &wood_sword_hit
+  name: wood_sword_hit
+  id: 2
+  spriteSheet: *sword_hit
   orientation: MOVING_ANGLE
   loopAnimation: false
   solid: false
-  duration: 300
-  collisionRadius: 0.8
-  movement: !!LinearEffectMovement {speed: 15.0, destroyAtTargetPosition: false}
+  duration: 200
+  collisionRadius: 1.2
+  movement: !!LinearEffectMovement {speed: 25.0, relative: true, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
@@ -537,16 +581,17 @@ effects:
     base: 0.0
     statMultipliers: []
   delayedFollowingElements: []
+  deathFollowingElements: []
 - &ghost_hit
   name: ghost_hit
-  id: 4
+  id: 3
   spriteSheet: null
   orientation: MOVING_ANGLE
   loopAnimation: false
   solid: false
   duration: 1000
   collisionRadius: 0.5
-  movement: !!AnchorEffectMovement {distance: 0.0}
+  movement: !!BoundEffectMovement {distance: 0.0}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
@@ -559,73 +604,99 @@ effects:
     base: 0.0
     statMultipliers: []
   delayedFollowingElements: []
+  deathFollowingElements: []
 - &warlock_projectile02
   name: warlock_projectile
-  id: 5
+  id: 4
   spriteSheet: *warlock_projectile
   orientation: STATIC
   loopAnimation: true
   solid: true
   duration: 800
   collisionRadius: 0.35
-  movement: !!LinearEffectMovement {speed: 20.0, destroyAtTargetPosition: true}
+  movement: !!LinearEffectMovement {speed: 25.0, relative: false, destroyAtTargetPosition: true}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
-    alterations:
-    - !!InstantDamageAlteration
-      amount:
-        base: 5.0
-        statMultipliers:
-        - {statType: INTELLIGENCE, multiplier: 1.0}
-    - !!FollowingElementAlteration
-      followingElement: !!FollowingEffect
-        offsetAngleEffect:
-          offsetAngle: 0.0
-          randomAngle: 0.0
-          effect: &piece_of_soul02
-            name: piece_of_soul
-            id: 6
-            spriteSheet: *piece_of_soul
-            orientation: MOVING_ANGLE
-            loopAnimation: true
-            solid: false
-            duration: 20000
-            collisionRadius: 0.5
-            movement: !!BackToOriginEffectMovement {speed: 30.0}
-            targets:
-            - targetType: ORIGIN
-              destroyWhenCollide: true
-              alterations:
-              - !!AddItemAlteration
-                itemStack:
-                  item: &piece_of_soul03 !!ResourceItem
-                    name: piece_of_soul
-                    id: 17
-                    maxStackSize: 10
-                    frame: {x: 1, y: 4}
-                    image: images/items.png
-                  quantity: 1
-                dropRemainder: false
-            repeatFollowingElements:
-              base: 0.0
-              statMultipliers: []
-            delayedFollowingElements: []
+    alterations: []
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
   delayedFollowingElements: []
+  deathFollowingElements:
+  - !!FollowingEffect
+    offsetAngleEffect:
+      offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: &warlock_projectile_explosion03
+        name: warlock_projectile_explosion
+        id: 7
+        spriteSheet: *warlock_projectile_explosion02
+        orientation: STATIC
+        loopAnimation: false
+        solid: false
+        duration: 600
+        collisionRadius: 1.2
+        movement: !!StaticEffectMovement {minDistance: 0.0, maxDistance: 0.0}
+        targets:
+        - targetType: ALL_ENEMIES
+          destroyWhenCollide: false
+          alterations:
+          - !!InstantDamageAlteration
+            amount:
+              base: 5.0
+              statMultipliers:
+              - {statType: INTELLIGENCE, multiplier: 1.0}
+          - !!FollowingElementAlteration
+            followingElement: !!FollowingEffect
+              offsetAngleEffect:
+                offsetAngle: 0.0
+                randomAngle: 0.0
+                effect: &piece_of_soul02
+                  name: piece_of_soul
+                  id: 5
+                  spriteSheet: *piece_of_soul
+                  orientation: MOVING_ANGLE
+                  loopAnimation: true
+                  solid: false
+                  duration: 20000
+                  collisionRadius: 0.5
+                  movement: !!BackToOriginEffectMovement {speed: 20.0}
+                  targets:
+                  - targetType: ORIGIN
+                    destroyWhenCollide: true
+                    alterations:
+                    - !!AddItemAlteration
+                      itemStack:
+                        item: &piece_of_soul03 !!ResourceItem
+                          name: piece_of_soul
+                          id: 17
+                          maxStackSize: 10
+                          frame: {x: 1, y: 4}
+                          image: images/items.png
+                        quantity: 1
+                      dropRemainder: false
+                  repeatFollowingElements:
+                    base: 0.0
+                    statMultipliers: []
+                  delayedFollowingElements: []
+                  deathFollowingElements: []
+        repeatFollowingElements:
+          base: 0.0
+          statMultipliers: []
+        delayedFollowingElements: []
+        deathFollowingElements: []
 - *piece_of_soul02
 - &summon_holemon03
   name: summon_holemon
-  id: 7
+  id: 6
   spriteSheet: *summon_holemon02
   orientation: STATIC
   loopAnimation: false
   solid: false
   duration: 800
   collisionRadius: 0.0
-  movement: !!LinearEffectMovement {speed: 7.0, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {speed: 7.0, relative: false, destroyAtTargetPosition: false}
   targets: []
   repeatFollowingElements:
     base: 0.0
@@ -700,6 +771,8 @@ effects:
       intelligenceBonus:
         base: 0.0
         statMultipliers: []
+  deathFollowingElements: []
+- *warlock_projectile_explosion03
 items:
 - &wood_sword02 !!WeaponItem
   name: wood_sword
@@ -713,7 +786,10 @@ items:
     id: 0
     cooldown: 1000
     selfAlterations: []
-    offsetAngleEffects: []
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *wood_sword_hit
     ammunition: {item: null, quantity: 1}
   specialAbility: !!EffectAbility
     id: 0
@@ -747,8 +823,8 @@ items:
   image: images/items.png
   spriteSheet: *leather_armor
   statModifiers:
-  - {operationType: ADDITIVE, statType: STRENGTH, value: 1.0}
-  - {operationType: ADDITIVE, statType: AGILITY, value: 2.0}
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 1.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 2.0}
 - &leather !!ResourceItem
   name: leather
   id: 5
@@ -766,7 +842,8 @@ items:
   - !!InstantEatAlteration
     amount:
       base: 20.0
-      statMultipliers: []
+      statMultipliers:
+      - {statType: STRENGTH, multiplier: 2.0}
 - &pixie_powder !!ResourceItem
   name: pixie_powder
   id: 7
@@ -792,6 +869,18 @@ items:
     spriteSheet: *campfire
     dimensions: {width: 1, height: 1}
     duration: 60000
+    bannedTiles:
+    - &water
+      name: water
+      id: 4
+      solid: false
+      velocityFactor: 0.3
+      frames:
+      - {x: 2, y: 0}
+      - {x: 3, y: 0}
+      - {x: 4, y: 0}
+      - {x: 5, y: 0}
+      image: images/tiles.png
     lightEmissionRadius: 8.0
 - &arrow !!ResourceItem
   name: arrow
@@ -813,8 +902,8 @@ items:
   image: images/items.png
   spriteSheet: *hard_leather_armor
   statModifiers:
-  - {operationType: ADDITIVE, statType: STRENGTH, value: 4.0}
-  - {operationType: ADDITIVE, statType: AGILITY, value: 4.0}
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 4.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 4.0}
 - &stone !!ResourceItem
   name: stone
   id: 13
@@ -843,12 +932,6 @@ items:
     - offsetAngle: 0.0
       randomAngle: 0.0
       effect: *wood_bow_hit
-    - offsetAngle: 0.2617993877991494
-      randomAngle: 0.0
-      effect: *wood_bow_hit
-    - offsetAngle: -0.2617993877991494
-      randomAngle: 0.0
-      effect: *wood_bow_hit
     ammunition:
       item: *arrow
       quantity: 1
@@ -865,7 +948,8 @@ items:
   frame: {x: 0, y: 4}
   image: images/items.png
   spriteSheet: *warlock_wand02
-  statModifiers: []
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
   baseAbility: !!EffectAbility
     id: 0
     cooldown: 1000
@@ -1212,17 +1296,7 @@ tiles:
   frames:
   - {x: 1, y: 1}
   image: images/tiles.png
-- &water
-  name: water
-  id: 4
-  solid: false
-  velocityFactor: 0.3
-  frames:
-  - {x: 2, y: 0}
-  - {x: 3, y: 0}
-  - {x: 4, y: 0}
-  - {x: 5, y: 0}
-  image: images/tiles.png
+- *water
 - &deep_water
   name: deep_water
   id: 5
@@ -1250,6 +1324,8 @@ structures:
   spriteSheet: *tree
   dimensions: {width: 1, height: 1}
   duration: 0
+  bannedTiles:
+  - *water
   lightEmissionRadius: 0.0
   harvestingTime: 4000
   itemReward: *tree02
@@ -1261,6 +1337,8 @@ structures:
   spriteSheet: *cotton_bush
   dimensions: {width: 1, height: 1}
   duration: 0
+  bannedTiles:
+  - *water
   lightEmissionRadius: 0.0
   harvestingTime: 2000
   itemReward: *cotton02
@@ -1272,6 +1350,7 @@ structures:
   spriteSheet: *rock
   dimensions: {width: 2, height: 1}
   duration: 0
+  bannedTiles: []
   lightEmissionRadius: 0.0
   harvestingTime: 6000
   itemReward: *rock02
@@ -1284,6 +1363,7 @@ structures:
   spriteSheet: *dead_tree
   dimensions: {width: 1, height: 1}
   duration: 0
+  bannedTiles: []
   lightEmissionRadius: 0.0
 - &tombstone02
   name: tombstone
@@ -1292,6 +1372,7 @@ structures:
   spriteSheet: *tombstone
   dimensions: {width: 1, height: 1}
   duration: 0
+  bannedTiles: []
   lightEmissionRadius: 0.0
 mapGenerators:
 - &test
@@ -1359,7 +1440,6 @@ mapGenerators:
     - heightmap: *special
       min: 0.7
       max: 0.85
-    bannedTiles: []
     density: 0.04
   - structureProducer:
       backingArray:
@@ -1374,8 +1454,6 @@ mapGenerators:
     - heightmap: *moisture
       min: 0.4
       max: 0.7
-    bannedTiles:
-    - *water
     density: 0.01
   - structureProducer:
       backingArray:
@@ -1390,8 +1468,6 @@ mapGenerators:
     - heightmap: *moisture
       min: 0.7
       max: 1.0
-    bannedTiles:
-    - *water
     density: 0.04
   - structureProducer:
       backingArray:
@@ -1404,7 +1480,6 @@ mapGenerators:
     - heightmap: *moisture
       min: 0.0
       max: 0.3
-    bannedTiles: []
     density: 0.01
 ecosystems:
 - &test02
@@ -1438,6 +1513,7 @@ gameModes:
   ecosystem: *test02
   dayCycle: !!EternalDayCycle {}
   endGameCondition: !!NoEndCondition {}
+  events: []
   spawnSquareSize: 490.0
   mapLimitEnabled: false
   mapLimitSize: 500.0

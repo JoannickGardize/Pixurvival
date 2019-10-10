@@ -49,6 +49,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		wrapper.add(LayoutUtils.labelled("structureGeneratorEditor.density", densityInput));
 		heightmapConditionsEditor.setBorder(LayoutUtils.createGroupBorder("generic.conditions"));
 		topPanel.add(wrapper, BorderLayout.EAST);
+		topPanel.add(heightmapConditionsEditor, BorderLayout.CENTER);
 		add(topPanel, BorderLayout.CENTER);
 		structureProducerEditor.setBorder(LayoutUtils.createGroupBorder("elementType.structure"));
 		add(structureProducerEditor, BorderLayout.SOUTH);

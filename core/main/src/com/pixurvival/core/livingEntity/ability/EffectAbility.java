@@ -39,6 +39,10 @@ public class EffectAbility extends CooldownAbility {
 		}
 	}
 
+	public boolean isEmpty() {
+		return offsetAngleEffects.isEmpty() && selfAlterations.isEmpty();
+	}
+
 	private boolean removeAmmunition(LivingEntity entity) {
 		if (ammunition != null && entity instanceof InventoryHolder) {
 			Inventory inventory = ((InventoryHolder) entity).getInventory();

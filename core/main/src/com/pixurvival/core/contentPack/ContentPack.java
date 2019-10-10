@@ -169,6 +169,9 @@ public class ContentPack implements Serializable {
 				maxLightRadius = structure.getLightEmissionRadius();
 			}
 		}
+		for (Creature creature : creatures) {
+			creature.initialize();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

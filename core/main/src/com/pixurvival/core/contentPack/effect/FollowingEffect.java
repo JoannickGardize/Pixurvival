@@ -18,5 +18,4 @@ public class FollowingEffect extends FollowingElement {
 		EffectEntity following = new EffectEntity(offsetAngleEffect, effectEntity);
 		effectEntity.getWorld().getEntityPool().add(following);
 	}
-
 }

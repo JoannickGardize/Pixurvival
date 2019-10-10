@@ -1,5 +1,6 @@
 package com.pixurvival.contentPackEditor.component.effect;
 
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,8 +9,8 @@ import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
-import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
+import com.pixurvival.core.contentPack.effect.BoundEffectMovement;
 import com.pixurvival.core.contentPack.effect.EffectMovement;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.StaticEffectMovement;
@@ -35,18 +36,22 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 		list.add(new ClassEntry(StaticEffectMovement.class,
 				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput), LayoutUtils.labelled("generic.maxDistance", maxDistanceInput))));
 
-		// AnchorEffectMovement
+		// BoundEffectMovement
 		DoubleInput distanceInput = new DoubleInput(Bounds.positive());
-		bind(distanceInput, AnchorEffectMovement::getDistance, AnchorEffectMovement::setDistance, AnchorEffectMovement.class);
-		list.add(new ClassEntry(AnchorEffectMovement.class, LayoutUtils.labelled("generic.distance", distanceInput)));
+		bind(distanceInput, BoundEffectMovement::getDistance, BoundEffectMovement::setDistance, BoundEffectMovement.class);
+		list.add(new ClassEntry(BoundEffectMovement.class, LayoutUtils.labelled("generic.distance", distanceInput)));
 
 		// LinearEffectMovement
 		DoubleInput speedInput = new DoubleInput(Bounds.positive());
+		DoubleInput initialDistanceInput = new DoubleInput(Bounds.positive());
 		BooleanCheckBox destroyAtTargetPositionCheckBox = new BooleanCheckBox();
+		BooleanCheckBox relativeCheckBox = new BooleanCheckBox();
 		bind(speedInput, LinearEffectMovement::getSpeed, LinearEffectMovement::setSpeed, LinearEffectMovement.class);
 		bind(destroyAtTargetPositionCheckBox, LinearEffectMovement::isDestroyAtTargetPosition, LinearEffectMovement::setDestroyAtTargetPosition, LinearEffectMovement.class);
-		list.add(new ClassEntry(LinearEffectMovement.class,
-				LayoutUtils.createHorizontalLabelledBox("effectMovementEditor.destroyAtTargetPosition", destroyAtTargetPositionCheckBox, "statType.speed", speedInput)));
+		bind(relativeCheckBox, LinearEffectMovement::isRelative, LinearEffectMovement::setRelative, LinearEffectMovement.class);
+		bind(initialDistanceInput, LinearEffectMovement::getInitialDistance, LinearEffectMovement::setInitialDistance, LinearEffectMovement.class);
+		list.add(new ClassEntry(LinearEffectMovement.class, LayoutUtils.createHorizontalLabelledBox("effectMovementEditor.destroyAtTargetPosition", destroyAtTargetPositionCheckBox,
+				"effectMovementEditor.relative", relativeCheckBox, "effectMovementEditor.initialDistance", initialDistanceInput, "statType.speed", speedInput)));
 
 		// BackToOriginEffectMovement
 		speedInput = new DoubleInput(Bounds.positive());

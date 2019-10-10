@@ -20,6 +20,14 @@ public class AbilitySet<T extends Ability> extends IdentifiedElement implements 
 		abilities.add(ability);
 	}
 
+	@SuppressWarnings("unchecked")
+	public void addSilence() {
+		abilities.add(0, (T) new SilenceAbility());
+		for (int i = 0; i < abilities.size(); i++) {
+			abilities.get(i).setId((byte) i);
+		}
+	}
+
 	public T get(int id) {
 		return abilities.get(id);
 	}

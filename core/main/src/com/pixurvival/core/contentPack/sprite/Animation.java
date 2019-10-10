@@ -32,6 +32,8 @@ public class Animation implements Serializable {
 	@Valid
 	private List<Frame> frames = new ArrayList<>();
 
+	private float rotationPerSecond = 0;
+
 	@Override
 	public String toString() {
 		return action.name();

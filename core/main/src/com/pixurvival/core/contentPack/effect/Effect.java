@@ -54,5 +54,5 @@ public class Effect extends IdentifiedElement {
 	 */
 	private List<DelayedFollowingElement> delayedFollowingElements = new ArrayList<>();
 
-	private transient int numberOfDelayedFollowingElements;
+	private List<FollowingElement> deathFollowingElements = new ArrayList<>();
 }

@@ -39,15 +39,13 @@ public class StatValue implements StatListener {
 	public void setBase(float base) {
 		if (this.base != base) {
 			this.base = base;
-			listeners.forEach(l -> l.baseStatChanged(this));
 			compute();
 		}
 	}
 
 	public void addToBase(float toAdd) {
 		if (toAdd != 0) {
-			this.base += base;
-			listeners.forEach(l -> l.baseStatChanged(this));
+			this.base += toAdd;
 			compute();
 		}
 	}

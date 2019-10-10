@@ -40,4 +40,11 @@ public class Creature extends IdentifiedElement {
 
 	@ElementReference
 	private AbilitySet<EffectAbility> abilitySet;
+
+	@Override
+	public void initialize() {
+		if (abilitySet != null) {
+			abilitySet.addSilence();
+		}
+	}
 }

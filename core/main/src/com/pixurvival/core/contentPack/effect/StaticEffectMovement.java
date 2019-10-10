@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.team.TeamMember;
-import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +20,14 @@ public class StaticEffectMovement implements EffectMovement {
 	@Override
 	public void initialize(EffectEntity entity) {
 		TeamMember ancestor = entity.getAncestor();
-		double distance = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
-		distance = MathUtils.clamp(distance, minDistance, maxDistance);
-		entity.getPosition().set(ancestor.getPosition()).addEuclidean(distance, entity.getMovingAngle());
+		double distanceSquared = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
+		if (distanceSquared <= minDistance * minDistance) {
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean(minDistance, entity.getMovingAngle());
+		} else if (distanceSquared >= maxDistance * maxDistance) {
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean(maxDistance, entity.getMovingAngle());
+		} else {
+			entity.getPosition().set(ancestor.getTargetPosition());
+		}
 	}
 
 	@Override

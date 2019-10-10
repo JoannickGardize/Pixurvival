@@ -17,6 +17,13 @@ public class GetAwayBehavior extends Behavior {
 	private BehaviorTarget targetType;
 
 	@Override
+	public void begin(CreatureEntity creature) {
+		Entity target = targetType.getEntityGetter().apply(creature);
+		creature.setTargetEntity(target);
+		super.begin(creature);
+	}
+
+	@Override
 	protected void step(CreatureEntity creature) {
 		Entity target = targetType.getEntityGetter().apply(creature);
 		if (target == null) {

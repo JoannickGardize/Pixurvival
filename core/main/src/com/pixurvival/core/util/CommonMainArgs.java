@@ -24,7 +24,7 @@ public class CommonMainArgs {
 
 	@SneakyThrows
 	public void apply(EndPoint endPoint, Listener listener) {
-		Log.class.getMethod(logLevel).invoke(null);
+		Log.class.getMethod(logLevel.toUpperCase()).invoke(null);
 		if (simulateLag) {
 			endPoint.addListener(new Listener.LagListener(minSimulateLag, maxSimulateLag, listener));
 			Log.warn("Lag simulation mode enabled : [" + getMinSimulateLag() + " ms, " + getMaxSimulateLag() + " ms]");

@@ -3,11 +3,6 @@ package com.pixurvival.core.entity;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.Positionnable;
@@ -18,6 +13,10 @@ import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.util.Collisions;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Classe mère de tout objet du monde : joueur, créatures, items, projectiles...
@@ -42,7 +41,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private double movingAngle = 0;
 	private boolean forward = false;
 	private double forwardFactor = 1;
-	private @Getter(AccessLevel.NONE) Vector2 targetVelocity = new Vector2();
+	private Vector2 targetVelocity = new Vector2();
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
 
@@ -77,10 +76,25 @@ public abstract class Entity implements Body, CustomDataHolder {
 		}
 	}
 
+	public void setVelocityDirect(Vector2 components) {
+		speed = components.length();
+		movingAngle = components.angle();
+		targetVelocity.set(components);
+		velocityChanged = false;
+	}
+
+	public void setMovementSameAs(Entity entity) {
+		speed = entity.speed;
+		forward = entity.forward;
+		velocityChanged = false;
+		targetVelocity.set(entity.velocity);
+		movingAngle = entity.movingAngle;
+	}
+
 	public void update() {
 
-		// Update position
 		previousPosition.set(position);
+
 		if (forward) {
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
@@ -126,9 +140,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 		double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 			if (targetVelocity.getY() > 0) {
-				position.setY(MathUtils.floor(position.getY() + 1) - getCollisionRadius());
+				position.setY(MathUtils.ceil(position.getY() + getCollisionRadius()) - getCollisionRadius());
 			} else {
-				position.setY(MathUtils.floor(position.getY()) + getCollisionRadius());
+				position.setY(MathUtils.floor(position.getY() - getCollisionRadius()) + getCollisionRadius());
 			}
 			velocity.setY(0);
 		} else {
@@ -141,9 +155,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 		double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 			if (targetVelocity.getX() > 0) {
-				position.setX(MathUtils.floor(position.getX() + 1) - getCollisionRadius());
+				position.setX(MathUtils.ceil(position.getX() + getCollisionRadius()) - getCollisionRadius());
 			} else {
-				position.setX(MathUtils.floor(position.getX()) + getCollisionRadius());
+				position.setX(MathUtils.floor(position.getX() - getCollisionRadius()) + getCollisionRadius());
 			}
 			velocity.setX(0);
 		} else {
@@ -197,14 +211,14 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return getCollisionRadius();
 	}
 
-	private void setSpeed(double speed) {
+	public void setSpeed(double speed) {
 		if (this.speed != speed) {
 			this.speed = speed;
 			velocityChanged = true;
 		}
 	}
 
-	private void updateVelocity() {
+	public void updateVelocity() {
 		if (velocityChanged) {
 			targetVelocity.setFromEuclidean(speed, movingAngle);
 			velocityChanged = false;
@@ -229,7 +243,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return searchResult;
 	}
 
-/**
+	/**
 	 * Used to find the closest in all the world. to avoid looping over all
 	 * entities, prefer the use of
 	 * {@link Entity#findClosest(EntityGroup, double)
@@ -272,8 +286,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	public boolean collideDynamic(Entity other) {
-		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position,
-				other.getCollisionRadius());
+		return Collisions.dynamicCircleCircle(position, getCollisionRadius(), velocity.copy().mul(world.getTime().getDeltaTime()), other.position, other.getCollisionRadius());
 	}
 
 	public ChunkPosition chunkPosition() {

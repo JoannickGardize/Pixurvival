@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class GameConstants {
 
+	public static final long FPS = 30;
 	public static final int CHUNK_SIZE = 32;
 	public static final int PIXEL_PER_UNIT = 8;
 

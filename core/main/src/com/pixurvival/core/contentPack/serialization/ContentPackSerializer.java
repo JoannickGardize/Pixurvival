@@ -26,6 +26,7 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DoNothingBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
@@ -35,8 +36,8 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
-import com.pixurvival.core.contentPack.effect.AnchorEffectMovement;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
+import com.pixurvival.core.contentPack.effect.BoundEffectMovement;
 import com.pixurvival.core.contentPack.effect.FollowingCreature;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
@@ -55,6 +56,7 @@ import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.ability.EffectAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
+import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
@@ -165,7 +167,7 @@ public class ContentPackSerializer {
 
 	private void addAllClassTags(Representer representer) {
 		addClassTag(representer, ContentPack.class);
-		addClassTag(representer, AnchorEffectMovement.class);
+		addClassTag(representer, BoundEffectMovement.class);
 		addClassTag(representer, LinearEffectMovement.class);
 		addClassTag(representer, StaticEffectMovement.class);
 		addClassTag(representer, InstantDamageAlteration.class);
@@ -202,6 +204,8 @@ public class ContentPackSerializer {
 		addClassTag(representer, BackToOriginEffectMovement.class);
 		addClassTag(representer, VanishBehavior.class);
 		addClassTag(representer, FollowingElementAlteration.class);
+		addClassTag(representer, ContinuousDamageAlteration.class);
+		addClassTag(representer, DoNothingBehavior.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

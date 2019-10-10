@@ -40,7 +40,7 @@ public class TextureAnimationSet {
 		AnimationTemplate template = spriteSheet.getAnimationTemplate();
 		for (Entry<ActionAnimation, Animation> entries : template.getAnimations().entrySet()) {
 			Animation animation = entries.getValue();
-			TextureAnimation textureAnimation = new TextureAnimation(textureSheet, animation, animation.getFrameDuration(), spriteSheet.getEquipmentOffset());
+			TextureAnimation textureAnimation = new TextureAnimation(textureSheet, animation, spriteSheet.getEquipmentOffset());
 			map.put(animation.getAction(), textureAnimation);
 		}
 	}
