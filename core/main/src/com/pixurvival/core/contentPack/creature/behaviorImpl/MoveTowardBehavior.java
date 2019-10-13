@@ -20,6 +20,8 @@ public class MoveTowardBehavior extends Behavior {
 	@Bounds(min = 0)
 	private double minDistance;
 
+	private double randomAngle;
+
 	@Override
 	public void begin(CreatureEntity creature) {
 		Entity target = targetType.getEntityGetter().apply(creature);
@@ -31,7 +33,7 @@ public class MoveTowardBehavior extends Behavior {
 	protected void step(CreatureEntity creature) {
 		Entity target = targetType.getEntityGetter().apply(creature);
 		if (target != null && creature.distanceSquared(target) > minDistance * minDistance) {
-			creature.moveToward(target);
+			creature.moveToward(target, randomAngle);
 			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
 			creature.getTargetPosition().set(target.getPosition());
 		} else {

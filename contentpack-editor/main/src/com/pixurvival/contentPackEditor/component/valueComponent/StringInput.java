@@ -32,5 +32,4 @@ public class StringInput extends FormattedTextInput<String> {
 	protected String format(String value) {
 		return value.trim();
 	}
-
 }

@@ -18,7 +18,7 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	private static final long serialVersionUID = 1L;
 
 	public EventPositionEditor() {
-		super("eventPositionType");
+		super("eventPositionType", null);
 
 		setLayout(new BorderLayout());
 		add(LayoutUtils.single(LayoutUtils.labelled("generic.type", getTypeChooser())), BorderLayout.WEST);
@@ -26,7 +26,7 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		DoubleInput distanceInput = new DoubleInput(Bounds.positive());

@@ -24,6 +24,12 @@ public class ResourcesDialog extends EditorDialog {
 
 	private JList<ResourceEntry> resourceList = new JList<>(new DefaultListModel<>());
 	private JButton addButton = new CPEButton("generic.add", () -> ResourcesService.getInstance().addResource());
+	private JButton modifyButton = new CPEButton("generic.modify", () -> {
+		ResourceEntry entry = resourceList.getSelectedValue();
+		if (entry != null) {
+			ResourcesService.getInstance().addResource(entry.getName());
+		}
+	});
 	private JButton importButton = new CPEButton("resources.importFolder", () -> ResourcesService.getInstance().importFolder());
 	private JButton deleteButton = new CPEButton("generic.remove", this::remove);
 	private JButton renameButton = new CPEButton("generic.rename", this::rename);
@@ -37,7 +43,7 @@ public class ResourcesDialog extends EditorDialog {
 		JScrollPane scrollPane = new JScrollPane(resourceList);
 		JPanel listPanel = (JPanel) LayoutUtils.addBorder(scrollPane, 0, 0, 0, 0);
 		JPanel buttonPanel = new JPanel();
-		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, importButton, renameButton, deleteButton);
+		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, modifyButton, renameButton, deleteButton, importButton);
 		listPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		content.add(listPanel, BorderLayout.WEST);

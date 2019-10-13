@@ -33,9 +33,9 @@ public class BehaviorData {
 	private Entity closestEnnemy;
 
 	/**
-	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur n'est
-	 * pas modifié, ou est inférieur ou temps actuel du {@link World}, il en
-	 * résultera une mise à jour du behavior à chaque frame.
+	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur
+	 * n'est pas modifié, ou est inférieur ou temps actuel du {@link World}, il
+	 * en résultera une mise à jour du behavior à chaque frame.
 	 */
 	@Getter
 	@Setter
@@ -66,9 +66,10 @@ public class BehaviorData {
 	}
 
 	/**
-	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière à ce
-	 * qu'elle corresponde au temps qu'il faut pour que la créature parcourt la
-	 * distance passé en paramètre, relatif donc à la vitesse de la créature.
+	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière
+	 * à ce qu'elle corresponde au temps qu'il faut pour que la créature
+	 * parcourt la distance passé en paramètre, relatif donc à la vitesse de la
+	 * créature.
 	 * 
 	 * @param targetDistance
 	 *            La distance à parcourir utilisé pour calculer le temps de la

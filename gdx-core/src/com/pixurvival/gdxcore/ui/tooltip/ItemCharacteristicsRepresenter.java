@@ -17,7 +17,7 @@ import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.WeaponItem;
-import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 import com.pixurvival.core.livingEntity.stats.StatModifier.OperationType;
@@ -105,7 +105,7 @@ public class ItemCharacteristicsRepresenter {
 		return table;
 	}
 
-	private static void appendAbility(Locale locale, ContentPack contentPack, boolean isBase, Item item, EffectAbility ability, Table table) {
+	private static void appendAbility(Locale locale, ContentPack contentPack, boolean isBase, Item item, AlterationAbility ability, Table table) {
 		String abilityName = "[ORANGE] " + PixurvivalGame.getString(isBase ? "hud.item.baseAbility" : "hud.item.specialAbility") + " "
 				+ contentPack.getTranslation(locale, item, isBase ? TranslationKey.ITEM_BASE_ABILITY_NAME : TranslationKey.ITEM_SPECIAL_ABILITY_NAME);
 		table.add(new Separator()).colspan(2).pad(0);

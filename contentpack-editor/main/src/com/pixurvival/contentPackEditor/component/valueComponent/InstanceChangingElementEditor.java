@@ -7,11 +7,11 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.BeanFactory;
+import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
-import com.pixurvival.contentPackEditor.util.BeanUtils;
 
 public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> {
 
@@ -28,15 +28,14 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	private @Getter JPanel specificPartPanel = new JPanel(new CardLayout());
 
 	@SuppressWarnings("unchecked")
-	public InstanceChangingElementEditor(String translationPreffix) {
-		List<ClassEntry> classEntries = getClassEntries();
+	public InstanceChangingElementEditor(String translationPreffix, Object params) {
+		List<ClassEntry> classEntries = getClassEntries(params);
 		typeChooser = new JComboBox<>(classEntries.stream().map(ClassEntry::getType).toArray(Class[]::new));
 		typeChooser.setRenderer(new ClassNameCellRenderer(translationPreffix));
 		specificPartPanel = new JPanel(new CardLayout());
-
 		typeChooser.addItemListener(e -> {
 			if (typeChooser.isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
-				changeInstance(BeanUtils.newFilledInstance(((Class<? extends E>) e.getItem())));
+				changeInstance(BeanFactory.newInstance(((Class<? extends E>) e.getItem())));
 			}
 		});
 		for (ClassEntry classEntry : classEntries) {
@@ -65,8 +64,7 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		}
 	}
 
-	protected abstract List<ClassEntry> getClassEntries();
+	protected abstract List<ClassEntry> getClassEntries(Object params);
 
 	protected abstract void initialize(E oldInstance, E newInstance);
-
 }

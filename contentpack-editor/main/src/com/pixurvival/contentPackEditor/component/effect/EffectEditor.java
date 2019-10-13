@@ -33,7 +33,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		// Construction
 
 		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
-		ListEditor<DelayedFollowingElement> followingElementsEditor = new VerticalListEditor<>(DelayedFollowingElementEditor::new, BeanFactory.newInstanceSupplier(DelayedFollowingElement.class),
+		ListEditor<DelayedFollowingElement> followingElementsEditor = new VerticalListEditor<>(DelayedFollowingElementEditor::new, BeanFactory.of(DelayedFollowingElement.class),
 				VerticalListEditor.HORIZONTAL);
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
@@ -43,7 +43,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
-		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.newInstanceSupplier(FollowingElement.class));
+		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class));
 
 		// Binding
 

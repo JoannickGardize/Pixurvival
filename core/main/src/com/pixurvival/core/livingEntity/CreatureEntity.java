@@ -12,7 +12,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.MoveUtils;
@@ -28,7 +28,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
-	private static final AbilitySet<EffectAbility> EMPTY_ABILITY_SET = new AbilitySet<>();
+	private static final AbilitySet<AlterationAbility> EMPTY_ABILITY_SET = new AbilitySet<>();
 
 	public static final double OBSTACLE_VISION_DISTANCE = 4;
 
@@ -51,6 +51,7 @@ public class CreatureEntity extends LivingEntity {
 		getStats().get(StatType.INTELLIGENCE).addToBase(definition.getIntelligence());
 		super.initialize();
 		if (getWorld().isServer()) {
+			behaviorData = new BehaviorData(this);
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 			spawnPosition = getPosition().copy();
@@ -116,6 +117,10 @@ public class CreatureEntity extends LivingEntity {
 
 	public void moveToward(Positionnable target) {
 		moveIfNotNull(target, this.angleToward(target));
+	}
+
+	public void moveToward(Positionnable target, double randomAngle) {
+		moveIfNotNull(target, this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle)));
 	}
 
 	@Override

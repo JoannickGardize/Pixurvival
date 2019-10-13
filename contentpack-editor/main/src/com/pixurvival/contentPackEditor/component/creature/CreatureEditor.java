@@ -22,7 +22,7 @@ import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 
@@ -36,7 +36,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
 	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class, false);
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ElementChooserButton<AbilitySet<EffectAbility>> abilitySetChooser = new ElementChooserButton(AbilitySet.class, false);
+	private ElementChooserButton<AbilitySet<AlterationAbility>> abilitySetChooser = new ElementChooserButton(AbilitySet.class, false);
 
 	private StatSet statSet = new StatSet();
 	private FloatInput strengthInput = new FloatInput();

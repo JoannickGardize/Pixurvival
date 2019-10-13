@@ -38,6 +38,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
 import com.pixurvival.core.contentPack.effect.BoundEffectMovement;
+import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.FollowingCreature;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
@@ -54,7 +55,7 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
@@ -190,7 +191,7 @@ public class ContentPackSerializer {
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
-		addClassTag(representer, EffectAbility.class);
+		addClassTag(representer, AlterationAbility.class);
 		addClassTag(representer, NoEndCondition.class);
 		addClassTag(representer, RemainingTeamCondition.class);
 		addClassTag(representer, EternalDayCycle.class);
@@ -206,6 +207,7 @@ public class ContentPackSerializer {
 		addClassTag(representer, FollowingElementAlteration.class);
 		addClassTag(representer, ContinuousDamageAlteration.class);
 		addClassTag(representer, DoNothingBehavior.class);
+		addClassTag(representer, DelayedFollowingElement.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

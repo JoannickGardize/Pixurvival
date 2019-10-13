@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.contentPackEditor.component.abilitySet.EffectAbilityEditor;
+import com.pixurvival.contentPackEditor.component.abilitySet.AlterationAbilityEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 
@@ -8,8 +8,8 @@ public class WeaponPanel extends EquipablePanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private EffectAbilityEditor baseAbilityEditor = new EffectAbilityEditor(true, true);
-	private EffectAbilityEditor specialAbilityEditor = new EffectAbilityEditor(true, true);
+	private AlterationAbilityEditor baseAbilityEditor = new AlterationAbilityEditor(true, true);
+	private AlterationAbilityEditor specialAbilityEditor = new AlterationAbilityEditor(true, true);
 
 	public WeaponPanel() {
 		baseAbilityEditor.setBorder(LayoutUtils.createGroupBorder("weaponEditor.baseAbility"));

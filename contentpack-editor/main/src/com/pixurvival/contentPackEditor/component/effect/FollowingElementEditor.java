@@ -22,7 +22,7 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 	private static final long serialVersionUID = 1L;
 
 	public FollowingElementEditor(Object... topLineLabelAndComponents) {
-		super("followingElementType");
+		super("followingElementType", null);
 
 		setLayout(new BorderLayout());
 		int length = topLineLabelAndComponents.length;
@@ -34,7 +34,7 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		// FollowingEffect

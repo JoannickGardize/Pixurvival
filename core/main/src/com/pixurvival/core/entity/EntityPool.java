@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
-
+ 
 /**
  * This class contains all entities of a given {@link World}, packed by group
  * defined in enum {@link EntityGroup}.
@@ -38,6 +38,7 @@ public class EntityPool extends EntityCollection {
 		if (world.isServer()) {
 			e.setWorld(world);
 			e.setId(nextId++);
+			e.updateChunk();
 		}
 		e.initialize();
 	}

@@ -19,6 +19,7 @@ import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
+import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration.FixedMovementOrigin;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
@@ -33,13 +34,19 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 	private static final long serialVersionUID = 1L;
 
+	private boolean showDelayedAlteration;
+
 	public AlterationEditor() {
-		super("alterationType");
+		this(true);
+	}
+
+	public AlterationEditor(boolean showDelayedAlteration) {
+		super("alterationType", showDelayedAlteration);
 		LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		// InstantDamageAlteration
@@ -75,6 +82,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		entries.add(new ClassEntry(StatAlteration.class, statAlterationPanel));
 
 		// FixedMovementAlteration
+
 		durationInput = new TimeInput();
 		EnumChooser<FixedMovementOrigin> originChooser = new EnumChooser<>(FixedMovementOrigin.class);
 		AngleInput relativeAngleInput = new AngleInput();
@@ -87,9 +95,21 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		bind(speedEditor, FixedMovementAlteration::getSpeed, FixedMovementAlteration::setSpeed, FixedMovementAlteration.class);
 		JPanel fmaPanel = new JPanel();
 		LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.origin", originChooser),
-				LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "offsetAngleEffect.randomAngle", randomAngleInput),
+				LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "generic.randomAngle", randomAngleInput),
 				LayoutUtils.createVerticalLabelledBox("statType.speed", speedEditor));
 		entries.add(new ClassEntry(FixedMovementAlteration.class, fmaPanel));
+
+		// DelayedAlteration
+		if (Boolean.TRUE.equals(params)) {
+			TimeInput delayInput = new TimeInput();
+			AlterationEditor alterationEditor = new AlterationEditor(false);
+			bind(delayInput, DelayedAlteration::getDuration, DelayedAlteration::setDuration, DelayedAlteration.class);
+			bind(alterationEditor, DelayedAlteration::getAlteration, DelayedAlteration::setAlteration, DelayedAlteration.class);
+			JPanel panel = new JPanel(new BorderLayout());
+			panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
+			panel.add(alterationEditor);
+			entries.add(new ClassEntry(DelayedAlteration.class, panel));
+		}
 
 		// OverridingSpriteSheetEditor
 

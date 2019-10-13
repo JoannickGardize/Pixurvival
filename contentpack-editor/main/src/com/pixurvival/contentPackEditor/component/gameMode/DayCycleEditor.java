@@ -17,12 +17,12 @@ public class DayCycleEditor extends InstanceChangingElementEditor<DayCycle> {
 	private static final long serialVersionUID = 1L;
 
 	public DayCycleEditor() {
-		super("dayCycleType");
+		super("dayCycleType", null);
 		LayoutUtils.addHorizontally(this, getTypeChooser(), getSpecificPartPanel());
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> classEntries = new ArrayList<>();
 		classEntries.add(new ClassEntry(EternalDayCycle.class, new JPanel()));
 		TimeInput dayDurationInput = new TimeInput();

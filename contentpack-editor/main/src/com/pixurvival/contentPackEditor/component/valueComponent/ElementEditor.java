@@ -55,28 +55,12 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		if (value == null) {
 			return false;
 		}
-		// boolean valid = true;
-		// boolean valueChanged = false;
 		for (SubValueEntry entry : subValues) {
 			if (entry.getCondition().test(value) && !entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
-				// Remove references of elements when removed
-				// if (entry.getComponent() instanceof ElementChooserButton<?>
-				// && entry.getGetter().apply(value) != null) {
-				// entry.getSetter().accept(value, null);
-				// valueChanged = true;
-				// if (((ElementChooserButton<?>)
-				// entry.getComponent()).isRequired()) {
-				// valid = false;
-				// }
-				// } else {
-				// valid = false;
-				// }
+
 				return false;
 			}
 		}
-		// if (valueChanged) {
-		// notifyValueChanged();
-		// }
 		return true;
 	}
 

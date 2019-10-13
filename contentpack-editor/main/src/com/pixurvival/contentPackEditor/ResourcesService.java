@@ -68,6 +68,10 @@ public class ResourcesService {
 			Utils.showErrorDialog("resources.name.invalidMessage");
 			return;
 		}
+		addResource(name);
+	}
+
+	public void addResource(String name) {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
 			return;

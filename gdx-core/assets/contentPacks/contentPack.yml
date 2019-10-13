@@ -15,6 +15,7 @@ animationTemplates:
       - {x: 0, y: 3}
       - {x: 2, y: 3}
       - {x: 0, y: 3}
+      rotationPerSecond: 0.0
     MOVE_UP:
       frameDuration: 200
       action: MOVE_UP
@@ -23,6 +24,7 @@ animationTemplates:
       - {x: 0, y: 1}
       - {x: 2, y: 1}
       - {x: 0, y: 1}
+      rotationPerSecond: 0.0
     MOVE_LEFT:
       frameDuration: 200
       action: MOVE_LEFT
@@ -31,6 +33,7 @@ animationTemplates:
       - {x: 0, y: 2}
       - {x: 2, y: 2}
       - {x: 0, y: 2}
+      rotationPerSecond: 0.0
     MOVE_DOWN:
       frameDuration: 200
       action: MOVE_DOWN
@@ -39,50 +42,59 @@ animationTemplates:
       - {x: 0, y: 0}
       - {x: 2, y: 0}
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     STAND_RIGHT:
       frameDuration: 200
       action: STAND_RIGHT
       frames:
       - {x: 0, y: 3}
+      rotationPerSecond: 0.0
     STAND_UP:
       frameDuration: 200
       action: STAND_UP
       frames:
       - {x: 0, y: 1}
+      rotationPerSecond: 0.0
     STAND_LEFT:
       frameDuration: 200
       action: STAND_LEFT
       frames:
       - {x: 0, y: 2}
+      rotationPerSecond: 0.0
     STAND_DOWN:
       frameDuration: 200
       action: STAND_DOWN
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     WORK_RIGHT:
       frameDuration: 200
       action: WORK_RIGHT
       frames:
       - {x: 0, y: 3}
       - {x: 2, y: 3}
+      rotationPerSecond: 0.0
     WORK_UP:
       frameDuration: 200
       action: WORK_UP
       frames:
       - {x: 0, y: 1}
       - {x: 2, y: 1}
+      rotationPerSecond: 0.0
     WORK_DOWN:
       frameDuration: 200
       action: WORK_DOWN
       frames:
       - {x: 0, y: 0}
       - {x: 2, y: 0}
+      rotationPerSecond: 0.0
     WORK_LEFT:
       frameDuration: 200
       action: WORK_LEFT
       frames:
       - {x: 0, y: 2}
       - {x: 2, y: 2}
+      rotationPerSecond: 0.0
 - &harvestable_structure
   name: harvestable_structure
   id: 1
@@ -92,11 +104,13 @@ animationTemplates:
       action: DEFAULT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     HARVESTED:
       frameDuration: 1000
       action: HARVESTED
       frames:
       - {x: 1, y: 0}
+      rotationPerSecond: 0.0
 - &animated2
   name: animated2
   id: 2
@@ -107,6 +121,7 @@ animationTemplates:
       frames:
       - {x: 0, y: 0}
       - {x: 1, y: 0}
+      rotationPerSecond: 0.0
 - name: sword_hit
   id: 3
   animations:
@@ -120,6 +135,7 @@ animationTemplates:
       - {x: 0, y: 1}
       - {x: 1, y: 1}
       - {x: 2, y: 1}
+      rotationPerSecond: 0.0
 - &single_image
   name: single_image
   id: 4
@@ -129,6 +145,7 @@ animationTemplates:
       action: DEFAULT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
 - &summon_holemon
   name: summon_holemon
   id: 5
@@ -141,6 +158,7 @@ animationTemplates:
       - {x: 1, y: 0}
       - {x: 2, y: 0}
       - {x: 3, y: 0}
+      rotationPerSecond: 0.0
 - &warlock_projectile_explosion
   name: warlock_projectile_explosion
   id: 6
@@ -152,6 +170,7 @@ animationTemplates:
       - {x: 0, y: 0}
       - {x: 1, y: 0}
       - {x: 2, y: 0}
+      rotationPerSecond: 0.0
 - &single_image_equipment
   name: single_image_equipment
   id: 7
@@ -161,61 +180,357 @@ animationTemplates:
       action: MOVE_RIGHT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     MOVE_UP:
       frameDuration: 1000
       action: MOVE_UP
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     MOVE_LEFT:
       frameDuration: 1000
       action: MOVE_LEFT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     MOVE_DOWN:
       frameDuration: 1000
       action: MOVE_DOWN
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     STAND_RIGHT:
       frameDuration: 1000
       action: STAND_RIGHT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     STAND_UP:
       frameDuration: 1000
       action: STAND_UP
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     STAND_LEFT:
       frameDuration: 1000
       action: STAND_LEFT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     STAND_DOWN:
       frameDuration: 1000
       action: STAND_DOWN
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     WORK_RIGHT:
       frameDuration: 1000
       action: WORK_RIGHT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     WORK_UP:
       frameDuration: 1000
       action: WORK_UP
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     WORK_DOWN:
       frameDuration: 1000
       action: WORK_DOWN
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
     WORK_LEFT:
       frameDuration: 1000
       action: WORK_LEFT
       frames:
       - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+- &fast_animated2
+  name: fast_animated2
+  id: 8
+  animations:
+    DEFAULT:
+      frameDuration: 150
+      action: DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 600.0
+- &golem
+  name: golem
+  id: 9
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 300
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 4}
+      - {x: 1, y: 4}
+      - {x: 0, y: 4}
+      - {x: 2, y: 4}
+      rotationPerSecond: 0.0
+    MOVE_UP:
+      frameDuration: 300
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 2}
+      - {x: 1, y: 2}
+      - {x: 0, y: 2}
+      - {x: 2, y: 2}
+      rotationPerSecond: 0.0
+    MOVE_LEFT:
+      frameDuration: 300
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 3}
+      - {x: 1, y: 3}
+      - {x: 0, y: 3}
+      - {x: 2, y: 3}
+      rotationPerSecond: 0.0
+    MOVE_DOWN:
+      frameDuration: 300
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 1}
+      - {x: 1, y: 1}
+      - {x: 0, y: 1}
+      - {x: 2, y: 1}
+      rotationPerSecond: 0.0
+    STAND_RIGHT:
+      frameDuration: 1000
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 1000
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 1000
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 1000
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    WORK_RIGHT:
+      frameDuration: 1000
+      action: WORK_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+- &golem_rolling
+  name: golem_rolling
+  id: 10
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 400
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: -360.0
+    MOVE_UP:
+      frameDuration: 300
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: -360.0
+    MOVE_LEFT:
+      frameDuration: 300
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 360.0
+    MOVE_DOWN:
+      frameDuration: 300
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 360.0
+    STAND_RIGHT:
+      frameDuration: 1000
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 1000
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 1000
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 1000
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+- &barbaric_axe
+  name: barbaric_axe
+  id: 11
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 1000
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_UP:
+      frameDuration: 1000
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_LEFT:
+      frameDuration: 1000
+      action: MOVE_LEFT
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_DOWN:
+      frameDuration: 1000
+      action: MOVE_DOWN
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_RIGHT:
+      frameDuration: 1000
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 1000
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 1000
+      action: STAND_LEFT
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 1000
+      action: STAND_DOWN
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_RIGHT:
+      frameDuration: 1000
+      action: WORK_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    WORK_UP:
+      frameDuration: 1000
+      action: WORK_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    WORK_DOWN:
+      frameDuration: 1000
+      action: WORK_DOWN
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_LEFT:
+      frameDuration: 1000
+      action: WORK_LEFT
+      frames:
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+- &boss
+  name: boss
+  id: 12
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 300
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_UP:
+      frameDuration: 300
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_LEFT:
+      frameDuration: 300
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_DOWN:
+      frameDuration: 300
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    STAND_RIGHT:
+      frameDuration: 300
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 300
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 300
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 300
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 0, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
 equipmentOffsets:
 - &character02
   name: character
@@ -270,6 +585,28 @@ equipmentOffsets:
   id: 3
   frameOffsets:
   - {x: 0, y: 0, offsetX: 1, offsetY: 2, back: false}
+- &barbaric
+  name: barbaric
+  id: 4
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 0, offsetY: 2, back: false}
+  - {x: 1, y: 0, offsetX: 0, offsetY: 3, back: false}
+  - {x: 2, y: 0, offsetX: 1, offsetY: 1, back: false}
+  - {x: 0, y: 1, offsetX: 6, offsetY: 2, back: false}
+  - {x: 1, y: 1, offsetX: 6, offsetY: 4, back: true}
+  - {x: 2, y: 1, offsetX: 6, offsetY: 3, back: false}
+  - {x: 0, y: 2, offsetX: 4, offsetY: 2, back: false}
+  - {x: 1, y: 2, offsetX: 5, offsetY: 2, back: false}
+  - {x: 2, y: 2, offsetX: 2, offsetY: 2, back: false}
+  - {x: 0, y: 3, offsetX: 2, offsetY: 2, back: false}
+  - {x: 1, y: 3, offsetX: 1, offsetY: 2, back: false}
+  - {x: 2, y: 3, offsetX: 4, offsetY: 2, back: false}
+- &barbaric_axe02
+  name: barbaric_axe
+  id: 5
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 0, offsetY: 1, back: false}
+  - {x: 1, y: 0, offsetX: 2, offsetY: 1, back: false}
 spriteSheets:
 - &character03
   name: character
@@ -510,6 +847,96 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 9.5
   shadow: false
+- &whirlwind
+  name: whirlwind
+  id: 24
+  width: 29
+  height: 29
+  image: images/whirlwind.png
+  animationTemplate: *fast_animated2
+  equipmentOffset: null
+  heightOffset: 12.0
+  shadow: false
+- &arcanite_rock
+  name: arcanite_rock
+  id: 25
+  width: 21
+  height: 19
+  image: images/arcanite_rock.png
+  animationTemplate: *harvestable_structure
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &magic_tree
+  name: magic_tree
+  id: 26
+  width: 19
+  height: 24
+  image: images/magic_tree.png
+  animationTemplate: *harvestable_structure
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &golem02
+  name: golem
+  id: 27
+  width: 15
+  height: 15
+  image: images/golem.png
+  animationTemplate: *golem
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &golem_rolling02
+  name: golem_rolling
+  id: 28
+  width: 11
+  height: 11
+  image: images/golem_rolling.png
+  animationTemplate: *golem_rolling
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &barbaric_clothing
+  name: barbaric_clothing
+  id: 29
+  width: 7
+  height: 9
+  image: images/barbaric_clothing.png
+  animationTemplate: *character
+  equipmentOffset: *barbaric
+  heightOffset: 0.0
+  shadow: true
+- &barbaric_axe03
+  name: barbaric_axe
+  id: 30
+  width: 3
+  height: 8
+  image: images/barbaric_axe.png
+  animationTemplate: *barbaric_axe
+  equipmentOffset: *barbaric_axe02
+  heightOffset: 0.0
+  shadow: true
+- &small_hit
+  name: small_hit
+  id: 31
+  width: 6
+  height: 5
+  image: images/small_hit.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &necrodamon
+  name: necrodamon
+  id: 32
+  width: 46
+  height: 34
+  image: images/necrodamon.png
+  animationTemplate: *boss
+  equipmentOffset: null
+  heightOffset: 4.0
+  shadow: true
 effects:
 - &wood_bow_hit
   name: wood_bow_hit
@@ -520,7 +947,7 @@ effects:
   solid: true
   duration: 750
   collisionRadius: 0.6
-  movement: !!LinearEffectMovement {speed: 24.0, relative: false, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 24.0, relative: false, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -544,7 +971,7 @@ effects:
   solid: true
   duration: 1000
   collisionRadius: 0.3
-  movement: !!LinearEffectMovement {speed: 18.0, relative: false, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -567,7 +994,7 @@ effects:
   solid: false
   duration: 200
   collisionRadius: 1.2
-  movement: !!LinearEffectMovement {speed: 25.0, relative: true, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 25.0, relative: true, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
@@ -614,7 +1041,7 @@ effects:
   solid: true
   duration: 800
   collisionRadius: 0.35
-  movement: !!LinearEffectMovement {speed: 25.0, relative: false, destroyAtTargetPosition: true}
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 25.0, relative: false, destroyAtTargetPosition: true}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
@@ -696,7 +1123,7 @@ effects:
   solid: false
   duration: 800
   collisionRadius: 0.0
-  movement: !!LinearEffectMovement {speed: 7.0, relative: false, destroyAtTargetPosition: false}
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 7.0, relative: false, destroyAtTargetPosition: false}
   targets: []
   repeatFollowingElements:
     base: 0.0
@@ -735,7 +1162,7 @@ effects:
                   targetType: CLOSEST_ENNEMY
                   operator: GREATER_THAN
                   targetDistance: 30.0
-                abilityToUseId: 0
+                abilityToUseId: 1
                 targetType: CLOSEST_ENNEMY
                 minDistance: 5.0
                 maxDistance: 10.0
@@ -752,10 +1179,10 @@ effects:
           name: ninja_pig
           id: 0
           abilities:
-          - !!EffectAbility
+          - !!AlterationAbility
             id: 0
             cooldown: 2000
-            selfAlterations: null
+            selfAlterations: []
             offsetAngleEffects:
             - offsetAngle: 0.0
               randomAngle: 0.0
@@ -773,6 +1200,78 @@ effects:
         statMultipliers: []
   deathFollowingElements: []
 - *warlock_projectile_explosion03
+- &whirlwind02
+  name: whirlwind
+  id: 8
+  spriteSheet: *whirlwind
+  orientation: STATIC
+  loopAnimation: true
+  solid: false
+  duration: 5000
+  collisionRadius: 1.83
+  movement: !!BoundEffectMovement {distance: 0.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!ContinuousDamageAlteration
+      damagePerSecond:
+        base: 20.0
+        statMultipliers:
+        - {statType: STRENGTH, multiplier: 0.8}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+- &barabaric_axe_base
+  name: barabaric_axe_base
+  id: 9
+  spriteSheet: *small_hit
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  solid: false
+  duration: 250
+  collisionRadius: 0.4
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: true, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      amount:
+        base: 10.0
+        statMultipliers:
+        - {statType: STRENGTH, multiplier: 1.7}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+- &barbaric_axe_special
+  name: barbaric_axe_special
+  id: 10
+  spriteSheet: *small_hit
+  orientation: MOVING_ANGLE
+  loopAnimation: false
+  solid: false
+  duration: 200
+  collisionRadius: 0.4
+  movement: !!LinearEffectMovement {initialDistance: 1.0, speed: 10.0, relative: true, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      amount:
+        base: 15.0
+        statMultipliers:
+        - {statType: STRENGTH, multiplier: 2.0}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
 items:
 - &wood_sword02 !!WeaponItem
   name: wood_sword
@@ -782,7 +1281,7 @@ items:
   image: images/items.png
   spriteSheet: *wood_sword
   statModifiers: []
-  baseAbility: !!EffectAbility
+  baseAbility: !!AlterationAbility
     id: 0
     cooldown: 1000
     selfAlterations: []
@@ -791,11 +1290,18 @@ items:
       randomAngle: 0.0
       effect: *wood_sword_hit
     ammunition: {item: null, quantity: 1}
-  specialAbility: !!EffectAbility
+  specialAbility: !!AlterationAbility
     id: 0
-    cooldown: 0
-    selfAlterations: []
-    offsetAngleEffects: []
+    cooldown: 1000
+    selfAlterations:
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      duration: 5000
+      stackPolicy: REPLACE
+      statModifier: {statType: SPEED, operationType: ADDITIVE, value: 3.0}
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *whirlwind02
     ammunition: {item: null, quantity: 1}
 - &wood !!ResourceItem
   name: wood
@@ -924,7 +1430,7 @@ items:
   image: images/items.png
   spriteSheet: *wood_bow
   statModifiers: []
-  baseAbility: !!EffectAbility
+  baseAbility: !!AlterationAbility
     id: 0
     cooldown: 800
     selfAlterations: []
@@ -935,7 +1441,7 @@ items:
     ammunition:
       item: *arrow
       quantity: 1
-  specialAbility: !!EffectAbility
+  specialAbility: !!AlterationAbility
     id: 0
     cooldown: 0
     selfAlterations: []
@@ -950,7 +1456,7 @@ items:
   spriteSheet: *warlock_wand02
   statModifiers:
   - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
-  baseAbility: !!EffectAbility
+  baseAbility: !!AlterationAbility
     id: 0
     cooldown: 1000
     selfAlterations: []
@@ -959,7 +1465,7 @@ items:
       randomAngle: 0.0
       effect: *warlock_projectile02
     ammunition: {item: null, quantity: 1}
-  specialAbility: !!EffectAbility
+  specialAbility: !!AlterationAbility
     id: 0
     cooldown: 30000
     selfAlterations: []
@@ -971,6 +1477,73 @@ items:
       item: *piece_of_soul03
       quantity: 10
 - *piece_of_soul03
+- &arcanite !!ResourceItem
+  name: arcanite
+  id: 18
+  maxStackSize: 30
+  frame: {x: 2, y: 4}
+  image: images/items.png
+- &magic_wood !!ResourceItem
+  name: magic_wood
+  id: 19
+  maxStackSize: 50
+  frame: {x: 3, y: 4}
+  image: images/items.png
+- !!ClothingItem
+  name: barbaric_clothing
+  id: 20
+  maxStackSize: 1
+  frame: {x: 6, y: 0}
+  image: images/items.png
+  spriteSheet: *barbaric_clothing
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 6.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 6.0}
+- !!WeaponItem
+  name: barbaric_axe
+  id: 21
+  maxStackSize: 1
+  frame: {x: 6, y: 1}
+  image: images/items.png
+  spriteSheet: *barbaric_axe03
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 1.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 1.0}
+  baseAbility: !!AlterationAbility
+    id: 0
+    cooldown: 600
+    selfAlterations: []
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *barabaric_axe_base
+    - offsetAngle: 0.5235987755982988
+      randomAngle: 0.0
+      effect: *barabaric_axe_base
+    - offsetAngle: -0.5235987755982988
+      randomAngle: 0.0
+      effect: *barabaric_axe_base
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!AlterationAbility
+    id: 0
+    cooldown: 2000
+    selfAlterations:
+    - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+      duration: 200
+      stackPolicy: REPLACE
+      origin: SELF
+      relativeAngle: 0.0
+      randomAngle: 0.0
+      speed:
+        base: 0.0
+        statMultipliers:
+        - {statType: AGILITY, multiplier: 1.0}
+        - {statType: SPEED, multiplier: 1.2}
+    offsetAngleEffects:
+    - offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *barbaric_axe_special
+    ammunition: {item: null, quantity: 1}
 itemCrafts:
 - name: wood_sword
   id: 0
@@ -1095,6 +1668,30 @@ itemRewards:
       item: *pixie_powder
       quantity: 1
     probability: 0.5
+- &arcanite02
+  name: arcanite
+  id: 4
+  entries:
+  - itemStack:
+      item: *arcanite
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *arcanite
+      quantity: 1
+    probability: 0.5
+- &magic_tree02
+  name: magic_tree
+  id: 5
+  entries:
+  - itemStack:
+      item: *magic_wood
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *magic_wood
+      quantity: 1
+    probability: 0.5
 behaviorSets:
 - &ranged_attack
   name: ranged_attack
@@ -1118,7 +1715,7 @@ behaviorSets:
           targetType: CLOSEST_ENNEMY
           operator: GREATER_THAN
           targetDistance: 45.0
-        abilityToUseId: 0
+        abilityToUseId: 1
         targetType: CLOSEST_ENNEMY
         minDistance: 5.0
         maxDistance: 15.0
@@ -1193,7 +1790,7 @@ behaviorSets:
           name: null
           id: 0
           nextBehavior: *Disappear
-        abilityToUseId: 0
+        abilityToUseId: 1
         targetType: CLOSEST_ENNEMY
         minDistance: 0.0
       targetType: CLOSEST_ENNEMY
@@ -1211,20 +1808,111 @@ behaviorSets:
   - *Get_Away_from_light
   - *Disappear
 - *ranged_minion
+- &golem03
+  name: golem
+  id: 4
+  behaviors:
+  - &Sleeping !!DoNothingBehavior
+    name: Sleeping
+    id: 0
+    changeConditions:
+    - !!DistanceCondition
+      name: null
+      id: 0
+      nextBehavior: &Rolling !!MoveTowardBehavior
+        name: Rolling
+        id: 0
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: *Sleeping
+          targetType: CLOSEST_ENNEMY
+          operator: GREATER_THAN
+          targetDistance: 30.0
+        - !!TimeCondition
+          name: null
+          id: 0
+          nextBehavior: &Attack03 !!MoveTowardBehavior
+            name: Attack
+            id: 2
+            changeConditions:
+            - !!DistanceCondition
+              name: null
+              id: 0
+              nextBehavior: *Sleeping
+              targetType: CLOSEST_ENNEMY
+              operator: GREATER_THAN
+              targetDistance: 30.0
+            - !!DistanceCondition
+              name: null
+              id: 1
+              nextBehavior: *Rolling
+              targetType: CLOSEST_ENNEMY
+              operator: GREATER_THAN
+              targetDistance: 10.0
+            abilityToUseId: -1
+            targetType: CLOSEST_ENNEMY
+            minDistance: 0.0
+          targetTime: 5000
+        abilityToUseId: 1
+        targetType: CLOSEST_ENNEMY
+        minDistance: 0.1
+      targetType: CLOSEST_ENNEMY
+      operator: LESS_THAN
+      targetDistance: 10.0
+    abilityToUseId: -1
+  - *Rolling
+  - *Attack03
+- &necrodamon02
+  name: necrodamon
+  id: 5
+  behaviors:
+  - !!WanderBehavior
+    name: Wander
+    id: 0
+    changeConditions: []
+    abilityToUseId: -1
+    anchorType: SPAWN_POSITION
+    moveRate: 0.3
+    forwardFactor: 1.0
 abilitySets:
 - *ninja_pig
 - &night_ghost
   name: night_ghost
   id: 1
   abilities:
-  - !!EffectAbility
+  - !!AlterationAbility
     id: 0
     cooldown: 1000
-    selfAlterations: null
+    selfAlterations: []
     offsetAngleEffects:
     - offsetAngle: 0.0
       randomAngle: 0.0
       effect: *ghost_hit
+    ammunition: {item: null, quantity: 1}
+- &golem04
+  name: golem
+  id: 2
+  abilities:
+  - !!AlterationAbility
+    id: 0
+    cooldown: 6000
+    selfAlterations:
+    - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+      duration: 2000
+      stackPolicy: REPLACE
+      origin: SELF
+      relativeAngle: 0.0
+      randomAngle: 0.0
+      speed:
+        base: 10.0
+        statMultipliers: []
+    - !!com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration
+      duration: 2000
+      stackPolicy: REPLACE
+      spriteSheet: *golem_rolling02
+    offsetAngleEffects: []
     ammunition: {item: null, quantity: 1}
 creatures:
 - name: pixie
@@ -1238,18 +1926,17 @@ creatures:
   behaviorSet: *get_away
   itemReward: *pixie02
   abilitySet: null
-- &ninja_pig03
-  name: ninja_pig
+- name: ninja_pig
   id: 1
   spriteSheet: *ninja_pig02
   collisionRadius: 0.42
   strength: -3.0
-  agility: -2.0
+  agility: -10.0
   intelligence: 0.0
   solid: true
   behaviorSet: *ranged_attack
   itemReward: null
-  abilitySet: *ninja_pig
+  abilitySet: null
 - &night_ghost02
   name: night_ghost
   id: 2
@@ -1263,6 +1950,30 @@ creatures:
   itemReward: null
   abilitySet: *night_ghost
 - *holemon02
+- &golem05
+  name: golem
+  id: 4
+  spriteSheet: *golem02
+  collisionRadius: 0.65
+  strength: 5.0
+  agility: -6.0
+  intelligence: 0.0
+  solid: true
+  behaviorSet: *golem03
+  itemReward: null
+  abilitySet: *golem04
+- &necrodamon03
+  name: necrodamon
+  id: 5
+  spriteSheet: *necrodamon
+  collisionRadius: 0.9
+  strength: 20.0
+  agility: 10.0
+  intelligence: 30.0
+  solid: true
+  behaviorSet: *necrodamon02
+  itemReward: null
+  abilitySet: null
 tiles:
 - &grass
   name: grass
@@ -1315,6 +2026,14 @@ tiles:
   velocityFactor: 1.0
   frames:
   - {x: 6, y: 0}
+  image: images/tiles.png
+- &magic_grass
+  name: magic_grass
+  id: 7
+  solid: false
+  velocityFactor: 1.0
+  frames:
+  - {x: 6, y: 1}
   image: images/tiles.png
 structures:
 - &tree03 !!HarvestableStructure
@@ -1374,6 +2093,30 @@ structures:
   duration: 0
   bannedTiles: []
   lightEmissionRadius: 0.0
+- &arcanite_rock02 !!HarvestableStructure
+  name: arcanite_rock
+  id: 6
+  solid: true
+  spriteSheet: *arcanite_rock
+  dimensions: {width: 2, height: 1}
+  duration: 0
+  bannedTiles: []
+  lightEmissionRadius: 0.0
+  harvestingTime: 6000
+  itemReward: *arcanite02
+  regrowthTime: {min: 420000, max: 480000}
+- &magic_tree03 !!HarvestableStructure
+  name: magic_tree
+  id: 7
+  solid: true
+  spriteSheet: *magic_tree
+  dimensions: {width: 1, height: 1}
+  duration: 0
+  bannedTiles: []
+  lightEmissionRadius: 0.0
+  harvestingTime: 4000
+  itemReward: *magic_tree02
+  regrowthTime: {min: 240000, max: 300000}
 mapGenerators:
 - &test
   name: test
@@ -1410,6 +2153,18 @@ mapGenerators:
       entries:
       - tile: *dark_grass
         next: 1.0
+  - heightmapConditions:
+    - heightmap: *height
+      min: 0.35
+      max: 0.75
+    - heightmap: *special
+      min: 0.2
+      max: 0.3
+    tileHashmap:
+      heightmap: *height
+      entries:
+      - tile: *magic_grass
+        next: 0.0
   - heightmapConditions: []
     tileHashmap:
       heightmap: *height
@@ -1443,9 +2198,23 @@ mapGenerators:
     density: 0.04
   - structureProducer:
       backingArray:
+      - probability: 2.0
+        element: *magic_tree03
+      - probability: 1.0
+        element: *arcanite_rock02
+    heightmapConditions:
+    - heightmap: *height
+      min: 0.35
+      max: 0.75
+    - heightmap: *special
+      min: 0.2
+      max: 0.3
+    density: 0.02
+  - structureProducer:
+      backingArray:
       - probability: 6.0
         element: *tree03
-      - probability: 4.0
+      - probability: 2.0
         element: *cotton_bush02
     heightmapConditions:
     - heightmap: *height
@@ -1489,13 +2258,23 @@ ecosystems:
   - creatureChooser:
       backingArray:
       - probability: 1.0
-        element: *ninja_pig03
+        element: *golem05
     initialSpawn: 1
     maximumCreatures: 1
     respawnTime: {min: 30000, max: 60000}
     structure: *tree03
     spawnRadius: 10.0
     managedRadius: 60.0
+  - creatureChooser:
+      backingArray:
+      - probability: 1.0
+        element: *necrodamon03
+    initialSpawn: 1
+    maximumCreatures: 1
+    respawnTime: {min: 150000, max: 180000}
+    structure: *tombstone02
+    spawnRadius: 8.0
+    managedRadius: 128.0
   darknessSpawner:
     creatureChooser:
       backingArray:

@@ -17,9 +17,13 @@ public abstract class UniqueAlteration implements Alteration {
 
 	@Override
 	public void apply(TeamMember source, LivingEntity entity) {
-		CheckListHolder holder = (CheckListHolder) source;
-		if (!holder.isChecked(entity)) {
-			holder.check(entity);
+		if (source instanceof CheckListHolder) {
+			CheckListHolder holder = (CheckListHolder) source;
+			if (!holder.isChecked(entity)) {
+				holder.check(entity);
+				uniqueApply(source, entity);
+			}
+		} else {
 			uniqueApply(source, entity);
 		}
 	}

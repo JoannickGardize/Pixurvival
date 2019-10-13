@@ -21,5 +21,5 @@ public enum EquipmentAbilityType {
 	private int abilityId;
 	private int equipmentId;
 	private Function<Equipment, ItemStack> itemGetter;
-	private Function<Equipment, EffectAbility> abilityGetter;
+	private Function<Equipment, AlterationAbility> abilityGetter;
 }

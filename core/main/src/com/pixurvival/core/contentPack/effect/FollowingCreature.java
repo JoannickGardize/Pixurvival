@@ -1,7 +1,6 @@
 package com.pixurvival.core.contentPack.effect;
 
 import com.pixurvival.core.contentPack.creature.Creature;
-import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.alteration.StatAmount;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -24,8 +23,8 @@ public class FollowingCreature extends FollowingElement {
 	private StatAmount intelligenceBonus = new StatAmount();
 
 	@Override
-	public void apply(EffectEntity effectEntity) {
-		TeamMember origin = effectEntity.getOrigin();
+	public void apply(TeamMember ancestor) {
+		TeamMember origin = ancestor.getOrigin();
 		CreatureEntity creatureEntity = new CreatureEntity(creature);
 		if (owned) {
 			creatureEntity.setMaster(origin);
@@ -35,8 +34,8 @@ public class FollowingCreature extends FollowingElement {
 		creatureStats.get(StatType.STRENGTH).setBase(strengthBonus.getValue(originStats));
 		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(originStats));
 		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(originStats));
-		creatureEntity.getPosition().set(effectEntity.getPosition());
-		effectEntity.getWorld().getEntityPool().add(creatureEntity);
+		creatureEntity.getPosition().set(ancestor.getPosition());
+		ancestor.getWorld().getEntityPool().add(creatureEntity);
 	}
 
 }

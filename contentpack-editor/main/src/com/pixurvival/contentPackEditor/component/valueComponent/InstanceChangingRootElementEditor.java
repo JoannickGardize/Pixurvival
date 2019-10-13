@@ -13,7 +13,7 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 public abstract class InstanceChangingRootElementEditor<E extends IdentifiedElement> extends InstanceChangingElementEditor<E> {
 
 	public InstanceChangingRootElementEditor(String translationPreffix) {
-		super(translationPreffix);
+		super(translationPreffix, null);
 		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
 		EventManager.getInstance().register(this);
 	}

@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
@@ -39,7 +40,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 	private ListEditor<ChangeCondition> changeConditionsEditor;
 
 	public BehaviorEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
-		super("behaviorType");
+		super("behaviorType", null);
 
 		changeConditionsEditor = new VerticalListEditor<>(() -> {
 			ChangeConditionEditor editor = new ChangeConditionEditor(behaviorCollectionSupplier);
@@ -70,7 +71,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// GET_AWAY
@@ -81,9 +82,12 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		// MOVE_TOWARD
 		targetChooser = new EnumChooser<>(BehaviorTarget.class);
 		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
+		AngleInput randomAngleInput = new AngleInput();
 		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
 		bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
-		classEntries.add(new ClassEntry(MoveTowardBehavior.class, LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput)));
+		bind(randomAngleInput, MoveTowardBehavior::getRandomAngle, MoveTowardBehavior::setRandomAngle, MoveTowardBehavior.class);
+		classEntries.add(new ClassEntry(MoveTowardBehavior.class,
+				LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput)));
 
 		// TURN_AROUND
 		targetChooser = new EnumChooser<>(BehaviorTarget.class);

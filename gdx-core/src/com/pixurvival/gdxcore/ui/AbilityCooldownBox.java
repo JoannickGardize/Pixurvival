@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
-import com.pixurvival.core.livingEntity.ability.EffectAbility;
+import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.input.InputAction;
@@ -50,7 +50,7 @@ public class AbilityCooldownBox extends Actor {
 		batch.setColor(1, 1, 1, parentAlpha);
 		PixurvivalGame.getSkin().getDrawable("Button-gray").draw(batch, getX(), getY(), getWidth(), getHeight());
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		EffectAbility ability = type.getAbilityGetter().apply(myPlayer.getEquipment());
+		AlterationAbility ability = type.getAbilityGetter().apply(myPlayer.getEquipment());
 		itemStackDrawer.setItemStack(type.getItemGetter().apply(myPlayer.getEquipment()));
 		if (ability != null && !ability.isEmpty()) {
 			itemStackDrawer.draw(batch);

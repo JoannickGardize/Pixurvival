@@ -1,6 +1,5 @@
 package com.pixurvival.contentPackEditor.component.effect;
 
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +19,12 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 	private static final long serialVersionUID = 1L;
 
 	public EffectMovementEditor() {
-		super("effectMovementType");
+		super("effectMovementType", null);
 		LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> list = new ArrayList<>();
 
 		// StaticEffectMovement

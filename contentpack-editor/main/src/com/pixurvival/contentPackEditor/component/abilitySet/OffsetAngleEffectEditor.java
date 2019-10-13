@@ -33,7 +33,7 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		LayoutUtils.addHorizontalLabelledItem(panel, "offsetAngleEffect.offsetAngle", offsetAngleInput, gbc);
-		LayoutUtils.addHorizontalLabelledItem(panel, "offsetAngleEffect.randomAngle", randomAngleInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(panel, "generic.randomAngle", randomAngleInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		gbc.gridheight = 2;
 		panel.add(LayoutUtils.labelled("elementType.effect", effectChooser), gbc);

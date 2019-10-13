@@ -16,7 +16,7 @@ import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamCo
 public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGameCondition> {
 
 	public EndGameConditionEditor() {
-		super("endGameConditionType");
+		super("endGameConditionType", null);
 
 		LayoutUtils.addHorizontally(this, 1, getTypeChooser(), getSpecificPartPanel());
 	}
@@ -24,7 +24,7 @@ public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGam
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		entries.add(new ClassEntry(NoEndCondition.class, new JPanel()));

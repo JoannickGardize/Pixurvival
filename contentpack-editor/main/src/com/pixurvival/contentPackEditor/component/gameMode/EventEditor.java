@@ -18,7 +18,7 @@ import com.pixurvival.core.contentPack.gameMode.event.Event;
 public class EventEditor extends InstanceChangingElementEditor<Event> {
 
 	public EventEditor() {
-		super("eventType");
+		super("eventType", null);
 
 		TimeInput timeInput = new TimeInput();
 		BooleanCheckBox repeatCheckBox = new BooleanCheckBox();
@@ -34,7 +34,7 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);

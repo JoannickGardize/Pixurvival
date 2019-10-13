@@ -1,7 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.contentPack.effect.FollowingElement;
-import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -18,8 +17,6 @@ public class FollowingElementAlteration extends UniqueAlteration {
 
 	@Override
 	public void uniqueApply(TeamMember source, LivingEntity entity) {
-		if (source instanceof EffectEntity) {
-			followingElement.apply((EffectEntity) source);
-		}
+		followingElement.apply(source);
 	}
 }

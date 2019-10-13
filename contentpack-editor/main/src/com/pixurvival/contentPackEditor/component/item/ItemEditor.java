@@ -85,7 +85,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
 		entries.add(new ClassEntry(ResourceItem.class, new JPanel()));

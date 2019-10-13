@@ -31,7 +31,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 	private ElementChooserButton<Behavior> nextBehaviorChooser;
 
 	public ChangeConditionEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
-		super("changeConditionType");
+		super("changeConditionType", null);
 		// Construction
 
 		nextBehaviorChooser = new ElementChooserButton<>(behaviorCollectionSupplier);
@@ -48,7 +48,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 	}
 
 	@Override
-	protected List<ClassEntry> getClassEntries() {
+	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// DistanceCondition

@@ -16,6 +16,9 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, EffectEntity e) {
+		if (e.getDefinition().getEffect().getSpriteSheet() == null) {
+			return;
+		}
 		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getEffect().getSpriteSheet());
 		if (textureAnimationSet.getShadow() != null) {
 			DrawData data = (DrawData) e.getCustomData();
