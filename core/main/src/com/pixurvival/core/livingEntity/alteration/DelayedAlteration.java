@@ -15,15 +15,7 @@ public class DelayedAlteration extends PersistentAlteration {
 	private Alteration alteration;
 
 	@Override
-	public void begin(TeamMember source, LivingEntity entity) {
-	}
-
-	@Override
-	public void update(TeamMember source, LivingEntity entity) {
-	}
-
-	@Override
-	public void end(TeamMember source, LivingEntity entity) {
+	public void end(TeamMember source, LivingEntity entity, Object data) {
 		alteration.apply(source, entity);
 	}
 }

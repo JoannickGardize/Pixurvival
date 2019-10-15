@@ -49,10 +49,15 @@ public abstract class PersistentAlteration implements Alteration {
 		entity.applyPersistentAlteration(source, this);
 	}
 
-	public abstract void begin(TeamMember source, LivingEntity entity);
+	public Object begin(TeamMember source, LivingEntity entity) {
+		return null;
+	}
 
-	public abstract void update(TeamMember source, LivingEntity entity);
+	public Object update(TeamMember source, LivingEntity entity, Object data) {
+		return data;
+	}
 
-	public abstract void end(TeamMember source, LivingEntity entity);
+	public void end(TeamMember source, LivingEntity entity, Object data) {
+	}
 
 }

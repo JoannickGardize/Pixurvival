@@ -39,12 +39,12 @@ public class UseItemRequest implements IPlayerActionRequest {
 
 		@Override
 		public void write(Kryo kryo, Output output, UseItemRequest object) {
-			output.writeInt(object.slotIndex);
+			output.writeShort(object.slotIndex);
 		}
 
 		@Override
 		public UseItemRequest read(Kryo kryo, Input input, Class<UseItemRequest> type) {
-			return new UseItemRequest(input.readInt());
+			return new UseItemRequest(input.readShort());
 		}
 	}
 

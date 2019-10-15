@@ -11,6 +11,8 @@ import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
+import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.team.Team;
@@ -118,6 +120,12 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		if (getWorld().isServer()) {
 			for (FollowingElement followingElement : definition.getEffect().getDeathFollowingElements()) {
 				followingElement.apply(this);
+			}
+			if (getOrigin() instanceof LivingEntity) {
+				LivingEntity origin = (LivingEntity) getOrigin();
+				for (Alteration alteration : definition.getEffect().getDeathAlterations()) {
+					alteration.apply(this, origin);
+				}
 			}
 		}
 	}

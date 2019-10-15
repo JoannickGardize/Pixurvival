@@ -20,16 +20,13 @@ public class OverridingSpriteSheetAlteration extends PersistentAlteration {
 	private SpriteSheet spriteSheet;
 
 	@Override
-	public void begin(TeamMember source, LivingEntity entity) {
+	public Object begin(TeamMember source, LivingEntity entity) {
 		entity.setOverridingSpriteSheet(spriteSheet);
+		return null;
 	}
 
 	@Override
-	public void update(TeamMember source, LivingEntity entity) {
-	}
-
-	@Override
-	public void end(TeamMember source, LivingEntity entity) {
+	public void end(TeamMember source, LivingEntity entity, Object data) {
 		entity.setOverridingSpriteSheet(null);
 	}
 }

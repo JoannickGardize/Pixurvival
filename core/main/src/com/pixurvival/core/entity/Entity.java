@@ -210,11 +210,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return getCollisionRadius();
 	}
 
-	public void setSpeed(double speed) {
+	public boolean setSpeed(double speed) {
 		if (this.speed != speed) {
 			this.speed = speed;
 			velocityChanged = true;
+			return true;
 		}
+		return false;
 	}
 
 	public void updateVelocity() {

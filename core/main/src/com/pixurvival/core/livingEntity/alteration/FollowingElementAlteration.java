@@ -13,10 +13,16 @@ public class FollowingElementAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	public enum FollowingElementSource {
+		ORIGIN,
+		SELF
+	}
+
+	private FollowingElementSource source = FollowingElementSource.SELF;
 	private FollowingElement followingElement;
 
 	@Override
 	public void uniqueApply(TeamMember source, LivingEntity entity) {
-		followingElement.apply(source);
+		followingElement.apply(this.source == FollowingElementSource.ORIGIN ? source.getOrigin() : source);
 	}
 }

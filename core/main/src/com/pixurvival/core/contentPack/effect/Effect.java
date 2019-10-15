@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatAmount;
 
 import lombok.Getter;
@@ -55,4 +56,6 @@ public class Effect extends IdentifiedElement {
 	private List<DelayedFollowingElement> delayedFollowingElements = new ArrayList<>();
 
 	private List<FollowingElement> deathFollowingElements = new ArrayList<>();
+
+	private List<Alteration> deathAlterations = new ArrayList<>();
 }

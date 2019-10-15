@@ -16,16 +16,13 @@ public class StatAlteration extends PersistentAlteration {
 	private StatModifier statModifier = new StatModifier();
 
 	@Override
-	public void begin(TeamMember source, LivingEntity entity) {
+	public Object begin(TeamMember source, LivingEntity entity) {
 		entity.getStats().addModifier(statModifier);
+		return null;
 	}
 
 	@Override
-	public void update(TeamMember source, LivingEntity entity) {
-	}
-
-	@Override
-	public void end(TeamMember source, LivingEntity entity) {
+	public void end(TeamMember source, LivingEntity entity, Object data) {
 		entity.getStats().removeModifier(statModifier);
 	}
 }

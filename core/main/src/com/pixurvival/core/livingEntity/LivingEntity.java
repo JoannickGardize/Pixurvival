@@ -42,7 +42,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	private @Setter Team team = TeamSet.WILD_TEAM;
 
 	private @Setter boolean movementChangeEnabled = true;
-	private @Setter SpriteSheet overridingSpriteSheet = null;
+	private SpriteSheet overridingSpriteSheet = null;
 
 	public LivingEntity() {
 	}
@@ -54,6 +54,22 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		setForward(true);
 		updateVelocity();
 		movementChangeEnabled = false;
+	}
+
+	@Override
+	public boolean setSpeed(double speed) {
+		if (movementChangeEnabled && super.setSpeed(speed)) {
+			setStateChanged(true);
+			return true;
+		}
+		return false;
+	}
+
+	public void setOverridingSpriteSheet(SpriteSheet spriteSheet) {
+		if (overridingSpriteSheet != spriteSheet) {
+			overridingSpriteSheet = spriteSheet;
+			setStateChanged(true);
+		}
 	}
 
 	public void stopFixedMovement() {
@@ -81,6 +97,13 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		for (int i = 0; i < abilitySet.size(); i++) {
 			abilityData[i] = abilitySet.get(i).createAbilityData();
 		}
+	}
+
+	public void teleport(Vector2 position) {
+		if (!getWorld().getMap().collide(getPosition().getX(), getPosition().getY(), getCollisionRadius())) {
+			getPosition().set(position);
+		}
+		setStateChanged(true);
 	}
 
 	public void setHealth(float health) {
@@ -161,7 +184,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 				persistentAlterationEntries.add(entry);
 			} else {
 				PersistentAlterationEntry oldEntry = persistentAlterationEntries.get(index);
-				oldEntry.getAlteration().end(oldEntry.getSource(), this);
+				oldEntry.getAlteration().end(oldEntry.getSource(), this, oldEntry.getData());
 				persistentAlterationEntries.set(index, entry);
 			}
 			beginPersistentAlteration(entry);
@@ -176,17 +199,19 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	private void beginPersistentAlteration(PersistentAlterationEntry entry) {
+		// Begin before fixing the term time, because some type of PersistentAlteration
+		// fixes the term during this method
+		entry.setData(entry.getAlteration().begin(entry.getSource(), this));
 		entry.setTermTimeMillis(entry.getAlteration().getDuration() + getWorld().getTime().getTimeMillis());
-		entry.getAlteration().begin(entry.getSource(), this);
 	}
 
 	@Override
 	public void update() {
 		long timeMillis = getWorld().getTime().getTimeMillis();
 		persistentAlterationEntries.removeIf(entry -> {
-			entry.getAlteration().update(entry.getSource(), this);
+			entry.setData(entry.getAlteration().update(entry.getSource(), this, entry.getData()));
 			if (timeMillis >= entry.getTermTimeMillis()) {
-				entry.getAlteration().end(entry.getSource(), this);
+				entry.getAlteration().end(entry.getSource(), this, entry.getData());
 				return true;
 			}
 			return false;
@@ -234,6 +259,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	public void stopCurrentAbility() {
 		if (currentAbility != null && currentAbility.stop(this)) {
 			currentAbility = null;
+			setStateChanged(true);
 		}
 	}
 
@@ -242,11 +268,17 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		// normal part
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
-		buffer.putDouble(getMovingAngle());
-		buffer.put(isForward() ? (byte) 1 : (byte) 0);
+		if (movementChangeEnabled) {
+			buffer.put(isForward() ? (byte) 1 : (byte) 0);
+			buffer.putDouble(getMovingAngle());
+		} else {
+			buffer.put((byte) 2);
+			buffer.putDouble(getMovingAngle());
+			buffer.putDouble(getSpeed());
+		}
 		buffer.putFloat(getHealth());
 		buffer.putShort((short) getTeam().getId());
-		ByteBufferUtils.writeElementOrNull(buffer, getOverridingSpriteSheet());
+		ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
 		if (getCurrentAbility() == null) {
 			buffer.put(Ability.NONE_ID);
 		} else {
@@ -259,15 +291,22 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
-		setMovingAngle(buffer.getDouble());
-		setForward(buffer.get() == 1);
+		byte forwardType = buffer.get();
+		if (forwardType == 2) {
+			setFixedMovement(buffer.getDouble(), buffer.getDouble());
+		} else {
+			stopFixedMovement();
+			setForward(forwardType == 1);
+			setMovingAngle(buffer.getDouble());
+		}
 		setHealth(buffer.getFloat());
 		setTeam(getWorld().getTeamSet().get(buffer.getShort()));
-		ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
+		overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
 		byte abilityId = buffer.get();
 		if (abilityId == Ability.NONE_ID) {
 			stopCurrentAbility();
 		} else {
+			System.out.println("fif");
 			getAbilityData(abilityId).apply(buffer, this);
 			startAbility(abilityId);
 		}

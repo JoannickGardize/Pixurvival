@@ -60,8 +60,10 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void update() {
-		currentBehavior.update(this);
-		updateTargetPosition();
+		if (getWorld().isServer()) {
+			currentBehavior.update(this);
+			updateTargetPosition();
+		}
 		super.update();
 	}
 

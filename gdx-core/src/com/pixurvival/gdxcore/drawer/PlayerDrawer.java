@@ -57,7 +57,7 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 
 	protected void drawWeapon(boolean back, Batch batch, PlayerEntity e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {
 		ItemStack weapon = e.getEquipment().getWeapon();
-		if (weapon != null) {
+		if (weapon != null && (e.getCurrentAbility() == null || e.getCurrentAbility().getAnimationItem(e) == null)) {
 			SpriteSheet spriteSheet = ((WeaponItem) weapon.getItem()).getSpriteSheet();
 			TextureAnimationSet weaponAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(spriteSheet);
 			TextureAnimation weaponAnimation = weaponAnimationSet.get(actionAnimation);

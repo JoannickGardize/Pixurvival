@@ -11,6 +11,7 @@ import lombok.Setter;
 public class PersistentAlterationEntry {
 	private TeamMember source;
 	private PersistentAlteration alteration;
+	private @Setter Object data;
 
 	private @Setter long termTimeMillis;
 

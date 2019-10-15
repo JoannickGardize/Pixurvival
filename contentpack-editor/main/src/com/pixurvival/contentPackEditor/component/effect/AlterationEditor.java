@@ -11,8 +11,10 @@ import com.pixurvival.contentPackEditor.component.item.StatModifierEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
+import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -23,12 +25,15 @@ import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration.FixedMovementOrigin;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
+import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration.FollowingElementSource;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
 import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
+import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.StatAlteration;
+import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 
 public class AlterationEditor extends InstanceChangingElementEditor<Alteration> {
 
@@ -82,7 +87,6 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		entries.add(new ClassEntry(StatAlteration.class, statAlterationPanel));
 
 		// FixedMovementAlteration
-
 		durationInput = new TimeInput();
 		EnumChooser<FixedMovementOrigin> originChooser = new EnumChooser<>(FixedMovementOrigin.class);
 		AngleInput relativeAngleInput = new AngleInput();
@@ -99,6 +103,9 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 				LayoutUtils.createVerticalLabelledBox("statType.speed", speedEditor));
 		entries.add(new ClassEntry(FixedMovementAlteration.class, fmaPanel));
 
+		// TeleportationAlteration
+		entries.add(new ClassEntry(TeleportationAlteration.class, new JPanel()));
+
 		// DelayedAlteration
 		if (Boolean.TRUE.equals(params)) {
 			TimeInput delayInput = new TimeInput();
@@ -109,10 +116,21 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
 			panel.add(alterationEditor);
 			entries.add(new ClassEntry(DelayedAlteration.class, panel));
+
+			// RepeatAlteration
+			IntegerInput numberOfRepeatInput = new IntegerInput(Bounds.positive());
+			TimeInput intervalInput = new TimeInput();
+			alterationEditor = new AlterationEditor(false);
+			bind(numberOfRepeatInput, RepeatAlteration::getNumberOfRepeat, RepeatAlteration::setNumberOfRepeat, RepeatAlteration.class);
+			bind(intervalInput, RepeatAlteration::getInterval, RepeatAlteration::setInterval, RepeatAlteration.class);
+			bind(alterationEditor, RepeatAlteration::getAlteration, RepeatAlteration::setAlteration, RepeatAlteration.class);
+			panel = new JPanel(new BorderLayout());
+			panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "gerneric.interval", intervalInput), BorderLayout.WEST);
+			panel.add(alterationEditor);
+			entries.add(new ClassEntry(RepeatAlteration.class, panel));
 		}
 
 		// OverridingSpriteSheetEditor
-
 		durationInput = new TimeInput();
 		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
 		bind(durationInput, OverridingSpriteSheetAlteration::getDuration, OverridingSpriteSheetAlteration::setDuration, OverridingSpriteSheetAlteration.class);
@@ -128,9 +146,12 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 				LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox))));
 
 		// FollowingElementAlteration
+		EnumChooser<FollowingElementSource> sourceChooser = new EnumChooser<>(FollowingElementSource.class);
 		FollowingElementEditor followingElementEditor = new FollowingElementEditor();
+		bind(sourceChooser, FollowingElementAlteration::getSource, FollowingElementAlteration::setSource, FollowingElementAlteration.class);
 		bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
-		entries.add(new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(followingElementEditor)));
+		entries.add(
+				new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.source", sourceChooser), followingElementEditor))));
 
 		return entries;
 	}

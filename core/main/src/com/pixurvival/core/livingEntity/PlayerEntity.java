@@ -22,6 +22,7 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
+import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
@@ -108,8 +109,11 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		this.inventory = inventory;
 	}
 
+	public static Object THIS_ONE;
+
 	@Override
 	public void update() {
+		THIS_ONE = this;
 		addHunger(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
 		if (isForward()) {
 			addHunger(-(float) (HUNGER_DECREASE_MOVE * getWorld().getTime().getDeltaTime()));
@@ -229,5 +233,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	protected void fixedMovementEnded() {
 		lastPlayerMovementRequest.apply(this);
+	}
+
+	public void silence(long duration) {
+		startAbility(SILENCE_ABILITY_ID);
+		((SilenceAbilityData) getAbilityData(SILENCE_ABILITY_ID)).setEndTime(getWorld().getTime().getTimeMillis() + duration);
 	}
 }

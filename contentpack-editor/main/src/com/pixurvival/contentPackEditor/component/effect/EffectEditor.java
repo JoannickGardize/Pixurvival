@@ -23,6 +23,7 @@ import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 
 public class EffectEditor extends RootElementEditor<Effect> {
 
@@ -44,6 +45,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
 		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class));
+		ListEditor<Alteration> deathAlterations = new VerticalListEditor<>(AlterationEditor::new, BeanFactory.of(Alteration.class), VerticalListEditor.HORIZONTAL);
 
 		// Binding
 
@@ -58,6 +60,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
 		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
 		bind(deathFollowingElements, Effect::getDeathFollowingElements, Effect::setDeathFollowingElements);
+		bind(deathAlterations, Effect::getDeathAlterations, Effect::setDeathAlterations);
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -76,6 +79,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		followingElementsPanel.add(followingElementsEditor, BorderLayout.CENTER);
 		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.delayedFollowingElements"), followingElementsPanel);
 		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.deathFollowingElements"), deathFollowingElements);
+		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.deathAlterations"), deathAlterations);
 		LayoutUtils.fill(this, tabbedPane);
 	}
 }
