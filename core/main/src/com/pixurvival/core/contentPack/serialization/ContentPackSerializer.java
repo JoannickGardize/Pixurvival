@@ -62,6 +62,9 @@ import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
+import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
+import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
+import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 import com.pixurvival.core.util.FileUtils;
 
@@ -210,6 +213,9 @@ public class ContentPackSerializer {
 		addClassTag(representer, DoNothingBehavior.class);
 		addClassTag(representer, DelayedFollowingElement.class);
 		addClassTag(representer, TeleportationAlteration.class);
+		addClassTag(representer, SilenceAlteration.class);
+		addClassTag(representer, StunAlteration.class);
+		addClassTag(representer, InvincibleAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

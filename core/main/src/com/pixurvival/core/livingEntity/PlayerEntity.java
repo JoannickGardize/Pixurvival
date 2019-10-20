@@ -25,7 +25,6 @@ import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
-import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
@@ -47,6 +46,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final int INVENTORY_SIZE = 32;
 
+	public static final int SILENCE_ABILITY_ID = 0;
 	public static final int CRAFT_ABILITY_ID = 1;
 	public static final int HARVEST_ABILITY_ID = 2;
 	public static final int USE_ITEM_ABILITY_ID = 3;
@@ -85,7 +85,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
 			if (newItemStack != null) {
-				((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+				if (getWorld().isServer()) {
+					((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+				}
 				if (equipmentIndex == Equipment.WEAPON_INDEX) {
 					WeaponItem weaponItem = (WeaponItem) newItemStack.getItem();
 					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId());
@@ -109,11 +111,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		this.inventory = inventory;
 	}
 
-	public static Object THIS_ONE;
-
 	@Override
 	public void update() {
-		THIS_ONE = this;
 		addHunger(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
 		if (isForward()) {
 			addHunger(-(float) (HUNGER_DECREASE_MOVE * getWorld().getTime().getDeltaTime()));
@@ -196,18 +195,12 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PlayerData data = new PlayerData();
 		data.setId(getId());
 		data.setName(name);
-		data.setStrength(getStats().get(StatType.STRENGTH).getBase());
-		data.setAgility(getStats().get(StatType.AGILITY).getBase());
-		data.setIntelligence(getStats().get(StatType.INTELLIGENCE).getBase());
 		data.setEquipment(equipment);
 		return data;
 	}
 
 	public void applyData(PlayerData data) {
 		name = data.getName();
-		getStats().get(StatType.STRENGTH).setBase(data.getStrength());
-		getStats().get(StatType.AGILITY).setBase(data.getAgility());
-		getStats().get(StatType.INTELLIGENCE).setBase(data.getIntelligence());
 		equipment.set(data.getEquipment());
 	}
 

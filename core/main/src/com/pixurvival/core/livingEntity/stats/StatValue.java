@@ -43,6 +43,18 @@ public class StatValue implements StatListener {
 		}
 	}
 
+	/**
+	 * Directly set the value, used by the client side
+	 * 
+	 * @param value
+	 */
+	public void setValue(float value) {
+		if (this.value != value) {
+			this.value = value;
+			listeners.forEach(l -> l.statChanged(this));
+		}
+	}
+
 	public void addToBase(float toAdd) {
 		if (toAdd != 0) {
 			this.base += toAdd;

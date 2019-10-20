@@ -29,10 +29,13 @@ import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration.Fo
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
+import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
 import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
 import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
+import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
 import com.pixurvival.core.livingEntity.alteration.StatAlteration;
+import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 
 public class AlterationEditor extends InstanceChangingElementEditor<Alteration> {
@@ -103,6 +106,16 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 				LayoutUtils.createVerticalLabelledBox("statType.speed", speedEditor));
 		entries.add(new ClassEntry(FixedMovementAlteration.class, fmaPanel));
 
+		// StunAlteration
+		durationInput = new TimeInput();
+		bind(durationInput, StunAlteration::getDuration, StunAlteration::setDuration, StunAlteration.class);
+		entries.add(new ClassEntry(StunAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+
+		// InvincibleAlteration
+		durationInput = new TimeInput();
+		bind(durationInput, InvincibleAlteration::getDuration, InvincibleAlteration::setDuration, InvincibleAlteration.class);
+		entries.add(new ClassEntry(InvincibleAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+
 		// TeleportationAlteration
 		entries.add(new ClassEntry(TeleportationAlteration.class, new JPanel()));
 
@@ -130,6 +143,19 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			entries.add(new ClassEntry(RepeatAlteration.class, panel));
 		}
 
+		// FollowingElementAlteration
+		EnumChooser<FollowingElementSource> sourceChooser = new EnumChooser<>(FollowingElementSource.class);
+		FollowingElementEditor followingElementEditor = new FollowingElementEditor();
+		bind(sourceChooser, FollowingElementAlteration::getSource, FollowingElementAlteration::setSource, FollowingElementAlteration.class);
+		bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
+		entries.add(
+				new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.source", sourceChooser), followingElementEditor))));
+
+		// SilenceAlteration
+		durationInput = new TimeInput();
+		bind(durationInput, SilenceAlteration::getDuration, SilenceAlteration::setDuration, SilenceAlteration.class);
+		entries.add(new ClassEntry(SilenceAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+
 		// OverridingSpriteSheetEditor
 		durationInput = new TimeInput();
 		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
@@ -144,14 +170,6 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
 		entries.add(new ClassEntry(AddItemAlteration.class,
 				LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox))));
-
-		// FollowingElementAlteration
-		EnumChooser<FollowingElementSource> sourceChooser = new EnumChooser<>(FollowingElementSource.class);
-		FollowingElementEditor followingElementEditor = new FollowingElementEditor();
-		bind(sourceChooser, FollowingElementAlteration::getSource, FollowingElementAlteration::setSource, FollowingElementAlteration.class);
-		bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
-		entries.add(
-				new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.source", sourceChooser), followingElementEditor))));
 
 		return entries;
 	}

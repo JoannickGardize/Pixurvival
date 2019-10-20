@@ -10,10 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.entity.EntityPool;
-import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ScreenResizeEvent;
+import com.pixurvival.gdxcore.WorldScreen;
+import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class OverlaysActor extends Actor implements EventListener {
 
@@ -38,8 +39,11 @@ public class OverlaysActor extends Actor implements EventListener {
 	public void draw(Batch batch, float parentAlpha) {
 		ScissorStack.pushScissors(scissors);
 		batch.setColor(1, 1, 1, 0.75f);
-		EntityPool entityPool = PixurvivalGame.getWorld().getEntityPool();
-		entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
+		DrawUtils.foreachChunksInScreen(WorldScreen.getWorldStage(), 3, chunk -> {
+			EntityCollection entityPool = chunk.getEntities();
+			entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
+		});
+
 		batch.flush(); // Make sure nothing is clipped before we want it to.
 		ScissorStack.popScissors();
 	}

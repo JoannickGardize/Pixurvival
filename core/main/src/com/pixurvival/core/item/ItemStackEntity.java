@@ -154,7 +154,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
+	public void writeUpdate(ByteBuffer buffer, boolean full) {
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
 		buffer.put((byte) state.ordinal());

@@ -151,7 +151,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
+	public void writeUpdate(ByteBuffer buffer, boolean full) {
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);

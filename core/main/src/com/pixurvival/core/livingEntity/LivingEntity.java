@@ -26,7 +26,13 @@ import lombok.Setter;
 @Getter
 public abstract class LivingEntity extends Entity implements Damageable, TeamMember {
 
-	public static final int SILENCE_ABILITY_ID = 0;
+	public static final byte UPDATE_CONTENT_MASK_STATS = 1;
+	public static final byte UPDATE_CONTENT_MASK_OTHERS = 2;
+	public static final byte UPDATE_CONTENT_MASK_FORWARD = 4;
+	public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED = 8;
+	public static final byte UPDATE_CONTENT_MASK_ALL = UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_OTHERS;
+
+	private byte updateContentFlags = UPDATE_CONTENT_MASK_ALL;
 
 	private float health;
 
@@ -44,7 +50,40 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	private @Setter boolean movementChangeEnabled = true;
 	private SpriteSheet overridingSpriteSheet = null;
 
-	public LivingEntity() {
+	private long stunTermTime = 0;
+	private long invincibleTermTime = 0;
+
+	@Override
+	protected boolean canForward() {
+		return getWorld().getTime().getTimeMillis() >= stunTermTime;
+	}
+
+	@Override
+	public void setStateChanged(boolean stateChanged) {
+		if (!stateChanged) {
+			updateContentFlags = 0;
+		}
+		super.setStateChanged(stateChanged);
+	}
+
+	public void addUpdateContentMask(byte mask) {
+		updateContentFlags |= mask;
+	}
+
+	public void stun(long duration) {
+		long term = duration + getWorld().getTime().getTimeMillis();
+		if (term > stunTermTime) {
+			stunTermTime = term;
+			setStateChanged(true);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
+		}
+	}
+
+	public void setInvincible(long duration) {
+		long term = duration + getWorld().getTime().getTimeMillis();
+		if (term > invincibleTermTime) {
+			invincibleTermTime = term;
+		}
 	}
 
 	public void setFixedMovement(double movingAngle, double speed) {
@@ -69,6 +108,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		if (overridingSpriteSheet != spriteSheet) {
 			overridingSpriteSheet = spriteSheet;
 			setStateChanged(true);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
 		}
 	}
 
@@ -82,12 +122,18 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	@Override
 	public void initialize() {
-		stats.get(StatType.MAX_HEALTH).addListener(s -> {
-			if (getHealth() > s.getValue()) {
-				setHealth(s.getValue());
-			}
-		});
 		health = getMaxHealth();
+		if (getWorld().isServer()) {
+			stats.get(StatType.MAX_HEALTH).addListener(s -> {
+				if (getHealth() > s.getValue()) {
+					setHealth(s.getValue());
+				}
+			});
+			stats.addListener(s -> {
+				setStateChanged(true);
+				addUpdateContentMask(UPDATE_CONTENT_MASK_STATS);
+			});
+		}
 		initializeAbilityData();
 	}
 
@@ -153,6 +199,9 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	public void takeTrueDamage(float amount) {
+		if (getWorld().getTime().getTimeMillis() < invincibleTermTime) {
+			return;
+		}
 		health -= amount;
 		if (health < 0) {
 			health = 0;
@@ -199,7 +248,8 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	private void beginPersistentAlteration(PersistentAlterationEntry entry) {
-		// Begin before fixing the term time, because some type of PersistentAlteration
+		// Begin before fixing the term time, because some type of
+		// PersistentAlteration
 		// fixes the term during this method
 		entry.setData(entry.getAlteration().begin(entry.getSource(), this));
 		entry.setTermTimeMillis(entry.getAlteration().getDuration() + getWorld().getTime().getTimeMillis());
@@ -254,61 +304,109 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			currentAbility = ability;
 		}
 		setStateChanged(true);
+		addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
 	}
 
 	public void stopCurrentAbility() {
 		if (currentAbility != null && currentAbility.stop(this)) {
 			currentAbility = null;
 			setStateChanged(true);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
 		}
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer) {
+	public void writeUpdate(ByteBuffer buffer, boolean full) {
+
+		// Building update flags
+
+		byte updateFlagsToSend = full ? UPDATE_CONTENT_MASK_ALL : updateContentFlags;
+		if (isForward()) {
+			updateFlagsToSend |= UPDATE_CONTENT_MASK_FORWARD;
+		}
+		if (movementChangeEnabled) {
+			updateFlagsToSend |= UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED;
+		}
+		buffer.put(updateFlagsToSend);
+
 		// normal part
+
 		buffer.putDouble(getPosition().getX());
 		buffer.putDouble(getPosition().getY());
-		if (movementChangeEnabled) {
-			buffer.put(isForward() ? (byte) 1 : (byte) 0);
-			buffer.putDouble(getMovingAngle());
-		} else {
-			buffer.put((byte) 2);
-			buffer.putDouble(getMovingAngle());
+		buffer.putDouble(getMovingAngle());
+		if (!movementChangeEnabled) {
 			buffer.putDouble(getSpeed());
 		}
 		buffer.putFloat(getHealth());
-		buffer.putShort((short) getTeam().getId());
-		ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
-		if (getCurrentAbility() == null) {
-			buffer.put(Ability.NONE_ID);
-		} else {
-			byte id = getCurrentAbility().getId();
-			buffer.put(id);
-			getAbilityData(id).write(buffer, this);
+
+		// stats part
+
+		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_STATS) != 0) {
+			buffer.putFloat(getStats().getValue(StatType.STRENGTH));
+			buffer.putFloat(getStats().getValue(StatType.AGILITY));
+			buffer.putFloat(getStats().getValue(StatType.INTELLIGENCE));
+			buffer.putFloat(getStats().getValue(StatType.MAX_HEALTH));
+			buffer.putFloat(getStats().getValue(StatType.ARMOR));
+			buffer.putFloat(getStats().getValue(StatType.SPEED));
+		}
+
+		// others part
+
+		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_OTHERS) != 0) {
+			buffer.putLong(stunTermTime);
+			buffer.putShort((short) getTeam().getId());
+			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
+			if (getCurrentAbility() == null) {
+				buffer.put(Ability.NONE_ID);
+			} else {
+				byte id = getCurrentAbility().getId();
+				buffer.put(id);
+				getAbilityData(id).write(buffer, this);
+			}
 		}
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
+
+		byte updateContentFlag = buffer.get();
+
+		// normal part
+
 		getPosition().set(buffer.getDouble(), buffer.getDouble());
-		byte forwardType = buffer.get();
-		if (forwardType == 2) {
-			setFixedMovement(buffer.getDouble(), buffer.getDouble());
-		} else {
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED) != 0) {
 			stopFixedMovement();
-			setForward(forwardType == 1);
+			setForward((updateContentFlag & UPDATE_CONTENT_MASK_FORWARD) != 0);
 			setMovingAngle(buffer.getDouble());
+		} else {
+			setFixedMovement(buffer.getDouble(), buffer.getDouble());
 		}
 		setHealth(buffer.getFloat());
-		setTeam(getWorld().getTeamSet().get(buffer.getShort()));
-		overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
-		byte abilityId = buffer.get();
-		if (abilityId == Ability.NONE_ID) {
-			stopCurrentAbility();
-		} else {
-			System.out.println("fif");
-			getAbilityData(abilityId).apply(buffer, this);
-			startAbility(abilityId);
+
+		// stats part
+
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_STATS) != 0) {
+			getStats().get(StatType.STRENGTH).setValue(buffer.getFloat());
+			getStats().get(StatType.AGILITY).setValue(buffer.getFloat());
+			getStats().get(StatType.INTELLIGENCE).setValue(buffer.getFloat());
+			getStats().get(StatType.MAX_HEALTH).setValue(buffer.getFloat());
+			getStats().get(StatType.ARMOR).setValue(buffer.getFloat());
+			getStats().get(StatType.SPEED).setValue(buffer.getFloat());
+		}
+
+		// others part
+
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
+			stunTermTime = buffer.getLong();
+			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
+			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
+			byte abilityId = buffer.get();
+			if (abilityId == Ability.NONE_ID) {
+				stopCurrentAbility();
+			} else {
+				getAbilityData(abilityId).apply(buffer, this);
+				startAbility(abilityId);
+			}
 		}
 	}
 

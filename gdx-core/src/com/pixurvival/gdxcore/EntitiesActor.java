@@ -51,22 +51,21 @@ public class EntitiesActor extends Actor {
 		drawers.put(EffectEntity.class, new EffectDrawer());
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void act(float delta) {
-		PixurvivalGame.getWorld().getEntityPool().foreach(e -> ((ElementDrawer<Entity>) drawers.get(e.getClass())).update(e));
-		super.act(delta);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		objectsToDraw.clear();
-		// TODO utiliser le pool des chunks
-		PixurvivalGame.getWorld().getEntityPool().foreach(e -> objectsToDraw.add(e));
-
-		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> chunk.forEachStructure(objectsToDraw::add));
-		objectsToDraw.sort((e1, e2) -> (int) ((e2.getPosition().getY() - e1.getPosition().getY()) * 10000));
+		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> {
+			chunk.getEntities().foreach((group, map) -> {
+				ElementDrawer<Entity> drawer = (ElementDrawer<Entity>) drawers.get(group.getType());
+				map.values().forEach(e -> {
+					drawer.update(e);
+					objectsToDraw.add(e);
+				});
+			});
+			chunk.forEachStructure(objectsToDraw::add);
+		});
+		objectsToDraw.sort((e1, e2) -> (int) ((e2.getPosition().getY() - e1.getPosition().getY()) * 1000));
 
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));

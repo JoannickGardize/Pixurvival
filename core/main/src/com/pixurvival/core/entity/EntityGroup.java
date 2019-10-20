@@ -14,16 +14,18 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum EntityGroup {
-	PLAYER(true, PlayerEntity::new),
-	ITEM_STACK(false, ItemStackEntity::new),
-	CREATURE(false, CreatureEntity::new),
-	EFFECT(false, EffectEntity::new);
+	PLAYER(true, PlayerEntity::new, PlayerEntity.class),
+	ITEM_STACK(false, ItemStackEntity::new, ItemStackEntity.class),
+	CREATURE(false, CreatureEntity::new, CreatureEntity.class),
+	EFFECT(false, EffectEntity::new, EffectEntity.class);
 
 	public static final byte END_MARKER = -1;
 
 	private @Getter boolean persistentInstance;
 
 	private @Getter Supplier<Entity> entitySupplier;
+
+	private @Getter Class<? extends Entity> type;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EntityGroup> {
 

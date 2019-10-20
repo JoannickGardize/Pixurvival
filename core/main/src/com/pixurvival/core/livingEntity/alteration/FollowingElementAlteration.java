@@ -15,7 +15,8 @@ public class FollowingElementAlteration extends UniqueAlteration {
 
 	public enum FollowingElementSource {
 		ORIGIN,
-		SELF
+		SELF,
+		TARGET
 	}
 
 	private FollowingElementSource source = FollowingElementSource.SELF;
@@ -23,6 +24,16 @@ public class FollowingElementAlteration extends UniqueAlteration {
 
 	@Override
 	public void uniqueApply(TeamMember source, LivingEntity entity) {
-		followingElement.apply(this.source == FollowingElementSource.ORIGIN ? source.getOrigin() : source);
+		switch (this.source) {
+		case ORIGIN:
+			followingElement.apply(source.getOrigin());
+			break;
+		case SELF:
+			followingElement.apply(source);
+			break;
+		case TARGET:
+			followingElement.apply(entity);
+			break;
+		}
 	}
 }

@@ -79,6 +79,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 	private void addSpawnerActionTimer(Chunk chunk, ChunkSpawner spawner) {
 		World world = chunk.getMap().getWorld();
 		if (spawner instanceof DarknessSpawner) {
+			// TODO WTF ?
 		}
 		world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunk.getPosition(), spawner), spawner.getRespawnTime().next(world.getRandom()));
 		actionMemory.computeIfAbsent(chunk.getPosition(), p -> new HashSet<>()).add(spawner);

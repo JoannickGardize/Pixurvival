@@ -1,13 +1,12 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class SilenceAlteration implements Alteration {
+public class InvincibleAlteration implements Alteration {
 
 	private static final long serialVersionUID = 1L;
 
@@ -17,8 +16,7 @@ public class SilenceAlteration implements Alteration {
 
 	@Override
 	public void apply(TeamMember source, LivingEntity entity) {
-		if (entity instanceof PlayerEntity) {
-			((PlayerEntity) entity).silence(duration);
-		}
+		entity.setInvincible(duration);
 	}
+
 }

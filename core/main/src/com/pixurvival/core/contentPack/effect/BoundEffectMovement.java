@@ -10,12 +10,6 @@ import com.pixurvival.core.util.Vector2;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * TODO incompatible with effects with ancestors that aren't Entities.
- * 
- * @author SharkHendrix
- *
- */
 @Getter
 @Setter
 public class BoundEffectMovement implements EffectMovement {
@@ -37,9 +31,10 @@ public class BoundEffectMovement implements EffectMovement {
 		TeamMember ancestor = entity.getAncestor();
 		if (ancestor != null) {
 			entity.getPosition().set(ancestor.getPosition()).add((Vector2) entity.getMovementData());
-			entity.setMovementSameAs(((Entity) ancestor));
+			if (ancestor instanceof Entity) {
+				entity.setMovementSameAs(((Entity) ancestor));
+			}
 		}
-
 	}
 
 	@Override

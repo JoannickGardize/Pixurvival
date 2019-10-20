@@ -119,6 +119,7 @@ public class ServerGame {
 			playerEntity.setName(playerConnection.toString());
 			playerEntity.getInventory().addListener(playerConnection);
 			playerEntity.getEquipment().addListener(playerConnection);
+			playerEntity.getStats().addListener(playerConnection);
 			playerConnection.setPlayerEntity(playerEntity);
 			createWorld.setMyPlayerId(playerEntity.getId());
 			createWorld.setMyTeamId(playerEntity.getTeam().getId());

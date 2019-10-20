@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class PlayerSession {
 
 	private @NonNull @Getter PlayerConnection connection;
-	private Set<ChunkPosition> knownPositions = new HashSet<>();
+	private @Getter Set<ChunkPosition> knownPositions = new HashSet<>();
 	private List<CompressedChunk> chunksToSend = new ArrayList<>();
 	private List<StructureUpdate> structureUpdatesToSend = new ArrayList<>();
 	private Set<ChunkPosition> missingChunks = new HashSet<>();

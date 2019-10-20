@@ -32,6 +32,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Setter long id;
 	private @Setter World world;
 	private @Setter Chunk chunk;
+	private ChunkPosition previousChunkPosition;
+
 	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
@@ -90,11 +92,15 @@ public abstract class Entity implements Body, CustomDataHolder {
 		movingAngle = entity.movingAngle;
 	}
 
+	protected boolean canForward() {
+		return true;
+	}
+
 	public void update() {
 
 		previousPosition.set(position);
 
-		if (forward) {
+		if (forward && canForward()) {
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
 			stepX();
@@ -110,13 +116,14 @@ public abstract class Entity implements Body, CustomDataHolder {
 		// Update current chunk
 		if (chunk == null) {
 			chunk = getWorld().getMap().chunkAt(position.getX(), position.getY());
+			previousChunkPosition = null;
 			if (chunk != null) {
 				chunk.getEntities().add(this);
 				setStateChanged(true);
 				getWorld().getMap().notifyChangedChunk(null, this);
 			}
 		} else {
-			ChunkPosition previousChunkPosition = chunk.getPosition();
+			previousChunkPosition = chunk.getPosition();
 			ChunkPosition newChunkPosition = previousChunkPosition.createIfDifferent(position);
 			if (newChunkPosition != previousChunkPosition) {
 				chunk.getEntities().remove(this);
@@ -188,11 +195,14 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	/**
-	 * Write data that prequisites a call {@link this#initialize()}.
+	 * Write data that prequisites a call to {@link this#initialize()}.
 	 * 
 	 * @param buffer
+	 * @param full
+	 *            true if all the data should be writen, for clients that discovers
+	 *            this entity.
 	 */
-	public abstract void writeUpdate(ByteBuffer buffer);
+	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 
 	public abstract void applyUpdate(ByteBuffer buffer);
 

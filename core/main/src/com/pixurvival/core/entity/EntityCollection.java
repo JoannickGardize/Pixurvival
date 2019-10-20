@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.AccessLevel;
@@ -67,7 +69,7 @@ public class EntityCollection {
 		entityList.forEach(this::add);
 	}
 
-	public void writeUpdate(ByteBuffer byteBuffer, boolean onlyChanged) {
+	public void writeUpdate(ByteBuffer byteBuffer, boolean full, Set<ChunkPosition> knownPosition) {
 		for (Entry<EntityGroup, Map<Long, Entity>> groupEntry : entities.entrySet()) {
 			Map<Long, Entity> entityMap = groupEntry.getValue();
 			if (entityMap.isEmpty()) {
@@ -77,12 +79,21 @@ public class EntityCollection {
 			int sizePosition = byteBuffer.position();
 			byteBuffer.putShort((short) 0);
 			short size = 0;
-			for (Entity e : entityMap.values()) {
-				if (!onlyChanged || e.isStateChanged()) {
-					size++;
-					byteBuffer.putLong(e.getId());
-					e.writeInitialization(byteBuffer);
-					e.writeUpdate(byteBuffer);
+			if (full) {
+				for (Entity e : entityMap.values()) {
+					writeEntity(byteBuffer, e, full);
+				}
+				size += entityMap.size();
+			} else {
+				for (Entity e : entityMap.values()) {
+					if (!knownPosition.contains(e.getPreviousChunkPosition())) {
+						size++;
+						writeEntity(byteBuffer, e, true);
+					}
+					if (e.isStateChanged()) {
+						size++;
+						writeEntity(byteBuffer, e, false);
+					}
 				}
 			}
 			if (size == 0) {
@@ -91,6 +102,12 @@ public class EntityCollection {
 				byteBuffer.putShort(sizePosition, size);
 			}
 		}
+	}
+
+	private void writeEntity(ByteBuffer byteBuffer, Entity e, boolean full) {
+		byteBuffer.putLong(e.getId());
+		e.writeInitialization(byteBuffer);
+		e.writeUpdate(byteBuffer, full);
 	}
 
 	public void writeAllIds(ByteBuffer byteBuffer) {

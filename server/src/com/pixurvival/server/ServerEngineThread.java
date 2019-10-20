@@ -110,10 +110,7 @@ public class ServerEngineThread extends EngineThread {
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
-		playerEntity.foreachChunkInView(chunk -> {
-			boolean onlyChanged = !session.isNewPosition(chunk.getPosition());
-			chunk.getEntities().writeUpdate(byteBuffer, onlyChanged);
-		});
+		playerEntity.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, session.isNewPosition(chunk.getPosition()), session.getKnownPositions()));
 	}
 
 	private void writeRemoveEntity(GameSession gs, PlayerSession session, ByteBuffer byteBuffer) {

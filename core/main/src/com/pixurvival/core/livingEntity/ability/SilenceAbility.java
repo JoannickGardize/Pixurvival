@@ -18,12 +18,11 @@ public class SilenceAbility extends Ability {
 
 	@Override
 	public boolean update(LivingEntity entity) {
-		return ((SilenceAbilityData) getAbilityData(entity)).getEndTime() >= entity.getWorld().getTime().getTimeMillis();
+		return entity.getWorld().getTime().getTimeMillis() >= ((SilenceAbilityData) getAbilityData(entity)).getEndTime();
 	}
 
 	@Override
 	public boolean stop(LivingEntity entity) {
 		return false;
 	}
-
 }
