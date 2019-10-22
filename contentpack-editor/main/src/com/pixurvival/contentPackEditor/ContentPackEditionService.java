@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import lombok.Getter;
-import lombok.SneakyThrows;
-
 import com.pixurvival.contentPackEditor.component.translation.TranslationUpdateManager;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
@@ -24,6 +21,9 @@ import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.util.CaseUtils;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
 
 public class ContentPackEditionService {
 
@@ -56,9 +56,9 @@ public class ContentPackEditionService {
 
 	@SneakyThrows
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void addElement(ElementType type, String name) {
+	public IdentifiedElement addElement(ElementType type, String name) {
 		if (FileService.getInstance().getCurrentContentPack() == null) {
-			return;
+			return null;
 		}
 		List list = listOf(type);
 		Supplier<IdentifiedElement> initializer = initializers.get(type);
@@ -72,6 +72,7 @@ public class ContentPackEditionService {
 		newElement.setId(list.size());
 		list.add(newElement);
 		EventManager.getInstance().fire(new ElementAddedEvent(newElement));
+		return newElement;
 	}
 
 	public void removeElement(IdentifiedElement element) {
@@ -89,10 +90,14 @@ public class ContentPackEditionService {
 		EventManager.getInstance().fire(new ElementInstanceChangedEvent(element));
 	}
 
-	@SuppressWarnings("unchecked")
 	@SneakyThrows
 	public List<IdentifiedElement> listOf(ElementType type) {
-		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
+		return listOf(FileService.getInstance().getCurrentContentPack(), type);
+	}
+
+	@SuppressWarnings("unchecked")
+	@SneakyThrows
+	public List<IdentifiedElement> listOf(ContentPack contentPack, ElementType type) {
 		if (contentPack == null) {
 			return Collections.emptyList();
 		}

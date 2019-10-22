@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -87,11 +89,12 @@ public class ContentPackSerializer {
 	private Yaml yaml;
 	private NameAnchorGenerator nameAnchorGenerator = new NameAnchorGenerator();
 	private Map<String, Class<?>> classFromSimpleName = new HashMap<>();
+	private List<ContentPackSerializerPlugin> plugins = new ArrayList<>();
 
 	public ContentPackSerializer(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
 		Representer representer = new Representer();
-		representer.setPropertyUtils(new CustomPropertyOrderUtils());
+		representer.setPropertyUtils(new DeclarationPropertyOrderUtils());
 		representer.getPropertyUtils().setSkipMissingProperties(true);
 		addAllClassTags(representer);
 		Constructor constructor = new Constructor() {
@@ -114,6 +117,10 @@ public class ContentPackSerializer {
 
 	public ContentPackSerializer() {
 		this(null);
+	}
+
+	public void addPlugin(ContentPackSerializerPlugin plugin) {
+		plugins.add(plugin);
 	}
 
 	public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
@@ -146,7 +153,9 @@ public class ContentPackSerializer {
 					contentPack.addTranslation(locale, properties);
 				}
 			}
-
+			for (ContentPackSerializerPlugin plugin : plugins) {
+				plugin.read(contentPack, zipFile);
+			}
 			return contentPack;
 		} catch (IOException e) {
 			throw new ContentPackException(e);
@@ -165,6 +174,9 @@ public class ContentPackSerializer {
 			for (Entry<Locale, Properties> translation : contentPack.getTranslations().entrySet()) {
 				zipOutputStream.putNextEntry(new ZipEntry(TRANSLATIONS_ROOT + "translation_" + translation.getKey().toLanguageTag() + ".properties"));
 				translation.getValue().store(zipOutputStream, null);
+			}
+			for (ContentPackSerializerPlugin plugin : plugins) {
+				plugin.write(contentPack, zipOutputStream);
 			}
 			zipOutputStream.closeEntry();
 		}

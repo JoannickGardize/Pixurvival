@@ -19,10 +19,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionListener;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.TranslationService;
@@ -40,6 +36,11 @@ import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Deprecated
 public class RootElementList<E extends IdentifiedElement> extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -226,8 +227,7 @@ public class RootElementList<E extends IdentifiedElement> extends JPanel {
 	}
 
 	private String showChooseNameDialog(String defaultName) {
-		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this),
-				TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), defaultName);
+		String name = JOptionPane.showInputDialog(SwingUtilities.getRoot(this), TranslationService.getInstance().getString("elementList.add.chooseNameMessage"), defaultName);
 		if (name == null) {
 			return null;
 		}

@@ -20,6 +20,7 @@ import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
 
+@Deprecated
 public class ElementTypeChooser extends JList<ElementType> {
 
 	private static final long serialVersionUID = 1L;

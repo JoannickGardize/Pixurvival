@@ -6,6 +6,8 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import com.pixurvival.contentPackEditor.component.tree.LayoutFolder;
+import com.pixurvival.contentPackEditor.component.tree.LayoutManager;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
@@ -19,14 +21,15 @@ public class FileService {
 
 	private static @Getter FileService instance = new FileService();
 
-	private FileService() {
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-	}
-
 	private @Getter ContentPack currentContentPack;
 	private @Getter File currentFile;
 	private JFileChooser fileChooser = new JFileChooser();
 	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer();
+
+	private FileService() {
+		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		contentPackSerializer.addPlugin(LayoutManager.getInstance());
+	}
 
 	public void newContentPack() {
 		if (!savePrevious()) {
@@ -35,6 +38,7 @@ public class FileService {
 		currentContentPack = new ContentPack();
 		ResourcesService.getInstance().clear();
 		currentFile = null;
+		LayoutManager.getInstance().setRoot(new LayoutFolder("root"));
 		EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 		EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));
 	}

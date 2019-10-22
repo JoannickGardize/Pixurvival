@@ -1,16 +1,10 @@
 package com.pixurvival.contentPackEditor.component;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.util.Arrays;
-
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 
 import com.pixurvival.contentPackEditor.FileService;
-import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.translation.TranslationDialog;
+import com.pixurvival.contentPackEditor.util.MenuBuilder;
 
 public class CPEMenuBar extends JMenuBar {
 
@@ -23,58 +17,14 @@ public class CPEMenuBar extends JMenuBar {
 		final ConstantsDialog constantsDialog = new ConstantsDialog();
 		final TranslationDialog translationDialog = TranslationDialog.getInstance();
 
-		addItem("file.new", fs::newContentPack);
-		addItem("file.open", fs::open);
-		addItem("file.save", fs::save);
-		addItem("file.saveAs", fs::saveAs);
-		addItem("contentPack.identifier", () -> identifierDialog.setVisible(true));
-		addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
-		addItem("contentPack.constants", () -> constantsDialog.setVisible(true));
-		addItem("contentPack.translations", () -> translationDialog.setVisible(true));
-	}
-
-	private void addItem(String path, Runnable action) {
-		String[] split = path.split("\\.");
-		String textKey = "menuBar." + path;
-		JMenuItem item = findOrCreate(this, split, 0);
-		item.setText(TranslationService.getInstance().getString(textKey));
-		item.addActionListener(l -> action.run());
-	}
-
-	private JMenuItem findOrCreate(Container component, String[] split, int index) {
-		boolean isLast = index == split.length - 1;
-		String currentName = split[index];
-		for (Component child : component.getComponents()) {
-			if (child instanceof JMenuItem) {
-				JMenuItem item = (JMenuItem) child;
-				if (item.getName().equals(currentName)) {
-					if (isLast) {
-						return item;
-					} else {
-						return findOrCreate(item, split, index + 1);
-					}
-				}
-			}
-		}
-		if (isLast) {
-			JMenuItem item = new JMenuItem();
-			item.setName(currentName);
-			addTo(component, item);
-			return item;
-		} else {
-			JMenu item = new JMenu();
-			item.setName(currentName);
-			item.setText(TranslationService.getInstance().getString("menuBar." + String.join(".", Arrays.copyOfRange(split, 0, index + 1))));
-			addTo(component, item);
-			return findOrCreate(item, split, index + 1);
-		}
-	}
-
-	private void addTo(Container component, JMenuItem item) {
-		if (component == this) {
-			add(item);
-		} else {
-			((JMenu) component).add(item);
-		}
+		MenuBuilder builder = new MenuBuilder(this, "menuBar");
+		builder.addItem("file.new", fs::newContentPack);
+		builder.addItem("file.open", fs::open);
+		builder.addItem("file.save", fs::save);
+		builder.addItem("file.saveAs", fs::saveAs);
+		builder.addItem("contentPack.identifier", () -> identifierDialog.setVisible(true));
+		builder.addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
+		builder.addItem("contentPack.constants", () -> constantsDialog.setVisible(true));
+		builder.addItem("contentPack.translations", () -> translationDialog.setVisible(true));
 	}
 }

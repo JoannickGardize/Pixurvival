@@ -20,7 +20,7 @@ import com.pixurvival.core.util.ReflectionUtils;
  * @author SharkHendrix
  *
  */
-public class CustomPropertyOrderUtils extends PropertyUtils {
+public class DeclarationPropertyOrderUtils extends PropertyUtils {
 
 	private static class OrderEntry {
 		private Map<String, Integer> orderMap = new HashMap<>();

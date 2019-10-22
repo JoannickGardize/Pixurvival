@@ -2,13 +2,15 @@ package com.pixurvival.contentPackEditor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 import com.pixurvival.contentPackEditor.component.CPEMenuBar;
-import com.pixurvival.contentPackEditor.component.ElementTypeChooser;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
+import com.pixurvival.contentPackEditor.component.tree.LayoutTree;
 import com.pixurvival.core.util.ArgsUtils;
 
 import lombok.Getter;
@@ -27,9 +29,10 @@ public class ContentPackEditor extends JFrame {
 
 		Container content = getContentPane();
 		content.setLayout(new BorderLayout(10, 0));
-		content.add(new ElementTypeChooser(), BorderLayout.WEST);
+		JScrollPane treeScrollPane = new JScrollPane(new LayoutTree());
+		treeScrollPane.setPreferredSize(new Dimension(300, 600));
+		content.add(treeScrollPane, BorderLayout.WEST);
 		content.add(new ElementTypePanelCard(), BorderLayout.CENTER);
-
 		setLocationRelativeTo(null);
 	}
 
