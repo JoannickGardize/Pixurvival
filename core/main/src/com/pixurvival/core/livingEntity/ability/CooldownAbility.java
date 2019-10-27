@@ -29,8 +29,7 @@ public abstract class CooldownAbility extends Ability {
 		CooldownAbilityData cooldownData = (CooldownAbilityData) data;
 		long readyTimeMillis = cooldownData.getReadyTimeMillis();
 		long currentTimeMillis = entity.getWorld().getTime().getTimeMillis();
-		if (currentTimeMillis >= readyTimeMillis) {
-			fire(entity);
+		if (currentTimeMillis >= readyTimeMillis && fire(entity)) {
 			cooldownData.setReadyTimeMillis(currentTimeMillis + cooldown);
 		}
 		return false;
@@ -46,5 +45,5 @@ public abstract class CooldownAbility extends Ability {
 		return new CooldownAbilityData();
 	}
 
-	public abstract void fire(LivingEntity entity);
+	public abstract boolean fire(LivingEntity entity);
 }

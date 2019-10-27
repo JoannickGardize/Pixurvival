@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 
-public class AlterationAbilityEditor extends ElementEditor<AlterationAbility> {
+public class AlterationAbilityEditor<T extends AlterationAbility> extends ElementEditor<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,6 @@ public class AlterationAbilityEditor extends ElementEditor<AlterationAbility> {
 		// Binding
 
 		bind(cooldownInput, AlterationAbility::getCooldown, AlterationAbility::setCooldown);
-		bind(ammunitionEditor, AlterationAbility::getAmmunition, AlterationAbility::setAmmunition);
 		bind(alterationsEditor, AlterationAbility::getAlterations, AlterationAbility::setAlterations);
 
 		// Layouting

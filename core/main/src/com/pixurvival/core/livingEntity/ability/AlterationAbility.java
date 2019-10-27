@@ -2,9 +2,6 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.util.List;
 
-import com.pixurvival.core.item.Inventory;
-import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 
@@ -18,29 +15,29 @@ public class AlterationAbility extends CooldownAbility {
 	private static final long serialVersionUID = 1L;
 
 	private List<Alteration> alterations;
-	private ItemStack ammunition = new ItemStack();
 
 	@Override
-	public void fire(LivingEntity entity) {
+	public boolean fire(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
-			if (ammunition.getItem() != null && !removeAmmunition(entity)) {
-				return;
+			if (!canFire(entity)) {
+				return false;
 			}
 			if (alterations != null) {
 				alterations.forEach(a -> a.apply(entity, entity));
 			}
+			return true;
+		} else {
+			return false;
 		}
+
+	}
+
+	public boolean canFire(LivingEntity entity) {
+		return true;
 	}
 
 	public boolean isEmpty() {
 		return alterations.isEmpty();
 	}
 
-	private boolean removeAmmunition(LivingEntity entity) {
-		if (ammunition != null && entity instanceof InventoryHolder) {
-			Inventory inventory = ((InventoryHolder) entity).getInventory();
-			return inventory.remove(ammunition);
-		}
-		return true;
-	}
 }
