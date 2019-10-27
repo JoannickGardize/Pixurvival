@@ -148,7 +148,7 @@ public class ContentPack implements Serializable {
 		}
 	}
 
-	public boolean isResourcePresent(String resource) {
+	public boolean containsResource(String resource) {
 		return resources.containsKey(resource);
 	}
 

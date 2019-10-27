@@ -5,7 +5,7 @@ import com.pixurvival.core.entity.Entity;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class MoveUtils {
+public class PseudoAIUtils {
 
 	/**
 	 * Recherche un angle ou l'entité passé en paramètre ne devrait pas entrer
@@ -55,5 +55,27 @@ public class MoveUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @param shooterPosition
+	 * @param bulletSpeed
+	 * @param targetPosition
+	 *            The actual target position, the final target position is
+	 *            stored there.
+	 * @param targetVelocity
+	 */
+	public static void findTargetPositionPrediction(Vector2 shooterPosition, double bulletSpeed, Vector2 targetPosition, Vector2 targetVelocity) {
+		double a = (targetVelocity.getX() * targetVelocity.getX()) + (targetVelocity.getY() * targetVelocity.getY()) - (bulletSpeed * bulletSpeed);
+		double b = 2 * (targetVelocity.getX() * (targetPosition.getX() - shooterPosition.getX()) + targetVelocity.getY() * (targetPosition.getY() - shooterPosition.getY()));
+		double c = ((targetPosition.getX() - shooterPosition.getX()) * (targetPosition.getX() - shooterPosition.getX()))
+				+ ((targetPosition.getY() - shooterPosition.getY()) * (targetPosition.getY() - shooterPosition.getY()));
+		double disc = b * b - (4 * a * c);
+		if (disc >= 0) {
+			double t1 = (-1 * b + Math.sqrt(disc)) / (2 * a);
+			double t2 = (-1 * b - Math.sqrt(disc)) / (2 * a);
+			double t = Math.max(t1, t2);
+			targetPosition.set((targetVelocity.getX() * t) + targetPosition.getX(), (targetVelocity.getY() * t) + targetPosition.getY());
+		}
 	}
 }

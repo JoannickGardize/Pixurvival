@@ -13,7 +13,7 @@ public abstract class ChangeCondition extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
-	@ElementReference(depth = 5)
+	@ElementReference(depth = 4)
 	private Behavior nextBehavior;
 
 	public abstract boolean test(CreatureEntity creature);

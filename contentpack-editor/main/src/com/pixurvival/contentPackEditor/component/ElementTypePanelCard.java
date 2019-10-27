@@ -5,7 +5,7 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.ElementType;
-import com.pixurvival.contentPackEditor.event.ElementTypeChooseEvent;
+import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 
@@ -19,14 +19,17 @@ public class ElementTypePanelCard extends JPanel {
 		setLayout(new CardLayout());
 		add(new JPanel(), NONE_CARD);
 		for (ElementType elementType : ElementType.values()) {
-			add(new ElementTypePanel<>(elementType), elementType.name());
+			add(elementType.getElementEditor(), elementType.name());
 		}
 		((CardLayout) getLayout()).show(this, NONE_CARD);
 		EventManager.getInstance().register(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@EventListener
-	public void elementTypeChoose(ElementTypeChooseEvent event) {
-		((CardLayout) getLayout()).show(this, event.getElementType().name());
+	public void elementSelected(ElementSelectedEvent event) {
+		ElementType type = ElementType.of(event.getElement());
+		((CardLayout) getLayout()).show(this, type.name());
+		type.getElementEditor().setValue(event.getElement());
 	}
 }

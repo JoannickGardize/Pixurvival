@@ -40,15 +40,15 @@ public class ChunkPosition {
 	}
 
 	/**
-	 * Convert the world position into chunk coordinates. Return this instance if
-	 * this is the result of the conversion. The purpose of this method is for
-	 * performance, to avoid new allocations, for example in the context of entities
-	 * checking every ticks their chunk positions.
+	 * Convert the world position into chunk coordinates. Return this instance
+	 * if this is the result of the conversion. The purpose of this method is
+	 * for performance, to avoid new allocations, for example in the context of
+	 * entities checking every ticks their chunk positions.
 	 * 
 	 * @param position
 	 *            the position to convert
-	 * @return the ChunkPosition corresponding to the paramter position, reuse this
-	 *         instance if this is the same.
+	 * @return the ChunkPosition corresponding to the paramter position, reuse
+	 *         this instance if this is the same.
 	 */
 	public ChunkPosition createIfDifferent(Vector2 position) {
 		int positionX = MathUtils.floor(position.getX() / GameConstants.CHUNK_SIZE);

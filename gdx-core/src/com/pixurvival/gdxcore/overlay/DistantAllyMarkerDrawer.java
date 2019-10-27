@@ -28,7 +28,13 @@ public class DistantAllyMarkerDrawer implements OverlayDrawer<PlayerEntity> {
 	@Override
 	public void draw(Batch batch, Viewport worldViewport, PlayerEntity e) {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		com.pixurvival.core.util.Vector2 myPosition = ((DrawData) myPlayer.getCustomData()).getDrawPosition();
+		com.pixurvival.core.util.Vector2 myPosition = null;
+		DrawData drawData = ((DrawData) myPlayer.getCustomData());
+		if (drawData != null) {
+			myPosition = drawData.getDrawPosition();
+		} else {
+			myPosition = myPlayer.getPosition();
+		}
 		float px = (float) myPosition.getX();
 		float py = (float) myPosition.getY();
 		com.pixurvival.core.util.Vector2 otherPosition = ((DrawData) e.getCustomData()).getDrawPosition();

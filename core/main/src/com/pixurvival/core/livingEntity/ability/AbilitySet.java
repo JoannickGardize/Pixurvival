@@ -22,6 +22,9 @@ public class AbilitySet<T extends Ability> extends IdentifiedElement implements 
 
 	@SuppressWarnings("unchecked")
 	public void addSilence() {
+		if (abilities.get(0) instanceof SilenceAbility) {
+			return;
+		}
 		abilities.add(0, (T) new SilenceAbility());
 		for (int i = 0; i < abilities.size(); i++) {
 			abilities.get(i).setId((byte) i);

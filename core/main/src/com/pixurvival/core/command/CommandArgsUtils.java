@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -113,9 +114,17 @@ public class CommandArgsUtils {
 			case "@target":
 				PlayerEntity player = asPlayer(executor, "@cursor");
 				return player.getTargetPosition();
+			case "@me":
+				return asPlayer(executor, "@me").getPosition();
+			case "@closest":
+				Entity e = asPlayer(executor, "@closest").findClosest(EntityGroup.PLAYER);
+				if (e == null) {
+					throw new CommandExecutionException("@closest : no other players");
+				}
+				return e.getPosition();
 			}
 		}
-		if (arg.matches("\\d+(\\.\\d+)?;\\d+(\\.\\d+)?")) {
+		if (arg.matches("\\-?\\d+(\\.\\d+)?;\\-?\\d+(\\.\\d+)?")) {
 			String[] split = arg.split(";");
 			return new Vector2(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
 		} else {
@@ -123,12 +132,14 @@ public class CommandArgsUtils {
 		}
 	}
 
+	public static Vector2 position(CommandExecutor executor) throws CommandExecutionException {
+		PlayerEntity player = asPlayer(executor, "@cursor");
+		return player.getTargetPosition();
+	}
+
 	public static ItemStack itemStack(CommandExecutor executor, String arg) throws CommandExecutionException {
 		String[] split = arg.split(":");
-		Item item = executor.getWorld().getContentPack().get(Item.class, split[0]);
-		if (item == null) {
-			throw new CommandExecutionException("No item with name : " + split[0]);
-		}
+		Item item = contentPackElement(executor, Item.class, split[0]);
 		if (split.length == 1) {
 			return new ItemStack(item);
 		} else {
@@ -137,6 +148,14 @@ public class CommandArgsUtils {
 			}
 			return new ItemStack(item, Integer.parseInt(split[1]));
 		}
+	}
+
+	public static <T extends IdentifiedElement> T contentPackElement(CommandExecutor executor, Class<T> type, String arg) throws CommandExecutionException {
+		T element = executor.getWorld().getContentPack().get(type, arg);
+		if (element == null) {
+			throw new CommandExecutionException("No " + type.getSimpleName() + " with name " + arg);
+		}
+		return element;
 	}
 
 	public static ItemStack[] itemStacks(CommandExecutor executor, String arg) throws CommandExecutionException {

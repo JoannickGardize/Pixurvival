@@ -10,6 +10,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
+import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
+import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
 public class LayoutTreeModel implements TreeModel {
@@ -19,13 +24,43 @@ public class LayoutTreeModel implements TreeModel {
 	private LayoutFolder root = new LayoutFolder("loading...");
 	private Map<IdentifiedElement, LayoutElement> elementsMap = new HashMap<>();
 
+	public LayoutTreeModel() {
+		EventManager.getInstance().register(this);
+	}
+
 	public void setRoot(LayoutFolder root) {
 		this.root = root;
 		setParentReferences(root);
 		elementsMap.clear();
-		updateAllValidation();
+		root.forEachLeaf(node -> {
+			LayoutElement layoutElement = (LayoutElement) node;
+			elementsMap.put(layoutElement.getElement(), layoutElement);
+		});
+		root.forEachDeepFirst(LayoutNode::updateValidation);
 		TreeModelEvent event = new TreeModelEvent(this, root.getPath());
 		listeners.forEach(l -> l.treeStructureChanged(event));
+	}
+
+	@EventListener
+	public void contentPackLoaded(ContentPackLoadedEvent event) {
+		setRoot(LayoutManager.getInstance().getRoot());
+	}
+
+	@EventListener
+	public void elementInstanceChanged(ElementInstanceChangedEvent event) {
+		LayoutElement layoutElement = elementsMap.remove(event.getOldElement());
+		layoutElement.setElement(event.getElement());
+		root.forEachDeepFirst(LayoutNode::updateValidation);
+		elementsMap.put(event.getElement(), layoutElement);
+		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
+		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
+	}
+
+	@EventListener
+	public void elementChanged(ElementChangedEvent event) {
+		elementsMap.get(event.getElement()).forEachAncestor(LayoutNode::updateValidation);
+		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
+		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
 	}
 
 	private void setParentReferences(LayoutNode node) {
@@ -40,6 +75,12 @@ public class LayoutTreeModel implements TreeModel {
 		if (parent != null) {
 			int index = parent.getChildren().indexOf(node);
 			parent.getChildren().remove(index);
+			if (node instanceof LayoutElement) {
+				LayoutElement layoutElement = (LayoutElement) node;
+				if (node.equals(elementsMap.get(layoutElement.getElement()))) {
+					elementsMap.remove(layoutElement.getElement());
+				}
+			}
 			parent.forEachAncestor(LayoutNode::updateValidation);
 			TreeModelEvent event = new TreeModelEvent(this, parent.getPath(), new int[] { index }, new Object[] { node });
 			listeners.forEach(l -> l.treeNodesRemoved(event));
@@ -49,9 +90,18 @@ public class LayoutTreeModel implements TreeModel {
 	public void insert(LayoutNode node, LayoutNode parent, int index) {
 		parent.getChildren().add(index, node);
 		node.setParent(parent);
-		parent.forEachAncestor(LayoutNode::updateValidation);
+		if (node instanceof LayoutElement) {
+			LayoutElement layoutElement = (LayoutElement) node;
+			elementsMap.put(layoutElement.getElement(), layoutElement);
+		}
+		node.forEachAncestor(LayoutNode::updateValidation);
 		TreeModelEvent event = new TreeModelEvent(this, parent.getPath(), new int[] { index }, new Object[] { node });
 		listeners.forEach(l -> l.treeNodesInserted(event));
+	}
+
+	public void notifyNodeChanged(LayoutNode node) {
+		TreeModelEvent modelEvent = new TreeModelEvent(this, node.getPath());
+		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
 	}
 
 	@Override
@@ -92,14 +142,5 @@ public class LayoutTreeModel implements TreeModel {
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		listeners.remove(l);
-	}
-
-	private void updateAllValidation() {
-		root.forEachLeaf(node -> {
-			LayoutElement layoutElement = (LayoutElement) node;
-			elementsMap.put(layoutElement.getElement(), layoutElement);
-			layoutElement.updateValidation();
-		});
-		root.forEachFolderDeepFirst(LayoutNode::updateValidation);
 	}
 }

@@ -8,5 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ElementInstanceChangedEvent extends Event {
+	private IdentifiedElement oldElement;
 	private IdentifiedElement element;
 }

@@ -144,10 +144,7 @@ public class WorldScreen implements Screen {
 		Entity myPlayer = world.getMyPlayer();
 		if (myPlayer != null) {
 			DrawData data = (DrawData) myPlayer.getCustomData();
-
-			if (data != null) {
-				cameraControlProcessor.updateCameraPosition(data.getDrawPosition() == null ? myPlayer.getPosition() : data.getDrawPosition());
-			}
+			cameraControlProcessor.updateCameraPosition(data == null ? myPlayer.getPosition() : data.getDrawPosition());
 		}
 		worldStage.draw();
 		lightDrawer.draw(worldStage);

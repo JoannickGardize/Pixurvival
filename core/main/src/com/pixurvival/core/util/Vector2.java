@@ -97,6 +97,10 @@ public class Vector2 {
 		return this;
 	}
 
+	public static double dot(Vector2 left, Vector2 right) {
+		return (left.x * right.x) + (left.y * right.y);
+	}
+
 	public Vector2 lerp(Vector2 target, double delta) {
 		x += (target.x - x) * delta;
 		y += (target.y - y) * delta;

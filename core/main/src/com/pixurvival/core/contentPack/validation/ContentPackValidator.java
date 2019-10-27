@@ -185,7 +185,7 @@ public class ContentPackValidator {
 		}
 		ResourceReference resourceReference = (ResourceReference) annotation;
 		ContentPack contentPack = (ContentPack) node.getRoot().getObject();
-		if (!contentPack.isResourcePresent((String) node.getObject())) {
+		if (!contentPack.containsResource((String) node.getObject())) {
 			invalidNodes.add(new InvalidNode(node, resourceReference));
 		}
 	}

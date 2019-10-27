@@ -15,7 +15,7 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
-import com.pixurvival.core.util.MoveUtils;
+import com.pixurvival.core.util.PseudoAIUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -76,6 +76,7 @@ public class CreatureEntity extends LivingEntity {
 	private void updateTargetPosition() {
 		if (getWorld().isServer() && targetEntity != null) {
 			getTargetPosition().set(targetEntity.getPosition());
+			PseudoAIUtils.findTargetPositionPrediction(getPosition(), 18, getTargetPosition(), targetEntity.getVelocity());
 		}
 	}
 
@@ -90,7 +91,7 @@ public class CreatureEntity extends LivingEntity {
 	public void move(double direction, double forwardFactor) {
 		setForwardFactor(forwardFactor);
 		if (isSolid()) {
-			setMovingAngle(MoveUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
+			setMovingAngle(PseudoAIUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
 		} else {
 			setMovingAngle(direction);
 		}

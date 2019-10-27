@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.World.Type;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EffectEntity;
@@ -93,6 +94,14 @@ public class EntitiesActor extends Actor {
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {
 				shapes.rect(x * GameConstants.CHUNK_SIZE, y * GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE);
+			}
+		}
+		if (PixurvivalGame.getWorld().getType() == Type.CLIENT) {
+			shapes.setColor(Color.YELLOW);
+			PlayerEntity player = PixurvivalGame.getClient().getMyPlayer();
+			if (player != null) {
+				shapes.rect((float) (player.getPosition().getX() - GameConstants.PLAYER_VIEW_DISTANCE), (float) (player.getPosition().getY() - GameConstants.PLAYER_VIEW_DISTANCE),
+						(float) (GameConstants.PLAYER_VIEW_DISTANCE * 2), (float) (GameConstants.PLAYER_VIEW_DISTANCE * 2));
 			}
 		}
 	}

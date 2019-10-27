@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.pixurvival.core.command.impl.GiveItemCommandProcessor;
+import com.pixurvival.core.command.impl.SpawnCommandProcessor;
 import com.pixurvival.core.command.impl.TeleportCommandProcessor;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.entity.EntityGroup;
@@ -19,6 +20,7 @@ public class CommandManager {
 		commands.put("give", new GiveItemCommandProcessor());
 		commands.put("teleport", new TeleportCommandProcessor());
 		commands.put("tp", new TeleportCommandProcessor());
+		commands.put("spawn", new SpawnCommandProcessor());
 	}
 
 	public String process(CommandExecutor executor, String[] args) {
@@ -43,7 +45,7 @@ public class CommandManager {
 		if (processor == null) {
 			return input;
 		}
-		Class<?> argType = processor.getArgType(args.length - 1);
+		Class<?> argType = processor.getAutocompleteArgType(args.length - 1);
 		if (argType == null) {
 			return null;
 		}

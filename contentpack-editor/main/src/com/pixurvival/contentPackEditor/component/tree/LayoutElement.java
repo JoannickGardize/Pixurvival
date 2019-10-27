@@ -37,8 +37,8 @@ public class LayoutElement extends LayoutNode {
 		return layoutElement;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void updateValidation() {
 		setValid(ElementType.of(element).getElementEditor().isValueValid(element));
 	}

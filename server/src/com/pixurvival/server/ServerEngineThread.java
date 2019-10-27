@@ -43,7 +43,7 @@ public class ServerEngineThread extends EngineThread {
 	@Override
 	public synchronized void update(double deltaTimeMillis) {
 		game.consumeReceivedObjects();
-		sessions.forEach(w -> w.getWorld().update(deltaTimeMillis));
+		sessions.forEach(gs -> gs.getWorld().update(deltaTimeMillis));
 		sendUpdateTimer += deltaTimeMillis;
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
 			sessions.forEach(gs -> {
@@ -53,6 +53,11 @@ public class ServerEngineThread extends EngineThread {
 				gs.getChunkChangedEntities().clear();
 				gs.getWorld().getEntityPool().foreach(entity -> entity.setStateChanged(false));
 			});
+			sessions.forEach(gs -> gs.getWorld().getEntityPool().foreach(entity -> {
+				if (entity.getChunk() != null) {
+					entity.setPreviousUpdateChunkPosition(entity.getChunk().getPosition());
+				}
+			}));
 			if (sendUpdateTimer > sendUpdateIntervalMillis * 1.5) {
 				sendUpdateTimer = 0;
 				Log.warn("Some frames send skipped.");
@@ -110,7 +115,7 @@ public class ServerEngineThread extends EngineThread {
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
-		playerEntity.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, session.isNewPosition(chunk.getPosition()), session.getKnownPositions()));
+		playerEntity.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, session.isNewPosition(chunk.getPosition()), playerEntity.getChunkVision()));
 	}
 
 	private void writeRemoveEntity(GameSession gs, PlayerSession session, ByteBuffer byteBuffer) {

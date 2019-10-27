@@ -17,8 +17,7 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.Utils;
-import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
-import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.util.MenuBuilder;
 import com.pixurvival.core.contentPack.IdentifiedElement;
@@ -32,12 +31,21 @@ public class LayoutTree extends JTree {
 	private int currentContextY;
 
 	public LayoutTree() {
+		getActionMap().put("cut", null);
+		getActionMap().put("copy", null);
+		getActionMap().put("paste", null);
+		getActionMap().getParent().put("cut", null);
+		getActionMap().getParent().put("copy", null);
+		getActionMap().getParent().put("paste", null);
+
 		JPopupMenu contextMenu = new JPopupMenu();
 		MenuBuilder menuBuilder = new MenuBuilder(contextMenu, "treeContextMenu");
 		menuBuilder.addItem("new.folder", this::newFolder);
 		for (ElementType type : ElementType.values()) {
 			menuBuilder.addItem("new." + CaseUtils.upperToCamelCase(type.name()), () -> this.newElement(type), type.toString());
 		}
+		menuBuilder.addItem("rename", this::rename);
+		menuBuilder.addItem("delete", this::rename);
 
 		setModel(new LayoutTreeModel());
 		setCellRenderer(new LayoutTreeCellRenderer());
@@ -47,10 +55,8 @@ public class LayoutTree extends JTree {
 		setDropMode(DropMode.ON_OR_INSERT);
 		setTransferHandler(new TreeTransferHandler());
 		getSelectionModel().setSelectionMode(TreeSelectionModel.CONTIGUOUS_TREE_SELECTION);
-		EventManager.getInstance().register(this);
 
 		addMouseListener(new MouseAdapter() {
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
@@ -62,17 +68,17 @@ public class LayoutTree extends JTree {
 		});
 
 		addTreeSelectionListener(new TreeSelectionListener() {
-
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				if (e.isAddedPath()) {
 					TreePath path = e.getPath();
-					// TODO
+					if (path.getLastPathComponent() instanceof LayoutElement) {
+						LayoutElement layoutElement = (LayoutElement) path.getLastPathComponent();
+						EventManager.getInstance().fire(new ElementSelectedEvent(layoutElement.getElement()));
+					}
 				}
-
 			}
 		});
-
 	}
 
 	private LayoutNode getRightClickedNode() {
@@ -116,9 +122,39 @@ public class LayoutTree extends JTree {
 		}
 	}
 
-	@EventListener
-	public void contentPackLoaded(ContentPackLoadedEvent event) {
-		((LayoutTreeModel) getModel()).setRoot(LayoutManager.getInstance().getRoot());
+	private void rename() {
+		LayoutNode selectedNode = getRightClickedNode();
+		if (selectedNode instanceof LayoutFolder) {
+			String newName = showChooseFolderNameDialog(((LayoutFolder) selectedNode).getName());
+			if (newName != null) {
+				((LayoutFolder) selectedNode).setName(newName);
+				((LayoutTreeModel) getModel()).notifyNodeChanged(selectedNode);
+			}
+		} else {
+			LayoutElement layoutElement = (LayoutElement) selectedNode;
+			String newName = showChooseElementNameDialog(ElementType.of(layoutElement.getElement()), layoutElement.getElement().getName());
+			if (newName != null) {
+				layoutElement.getElement().setName(newName);
+				((LayoutTreeModel) getModel()).notifyNodeChanged(selectedNode);
+			}
+		}
+	}
+
+	private void delete() {
+		LayoutNode selectedNode = getRightClickedNode();
+
+		String messageKey = selectedNode instanceof LayoutFolder ? "treeContextMenu.delete.folder" : "treeContextMenu.delete.element";
+		int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString(messageKey).replace("{0}", selectedNode.toString()));
+		if (option != JOptionPane.YES_OPTION) {
+			return;
+		}
+
+		if (selectedNode instanceof LayoutFolder) {
+			// selectedNode.fo
+			// TODO
+		} else {
+
+		}
 	}
 
 	private String showChooseFolderNameDialog(String defaultName) {

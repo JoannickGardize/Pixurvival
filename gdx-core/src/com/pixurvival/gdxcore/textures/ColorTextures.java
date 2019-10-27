@@ -26,7 +26,6 @@ public class ColorTextures {
 			pixmap.drawPixel(0, 0, Color.rgba8888(c));
 			Texture texture = new Texture(pixmap);
 			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			textures.put(c, texture);
 			return texture;
 		});
 	}

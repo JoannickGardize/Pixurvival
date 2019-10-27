@@ -57,7 +57,6 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		}
 		for (SubValueEntry entry : subValues) {
 			if (entry.getCondition().test(value) && !entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
-
 				return false;
 			}
 		}

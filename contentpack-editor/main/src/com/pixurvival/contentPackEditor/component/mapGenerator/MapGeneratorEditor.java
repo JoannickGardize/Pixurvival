@@ -71,6 +71,18 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 		tabbedPane.addTab(t.getString("mapGeneratorEditor.structureGenerator"), structureGeneratorsEditor);
 	}
 
+	@Override
+	public boolean isValueValid(MapGenerator value) {
+		if (value == null) {
+			return false;
+		}
+		MapGenerator previousValue = getValue();
+		setValue(value);
+		boolean result = super.isValueValid(value);
+		setValue(previousValue);
+		return result;
+	}
+
 	private Supplier<Collection<Heightmap>> getHeightmapCollectionSupplier() {
 		return () -> {
 			if (getValue() == null) {

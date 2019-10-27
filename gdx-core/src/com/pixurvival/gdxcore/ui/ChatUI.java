@@ -64,7 +64,6 @@ public class ChatUI extends UIWindow implements ChatListener {
 		sb.append(" : ");
 		sb.append(chatEntry.getText());
 		chatHistory.push(new ChatTextEntry(sb.toString()));
-		inputArea.setText("");
 		validate();
 		displayAreScrollPane.setScrollPercentY(1);
 	}

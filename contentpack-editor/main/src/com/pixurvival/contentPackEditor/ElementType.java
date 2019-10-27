@@ -3,7 +3,6 @@ package com.pixurvival.contentPackEditor;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.pixurvival.contentPackEditor.component.RootElementList;
 import com.pixurvival.contentPackEditor.component.abilitySet.AbilitySetEditor;
 import com.pixurvival.contentPackEditor.component.animationTemplate.AnimationTemplateEditor;
 import com.pixurvival.contentPackEditor.component.behaviorSet.BehaviorSetEditor;
@@ -66,14 +65,12 @@ public enum ElementType {
 		for (ElementType type : ElementType.values()) {
 
 			classToType.put(type.getElementClass(), type);
-			type.elementList = new RootElementList<>(type);
 		}
 	}
 
 	private @NonNull @Getter Class<? extends IdentifiedElement> elementClass;
 	@SuppressWarnings("rawtypes")
 	private @NonNull @Getter ElementEditor elementEditor;
-	private @Getter RootElementList<IdentifiedElement> elementList;
 
 	@Override
 	public String toString() {

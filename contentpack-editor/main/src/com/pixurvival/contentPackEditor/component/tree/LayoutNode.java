@@ -16,7 +16,7 @@ public abstract class LayoutNode {
 
 	@Getter
 	@Setter
-	private boolean valid = true;
+	private transient boolean valid = true;
 
 	public abstract boolean isLeaf();
 
@@ -44,6 +44,11 @@ public abstract class LayoutNode {
 			}
 			action.accept(node);
 		});
+	}
+
+	public void forEachDeepFirst(Consumer<LayoutNode> action) {
+		getChildren().forEach(node -> node.forEachDeepFirst(action));
+		action.accept(this);
 	}
 
 	public void forEachAncestor(Consumer<LayoutNode> action) {

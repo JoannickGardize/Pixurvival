@@ -176,6 +176,15 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	@Override
+	public void setForwardFactor(double forwardFactor) {
+		if (forwardFactor != getForwardFactor()) {
+			super.setForwardFactor(forwardFactor);
+			setStateChanged(true);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
+		}
+	}
+
+	@Override
 	public float getMaxHealth() {
 		return stats.getValue(StatType.MAX_HEALTH);
 	}
@@ -291,6 +300,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	public void startAbility(int abilityId) {
+		System.out.println("try start " + abilityId);
 		if (currentAbility != null && (currentAbility.getId() == abilityId || !currentAbility.stop(this))) {
 			return;
 		}
@@ -301,6 +311,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			if (!ability.start(this)) {
 				return;
 			}
+			System.out.println("started " + abilityId);
 			currentAbility = ability;
 		}
 		setStateChanged(true);
@@ -309,6 +320,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	public void stopCurrentAbility() {
 		if (currentAbility != null && currentAbility.stop(this)) {
+			System.out.println("stoped");
 			currentAbility = null;
 			setStateChanged(true);
 			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
@@ -356,6 +368,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			buffer.putLong(stunTermTime);
 			buffer.putShort((short) getTeam().getId());
 			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
+			buffer.putDouble(getForwardFactor());
 			if (getCurrentAbility() == null) {
 				buffer.put(Ability.NONE_ID);
 			} else {
@@ -384,7 +397,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		setHealth(buffer.getFloat());
 
 		// stats part
-
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_STATS) != 0) {
 			getStats().get(StatType.STRENGTH).setValue(buffer.getFloat());
 			getStats().get(StatType.AGILITY).setValue(buffer.getFloat());
@@ -400,6 +412,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			stunTermTime = buffer.getLong();
 			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
 			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
+			setForwardFactor(buffer.getDouble());
 			byte abilityId = buffer.get();
 			if (abilityId == Ability.NONE_ID) {
 				stopCurrentAbility();

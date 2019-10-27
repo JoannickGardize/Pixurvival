@@ -1,13 +1,13 @@
 package com.pixurvival.contentPackEditor.event;
 
-import com.pixurvival.contentPackEditor.ElementType;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ElementTypeChooseEvent extends Event {
+public class ElementSelectedEvent extends Event {
 
-	private ElementType elementType;
+	private IdentifiedElement element;
 }

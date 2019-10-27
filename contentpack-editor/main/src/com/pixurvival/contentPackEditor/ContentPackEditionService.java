@@ -86,8 +86,9 @@ public class ContentPackEditionService {
 	public void changeInstance(IdentifiedElement element) {
 		ElementType type = ElementType.of(element);
 		List<IdentifiedElement> list = listOf(type);
+		IdentifiedElement oldInstance = list.get(element.getId());
 		list.set(element.getId(), element);
-		EventManager.getInstance().fire(new ElementInstanceChangedEvent(element));
+		EventManager.getInstance().fire(new ElementInstanceChangedEvent(oldInstance, element));
 	}
 
 	@SneakyThrows

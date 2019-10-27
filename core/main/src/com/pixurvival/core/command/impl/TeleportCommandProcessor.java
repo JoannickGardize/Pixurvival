@@ -28,7 +28,7 @@ public class TeleportCommandProcessor extends CommandProcessor {
 	}
 
 	@Override
-	public Class<?> getArgType(int argIndex) {
+	public Class<?> getAutocompleteArgType(int argIndex) {
 		switch (argIndex) {
 		case 1:
 			return PlayerEntity.class;

@@ -7,14 +7,20 @@ import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ChunkGroupRectangle {
 
 	private int xStart;
 	private int xEnd;
 	private int yStart;
 	private int yEnd;
+
+	public ChunkGroupRectangle(Vector2 center, double halfSquareLength) {
+		set(center, halfSquareLength);
+	}
 
 	/**
 	 * Set this ChunkGroupRectangle as a square defined by parameters.
@@ -46,5 +52,9 @@ public class ChunkGroupRectangle {
 				action.accept(new ChunkPosition(x, y));
 			}
 		}
+	}
+
+	public boolean contains(ChunkPosition position) {
+		return position.getX() >= xStart && position.getX() <= xEnd && position.getY() >= yStart && position.getY() <= yEnd;
 	}
 }

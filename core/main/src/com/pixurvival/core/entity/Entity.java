@@ -31,8 +31,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	private @Setter long id;
 	private @Setter World world;
+	private @Setter ChunkPosition previousUpdateChunkPosition;
 	private @Setter Chunk chunk;
-	private ChunkPosition previousChunkPosition;
 
 	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
@@ -48,9 +48,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean velocityChanged = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server will
-	 * send data of this entity at the next data send tick to clients that view this
-	 * entity. Must be true at initialization to send the new entity data.
+	 * Indicate if the state of this entity has changed, if true, the server
+	 * will send data of this entity at the next data send tick to clients that
+	 * view this entity. Must be true at initialization to send the new entity
+	 * data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -116,14 +117,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 		// Update current chunk
 		if (chunk == null) {
 			chunk = getWorld().getMap().chunkAt(position.getX(), position.getY());
-			previousChunkPosition = null;
 			if (chunk != null) {
 				chunk.getEntities().add(this);
 				setStateChanged(true);
 				getWorld().getMap().notifyChangedChunk(null, this);
 			}
 		} else {
-			previousChunkPosition = chunk.getPosition();
+			ChunkPosition previousChunkPosition = chunk.getPosition();
 			ChunkPosition newChunkPosition = previousChunkPosition.createIfDifferent(position);
 			if (newChunkPosition != previousChunkPosition) {
 				chunk.getEntities().remove(this);
@@ -199,8 +199,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 * @param full
-	 *            true if all the data should be writen, for clients that discovers
-	 *            this entity.
+	 *            true if all the data should be writen, for clients that
+	 *            discovers this entity.
 	 */
 	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 
@@ -256,7 +256,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of
+	 * {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position
