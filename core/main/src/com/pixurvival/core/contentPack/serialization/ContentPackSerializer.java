@@ -35,6 +35,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.TookDamageCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
@@ -57,14 +58,18 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.livingEntity.ability.AlterationAbility;
+import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
+import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
+import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
 import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
+import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
+import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
 import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
@@ -207,7 +212,8 @@ public class ContentPackSerializer {
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, MoveTowardBehavior.class);
-		addClassTag(representer, AlterationAbility.class);
+		addClassTag(representer, ItemAlterationAbility.class);
+		addClassTag(representer, CreatureAlterationAbility.class);
 		addClassTag(representer, NoEndCondition.class);
 		addClassTag(representer, RemainingTeamCondition.class);
 		addClassTag(representer, EternalDayCycle.class);
@@ -228,6 +234,10 @@ public class ContentPackSerializer {
 		addClassTag(representer, SilenceAlteration.class);
 		addClassTag(representer, StunAlteration.class);
 		addClassTag(representer, InvincibleAlteration.class);
+		addClassTag(representer, TookDamageCondition.class);
+		addClassTag(representer, FixedMovementAlteration.class);
+		addClassTag(representer, OverridingSpriteSheetAlteration.class);
+		addClassTag(representer, RepeatAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

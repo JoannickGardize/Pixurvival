@@ -8,7 +8,6 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 
 	private EntityOverlayStackDrawer<PlayerEntity> selfDrawer = new EntityOverlayStackDrawer<>();
 	private EntityOverlayStackDrawer<PlayerEntity> alliesDrawer = new EntityOverlayStackDrawer<>();
-	private DistantAllyMarkerDrawer distantAlliesDrawer = new DistantAllyMarkerDrawer();
 	private EntityOverlayStackDrawer<PlayerEntity> ennemiesDrawer = new EntityOverlayStackDrawer<>();
 
 	public PlayerEntityOverlayDrawer() {
@@ -26,7 +25,6 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 			selfDrawer.draw(batch, worldViewport, e);
 		} else if (e.getTeam().getId() == myPlayer.getTeam().getId()) {
 			alliesDrawer.draw(batch, worldViewport, e);
-			distantAlliesDrawer.draw(batch, worldViewport, e);
 		} else {
 			ennemiesDrawer.draw(batch, worldViewport, e);
 		}

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
- 
+
 /**
  * This class contains all entities of a given {@link World}, packed by group
  * defined in enum {@link EntityGroup}.
@@ -21,7 +21,6 @@ public class EntityPool extends EntityCollection {
 	private World world;
 	private long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
-	private EntityCollection persistentInstances = new EntityCollection();
 	private List<Entity> newEntities = new ArrayList<>();
 
 	public EntityPool(World world) {
@@ -121,17 +120,10 @@ public class EntityPool extends EntityCollection {
 	}
 
 	@Override
-	protected Entity createEntity(EntityGroup group, long id) {
-		Entity e = persistentInstances.get(group, id);
-		if (e == null) {
-			e = super.createEntity(group, id);
-			if (group.isPersistentInstance()) {
-				persistentInstances.add(e);
-			}
-		} else {
-			e.setChunk(null);
-			e.setAlive(true);
-		}
+	protected Entity createEntity(EntityGroup group, World world, long id) {
+		Entity e = super.createEntity(group, world, id);
+		e.setChunk(null);
+		e.setAlive(true);
 		return e;
 	}
 

@@ -52,6 +52,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		if (getWorld().isServer()) {
 			definition.getEffect().getMovement().initialize(this);
 			creationTime = getWorld().getTime().getTimeMillis();
@@ -78,7 +79,8 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			processFollowingElements(age);
 			processEffectTarget();
 		}
-		super.update();
+		normalPositionUpdate();
+		updateChunk();
 	}
 
 	private void processEffectTarget() {
@@ -211,5 +213,10 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	public TeamMember getOrigin() {
 		return ancestor.getOrigin();
+	}
+
+	@Override
+	public double getDisplayDeath() {
+		return definition.getEffect().isAlwaysForeground() ? -1_000_000 : super.getDisplayDeath();
 	}
 }

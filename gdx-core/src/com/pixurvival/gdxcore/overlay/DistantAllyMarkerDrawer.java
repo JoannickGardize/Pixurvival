@@ -1,5 +1,6 @@
 package com.pixurvival.gdxcore.overlay;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.drawer.DrawData;
@@ -37,10 +39,14 @@ public class DistantAllyMarkerDrawer implements OverlayDrawer<PlayerEntity> {
 		}
 		float px = (float) myPosition.getX();
 		float py = (float) myPosition.getY();
-		com.pixurvival.core.util.Vector2 otherPosition = ((DrawData) e.getCustomData()).getDrawPosition();
+		com.pixurvival.core.util.Vector2 otherPosition = e.getPosition();
 		Vector2 intersection = findEdgePoint(worldViewport, px, py, (float) otherPosition.getX(), (float) otherPosition.getY());
 		if (intersection == null) {
 			return;
+		}
+		if (myPlayer.getWorld().getEntityPool().get(EntityGroup.PLAYER, e.getId()) == null) {
+			e.getPosition().addX(e.getVelocity().getX() * Gdx.graphics.getDeltaTime());
+			e.getPosition().addY(e.getVelocity().getY() * Gdx.graphics.getDeltaTime());
 		}
 		Vector2 drawPosition = worldViewport.project(intersection);
 		tmp.set(px, py);

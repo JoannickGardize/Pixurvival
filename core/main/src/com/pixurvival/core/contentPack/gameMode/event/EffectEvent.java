@@ -10,6 +10,7 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.Team;
+import com.pixurvival.core.team.TeamSet;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,8 +26,8 @@ public class EffectEvent extends Event {
 	private EventPosition position;
 
 	/**
-	 * The Effect will have as ancestor a virtual TeamMember of the WILD team.
-	 * The ancestor's stats are filled with special values :
+	 * The Effect will have as ancestor a virtual TeamMember of the WILD team. The
+	 * ancestor's stats are filled with special values :
 	 * <ul>
 	 * <li>Strength : number of concerned players
 	 * <li>Agility : number of repeat (starting to zero)
@@ -39,7 +40,9 @@ public class EffectEvent extends Event {
 	public void perform(World world, int repeatCount) {
 		if (forEachTeam) {
 			for (Team team : world.getTeamSet()) {
-				perform(world, team.getAliveMembers(), repeatCount);
+				if (team != TeamSet.WILD_TEAM) {
+					perform(world, team.getAliveMembers(), repeatCount);
+				}
 			}
 		} else {
 			perform(world, (Collection) world.getEntityPool().get(EntityGroup.PLAYER), repeatCount);

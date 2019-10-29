@@ -1,7 +1,5 @@
 package com.pixurvival.core.entity;
 
-import java.util.function.Supplier;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -14,16 +12,14 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum EntityGroup {
-	PLAYER(true, PlayerEntity::new, PlayerEntity.class),
-	ITEM_STACK(false, ItemStackEntity::new, ItemStackEntity.class),
-	CREATURE(false, CreatureEntity::new, CreatureEntity.class),
-	EFFECT(false, EffectEntity::new, EffectEntity.class);
+	PLAYER((w, id) -> w.getPlayerEntities().get(id), PlayerEntity.class),
+	ITEM_STACK((w, id) -> new ItemStackEntity(), ItemStackEntity.class),
+	CREATURE((w, id) -> new CreatureEntity(), CreatureEntity.class),
+	EFFECT((w, id) -> new EffectEntity(), EffectEntity.class);
 
 	public static final byte END_MARKER = -1;
 
-	private @Getter boolean persistentInstance;
-
-	private @Getter Supplier<Entity> entitySupplier;
+	private @Getter EntitySupplier entitySupplier;
 
 	private @Getter Class<? extends Entity> type;
 

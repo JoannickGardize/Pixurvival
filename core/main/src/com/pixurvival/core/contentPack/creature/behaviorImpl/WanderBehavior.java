@@ -15,8 +15,8 @@ public class WanderBehavior extends Behavior {
 
 	public static final double MEAN_TIME = 700;
 	public static final double DEVIATON_TIME = 500;
-	public static final double MIN_TIME = 200;
-	public static final double MAX_TIME = 1200;
+	public static final double MIN_TIME = 300;
+	public static final double MAX_TIME = 800;
 	private static final double MAX_ANCHOR_DISTANCE = 10;
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class WanderBehavior extends Behavior {
 		WorldRandom random = creature.getWorld().getRandom();
 		Vector2 anchorPosition = anchorType.getAnchorGetter().apply(creature);
 		if (anchorPosition != null && creature.getPosition().distanceSquared(anchorPosition) >= MAX_ANCHOR_DISTANCE * MAX_ANCHOR_DISTANCE) {
-			creature.move(creature.getPosition().angleToward(anchorPosition));
+			creature.move(creature.getPosition().angleToward(anchorPosition), forwardFactor);
 		} else {
 			if (random.nextDouble() < moveRate) {
 				creature.move(random.nextAngle(), forwardFactor);

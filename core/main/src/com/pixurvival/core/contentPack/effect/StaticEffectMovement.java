@@ -21,12 +21,14 @@ public class StaticEffectMovement implements EffectMovement {
 	public void initialize(EffectEntity entity) {
 		TeamMember ancestor = entity.getAncestor();
 		double distanceSquared = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
+		double angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
+				+ entity.getWorld().getRandom().nextAngle(entity.getDefinition().getRandomAngle());
 		if (distanceSquared <= minDistance * minDistance) {
-			entity.getPosition().set(ancestor.getPosition()).addEuclidean(minDistance, entity.getMovingAngle());
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean(minDistance, angle);
 		} else if (distanceSquared >= maxDistance * maxDistance) {
-			entity.getPosition().set(ancestor.getPosition()).addEuclidean(maxDistance, entity.getMovingAngle());
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean(maxDistance, angle);
 		} else {
-			entity.getPosition().set(ancestor.getTargetPosition());
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean(Math.sqrt(distanceSquared), angle);
 		}
 	}
 

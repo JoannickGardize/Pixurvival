@@ -7,7 +7,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +14,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Creature extends IdentifiedElement {
+
+	private static final AbilitySet EMPTY_ABILITY_SET = new AbilitySet();
+
+	static {
+		EMPTY_ABILITY_SET.addSilence();
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,11 +44,13 @@ public class Creature extends IdentifiedElement {
 	private ItemReward itemReward;
 
 	@ElementReference
-	private AbilitySet<AlterationAbility> abilitySet;
+	private AbilitySet abilitySet;
 
 	@Override
 	public void initialize() {
-		if (abilitySet != null) {
+		if (abilitySet == null) {
+			abilitySet = EMPTY_ABILITY_SET;
+		} else {
 			abilitySet.addSilence();
 		}
 	}

@@ -23,6 +23,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.DoubleComparison;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.TookDamageCondition;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
 
@@ -65,6 +66,9 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		TimeInput timeInput = new TimeInput();
 		bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
 		classEntries.add(new ClassEntry(TimeCondition.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput))));
+
+		// TookDamageCondition
+		classEntries.add(new ClassEntry(TookDamageCondition.class, new JPanel()));
 
 		// InLightCondition
 		classEntries.add(new ClassEntry(InLightCondition.class, new JPanel()));

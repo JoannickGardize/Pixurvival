@@ -9,29 +9,28 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 import lombok.Getter;
 import lombok.Setter;
 
-public class AbilitySet<T extends Ability> extends IdentifiedElement implements Iterable<T> {
+public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
 
 	private static final long serialVersionUID = 1L;
 
-	private @Getter @Setter List<T> abilities = new ArrayList<>();
+	private @Getter @Setter List<Ability> abilities = new ArrayList<>();
 
-	public void add(T ability) {
+	public void add(Ability ability) {
 		ability.setId((byte) abilities.size());
 		abilities.add(ability);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addSilence() {
-		if (abilities.get(0) instanceof SilenceAbility) {
+		if (!abilities.isEmpty() && abilities.get(0) instanceof SilenceAbility) {
 			return;
 		}
-		abilities.add(0, (T) new SilenceAbility());
+		abilities.add(0, new SilenceAbility());
 		for (int i = 0; i < abilities.size(); i++) {
 			abilities.get(i).setId((byte) i);
 		}
 	}
 
-	public T get(int id) {
+	public Ability get(int id) {
 		return abilities.get(id);
 	}
 
@@ -40,7 +39,7 @@ public class AbilitySet<T extends Ability> extends IdentifiedElement implements 
 	}
 
 	@Override
-	public Iterator<T> iterator() {
+	public Iterator<Ability> iterator() {
 		return abilities.iterator();
 	}
 }

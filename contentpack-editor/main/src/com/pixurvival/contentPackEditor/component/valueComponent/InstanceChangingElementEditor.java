@@ -1,14 +1,18 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
-import java.awt.CardLayout;
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ItemEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
+import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,23 +28,32 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 
 	private static final long serialVersionUID = 1L;
 
-	private @Getter JComboBox<Class<? extends E>> typeChooser;
-	private @Getter JPanel specificPartPanel = new JPanel(new CardLayout());
+	private JComboBox<Class<? extends E>> typeChooser;
+	private @Getter JPanel specificPartPanel;
+	private Class<?> currentClass;
+	private Map<Class<? extends E>, JPanel> classEntries = new HashMap<Class<? extends E>, JPanel>();
 
 	@SuppressWarnings("unchecked")
 	public InstanceChangingElementEditor(String translationPreffix, Object params) {
-		List<ClassEntry> classEntries = getClassEntries(params);
-		typeChooser = new JComboBox<>(classEntries.stream().map(ClassEntry::getType).toArray(Class[]::new));
+		for (ClassEntry classEntry : getClassEntries(params)) {
+			classEntries.put(classEntry.getType(), classEntry.getSpecificPanel());
+		}
+		typeChooser = new JComboBox<>(classEntries.keySet().stream().toArray(Class[]::new));
 		typeChooser.setRenderer(new ClassNameCellRenderer(translationPreffix));
-		specificPartPanel = new JPanel(new CardLayout());
+		specificPartPanel = new JPanel(new BorderLayout());
 		typeChooser.addItemListener(e -> {
 			if (typeChooser.isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
 				changeInstance(BeanFactory.newInstance(((Class<? extends E>) e.getItem())));
 			}
 		});
-		for (ClassEntry classEntry : classEntries) {
-			specificPartPanel.add(classEntry.getSpecificPanel(), classEntry.getType().getSimpleName());
-		}
+		// for (ClassEntry classEntry : classEntries) {
+		// specificPartPanel.add(classEntry.getSpecificPanel(),
+		// classEntry.getType().getSimpleName());
+		// }
+	}
+
+	public Component getTypeChooser() {
+		return LayoutUtils.single(typeChooser);
 	}
 
 	private void changeInstance(E newInstance) {
@@ -59,7 +72,13 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	protected void valueChanged(ValueComponent<?> source) {
 		if (source == this && getValue() != null) {
 			Class<?> type = getValue().getClass();
-			((CardLayout) specificPartPanel.getLayout()).show(specificPartPanel, type.getSimpleName());
+			if (type != currentClass) {
+				currentClass = type;
+				specificPartPanel.removeAll();
+				specificPartPanel.add(classEntries.get(type), BorderLayout.CENTER);
+				specificPartPanel.revalidate();
+				specificPartPanel.repaint();
+			}
 			typeChooser.setSelectedItem(type);
 		}
 	}

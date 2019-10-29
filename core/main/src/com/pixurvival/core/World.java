@@ -25,6 +25,8 @@ import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.message.PlayerInformation;
+import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
@@ -72,6 +74,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private @Getter ChatManager chatManager = new ChatManager();
 	private PlayerEntity myPlayer;
 	private @Getter Vector2 spawnCenter;
+	private @Getter Map<Long, PlayerEntity> playerEntities;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -100,13 +103,20 @@ public class World extends PluginHolder<World> implements ChatSender {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
-		for (String teamName : createWorld.getTeamNames()) {
-			world.teamSet.createTeam(teamName);
+		world.playerEntities = new HashMap<>();
+		for (TeamComposition teamComposition : createWorld.getTeamCompositions()) {
+			Team team = world.teamSet.createTeam(teamComposition.getTeamName());
+			for (PlayerInformation playerInformation : teamComposition.getMembers()) {
+				PlayerEntity player = new PlayerEntity();
+				player.setId(playerInformation.getId());
+				player.setName(playerInformation.getName());
+				player.setTeam(team);
+				player.setWorld(world);
+				world.playerEntities.put(player.getId(), player);
+			}
 		}
-		PlayerEntity myPlayer = new PlayerEntity();
-		myPlayer.setTeam(world.teamSet.get(createWorld.getMyTeamId()));
-		myPlayer.setWorld(world);
-		myPlayer.setId(createWorld.getMyPlayerId());
+		PlayerEntity myPlayer = world.playerEntities.get(createWorld.getMyPlayerId());
+		myPlayer.getPosition().set(createWorld.getMyPosition());
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);

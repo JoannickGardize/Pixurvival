@@ -16,7 +16,6 @@ import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.team.Team;
-import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.NonNull;
 
@@ -138,7 +137,7 @@ public class ServerEngineThread extends EngineThread {
 				});
 			}
 		});
-		ignoreTeamMembers(playerEntity);
+		// ignoreTeamMembers(playerEntity);
 		tmpRemoveEntityCollection.writeAllIds(byteBuffer);
 	}
 
@@ -168,8 +167,8 @@ public class ServerEngineThread extends EngineThread {
 				byteBuffer.putLong(ally.getId());
 				byteBuffer.putDouble(ally.getPosition().getX());
 				byteBuffer.putDouble(ally.getPosition().getY());
-				ByteBufferUtils.putBoolean(byteBuffer, ally.isForward());
-				byteBuffer.putDouble(ally.getMovingAngle());
+				byteBuffer.putDouble(ally.getVelocity().getX());
+				byteBuffer.putDouble(ally.getVelocity().getY());
 				length++;
 			}
 		}

@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -15,12 +16,19 @@ public class CraftAbility extends WorkAbility {
 
 	@Override
 	public boolean start(LivingEntity entity) {
+		if (!entity.getWorld().isServer()) {
+			return true;
+		}
 		super.start(entity);
 		ItemCraft itemCraft = ((CraftAbilityData) getAbilityData(entity)).getItemCraft();
 		if (itemCraft == null) {
 			return false;
 		}
 		Inventory inventory = ((InventoryHolder) entity).getInventory();
+		if (itemCraft.getRecipes() == null) {
+			Log.warn("itemCraft invalide : " + itemCraft);
+			return false;
+		}
 		return inventory.contains(itemCraft.getRecipes());
 	}
 

@@ -14,9 +14,9 @@ public class CommonMainArgs {
 
 	private boolean simulateLag = false;
 
-	private int minSimulateLag = 40;
+	private int minSimulateLag = 23;
 
-	private int maxSimulateLag = 50;
+	private int maxSimulateLag = 27;
 
 	private String contentPackDirectory = null;
 

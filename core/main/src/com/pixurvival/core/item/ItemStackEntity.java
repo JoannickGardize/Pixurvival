@@ -70,6 +70,7 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		speedInterpolation = new Timer(getWorld(), SPEED_INTERPOLATION_DURATION, false);
 	}
 
@@ -85,55 +86,57 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void update() {
-		switch (state) {
-		case INHIBITED:
-			setForward(false);
-			if (this.distanceSquared(magnetTarget) > INHIBITION_DISTANCE * INHIBITION_DISTANCE) {
-				state = State.WAITING;
-				magnetTarget = null;
-			}
-			break;
-		case WAITING:
-			setForward(false);
-			if (getWorld().isServer()) {
-				EntitySearchResult result = findClosest(EntityGroup.PLAYER, MAGNET_DISTANCE);
-				if (result.getDistanceSquared() <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
-					setStateChanged(true);
-					magnetTarget = (PlayerEntity) result.getEntity();
-					state = State.MAGNTIZED;
-					speedInterpolation.reset();
-
-				}
-			}
-			break;
-		case MAGNTIZED:
-			speedInterpolation.update(getWorld());
-			setMovingAngle(angleToward(magnetTarget));
-			setForward(true);
-			if (getWorld().isServer() && collideDynamic(magnetTarget)) {
-				setAlive(false);
-				ItemStack rest = magnetTarget.getInventory().add(itemStack);
-				if (rest != null) {
-					setAlive(true);
-					state = State.INHIBITED;
-					speedInterpolation.reset();
-					setForward(false);
-					itemStack = rest;
-					setStateChanged(true);
-				}
-			}
-			break;
-		case SPAWNING:
-			setForward(true);
-			setMovingAngle(getPosition().angleToward(spawnTarget));
-			double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
-			spawnProgress += deltaSpeed;
-			if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {
-				getPosition().set(spawnTarget);
+		if (!isCollisionLock()) {
+			switch (state) {
+			case INHIBITED:
 				setForward(false);
-				state = State.WAITING;
+				if (this.distanceSquared(magnetTarget) > INHIBITION_DISTANCE * INHIBITION_DISTANCE) {
+					state = State.WAITING;
+					magnetTarget = null;
+				}
+				break;
+			case WAITING:
+				setForward(false);
+				if (getWorld().isServer()) {
+					EntitySearchResult result = findClosest(EntityGroup.PLAYER, MAGNET_DISTANCE);
+					if (result.getDistanceSquared() <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
+						setStateChanged(true);
+						magnetTarget = (PlayerEntity) result.getEntity();
+						state = State.MAGNTIZED;
+						speedInterpolation.reset();
+
+					}
+				}
+				break;
+			case MAGNTIZED:
+				speedInterpolation.update(getWorld());
+				setMovingAngle(angleToward(magnetTarget));
+				setForward(true);
+				if (getWorld().isServer() && collideDynamic(magnetTarget)) {
+					setAlive(false);
+					ItemStack rest = magnetTarget.getInventory().add(itemStack);
+					if (rest != null) {
+						setAlive(true);
+						state = State.INHIBITED;
+						speedInterpolation.reset();
+						setForward(false);
+						itemStack = rest;
+						setStateChanged(true);
+					}
+				}
+				break;
+			case SPAWNING:
+				setForward(true);
+				setMovingAngle(getPosition().angleToward(spawnTarget));
+				double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
+				spawnProgress += deltaSpeed;
+				if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {
+					getPosition().set(spawnTarget);
+					setForward(false);
+					state = State.WAITING;
+				}
+				break;
 			}
-			break;
 		}
 		super.update();
 	}
@@ -174,7 +177,6 @@ public class ItemStackEntity extends Entity {
 			break;
 		default:
 			break;
-
 		}
 	}
 
@@ -215,5 +217,18 @@ public class ItemStackEntity extends Entity {
 	@Override
 	public boolean isSolid() {
 		return false;
+	}
+
+	@Override
+	protected void collisionLockEnded() {
+		if (state == State.SPAWNING) {
+			setForward(false);
+			state = State.WAITING;
+		}
+	}
+
+	@Override
+	protected boolean antiCollisionLockEnabled() {
+		return state == State.SPAWNING;
 	}
 }

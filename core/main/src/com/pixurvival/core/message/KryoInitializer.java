@@ -78,6 +78,10 @@ public class KryoInitializer {
 		register(kryo, ChatRequest.class);
 		register(kryo, ChatEntry.class);
 		register(kryo, UseItemRequest.class);
+		register(kryo, PlayerInformation.class);
+		register(kryo, PlayerInformation[].class);
+		register(kryo, TeamComposition.class);
+		register(kryo, TeamComposition[].class);
 	}
 
 	@SuppressWarnings("unchecked")

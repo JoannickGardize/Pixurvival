@@ -25,14 +25,16 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	private @Getter @Setter boolean oneRequired = false;
 	private @Getter ValueComponent<E> editorForValidation;
-	private Supplier<ValueComponent<E>> elementEditorSupplier;
+	@SuppressWarnings("rawtypes")
+	private Supplier elementEditorSupplier;
 	protected JPanel listPanel = new JPanel();
 	protected JButton addButton;
 	protected JButton removeButton;
 
-	public ListEditor(Supplier<ValueComponent<E>> elementEditorSupplier, Supplier<? extends E> valueSupplier) {
+	@SuppressWarnings("unchecked")
+	public <F extends E> ListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier) {
 		this.elementEditorSupplier = elementEditorSupplier;
-		editorForValidation = elementEditorSupplier.get();
+		editorForValidation = (ValueComponent<E>) elementEditorSupplier.get();
 		addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));
 		removeButton = new CPEButton("generic.remove", () -> {
 			if (!getValue().isEmpty()) {
@@ -108,7 +110,8 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	}
 
 	private ValueComponent<E> addComponent(int index, E value) {
-		ValueComponent<E> elementEditor = elementEditorSupplier.get();
+		@SuppressWarnings("unchecked")
+		ValueComponent<E> elementEditor = (ValueComponent<E>) elementEditorSupplier.get();
 		if (value != null) {
 			elementEditor.setValue(value);
 		}

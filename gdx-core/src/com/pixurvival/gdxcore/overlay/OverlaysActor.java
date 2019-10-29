@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ScreenResizeEvent;
 import com.pixurvival.gdxcore.WorldScreen;
 import com.pixurvival.gdxcore.util.DrawUtils;
@@ -28,6 +30,8 @@ public class OverlaysActor extends Actor implements EventListener {
 
 	private Viewport worldViewport;
 
+	private DistantAllyMarkerDrawer distantAlliesDrawer = new DistantAllyMarkerDrawer();
+
 	public OverlaysActor(Viewport worldViewport) {
 		this.worldViewport = worldViewport;
 		entityOverlayDrawers.put(EntityGroup.PLAYER, new PlayerEntityOverlayDrawer());
@@ -43,7 +47,14 @@ public class OverlaysActor extends Actor implements EventListener {
 			EntityCollection entityPool = chunk.getEntities();
 			entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
 		});
-
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (myPlayer != null) {
+			for (PlayerEntity ally : myPlayer.getTeam().getAliveMembers()) {
+				if (!ally.equals(myPlayer)) {
+					distantAlliesDrawer.draw(batch, worldViewport, ally);
+				}
+			}
+		}
 		batch.flush(); // Make sure nothing is clipped before we want it to.
 		ScissorStack.popScissors();
 	}

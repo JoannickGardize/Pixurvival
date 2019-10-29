@@ -32,6 +32,10 @@ public class BehaviorData {
 	private boolean closestEnnemyComputed = false;
 	private Entity closestEnnemy;
 
+	@Getter
+	@Setter
+	private boolean tookDamage = false;
+
 	/**
 	 * Temps de la prochaine mise à jour du {@link Behavior}. Si cette valeur
 	 * n'est pas modifié, ou est inférieur ou temps actuel du {@link World}, il
@@ -65,6 +69,10 @@ public class BehaviorData {
 		nextUpdateTimeMillis = time.getTimeMillis() + delayMillis;
 	}
 
+	public void forceUpdate() {
+		nextUpdateTimeMillis = creature.getWorld().getTime().getTimeMillis();
+	}
+
 	/**
 	 * Fixe le temps de la prochaine mise à jour du {@link Behavior} de manière
 	 * à ce qu'elle corresponde au temps qu'il faut pour que la créature
@@ -87,6 +95,7 @@ public class BehaviorData {
 
 	public void updatePreviousChangeConditionCheck() {
 		previousChangeConditionCheck = time.getTimeMillis();
+		tookDamage = false;
 	}
 
 	void beforeStep() {

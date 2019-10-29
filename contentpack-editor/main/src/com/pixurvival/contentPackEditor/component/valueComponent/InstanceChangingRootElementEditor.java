@@ -31,5 +31,4 @@ public abstract class InstanceChangingRootElementEditor<E extends IdentifiedElem
 		// ContentPack
 		ContentPackEditionService.getInstance().changeInstance(newInstance);
 	}
-
 }

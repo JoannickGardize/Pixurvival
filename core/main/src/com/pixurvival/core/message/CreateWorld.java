@@ -2,6 +2,7 @@ package com.pixurvival.core.message;
 
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Data;
 
@@ -12,7 +13,8 @@ public class CreateWorld {
 	private ContentPackIdentifier contentPackIdentifier;
 	private int gameModeId;
 	private long myPlayerId;
+	private Vector2 myPosition;
 	private PlayerInventory inventory;
-	private String[] teamNames;
+	private TeamComposition[] teamCompositions;
 	private int myTeamId;
 }

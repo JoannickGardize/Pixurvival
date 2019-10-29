@@ -12,7 +12,6 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
-import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -51,7 +50,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public static final int HARVEST_ABILITY_ID = 2;
 	public static final int USE_ITEM_ABILITY_ID = 3;
 
-	private static final AbilitySet<Ability> PLAYER_ABILITY_SET = new AbilitySet<>();
+	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
 
 	static {
 		PLAYER_ABILITY_SET.add(new SilenceAbility());
@@ -124,7 +123,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	protected void onDeath() {
-		getTeam().addDead(this);
+		if (getWorld().isServer()) {
+			// TODO Send to the client the dead members of team
+			getTeam().addDead(this);
+		}
 	}
 
 	@Override
@@ -143,8 +145,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		super.setTeam(team);
 		if (isAlive()) {
 			team.addAlive(this);
-		} else {
-			team.addDead(this);
 		}
 	}
 
@@ -194,18 +194,16 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public PlayerData getData() {
 		PlayerData data = new PlayerData();
 		data.setId(getId());
-		data.setName(name);
 		data.setEquipment(equipment);
 		return data;
 	}
 
 	public void applyData(PlayerData data) {
-		name = data.getName();
 		equipment.set(data.getEquipment());
 	}
 
 	@Override
-	public AbilitySet<Ability> getAbilitySet() {
+	public AbilitySet getAbilitySet() {
 		return PLAYER_ABILITY_SET;
 	}
 
@@ -231,5 +229,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public void silence(long duration) {
 		startAbility(SILENCE_ABILITY_ID);
 		((SilenceAbilityData) getAbilityData(SILENCE_ABILITY_ID)).setEndTime(getWorld().getTime().getTimeMillis() + duration);
+	}
+
+	@Override
+	protected void collisionLockEnded() {
+		lastPlayerMovementRequest.apply(this);
 	}
 }

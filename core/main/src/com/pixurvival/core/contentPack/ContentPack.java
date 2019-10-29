@@ -32,7 +32,6 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
@@ -89,7 +88,7 @@ public class ContentPack implements Serializable {
 	private List<BehaviorSet> behaviorSets = new ArrayList<>();
 
 	@ElementCollection(AbilitySet.class)
-	private List<AbilitySet<AlterationAbility>> abilitySets = new ArrayList<>();
+	private List<AbilitySet> abilitySets = new ArrayList<>();
 
 	@Valid
 	@ElementCollection(Creature.class)

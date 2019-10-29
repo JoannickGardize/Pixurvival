@@ -46,6 +46,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private Vector2 targetVelocity = new Vector2();
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
+	private boolean collisionLock = false;
 
 	/**
 	 * Indicate if the state of this entity has changed, if true, the server
@@ -55,7 +56,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 */
 	private @Setter boolean stateChanged = true;
 
-	public abstract void initialize();
+	public void initialize() {
+		previousPosition.set(position);
+	}
 
 	public void setMovingAngle(double movingAngle) {
 		if (this.movingAngle != movingAngle) {
@@ -97,10 +100,48 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return true;
 	}
 
+	protected void collisionLockEnded() {
+
+	}
+
+	protected boolean antiCollisionLockEnabled() {
+		return true;
+	}
+
 	public void update() {
 
-		previousPosition.set(position);
+		if (collisionLock) {
+			// Currently getting away from collision lock
+			if (getWorld().getMap().collide(this)) {
+				position.add(targetVelocity.getX() * getWorld().getTime().getDeltaTime(), targetVelocity.getY() * getWorld().getTime().getDeltaTime());
+			} else {
+				collisionLock = false;
+				collisionLockEnded();
+			}
+		} else if (antiCollisionLockEnabled() && getWorld().getMap().collide(this)) {
+			// Get away from collision lock
+			collisionLock = true;
+			if (previousPosition.epsilonEquals(position, 0.001)) {
+				setMovingAngle(getWorld().getRandom().nextAngle());
+			} else {
+				setMovingAngle(position.angleToward(previousPosition));
+			}
+			setSpeed(3);
+			setForward(true);
+			updateVelocity();
+			velocity.set(targetVelocity);
+			position.add(targetVelocity.getX() * getWorld().getTime().getDeltaTime(), targetVelocity.getY() * getWorld().getTime().getDeltaTime());
+			stepX();
+			stepY();
+		}
+		if (!collisionLock) {
+			normalPositionUpdate();
+		}
+		updateChunk();
+	}
 
+	protected void normalPositionUpdate() {
+		previousPosition.set(position);
 		if (forward && canForward()) {
 			setSpeed(getSpeedPotential() * forwardFactor);
 			updateVelocity();
@@ -110,7 +151,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 			setSpeed(0);
 			velocity.set(0, 0);
 		}
-		updateChunk();
 	}
 
 	public void updateChunk() {

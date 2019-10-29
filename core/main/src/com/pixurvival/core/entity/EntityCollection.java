@@ -12,8 +12,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
-import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -133,7 +133,7 @@ public class EntityCollection {
 				long entityId = byteBuffer.getLong();
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
-					e = createEntity(group, entityId);
+					e = createEntity(group, world, entityId);
 					e.setWorld(world);
 					e.applyInitialization(byteBuffer);
 					add(e);
@@ -161,25 +161,24 @@ public class EntityCollection {
 		}
 		// Far allies positions update
 		short length = byteBuffer.getShort();
-		Map<Long, Entity> groupMap = entities.get(EntityGroup.PLAYER);
+		Map<Long, PlayerEntity> groupMap = world.getPlayerEntities();
 		for (int i = 0; i < length; i++) {
 			long id = byteBuffer.getLong();
-			Entity e = groupMap.get(id);
+			PlayerEntity e = groupMap.get(id);
 			if (e != null) {
 				e.getPosition().set(byteBuffer.getDouble(), byteBuffer.getDouble());
-				e.setForward(ByteBufferUtils.getBoolean(byteBuffer));
-				e.setMovingAngle(byteBuffer.getDouble());
+				e.getVelocity().set(byteBuffer.getDouble(), byteBuffer.getDouble());
 			} else {
 				byteBuffer.getDouble();
 				byteBuffer.getDouble();
-				byteBuffer.get();
+				byteBuffer.getDouble();
 				byteBuffer.getDouble();
 			}
 		}
 	}
 
-	protected Entity createEntity(EntityGroup group, long id) {
-		Entity e = group.getEntitySupplier().get();
+	protected Entity createEntity(EntityGroup group, World world, long id) {
+		Entity e = group.getEntitySupplier().get(world, id);
 		e.setId(id);
 		return e;
 	}

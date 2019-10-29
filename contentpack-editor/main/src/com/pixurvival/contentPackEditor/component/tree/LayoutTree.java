@@ -45,7 +45,7 @@ public class LayoutTree extends JTree {
 			menuBuilder.addItem("new." + CaseUtils.upperToCamelCase(type.name()), () -> this.newElement(type), type.toString());
 		}
 		menuBuilder.addItem("rename", this::rename);
-		menuBuilder.addItem("delete", this::rename);
+		menuBuilder.addItem("delete", this::delete);
 
 		setModel(new LayoutTreeModel());
 		setCellRenderer(new LayoutTreeCellRenderer());
@@ -150,11 +150,12 @@ public class LayoutTree extends JTree {
 		}
 
 		if (selectedNode instanceof LayoutFolder) {
-			// selectedNode.fo
-			// TODO
+			selectedNode.forEachLeaf(childNode -> ContentPackEditionService.getInstance().removeElement(((LayoutElement) childNode).getElement()));
 		} else {
-
+			ContentPackEditionService.getInstance().removeElement(((LayoutElement) selectedNode).getElement());
 		}
+		LayoutTreeModel model = ((LayoutTreeModel) getModel());
+		model.remove(selectedNode);
 	}
 
 	private String showChooseFolderNameDialog(String defaultName) {

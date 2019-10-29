@@ -20,4 +20,8 @@ public interface Body extends Positionnable {
 	 * @return Moitié de la hauteur de la bounding box
 	 */
 	double getHalfHeight();
+
+	default double getDisplayDeath() {
+		return getPosition().getY();
+	}
 }

@@ -18,7 +18,9 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.KryoInitializer;
+import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.StartGame;
+import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.CommonMainArgs;
 
@@ -110,7 +112,7 @@ public class ServerGame {
 				team = world.getTeamSet().createTeam(playerConnection.getRequestedTeamName());
 			}
 		});
-		createWorld.setTeamNames(world.getTeamSet().getNames());
+
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
 			world.getEntityPool().add(playerEntity);
@@ -121,13 +123,30 @@ public class ServerGame {
 			playerEntity.getEquipment().addListener(playerConnection);
 			playerEntity.getStats().addListener(playerConnection);
 			playerConnection.setPlayerEntity(playerEntity);
-			createWorld.setMyPlayerId(playerEntity.getId());
-			createWorld.setMyTeamId(playerEntity.getTeam().getId());
-			createWorld.setInventory(playerEntity.getInventory());
-			playerConnection.sendTCP(createWorld);
 			session.addPlayer(playerConnection);
 		});
+
+		TeamComposition[] teamCompositions = new TeamComposition[world.getTeamSet().size()];
+		for (int i = 0; i < teamCompositions.length; i++) {
+			Team team = world.getTeamSet().get(i);
+			PlayerInformation[] playerInformations = new PlayerInformation[team.getAliveMembers().size()];
+			int j = 0;
+			for (PlayerEntity player : team.getAliveMembers()) {
+				playerInformations[j++] = new PlayerInformation(player.getId(), player.getName());
+			}
+			teamCompositions[i] = new TeamComposition(team.getName(), playerInformations);
+		}
+		createWorld.setTeamCompositions(teamCompositions);
 		world.initializeGame();
+
+		foreachPlayers(playerConnection -> {
+			PlayerEntity playerEntity = playerConnection.getPlayerEntity();
+			createWorld.setMyPlayerId(playerEntity.getId());
+			createWorld.setMyTeamId(playerEntity.getTeam().getId());
+			createWorld.setMyPosition(playerEntity.getPosition());
+			createWorld.setInventory(playerEntity.getInventory());
+			playerConnection.sendTCP(createWorld);
+		});
 
 		foreachPlayers(playerConnection -> {
 			boolean messageSent = false;

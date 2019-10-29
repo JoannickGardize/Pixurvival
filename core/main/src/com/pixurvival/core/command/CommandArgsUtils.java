@@ -167,6 +167,13 @@ public class CommandArgsUtils {
 		return result;
 	}
 
+	public static float getFloat(String arg) throws CommandExecutionException {
+		if (!arg.matches("\\d+(\\.d+)?")) {
+			throw new CommandExecutionException(arg + " is not a number.");
+		}
+		return Float.parseFloat(arg);
+	}
+
 	public static void checkArgsLength(String[] args, int min, int max) throws CommandExecutionException {
 		if (args.length < min || args.length > max) {
 			throw new CommandExecutionException("Wrong number of args : " + args.length + ", must be in range [" + min + ", " + max + "]");

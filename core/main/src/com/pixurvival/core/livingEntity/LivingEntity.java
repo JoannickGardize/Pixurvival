@@ -122,6 +122,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	@Override
 	public void initialize() {
+		super.initialize();
 		health = getMaxHealth();
 		if (getWorld().isServer()) {
 			stats.get(StatType.MAX_HEALTH).addListener(s -> {
@@ -138,7 +139,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	private void initializeAbilityData() {
-		AbilitySet<? extends Ability> abilitySet = getAbilitySet();
+		AbilitySet abilitySet = getAbilitySet();
 		abilityData = new AbilityData[abilitySet.size()];
 		for (int i = 0; i < abilitySet.size(); i++) {
 			abilityData[i] = abilitySet.get(i).createAbilityData();
@@ -300,7 +301,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	public void startAbility(int abilityId) {
-		System.out.println("try start " + abilityId);
 		if (currentAbility != null && (currentAbility.getId() == abilityId || !currentAbility.stop(this))) {
 			return;
 		}
@@ -311,7 +311,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			if (!ability.start(this)) {
 				return;
 			}
-			System.out.println("started " + abilityId);
 			currentAbility = ability;
 		}
 		setStateChanged(true);
@@ -320,7 +319,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	public void stopCurrentAbility() {
 		if (currentAbility != null && currentAbility.stop(this)) {
-			System.out.println("stoped");
 			currentAbility = null;
 			setStateChanged(true);
 			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
@@ -423,5 +421,9 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		}
 	}
 
-	public abstract AbilitySet<? extends Ability> getAbilitySet();
+	public void beforeTargetedAlteration() {
+		// for overriding
+	}
+
+	public abstract AbilitySet getAbilitySet();
 }

@@ -39,6 +39,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
+		BooleanCheckBox alwaysForegroundCheckbox = new BooleanCheckBox();
 		TimeInput durationInput = new TimeInput();
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
@@ -61,11 +62,12 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
 		bind(deathFollowingElements, Effect::getDeathFollowingElements, Effect::setDeathFollowingElements);
 		bind(deathAlterations, Effect::getDeathAlterations, Effect::setDeathAlterations);
+		bind(alwaysForegroundCheckbox, Effect::isAlwaysForeground, Effect::setAlwaysForeground);
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
 		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
-				loopAnimationCheckbox);
+				loopAnimationCheckbox, "effectEditor.alwaysForeground", alwaysForegroundCheckbox);
 		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
 		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));

@@ -28,9 +28,13 @@ public class FixedMovementAlteration extends PersistentAlteration {
 		double targetAngle;
 		double speedValue;
 		if (origin == FixedMovementOrigin.SOURCE) {
+			if (source instanceof LivingEntity) {
+				((LivingEntity) source).beforeTargetedAlteration();
+			}
 			targetAngle = source.getPosition().angleToward(source.getTargetPosition());
 			speedValue = speed.getValue(source.getStats());
 		} else {
+			entity.beforeTargetedAlteration();
 			targetAngle = entity.getPosition().angleToward(entity.getTargetPosition());
 			speedValue = speed.getValue(entity.getStats());
 		}

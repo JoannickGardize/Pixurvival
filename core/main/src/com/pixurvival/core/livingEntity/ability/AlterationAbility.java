@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AlterationAbility extends CooldownAbility {
+public abstract class AlterationAbility extends CooldownAbility {
 
 	private static final long serialVersionUID = 1L;
 

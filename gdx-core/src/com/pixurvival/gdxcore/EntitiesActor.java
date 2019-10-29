@@ -66,7 +66,7 @@ public class EntitiesActor extends Actor {
 			});
 			chunk.forEachStructure(objectsToDraw::add);
 		});
-		objectsToDraw.sort((e1, e2) -> (int) ((e2.getPosition().getY() - e1.getPosition().getY()) * 1000));
+		objectsToDraw.sort((e1, e2) -> (int) ((e2.getDisplayDeath() - e1.getDisplayDeath()) * 1000));
 
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));

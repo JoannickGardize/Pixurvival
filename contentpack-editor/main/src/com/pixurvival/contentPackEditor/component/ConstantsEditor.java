@@ -44,7 +44,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 	}
 
 	@Override
-	public <T> void bind(ValueComponent<T> component, Function<Constants, T> getter, BiConsumer<Constants, T> setter) {
+	public <T> void bind(ValueComponent<? extends T> component, Function<Constants, T> getter, BiConsumer<Constants, T> setter) {
 		component.addValueChangeListener(v -> EventManager.getInstance().fire(new ContentPackConstantChangedEvent(getValue())));
 		super.bind(component, getter, setter);
 	}

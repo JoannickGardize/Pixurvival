@@ -10,9 +10,8 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.ability.AlterationAbility;
+import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.PseudoAIUtils;
@@ -28,8 +27,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
-	private static final AbilitySet<AlterationAbility> EMPTY_ABILITY_SET = new AbilitySet<>();
-
 	public static final double OBSTACLE_VISION_DISTANCE = 4;
 
 	private @Getter @Setter Behavior currentBehavior;
@@ -41,17 +38,14 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void initialize() {
-		if (definition.getAbilitySet() == null) {
-			definition.setAbilitySet(EMPTY_ABILITY_SET);
-		}
 		// Add instead of setting base for the case that bonuses are applied at
 		// creation.
 		getStats().get(StatType.STRENGTH).addToBase(definition.getStrength());
 		getStats().get(StatType.AGILITY).addToBase(definition.getAgility());
 		getStats().get(StatType.INTELLIGENCE).addToBase(definition.getIntelligence());
 		super.initialize();
+		behaviorData = new BehaviorData(this);
 		if (getWorld().isServer()) {
-			behaviorData = new BehaviorData(this);
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 			spawnPosition = getPosition().copy();
@@ -62,22 +56,25 @@ public class CreatureEntity extends LivingEntity {
 	public void update() {
 		if (getWorld().isServer()) {
 			currentBehavior.update(this);
-			updateTargetPosition();
 		}
 		super.update();
 	}
 
 	@Override
-	public void startAbility(int abilityId) {
-		updateTargetPosition();
-		super.startAbility(abilityId);
-	}
-
-	private void updateTargetPosition() {
+	public void beforeTargetedAlteration() {
 		if (getWorld().isServer() && targetEntity != null) {
 			getTargetPosition().set(targetEntity.getPosition());
-			PseudoAIUtils.findTargetPositionPrediction(getPosition(), 18, getTargetPosition(), targetEntity.getVelocity());
+			double predictionBulletSpeed;
+			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
+				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
+			}
 		}
+	}
+
+	@Override
+	public void takeDamage(float amount) {
+		super.takeDamage(amount);
+		behaviorData.setTookDamage(true);
 	}
 
 	@Override
@@ -137,7 +134,7 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public AbilitySet<? extends Ability> getAbilitySet() {
+	public AbilitySet getAbilitySet() {
 		return definition.getAbilitySet();
 	}
 
@@ -164,5 +161,10 @@ public class CreatureEntity extends LivingEntity {
 	public void setMaster(TeamMember master) {
 		this.master = master;
 		setTeam(master.getTeam());
+	}
+
+	@Override
+	protected void collisionLockEnded() {
+		setForward(false);
 	}
 }

@@ -77,7 +77,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		listeners.add(listener);
 	}
 
-	public <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter, Predicate<E> condition) {
+	public <T> void bind(ValueComponent<? extends T> component, Function<E, T> getter, BiConsumer<E, T> setter, Predicate<E> condition) {
 		subValues.add(new SubValueEntry(component, getter, setter, condition));
 		component.addValueChangeListener(v -> {
 			if (value != null && condition.test(value)) {
@@ -89,11 +89,11 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T, F extends E> void bind(ValueComponent<T> component, Function<F, T> getter, BiConsumer<F, T> setter, Class<F> type) {
+	public <T, F extends E> void bind(ValueComponent<? extends T> component, Function<F, T> getter, BiConsumer<F, T> setter, Class<F> type) {
 		bind(component, (Function<E, T>) getter, (BiConsumer<E, T>) setter, type::isInstance);
 	}
 
-	public <T> void bind(ValueComponent<T> component, Function<E, T> getter, BiConsumer<E, T> setter) {
+	public <T> void bind(ValueComponent<? extends T> component, Function<E, T> getter, BiConsumer<E, T> setter) {
 		bind(component, getter, setter, v -> true);
 	}
 
@@ -102,8 +102,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields
-	 * has been updated.
+	 * Called after the value of this editor has been changed and all sub fields has
+	 * been updated.
 	 * 
 	 * @param value
 	 */

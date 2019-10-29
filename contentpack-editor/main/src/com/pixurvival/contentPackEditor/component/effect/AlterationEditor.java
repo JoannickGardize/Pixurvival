@@ -42,8 +42,6 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 	private static final long serialVersionUID = 1L;
 
-	private boolean showDelayedAlteration;
-
 	public AlterationEditor() {
 		this(true);
 	}
