@@ -51,6 +51,11 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		drawAfterBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);
 	}
 
+	@Override
+	public void backgroundDraw(Batch batch, E e) {
+		// Empty
+	}
+
 	protected void drawAfterBody(Batch batch, E e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {
 	}
 

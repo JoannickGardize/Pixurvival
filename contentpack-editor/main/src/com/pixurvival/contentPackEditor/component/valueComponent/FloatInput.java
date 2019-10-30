@@ -10,7 +10,7 @@ public class FloatInput extends NumberInput<Float> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(Locale.US));
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.####", new DecimalFormatSymbols(Locale.US));
 
 	public FloatInput(Bounds valueBounds) {
 		super(valueBounds);

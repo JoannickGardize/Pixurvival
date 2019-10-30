@@ -18,6 +18,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEdit
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
+import com.pixurvival.core.contentPack.effect.DrawDepth;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.FollowingElement;
@@ -39,7 +40,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
-		BooleanCheckBox alwaysForegroundCheckbox = new BooleanCheckBox();
+		EnumChooser<DrawDepth> drawDepthChooser = new EnumChooser<>(DrawDepth.class);
 		TimeInput durationInput = new TimeInput();
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
@@ -62,12 +63,12 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
 		bind(deathFollowingElements, Effect::getDeathFollowingElements, Effect::setDeathFollowingElements);
 		bind(deathAlterations, Effect::getDeathAlterations, Effect::setDeathAlterations);
-		bind(alwaysForegroundCheckbox, Effect::isAlwaysForeground, Effect::setAlwaysForeground);
+		bind(drawDepthChooser, Effect::getDrawDepth, Effect::setDrawDepth);
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
 		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
-				loopAnimationCheckbox, "effectEditor.alwaysForeground", alwaysForegroundCheckbox);
+				loopAnimationCheckbox, "effectEditor.drawDepth", drawDepthChooser);
 		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
 		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));

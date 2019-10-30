@@ -29,7 +29,7 @@ public class Effect extends IdentifiedElement {
 
 	private boolean loopAnimation = true;
 
-	private boolean alwaysForeground = false;
+	private DrawDepth drawDepth = DrawDepth.NORMAL;
 
 	private boolean solid;
 

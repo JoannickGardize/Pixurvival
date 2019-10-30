@@ -214,9 +214,4 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public TeamMember getOrigin() {
 		return ancestor.getOrigin();
 	}
-
-	@Override
-	public double getDisplayDeath() {
-		return definition.getEffect().isAlwaysForeground() ? -1_000_000 : super.getDisplayDeath();
-	}
 }

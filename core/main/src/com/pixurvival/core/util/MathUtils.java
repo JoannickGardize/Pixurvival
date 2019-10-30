@@ -5,10 +5,10 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MathUtils {
 
-	private static final double COMPARISON_PRECISION = 0.00001;
+	public static final double EPSILON = 0.00001;
 
 	public static boolean equals(double d1, double d2) {
-		return Math.abs(d1 - d2) < COMPARISON_PRECISION;
+		return Math.abs(d1 - d2) < EPSILON;
 	}
 
 	public static double normalizeAngle(double angle) {

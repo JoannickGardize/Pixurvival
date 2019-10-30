@@ -61,7 +61,7 @@ public class ChunkManager extends EngineThread {
 
 	public void requestChunk(TiledMap map, ChunkPosition position) {
 		synchronized (map) {
-			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, m -> new TiledMapEntry(m));
+			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, TiledMapEntry::new);
 			entry.requestedPositions.add(position);
 		}
 	}
@@ -113,7 +113,7 @@ public class ChunkManager extends EngineThread {
 			return;
 		}
 		tiledMaps.values().forEach(entry -> {
-			int unloadTry = (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE);
+			int unloadTry = Math.max(5, (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE));
 			synchronized (entry.map) {
 				for (int i = 0; i < unloadTry; i++) {
 					entry.nextCheckPosition();

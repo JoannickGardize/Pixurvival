@@ -16,6 +16,6 @@ public class CreatureDrawer extends LivingEntityDrawer<CreatureEntity> {
 	}
 
 	@Override
-	public void topDraw(Batch batch, CreatureEntity e) {
+	public void frontDraw(Batch batch, CreatureEntity e) {
 	}
 }

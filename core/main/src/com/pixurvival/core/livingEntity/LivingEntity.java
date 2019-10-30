@@ -88,6 +88,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	public void setFixedMovement(double movingAngle, double speed) {
 		movementChangeEnabled = true;
+		setForwardFactor(1);
 		setMovingAngle(movingAngle);
 		setSpeed(speed * getForwardFactor() * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor());
 		setForward(true);

@@ -18,6 +18,7 @@ public enum ActionAnimation {
 	WORK_UP,
 	WORK_DOWN,
 	WORK_LEFT,
+	BEFORE_DEFAULT,
 	DEFAULT,
 	HARVESTED;
 

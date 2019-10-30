@@ -94,4 +94,9 @@ public class TiledMapLimits implements TiledMapListener {
 	@Override
 	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
 	}
+
+	@Override
+	public String toString() {
+		return "X : " + getXMin() + " - " + getXMax() + " | Y : " + getYMin() + " - " + getYMax();
+	}
 }

@@ -10,9 +10,11 @@ public interface ElementDrawer<E extends Body> {
 
 	void drawShadow(Batch batch, E e);
 
+	void backgroundDraw(Batch batch, E e);
+
 	void draw(Batch batch, E e);
 
-	void topDraw(Batch batch, E e);
+	void frontDraw(Batch batch, E e);
 
 	void drawDebug(ShapeRenderer renderer, E e);
 

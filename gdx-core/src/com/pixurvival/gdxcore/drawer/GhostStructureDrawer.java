@@ -31,11 +31,15 @@ public class GhostStructureDrawer implements ElementDrawer<GhostStructure> {
 	}
 
 	@Override
-	public void topDraw(Batch batch, GhostStructure e) {
+	public void frontDraw(Batch batch, GhostStructure e) {
 
 	}
 
 	@Override
 	public void drawDebug(ShapeRenderer renderer, GhostStructure e) {
+	}
+
+	@Override
+	public void backgroundDraw(Batch batch, GhostStructure e) {
 	}
 }

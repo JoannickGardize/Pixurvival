@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
+import com.pixurvival.core.contentPack.effect.DrawDepth;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -30,23 +31,45 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 	}
 
 	@Override
+	public void backgroundDraw(Batch batch, EffectEntity e) {
+		if (e.getDefinition().getEffect().getDrawDepth() == DrawDepth.BACKGROUND) {
+			drawEffect(batch, e);
+		}
+	}
+
+	@Override
 	public void draw(Batch batch, EffectEntity e) {
+		if (e.getDefinition().getEffect().getDrawDepth() == DrawDepth.NORMAL) {
+			drawEffect(batch, e);
+		}
+	}
+
+	@Override
+	public void frontDraw(Batch batch, EffectEntity e) {
+		if (e.getDefinition().getEffect().getDrawDepth() == DrawDepth.FOREGROUND) {
+			drawEffect(batch, e);
+		}
+	}
+
+	private void drawEffect(Batch batch, EffectEntity e) {
 		Effect effect = e.getDefinition().getEffect();
 		if (effect.getSpriteSheet() == null) {
 			return;
 		}
 		TextureAnimationSet textureAnimationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(effect.getSpriteSheet());
-		TextureAnimation textureAnimation = textureAnimationSet.get(ActionAnimation.DEFAULT);
-		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
 		DrawData data = (DrawData) e.getCustomData();
-		if (data.isFirstLoop() || effect.isLoopAnimation()) {
+		TextureAnimation textureAnimation;
+		ActionAnimation actionAnimation = ActionAnimation.BEFORE_DEFAULT;
+		if ((textureAnimation = textureAnimationSet.get(ActionAnimation.BEFORE_DEFAULT)) == null || !data.isFirstLoop()) {
+			textureAnimation = textureAnimationSet.get(ActionAnimation.DEFAULT);
+			actionAnimation = ActionAnimation.DEFAULT;
+		}
+		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
+		if (effect.isLoopAnimation() || data.isFirstLoop()) {
 			Vector2 drawPosition = data.getDrawPosition();
 			float angle = effect.getOrientation() == OrientationType.MOVING_ANGLE ? (float) e.getMovingAngle() : 0;
-			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, ActionAnimation.DEFAULT, index, drawPosition, angle * MathUtils.radDeg + data.getAngle());
+			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, angle * MathUtils.radDeg + data.getAngle());
 		}
 	}
 
-	@Override
-	public void topDraw(Batch batch, EffectEntity e) {
-	}
 }

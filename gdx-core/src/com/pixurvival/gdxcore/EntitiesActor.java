@@ -70,8 +70,9 @@ public class EntitiesActor extends Actor {
 
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).topDraw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).frontDraw(batch, e));
 	}
 
 	@SuppressWarnings("unchecked")

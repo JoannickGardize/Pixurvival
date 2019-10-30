@@ -49,7 +49,12 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 	}
 
 	@Override
-	public void topDraw(Batch batch, ItemStackEntity e) {
+	public void frontDraw(Batch batch, ItemStackEntity e) {
+	}
+
+	@Override
+	public void backgroundDraw(Batch batch, ItemStackEntity e) {
+		// Empty
 	}
 
 }

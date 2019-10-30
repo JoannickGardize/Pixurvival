@@ -48,13 +48,18 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	}
 
 	@Override
-	public void topDraw(Batch batch, MapStructure e) {
+	public void frontDraw(Batch batch, MapStructure e) {
 	}
 
 	@Override
 	public void drawDebug(ShapeRenderer renderer, MapStructure e) {
 		renderer.setColor(Color.WHITE);
 		renderer.rect((float) (e.getPosition().getX() - e.getHalfWidth()), (float) (e.getPosition().getY() - e.getHalfHeight()), (float) (e.getHalfWidth() * 2), (float) (e.getHalfHeight() * 2));
+	}
+
+	@Override
+	public void backgroundDraw(Batch batch, MapStructure e) {
+		// Empty
 	}
 
 }

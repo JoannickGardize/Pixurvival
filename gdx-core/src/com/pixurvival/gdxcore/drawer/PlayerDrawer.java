@@ -22,7 +22,7 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 	private TextureAnimationSet defaultBody = PixurvivalGame.getContentPackTextures().getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter());
 
 	@Override
-	public void topDraw(Batch batch, PlayerEntity e) {
+	public void frontDraw(Batch batch, PlayerEntity e) {
 		if (e.getCurrentAbility() instanceof WorkAbility) {
 			WorkAbility ability = (WorkAbility) e.getCurrentAbility();
 			DrawData data = (DrawData) e.getCustomData();

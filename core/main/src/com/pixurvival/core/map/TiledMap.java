@@ -257,10 +257,10 @@ public class TiledMap {
 	 *            The position of the requested chunk
 	 * @return The chunk at the given position
 	 */
-	public Chunk chunkAtStrict(ChunkPosition position) {
+	public Chunk chunkAtWait(ChunkPosition position) {
 		requestChunk(position);
 		flushChunks();
-		ChunkPosition positionLock = new ChunkPosition(position);
+		ChunkPosition positionLock = waitingPositions.computeIfAbsent(new ChunkPosition(position), p -> p);
 		synchronized (positionLock) {
 			Chunk chunk = chunkAt(position);
 			if (chunk != null) {
