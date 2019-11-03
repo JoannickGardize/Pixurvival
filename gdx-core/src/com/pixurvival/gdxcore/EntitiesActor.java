@@ -69,8 +69,8 @@ public class EntitiesActor extends Actor {
 		objectsToDraw.sort((e1, e2) -> (int) ((e2.getDisplayDeath() - e1.getDisplayDeath()) * 1000));
 
 		manageGhostStructure();
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));
+		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).frontDraw(batch, e));
 	}

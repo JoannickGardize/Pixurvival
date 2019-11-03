@@ -13,4 +13,11 @@ public class CPEButton extends JButton {
 		addActionListener(l -> action.run());
 	}
 
+	public CPEButton(String textKey) {
+		super(TranslationService.getInstance().getString(textKey));
+	}
+
+	public void addAction(Runnable action) {
+		addActionListener(l -> action.run());
+	}
 }

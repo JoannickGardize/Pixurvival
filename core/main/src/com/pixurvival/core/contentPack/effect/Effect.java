@@ -25,7 +25,7 @@ public class Effect extends IdentifiedElement {
 	private SpriteSheet spriteSheet;
 
 	@Required
-	private OrientationType orientation;
+	private OrientationType orientation = OrientationType.STATIC;
 
 	private boolean loopAnimation = true;
 

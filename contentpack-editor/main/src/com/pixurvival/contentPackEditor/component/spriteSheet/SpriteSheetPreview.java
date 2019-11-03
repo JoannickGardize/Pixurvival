@@ -48,16 +48,14 @@ public class SpriteSheetPreview extends ResourcePreview {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Image image = (Image) getObject();
-				if (image == null || imageRectange == null
-						|| !ContentPackEditionService.getInstance().isValidForPreview(spriteSheet)) {
+				if (image == null || imageRectange == null || !ContentPackEditionService.getInstance().isValidForPreview(spriteSheet)) {
 					return;
 				}
-				double scale = imageRectange.width / image.getWidth(null);
+				double scale = imageRectange.width / (double) image.getWidth(null);
 				int x = (int) ((e.getX() - imageRectange.x) / (spriteSheet.getWidth() * scale));
 				int y = (int) ((e.getY() - imageRectange.y) / (spriteSheet.getHeight() * scale));
 				int pixelX = (int) ((e.getX() - imageRectange.x) / scale) - x * spriteSheet.getWidth();
-				int pixelY = spriteSheet.getHeight()
-						- ((int) ((e.getY() - imageRectange.y) / scale) - y * spriteSheet.getHeight()) - 1;
+				int pixelY = spriteSheet.getHeight() - ((int) ((e.getY() - imageRectange.y) / scale) - y * spriteSheet.getHeight()) - 1;
 				int maxX = (int) (imageRectange.width / (spriteSheet.getWidth() * scale));
 				int maxY = (int) (imageRectange.height / (spriteSheet.getHeight() * scale));
 				if (x >= 0 && y >= 0 && x < maxX && y < maxY) {
@@ -111,16 +109,12 @@ public class SpriteSheetPreview extends ResourcePreview {
 				g.drawLine(rec.x, (int) y, rec.x + rec.width, (int) y);
 			}
 		}
-		EquipmentOffset equipmentOffset = overrideEquipmentOffset != null ? overrideEquipmentOffset
-				: spriteSheet.getEquipmentOffset();
-		if (paintEquipmentOffset && spriteSheet.getWidth() > 0 && spriteSheet.getHeight() > 0 && equipmentOffset != null
-				&& equipmentOffset.getFrameOffsets() != null) {
+		EquipmentOffset equipmentOffset = overrideEquipmentOffset != null ? overrideEquipmentOffset : spriteSheet.getEquipmentOffset();
+		if (paintEquipmentOffset && spriteSheet.getWidth() > 0 && spriteSheet.getHeight() > 0 && equipmentOffset != null && equipmentOffset.getFrameOffsets() != null) {
 			Image crossImage = ImageService.getInstance().get("cross");
 			for (FrameOffset frameOffset : equipmentOffset.getFrameOffsets()) {
-				int x = (int) (rec.x + frameOffset.getX() * spriteSheet.getWidth() * scaleX
-						+ frameOffset.getOffsetX() * scaleX);
-				int y = (int) (rec.y + (frameOffset.getY() + 1) * spriteSheet.getHeight() * scaleY
-						- (1 + frameOffset.getOffsetY()) * scaleY);
+				int x = (int) (rec.x + frameOffset.getX() * spriteSheet.getWidth() * scaleX + frameOffset.getOffsetX() * scaleX);
+				int y = (int) (rec.y + (frameOffset.getY() + 1) * spriteSheet.getHeight() * scaleY - (1 + frameOffset.getOffsetY()) * scaleY);
 				g.drawImage(crossImage, x, y, (int) scaleX, (int) scaleY, null);
 
 			}

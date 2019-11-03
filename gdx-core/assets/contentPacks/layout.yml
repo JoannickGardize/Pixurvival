@@ -34,8 +34,6 @@ children:
     children:
     - !!element {type: ITEM_CRAFT, id: 1}
     - !!element {type: ITEM_CRAFT, id: 2}
-    - !!element {type: ITEM_CRAFT, id: 3}
-    - !!element {type: ITEM_CRAFT, id: 4}
   - !!folder
     name: Resources
     children:
@@ -52,16 +50,16 @@ children:
     - !!element {type: ITEM, id: 28}
     - !!element {type: ITEM, id: 29}
     - !!element {type: ITEM, id: 30}
-    - !!element {type: SPRITE_SHEET, id: 3}
+    - !!element {type: ITEM, id: 31}
   - !!folder
     name: Weapons
     children:
     - !!folder
       name: Wood sword
       children:
+      - !!element {type: ITEM, id: 0}
       - !!element {type: SPRITE_SHEET, id: 7}
       - !!element {type: SPRITE_SHEET, id: 16}
-      - !!element {type: ITEM, id: 0}
       - !!element {type: ITEM_CRAFT, id: 0}
       - !!element {type: EFFECT, id: 2}
     - !!folder
@@ -72,6 +70,13 @@ children:
       - !!element {type: ITEM, id: 15}
       - !!element {type: ITEM_CRAFT, id: 5}
       - !!element {type: EFFECT, id: 0}
+    - !!folder
+      name: Magic wand
+      children:
+      - !!element {type: ITEM, id: 34}
+      - !!element {type: SPRITE_SHEET, id: 60}
+      - !!element {type: EQUIPMENT_OFFSET, id: 9}
+      - !!element {type: EFFECT, id: 35}
     - !!folder
       name: Warlock wand
       children:
@@ -91,6 +96,7 @@ children:
     - !!folder
       name: Iron sword
       children:
+      - !!element {type: ITEM, id: 25}
       - !!element {type: SPRITE_SHEET, id: 24}
       - !!element {type: SPRITE_SHEET, id: 45}
       - !!element {type: ITEM_CRAFT, id: 7}
@@ -134,7 +140,6 @@ children:
       - !!element {type: SPRITE_SHEET, id: 47}
       - !!element {type: SPRITE_SHEET, id: 48}
       - !!element {type: SPRITE_SHEET, id: 49}
-      - !!element {type: ITEM, id: 25}
       - !!element {type: ITEM, id: 26}
       - !!element {type: ITEM_CRAFT, id: 11}
       - !!element {type: EFFECT, id: 22}
@@ -150,25 +155,41 @@ children:
       - !!element {type: ITEM, id: 27}
       - !!element {type: ITEM_CRAFT, id: 12}
       - !!element {type: EFFECT, id: 25}
+    - !!folder
+      name: Fire wand
+      children:
+      - !!element {type: SPRITE_SHEET, id: 57}
+      - !!element {type: ANIMATION_TEMPLATE, id: 16}
+      - !!element {type: EFFECT, id: 32}
+      - !!element {type: ITEM, id: 33}
+      - !!element {type: SPRITE_SHEET, id: 58}
+      - !!element {type: EFFECT, id: 33}
+      - !!element {type: EFFECT, id: 34}
+      - !!element {type: SPRITE_SHEET, id: 59}
   - !!folder
     name: Clothings
     children:
-    - !!element {type: SPRITE_SHEET, id: 29}
-    - !!element {type: SPRITE_SHEET, id: 39}
-    - !!element {type: ITEM, id: 4}
-    - !!element {type: ITEM, id: 20}
-    - !!element {type: ITEM, id: 22}
+    - !!element {type: ITEM_CRAFT, id: 3}
+    - !!element {type: ITEM_CRAFT, id: 4}
     - !!element {type: ITEM_CRAFT, id: 13}
     - !!element {type: ITEM_CRAFT, id: 14}
+    - !!element {type: ITEM_CRAFT, id: 15}
+    - !!element {type: SPRITE_SHEET, id: 3}
+    - !!element {type: SPRITE_SHEET, id: 29}
+    - !!element {type: SPRITE_SHEET, id: 39}
     - !!element {type: SPRITE_SHEET, id: 1}
     - !!element {type: SPRITE_SHEET, id: 2}
+    - !!element {type: ITEM, id: 4}
+    - !!element {type: ITEM, id: 12}
+    - !!element {type: ITEM, id: 20}
+    - !!element {type: ITEM, id: 22}
+    - !!element {type: ITEM, id: 32}
   - !!folder
     name: Edible
     children:
     - !!element {type: ITEM, id: 3}
     - !!element {type: ITEM, id: 6}
     - !!element {type: ITEM, id: 8}
-    - !!element {type: ITEM, id: 12}
   - !!folder
     name: Structures
     children:
@@ -271,6 +292,24 @@ children:
       - !!element {type: EFFECT, id: 18}
       - !!element {type: ABILITY_SET, id: 6}
       - !!element {type: BEHAVIOR_SET, id: 8}
+  - !!folder
+    name: Pixie warrior
+    children:
+    - !!element {type: CREATURE, id: 10}
+    - !!element {type: SPRITE_SHEET, id: 55}
+    - !!element {type: BEHAVIOR_SET, id: 10}
+    - !!element {type: ABILITY_SET, id: 8}
+    - !!element {type: ITEM_REWARD, id: 11}
+    - !!element {type: EFFECT, id: 30}
+  - !!folder
+    name: Dark rhino
+    children:
+    - !!element {type: CREATURE, id: 11}
+    - !!element {type: BEHAVIOR_SET, id: 11}
+    - !!element {type: ABILITY_SET, id: 9}
+    - !!element {type: ITEM_REWARD, id: 12}
+    - !!element {type: SPRITE_SHEET, id: 56}
+    - !!element {type: EFFECT, id: 31}
 - !!folder
   name: Map
   children:
@@ -329,3 +368,4 @@ children:
 - !!element {type: ECOSYSTEM, id: 0}
 - !!element {type: ECOSYSTEM, id: 1}
 - !!element {type: GAME_MODE, id: 0}
+- !!element {type: EFFECT, id: 29}

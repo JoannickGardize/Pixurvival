@@ -136,7 +136,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(intervalInput, RepeatAlteration::getInterval, RepeatAlteration::setInterval, RepeatAlteration.class);
 			bind(alterationEditor, RepeatAlteration::getAlteration, RepeatAlteration::setAlteration, RepeatAlteration.class);
 			panel = new JPanel(new BorderLayout());
-			panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "gerneric.interval", intervalInput), BorderLayout.WEST);
+			panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
 			panel.add(alterationEditor);
 			entries.add(new ClassEntry(RepeatAlteration.class, panel));
 		}

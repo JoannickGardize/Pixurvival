@@ -49,9 +49,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean collisionLock = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server will
-	 * send data of this entity at the next data send tick to clients that view this
-	 * entity. Must be true at initialization to send the new entity data.
+	 * Indicate if the state of this entity has changed, if true, the server
+	 * will send data of this entity at the next data send tick to clients that
+	 * view this entity. Must be true at initialization to send the new entity
+	 * data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -120,7 +121,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 		} else if (antiCollisionLockEnabled() && getWorld().getMap().collide(this)) {
 			// Get away from collision lock
 			collisionLock = true;
-			System.out.println("lock");
 			if (previousPosition.epsilonEquals(position, MathUtils.EPSILON)) {
 				setMovingAngle(getWorld().getRandom().nextAngle());
 			} else {
@@ -239,8 +239,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 * @param full
-	 *            true if all the data should be writen, for clients that discovers
-	 *            this entity.
+	 *            true if all the data should be writen, for clients that
+	 *            discovers this entity.
 	 */
 	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 
@@ -296,7 +296,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of
+	 * {@link Entity#findClosest(EntityGroup, double)
 	 * 
 	 * @param group
 	 * @param position

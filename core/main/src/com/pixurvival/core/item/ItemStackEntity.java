@@ -229,6 +229,6 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	protected boolean antiCollisionLockEnabled() {
-		return state == State.SPAWNING;
+		return state == State.WAITING;
 	}
 }

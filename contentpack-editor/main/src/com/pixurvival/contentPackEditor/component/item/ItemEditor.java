@@ -11,6 +11,9 @@ import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.ImageFramePreview;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
+import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.contentPackEditor.component.util.InteractionListener;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
@@ -25,18 +28,26 @@ import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 
-public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
+public class ItemEditor extends InstanceChangingRootElementEditor<Item> implements InteractionListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private ImageFramePreview itemPreview = new ImageFramePreview();
+	private ItemFrameChooserPopup itemFrameChooserPopup = new ItemFrameChooserPopup();
+	private FrameEditor frameEditor = new FrameEditor();
 
 	public ItemEditor() {
 		super("itemType");
 
 		// Contruction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
-		FrameEditor frameEditor = new FrameEditor();
+		itemFrameChooserPopup.addInteractionListener(this);
+		CPEButton frameChooser = new CPEButton("generic.select");
+		frameChooser.addAction(() -> {
+			if (ResourcesService.getInstance().containsResource(getValue().getImage())) {
+				itemFrameChooserPopup.show(frameChooser, getValue().getImage());
+			}
+		});
 		IntegerInput maxStackSizeInput = new IntegerInput(Bounds.min(1));
 
 		imageField.addValueChangeListener(v -> itemPreview.setImage(v.getName()));
@@ -63,7 +74,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		gbc.fill = GridBagConstraints.NONE;
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.image", imageField, gbc);
-		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.frame", frameEditor, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.frame", LayoutUtils.createHorizontalBox(frameEditor, frameChooser), gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "itemEditor.maxStackSize", maxStackSizeInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);
@@ -119,5 +130,15 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> {
 		newInstance.setFrame(oldInstance.getFrame());
 		newInstance.setMaxStackSize(oldInstance.getMaxStackSize());
 		newInstance.setImage(oldInstance.getImage());
+	}
+
+	@Override
+	public void interactionPerformed(Object data) {
+		ClickEvent clickEvent = (ClickEvent) data;
+		getValue().getFrame().setX(clickEvent.getSpriteX());
+		getValue().getFrame().setY(clickEvent.getSpriteY());
+		frameEditor.setValue(getValue().getFrame());
+		frameEditor.notifyValueChanged();
+		itemFrameChooserPopup.setVisible(false);
 	}
 }
