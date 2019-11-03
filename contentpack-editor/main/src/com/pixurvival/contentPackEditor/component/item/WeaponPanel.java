@@ -12,6 +12,7 @@ public class WeaponPanel extends EquipablePanel {
 	private ItemAlterationAbilityEditor specialAbilityEditor = new ItemAlterationAbilityEditor(true);
 
 	public WeaponPanel() {
+		super(true);
 		baseAbilityEditor.setBorder(LayoutUtils.createGroupBorder("weaponEditor.baseAbility"));
 		specialAbilityEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.specialAbility"));
 		finalizeLayout(LayoutUtils.createVerticalBox(baseAbilityEditor, specialAbilityEditor));
@@ -20,7 +21,7 @@ public class WeaponPanel extends EquipablePanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		super.bindTo(itemEditor);
+		bindTo(itemEditor, WeaponItem.class);
 		itemEditor.bind(baseAbilityEditor, WeaponItem::getBaseAbility, WeaponItem::setBaseAbility, WeaponItem.class);
 		itemEditor.bind(specialAbilityEditor, WeaponItem::getSpecialAbility, WeaponItem::setSpecialAbility, WeaponItem.class);
 	}

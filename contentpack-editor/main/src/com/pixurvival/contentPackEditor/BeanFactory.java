@@ -6,11 +6,14 @@ import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.util.BeanUtils;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
-import com.pixurvival.core.contentPack.effect.EffectMovement;
+import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.ResourceItem;
+import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 
@@ -41,7 +44,18 @@ public class BeanFactory {
 			return followingElement;
 		});
 
-		suppliers.put(EffectMovement.class, LinearEffectMovement::new);
+		suppliers.put(Item.class, () -> {
+			Item item = new ResourceItem();
+			item.setFrame(new Frame());
+			item.setMaxStackSize(1);
+			return item;
+		});
+
+		suppliers.put(Effect.class, () -> {
+			Effect effect = new Effect();
+			effect.setMovement(new LinearEffectMovement());
+			return effect;
+		});
 	}
 
 	@SneakyThrows

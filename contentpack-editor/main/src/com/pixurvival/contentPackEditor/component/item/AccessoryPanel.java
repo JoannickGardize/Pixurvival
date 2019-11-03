@@ -12,6 +12,7 @@ public class AccessoryPanel extends EquipablePanel {
 	private ItemAlterationAbilityEditor abilityEditor = new ItemAlterationAbilityEditor(true);
 
 	public AccessoryPanel() {
+		super(false);
 		EventManager.getInstance().register(abilityEditor);
 		abilityEditor.setBorder(LayoutUtils.createGroupBorder("accessoryEditor.ability"));
 		finalizeLayout(abilityEditor);
@@ -19,7 +20,7 @@ public class AccessoryPanel extends EquipablePanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		super.bindTo(itemEditor);
+		bindTo(itemEditor, AccessoryItem.class);
 		itemEditor.bind(abilityEditor, AccessoryItem::getAbility, AccessoryItem::setAbility, AccessoryItem.class);
 	}
 

@@ -6,7 +6,6 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
@@ -18,9 +17,10 @@ public abstract class EquipablePanel extends ItemSpecificPartPanel {
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
 	private ListEditor<StatModifier> statModifiersEditor = new VerticalListEditor<>(StatModifierEditor::new, StatModifier::new);
 	private JPanel parentPanel;
+	private boolean showSpriteSheet;
 
-	public EquipablePanel() {
-		EventManager.getInstance().register(this);
+	public EquipablePanel(boolean showSpriteSheet) {
+		this.showSpriteSheet = showSpriteSheet;
 
 		// Construction
 
@@ -29,13 +29,18 @@ public abstract class EquipablePanel extends ItemSpecificPartPanel {
 		// Layouting
 
 		statModifiersEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.statModifiers"));
-		parentPanel = LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), statModifiersEditor);
+		if (showSpriteSheet) {
+			parentPanel = LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("elementType.spriteSheet", spriteSheetChooser), statModifiersEditor);
+		} else {
+			parentPanel = statModifiersEditor;
+		}
 	}
 
-	@Override
-	public void bindTo(ItemEditor itemEditor) {
-		itemEditor.bind(spriteSheetChooser, EquipableItem::getSpriteSheet, EquipableItem::setSpriteSheet, EquipableItem.class);
-		itemEditor.bind(statModifiersEditor, EquipableItem::getStatModifiers, EquipableItem::setStatModifiers, EquipableItem.class);
+	public void bindTo(ItemEditor itemEditor, Class<? extends EquipableItem> type) {
+		if (showSpriteSheet) {
+			itemEditor.bind(spriteSheetChooser, EquipableItem::getSpriteSheet, EquipableItem::setSpriteSheet, type);
+		}
+		itemEditor.bind(statModifiersEditor, EquipableItem::getStatModifiers, EquipableItem::setStatModifiers, type);
 	}
 
 	protected void finalizeLayout(JPanel childPanel) {

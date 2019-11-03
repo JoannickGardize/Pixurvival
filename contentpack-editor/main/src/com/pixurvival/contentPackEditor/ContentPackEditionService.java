@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.component.translation.TranslationUpdateManager;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
@@ -15,11 +14,7 @@ import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.item.Item;
-import com.pixurvival.core.contentPack.item.ResourceItem;
-import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
@@ -31,7 +26,6 @@ public class ContentPackEditionService {
 
 	private Map<ElementType, Method> listGetters = new EnumMap<>(ElementType.class);
 	private Map<ElementType, Method> listSetters = new EnumMap<>(ElementType.class);
-	private Map<ElementType, Supplier<IdentifiedElement>> initializers = new EnumMap<>(ElementType.class);
 
 	@SneakyThrows
 	private ContentPackEditionService() {
@@ -41,14 +35,6 @@ public class ContentPackEditionService {
 			methodName = "set" + CaseUtils.upperToPascalCase(type.name()) + "s";
 			listSetters.put(type, ContentPack.class.getMethod(methodName, List.class));
 		}
-		initializers.put(ElementType.ITEM, () -> {
-			Item item = new ResourceItem();
-			item.setFrame(new Frame());
-			item.setMaxStackSize(1);
-			return item;
-		});
-
-		initializers.put(ElementType.STRUCTURE, Structure::new);
 
 		// Register translation related events
 		new TranslationUpdateManager();
@@ -61,13 +47,8 @@ public class ContentPackEditionService {
 			return null;
 		}
 		List list = listOf(type);
-		Supplier<IdentifiedElement> initializer = initializers.get(type);
-		IdentifiedElement newElement;
-		if (initializer == null) {
-			newElement = type.getElementClass().newInstance();
-		} else {
-			newElement = initializer.get();
-		}
+
+		IdentifiedElement newElement = BeanFactory.newInstance(type.getElementClass());
 		newElement.setName(name);
 		newElement.setId(list.size());
 		list.add(newElement);
