@@ -1,7 +1,6 @@
 package com.pixurvival.core.contentPack.effect;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -17,9 +16,6 @@ public class FollowingEffect extends FollowingElement {
 
 	@Override
 	public void apply(TeamMember origin) {
-		if (origin instanceof LivingEntity) {
-			((LivingEntity) origin).beforeTargetedAlteration();
-		}
 		EffectEntity following = new EffectEntity(offsetAngleEffect, origin);
 		origin.getWorld().getEntityPool().add(following);
 	}

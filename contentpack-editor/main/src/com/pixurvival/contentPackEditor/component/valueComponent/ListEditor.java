@@ -30,9 +30,11 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	protected JPanel listPanel = new JPanel();
 	protected JButton addButton;
 	protected JButton removeButton;
+	protected Supplier<? extends E> valueSupplier;
 
 	@SuppressWarnings("unchecked")
 	public <F extends E> ListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier) {
+		this.valueSupplier = valueSupplier;
 		this.elementEditorSupplier = elementEditorSupplier;
 		editorForValidation = (ValueComponent<E>) elementEditorSupplier.get();
 		addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));
@@ -67,9 +69,14 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 				E element = nonNullValue.get(i);
 				addComponent(i, element);
 			}
+			endModifications();
 			listPanel.revalidate();
 			listPanel.repaint();
 		}
+	}
+
+	protected void endModifications() {
+
 	}
 
 	@Override
@@ -96,6 +103,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 			setValue(new ArrayList<>());
 		}
 		getValue().add(addComponent(getValue().size(), value).getValue());
+		endModifications();
 		notifyValueChanged();
 		listPanel.revalidate();
 		listPanel.repaint();

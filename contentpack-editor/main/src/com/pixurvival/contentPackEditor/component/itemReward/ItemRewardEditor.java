@@ -10,7 +10,7 @@ public class ItemRewardEditor extends RootElementEditor<ItemReward> {
 
 	private static final long serialVersionUID = 1L;
 
-	private VerticalListEditor<ItemReward.Entry> entrylistEditor = new VerticalListEditor<>(ItemRewardEntryEditor::new, ItemReward.Entry::new);
+	private VerticalListEditor<ItemReward.Entry> entrylistEditor = new VerticalListEditor<>(ItemRewardEntryEditor::new, ItemReward.Entry::new, VerticalListEditor.HORIZONTAL);
 
 	public ItemRewardEditor() {
 

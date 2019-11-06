@@ -19,7 +19,7 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 	public TileGeneratorEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
 
 		ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(() -> new HeightmapConditionEditor(heightmapCollectionSupplier)),
-				HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
+				HeightmapCondition::new, VerticalListEditor.VERTICAL);
 
 		TileHashmapEditor tileHashmapEditor = new TileHashmapEditor(heightmapCollectionSupplier);
 

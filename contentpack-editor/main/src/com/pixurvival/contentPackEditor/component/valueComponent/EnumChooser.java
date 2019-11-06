@@ -26,7 +26,17 @@ public class EnumChooser<E extends Enum<E>> extends JComboBox<E> implements Valu
 	}
 
 	public EnumChooser(Class<E> enumType, String translationPreffix) {
-		super(enumType.getEnumConstants());
+		this(translationPreffix, enumType.getEnumConstants());
+	}
+
+	@SafeVarargs
+	public EnumChooser(Class<E> enumType, E... elements) {
+		this(CaseUtils.pascalToCamelCase(enumType.getSimpleName()), elements);
+	}
+
+	@SafeVarargs
+	public EnumChooser(String translationPreffix, E... elements) {
+		super(elements);
 		setRenderer(new EnumConstantCellRenderer(translationPreffix));
 		addItemListener(e -> {
 			if (isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {

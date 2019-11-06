@@ -1,8 +1,8 @@
 package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import com.pixurvival.core.GameConstants;
@@ -35,7 +35,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	private int nextFollowingElementIndex = 0;
 
 	private Collection<Object> checkList;
-	private Object tmpChecked;
 
 	private int numberOfDelayedFollowingElements;
 
@@ -88,10 +87,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			EntitySearchUtils.forEach(this, effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
-					if (tmpChecked != null) {
-						checkList.add(tmpChecked);
-						tmpChecked = null;
-					}
 					if (effectTarget.isDestroyWhenCollide()) {
 						setAlive(false);
 					}
@@ -183,7 +178,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	public boolean isChecked(Object object) {
 		if (checkList == null) {
-			checkList = new ArrayList<>(3);
+			checkList = new HashSet<>();
 			return false;
 		} else {
 			return checkList.contains(object);
@@ -192,7 +187,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public void check(Object object) {
-		tmpChecked = object;
+		checkList.add(object);
 	}
 
 	@Override

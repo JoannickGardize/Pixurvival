@@ -20,13 +20,13 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import lombok.experimental.UtilityClass;
-
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class LayoutUtils {
@@ -41,8 +41,7 @@ public class LayoutUtils {
 		addHorizontalLabelledItem(parent, labelKey, true, toolTipKey, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component,
-			GridBagConstraints gbc) {
+	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets.top = 2;
 		gbc.insets.bottom = 1;
@@ -170,9 +169,9 @@ public class LayoutUtils {
 		}
 	}
 
-	public static JPanel createHorizontalBox(int gap, Component... components) {
+	public static JPanel createHorizontalBox(int fillIndex, Component... components) {
 		JPanel panel = new JPanel();
-		addHorizontally(panel, -1, gap, components);
+		addHorizontally(panel, fillIndex, DEFAULT_GAP, components);
 		return panel;
 	}
 
@@ -304,6 +303,13 @@ public class LayoutUtils {
 		Dimension dim = new Dimension(minimumWidth, minimumHeight);
 		component.setMinimumSize(dim);
 		component.setPreferredSize(dim);
+	}
+
+	public static void setFixedSize(Component component, int minimumWidth, int minimumHeight) {
+		Dimension dim = new Dimension(minimumWidth, minimumHeight);
+		component.setMinimumSize(dim);
+		component.setPreferredSize(dim);
+		component.setMaximumSize(dim);
 	}
 
 	public static Component addBorder(Component comp, int top, int left, int bottom, int right) {

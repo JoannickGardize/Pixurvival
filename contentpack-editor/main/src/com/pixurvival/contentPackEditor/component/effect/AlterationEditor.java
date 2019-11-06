@@ -20,12 +20,11 @@ import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
+import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
-import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration.FixedMovementOrigin;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
-import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration.FollowingElementSource;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
@@ -34,6 +33,7 @@ import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlterati
 import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
 import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
+import com.pixurvival.core.livingEntity.alteration.SourceDirection;
 import com.pixurvival.core.livingEntity.alteration.StatAlteration;
 import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
@@ -48,7 +48,9 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 	public AlterationEditor(boolean showDelayedAlteration) {
 		super("alterationType", showDelayedAlteration);
-		LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
+		EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, AlterationTarget.TARGET, AlterationTarget.ORIGIN);
+		bind(alterationTargetChooser, Alteration::getTargetType, Alteration::setTargetType);
+		LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "generic.target", alterationTargetChooser), getSpecificPartPanel());
 	}
 
 	@Override
@@ -89,19 +91,21 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 		// FixedMovementAlteration
 		durationInput = new TimeInput();
-		EnumChooser<FixedMovementOrigin> originChooser = new EnumChooser<>(FixedMovementOrigin.class);
+		EnumChooser<AlterationTarget> sourceTypeChooser = new EnumChooser<>(AlterationTarget.class);
+		EnumChooser<SourceDirection> sourceDirectionChooser = new EnumChooser<>(SourceDirection.class);
 		AngleInput relativeAngleInput = new AngleInput();
 		AngleInput randomAngleInput = new AngleInput();
 		StatAmountEditor speedEditor = new StatAmountEditor();
 		bind(durationInput, FixedMovementAlteration::getDuration, FixedMovementAlteration::setDuration, FixedMovementAlteration.class);
-		bind(originChooser, FixedMovementAlteration::getOrigin, FixedMovementAlteration::setOrigin, FixedMovementAlteration.class);
+		bind(sourceTypeChooser, FixedMovementAlteration::getSourceType, FixedMovementAlteration::setSourceType, FixedMovementAlteration.class);
+		bind(sourceDirectionChooser, FixedMovementAlteration::getSourceDirection, FixedMovementAlteration::setSourceDirection, FixedMovementAlteration.class);
 		bind(relativeAngleInput, FixedMovementAlteration::getRelativeAngle, FixedMovementAlteration::setRelativeAngle, FixedMovementAlteration.class);
 		bind(randomAngleInput, FixedMovementAlteration::getRandomAngle, FixedMovementAlteration::setRandomAngle, FixedMovementAlteration.class);
 		bind(speedEditor, FixedMovementAlteration::getSpeed, FixedMovementAlteration::setSpeed, FixedMovementAlteration.class);
 		JPanel fmaPanel = new JPanel();
-		LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.origin", originChooser),
+		LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "generic.source", sourceTypeChooser),
 				LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "generic.randomAngle", randomAngleInput),
-				LayoutUtils.createVerticalLabelledBox("statType.speed", speedEditor));
+				LayoutUtils.createVerticalLabelledBox("alterationEditor.direction", sourceDirectionChooser, "statType.speed", speedEditor));
 		entries.add(new ClassEntry(FixedMovementAlteration.class, fmaPanel));
 
 		// StunAlteration
@@ -142,12 +146,9 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		}
 
 		// FollowingElementAlteration
-		EnumChooser<FollowingElementSource> sourceChooser = new EnumChooser<>(FollowingElementSource.class);
 		FollowingElementEditor followingElementEditor = new FollowingElementEditor();
-		bind(sourceChooser, FollowingElementAlteration::getSource, FollowingElementAlteration::setSource, FollowingElementAlteration.class);
 		bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
-		entries.add(
-				new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.source", sourceChooser), followingElementEditor))));
+		entries.add(new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(followingElementEditor)));
 
 		// SilenceAlteration
 		durationInput = new TimeInput();
@@ -174,7 +175,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 	@Override
 	protected void initialize(Alteration oldInstance, Alteration newInstance) {
-		// No common field
+		newInstance.setTargetType(oldInstance.getTargetType());
 	}
 
 }

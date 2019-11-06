@@ -12,13 +12,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class PersistentAlteration implements Alteration {
+public abstract class PersistentAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Enum that define how the same alteration (i.e. alteration definition from the
-	 * same source instance) is stacked to a single target.
+	 * Enum that define how the same alteration (i.e. alteration definition from
+	 * the same source instance) is stacked to a single target.
 	 * 
 	 * @author SharkHendrix
 	 *
@@ -31,11 +31,13 @@ public abstract class PersistentAlteration implements Alteration {
 		 */
 		STACK,
 		/**
-		 * The alteration is added once, and will not be replaced if already present.
+		 * The alteration is added once, and will not be replaced if already
+		 * present.
 		 */
 		IGNORE,
 		/**
-		 * The alteration is added once, and will be replaced if already present.
+		 * The alteration is added once, and will be replaced if already
+		 * present.
 		 */
 		REPLACE;
 
@@ -45,8 +47,8 @@ public abstract class PersistentAlteration implements Alteration {
 	private StackPolicy stackPolicy = StackPolicy.REPLACE;
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
-		entity.applyPersistentAlteration(source, this);
+	public void targetedApply(TeamMember source, LivingEntity target) {
+		target.applyPersistentAlteration(source, this);
 	}
 
 	public Object begin(TeamMember source, LivingEntity entity) {

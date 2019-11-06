@@ -61,17 +61,6 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void beforeTargetedAlteration() {
-		if (getWorld().isServer() && targetEntity != null) {
-			getTargetPosition().set(targetEntity.getPosition());
-			double predictionBulletSpeed;
-			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
-				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
-			}
-		}
-	}
-
-	@Override
 	public void takeDamage(float amount) {
 		super.takeDamage(amount);
 		behaviorData.setTookDamage(true);
@@ -166,5 +155,16 @@ public class CreatureEntity extends LivingEntity {
 	@Override
 	protected void collisionLockEnded() {
 		setForward(false);
+	}
+
+	@Override
+	public void prepareTargetedAlteration() {
+		if (targetEntity != null) {
+			getTargetPosition().set(targetEntity.getPosition());
+			double predictionBulletSpeed;
+			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
+				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
+			}
+		}
 	}
 }

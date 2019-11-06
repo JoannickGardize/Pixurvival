@@ -38,7 +38,7 @@ public class TileEditor extends RootElementEditor<Tile> {
 		// Construction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
 		EventManager.getInstance().register(this);
-		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new);
+		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new, VerticalListEditor.HORIZONTAL);
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DoubleInput velocityFactorInput = new DoubleInput(Bounds.positive());
 		imagePreview.setAnimation(new Animation());

@@ -21,14 +21,14 @@ public class ContentPackEditor extends JFrame {
 	private static @Getter ContentPackEditor instance;
 
 	public ContentPackEditor() {
-		setSize(800, 600);
+		setSize(1300, 900);
 
 		setJMenuBar(new CPEMenuBar());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JScrollPane treeScrollPane = new JScrollPane(new LayoutTree());
 		treeScrollPane.setMinimumSize(new Dimension(150, 300));
-		treeScrollPane.setPreferredSize(new Dimension(300, 600));
+		treeScrollPane.setPreferredSize(new Dimension(400, 600));
 		treeScrollPane.setMaximumSize(new Dimension(1000, 2000));
 		ElementTypePanelCard card = new ElementTypePanelCard();
 		card.setMinimumSize(new Dimension(150, 300));

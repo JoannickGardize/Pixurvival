@@ -62,6 +62,9 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 		ActionAnimation actionAnimation = ActionAnimation.BEFORE_DEFAULT;
 		if ((textureAnimation = textureAnimationSet.get(ActionAnimation.BEFORE_DEFAULT)) == null || !data.isFirstLoop()) {
 			textureAnimation = textureAnimationSet.get(ActionAnimation.DEFAULT);
+			if (textureAnimation == null) {
+				return;
+			}
 			actionAnimation = ActionAnimation.DEFAULT;
 		}
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);

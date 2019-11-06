@@ -12,12 +12,8 @@ public class FixedMovementAlteration extends PersistentAlteration {
 
 	private static final long serialVersionUID = 1L;
 
-	public enum FixedMovementOrigin {
-		SOURCE,
-		SELF;
-	}
-
-	private FixedMovementOrigin origin;
+	private AlterationTarget sourceType;
+	private SourceDirection sourceDirection;
 	private double relativeAngle;
 	private double randomAngle;
 
@@ -25,20 +21,13 @@ public class FixedMovementAlteration extends PersistentAlteration {
 
 	@Override
 	public Object begin(TeamMember source, LivingEntity entity) {
-		double targetAngle;
-		double speedValue;
-		if (origin == FixedMovementOrigin.SOURCE) {
-			if (source instanceof LivingEntity) {
-				((LivingEntity) source).beforeTargetedAlteration();
-			}
-			targetAngle = source.getPosition().angleToward(source.getTargetPosition());
-			speedValue = speed.getValue(source.getStats());
-		} else {
-			entity.beforeTargetedAlteration();
-			targetAngle = entity.getPosition().angleToward(entity.getTargetPosition());
-			speedValue = speed.getValue(entity.getStats());
+		TeamMember effectiveSource = sourceType.getFunction().apply(source, entity);
+		if (effectiveSource instanceof LivingEntity) {
+			((LivingEntity) effectiveSource).prepareTargetedAlteration();
 		}
-		entity.setFixedMovement(targetAngle + relativeAngle + entity.getWorld().getRandom().nextAngle(randomAngle), speedValue);
+		double angle = sourceDirection.getDirection(effectiveSource, entity);
+		double speedValue = speed.getValue(effectiveSource.getStats());
+		entity.setFixedMovement(angle + relativeAngle + entity.getWorld().getRandom().nextAngle(randomAngle), speedValue);
 		return null;
 	}
 

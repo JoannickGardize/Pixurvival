@@ -422,9 +422,9 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		}
 	}
 
-	public void beforeTargetedAlteration() {
-		// for overriding
-	}
-
 	public abstract AbilitySet getAbilitySet();
+
+	public void prepareTargetedAlteration() {
+
+	}
 }

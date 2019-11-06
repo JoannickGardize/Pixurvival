@@ -13,7 +13,7 @@ public class AbilitySetEditor extends RootElementEditor<AbilitySet> {
 	private static final long serialVersionUID = 1L;
 
 	public AbilitySetEditor() {
-		ListEditor<Ability> abilitiesEditor = new VerticalListEditor<>(CreatureAlterationAbilityEditor::new, CreatureAlterationAbility::new, VerticalListEditor.HORIZONTAL);
+		ListEditor<Ability> abilitiesEditor = new VerticalListEditor<>(CreatureAlterationAbilityEditor::new, CreatureAlterationAbility::new, VerticalListEditor.VERTICAL);
 		bind(abilitiesEditor, AbilitySet::getAbilities, AbilitySet::setAbilities);
 
 		LayoutUtils.fill(this, abilitiesEditor);

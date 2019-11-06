@@ -8,14 +8,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StunAlteration implements Alteration {
+public class StunAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
 	private long duration;
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
+	public void targetedApply(TeamMember source, LivingEntity entity) {
 		entity.stun(duration);
 	}
 

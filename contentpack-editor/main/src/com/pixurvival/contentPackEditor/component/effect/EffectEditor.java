@@ -46,7 +46,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
-		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class));
+		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class), VerticalListEditor.HORIZONTAL);
 		ListEditor<Alteration> deathAlterations = new VerticalListEditor<>(AlterationEditor::new, BeanFactory.of(Alteration.class), VerticalListEditor.HORIZONTAL);
 
 		// Binding

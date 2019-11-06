@@ -41,9 +41,9 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 	private FloatInput strengthInput = new FloatInput();
 	private FloatInput agilityInput = new FloatInput();
 	private FloatInput intelligenceInput = new FloatInput();
-	private JTextField maxHealthField = new JTextField(DECIMAL_FORMAT.format(StatType.MAX_HEALTH.getFormula().apply(statSet)));
-	private JTextField speedField = new JTextField(DECIMAL_FORMAT.format(StatType.SPEED.getFormula().apply(statSet)));
-	private JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().apply(statSet) * 100) + "%"));
+	private JTextField maxHealthField = new JTextField(DECIMAL_FORMAT.format(StatType.MAX_HEALTH.getFormula().compute(statSet)));
+	private JTextField speedField = new JTextField(DECIMAL_FORMAT.format(StatType.SPEED.getFormula().compute(statSet)));
+	private JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%"));
 
 	public CreatureEditor() {
 

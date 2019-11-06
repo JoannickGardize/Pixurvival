@@ -11,20 +11,22 @@ import com.pixurvival.core.team.TeamMember;
  * @author SharkHendrix
  *
  */
-public abstract class UniqueAlteration implements Alteration {
+public abstract class UniqueAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
+	public void targetedApply(TeamMember source, LivingEntity target) {
+		System.out.println(source.getClass().getSimpleName());
 		if (source instanceof CheckListHolder) {
 			CheckListHolder holder = (CheckListHolder) source;
-			if (!holder.isChecked(entity)) {
-				holder.check(entity);
-				uniqueApply(source, entity);
+			System.out.println(!holder.isChecked(target));
+			if (!holder.isChecked(target)) {
+				holder.check(target);
+				uniqueApply(source, target);
 			}
 		} else {
-			uniqueApply(source, entity);
+			uniqueApply(source, target);
 		}
 	}
 

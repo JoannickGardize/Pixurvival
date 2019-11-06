@@ -18,7 +18,7 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 	private static final long serialVersionUID = 1L;
 
 	private ItemStackEditor resultEditor = new ItemStackEditor();
-	private VerticalListEditor<ItemStack> recipesList = new VerticalListEditor<>(ItemStackEditor::new, ItemStack::new);
+	private VerticalListEditor<ItemStack> recipesList = new VerticalListEditor<>(ItemStackEditor::new, ItemStack::new, VerticalListEditor.HORIZONTAL);
 
 	public ItemCraftEditor() {
 

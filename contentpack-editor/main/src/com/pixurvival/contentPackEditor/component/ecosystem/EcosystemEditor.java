@@ -17,7 +17,7 @@ public class EcosystemEditor extends RootElementEditor<Ecosystem> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<StructureSpawner> structureSpawnersEditor = new VerticalListEditor<>(StructureSpawnerEditor::new, StructureSpawner::new, VerticalListEditor.HORIZONTAL);
+	private ListEditor<StructureSpawner> structureSpawnersEditor = new VerticalListEditor<>(StructureSpawnerEditor::new, StructureSpawner::new, VerticalListEditor.VERTICAL);
 	private DarknessSpawnerEditor<DarknessSpawner> darknessSpawnerEditor = new DarknessSpawnerEditor<>();
 
 	public EcosystemEditor() {

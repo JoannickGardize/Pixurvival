@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.livingEntity.Equipment;
+import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
 
@@ -88,7 +89,7 @@ public class StatValue implements StatListener {
 				relativeModifier += modifier.getValue();
 			}
 		}
-		float newValue = (base + type.getFormula().apply(statSet) + absoluteModifier) * relativeModifier;
+		float newValue = MathUtils.clamp((base + type.getFormula().compute(statSet) + absoluteModifier) * relativeModifier, type.getMinimum(), type.getMaximum());
 		if (newValue != value) {
 			value = newValue;
 			listeners.forEach(l -> l.statChanged(this));

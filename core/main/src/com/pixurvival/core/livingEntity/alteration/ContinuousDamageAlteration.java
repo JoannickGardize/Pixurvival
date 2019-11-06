@@ -8,14 +8,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ContinuousDamageAlteration implements Alteration {
+public class ContinuousDamageAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
 	private StatAmount damagePerSecond = new StatAmount();
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
-		entity.takeDamage(damagePerSecond.getValue(source.getStats()) * (float) entity.getWorld().getTime().getDeltaTime());
+	public void targetedApply(TeamMember source, LivingEntity target) {
+		target.takeDamage(damagePerSecond.getValue(source.getStats()) * (float) target.getWorld().getTime().getDeltaTime());
 	}
 }

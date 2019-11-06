@@ -30,7 +30,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 			HeightmapConditionEditor result = new HeightmapConditionEditor(heightmapCollectionSupplier);
 			result.setBorder(LayoutUtils.createBorder());
 			return result;
-		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
+		}, HeightmapCondition::new, VerticalListEditor.VERTICAL);
 
 		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class, IconService.getInstance()::get, ContentPack::getStructures);
 		DoubleInput densityInput = new DoubleInput(new Bounds(0, 1));

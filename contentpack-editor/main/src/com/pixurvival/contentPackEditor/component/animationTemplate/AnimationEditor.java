@@ -25,7 +25,7 @@ public class AnimationEditor extends ElementEditor<Animation> {
 
 	private static final long serialVersionUID = 1L;
 
-	private VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new);
+	private VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new, VerticalListEditor.HORIZONTAL);
 	private AnimationPreview animationPreview = new AnimationPreview();
 	private SpriteSheetChooserPreviewTabs previewPanel = new SpriteSheetChooserPreviewTabs();
 

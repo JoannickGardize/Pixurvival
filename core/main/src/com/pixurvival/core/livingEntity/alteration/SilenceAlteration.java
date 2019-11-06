@@ -7,7 +7,7 @@ import com.pixurvival.core.team.TeamMember;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SilenceAlteration implements Alteration {
+public class SilenceAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
@@ -16,7 +16,7 @@ public class SilenceAlteration implements Alteration {
 	private long duration;
 
 	@Override
-	public void apply(TeamMember source, LivingEntity entity) {
+	public void targetedApply(TeamMember source, LivingEntity entity) {
 		if (entity instanceof PlayerEntity) {
 			((PlayerEntity) entity).silence(duration);
 		}

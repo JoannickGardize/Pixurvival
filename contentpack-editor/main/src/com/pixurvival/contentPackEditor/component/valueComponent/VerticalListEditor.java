@@ -6,14 +6,19 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
+import com.pixurvival.contentPackEditor.ImageService;
+import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 
 public class VerticalListEditor<E> extends ListEditor<E> {
@@ -22,6 +27,8 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	public static final int VERTICAL = 1;
 
 	private static final long serialVersionUID = 1L;
+
+	private int buttonAlignment;
 
 	public <F extends E> VerticalListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier) {
 		this(elementEditorSupplier, valueSupplier, VERTICAL);
@@ -33,8 +40,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 
 	public <F extends E> VerticalListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier, int buttonAlignment, boolean useScrollPane) {
 		super(elementEditorSupplier, valueSupplier);
-		// setMinimumSize(new Dimension(100, 50));
-		// setPreferredSize(new Dimension(100, 50));
+		this.buttonAlignment = buttonAlignment;
 		listPanel.setBackground(new Color(150, 150, 150));
 		setLayout(new BorderLayout());
 		listPanel.setLayout(new GridBagLayout());
@@ -43,27 +49,57 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 			JPanel pusherPanel = new JPanel(new BorderLayout());
 			pusherPanel.add(listPanel, BorderLayout.NORTH);
 			pusherPanel.add(new JPanel(), BorderLayout.CENTER);
-			add(new JScrollPane(pusherPanel));
+			add(new JScrollPane(pusherPanel), BorderLayout.CENTER);
 		} else {
-			add(listPanel);
-		}
-		if (buttonAlignment == VERTICAL) {
-			add(LayoutUtils.createVerticalBox(3, addButton, removeButton), BorderLayout.SOUTH);
-		} else {
-			add(LayoutUtils.createVerticalBox(3, LayoutUtils.createHorizontalBox(addButton, removeButton)), BorderLayout.SOUTH);
+			add(listPanel, BorderLayout.CENTER);
 		}
 	}
 
 	@Override
 	protected void addEditor(ValueComponent<E> editor) {
 		((JComponent) editor).setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(3, 2, 3, 2), ((JComponent) editor).getBorder()));
+		int index = listPanel.getComponentCount();
+		if (index > 0 && listPanel.getComponent(index - 1) instanceof JButton) {
+			listPanel.remove(--index);
+		}
+		final int finalIndex = index;
+		CPEButton upButton = new CPEButton(ImageService.getInstance().get("up"), () -> {
+			if (finalIndex > 0) {
+				List<E> newValue = new ArrayList<>(getValue());
+				E tmp = newValue.get(finalIndex - 1);
+				newValue.set(finalIndex - 1, newValue.get(finalIndex));
+				newValue.set(finalIndex, tmp);
+				setValue(newValue);
+			}
+		});
+		CPEButton removeButton = new CPEButton(ImageService.getInstance().get("remove"), () -> {
+			List<E> newValue = new ArrayList<>(getValue());
+			newValue.remove(finalIndex);
+			setValue(newValue);
+		});
+		CPEButton downButton = new CPEButton(ImageService.getInstance().get("down"), () -> {
+			if (finalIndex < getValue().size() - 1) {
+				List<E> newValue = new ArrayList<>(getValue());
+				E tmp = newValue.get(finalIndex + 1);
+				newValue.set(finalIndex + 1, newValue.get(finalIndex));
+				newValue.set(finalIndex, tmp);
+				setValue(newValue);
+			}
+		});
+		LayoutUtils.setFixedSize(upButton, 30, 30);
+		LayoutUtils.setFixedSize(removeButton, 30, 30);
+		LayoutUtils.setFixedSize(downButton, 30, 30);
+
+		JPanel buttonsPanel = LayoutUtils
+				.single(buttonAlignment == VERTICAL ? LayoutUtils.createVerticalBox(upButton, removeButton, downButton) : LayoutUtils.createHorizontalBox(upButton, removeButton, downButton));
+
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.insets = new Insets(3, 2, 3, 2);
-		gbc.gridy = listPanel.getComponentCount();
-		listPanel.add((Component) editor, gbc);
+		gbc.gridy = index;
+		listPanel.add(LayoutUtils.createHorizontalBox(0, (Component) editor, buttonsPanel), gbc);
 		listPanel.revalidate();
 	}
 
@@ -71,5 +107,20 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	protected void removeLast() {
 		listPanel.remove(listPanel.getComponentCount() - 1);
 		listPanel.revalidate();
+	}
+
+	@Override
+	protected void endModifications() {
+		addAddButton();
+	}
+
+	private void addAddButton() {
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.insets = new Insets(3, 2, 3, 2);
+		gbc.gridy = listPanel.getComponentCount();
+		listPanel.add(new CPEButton("generic.add", () -> add(valueSupplier.get())), gbc);
 	}
 }
