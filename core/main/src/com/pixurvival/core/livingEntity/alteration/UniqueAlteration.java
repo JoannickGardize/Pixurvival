@@ -17,10 +17,8 @@ public abstract class UniqueAlteration extends Alteration {
 
 	@Override
 	public void targetedApply(TeamMember source, LivingEntity target) {
-		System.out.println(source.getClass().getSimpleName());
 		if (source instanceof CheckListHolder) {
 			CheckListHolder holder = (CheckListHolder) source;
-			System.out.println(!holder.isChecked(target));
 			if (!holder.isChecked(target)) {
 				holder.check(target);
 				uniqueApply(source, target);

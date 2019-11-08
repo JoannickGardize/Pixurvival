@@ -58,7 +58,7 @@ public class PlayerSession {
 		structureUpdatesToSend.add(structureUpdate);
 	}
 
-	public boolean isMissing(ChunkPosition position) {
+	public boolean isMissingAndRemove(ChunkPosition position) {
 		return missingChunks.remove(position);
 	}
 

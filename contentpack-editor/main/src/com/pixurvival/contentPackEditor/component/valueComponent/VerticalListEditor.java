@@ -70,12 +70,14 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 				newValue.set(finalIndex - 1, newValue.get(finalIndex));
 				newValue.set(finalIndex, tmp);
 				setValue(newValue);
+				notifyValueChanged();
 			}
 		});
 		CPEButton removeButton = new CPEButton(ImageService.getInstance().get("remove"), () -> {
 			List<E> newValue = new ArrayList<>(getValue());
 			newValue.remove(finalIndex);
 			setValue(newValue);
+			notifyValueChanged();
 		});
 		CPEButton downButton = new CPEButton(ImageService.getInstance().get("down"), () -> {
 			if (finalIndex < getValue().size() - 1) {
@@ -84,6 +86,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 				newValue.set(finalIndex + 1, newValue.get(finalIndex));
 				newValue.set(finalIndex, tmp);
 				setValue(newValue);
+				notifyValueChanged();
 			}
 		});
 		LayoutUtils.setFixedSize(upButton, 30, 30);

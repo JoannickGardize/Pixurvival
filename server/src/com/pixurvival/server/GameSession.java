@@ -50,7 +50,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	@Override
 	public void chunkLoaded(Chunk chunk) {
 		for (PlayerSession playerSession : players.values()) {
-			if (playerSession.isMissing(chunk.getPosition()) || chunk.getPosition().insideSquare(playerSession.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+			if (playerSession.isMissingAndRemove(chunk.getPosition())
+					|| chunk.getPosition().insideSquare(playerSession.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
 			}
 		}

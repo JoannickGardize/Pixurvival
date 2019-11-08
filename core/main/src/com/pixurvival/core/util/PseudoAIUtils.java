@@ -44,6 +44,16 @@ public class PseudoAIUtils {
 		return entity.getWorld().getRandom().nextAngle();
 	}
 
+	/**
+	 * @param entity
+	 *            The entity from which the position of the test starts, and
+	 *            considering it's collision radius
+	 * @param targetMovingAngle
+	 *            The direction that will be tested
+	 * @param viewDistance
+	 *            The distance of the test
+	 * @return true if the way is not free, false otherwise.
+	 */
 	public static boolean collideInDirection(Entity entity, double targetMovingAngle, int viewDistance) {
 
 		Vector2 delta = Vector2.fromEuclidean(1, targetMovingAngle);

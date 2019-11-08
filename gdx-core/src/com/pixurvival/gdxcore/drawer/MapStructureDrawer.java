@@ -20,7 +20,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	@Override
 	public void drawShadow(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
-		if (animationSet.getShadow() == null) {
+		// TODO gérer les entités non dessinés directement dans l'entityDrawer
+		if (animationSet == null || animationSet.getShadow() == null) {
 			return;
 		}
 		ActionAnimation action = ActionAnimation.DEFAULT;
@@ -36,6 +37,9 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	@Override
 	public void draw(Batch batch, MapStructure e) {
 		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
+		if (animationSet == null) {
+			return;
+		}
 		float x = (float) (e.getPosition().getX() - animationSet.getWidth() / 2);
 		float y = (float) e.getPosition().getY();
 		ActionAnimation action = ActionAnimation.DEFAULT;

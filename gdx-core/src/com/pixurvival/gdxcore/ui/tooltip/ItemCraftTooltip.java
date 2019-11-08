@@ -64,10 +64,21 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 		}
 		Inventory inv = PixurvivalGame.getClient().getMyInventory();
 		clearChildren();
+		// Add item tooltip itself
+		ItemTooltip itemTooltip = new ItemTooltip(false);
+		itemTooltip.setItem(itemCraft.getResult().getItem());
+		add(itemTooltip).expand().colspan(3);
+		row();
+		// Duration and recipes title
+		add(RepresenterUtils.labelledValue("hud.itemCraft.duration", RepresenterUtils.time(itemCraft.getDuration()))).expand().colspan(3);
+		row();
+		add(new Label(PixurvivalGame.getString("hud.itemCraft.recipes"), PixurvivalGame.getSkin(), "white")).expand().colspan(3);
+		// Add Recipes
 		Locale locale = PixurvivalGame.getClient().getCurrentLocale();
 		ContentPack contentPack = PixurvivalGame.getWorld().getContentPack();
 		StringBuilder quantitySB = new StringBuilder();
 		for (ItemStack itemStack : itemCraft.getRecipes()) {
+			row();
 			quantitySB.setLength(0);
 			int myTotal = inv.totalOf(itemStack.getItem());
 			quantitySB.append(contentPack.getTranslation(locale, itemStack.getItem(), TranslationKey.ITEM_NAME)).append(" ");
@@ -79,11 +90,8 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 			lineLabel.setAlignment(Align.right);
 			add(lineLabel);
 			add().expand();
-			row();
 		}
-		ItemTooltip itemTooltip = new ItemTooltip(false);
-		itemTooltip.setItem(itemCraft.getResult().getItem());
-		add(itemTooltip).expand().colspan(3);
+
 		pack();
 		invalidate();
 	}

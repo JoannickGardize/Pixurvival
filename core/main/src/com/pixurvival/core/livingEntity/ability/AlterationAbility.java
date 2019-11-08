@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
@@ -14,7 +15,7 @@ public abstract class AlterationAbility extends CooldownAbility {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Alteration> alterations;
+	private List<Alteration> alterations = new ArrayList<>();
 
 	@Override
 	public boolean fire(LivingEntity entity) {

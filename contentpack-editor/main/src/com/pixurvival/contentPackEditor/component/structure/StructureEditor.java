@@ -26,7 +26,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
 
 	public StructureEditor() {
 		super("structureType");

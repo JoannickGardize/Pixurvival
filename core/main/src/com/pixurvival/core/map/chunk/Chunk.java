@@ -30,6 +30,8 @@ public class Chunk {
 
 	private static final long KEEP_ALIVE_MILLIS = 10_000;
 
+	private static final SoftReference<CompressedChunk> NULL_COMPRESSED_REF = new SoftReference<CompressedChunk>(null);
+
 	private TiledMap map;
 
 	private MapTile[] tiles;
@@ -42,7 +44,7 @@ public class Chunk {
 
 	private int offsetY;
 
-	private @Getter(AccessLevel.NONE) SoftReference<CompressedChunk> compressedChunkRef = new SoftReference<>(null);
+	private @Getter(AccessLevel.NONE) SoftReference<CompressedChunk> compressedChunkRef = NULL_COMPRESSED_REF;
 
 	private @Setter long updateTimestamp;
 
@@ -95,6 +97,8 @@ public class Chunk {
 
 	public void updateTimestamp() {
 		updateTimestamp = map.getWorld().getTime().getTimeMillis();
+		// The CompressedChunk is not up to date anymore
+		compressedChunkRef = NULL_COMPRESSED_REF;
 	}
 
 	public MapTile tileAtLocal(int x, int y) {
@@ -198,5 +202,10 @@ public class Chunk {
 
 	public void setCompressed(CompressedChunk compressed) {
 		compressedChunkRef = new SoftReference<>(compressed);
+	}
+
+	@Override
+	public String toString() {
+		return "Chunk at " + position;
 	}
 }
