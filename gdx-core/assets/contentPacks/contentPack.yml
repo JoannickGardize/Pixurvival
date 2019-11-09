@@ -380,8 +380,8 @@ animationTemplates:
       frames:
       - {x: 0, y: 0}
       rotationPerSecond: 0.0
-- &barbaric_axe
-  name: barbaric_axe
+- &bidirectionnal_single_image_equipment
+  name: bidirectionnal_single_image_equipment
   id: 11
   animations:
     MOVE_RIGHT:
@@ -627,8 +627,8 @@ animationTemplates:
       - {x: 2, y: 0}
       - {x: 3, y: 0}
       rotationPerSecond: 90.0
-- &single_fast_rotating
-  name: single_fast_rotating
+- &single_rotating
+  name: single_rotating
   id: 15
   animations:
     DEFAULT:
@@ -637,6 +637,209 @@ animationTemplates:
       frames:
       - {x: 0, y: 0}
       rotationPerSecond: 360.0
+- &fire_area
+  name: fire_area
+  id: 16
+  animations:
+    BEFORE_DEFAULT:
+      frameDuration: 100
+      action: BEFORE_DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+    DEFAULT:
+      frameDuration: 250
+      action: DEFAULT
+      frames:
+      - {x: 3, y: 0}
+      - {x: 4, y: 0}
+      rotationPerSecond: 0.0
+- &blizzard
+  name: blizzard
+  id: 17
+  animations:
+    BEFORE_DEFAULT:
+      frameDuration: 150
+      action: BEFORE_DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: -360.0
+    DEFAULT:
+      frameDuration: 1000
+      action: DEFAULT
+      frames:
+      - {x: 2, y: 0}
+      rotationPerSecond: -360.0
+- &angel_form
+  name: angel_form
+  id: 18
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 500
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_UP:
+      frameDuration: 500
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_LEFT:
+      frameDuration: 500
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_DOWN:
+      frameDuration: 500
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_RIGHT:
+      frameDuration: 500
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 500
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 500
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 500
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_RIGHT:
+      frameDuration: 500
+      action: WORK_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_UP:
+      frameDuration: 500
+      action: WORK_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_DOWN:
+      frameDuration: 500
+      action: WORK_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    WORK_LEFT:
+      frameDuration: 500
+      action: WORK_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+- &single_fast_rotating
+  name: single_fast_rotating
+  id: 19
+  animations:
+    DEFAULT:
+      frameDuration: 1000
+      action: DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 650.0
+- &dynarcanite_explosion
+  name: dynarcanite_explosion
+  id: 20
+  animations:
+    BEFORE_DEFAULT:
+      frameDuration: 170
+      action: BEFORE_DEFAULT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      - {x: 2, y: 0}
+      rotationPerSecond: 0.0
+- &giant_crab
+  name: giant_crab
+  id: 21
+  animations:
+    MOVE_RIGHT:
+      frameDuration: 200
+      action: MOVE_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_UP:
+      frameDuration: 200
+      action: MOVE_UP
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_LEFT:
+      frameDuration: 200
+      action: MOVE_LEFT
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    MOVE_DOWN:
+      frameDuration: 200
+      action: MOVE_DOWN
+      frames:
+      - {x: 0, y: 0}
+      - {x: 1, y: 0}
+      rotationPerSecond: 0.0
+    STAND_RIGHT:
+      frameDuration: 1000
+      action: STAND_RIGHT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_UP:
+      frameDuration: 1000
+      action: STAND_UP
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_LEFT:
+      frameDuration: 1000
+      action: STAND_LEFT
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
+    STAND_DOWN:
+      frameDuration: 1000
+      action: STAND_DOWN
+      frames:
+      - {x: 0, y: 0}
+      rotationPerSecond: 0.0
 equipmentOffsets:
 - &character02
   name: character
@@ -670,30 +873,13 @@ equipmentOffsets:
   - {x: 0, y: 3, offsetX: 2, offsetY: 0, back: false}
   - {x: 1, y: 3, offsetX: 2, offsetY: 0, back: false}
   - {x: 2, y: 3, offsetX: 0, offsetY: 0, back: false}
-- &bow
-  name: bow
+- name: warlock_wand
   id: 2
-  frameOffsets:
-  - {x: 0, y: 0, offsetX: 2, offsetY: 2, back: false}
-  - {x: 1, y: 0, offsetX: 2, offsetY: 3, back: false}
-  - {x: 2, y: 0, offsetX: 2, offsetY: 2, back: false}
-  - {x: 0, y: 1, offsetX: 1, offsetY: 2, back: true}
-  - {x: 1, y: 1, offsetX: 2, offsetY: 4, back: false}
-  - {x: 2, y: 1, offsetX: 1, offsetY: 4, back: true}
-  - {x: 0, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 1, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 2, y: 2, offsetX: 1, offsetY: 2, back: false}
-  - {x: 0, y: 3, offsetX: 2, offsetY: 2, back: false}
-  - {x: 1, y: 3, offsetX: 2, offsetY: 2, back: false}
-  - {x: 2, y: 3, offsetX: 2, offsetY: 2, back: false}
-- &warlock_wand
-  name: warlock_wand
-  id: 3
   frameOffsets:
   - {x: 0, y: 0, offsetX: 1, offsetY: 2, back: false}
 - &barbaric
   name: barbaric
-  id: 4
+  id: 3
   frameOffsets:
   - {x: 0, y: 0, offsetX: 0, offsetY: 2, back: false}
   - {x: 1, y: 0, offsetX: 0, offsetY: 3, back: false}
@@ -707,28 +893,51 @@ equipmentOffsets:
   - {x: 0, y: 3, offsetX: 2, offsetY: 2, back: false}
   - {x: 1, y: 3, offsetX: 1, offsetY: 2, back: false}
   - {x: 2, y: 3, offsetX: 4, offsetY: 2, back: false}
-- &barbaric_axe02
+- &barbaric_axe
   name: barbaric_axe
-  id: 5
+  id: 4
   frameOffsets:
   - {x: 0, y: 0, offsetX: 0, offsetY: 1, back: false}
   - {x: 1, y: 0, offsetX: 2, offsetY: 1, back: false}
 - &shurirang02
   name: shurirang
-  id: 6
+  id: 5
   frameOffsets:
   - {x: 0, y: 0, offsetX: 3, offsetY: 3, back: false}
 - &big_sword
   name: big_sword
-  id: 7
+  id: 6
   frameOffsets:
   - {x: 0, y: 0, offsetX: 2, offsetY: 1, back: false}
 - &demonic_scythe
   name: demonic_scythe
-  id: 8
+  id: 7
   frameOffsets:
   - {x: 0, y: 0, offsetX: 1, offsetY: 1, back: false}
   - {x: 1, y: 0, offsetX: 7, offsetY: 1, back: false}
+- &magic_wand
+  name: magic_wand
+  id: 8
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 1, offsetY: 0, back: false}
+- &angel_form02
+  name: angel_form
+  id: 9
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 16, offsetY: 3, back: false}
+  - {x: 1, y: 0, offsetX: 16, offsetY: 3, back: false}
+- &bow
+  name: bow
+  id: 10
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 0, offsetY: 1, back: false}
+  - {x: 1, y: 0, offsetX: 2, offsetY: 1, back: false}
+- &rhinobow
+  name: rhinobow
+  id: 11
+  frameOffsets:
+  - {x: 0, y: 0, offsetX: 1, offsetY: 3, back: false}
+  - {x: 1, y: 0, offsetX: 1, offsetY: 3, back: false}
 spriteSheets:
 - &character03
   name: character
@@ -750,8 +959,8 @@ spriteSheets:
   equipmentOffset: *character02
   heightOffset: 0.0
   shadow: true
-- &hard_leather_armor
-  name: hard_leather_armor
+- &hunter_clothing
+  name: hunter_clothing
   id: 2
   width: 7
   height: 9
@@ -760,7 +969,8 @@ spriteSheets:
   equipmentOffset: *character02
   heightOffset: 0.0
   shadow: true
-- name: iron
+- &iron_armor
+  name: iron_armor
   id: 3
   width: 7
   height: 9
@@ -832,10 +1042,10 @@ spriteSheets:
 - &wood_bow
   name: wood_bow
   id: 10
-  width: 5
-  height: 8
+  width: 3
+  height: 7
   image: images/wood_bow.png
-  animationTemplate: *character
+  animationTemplate: *bidirectionnal_single_image_equipment
   equipmentOffset: *bow
   heightOffset: 0.0
   shadow: true
@@ -847,8 +1057,8 @@ spriteSheets:
   image: images/wood_bow_hit.png
   animationTemplate: *single_image
   equipmentOffset: null
-  heightOffset: 0.0
-  shadow: true
+  heightOffset: -1.0
+  shadow: false
 - &dead_tree
   name: dead_tree
   id: 12
@@ -869,7 +1079,7 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &ninja_pig02
+- &ninja_pig
   name: ninja_pig
   id: 14
   width: 7
@@ -879,8 +1089,7 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &rock_projectile
-  name: rock_projectile
+- name: rock_projectile
   id: 15
   width: 4
   height: 4
@@ -929,14 +1138,14 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: true
-- &warlock_wand02
+- &warlock_wand
   name: warlock_wand
   id: 20
-  width: 3
-  height: 8
+  width: 5
+  height: 11
   image: images/warlock_wand.png
   animationTemplate: *single_image_equipment
-  equipmentOffset: *warlock_wand
+  equipmentOffset: *big_sword
   heightOffset: 0.0
   shadow: true
 - &piece_of_soul
@@ -1029,14 +1238,14 @@ spriteSheets:
   equipmentOffset: *barbaric
   heightOffset: 0.0
   shadow: true
-- &barbaric_axe03
+- &barbaric_axe02
   name: barbaric_axe
   id: 30
   width: 3
   height: 8
   image: images/barbaric_axe.png
-  animationTemplate: *barbaric_axe
-  equipmentOffset: *barbaric_axe02
+  animationTemplate: *bidirectionnal_single_image_equipment
+  equipmentOffset: *barbaric_axe
   heightOffset: 0.0
   shadow: true
 - &small_hit
@@ -1175,7 +1384,7 @@ spriteSheets:
   width: 16
   height: 16
   image: images/fire_sword_special.png
-  animationTemplate: *single_fast_rotating
+  animationTemplate: *single_rotating
   equipmentOffset: null
   heightOffset: 6.0
   shadow: false
@@ -1245,7 +1454,7 @@ spriteSheets:
   width: 9
   height: 11
   image: images/demonic_scythe.png
-  animationTemplate: *barbaric_axe
+  animationTemplate: *bidirectionnal_single_image_equipment
   equipmentOffset: *demonic_scythe
   heightOffset: 0.0
   shadow: true
@@ -1279,6 +1488,286 @@ spriteSheets:
   equipmentOffset: null
   heightOffset: 0.0
   shadow: false
+- &pixie_warrior
+  name: pixie_warrior
+  id: 55
+  width: 7
+  height: 7
+  image: images/pixie_warrior.png
+  animationTemplate: *character
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &dark_rhino
+  name: dark_rhino
+  id: 56
+  width: 17
+  height: 13
+  image: images/dark_rhino.png
+  animationTemplate: *character
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &fire_area02
+  name: fire_area
+  id: 57
+  width: 48
+  height: 53
+  image: images/fire_area.png
+  animationTemplate: *fire_area
+  equipmentOffset: null
+  heightOffset: 24.0
+  shadow: false
+- &fire_wand
+  name: fire_wand
+  id: 58
+  width: 5
+  height: 11
+  image: images/fire_wand.png
+  animationTemplate: *single_image_equipment
+  equipmentOffset: *big_sword
+  heightOffset: 0.0
+  shadow: true
+- &fire_spin
+  name: fire_spin
+  id: 59
+  width: 11
+  height: 11
+  image: images/fire_spin.png
+  animationTemplate: *single_rotating
+  equipmentOffset: null
+  heightOffset: 1.0
+  shadow: true
+- &magic_wand02
+  name: magic_wand
+  id: 60
+  width: 3
+  height: 7
+  image: images/magic_wand.png
+  animationTemplate: *single_image_equipment
+  equipmentOffset: *magic_wand
+  heightOffset: 0.0
+  shadow: false
+- &magic_wand_hit
+  name: magic_wand_hit
+  id: 61
+  width: 5
+  height: 5
+  image: images/magic_wand_hit.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: false
+- &ice_wand
+  name: ice_wand
+  id: 62
+  width: 5
+  height: 11
+  image: images/ice_wand.png
+  animationTemplate: *single_image_equipment
+  equipmentOffset: *big_sword
+  heightOffset: 0.0
+  shadow: false
+- &blizzard02
+  name: blizzard
+  id: 63
+  width: 48
+  height: 48
+  image: images/blizzard.png
+  animationTemplate: *blizzard
+  equipmentOffset: null
+  heightOffset: 24.0
+  shadow: false
+- &light_sword
+  name: light_sword
+  id: 64
+  width: 5
+  height: 11
+  image: images/light_sword.png
+  animationTemplate: *single_image_equipment
+  equipmentOffset: *big_sword
+  heightOffset: 0.0
+  shadow: false
+- &light_sword_hit
+  name: light_sword_hit
+  id: 65
+  width: 12
+  height: 21
+  image: images/light_sword_hit.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 7.0
+  shadow: false
+- &light_sword_special
+  name: light_sword_special
+  id: 66
+  width: 31
+  height: 31
+  image: images/light_sword_special.png
+  animationTemplate: *single_rotating
+  equipmentOffset: null
+  heightOffset: 14.0
+  shadow: false
+- &light_wand
+  name: light_wand
+  id: 67
+  width: 5
+  height: 11
+  image: images/light_wand.png
+  animationTemplate: *single_image_equipment
+  equipmentOffset: *big_sword
+  heightOffset: 0.0
+  shadow: false
+- &light_wand_hit
+  name: light_wand_hit
+  id: 68
+  width: 17
+  height: 17
+  image: images/light_wand_hit.png
+  animationTemplate: *single_fast_rotating
+  equipmentOffset: null
+  heightOffset: 6.0
+  shadow: false
+- &angel_form03
+  name: angel_form
+  id: 69
+  width: 25
+  height: 12
+  image: images/angel.png
+  animationTemplate: *angel_form
+  equipmentOffset: *angel_form02
+  heightOffset: 0.0
+  shadow: true
+- &trap
+  name: trap
+  id: 70
+  width: 7
+  height: 8
+  image: images/trap.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 4.0
+  shadow: false
+- &triggered_trap
+  name: triggered_trap
+  id: 71
+  width: 9
+  height: 4
+  image: images/triggered_trap.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 2.0
+  shadow: false
+- &dynarcanite_explosion02
+  name: dynarcanite_explosion
+  id: 72
+  width: 23
+  height: 23
+  image: images/dynarcanite_explosion.png
+  animationTemplate: *dynarcanite_explosion
+  equipmentOffset: null
+  heightOffset: 11.0
+  shadow: false
+- &wizard_dress
+  name: wizard_dress
+  id: 73
+  width: 7
+  height: 9
+  image: images/wizard_dress.png
+  animationTemplate: *character
+  equipmentOffset: *character02
+  heightOffset: 0.0
+  shadow: true
+- &paladin_armor
+  name: paladin_armor
+  id: 74
+  width: 7
+  height: 9
+  image: images/paladin_armor.png
+  animationTemplate: *character
+  equipmentOffset: *character02
+  heightOffset: 0.0
+  shadow: true
+- &hook
+  name: hook
+  id: 75
+  width: 8
+  height: 7
+  image: images/hook.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: false
+- &shield_effect
+  name: shield_effect
+  id: 76
+  width: 15
+  height: 15
+  image: images/shield.png
+  animationTemplate: *single_rotating
+  equipmentOffset: null
+  heightOffset: 7.0
+  shadow: false
+- &rhinobow02
+  name: rhinobow
+  id: 77
+  width: 3
+  height: 11
+  image: images/rhinobow.png
+  animationTemplate: *bidirectionnal_single_image_equipment
+  equipmentOffset: *rhinobow
+  heightOffset: 0.0
+  shadow: true
+- &rhinobow_hit
+  name: rhinobow_hit
+  id: 78
+  width: 8
+  height: 5
+  image: images/rhinobow_hit.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: false
+- &golem_hit
+  name: golem_hit
+  id: 79
+  width: 8
+  height: 8
+  image: images/golem_hit.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 2.0
+  shadow: true
+- &giant_crab02
+  name: giant_crab
+  id: 80
+  width: 16
+  height: 12
+  image: images/giant_crab.png
+  animationTemplate: *giant_crab
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &ninja_pig_shuriken
+  name: ninja_pig_shuriken
+  id: 81
+  width: 5
+  height: 5
+  image: images/ninja_pig_shuriken.png
+  animationTemplate: *single_rotating
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+- &giant_crab_bubble
+  name: giant_crab_bubble
+  id: 82
+  width: 5
+  height: 5
+  image: images/giant_crab_bubble.png
+  animationTemplate: *single_image
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
 effects:
 - &wood_bow_hit
   name: wood_bow_hit
@@ -1286,7 +1775,7 @@ effects:
   spriteSheet: *bow_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 750
   collisionRadius: 0.6
@@ -1296,8 +1785,9 @@ effects:
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 8.0
+        base: 13.0
         statMultipliers:
         - {statType: AGILITY, multiplier: 1.0}
   repeatFollowingElements:
@@ -1306,15 +1796,15 @@ effects:
   delayedFollowingElements: []
   deathFollowingElements: []
   deathAlterations: []
-- &rock_projectile02
-  name: rock_projectile
+- &ninja_pig_shuriken02
+  name: ninja_pig_shuriken
   id: 1
-  spriteSheet: *rock_projectile
+  spriteSheet: *ninja_pig_shuriken
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
-  duration: 1000
+  duration: 800
   collisionRadius: 0.3
   movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
   targets:
@@ -1322,8 +1812,9 @@ effects:
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 8.0
+        base: 5.0
         statMultipliers: []
   repeatFollowingElements:
     base: 0.0
@@ -1337,7 +1828,7 @@ effects:
   spriteSheet: *sword_hit
   orientation: MOVING_ANGLE
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 150
   collisionRadius: 1.2
@@ -1347,10 +1838,11 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 10.0
+        base: 15.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 0.7}
+        - {statType: STRENGTH, multiplier: 1.0}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -1363,7 +1855,7 @@ effects:
   spriteSheet: null
   orientation: MOVING_ANGLE
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 1000
   collisionRadius: 0.5
@@ -1373,6 +1865,7 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 15.0
         statMultipliers: []
@@ -1388,7 +1881,7 @@ effects:
   spriteSheet: *warlock_projectile
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 800
   collisionRadius: 0.35
@@ -1412,7 +1905,7 @@ effects:
         spriteSheet: *warlock_projectile_explosion02
         orientation: STATIC
         loopAnimation: false
-        alwaysForeground: false
+        drawDepth: NORMAL
         solid: false
         duration: 600
         collisionRadius: 1.2
@@ -1422,12 +1915,13 @@ effects:
           destroyWhenCollide: false
           alterations:
           - !!InstantDamageAlteration
+            targetType: TARGET
             amount:
               base: 5.0
               statMultipliers:
               - {statType: INTELLIGENCE, multiplier: 1.0}
           - !!FollowingElementAlteration
-            source: SELF
+            targetType: TARGET
             followingElement: !!FollowingEffect
               offsetAngleEffect:
                 offsetAngle: 0.0
@@ -1438,7 +1932,7 @@ effects:
                   spriteSheet: *piece_of_soul
                   orientation: MOVING_ANGLE
                   loopAnimation: true
-                  alwaysForeground: false
+                  drawDepth: NORMAL
                   solid: false
                   duration: 20000
                   collisionRadius: 0.5
@@ -1448,6 +1942,7 @@ effects:
                     destroyWhenCollide: true
                     alterations:
                     - !!AddItemAlteration
+                      targetType: TARGET
                       itemStack:
                         item: &piece_of_soul03 !!ResourceItem
                           name: piece_of_soul
@@ -1477,7 +1972,7 @@ effects:
   spriteSheet: *summoning_effect02
   orientation: STATIC
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 800
   collisionRadius: 0.0
@@ -1533,7 +2028,7 @@ effects:
             forwardFactor: 0.7
           - *Attack
         itemReward: null
-        abilitySet: &ninja_pig
+        abilitySet: &ninja_pig02
           name: ninja_pig
           id: 0
           abilities:
@@ -1542,12 +2037,12 @@ effects:
             cooldown: 1000
             alterations:
             - !!FollowingElementAlteration
-              source: SELF
+              targetType: TARGET
               followingElement: !!FollowingEffect
                 offsetAngleEffect:
                   offsetAngle: 0.0
                   randomAngle: 0.08726646259971647
-                  effect: *rock_projectile02
+                  effect: *ninja_pig_shuriken02
             predictionBulletSpeed: 22.0
       owned: true
       strengthBonus:
@@ -1568,7 +2063,7 @@ effects:
   spriteSheet: *whirlwind
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 6000
   collisionRadius: 1.83
@@ -1578,10 +2073,11 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!ContinuousDamageAlteration
+      targetType: TARGET
       damagePerSecond:
-        base: 20.0
+        base: 30.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 0.8}
+        - {statType: STRENGTH, multiplier: 1.3}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -1594,7 +2090,7 @@ effects:
   spriteSheet: *small_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 250
   collisionRadius: 0.4
@@ -1604,6 +2100,7 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 10.0
         statMultipliers:
@@ -1620,7 +2117,7 @@ effects:
   spriteSheet: *small_hit
   orientation: MOVING_ANGLE
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 200
   collisionRadius: 0.4
@@ -1630,8 +2127,9 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 15.0
+        base: 20.0
         statMultipliers:
         - {statType: STRENGTH, multiplier: 2.0}
   repeatFollowingElements:
@@ -1646,7 +2144,7 @@ effects:
   spriteSheet: *necro_fire
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 1000
   collisionRadius: 0.5
@@ -1656,6 +2154,7 @@ effects:
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 15.0
         statMultipliers: []
@@ -1671,7 +2170,7 @@ effects:
   spriteSheet: *summoning_effect02
   orientation: STATIC
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 800
   collisionRadius: 0.0
@@ -1726,10 +2225,12 @@ effects:
           id: 0
           cooldown: 10000
           alterations:
-          - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+          - !!FixedMovementAlteration
+            targetType: SELF
             duration: 1000
             stackPolicy: REPLACE
-            origin: SELF
+            sourceType: SELF
+            sourceDirection: TARGET
             relativeAngle: 0.0
             randomAngle: 3.141592653589793
             speed:
@@ -1742,7 +2243,7 @@ effects:
           cooldown: 1200
           alterations:
           - !!FollowingElementAlteration
-            source: SELF
+            targetType: TARGET
             followingElement: !!FollowingEffect
               offsetAngleEffect:
                 offsetAngle: 0.0
@@ -1802,7 +2303,7 @@ effects:
   spriteSheet: *fireball
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 1000
   collisionRadius: 0.5
@@ -1812,6 +2313,7 @@ effects:
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 15.0
         statMultipliers: []
@@ -1827,7 +2329,7 @@ effects:
   spriteSheet: *shurirang03
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 600
   collisionRadius: 1.0
@@ -1837,6 +2339,7 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 10.0
         statMultipliers:
@@ -1857,7 +2360,7 @@ effects:
         spriteSheet: *shurirang03
         orientation: STATIC
         loopAnimation: true
-        alwaysForeground: false
+        drawDepth: NORMAL
         solid: false
         duration: 2000
         collisionRadius: 1.0
@@ -1867,6 +2370,7 @@ effects:
           destroyWhenCollide: false
           alterations:
           - !!InstantDamageAlteration
+            targetType: TARGET
             amount:
               base: 10.0
               statMultipliers:
@@ -1889,7 +2393,7 @@ effects:
   spriteSheet: *shurirang03
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 600
   collisionRadius: 1.0
@@ -1910,7 +2414,7 @@ effects:
         spriteSheet: *smoke02
         orientation: STATIC
         loopAnimation: false
-        alwaysForeground: true
+        drawDepth: FOREGROUND
         solid: false
         duration: 600
         collisionRadius: 0.0
@@ -1924,13 +2428,13 @@ effects:
         deathAlterations: []
   deathAlterations:
   - !!FollowingElementAlteration
-    source: ORIGIN
+    targetType: TARGET
     followingElement: !!FollowingEffect
       offsetAngleEffect:
         offsetAngle: 0.0
         randomAngle: 0.0
         effect: *smoke03
-  - !!TeleportationAlteration {}
+  - !!TeleportationAlteration {targetType: TARGET}
 - *smoke03
 - &ice_dragon_spike
   name: ice_dragon_spike
@@ -1938,7 +2442,7 @@ effects:
   spriteSheet: *ice_spike
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 1000
   collisionRadius: 0.5
@@ -1948,10 +2452,12 @@ effects:
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 15.0
         statMultipliers: []
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 1000
       stackPolicy: REPLACE
       statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.4}
@@ -1967,20 +2473,21 @@ effects:
   spriteSheet: *fire_sword_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 250
-  collisionRadius: 1.5
+  collisionRadius: 1.7
   movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 25.0, relative: true, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 25.0
+        base: 27.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 1.2}
+        - {statType: STRENGTH, multiplier: 1.4}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -1993,7 +2500,7 @@ effects:
   spriteSheet: *fire_sword_special
   orientation: STATIC
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 10000
   collisionRadius: 1.0
@@ -2003,10 +2510,11 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!ContinuousDamageAlteration
+      targetType: TARGET
       damagePerSecond:
         base: 10.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 0.4}
+        - {statType: STRENGTH, multiplier: 1.0}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -2019,7 +2527,7 @@ effects:
   spriteSheet: *sword_hit
   orientation: MOVING_ANGLE
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 200
   collisionRadius: 1.2
@@ -2029,10 +2537,11 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 20.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 1.0}
+        - {statType: STRENGTH, multiplier: 1.2}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -2045,21 +2554,23 @@ effects:
   spriteSheet: *ice_sword_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 250
-  collisionRadius: 1.5
+  collisionRadius: 1.7
   movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 25.0, relative: true, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 16.0
+        base: 22.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 0.8}
+        - {statType: STRENGTH, multiplier: 1.2}
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 600
       stackPolicy: IGNORE
       statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.3}
@@ -2075,27 +2586,29 @@ effects:
   spriteSheet: *ice_sword_rift
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 1000
-  collisionRadius: 0.45
+  collisionRadius: 1.25
   movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: true
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 5.0
+        base: 25.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 0.5}
-    - !!StunAlteration {duration: 800}
+        - {statType: STRENGTH, multiplier: 1.0}
+    - !!StunAlteration {targetType: TARGET, duration: 800}
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 1200
       stackPolicy: IGNORE
       statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.3}
     - !!FollowingElementAlteration
-      source: TARGET
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2106,7 +2619,7 @@ effects:
             spriteSheet: *ice_stun
             orientation: STATIC
             loopAnimation: true
-            alwaysForeground: false
+            drawDepth: NORMAL
             solid: false
             duration: 800
             collisionRadius: 0.0
@@ -2131,20 +2644,21 @@ effects:
   spriteSheet: *demonic_scythe_hit
   orientation: MOVING_ANGLE
   loopAnimation: true
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 250
-  collisionRadius: 1.5
+  collisionRadius: 1.7
   movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: true, destroyAtTargetPosition: false}
   targets:
   - targetType: ALL_ENEMIES
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
-        base: 20.0
+        base: 27.0
         statMultipliers:
-        - {statType: STRENGTH, multiplier: 1.0}
+        - {statType: STRENGTH, multiplier: 1.4}
   repeatFollowingElements:
     base: 0.0
     statMultipliers: []
@@ -2157,7 +2671,7 @@ effects:
   spriteSheet: null
   orientation: STATIC
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: false
   duration: 2000
   collisionRadius: 0.7
@@ -2167,6 +2681,7 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 30.0
         statMultipliers: []
@@ -2182,7 +2697,7 @@ effects:
   spriteSheet: *arcanite_golem_hit
   orientation: MOVING_ANGLE
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 1200
   collisionRadius: 0.4
@@ -2192,6 +2707,7 @@ effects:
     destroyWhenCollide: false
     alterations:
     - !!InstantDamageAlteration
+      targetType: TARGET
       amount:
         base: 13.0
         statMultipliers: []
@@ -2207,7 +2723,7 @@ effects:
   spriteSheet: null
   orientation: STATIC
   loopAnimation: false
-  alwaysForeground: false
+  drawDepth: NORMAL
   solid: true
   duration: 0
   collisionRadius: 0.0
@@ -2225,13 +2741,706 @@ effects:
       effect: *smoke03
   deathAlterations:
   - !!FollowingElementAlteration
-    source: ORIGIN
+    targetType: TARGET
     followingElement: !!FollowingEffect
       offsetAngleEffect:
         offsetAngle: 0.0
         randomAngle: 0.0
         effect: *smoke03
-  - !!TeleportationAlteration {}
+  - !!TeleportationAlteration {targetType: TARGET}
+- &nina_pig_wave
+  name: nina_pig_wave
+  id: 29
+  spriteSheet: *summoning_effect02
+  orientation: STATIC
+  loopAnimation: false
+  drawDepth: NORMAL
+  solid: false
+  duration: 30000
+  collisionRadius: 0.0
+  movement: !!StaticEffectMovement {minDistance: 0.0, maxDistance: 0.0}
+  targets: []
+  repeatFollowingElements:
+    base: 1.0
+    statMultipliers:
+    - {statType: AGILITY, multiplier: 1.0}
+  delayedFollowingElements:
+  - delay: 300
+    followingElement: !!FollowingCreature
+      creature: &ninja_pig04
+        name: ninja_pig
+        id: 1
+        spriteSheet: *ninja_pig
+        collisionRadius: 0.42
+        strength: -5.0
+        agility: -5.0
+        intelligence: 0.0
+        solid: true
+        behaviorSet: &ranged_attack
+          name: ranged_attack
+          id: 0
+          behaviors:
+          - !!TurnAroundBehavior
+            name: Wander
+            id: 0
+            changeConditions: []
+            abilityToUseId: 1
+            targetType: CLOSEST_ENNEMY
+            minDistance: 1.0
+            maxDistance: 15.0
+        itemReward: &ninja_pig03
+          name: ninja_pig
+          id: 6
+          entries:
+          - itemStack:
+              item: &leather !!ResourceItem
+                name: leather
+                id: 5
+                maxStackSize: 50
+                frame: {x: 5, y: 0}
+                image: images/items.png
+              quantity: 2
+            probability: 1.0
+          - itemStack:
+              item: *leather
+              quantity: 1
+            probability: 0.5
+          - itemStack:
+              item: &raw_meat !!ResourceItem
+                name: raw_meat
+                id: 8
+                maxStackSize: 20
+                frame: {x: 4, y: 1}
+                image: images/items.png
+              quantity: 1
+            probability: 1.0
+          - itemStack:
+              item: *raw_meat
+              quantity: 1
+            probability: 0.5
+        abilitySet: *ninja_pig02
+      owned: false
+      strengthBonus:
+        base: 0.0
+        statMultipliers:
+        - {statType: AGILITY, multiplier: 0.1}
+      agilityBonus:
+        base: 0.0
+        statMultipliers:
+        - {statType: AGILITY, multiplier: 0.1}
+      intelligenceBonus:
+        base: 0.0
+        statMultipliers: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &pixie_punch
+  name: pixie_punch
+  id: 30
+  spriteSheet: null
+  orientation: STATIC
+  loopAnimation: false
+  drawDepth: NORMAL
+  solid: false
+  duration: 100
+  collisionRadius: 1.8
+  movement: !!BoundEffectMovement {distance: 0.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 10.0
+        statMultipliers: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &dark_rhino_hit
+  name: dark_rhino_hit
+  id: 31
+  spriteSheet: null
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: false
+  duration: 3000
+  collisionRadius: 0.9
+  movement: !!BoundEffectMovement {distance: 1.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 50.0
+        statMultipliers: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &fire_area03
+  name: fire_area
+  id: 32
+  spriteSheet: *fire_area02
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 6000
+  collisionRadius: 3.0
+  movement: !!StaticEffectMovement {minDistance: 0.0, maxDistance: 0.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!ContinuousDamageAlteration
+      targetType: TARGET
+      damagePerSecond:
+        base: 30.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 2.0}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &fire_wand_hit
+  name: fire_wand_hit
+  id: 33
+  spriteSheet: *fireball
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 800
+  collisionRadius: 0.65
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 24.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 20.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 1.4}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &fire_wand_spin
+  name: fire_wand_spin
+  id: 34
+  spriteSheet: *fire_spin
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 1200
+  collisionRadius: 0.0
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 15.0, relative: false, destroyAtTargetPosition: true}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 30.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 2.0}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements:
+  - !!FollowingEffect
+    offsetAngleEffect:
+      offsetAngle: 0.0
+      randomAngle: 0.0
+      effect: *fire_area03
+  deathAlterations: []
+- &magic_wand_hit02
+  name: magic_wand_hit
+  id: 35
+  spriteSheet: *magic_wand_hit
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 750
+  collisionRadius: 0.6
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 22.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 10.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.8}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &ice_wand_hit
+  name: ice_wand_hit
+  id: 36
+  spriteSheet: *ice_spike
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 800
+  collisionRadius: 0.65
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 24.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 17.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 1.1}
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 600
+      stackPolicy: REPLACE
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.4}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &blizzard03
+  name: blizzard
+  id: 37
+  spriteSheet: *blizzard02
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 6000
+  collisionRadius: 3.0
+  movement: !!StaticEffectMovement {minDistance: 0.0, maxDistance: 18.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!ContinuousDamageAlteration
+      targetType: TARGET
+      damagePerSecond:
+        base: 28.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 1.8}
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 500
+      stackPolicy: REPLACE
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.4}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &light_sword_hit02
+  name: light_sword_hit
+  id: 38
+  spriteSheet: *light_sword_hit
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: false
+  duration: 250
+  collisionRadius: 1.7
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 25.0, relative: true, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 22.0
+        statMultipliers:
+        - {statType: STRENGTH, multiplier: 1.0}
+    - !!InstantHealAlteration
+      targetType: ORIGIN
+      amount:
+        base: 3.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.2}
+  - targetType: OTHER_ALLIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantHealAlteration
+      targetType: TARGET
+      amount:
+        base: 5.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.5}
+    - !!InstantHealAlteration
+      targetType: ORIGIN
+      amount:
+        base: 3.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.2}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &light_sword_special02
+  name: light_sword_special
+  id: 39
+  spriteSheet: *light_sword_special
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 2000
+  collisionRadius: 2.3
+  movement: !!BoundEffectMovement {distance: 0.0}
+  targets:
+  - targetType: ALL_ALLIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantHealAlteration
+      targetType: TARGET
+      amount:
+        base: 20.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 1.0}
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 3000
+      stackPolicy: IGNORE
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: 0.5}
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 0
+      stackPolicy: IGNORE
+      statModifier: {statType: ARMOR, operationType: RELATIVE, value: 0.3}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &light_wand_hit02
+  name: light_wand_hit
+  id: 40
+  spriteSheet: *light_wand_hit
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 1000
+  collisionRadius: 1.0
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 10.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.8}
+    - !!InstantHealAlteration
+      targetType: ORIGIN
+      amount:
+        base: 3.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.2}
+  - targetType: OTHER_ALLIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantHealAlteration
+      targetType: TARGET
+      amount:
+        base: 5.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.4}
+    - !!InstantHealAlteration
+      targetType: ORIGIN
+      amount:
+        base: 3.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.2}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &trap02
+  name: trap
+  id: 41
+  spriteSheet: *trap
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 15000
+  collisionRadius: 0.5
+  movement: !!StaticEffectMovement {minDistance: 1.0, maxDistance: 1.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 10.0
+        statMultipliers:
+        - {statType: AGILITY, multiplier: 1.0}
+    - !!StunAlteration {targetType: TARGET, duration: 2000}
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: &triggered_trap02
+            name: triggered_trap
+            id: 42
+            spriteSheet: *triggered_trap
+            orientation: STATIC
+            loopAnimation: true
+            drawDepth: FOREGROUND
+            solid: false
+            duration: 2000
+            collisionRadius: 0.0
+            movement: !!StaticEffectMovement {minDistance: 0.0, maxDistance: 0.0}
+            targets: []
+            repeatFollowingElements:
+              base: 0.0
+              statMultipliers: []
+            delayedFollowingElements: []
+            deathFollowingElements: []
+            deathAlterations: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- *triggered_trap02
+- &dynarcanite_explosion03
+  name: dynarcanite_explosion
+  id: 43
+  spriteSheet: *dynarcanite_explosion02
+  orientation: STATIC
+  loopAnimation: false
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 520
+  collisionRadius: 1.5
+  movement: !!BoundEffectMovement {distance: 0.0}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 7.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.7}
+    - !!FixedMovementAlteration
+      targetType: TARGET
+      duration: 700
+      stackPolicy: REPLACE
+      sourceType: ORIGIN
+      sourceDirection: POSITION
+      relativeAngle: 0.0
+      randomAngle: 0.0
+      speed:
+        base: 6.0
+        statMultipliers:
+        - {statType: INTELLIGENCE, multiplier: 0.2}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &hook02
+  name: hook
+  id: 44
+  spriteSheet: *hook
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 1000
+  collisionRadius: 0.6
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!FixedMovementAlteration
+      targetType: TARGET
+      duration: 800
+      stackPolicy: REPLACE
+      sourceType: ORIGIN
+      sourceDirection: POSITION
+      relativeAngle: 3.141592653589793
+      randomAngle: 0.0
+      speed:
+        base: 13.0
+        statMultipliers: []
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: &hooked
+            name: hooked
+            id: 45
+            spriteSheet: *hook
+            orientation: STATIC
+            loopAnimation: true
+            drawDepth: FOREGROUND
+            solid: false
+            duration: 800
+            collisionRadius: 0.0
+            movement: !!BoundEffectMovement {distance: 0.0}
+            targets: []
+            repeatFollowingElements:
+              base: 0.0
+              statMultipliers: []
+            delayedFollowingElements: []
+            deathFollowingElements: []
+            deathAlterations: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- *hooked
+- &shield_effect02
+  name: shield_effect
+  id: 46
+  spriteSheet: *shield_effect
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: BACKGROUND
+  solid: false
+  duration: 4000
+  collisionRadius: 0.0
+  movement: !!BoundEffectMovement {distance: 0.0}
+  targets: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &rhinobow_hit02
+  name: rhinobow_hit
+  id: 47
+  spriteSheet: *rhinobow_hit
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 1000
+  collisionRadius: 0.65
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 24.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 20.0
+        statMultipliers:
+        - {statType: AGILITY, multiplier: 1.5}
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &golem_hit02
+  name: golem_hit
+  id: 48
+  spriteSheet: *golem_hit
+  orientation: MOVING_ANGLE
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 500
+  collisionRadius: 0.0
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 12.0, relative: true, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: false
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 18.0
+        statMultipliers: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
+- &giant_crab_bubble02
+  name: giant_crab_bubble
+  id: 49
+  spriteSheet: *giant_crab_bubble
+  orientation: STATIC
+  loopAnimation: true
+  drawDepth: NORMAL
+  solid: true
+  duration: 800
+  collisionRadius: 0.3
+  movement: !!LinearEffectMovement {initialDistance: 0.0, speed: 18.0, relative: false, destroyAtTargetPosition: false}
+  targets:
+  - targetType: ALL_ENEMIES
+    destroyWhenCollide: true
+    alterations:
+    - !!InstantDamageAlteration
+      targetType: TARGET
+      amount:
+        base: 6.0
+        statMultipliers: []
+  repeatFollowingElements:
+    base: 0.0
+    statMultipliers: []
+  delayedFollowingElements: []
+  deathFollowingElements: []
+  deathAlterations: []
 items:
 - &wood_sword02 !!WeaponItem
   name: wood_sword
@@ -2246,7 +3455,7 @@ items:
     cooldown: 1000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2279,6 +3488,7 @@ items:
   duration: 5000
   alterations:
   - !!InstantHealAlteration
+    targetType: TARGET
     amount:
       base: 50.0
       statMultipliers: []
@@ -2292,12 +3502,7 @@ items:
   statModifiers:
   - {statType: STRENGTH, operationType: ADDITIVE, value: 1.0}
   - {statType: AGILITY, operationType: ADDITIVE, value: 2.0}
-- &leather !!ResourceItem
-  name: leather
-  id: 5
-  maxStackSize: 50
-  frame: {x: 5, y: 0}
-  image: images/items.png
+- *leather
 - &apple !!EdibleItem
   name: apple
   id: 6
@@ -2307,22 +3512,17 @@ items:
   duration: 1000
   alterations:
   - !!InstantEatAlteration
+    targetType: TARGET
     amount:
-      base: 20.0
-      statMultipliers:
-      - {statType: STRENGTH, multiplier: 2.0}
+      base: 10.0
+      statMultipliers: []
 - &pixie_powder !!ResourceItem
   name: pixie_powder
   id: 7
   maxStackSize: 100
   frame: {x: 2, y: 1}
   image: images/items.png
-- !!ResourceItem
-  name: raw_meat
-  id: 8
-  maxStackSize: 20
-  frame: {x: 4, y: 1}
-  image: images/items.png
+- *raw_meat
 - !!StructureItem
   name: campfire
   id: 9
@@ -2355,22 +3555,21 @@ items:
   maxStackSize: 500
   frame: {x: 1, y: 1}
   image: images/items.png
-- !!ResourceItem
+- &hard_leather !!ResourceItem
   name: hard_leather
   id: 11
   maxStackSize: 20
   frame: {x: 1, y: 2}
   image: images/items.png
-- &hard_leather_armor02 !!ClothingItem
-  name: hard_leather_armor
+- &hunter_clothing02 !!ClothingItem
+  name: hunter_clothing
   id: 12
-  maxStackSize: 20
+  maxStackSize: 1
   frame: {x: 5, y: 2}
   image: images/items.png
-  spriteSheet: *hard_leather_armor
+  spriteSheet: *hunter_clothing
   statModifiers:
-  - {statType: STRENGTH, operationType: ADDITIVE, value: 4.0}
-  - {statType: AGILITY, operationType: ADDITIVE, value: 4.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 12.0}
 - &stone !!ResourceItem
   name: stone
   id: 13
@@ -2396,7 +3595,7 @@ items:
     cooldown: 800
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2407,16 +3606,16 @@ items:
       quantity: 1
   specialAbility: !!ItemAlterationAbility
     id: 0
-    cooldown: 0
+    cooldown: 1000
     alterations: []
     ammunition: {item: null, quantity: 1}
-- &warlock_wand03 !!WeaponItem
+- &warlock_wand02 !!WeaponItem
   name: warlock_wand
   id: 16
   maxStackSize: 1
   frame: {x: 0, y: 4}
   image: images/items.png
-  spriteSheet: *warlock_wand02
+  spriteSheet: *warlock_wand
   statModifiers:
   - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
   baseAbility: !!ItemAlterationAbility
@@ -2424,7 +3623,7 @@ items:
     cooldown: 1000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2436,7 +3635,7 @@ items:
     cooldown: 30000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2468,13 +3667,13 @@ items:
   statModifiers:
   - {statType: STRENGTH, operationType: ADDITIVE, value: 6.0}
   - {statType: AGILITY, operationType: ADDITIVE, value: 6.0}
-- &barbaric_axe04 !!WeaponItem
+- &barbaric_axe03 !!WeaponItem
   name: barbaric_axe
   id: 21
   maxStackSize: 1
   frame: {x: 6, y: 1}
   image: images/items.png
-  spriteSheet: *barbaric_axe03
+  spriteSheet: *barbaric_axe02
   statModifiers:
   - {statType: STRENGTH, operationType: ADDITIVE, value: 1.0}
   - {statType: AGILITY, operationType: ADDITIVE, value: 1.0}
@@ -2483,21 +3682,21 @@ items:
     cooldown: 600
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *barabaric_axe_base
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.5235987755982988
           randomAngle: 0.0
           effect: *barabaric_axe_base
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -0.5235987755982988
@@ -2508,10 +3707,12 @@ items:
     id: 0
     cooldown: 2000
     alterations:
-    - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+    - !!FixedMovementAlteration
+      targetType: SELF
       duration: 200
       stackPolicy: REPLACE
-      origin: SELF
+      sourceType: SELF
+      sourceDirection: TARGET
       relativeAngle: 0.0
       randomAngle: 0.0
       speed:
@@ -2519,7 +3720,7 @@ items:
         statMultipliers:
         - {statType: SPEED, multiplier: 2.5}
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2551,7 +3752,7 @@ items:
     cooldown: 1000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2563,7 +3764,7 @@ items:
     cooldown: 14000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2584,7 +3785,7 @@ items:
     cooldown: 800
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2596,15 +3797,17 @@ items:
     cooldown: 20000
     alterations:
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 10000
       stackPolicy: REPLACE
       statModifier: {statType: STRENGTH, operationType: RELATIVE, value: 0.5}
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 10000
       stackPolicy: REPLACE
       statModifier: {statType: SPEED, operationType: RELATIVE, value: 0.5}
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2625,7 +3828,7 @@ items:
     cooldown: 900
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2637,17 +3840,18 @@ items:
     cooldown: 20000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *whirlwind02
-    - !!SilenceAlteration {duration: 6000}
+    - !!SilenceAlteration {targetType: TARGET, duration: 6000}
     - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
       duration: 6000
       stackPolicy: REPLACE
-      statModifier: {statType: SPEED, operationType: RELATIVE, value: 0.7}
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: 0.5}
     ammunition: {item: null, quantity: 1}
 - &ice_sword02 !!WeaponItem
   name: ice_sword
@@ -2663,7 +3867,7 @@ items:
     cooldown: 800
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2675,7 +3879,7 @@ items:
     cooldown: 5000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2689,15 +3893,18 @@ items:
   frame: {x: 0, y: 5}
   image: images/items.png
   spriteSheet: *demonic_scythe02
-  statModifiers: []
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 3.0}
   baseAbility: !!ItemAlterationAbility
     id: 0
     cooldown: 900
     alterations:
-    - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+    - !!FixedMovementAlteration
+      targetType: SELF
       duration: 200
       stackPolicy: REPLACE
-      origin: SELF
+      sourceType: SELF
+      sourceDirection: TARGET
       relativeAngle: 0.0
       randomAngle: 0.0
       speed:
@@ -2705,7 +3912,7 @@ items:
         statMultipliers:
         - {statType: SPEED, multiplier: 2.0}
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2716,17 +3923,19 @@ items:
     id: 0
     cooldown: 30000
     alterations:
-    - !!com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration
+    - !!OverridingSpriteSheetAlteration
+      targetType: TARGET
       duration: 5000
       stackPolicy: REPLACE
       spriteSheet: *demon
     - !!InstantHealAlteration
+      targetType: TARGET
       amount:
         base: 35.0
         statMultipliers: []
-    - !!InvincibleAlteration {duration: 5000}
+    - !!InvincibleAlteration {targetType: TARGET, duration: 5000}
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -2751,6 +3960,422 @@ items:
   maxStackSize: 1
   frame: {x: 5, y: 4}
   image: images/items.png
+- &rhino_horn !!ResourceItem
+  name: rhino_horn
+  id: 31
+  maxStackSize: 15
+  frame: {x: 4, y: 2}
+  image: images/items.png
+- &iron_armor02 !!ClothingItem
+  name: iron_armor
+  id: 32
+  maxStackSize: 1
+  frame: {x: 0, y: 3}
+  image: images/items.png
+  spriteSheet: *iron_armor
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 12.0}
+- &fire_wand02 !!WeaponItem
+  name: fire_wand
+  id: 33
+  maxStackSize: 1
+  frame: {x: 1, y: 5}
+  image: images/items.png
+  spriteSheet: *fire_wand
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 700
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *fire_wand_hit
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 14000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *fire_wand_spin
+    ammunition: {item: null, quantity: 1}
+- &magic_wand03 !!WeaponItem
+  name: magic_wand
+  id: 34
+  maxStackSize: 1
+  frame: {x: 7, y: 0}
+  image: images/items.png
+  spriteSheet: *magic_wand02
+  statModifiers: []
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 900
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *magic_wand_hit02
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 0
+    alterations: []
+    ammunition: {item: null, quantity: 1}
+- &ice_wand02 !!WeaponItem
+  name: ice_wand
+  id: 35
+  maxStackSize: 1
+  frame: {x: 7, y: 3}
+  image: images/items.png
+  spriteSheet: *ice_wand
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 700
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *ice_wand_hit
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 18000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *blizzard03
+    ammunition: {item: null, quantity: 1}
+- &agility_ring !!AccessoryItem
+  name: agility_ring
+  id: 36
+  maxStackSize: 1
+  frame: {x: 4, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers:
+  - {statType: AGILITY, operationType: ADDITIVE, value: 3.0}
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 0
+    alterations: []
+    ammunition: {item: null, quantity: 1}
+- &light_sword02 !!WeaponItem
+  name: light_sword
+  id: 37
+  maxStackSize: 1
+  frame: {x: 7, y: 1}
+  image: images/items.png
+  spriteSheet: *light_sword
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 1.0}
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 1.0}
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 900
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *light_sword_hit02
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 15000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *light_sword_special02
+    ammunition: {item: null, quantity: 1}
+- &golem_heart !!ResourceItem
+  name: golem_heart
+  id: 38
+  maxStackSize: 1
+  frame: {x: 7, y: 4}
+  image: images/items.png
+- &light_wand02 !!WeaponItem
+  name: light_wand
+  id: 39
+  maxStackSize: 1
+  frame: {x: 7, y: 2}
+  image: images/items.png
+  spriteSheet: *light_wand
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 1.0}
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 1000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *light_wand_hit02
+    ammunition: {item: null, quantity: 1}
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 23000
+    alterations:
+    - !!OverridingSpriteSheetAlteration
+      targetType: TARGET
+      duration: 6000
+      stackPolicy: REPLACE
+      spriteSheet: *angel_form03
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 6000
+      stackPolicy: REPLACE
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: 0.5}
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 6000
+      stackPolicy: REPLACE
+      statModifier: {statType: INTELLIGENCE, operationType: RELATIVE, value: 2.0}
+    ammunition: {item: null, quantity: 1}
+- &strength_ring !!AccessoryItem
+  name: strength_ring
+  id: 40
+  maxStackSize: 1
+  frame: {x: 2, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 3.0}
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 0
+    alterations: []
+    ammunition: {item: null, quantity: 1}
+- &intelligence_ring !!AccessoryItem
+  name: intelligence_ring
+  id: 41
+  maxStackSize: 1
+  frame: {x: 3, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 3.0}
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 0
+    alterations: []
+    ammunition: {item: null, quantity: 1}
+- &trinity_ring !!AccessoryItem
+  name: trinity_ring
+  id: 42
+  maxStackSize: 1
+  frame: {x: 5, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 2.0}
+  - {statType: AGILITY, operationType: ADDITIVE, value: 2.0}
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 2.0}
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 0
+    alterations: []
+    ammunition: {item: null, quantity: 1}
+- &reusable_trap !!AccessoryItem
+  name: reusable_trap
+  id: 43
+  maxStackSize: 1
+  frame: {x: 6, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers: []
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 15000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *trap02
+    ammunition: {item: null, quantity: 1}
+- !!AccessoryItem
+  name: dynarcanite
+  id: 44
+  maxStackSize: 1
+  frame: {x: 7, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers: []
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 15000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *dynarcanite_explosion03
+    ammunition: {item: null, quantity: 1}
+- &wizard_dress02 !!ClothingItem
+  name: wizard_dress
+  id: 45
+  maxStackSize: 1
+  frame: {x: 8, y: 4}
+  image: images/items.png
+  spriteSheet: *wizard_dress
+  statModifiers:
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 12.0}
+- &paladin_armor02 !!ClothingItem
+  name: paladin_armor
+  id: 46
+  maxStackSize: 1
+  frame: {x: 8, y: 3}
+  image: images/items.png
+  spriteSheet: *paladin_armor
+  statModifiers:
+  - {statType: STRENGTH, operationType: ADDITIVE, value: 6.0}
+  - {statType: INTELLIGENCE, operationType: ADDITIVE, value: 6.0}
+- &grappling_hook !!AccessoryItem
+  name: grappling_hook
+  id: 47
+  maxStackSize: 1
+  frame: {x: 5, y: 3}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers: []
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 15000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *hook02
+    ammunition: {item: null, quantity: 1}
+- !!AccessoryItem
+  name: shield
+  id: 48
+  maxStackSize: 1
+  frame: {x: 8, y: 5}
+  image: images/items.png
+  spriteSheet: null
+  statModifiers:
+  - {statType: ARMOR, operationType: ADDITIVE, value: 0.1}
+  ability: !!ItemAlterationAbility
+    id: 0
+    cooldown: 17000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *shield_effect02
+    - !!com.pixurvival.core.livingEntity.alteration.StatAlteration
+      targetType: TARGET
+      duration: 4000
+      stackPolicy: REPLACE
+      statModifier: {statType: SPEED, operationType: RELATIVE, value: -0.3}
+    - !!InvincibleAlteration {targetType: TARGET, duration: 4000}
+    - !!SilenceAlteration {targetType: TARGET, duration: 4000}
+    ammunition: {item: null, quantity: 1}
+- &rhinobow03 !!WeaponItem
+  name: rhinobow
+  id: 49
+  maxStackSize: 1
+  frame: {x: 2, y: 3}
+  image: images/items.png
+  spriteSheet: *rhinobow02
+  statModifiers:
+  - {statType: AGILITY, operationType: ADDITIVE, value: 2.0}
+  baseAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 700
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *rhinobow_hit02
+    ammunition:
+      item: *arrow
+      quantity: 1
+  specialAbility: !!ItemAlterationAbility
+    id: 0
+    cooldown: 6000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *rhinobow_hit02
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.2617993877991494
+          randomAngle: 0.0
+          effect: *rhinobow_hit02
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: -0.2617993877991494
+          randomAngle: 0.0
+          effect: *rhinobow_hit02
+    ammunition:
+      item: *arrow
+      quantity: 3
+- &crabmeat !!EdibleItem
+  name: crabmeat
+  id: 50
+  maxStackSize: 20
+  frame: {x: 8, y: 2}
+  image: images/items.png
+  duration: 3000
+  alterations:
+  - !!InstantEatAlteration
+    targetType: TARGET
+    amount:
+      base: 20.0
+      statMultipliers: []
 itemCrafts:
 - name: wood_sword
   id: 0
@@ -2789,20 +4414,22 @@ itemCrafts:
     quantity: 1
   recipes:
   - item: *leather
-    quantity: 8
+    quantity: 4
   - item: *cotton
     quantity: 3
-- name: hard_leather_armor
+- name: hunter_clothing
   id: 4
   duration: 6000
   result:
-    item: *hard_leather_armor02
+    item: *hunter_clothing02
     quantity: 1
   recipes:
   - item: *leather
-    quantity: 8
-  - item: *leather
-    quantity: 4
+    quantity: 12
+  - item: *hard_leather
+    quantity: 10
+  - item: *cotton
+    quantity: 5
 - name: wood_bow
   id: 5
   duration: 4000
@@ -2818,7 +4445,7 @@ itemCrafts:
   id: 6
   duration: 7000
   result:
-    item: *warlock_wand03
+    item: *warlock_wand02
     quantity: 1
   recipes:
   - item: *magic_wood
@@ -2842,7 +4469,7 @@ itemCrafts:
   id: 8
   duration: 8000
   result:
-    item: *barbaric_axe04
+    item: *barbaric_axe03
     quantity: 1
   recipes:
   - item: *magic_wood
@@ -2902,12 +4529,10 @@ itemCrafts:
     item: *barbaric_clothing02
     quantity: 1
   recipes:
-  - item: *leather
-    quantity: 12
+  - item: *hard_leather
+    quantity: 10
   - item: *iron
-    quantity: 6
-  - item: *cotton
-    quantity: 4
+    quantity: 10
 - name: ninja_clothing
   id: 14
   duration: 8000
@@ -2918,9 +4543,172 @@ itemCrafts:
   - item: *cotton
     quantity: 8
   - item: *arcanite
-    quantity: 12
-  - item: *leather
-    quantity: 8
+    quantity: 10
+  - item: *hard_leather
+    quantity: 10
+- name: iron_armor
+  id: 15
+  duration: 12000
+  result:
+    item: *iron_armor02
+    quantity: 1
+  recipes:
+  - item: *iron
+    quantity: 20
+- name: magic_wand
+  id: 16
+  duration: 4000
+  result:
+    item: *magic_wand03
+    quantity: 1
+  recipes:
+  - item: *magic_wood
+    quantity: 5
+  - item: *arcanite
+    quantity: 7
+- name: ice_wand
+  id: 17
+  duration: 10000
+  result:
+    item: *ice_wand02
+    quantity: 1
+  recipes:
+  - item: *magic_wand03
+    quantity: 1
+  - item: *ice_soul
+    quantity: 1
+- name: fire_wand
+  id: 18
+  duration: 10000
+  result:
+    item: *fire_wand02
+    quantity: 1
+  recipes:
+  - item: *magic_wand03
+    quantity: 1
+  - item: *fire_soul
+    quantity: 1
+- name: light_sword
+  id: 19
+  duration: 10000
+  result:
+    item: *light_sword02
+    quantity: 1
+  recipes:
+  - item: *iron_sword02
+    quantity: 1
+  - item: *golem_heart
+    quantity: 2
+- name: light_wand
+  id: 20
+  duration: 10000
+  result:
+    item: *light_wand02
+    quantity: 1
+  recipes:
+  - item: *magic_wand03
+    quantity: 1
+  - item: *golem_heart
+    quantity: 2
+- name: agility_ring
+  id: 21
+  duration: 6000
+  result:
+    item: *agility_ring
+    quantity: 1
+  recipes:
+  - item: *hard_leather
+    quantity: 10
+- name: strength_ring
+  id: 22
+  duration: 6000
+  result:
+    item: *strength_ring
+    quantity: 1
+  recipes:
+  - item: *iron
+    quantity: 10
+- name: intelligence_ring
+  id: 23
+  duration: 6000
+  result:
+    item: *intelligence_ring
+    quantity: 1
+  recipes:
+  - item: *arcanite
+    quantity: 15
+- name: trinity_ring
+  id: 24
+  duration: 6000
+  result:
+    item: *trinity_ring
+    quantity: 1
+  recipes:
+  - item: *strength_ring
+    quantity: 1
+  - item: *agility_ring
+    quantity: 1
+  - item: *intelligence_ring
+    quantity: 1
+- name: reusable_trap
+  id: 25
+  duration: 5000
+  result:
+    item: *reusable_trap
+    quantity: 1
+  recipes:
+  - item: *iron
+    quantity: 5
+  - item: *wood
+    quantity: 5
+  - item: *pixie_powder
+    quantity: 3
+- name: wizard_dress
+  id: 26
+  duration: 8000
+  result:
+    item: *wizard_dress02
+    quantity: 1
+  recipes:
+  - item: *arcanite
+    quantity: 20
+  - item: *cotton
+    quantity: 15
+- name: paladin_armor
+  id: 27
+  duration: 10000
+  result:
+    item: *paladin_armor02
+    quantity: 1
+  recipes:
+  - item: *arcanite
+    quantity: 10
+  - item: *iron
+    quantity: 10
+- name: grappling_hook
+  id: 28
+  duration: 6000
+  result:
+    item: *grappling_hook
+    quantity: 1
+  recipes:
+  - item: *iron
+    quantity: 6
+  - item: *cotton
+    quantity: 15
+- name: rhinobow
+  id: 29
+  duration: 10000
+  result:
+    item: *rhinobow03
+    quantity: 1
+  recipes:
+  - item: *wood
+    quantity: 20
+  - item: *cotton
+    quantity: 10
+  - item: *rhino_horn
+    quantity: 2
 itemRewards:
 - &tree02
   name: tree
@@ -3022,18 +4810,7 @@ itemRewards:
       item: *magic_wood
       quantity: 1
     probability: 0.5
-- &ninja_pig03
-  name: ninja_pig
-  id: 6
-  entries:
-  - itemStack:
-      item: *leather
-      quantity: 2
-    probability: 1.0
-  - itemStack:
-      item: *leather
-      quantity: 1
-    probability: 0.5
+- *ninja_pig03
 - &fire_dragon03
   name: fire_dragon
   id: 7
@@ -3078,50 +4855,89 @@ itemRewards:
       item: *arcanite
       quantity: 1
     probability: 0.5
+- &pixie_warrior03
+  name: pixie_warrior
+  id: 11
+  entries:
+  - itemStack:
+      item: *leather
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *leather
+      quantity: 1
+    probability: 0.5
+  - itemStack:
+      item: *pixie_powder
+      quantity: 1
+    probability: 0.5
+- &darnk_rhino
+  name: darnk_rhino
+  id: 12
+  entries:
+  - itemStack:
+      item: *hard_leather
+      quantity: 2
+    probability: 1.0
+  - itemStack:
+      item: *hard_leather
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *hard_leather
+      quantity: 1
+    probability: 0.5
+  - itemStack:
+      item: *rhino_horn
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *rhino_horn
+      quantity: 1
+    probability: 0.5
+- &golem04
+  name: golem
+  id: 13
+  entries:
+  - itemStack:
+      item: *stone
+      quantity: 2
+    probability: 1.0
+  - itemStack:
+      item: *stone
+      quantity: 1
+    probability: 0.5
+  - itemStack:
+      item: *arcanite
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *arcanite
+      quantity: 1
+    probability: 0.5
+- &giant_crab04
+  name: giant_crab
+  id: 14
+  entries:
+  - itemStack:
+      item: *crabmeat
+      quantity: 1
+    probability: 1.0
+  - itemStack:
+      item: *crabmeat
+      quantity: 1
+    probability: 0.5
+  - itemStack:
+      item: *crabmeat
+      quantity: 1
+    probability: 0.5
 behaviorSets:
-- &ranged_attack
-  name: ranged_attack
-  id: 0
-  behaviors:
-  - &Wander02 !!WanderBehavior
-    name: Wander
-    id: 0
-    changeConditions:
-    - !!DistanceCondition
-      name: null
-      id: 0
-      nextBehavior: &Turn_around !!TurnAroundBehavior
-        name: Turn around
-        id: 0
-        changeConditions:
-        - !!DistanceCondition
-          name: null
-          id: 0
-          nextBehavior: *Wander02
-          targetType: CLOSEST_ENNEMY
-          operator: GREATER_THAN
-          targetDistance: 45.0
-        abilityToUseId: 1
-        targetType: CLOSEST_ENNEMY
-        minDistance: 5.0
-        maxDistance: 15.0
-      targetType: CLOSEST_ENNEMY
-      operator: LESS_THAN
-      targetDistance: 18.0
-    - !!TookDamageCondition
-      name: null
-      id: 0
-      nextBehavior: *Turn_around
-    abilityToUseId: -1
-    anchorType: SPAWN_POSITION
-    moveRate: 0.3
-    forwardFactor: 1.0
-  - *Turn_around
+- *ranged_attack
 - &get_away
   name: get_away
   id: 1
   behaviors:
-  - &Wander03 !!WanderBehavior
+  - &Wander02 !!WanderBehavior
     name: Wander
     id: 0
     changeConditions:
@@ -3135,7 +4951,7 @@ behaviorSets:
         - !!DistanceCondition
           name: null
           id: 0
-          nextBehavior: *Wander03
+          nextBehavior: *Wander02
           targetType: CLOSEST_ENNEMY
           operator: GREATER_THAN
           targetDistance: 20.0
@@ -3157,7 +4973,7 @@ behaviorSets:
   name: ghost_behavior
   id: 2
   behaviors:
-  - &Wander04 !!WanderBehavior
+  - &Wander03 !!WanderBehavior
     name: Wander
     id: 0
     changeConditions:
@@ -3171,7 +4987,7 @@ behaviorSets:
         - !!TimeCondition
           name: null
           id: 0
-          nextBehavior: *Wander04
+          nextBehavior: *Wander03
           targetTime: 1500
         - !!IsDayCondition
           name: null
@@ -3196,7 +5012,7 @@ behaviorSets:
         - !!DistanceCondition
           name: null
           id: 1
-          nextBehavior: *Wander04
+          nextBehavior: *Wander03
           targetType: CLOSEST_ENNEMY
           operator: GREATER_THAN
           targetDistance: 20.0
@@ -3266,11 +5082,11 @@ behaviorSets:
               targetType: CLOSEST_ENNEMY
               operator: GREATER_THAN
               targetDistance: 10.0
-            abilityToUseId: -1
+            abilityToUseId: 2
             targetType: CLOSEST_ENNEMY
-            minDistance: 0.0
+            minDistance: 1.2
             randomAngle: 0.0
-          targetTime: 5000
+          targetTime: 2000
         abilityToUseId: 1
         targetType: CLOSEST_ENNEMY
         minDistance: 0.1
@@ -3523,7 +5339,7 @@ behaviorSets:
         maxDistance: 12.0
       targetType: CLOSEST_ENNEMY
       operator: LESS_THAN
-      targetDistance: 13.0
+      targetDistance: 10.0
     - !!TookDamageCondition
       name: null
       id: 0
@@ -3533,8 +5349,201 @@ behaviorSets:
   - *Teleportation
   - *Attack_anyway
   - *Attack05
+- &pixie_warrior02
+  name: pixie_warrior
+  id: 10
+  behaviors:
+  - &Spawned !!WanderBehavior
+    name: Spawned
+    id: 0
+    changeConditions:
+    - !!TookDamageCondition
+      name: null
+      id: 0
+      nextBehavior: &Attack06 !!MoveTowardBehavior
+        name: Attack
+        id: 1
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: *Spawned
+          targetType: CLOSEST_ENNEMY
+          operator: GREATER_THAN
+          targetDistance: 20.0
+        abilityToUseId: 1
+        targetType: CLOSEST_ENNEMY
+        minDistance: 0.4
+        randomAngle: 0.06981317007977318
+    - !!TimeCondition
+      name: null
+      id: 0
+      nextBehavior: &wander !!WanderBehavior
+        name: wander
+        id: 0
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: *Attack06
+          targetType: CLOSEST_ENNEMY
+          operator: LESS_THAN
+          targetDistance: 10.0
+        - !!TookDamageCondition
+          name: null
+          id: 0
+          nextBehavior: *Attack06
+        abilityToUseId: -1
+        anchorType: SPAWN_POSITION
+        moveRate: 0.3
+        forwardFactor: 0.5
+      targetTime: 8000
+    abilityToUseId: -1
+    anchorType: SPAWN_POSITION
+    moveRate: 0.3
+    forwardFactor: 0.5
+  - *Attack06
+  - *wander
+- &dark_rhino02
+  name: dark_rhino
+  id: 11
+  behaviors:
+  - !!WanderBehavior
+    name: Just spawned
+    id: 0
+    changeConditions:
+    - !!TimeCondition
+      name: null
+      id: 0
+      nextBehavior: &Wander04 !!WanderBehavior
+        name: Wander
+        id: 0
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: &Come_in !!TurnAroundBehavior
+            name: Come in
+            id: 0
+            changeConditions:
+            - !!TimeCondition
+              name: null
+              id: 0
+              nextBehavior: &Rush !!MoveTowardBehavior
+                name: Rush
+                id: 3
+                changeConditions:
+                - !!TimeCondition
+                  name: null
+                  id: 0
+                  nextBehavior: *Come_in
+                  targetTime: 2000
+                abilityToUseId: 1
+                targetType: CLOSEST_ENNEMY
+                minDistance: 0.0
+                randomAngle: 0.0
+              targetTime: 3000
+            - !!DistanceCondition
+              name: null
+              id: 1
+              nextBehavior: *Wander04
+              targetType: CLOSEST_ENNEMY
+              operator: GREATER_THAN
+              targetDistance: 30.0
+            abilityToUseId: -1
+            targetType: CLOSEST_ENNEMY
+            minDistance: 5.0
+            maxDistance: 10.0
+          targetType: CLOSEST_ENNEMY
+          operator: LESS_THAN
+          targetDistance: 14.0
+        - !!TookDamageCondition
+          name: null
+          id: 0
+          nextBehavior: *Rush
+        abilityToUseId: -1
+        anchorType: SPAWN_POSITION
+        moveRate: 0.3
+        forwardFactor: 0.5
+      targetTime: 8000
+    - !!TookDamageCondition
+      name: null
+      id: 0
+      nextBehavior: *Rush
+    abilityToUseId: -1
+    anchorType: SPAWN_POSITION
+    moveRate: 0.3
+    forwardFactor: 0.5
+  - *Wander04
+  - !!DoNothingBehavior
+    name: Prepare Rush
+    id: 0
+    changeConditions:
+    - !!TimeCondition
+      name: null
+      id: 0
+      nextBehavior: *Rush
+      targetTime: 1000
+    abilityToUseId: -1
+  - *Rush
+  - *Come_in
+- &giant_crab03
+  name: giant_crab
+  id: 12
+  behaviors:
+  - !!WanderBehavior
+    name: Spawned
+    id: 0
+    changeConditions:
+    - !!TookDamageCondition
+      name: null
+      id: 0
+      nextBehavior: &Attack07 !!TurnAroundBehavior
+        name: Attack
+        id: 0
+        changeConditions:
+        - !!DistanceCondition
+          name: null
+          id: 0
+          nextBehavior: &Wander05 !!WanderBehavior
+            name: Wander
+            id: 0
+            changeConditions:
+            - !!DistanceCondition
+              name: null
+              id: 0
+              nextBehavior: *Attack07
+              targetType: CLOSEST_ENNEMY
+              operator: LESS_THAN
+              targetDistance: 12.0
+            - !!TookDamageCondition
+              name: null
+              id: 0
+              nextBehavior: *Attack07
+            abilityToUseId: -1
+            anchorType: SPAWN_POSITION
+            moveRate: 0.3
+            forwardFactor: 0.7
+          targetType: CLOSEST_ENNEMY
+          operator: GREATER_THAN
+          targetDistance: 25.0
+        abilityToUseId: 1
+        targetType: CLOSEST_ENNEMY
+        minDistance: 3.0
+        maxDistance: 8.0
+    - !!TimeCondition
+      name: null
+      id: 0
+      nextBehavior: *Wander05
+      targetTime: 8000
+    abilityToUseId: -1
+    anchorType: SPAWN_POSITION
+    moveRate: 0.3
+    forwardFactor: 0.7
+  - *Wander05
+  - *Attack07
 abilitySets:
-- *ninja_pig
+- *ninja_pig02
 - &night_ghost
   name: night_ghost
   id: 1
@@ -3544,7 +5553,7 @@ abilitySets:
     cooldown: 1000
     alterations: []
     predictionBulletSpeed: 0.0
-- &golem04
+- &golem05
   name: golem
   id: 2
   abilities:
@@ -3552,28 +5561,43 @@ abilitySets:
     id: 0
     cooldown: 6000
     alterations:
-    - !!com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration
+    - !!FixedMovementAlteration
+      targetType: SELF
       duration: 2000
       stackPolicy: REPLACE
-      origin: SELF
+      sourceType: SELF
+      sourceDirection: TARGET
       relativeAngle: 0.0
       randomAngle: 0.0
       speed:
         base: 0.0
         statMultipliers:
         - {statType: SPEED, multiplier: 2.5}
-    - !!com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration
+    - !!OverridingSpriteSheetAlteration
+      targetType: TARGET
       duration: 2000
       stackPolicy: REPLACE
       spriteSheet: *golem_rolling02
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *golem_rolling_damage
     predictionBulletSpeed: 10.5
+  - !!CreatureAlterationAbility
+    id: 0
+    cooldown: 1000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *golem_hit02
+    predictionBulletSpeed: 0.0
 - *zombie04
 - &necro_damon
   name: necro_damon
@@ -3584,7 +5608,7 @@ abilitySets:
     cooldown: 800
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -3596,7 +5620,7 @@ abilitySets:
     cooldown: 10000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -3611,13 +5635,14 @@ abilitySets:
     id: 0
     cooldown: 5000
     alterations:
-    - !!com.pixurvival.core.livingEntity.alteration.RepeatAlteration
+    - !!RepeatAlteration
+      targetType: TARGET
       duration: 0
       stackPolicy: REPLACE
       numberOfRepeat: 8
       interval: 300
       alteration: !!FollowingElementAlteration
-        source: SELF
+        targetType: TARGET
         followingElement: !!FollowingEffect
           offsetAngleEffect:
             offsetAngle: 0.0
@@ -3629,56 +5654,56 @@ abilitySets:
     cooldown: 5000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.7853981633974483
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -0.7853981633974483
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 1.5707963267948966
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -1.5707963267948966
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 2.356194490192345
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -2.356194490192345
           randomAngle: 0.0
           effect: *fire_dragon_hit
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 3.141592653589793
@@ -3694,7 +5719,7 @@ abilitySets:
     cooldown: 1000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
@@ -3706,35 +5731,35 @@ abilitySets:
     cooldown: 2000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *ice_dragon_spike
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.3490658503988659
           randomAngle: 0.0
           effect: *ice_dragon_spike
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -0.3490658503988659
           randomAngle: 0.0
           effect: *ice_dragon_spike
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.6981317007977318
           randomAngle: 0.0
           effect: *ice_dragon_spike
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -0.6981317007977318
@@ -3750,39 +5775,104 @@ abilitySets:
     cooldown: 2000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.0
           effect: *arcanite_golem_hit02
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: -0.3490658503988659
           randomAngle: 0.0
           effect: *arcanite_golem_hit02
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.3490658503988659
           randomAngle: 0.0
           effect: *arcanite_golem_hit02
-    predictionBulletSpeed: 25.0
+    predictionBulletSpeed: 23.0
   - !!CreatureAlterationAbility
     id: 0
     cooldown: 5000
     alterations:
     - !!FollowingElementAlteration
-      source: SELF
+      targetType: TARGET
       followingElement: !!FollowingEffect
         offsetAngleEffect:
           offsetAngle: 0.0
           randomAngle: 0.5235987755982988
           effect: *arcanite_golem_teleportation
     predictionBulletSpeed: 0.0
+- &pixie_warrior04
+  name: pixie_warrior
+  id: 8
+  abilities:
+  - !!CreatureAlterationAbility
+    id: 0
+    cooldown: 700
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *pixie_punch
+    predictionBulletSpeed: 0.0
+- &dark_rhino03
+  name: dark_rhino
+  id: 9
+  abilities:
+  - !!CreatureAlterationAbility
+    id: 0
+    cooldown: 4000
+    alterations:
+    - !!FollowingElementAlteration
+      targetType: TARGET
+      followingElement: !!FollowingEffect
+        offsetAngleEffect:
+          offsetAngle: 0.0
+          randomAngle: 0.0
+          effect: *dark_rhino_hit
+    - !!FixedMovementAlteration
+      targetType: SELF
+      duration: 2000
+      stackPolicy: REPLACE
+      sourceType: SELF
+      sourceDirection: TARGET
+      relativeAngle: 0.0
+      randomAngle: 0.0
+      speed:
+        base: 15.0
+        statMultipliers: []
+    predictionBulletSpeed: 20.0
+- &giant_crab05
+  name: giant_crab
+  id: 10
+  abilities:
+  - !!CreatureAlterationAbility
+    id: 0
+    cooldown: 3000
+    alterations:
+    - !!RepeatAlteration
+      targetType: TARGET
+      duration: 0
+      stackPolicy: REPLACE
+      numberOfRepeat: 5
+      interval: 300
+      alteration: !!FollowingElementAlteration
+        targetType: TARGET
+        followingElement: !!FollowingEffect
+          offsetAngleEffect:
+            offsetAngle: 0.0
+            randomAngle: 0.3490658503988659
+            effect: *giant_crab_bubble02
+    predictionBulletSpeed: 22.0
 creatures:
 - &pixie03
   name: pixie
@@ -3796,18 +5886,7 @@ creatures:
   behaviorSet: *get_away
   itemReward: *pixie02
   abilitySet: null
-- &ninja_pig04
-  name: ninja_pig
-  id: 1
-  spriteSheet: *ninja_pig02
-  collisionRadius: 0.42
-  strength: -5.0
-  agility: -5.0
-  intelligence: 0.0
-  solid: true
-  behaviorSet: *ranged_attack
-  itemReward: *ninja_pig03
-  abilitySet: *ninja_pig
+- *ninja_pig04
 - &night_ghost02
   name: night_ghost
   id: 2
@@ -3821,7 +5900,7 @@ creatures:
   itemReward: null
   abilitySet: *night_ghost
 - *holemon02
-- &golem05
+- &golem06
   name: golem
   id: 4
   spriteSheet: *golem02
@@ -3831,8 +5910,8 @@ creatures:
   intelligence: 0.0
   solid: true
   behaviorSet: *golem03
-  itemReward: null
-  abilitySet: *golem04
+  itemReward: *golem04
+  abilitySet: *golem05
 - &necrodamon04
   name: necrodamon
   id: 5
@@ -3870,7 +5949,8 @@ creatures:
   behaviorSet: *ice_dragon02
   itemReward: *ice_dragon03
   abilitySet: *ice_dragon04
-- name: arcanite_golem
+- &arcanite_golem05
+  name: arcanite_golem
   id: 9
   spriteSheet: *arcanite_golem
   collisionRadius: 0.65
@@ -3881,6 +5961,42 @@ creatures:
   behaviorSet: *arcanite_golem02
   itemReward: *arcanite_golem03
   abilitySet: *arcanite_golem04
+- &pixie_warrior05
+  name: pixie_warrior
+  id: 10
+  spriteSheet: *pixie_warrior
+  collisionRadius: 0.35
+  strength: -4.0
+  agility: 8.0
+  intelligence: 0.0
+  solid: true
+  behaviorSet: *pixie_warrior02
+  itemReward: *pixie_warrior03
+  abilitySet: *pixie_warrior04
+- &dark_rhino04
+  name: dark_rhino
+  id: 11
+  spriteSheet: *dark_rhino
+  collisionRadius: 0.9
+  strength: 5.0
+  agility: 0.0
+  intelligence: 0.0
+  solid: true
+  behaviorSet: *dark_rhino02
+  itemReward: *darnk_rhino
+  abilitySet: *dark_rhino03
+- &giant_crab06
+  name: giant_crab
+  id: 12
+  spriteSheet: *giant_crab02
+  collisionRadius: 1.0
+  strength: 1.0
+  agility: -3.0
+  intelligence: 0.0
+  solid: true
+  behaviorSet: *giant_crab03
+  itemReward: *giant_crab04
+  abilitySet: *giant_crab05
 tiles:
 - &grass
   name: grass
@@ -4024,6 +6140,15 @@ structures:
   harvestingTime: 2500
   itemReward: *magic_tree02
   regrowthTime: {min: 240000, max: 300000}
+- &giant_crab_spawner
+  name: giant_crab_spawner
+  id: 8
+  solid: false
+  spriteSheet: null
+  dimensions: {width: 1, height: 1}
+  duration: 0
+  bannedTiles: []
+  lightEmissionRadius: 0.0
 mapGenerators:
 - &test
   name: test
@@ -4153,10 +6278,16 @@ mapGenerators:
     - heightmap: *height
       min: 0.76
       max: 0.84
-    - heightmap: *moisture
-      min: 0.0
-      max: 0.3
-    density: 0.01
+    density: 0.003
+  - structureProducer:
+      backingArray:
+      - probability: 1.0
+        element: *giant_crab_spawner
+    heightmapConditions:
+    - heightmap: *height
+      min: 0.31
+      max: 0.34
+    density: 0.02
 ecosystems:
 - &test02
   name: test
@@ -4164,16 +6295,16 @@ ecosystems:
   structureSpawners:
   - creatureChooser:
       backingArray:
-      - probability: 1.0
-        element: *ninja_pig04
+      - probability: 2.0
+        element: *pixie_warrior05
       - probability: 1.0
         element: *pixie03
-    initialSpawn: 1
-    maximumCreatures: 1
+    initialSpawn: 3
+    maximumCreatures: 2
     respawnTime: {min: 30000, max: 60000}
     structure: *tree03
     spawnRadius: 10.0
-    managedRadius: 60.0
+    managedRadius: 50.0
   - creatureChooser:
       backingArray:
       - probability: 1.0
@@ -4190,22 +6321,36 @@ ecosystems:
         element: *fire_dragon05
       - probability: 1.0
         element: *ice_dragon05
+      - probability: 5.0
+        element: *dark_rhino04
     initialSpawn: 1
     maximumCreatures: 1
-    respawnTime: {min: 150000, max: 180000}
+    respawnTime: {min: 30000, max: 60000}
     structure: *rock04
     spawnRadius: 8.0
-    managedRadius: 128.0
+    managedRadius: 45.0
   - creatureChooser:
       backingArray:
+      - probability: 2.0
+        element: *golem06
       - probability: 1.0
-        element: *golem05
-    initialSpawn: 1
+        element: *arcanite_golem05
+    initialSpawn: 2
     maximumCreatures: 1
     respawnTime: {min: 30000, max: 60000}
     structure: *arcanite_rock02
     spawnRadius: 6.0
     managedRadius: 30.0
+  - creatureChooser:
+      backingArray:
+      - probability: 1.0
+        element: *giant_crab06
+    initialSpawn: 2
+    maximumCreatures: 2
+    respawnTime: {min: 60000, max: 90000}
+    structure: *giant_crab_spawner
+    spawnRadius: 5.0
+    managedRadius: 60.0
   darknessSpawner:
     creatureChooser:
       backingArray:
@@ -4232,7 +6377,13 @@ gameModes:
   ecosystem: *test02
   dayCycle: !!EternalDayCycle {}
   endGameCondition: !!NoEndCondition {}
-  events: []
+  events:
+  - !!com.pixurvival.core.contentPack.gameMode.event.EffectEvent
+    time: 300000
+    repeat: true
+    forEachTeam: true
+    position: !!com.pixurvival.core.contentPack.gameMode.event.PlayerProximityEventPosition {distance: 10.0}
+    effect: *nina_pig_wave
   spawnSquareSize: 490.0
   mapLimitEnabled: false
   mapLimitSize: 500.0

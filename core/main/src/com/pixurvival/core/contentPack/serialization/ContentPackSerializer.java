@@ -50,6 +50,8 @@ import com.pixurvival.core.contentPack.gameMode.DayNightCycle;
 import com.pixurvival.core.contentPack.gameMode.EternalDayCycle;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamCondition;
+import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
+import com.pixurvival.core.contentPack.gameMode.event.PlayerProximityEventPosition;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
@@ -71,6 +73,7 @@ import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
 import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
+import com.pixurvival.core.livingEntity.alteration.StatAlteration;
 import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 import com.pixurvival.core.util.FileUtils;
@@ -238,6 +241,9 @@ public class ContentPackSerializer {
 		addClassTag(representer, FixedMovementAlteration.class);
 		addClassTag(representer, OverridingSpriteSheetAlteration.class);
 		addClassTag(representer, RepeatAlteration.class);
+		addClassTag(representer, PlayerProximityEventPosition.class);
+		addClassTag(representer, EffectEvent.class);
+		addClassTag(representer, StatAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {
