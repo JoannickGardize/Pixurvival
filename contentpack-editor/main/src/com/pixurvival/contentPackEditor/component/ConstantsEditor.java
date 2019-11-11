@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
@@ -21,8 +20,8 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> defaultCharacterChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
-	private ElementChooserButton<Tile> outsideTileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get);
+	private ElementChooserButton<SpriteSheet> defaultCharacterChooser = new ElementChooserButton<>(SpriteSheet.class);
+	private ElementChooserButton<Tile> outsideTileChooser = new ElementChooserButton<>(Tile.class);
 
 	public ConstantsEditor() {
 		defaultCharacterChooser.getSearchPopup().setModal(true);

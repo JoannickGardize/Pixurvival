@@ -1,10 +1,15 @@
 package com.pixurvival.contentPackEditor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.pixurvival.contentPackEditor.util.BeanUtils;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
@@ -63,7 +68,7 @@ public class BeanFactory {
 	public static <T> T newInstance(Class<T> type) {
 		Supplier<?> supplier = suppliers.get(type);
 		if (supplier == null) {
-			return BeanUtils.newFilledInstance(type);
+			return newFilledInstance(type);
 		} else {
 			return (T) suppliers.get(type).get();
 		}
@@ -71,5 +76,62 @@ public class BeanFactory {
 
 	public static <T> Supplier<T> of(Class<T> type) {
 		return () -> BeanFactory.newInstance(type);
+	}
+
+	private static <T> T newFilledInstance(Class<T> clazz) {
+		try {
+			T instance = clazz.newInstance();
+			fill(instance);
+			return instance;
+		} catch (InstantiationException | IllegalAccessException e) {
+			return null;
+		}
+	}
+
+	private static void fill(Object instance) {
+		Class<?> clazz = instance.getClass();
+		forEachPropertyMethods(clazz, (getter, setter) -> {
+			try {
+				Object object = getter.invoke(instance);
+				if (object == null) {
+					Object attributeValue = newInstanceIfPossible(getter.getReturnType());
+					if (attributeValue != null) {
+						fill(attributeValue);
+						setter.invoke(instance, attributeValue);
+					}
+				}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private static void forEachPropertyMethods(Class<?> clazz, BiConsumer<Method, Method> action) {
+		for (Method getter : clazz.getMethods()) {
+			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !IdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
+				try {
+					Method setter = clazz.getMethod("set" + getter.getName().substring(3), getter.getReturnType());
+					if (setter.getParameterCount() == 1 && setter.getParameters()[0].getType() == getter.getReturnType()) {
+						action.accept(getter, setter);
+					}
+				} catch (NoSuchMethodException e) {
+					// Nothing
+				}
+			}
+		}
+	}
+
+	private static Object newInstanceIfPossible(Class<?> type) {
+		if (type == String.class) {
+			return null;
+		} else if (Collection.class.isAssignableFrom(type)) {
+			return new ArrayList<>();
+		}
+		Supplier<?> supplier = suppliers.get(type);
+		if (supplier == null) {
+			return null;
+		} else {
+			return supplier.get();
+		}
 	}
 }

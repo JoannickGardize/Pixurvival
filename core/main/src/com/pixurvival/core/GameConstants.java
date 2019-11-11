@@ -14,7 +14,7 @@ public class GameConstants {
 	public static final double PLAYER_VIEW_DISTANCE = 35;
 
 	public static final double KEEP_ALIVE_DISTANCE = 150;
-	public static final double MAX_HARVEST_DISTANCE = 2;
+	public static final double MAX_STRUCTURE_INTERACTION_DISTANCE = 2;
 	public static final double MAX_PLACE_STRUCTURE_DISTANCE = 3;
 
 	// Calculated

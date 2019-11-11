@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -29,7 +28,7 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 
 		// Construction
 
-		ElementChooserButton<Tile> defaultTileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get);
+		ElementChooserButton<Tile> defaultTileChooser = new ElementChooserButton<>(Tile.class);
 
 		ListEditor<TileGenerator> tileGeneratorsEditor = new VerticalListEditor<>(() -> {
 			TileGeneratorEditor editor = new TileGeneratorEditor(getHeightmapCollectionSupplier());

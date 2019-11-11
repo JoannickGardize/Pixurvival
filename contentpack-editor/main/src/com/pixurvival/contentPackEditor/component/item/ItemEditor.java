@@ -40,7 +40,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 		super("itemType");
 
 		// Contruction
-		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(), ResourceEntry::getIcon);
+		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 		itemFrameChooserPopup.addInteractionListener(this);
 		CPEButton frameChooser = new CPEButton("generic.select");
 		frameChooser.addAction(() -> {

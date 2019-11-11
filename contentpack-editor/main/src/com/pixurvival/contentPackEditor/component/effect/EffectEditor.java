@@ -34,7 +34,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 		// Construction
 
-		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
+		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
 		ListEditor<DelayedFollowingElement> followingElementsEditor = new VerticalListEditor<>(DelayedFollowingElementEditor::new, BeanFactory.of(DelayedFollowingElement.class),
 				VerticalListEditor.HORIZONTAL);
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);

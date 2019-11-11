@@ -157,7 +157,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 		// OverridingSpriteSheetEditor
 		durationInput = new TimeInput();
-		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
+		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
 		bind(durationInput, OverridingSpriteSheetAlteration::getDuration, OverridingSpriteSheetAlteration::setDuration, OverridingSpriteSheetAlteration.class);
 		bind(spriteSheetChooser, OverridingSpriteSheetAlteration::getSpriteSheet, OverridingSpriteSheetAlteration::setSpriteSheet, OverridingSpriteSheetAlteration.class);
 		entries.add(new ClassEntry(OverridingSpriteSheetAlteration.class, LayoutUtils.createHorizontalLabelledBox("generic.duration", durationInput, "elementType.spriteSheet", spriteSheetChooser)));

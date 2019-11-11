@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World.Type;
@@ -115,7 +116,7 @@ public class EntitiesActor extends Actor {
 			int x = MathUtils.floor(mousePos.x);
 			int y = MathUtils.floor(mousePos.y);
 			Structure structure = ((StructureItem) heldItemStack.getItem()).getStructure();
-			boolean valid = MapStructure.canPlace(myPlayer, myPlayer.getWorld().getMap(), structure, x, y);
+			boolean valid = ActionPreconditions.canPlace(myPlayer, structure, x, y);
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);
 			objectsToDraw.add(ghostStructure);
 		}

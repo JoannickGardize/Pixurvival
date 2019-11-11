@@ -1,9 +1,5 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
-import java.util.function.Function;
-
-import javax.swing.Icon;
-
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.WeightedValueProducer.Entry;
@@ -14,9 +10,9 @@ public class WeightedValueEntryEditor<E extends IdentifiedElement> extends Eleme
 
 	private ElementChooserButton<E> elementChooser;
 
-	public WeightedValueEntryEditor(Class<E> elementType, Function<E, Icon> iconProvider) {
+	public WeightedValueEntryEditor(Class<E> elementType) {
 
-		elementChooser = new ElementChooserButton<>(elementType, iconProvider);
+		elementChooser = new ElementChooserButton<>(elementType);
 		DoubleInput probability = new DoubleInput(Bounds.positive());
 
 		bind(elementChooser, Entry::getElement, Entry::setElement);

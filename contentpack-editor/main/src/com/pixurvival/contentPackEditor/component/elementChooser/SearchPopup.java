@@ -11,16 +11,15 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
 import com.pixurvival.contentPackEditor.component.util.RelativePopup;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
@@ -53,13 +52,11 @@ public class SearchPopup<T extends IdentifiedElement> extends RelativePopup {
 	private JPanel resultPanel = new JPanel(new GridBagLayout());
 	private Supplier<Collection<T>> itemsSupplier;
 	private List<ItemMatchEntry> sortedList = new ArrayList<>();
-	private Function<T, Icon> iconProvider;
 	private SearchPopupSelectionModel selectionModel;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 
-	public SearchPopup(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider) {
+	public SearchPopup(Supplier<Collection<T>> itemsSupplier) {
 		this.itemsSupplier = itemsSupplier;
-		this.iconProvider = iconProvider;
 		Container content = getContentPane();
 		selectionModel = new SearchPopupSelectionModel(resultPanel);
 		JButton removeButton = new JButton("X");
@@ -150,7 +147,7 @@ public class SearchPopup<T extends IdentifiedElement> extends RelativePopup {
 			T item = sortedList.get(i).getItem();
 			JMenuItem menuItem = (JMenuItem) resultPanel.getComponent(i);
 			menuItem.setText(item.getName());
-			menuItem.setIcon(iconProvider.apply(item));
+			menuItem.setIcon(IconService.getInstance().get(item));
 			menuItem.setVisible(true);
 		}
 		for (int i = sortedList.size(); i < RESULT_SIZE; i++) {

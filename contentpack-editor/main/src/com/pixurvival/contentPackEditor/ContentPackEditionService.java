@@ -7,7 +7,23 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pixurvival.contentPackEditor.component.abilitySet.AbilitySetEditor;
+import com.pixurvival.contentPackEditor.component.animationTemplate.AnimationTemplateEditor;
+import com.pixurvival.contentPackEditor.component.behaviorSet.BehaviorSetEditor;
+import com.pixurvival.contentPackEditor.component.creature.CreatureEditor;
+import com.pixurvival.contentPackEditor.component.ecosystem.EcosystemEditor;
+import com.pixurvival.contentPackEditor.component.effect.EffectEditor;
+import com.pixurvival.contentPackEditor.component.equipmentOffset.EquipmentOffsetEditor;
+import com.pixurvival.contentPackEditor.component.gameMode.GameModeEditor;
+import com.pixurvival.contentPackEditor.component.item.ItemEditor;
+import com.pixurvival.contentPackEditor.component.itemCraft.ItemCraftEditor;
+import com.pixurvival.contentPackEditor.component.itemReward.ItemRewardEditor;
+import com.pixurvival.contentPackEditor.component.mapGenerator.MapGeneratorEditor;
+import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetEditor;
+import com.pixurvival.contentPackEditor.component.structure.StructureEditor;
+import com.pixurvival.contentPackEditor.component.tile.TileEditor;
 import com.pixurvival.contentPackEditor.component.translation.TranslationUpdateManager;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ElementAddedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
@@ -26,6 +42,8 @@ public class ContentPackEditionService {
 
 	private Map<ElementType, Method> listGetters = new EnumMap<>(ElementType.class);
 	private Map<ElementType, Method> listSetters = new EnumMap<>(ElementType.class);
+	@SuppressWarnings("rawtypes")
+	private Map<ElementType, ElementEditor> elementTypeEditors = new EnumMap<>(ElementType.class);
 
 	@SneakyThrows
 	private ContentPackEditionService() {
@@ -35,9 +53,29 @@ public class ContentPackEditionService {
 			methodName = "set" + CaseUtils.upperToPascalCase(type.name()) + "s";
 			listSetters.put(type, ContentPack.class.getMethod(methodName, List.class));
 		}
+		elementTypeEditors.put(ElementType.SPRITE_SHEET, new SpriteSheetEditor());
+		elementTypeEditors.put(ElementType.ANIMATION_TEMPLATE, new AnimationTemplateEditor());
+		elementTypeEditors.put(ElementType.EQUIPMENT_OFFSET, new EquipmentOffsetEditor());
+		elementTypeEditors.put(ElementType.ITEM, new ItemEditor());
+		elementTypeEditors.put(ElementType.ITEM_CRAFT, new ItemCraftEditor());
+		elementTypeEditors.put(ElementType.ITEM_REWARD, new ItemRewardEditor());
+		elementTypeEditors.put(ElementType.EFFECT, new EffectEditor());
+		elementTypeEditors.put(ElementType.ABILITY_SET, new AbilitySetEditor());
+		elementTypeEditors.put(ElementType.BEHAVIOR_SET, new BehaviorSetEditor());
+		elementTypeEditors.put(ElementType.CREATURE, new CreatureEditor());
+		elementTypeEditors.put(ElementType.TILE, new TileEditor());
+		elementTypeEditors.put(ElementType.STRUCTURE, new StructureEditor());
+		elementTypeEditors.put(ElementType.MAP_GENERATOR, new MapGeneratorEditor());
+		elementTypeEditors.put(ElementType.ECOSYSTEM, new EcosystemEditor());
+		elementTypeEditors.put(ElementType.GAME_MODE, new GameModeEditor());
 
 		// Register translation related events
 		new TranslationUpdateManager();
+	}
+
+	@SuppressWarnings("rawtypes")
+	public ElementEditor editorOf(ElementType type) {
+		return elementTypeEditors.get(type);
 	}
 
 	@SneakyThrows

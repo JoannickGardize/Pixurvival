@@ -15,7 +15,7 @@ public class AddItemAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
-	private ItemStack itemStack;
+	private ItemStack itemStack = new ItemStack();
 	private boolean dropRemainder;
 
 	@Override

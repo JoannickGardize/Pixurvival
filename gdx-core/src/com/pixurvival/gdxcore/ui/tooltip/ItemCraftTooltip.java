@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.TranslationKey;
 import com.pixurvival.core.contentPack.item.ItemCraft;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
@@ -72,16 +74,30 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 		// Duration and recipes title
 		add(RepresenterUtils.labelledValue("hud.itemCraft.duration", RepresenterUtils.time(itemCraft.getDuration()))).expand().colspan(3);
 		row();
+		ContentPack contentPack = PixurvivalGame.getWorld().getContentPack();
+		Locale locale = PixurvivalGame.getClient().getCurrentLocale();
+		if (itemCraft.getRequiredStructure() != null) {
+			Structure structure = itemCraft.getRequiredStructure();
+			add(new Label(PixurvivalGame.getString("hud.itemCraft.require"), PixurvivalGame.getSkin(), "white")).expand().colspan(3);
+			row();
+			if (structure.getSpriteSheet() != null) {
+				Texture texture = PixurvivalGame.getContentPackTextures().getAnimationSet(structure.getSpriteSheet()).get(ActionAnimation.DEFAULT).getTexture(0);
+				add(new Image(texture)).size(ITEM_WIDTH, ITEM_WIDTH);
+			} else {
+				add();
+			}
+			add(new Label(contentPack.getTranslation(locale, structure, TranslationKey.NAME), PixurvivalGame.getSkin(), "white"));
+			row();
+
+		}
 		add(new Label(PixurvivalGame.getString("hud.itemCraft.recipes"), PixurvivalGame.getSkin(), "white")).expand().colspan(3);
 		// Add Recipes
-		Locale locale = PixurvivalGame.getClient().getCurrentLocale();
-		ContentPack contentPack = PixurvivalGame.getWorld().getContentPack();
 		StringBuilder quantitySB = new StringBuilder();
 		for (ItemStack itemStack : itemCraft.getRecipes()) {
 			row();
 			quantitySB.setLength(0);
 			int myTotal = inv.totalOf(itemStack.getItem());
-			quantitySB.append(contentPack.getTranslation(locale, itemStack.getItem(), TranslationKey.ITEM_NAME)).append(" ");
+			quantitySB.append(contentPack.getTranslation(locale, itemStack.getItem(), TranslationKey.NAME)).append(" ");
 			quantitySB.append(myTotal).append(" / ").append(itemStack.getQuantity());
 			Texture itemTexture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId()).getTexture();
 			add(new Image(itemTexture)).size(ITEM_WIDTH, ITEM_WIDTH);

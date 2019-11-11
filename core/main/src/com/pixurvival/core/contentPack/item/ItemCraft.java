@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
@@ -28,5 +30,8 @@ public class ItemCraft extends IdentifiedElement implements Serializable {
 
 	@Valid
 	private List<ItemStack> recipes = new ArrayList<>();
+
+	@ElementReference
+	private Structure requiredStructure;
 
 }

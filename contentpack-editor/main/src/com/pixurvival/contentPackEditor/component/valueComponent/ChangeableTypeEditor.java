@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.util.BeanUtils;
+import com.pixurvival.contentPackEditor.BeanFactory;
 
 @Deprecated
 public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T> {
@@ -42,7 +42,7 @@ public class ChangeableTypeEditor<T> extends JPanel implements ValueComponent<T>
 		}
 		currentType = newType;
 		ElementEditor<T> elementEditor = typesMap.get(newType);
-		elementEditor.setValue(BeanUtils.newFilledInstance(newType));
+		elementEditor.setValue(BeanFactory.newInstance(newType));
 		listeners.forEach(l -> l.valueChanged(elementEditor.getValue()));
 		((CardLayout) getLayout()).show(this, newType.getSimpleName());
 	}

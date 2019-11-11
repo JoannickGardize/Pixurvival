@@ -8,7 +8,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.item.Item;
@@ -23,7 +22,7 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 	}
 
 	public ItemStackEditor(boolean itemRequired) {
-		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, IconService.getInstance()::get, itemRequired);
+		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, itemRequired);
 		IntegerInput quantityInput = new IntegerInput(Bounds.min(1));
 
 		bind(itemChooser, ItemStack::getItem, ItemStack::setItem);

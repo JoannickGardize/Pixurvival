@@ -15,6 +15,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
+import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.Utils;
 import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
@@ -42,7 +43,7 @@ public class LayoutTree extends JTree {
 		MenuBuilder menuBuilder = new MenuBuilder(contextMenu, "treeContextMenu");
 		menuBuilder.addItem("new.folder", this::newFolder);
 		for (ElementType type : ElementType.values()) {
-			menuBuilder.addItem("new." + CaseUtils.upperToCamelCase(type.name()), () -> this.newElement(type), type.toString());
+			menuBuilder.addItem("new." + CaseUtils.upperToCamelCase(type.name()), () -> this.newElement(type), type.toString(), IconService.getInstance().get(type));
 		}
 		menuBuilder.addItem("rename", this::rename);
 		menuBuilder.addItem("delete", this::delete);

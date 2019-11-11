@@ -32,9 +32,9 @@ public class InventoryTable extends Table {
 	}
 
 	@Override
-	protected void sizeChanged() {
+	public void layout() {
 		sizeToFill(getWidth(), getHeight());
-		super.sizeChanged();
+		super.layout();
 	}
 
 	@SuppressWarnings("unchecked")

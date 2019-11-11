@@ -1,5 +1,6 @@
 package com.pixurvival.contentPackEditor.component.tree;
 
+import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
@@ -40,7 +41,7 @@ public class LayoutElement extends LayoutNode {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void updateValidation() {
-		setValid(ElementType.of(element).getElementEditor().isValueValid(element));
+		setValid(ContentPackEditionService.getInstance().editorOf(ElementType.of(element)).isValueValid(element));
 	}
 
 }

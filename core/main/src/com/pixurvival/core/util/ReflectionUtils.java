@@ -28,8 +28,8 @@ public class ReflectionUtils {
 
 	/**
 	 * @param clazz
-	 * @return All the field of the class and superclasses, with superclasses fields
-	 *         first.
+	 * @return All the field of the class and superclasses, with superclasses
+	 *         fields first.
 	 */
 	public static Field[] getAllFields(Class<?> clazz) {
 		List<Field> list = new ArrayList<>();
@@ -88,4 +88,12 @@ public class ReflectionUtils {
 		field.set(instance, value);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T> Class<? extends T> getSuperClassUnder(Class<? extends T> type, Class<T> under) {
+		Class<? extends T> tmp = type;
+		while (tmp.getSuperclass() != under) {
+			tmp = (Class<? extends T>) tmp.getSuperclass();
+		}
+		return tmp;
+	}
 }

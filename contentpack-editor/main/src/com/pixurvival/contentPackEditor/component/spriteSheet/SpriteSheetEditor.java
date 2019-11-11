@@ -26,8 +26,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier(),
-			ResourceEntry::getIcon);
+	private ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 	private IntegerInput widthField = new IntegerInput(Bounds.min(1));
 	private IntegerInput heightField = new IntegerInput(Bounds.min(1));
 	private ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(AnimationTemplate.class);
@@ -43,8 +42,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()),
-				(v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
 		bind(widthField, SpriteSheet::getWidth, SpriteSheet::setWidth);
 		bind(heightField, SpriteSheet::getHeight, SpriteSheet::setHeight);
 		bind(animationTemplateField, SpriteSheet::getAnimationTemplate, SpriteSheet::setAnimationTemplate);

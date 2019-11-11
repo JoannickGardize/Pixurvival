@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
@@ -26,7 +25,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider(), false);
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
 
 	public StructureEditor() {
 		super("structureType");
@@ -37,7 +36,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		DoubleInput lightEmissionRadiusInput = new DoubleInput(Bounds.positive());
 		TimeInput durationInput = new TimeInput();
 		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
-			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, IconService.getInstance()::get, true);
+			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, true);
 			tileChooser.setBorder(LayoutUtils.createBorder());
 			return tileChooser;
 		}, () -> null);

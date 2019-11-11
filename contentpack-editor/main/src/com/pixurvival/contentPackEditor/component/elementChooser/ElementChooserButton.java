@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.FileService;
+import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
@@ -32,25 +31,16 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	private @Getter SearchPopup<T> searchPopup;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
-	private Function<T, Icon> iconProvider;
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
 	private @Getter @Setter boolean required;
 
 	public ElementChooserButton(Class<T> elementType) {
-		this(createItemsSupplier(elementType), e -> null);
+		this(createItemsSupplier(elementType), true);
 	}
 
 	public ElementChooserButton(Class<T> elementType, boolean required) {
-		this(createItemsSupplier(elementType), e -> null, required);
-	}
-
-	public ElementChooserButton(Class<T> elementType, Function<T, Icon> iconProvider) {
-		this(createItemsSupplier(elementType), iconProvider, true);
-	}
-
-	public ElementChooserButton(Class<T> elementType, Function<T, Icon> iconProvider, boolean required) {
-		this(createItemsSupplier(elementType), iconProvider, required);
+		this(createItemsSupplier(elementType), required);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -66,23 +56,14 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 	}
 
 	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier) {
-		this(itemsSupplier, e -> null);
+		this(itemsSupplier, true);
 	}
 
 	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, boolean required) {
-		this(itemsSupplier, e -> null, required);
-	}
-
-	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider) {
-		this(itemsSupplier, iconProvider, true);
-	}
-
-	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, Function<T, Icon> iconProvider, boolean required) {
 		super(TranslationService.getInstance().getString("elementChooserButton.none"));
 		this.required = required;
 
-		this.iconProvider = iconProvider;
-		searchPopup = new SearchPopup<>(itemsSupplier, iconProvider);
+		searchPopup = new SearchPopup<>(itemsSupplier);
 		addActionListener(e -> {
 			searchPopup.setSearchText("");
 			searchPopup.show(this);
@@ -137,7 +118,7 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 	private void updateDisplay() {
 
 		if (isValueValid()) {
-			setIcon(iconProvider.apply(value));
+			setIcon(IconService.getInstance().get(value));
 			setForeground(Color.BLACK);
 		} else {
 			setForeground(Color.RED);

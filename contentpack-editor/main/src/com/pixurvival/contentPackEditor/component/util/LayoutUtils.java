@@ -7,11 +7,9 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,11 +18,8 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import com.pixurvival.contentPackEditor.ResourceEntry;
-import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
 import lombok.experimental.UtilityClass;
 
@@ -283,20 +278,6 @@ public class LayoutUtils {
 			yOffset = (destHeight - height) / 2;
 		}
 		return new Rectangle(xOffset, yOffset, width, height);
-	}
-
-	public static Function<SpriteSheet, Icon> getSpriteSheetIconProvider() {
-		return s -> {
-			if (s == null) {
-				return null;
-			}
-			ResourceEntry entry = ResourcesService.getInstance().getResource(s.getImage());
-			if (entry != null) {
-				return entry.getIcon();
-			} else {
-				return null;
-			}
-		};
 	}
 
 	public static void setMinimumSize(Component component, int minimumWidth, int minimumHeight) {

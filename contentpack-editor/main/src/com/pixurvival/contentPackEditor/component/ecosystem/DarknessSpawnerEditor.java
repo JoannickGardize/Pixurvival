@@ -12,7 +12,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
-import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
 
@@ -20,7 +19,7 @@ public class DarknessSpawnerEditor<T extends ChunkSpawner> extends ElementEditor
 
 	private static final long serialVersionUID = 1L;
 
-	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class, c -> null, ContentPack::getCreatures);
+	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 
 	public DarknessSpawnerEditor() {
 		setBorder(LayoutUtils.createBorder());

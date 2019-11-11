@@ -3,11 +3,11 @@ package com.pixurvival.core.message.playerRequest;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.MapStructure;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class PlaceStructureRequest implements IPlayerActionRequest {
 			return;
 		}
 		Structure structure = ((StructureItem) player.getInventory().getHeldItemStack().getItem()).getStructure();
-		if (MapStructure.canPlace(player, player.getWorld().getMap(), structure, x, y)) {
+		if (ActionPreconditions.canPlace(player, structure, x, y)) {
 			if (heldItemStack.getQuantity() == 1) {
 				player.getInventory().setHeldItemStack(null);
 			} else {

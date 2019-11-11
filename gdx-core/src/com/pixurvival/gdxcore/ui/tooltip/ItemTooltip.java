@@ -64,7 +64,7 @@ public class ItemTooltip extends Table implements StatListener {
 		Locale locale = PixurvivalGame.getClient().getCurrentLocale();
 		ContentPack contentPack = PixurvivalGame.getWorld().getContentPack();
 		Image image = new Image(PixurvivalGame.getContentPackTextures().getItem(item.getId()).getTexture());
-		Label nameLabel = new Label(contentPack.getTranslation(locale, item, TranslationKey.ITEM_NAME), PixurvivalGame.getSkin(), "white");
+		Label nameLabel = new Label(contentPack.getTranslation(locale, item, TranslationKey.NAME), PixurvivalGame.getSkin(), "white");
 		add(image).expand(false, false).size(ITEM_WIDTH, ITEM_WIDTH);
 		add(nameLabel);
 		row();

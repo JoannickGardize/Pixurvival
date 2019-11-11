@@ -1,6 +1,5 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.item.StructureItem;
@@ -10,7 +9,7 @@ public class StructurePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class, IconService.getInstance()::get);
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class);
 
 	public StructurePanel() {
 		add(LayoutUtils.labelled("elementType.structure", structureChooser));

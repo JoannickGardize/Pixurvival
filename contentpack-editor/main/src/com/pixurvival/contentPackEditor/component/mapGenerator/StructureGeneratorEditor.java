@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
@@ -14,7 +13,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
-import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
 import com.pixurvival.core.contentPack.map.StructureGenerator;
@@ -32,7 +30,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 			return result;
 		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
-		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class, IconService.getInstance()::get, ContentPack::getStructures);
+		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class);
 		DoubleInput densityInput = new DoubleInput(new Bounds(0, 1));
 
 		// Binding

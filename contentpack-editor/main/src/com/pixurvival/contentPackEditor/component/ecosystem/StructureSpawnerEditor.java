@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
-import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
@@ -15,7 +14,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
-import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -24,9 +22,9 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class, IconService.getInstance()::get, true);
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class, true);
 
-	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class, c -> null, ContentPack::getCreatures);
+	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 
 	public StructureSpawnerEditor() {
 		setBorder(LayoutUtils.createBorder());

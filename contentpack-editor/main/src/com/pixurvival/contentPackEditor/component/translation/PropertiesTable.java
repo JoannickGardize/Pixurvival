@@ -18,7 +18,6 @@ public class PropertiesTable extends JTable {
 		PropertiesTable table = new PropertiesTable();
 		PropertiesTableModel model = (PropertiesTableModel) table.getModel();
 		Properties prop = new Properties();
-		prop.put("test", "edfhdj");
 		model.setProperties(prop);
 		frame.setContentPane(table);
 		frame.setSize(800, 600);

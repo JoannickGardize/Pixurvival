@@ -14,7 +14,7 @@ public abstract class EquipablePanel extends ItemSpecificPartPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 	private ListEditor<StatModifier> statModifiersEditor = new VerticalListEditor<>(StatModifierEditor::new, StatModifier::new, VerticalListEditor.HORIZONTAL);
 	private JPanel parentPanel;
 	private boolean showSpriteSheet;

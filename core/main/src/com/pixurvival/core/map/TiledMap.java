@@ -363,6 +363,26 @@ public class TiledMap {
 		return false;
 	}
 
+	public MapStructure findClosestStructure(int x, int y) {
+		MapStructure closest = null;
+		double closestDist = Double.POSITIVE_INFINITY;
+		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
+			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
+				MapStructure structure = tileAt(dx, dy).getStructure();
+				if (structure != null) {
+					double diffX = structure.getPosition().getX() - x;
+					double diffY = structure.getPosition().getY() - y;
+					double dist = diffX * diffX + diffY * diffY;
+					if (dist < closestDist) {
+						closestDist = dist;
+						closest = structure;
+					}
+				}
+			}
+		}
+		return closest;
+	}
+
 	public boolean isInAnyLight(Vector2 position) {
 		return getAnyCollidingLight(position) != null;
 	}

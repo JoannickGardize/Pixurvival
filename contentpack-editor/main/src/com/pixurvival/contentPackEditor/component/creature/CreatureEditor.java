@@ -31,7 +31,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(Locale.US));
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, LayoutUtils.getSpriteSheetIconProvider());
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
 	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class, false);
 	@SuppressWarnings({ "rawtypes", "unchecked" })

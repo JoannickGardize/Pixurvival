@@ -200,37 +200,41 @@ public class ContentPack implements Serializable {
 		return result;
 	}
 
-	public static void getAllTranslationKeys(Collection<String> resultStore, Item item) {
-		getAllTranslationKeys(resultStore, item, false);
+	public static void getAllTranslationKeys(Collection<String> resultStore, IdentifiedElement element) {
+		getAllTranslationKeys(resultStore, element, false);
 
 	}
 
-	public static void getAllTranslationKeys(Collection<String> resultStore, Item item, boolean allPotential) {
-		resultStore.add(TranslationKey.ITEM_NAME.getKey(item));
-		resultStore.add(TranslationKey.ITEM_DESCRIPTION.getKey(item));
-		if (item instanceof WeaponItem || allPotential) {
-			resultStore.add(TranslationKey.ITEM_BASE_ABILITY_NAME.getKey(item));
-			resultStore.add(TranslationKey.ITEM_BASE_ABILITY_DESCRIPTION.getKey(item));
-		}
-		if (item instanceof WeaponItem || item instanceof AccessoryItem || allPotential) {
-			resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_NAME.getKey(item));
-			resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_DESCRIPTION.getKey(item));
+	public static void getAllTranslationKeys(Collection<String> resultStore, IdentifiedElement element, boolean allPotential) {
+		if (element instanceof Item) {
+			resultStore.add(TranslationKey.NAME.getKey(element));
+			resultStore.add(TranslationKey.ITEM_DESCRIPTION.getKey(element));
+			if (element instanceof WeaponItem || allPotential) {
+				resultStore.add(TranslationKey.ITEM_BASE_ABILITY_NAME.getKey(element));
+				resultStore.add(TranslationKey.ITEM_BASE_ABILITY_DESCRIPTION.getKey(element));
+			}
+			if (element instanceof WeaponItem || element instanceof AccessoryItem || allPotential) {
+				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_NAME.getKey(element));
+				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_DESCRIPTION.getKey(element));
+			}
+		} else if (element instanceof Structure) {
+			resultStore.add(TranslationKey.NAME.getKey(element));
 		}
 	}
 
-	public static List<String> getAllTranslationKeys(Item item) {
+	public static List<String> getAllTranslationKeys(IdentifiedElement item) {
 		List<String> result = new ArrayList<>();
 		getAllTranslationKeys(result, item);
 		return result;
 	}
 
-	public static List<String> getAllTranslationKeys(Item item, boolean allPotential) {
+	public static List<String> getAllTranslationKeys(IdentifiedElement item, boolean allPotential) {
 		List<String> result = new ArrayList<>();
 		getAllTranslationKeys(result, item, allPotential);
 		return result;
 	}
 
-	public String getTranslation(Locale locale, Item item, TranslationKey key) {
+	public String getTranslation(Locale locale, IdentifiedElement item, TranslationKey key) {
 		return translations.get(locale).getProperty(key.getKey(item));
 	}
 

@@ -61,7 +61,7 @@ public class AlterationRepresenter {
 		sb.setLength(0);
 		sb.append(itemStack.getQuantity());
 		sb.append("x ");
-		sb.append(PixurvivalGame.getWorld().getContentPack().getTranslation(locale, itemStack.getItem(), TranslationKey.ITEM_NAME));
+		sb.append(PixurvivalGame.getWorld().getContentPack().getTranslation(locale, itemStack.getItem(), TranslationKey.NAME));
 		return RepresenterUtils.labelledValue("hud.alteration.addItem", sb.toString());
 	}
 

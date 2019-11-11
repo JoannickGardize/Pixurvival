@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -17,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.util.SpecialCellRenderer;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
@@ -42,11 +42,7 @@ public class LocaleList extends JPanel {
 
 		setLayout(new BorderLayout());
 		add(new JScrollPane(localeList), BorderLayout.CENTER);
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-		buttonsPanel.add(addButton);
-		buttonsPanel.add(modifyButton);
-		buttonsPanel.add(removeButton);
+		JPanel buttonsPanel = LayoutUtils.createVerticalBox(addButton, modifyButton, removeButton);
 		add(buttonsPanel, BorderLayout.SOUTH);
 		EventManager.getInstance().register(this);
 	}
