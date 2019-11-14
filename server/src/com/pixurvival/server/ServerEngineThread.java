@@ -2,7 +2,6 @@ package com.pixurvival.server;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.esotericsoftware.minlog.Log;
@@ -15,7 +14,6 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.WorldUpdate;
-import com.pixurvival.core.team.Team;
 
 import lombok.NonNull;
 
@@ -137,25 +135,7 @@ public class ServerEngineThread extends EngineThread {
 				});
 			}
 		});
-		// ignoreTeamMembers(playerEntity);
 		tmpRemoveEntityCollection.writeAllIds(byteBuffer);
-	}
-
-	/**
-	 * Ignore team members from the remove entity list so the client can see
-	 * positions of allies.
-	 * 
-	 * @param playerEntity
-	 */
-	private void ignoreTeamMembers(PlayerEntity playerEntity) {
-		Team team = playerEntity.getTeam();
-		Iterator<Entity> playerIterator = tmpRemoveEntityCollection.get(EntityGroup.PLAYER).iterator();
-		while (playerIterator.hasNext()) {
-			Entity e = playerIterator.next();
-			if (team.getAliveMembers().contains(e)) {
-				playerIterator.remove();
-			}
-		}
 	}
 
 	private void writeDistantAllyPositions(PlayerEntity player, ByteBuffer byteBuffer) {
