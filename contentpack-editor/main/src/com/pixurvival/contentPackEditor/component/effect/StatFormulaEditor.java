@@ -6,26 +6,27 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.core.livingEntity.alteration.StatAmount;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.livingEntity.alteration.StatMultiplier;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class StatAmountEditor extends JButton implements ValueComponent<StatAmount> {
+public class StatFormulaEditor extends JButton implements ValueComponent<StatFormula> {
 
 	private static final long serialVersionUID = 1L;
 
 	private @Getter @Setter JLabel associatedLabel;
-	private List<ValueChangeListener<StatAmount>> listeners = new ArrayList<>();
-	private StatAmount value;
+	private List<ValueChangeListener<StatFormula>> listeners = new ArrayList<>();
+	private StatFormula value;
 
-	private StatAmountPopup popup = new StatAmountPopup();
+	private StatFormulaPopup popup = new StatFormulaPopup();
 
-	public StatAmountEditor() {
+	public StatFormulaEditor() {
 		popup.setOnCloseAction(() -> setValue(popup.getValue()));
 		addActionListener(e -> {
 			popup.setValue(value);
@@ -34,23 +35,27 @@ public class StatAmountEditor extends JButton implements ValueComponent<StatAmou
 	}
 
 	@Override
-	public StatAmount getValue() {
+	public StatFormula getValue() {
 		return value;
 	}
 
 	@Override
-	public void setValue(StatAmount value) {
+	public void setValue(StatFormula value) {
 		this.value = value;
+		if (value.getId() == -1) {
+			// Initialize the formula id to be unique
+			value.setId(ContentPackEditionService.getInstance().nextStatFormulaId());
+		}
 		updateButtonText();
 	}
 
 	@Override
-	public boolean isValueValid(StatAmount value) {
+	public boolean isValueValid(StatFormula value) {
 		return value != null;
 	}
 
 	@Override
-	public void addValueChangeListener(ValueChangeListener<StatAmount> listener) {
+	public void addValueChangeListener(ValueChangeListener<StatFormula> listener) {
 		listeners.add(listener);
 	}
 

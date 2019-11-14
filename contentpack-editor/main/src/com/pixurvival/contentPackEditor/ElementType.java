@@ -54,8 +54,6 @@ public enum ElementType {
 
 	private @NonNull @Getter Class<? extends IdentifiedElement> elementClass;
 
-	@SuppressWarnings("rawtypes")
-
 	@Override
 	public String toString() {
 		return TranslationService.getInstance().getString("elementType." + CaseUtils.upperToCamelCase(name()));

@@ -3,27 +3,30 @@ package com.pixurvival.contentPackEditor.component.effect;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JTextField;
+
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.util.RelativePopup;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
-import com.pixurvival.core.livingEntity.alteration.StatAmount;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.livingEntity.alteration.StatMultiplier;
 import com.pixurvival.core.livingEntity.stats.StatType;
 
 import lombok.Setter;
 
-public class StatAmountPopup extends RelativePopup {
+public class StatFormulaPopup extends RelativePopup {
 
 	private static final long serialVersionUID = 1L;
 
 	private FloatInput baseInput;
 	private FloatInput[] statMultiplierInputs;
-	private StatAmount value;
+	private JTextField idField = new JTextField();
+	private StatFormula value;
 	private @Setter Runnable onCloseAction = () -> {
 	};
 
-	public StatAmountPopup() {
+	public StatFormulaPopup() {
 		baseInput = new FloatInput();
 		baseInput.setColumns(6);
 		statMultiplierInputs = new FloatInput[StatType.values().length];
@@ -35,13 +38,15 @@ public class StatAmountPopup extends RelativePopup {
 			statMultiplierInputs[i].setColumns(6);
 			LayoutUtils.addHorizontalLabelledItem(getContentPane(), "+ " + TranslationService.getInstance().getString(StatType.values()[i]) + " x", false, null, statMultiplierInputs[i], gbc);
 		}
+		idField.setEditable(false);
+		LayoutUtils.addHorizontalLabelledItem(getContentPane(), "generic.id", idField, gbc);
 		pack();
 	}
 
-	public void setValue(StatAmount value) {
+	public void setValue(StatFormula value) {
 		this.value = value;
 		if (value == null) {
-			this.value = new StatAmount();
+			this.value = new StatFormula();
 		}
 		baseInput.setValue(this.value.getBase());
 		for (int i = 0; i < StatType.values().length; i++) {
@@ -51,11 +56,12 @@ public class StatAmountPopup extends RelativePopup {
 			FloatInput input = statMultiplierInputs[multiplier.getStatType().ordinal()];
 			input.setValue(input.getValue() + multiplier.getMultiplier());
 		}
+		idField.setText(String.valueOf(value.getId()));
 	}
 
-	public StatAmount getValue() {
+	public StatFormula getValue() {
 		if (this.value == null) {
-			value = new StatAmount();
+			value = new StatFormula();
 		}
 		value.setBase(baseInput.getValue());
 		value.getStatMultipliers().clear();

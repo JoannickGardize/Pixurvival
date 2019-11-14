@@ -1,10 +1,12 @@
 package com.pixurvival.core.contentPack;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,8 +28,12 @@ public abstract class IdentifiedElement implements Serializable {
 	@Bounds(min = 0)
 	private int id;
 
-	public void initialize() {
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		// for override
+	}
 
+	public void initialize() {
+		// for override
 	}
 
 	@Override

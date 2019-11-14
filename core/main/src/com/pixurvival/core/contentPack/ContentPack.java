@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -32,6 +33,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
@@ -50,6 +52,8 @@ public class ContentPack implements Serializable {
 	private transient double maxLightRadius;
 
 	private transient Map<Locale, Properties> translations = new HashMap<>();
+
+	private transient Map<Long, StatFormula> statFormulas = new HashMap<>();
 
 	@Valid
 	@Required
@@ -153,6 +157,7 @@ public class ContentPack implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void initialize() {
+		initializeStatFormulaMap();
 		elementsByName = new HashMap<>();
 		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
 			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
@@ -171,6 +176,17 @@ public class ContentPack implements Serializable {
 		for (Creature creature : creatures) {
 			creature.initialize();
 		}
+	}
+
+	public void initializeStatFormulaMap() {
+		statFormulas.clear();
+		forEachStatFormulas(f -> statFormulas.put(f.getId(), f));
+	}
+
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		items.forEach(i -> i.forEachStatFormulas(action));
+		creatures.forEach(c -> c.forEachStatFormulas(action));
+		effects.forEach(e -> e.forEachStatFormulas(action));
 	}
 
 	@SuppressWarnings("unchecked")

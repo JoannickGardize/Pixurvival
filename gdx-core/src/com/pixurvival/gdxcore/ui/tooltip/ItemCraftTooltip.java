@@ -27,8 +27,6 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 
 	private static @Getter ItemCraftTooltip instance = new ItemCraftTooltip();
 
-	public static final float ITEM_WIDTH = 20;
-
 	private ItemCraft itemCraft;
 
 	private ItemCraftTooltip() {
@@ -66,11 +64,6 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 		}
 		Inventory inv = PixurvivalGame.getClient().getMyInventory();
 		clearChildren();
-		// Add item tooltip itself
-		ItemTooltip itemTooltip = new ItemTooltip(false);
-		itemTooltip.setItem(itemCraft.getResult().getItem());
-		add(itemTooltip).expand().colspan(3);
-		row();
 		// Duration and recipes title
 		add(RepresenterUtils.labelledValue("hud.itemCraft.duration", RepresenterUtils.time(itemCraft.getDuration()))).expand().colspan(3);
 		row();
@@ -82,7 +75,7 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 			row();
 			if (structure.getSpriteSheet() != null) {
 				Texture texture = PixurvivalGame.getContentPackTextures().getAnimationSet(structure.getSpriteSheet()).get(ActionAnimation.DEFAULT).getTexture(0);
-				add(new Image(texture)).size(ITEM_WIDTH, ITEM_WIDTH);
+				add(new Image(texture)).size(RepresenterUtils.ITEM_WIDTH, RepresenterUtils.ITEM_WIDTH);
 			} else {
 				add();
 			}
@@ -97,16 +90,21 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 			row();
 			quantitySB.setLength(0);
 			int myTotal = inv.totalOf(itemStack.getItem());
-			quantitySB.append(contentPack.getTranslation(locale, itemStack.getItem(), TranslationKey.NAME)).append(" ");
 			quantitySB.append(myTotal).append(" / ").append(itemStack.getQuantity());
 			Texture itemTexture = PixurvivalGame.getContentPackTextures().getItem(itemStack.getItem().getId()).getTexture();
-			add(new Image(itemTexture)).size(ITEM_WIDTH, ITEM_WIDTH);
+			add(new Image(itemTexture)).size(RepresenterUtils.ITEM_WIDTH, RepresenterUtils.ITEM_WIDTH);
 			String style = myTotal >= itemStack.getQuantity() ? "white" : "red";
-			Label lineLabel = new Label(quantitySB.toString(), PixurvivalGame.getSkin(), style);
-			lineLabel.setAlignment(Align.right);
-			add(lineLabel);
-			add().expand();
+			Label nameLabel = new Label(contentPack.getTranslation(locale, itemStack.getItem(), TranslationKey.NAME) + " ", PixurvivalGame.getSkin(), style);
+			add(nameLabel).expand();
+			Label quantityLabel = new Label(quantitySB.toString(), PixurvivalGame.getSkin(), style);
+			quantityLabel.setAlignment(Align.right);
+			add(quantityLabel);
 		}
+		row();
+		// Add item tooltip itself
+		ItemTooltip itemTooltip = new ItemTooltip(false);
+		itemTooltip.setItem(itemCraft.getResult().getItem());
+		add(itemTooltip).expand().colspan(3);
 
 		pack();
 		invalidate();

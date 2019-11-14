@@ -3,8 +3,10 @@ package com.pixurvival.core.livingEntity.ability;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -41,5 +43,10 @@ public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
 	@Override
 	public Iterator<Ability> iterator() {
 		return abilities.iterator();
+	}
+
+	@Override
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		abilities.forEach(a -> a.forEachStatFormulas(action));
 	}
 }

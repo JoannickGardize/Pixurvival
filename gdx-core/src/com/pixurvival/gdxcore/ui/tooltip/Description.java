@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.livingEntity.alteration.StatAmount;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 public class Description {
 
@@ -14,7 +14,7 @@ public class Description {
 		elements.add(sb -> sb.append(str));
 	}
 
-	public void add(StatAmount statAmount) {
+	public void add(StatFormula statAmount) {
 		elements.add(sb -> {
 			RepresenterUtils.appendStatAmount(sb, statAmount);
 			sb.append("[WHITE]");

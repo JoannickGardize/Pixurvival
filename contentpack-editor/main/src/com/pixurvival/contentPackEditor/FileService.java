@@ -39,6 +39,7 @@ public class FileService {
 		ResourcesService.getInstance().clear();
 		currentFile = null;
 		LayoutManager.getInstance().setRoot(new LayoutFolder("root"));
+		ContentPackEditionService.getInstance().updateNextStatFormulaId();
 		EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 		EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));
 	}
@@ -59,6 +60,7 @@ public class FileService {
 			currentContentPack = contentPackSerializer.load(file);
 			currentFile = file;
 			ResourcesService.getInstance().loadContentPack(currentContentPack);
+			ContentPackEditionService.getInstance().updateNextStatFormulaId();
 			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 			EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));
 		} catch (ContentPackException e) {

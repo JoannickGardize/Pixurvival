@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import java.util.function.Consumer;
+
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -17,7 +19,7 @@ public class FixedMovementAlteration extends PersistentAlteration {
 	private double relativeAngle;
 	private double randomAngle;
 
-	private StatAmount speed = new StatAmount();
+	private StatFormula speed = new StatFormula();
 
 	@Override
 	public Object begin(TeamMember source, LivingEntity entity) {
@@ -34,6 +36,11 @@ public class FixedMovementAlteration extends PersistentAlteration {
 	@Override
 	public void end(TeamMember source, LivingEntity entity, Object data) {
 		entity.stopFixedMovement();
+	}
+
+	@Override
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		action.accept(speed);
 	}
 
 }

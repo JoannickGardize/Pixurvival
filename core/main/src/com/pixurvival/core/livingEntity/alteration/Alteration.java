@@ -1,6 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
@@ -29,4 +30,8 @@ public abstract class Alteration implements Serializable {
 	}
 
 	public abstract void targetedApply(TeamMember source, LivingEntity target);
+
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		// for override
+	}
 }

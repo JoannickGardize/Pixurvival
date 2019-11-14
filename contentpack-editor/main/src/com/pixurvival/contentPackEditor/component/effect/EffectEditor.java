@@ -45,7 +45,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
-		StatAmountEditor repeatFollowingElementsEditor = new StatAmountEditor();
+		StatFormulaEditor repeatFollowingElementsEditor = new StatFormulaEditor();
 		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class), VerticalListEditor.HORIZONTAL);
 		ListEditor<Alteration> deathAlterations = new VerticalListEditor<>(AlterationEditor::new, BeanFactory.of(Alteration.class), VerticalListEditor.HORIZONTAL);
 

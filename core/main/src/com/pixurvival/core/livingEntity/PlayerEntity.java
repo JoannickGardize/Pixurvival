@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity;
 
+import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
@@ -41,7 +42,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final float MAX_HUNGER = 100;
 	public static final float HUNGER_DECREASE = 100f / (60 * 10);
-	public static final float HUNGER_DECREASE_MOVE = 100f / (60 * 10);
+	public static final float HUNGER_DAMAGE = 10;
 
 	public static final int INVENTORY_SIZE = 32;
 
@@ -113,8 +114,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public void update() {
 		addHunger(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
-		if (isForward()) {
-			addHunger(-(float) (HUNGER_DECREASE_MOVE * getWorld().getTime().getDeltaTime()));
+		if (hunger <= 0) {
+			takeTrueDamageSneaky(HUNGER_DAMAGE * (float) getWorld().getTime().getDeltaTime());
 		}
 		super.update();
 		chunkVision.move(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, position -> getWorld().getMap().notifyEnterView(this, position),
@@ -165,6 +166,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public void addHunger(float hungerToAdd) {
 		hunger = MathUtils.clamp(hunger + hungerToAdd, 0, MAX_HUNGER);
+		setStateChanged(true);
+		addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
 	}
 
 	public void craft(ItemCraft itemCraft) {
@@ -234,5 +237,15 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	protected void collisionLockEnded() {
 		lastPlayerMovementRequest.apply(this);
+	}
+
+	@Override
+	protected void writeAdditionnalOtherPart(ByteBuffer byteBuffer) {
+		byteBuffer.putFloat(hunger);
+	}
+
+	@Override
+	protected void applyAdditionnalOtherPart(ByteBuffer byteBuffer) {
+		hunger = byteBuffer.getFloat();
 	}
 }

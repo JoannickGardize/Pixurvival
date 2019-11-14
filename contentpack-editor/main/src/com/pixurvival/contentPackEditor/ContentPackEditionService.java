@@ -32,6 +32,7 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.util.CaseUtils;
+import com.pixurvival.core.util.Wrapper;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -44,6 +45,7 @@ public class ContentPackEditionService {
 	private Map<ElementType, Method> listSetters = new EnumMap<>(ElementType.class);
 	@SuppressWarnings("rawtypes")
 	private Map<ElementType, ElementEditor> elementTypeEditors = new EnumMap<>(ElementType.class);
+	private long nextStatFormulaId;
 
 	@SneakyThrows
 	private ContentPackEditionService() {
@@ -71,6 +73,20 @@ public class ContentPackEditionService {
 
 		// Register translation related events
 		new TranslationUpdateManager();
+	}
+
+	public void updateNextStatFormulaId() {
+		Wrapper<Long> maxId = new Wrapper<>(-1L);
+		FileService.getInstance().getCurrentContentPack().forEachStatFormulas(f -> {
+			if (f.getId() > maxId.getValue()) {
+				maxId.setValue(f.getId());
+			}
+		});
+		nextStatFormulaId = maxId.getValue() + 1;
+	}
+
+	public long nextStatFormulaId() {
+		return nextStatFormulaId++;
 	}
 
 	@SuppressWarnings("rawtypes")

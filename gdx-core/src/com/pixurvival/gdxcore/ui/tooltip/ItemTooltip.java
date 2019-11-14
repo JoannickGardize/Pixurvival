@@ -2,7 +2,6 @@ package com.pixurvival.gdxcore.ui.tooltip;
 
 import java.util.Locale;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -53,10 +52,6 @@ public class ItemTooltip extends Table implements StatListener {
 			DrawUtils.setTooltipPosition(this);
 		}
 		super.draw(batch, parentAlpha);
-	}
-
-	public static float getLabelWidth() {
-		return Gdx.graphics.getWidth() / 4;
 	}
 
 	private void build() {

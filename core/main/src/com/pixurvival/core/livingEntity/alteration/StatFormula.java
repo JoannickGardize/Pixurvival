@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.team.TeamMember;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a value depending on a {@link StatSet}. It is formed by a base
@@ -20,17 +20,22 @@ import com.pixurvival.core.team.TeamMember;
  */
 @Getter
 @Setter
-public class StatAmount implements Serializable {
+public class StatFormula implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Useful to reference this StatAmount in translation texts.
+	 */
+	private long id = -1;
 
 	private float base;
 
 	private List<StatMultiplier> statMultipliers = new ArrayList<>();
 
 	/**
-	 * Returns the value of this StatAmount for the given StatSet, the value
-	 * will be set to zero if the result is negative.
+	 * Returns the value of this StatAmount for the given StatSet, the value will be
+	 * set to zero if the result is negative.
 	 * 
 	 * @param statSet
 	 * @return

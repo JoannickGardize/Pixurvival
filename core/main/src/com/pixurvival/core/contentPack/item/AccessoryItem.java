@@ -1,6 +1,9 @@
 package com.pixurvival.core.contentPack.item;
 
+import java.util.function.Consumer;
+
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +16,8 @@ public class AccessoryItem extends EquipableItem {
 
 	private ItemAlterationAbility ability;
 
+	@Override
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		ability.forEachStatFormulas(action);
+	}
 }

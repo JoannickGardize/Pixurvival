@@ -14,6 +14,7 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -381,6 +382,18 @@ public class TiledMap {
 			}
 		}
 		return closest;
+	}
+
+	public MapStructure findStructure(Structure structure, int x, int y) {
+		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
+			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
+				MapStructure mapStructure = tileAt(dx, dy).getStructure();
+				if (mapStructure != null && mapStructure.getDefinition() == structure) {
+					return mapStructure;
+				}
+			}
+		}
+		return null;
 	}
 
 	public boolean isInAnyLight(Vector2 position) {

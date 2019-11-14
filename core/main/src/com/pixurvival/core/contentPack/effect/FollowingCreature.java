@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.effect;
 
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.livingEntity.alteration.StatAmount;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
@@ -18,9 +18,9 @@ public class FollowingCreature extends FollowingElement {
 
 	private Creature creature;
 	private boolean owned = true;
-	private StatAmount strengthBonus = new StatAmount();
-	private StatAmount agilityBonus = new StatAmount();
-	private StatAmount intelligenceBonus = new StatAmount();
+	private StatFormula strengthBonus = new StatFormula();
+	private StatFormula agilityBonus = new StatFormula();
+	private StatFormula intelligenceBonus = new StatFormula();
 
 	@Override
 	public void apply(TeamMember ancestor) {

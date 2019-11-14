@@ -27,10 +27,11 @@ import lombok.Setter;
 public abstract class LivingEntity extends Entity implements Damageable, TeamMember {
 
 	public static final byte UPDATE_CONTENT_MASK_STATS = 1;
-	public static final byte UPDATE_CONTENT_MASK_OTHERS = 2;
-	public static final byte UPDATE_CONTENT_MASK_FORWARD = 4;
-	public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED = 8;
-	public static final byte UPDATE_CONTENT_MASK_ALL = UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_OTHERS;
+	public static final byte UPDATE_CONTENT_MASK_ABILITY = 2;
+	public static final byte UPDATE_CONTENT_MASK_OTHERS = 4;
+	public static final byte UPDATE_CONTENT_MASK_FORWARD = 8;
+	public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED = 16;
+	public static final byte UPDATE_CONTENT_MASK_ALL = UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
 
 	private byte updateContentFlags = UPDATE_CONTENT_MASK_ALL;
 
@@ -210,6 +211,11 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	public void takeTrueDamage(float amount) {
+		takeTrueDamageSneaky(amount);
+		setStateChanged(true);
+	}
+
+	public void takeTrueDamageSneaky(float amount) {
 		if (getWorld().getTime().getTimeMillis() < invincibleTermTime) {
 			return;
 		}
@@ -217,7 +223,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		if (health < 0) {
 			health = 0;
 		}
-		setStateChanged(true);
 	}
 
 	@Override
@@ -315,14 +320,14 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			currentAbility = ability;
 		}
 		setStateChanged(true);
-		addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
+		addUpdateContentMask(UPDATE_CONTENT_MASK_ABILITY);
 	}
 
 	public void stopCurrentAbility() {
 		if (currentAbility != null && currentAbility.stop(this)) {
 			currentAbility = null;
 			setStateChanged(true);
-			addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_ABILITY);
 		}
 	}
 
@@ -361,13 +366,8 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			buffer.putFloat(getStats().getValue(StatType.SPEED));
 		}
 
-		// others part
-
-		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_OTHERS) != 0) {
-			buffer.putLong(stunTermTime);
-			buffer.putShort((short) getTeam().getId());
-			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
-			buffer.putDouble(getForwardFactor());
+		// ability part
+		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_ABILITY) != 0) {
 			if (getCurrentAbility() == null) {
 				buffer.put(Ability.NONE_ID);
 			} else {
@@ -375,6 +375,16 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 				buffer.put(id);
 				getAbilityData(id).write(buffer, this);
 			}
+		}
+
+		// others part
+
+		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_OTHERS) != 0) {
+			buffer.putLong(stunTermTime);
+			buffer.putShort((short) getTeam().getId());
+			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
+			buffer.putDouble(getForwardFactor());
+			writeAdditionnalOtherPart(buffer);
 		}
 	}
 
@@ -396,6 +406,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		setHealth(buffer.getFloat());
 
 		// stats part
+
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_STATS) != 0) {
 			getStats().get(StatType.STRENGTH).setValue(buffer.getFloat());
 			getStats().get(StatType.AGILITY).setValue(buffer.getFloat());
@@ -405,13 +416,9 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			getStats().get(StatType.SPEED).setValue(buffer.getFloat());
 		}
 
-		// others part
+		// ability part
 
-		if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
-			stunTermTime = buffer.getLong();
-			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
-			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
-			setForwardFactor(buffer.getDouble());
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_ABILITY) != 0) {
 			byte abilityId = buffer.get();
 			if (abilityId == Ability.NONE_ID) {
 				stopCurrentAbility();
@@ -420,6 +427,24 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 				startAbility(abilityId);
 			}
 		}
+
+		// others part
+
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
+			stunTermTime = buffer.getLong();
+			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
+			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
+			setForwardFactor(buffer.getDouble());
+			applyAdditionnalOtherPart(buffer);
+		}
+	}
+
+	protected void writeAdditionnalOtherPart(ByteBuffer byteBuffer) {
+		// For override
+	}
+
+	protected void applyAdditionnalOtherPart(ByteBuffer byteBuffer) {
+		// For override
 	}
 
 	public abstract AbilitySet getAbilitySet();

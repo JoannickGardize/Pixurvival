@@ -2,9 +2,11 @@ package com.pixurvival.core.livingEntity.ability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
+import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +41,11 @@ public abstract class AlterationAbility extends CooldownAbility {
 
 	public boolean isEmpty() {
 		return alterations.isEmpty();
+	}
+
+	@Override
+	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		alterations.forEach(a -> a.forEachStatFormulas(action));
 	}
 
 }

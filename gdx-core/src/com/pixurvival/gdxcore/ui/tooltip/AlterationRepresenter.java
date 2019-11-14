@@ -1,12 +1,12 @@
 package com.pixurvival.gdxcore.ui.tooltip;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.pixurvival.core.contentPack.TranslationKey;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -57,12 +57,10 @@ public class AlterationRepresenter {
 	private static Actor addItem(Alteration alteration) {
 		AddItemAlteration addItemAlteration = (AddItemAlteration) alteration;
 		ItemStack itemStack = addItemAlteration.getItemStack();
-		Locale locale = PixurvivalGame.getClient().getCurrentLocale();
-		sb.setLength(0);
-		sb.append(itemStack.getQuantity());
-		sb.append("x ");
-		sb.append(PixurvivalGame.getWorld().getContentPack().getTranslation(locale, itemStack.getItem(), TranslationKey.NAME));
-		return RepresenterUtils.labelledValue("hud.alteration.addItem", sb.toString());
+		Table table = new Table();
+		table.add(new Label(PixurvivalGame.getString("hud.alteration.addItem"), PixurvivalGame.getSkin(), "white")).expand();
+		RepresenterUtils.appendItemStack(table, itemStack);
+		return table;
 	}
 
 }

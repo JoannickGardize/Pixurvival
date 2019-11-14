@@ -45,9 +45,9 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 		// FollowingCreature
 		ElementChooserButton<Creature> creatureChooser = new ElementChooserButton<>(Creature.class);
 		BooleanCheckBox ownedCheckBox = new BooleanCheckBox();
-		StatAmountEditor strengthEditor = new StatAmountEditor();
-		StatAmountEditor agilityEditor = new StatAmountEditor();
-		StatAmountEditor intelligenceEditor = new StatAmountEditor();
+		StatFormulaEditor strengthEditor = new StatFormulaEditor();
+		StatFormulaEditor agilityEditor = new StatFormulaEditor();
+		StatFormulaEditor intelligenceEditor = new StatFormulaEditor();
 		bind(creatureChooser, FollowingCreature::getCreature, FollowingCreature::setCreature, FollowingCreature.class);
 		bind(ownedCheckBox, FollowingCreature::isOwned, FollowingCreature::setOwned, FollowingCreature.class);
 		bind(strengthEditor, FollowingCreature::getStrengthBonus, FollowingCreature::setStrengthBonus, FollowingCreature.class);

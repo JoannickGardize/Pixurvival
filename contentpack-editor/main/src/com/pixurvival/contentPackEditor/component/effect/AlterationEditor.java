@@ -58,22 +58,22 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		List<ClassEntry> entries = new ArrayList<>();
 
 		// InstantDamageAlteration
-		StatAmountEditor damageAmountEditor = new StatAmountEditor();
+		StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
 		bind(damageAmountEditor, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
 		entries.add(new ClassEntry(InstantDamageAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor))));
 
 		// ContinuousDamageAlteration
-		damageAmountEditor = new StatAmountEditor();
+		damageAmountEditor = new StatFormulaEditor();
 		bind(damageAmountEditor, ContinuousDamageAlteration::getDamagePerSecond, ContinuousDamageAlteration::setDamagePerSecond, ContinuousDamageAlteration.class);
 		entries.add(new ClassEntry(ContinuousDamageAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor))));
 
 		// InstantHealAlteration
-		StatAmountEditor healAmountEditor = new StatAmountEditor();
+		StatFormulaEditor healAmountEditor = new StatFormulaEditor();
 		bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
 		entries.add(new ClassEntry(InstantHealAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", healAmountEditor))));
 
 		// InstantEatAlteration
-		StatAmountEditor eatAmountEditor = new StatAmountEditor();
+		StatFormulaEditor eatAmountEditor = new StatFormulaEditor();
 		bind(eatAmountEditor, InstantEatAlteration::getAmount, InstantEatAlteration::setAmount, InstantEatAlteration.class);
 		entries.add(new ClassEntry(InstantEatAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", eatAmountEditor))));
 
@@ -95,7 +95,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		EnumChooser<SourceDirection> sourceDirectionChooser = new EnumChooser<>(SourceDirection.class);
 		AngleInput relativeAngleInput = new AngleInput();
 		AngleInput randomAngleInput = new AngleInput();
-		StatAmountEditor speedEditor = new StatAmountEditor();
+		StatFormulaEditor speedEditor = new StatFormulaEditor();
 		bind(durationInput, FixedMovementAlteration::getDuration, FixedMovementAlteration::setDuration, FixedMovementAlteration.class);
 		bind(sourceTypeChooser, FixedMovementAlteration::getSourceType, FixedMovementAlteration::setSourceType, FixedMovementAlteration.class);
 		bind(sourceDirectionChooser, FixedMovementAlteration::getSourceDirection, FixedMovementAlteration::setSourceDirection, FixedMovementAlteration.class);

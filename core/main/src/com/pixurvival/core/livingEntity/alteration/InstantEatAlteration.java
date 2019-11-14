@@ -13,7 +13,7 @@ public class InstantEatAlteration extends Alteration {
 
 	private static final long serialVersionUID = 1L;
 
-	private StatAmount amount = new StatAmount();
+	private StatFormula amount = new StatFormula();
 
 	@Override
 	public void targetedApply(TeamMember source, LivingEntity entity) {
