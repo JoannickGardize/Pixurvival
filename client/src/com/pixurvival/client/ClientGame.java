@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
@@ -30,7 +26,7 @@ import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldReady;
@@ -39,6 +35,10 @@ import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor {
@@ -57,6 +57,8 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private String[] gameBeginningCommands;
 	private @Getter @Setter List<Locale> localePriorityList = new ArrayList<>();
 	private @Getter Locale currentLocale;
+	private @Getter boolean spectator;
+	private @Getter int myTeamId;
 
 	public ClientGame(CommonMainArgs clientArgs) {
 		client = new Client(8192, 8192);
@@ -90,6 +92,15 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		return world.getMyPlayer().getInventory();
 	}
 
+	public void spectate(Spectate spectate) {
+		PlayerEntity player = world.getPlayerEntities().get(spectate.getPlayerId());
+		player.getPosition().set(spectate.getPlayerPosition());
+		player.setInventory(world.getMyPlayer().getInventory());
+		spectator = true;
+		world.setMyPlayer(player);
+		listeners.forEach(ClientGameListener::spectatorStarted);
+	}
+
 	public void connectToServer(String address, int port, String playerName) {
 		try {
 			if (client.isConnected()) {
@@ -107,6 +118,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
+			myTeamId = createWorld.getMyTeamId();
 			createWorld.getInventory().computeQuantities();
 			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
 			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());
@@ -143,10 +155,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	}
 
 	public void sendAction(IPlayerActionRequest request) {
-		if (world != null) {
+		if (world != null && getMyPlayer() != null && getMyPlayer().isAlive() && !spectator) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
-				if (getMyPlayer() != null && request.isClientPreapply()) {
+				if (request.isClientPreapply()) {
 					synchronized (playerActionRequests) {
 						playerActionRequests.add(request);
 					}
@@ -209,10 +221,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	public void notifyReady() {
 		client.sendTCP(new GameReady());
-	}
-
-	public void offer(PlayerData[] data) {
-		world.getPlugin(WorldUpdateManager.class).offer(data);
 	}
 
 	public void offer(WorldUpdate worldUpdate) {

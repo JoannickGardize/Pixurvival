@@ -21,21 +21,19 @@ import lombok.Setter;
 @Getter
 public class WorldUpdate implements Poolable {
 
-	public static final int BUFFER_SIZE = 8192;
+	public static final int BUFFER_SIZE = 16384;
 
 	private @Setter long updateId;
 	private @Setter long worldId;
 	private @Setter int entityUpdateLength;
-	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(16384);
+	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 	private List<StructureUpdate> structureUpdates = new ArrayList<>();
-	private List<PlayerData> playerData = new ArrayList<>();
 	private List<CompressedChunk> compressedChunks = new ArrayList<>();
 
 	@Override
 	public void clear() {
 		entityUpdateByteBuffer.position(0);
 		structureUpdates.clear();
-		playerData.clear();
 		compressedChunks.clear();
 	}
 
@@ -49,7 +47,6 @@ public class WorldUpdate implements Poolable {
 			output.writeInt(object.entityUpdateLength);
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
 			KryoUtils.writeUnspecifiedClassList(kryo, output, object.structureUpdates);
-			KryoUtils.writeUniqueClassList(kryo, output, object.playerData);
 			KryoUtils.writeUniqueClassList(kryo, output, object.compressedChunks);
 		}
 
@@ -67,7 +64,6 @@ public class WorldUpdate implements Poolable {
 			worldUpdate.entityUpdateLength = input.readInt();
 			input.readBytes(worldUpdate.entityUpdateByteBuffer.array(), 0, worldUpdate.entityUpdateLength);
 			KryoUtils.readUnspecifiedClassList(kryo, input, worldUpdate.structureUpdates);
-			KryoUtils.readUniqueClassList(kryo, input, worldUpdate.playerData, PlayerData.class);
 			KryoUtils.readUniqueClassList(kryo, input, worldUpdate.compressedChunks, CompressedChunk.class);
 			return worldUpdate;
 		}

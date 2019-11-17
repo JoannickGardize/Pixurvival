@@ -112,16 +112,16 @@ public class MapAnalytics {
 	}
 
 	/**
-	 * Simple path finding to check if position1 and position2 are connected by
-	 * a simple path.
+	 * Naive path finding to check if position1 and position2 are connected by a
+	 * simple path.
 	 * 
 	 * @param cursor
 	 *            cursor for accessing tile data
 	 * @param position1
 	 * @param position2
 	 * @param maxFail
-	 *            Maximum number of "fail" of the algorithm, a "fail" means "oh,
-	 *            hitting a wall, let's change direction"
+	 *            Maximum number of "fail" of the algorithm, a "fail" happens
+	 *            each time an obstacle is encountered.
 	 * @return true if the two positions are connected, false if they are
 	 *         <b>maybe</b> not connected.
 	 */

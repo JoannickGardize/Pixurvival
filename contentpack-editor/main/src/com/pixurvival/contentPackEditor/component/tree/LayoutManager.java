@@ -74,18 +74,39 @@ public class LayoutManager implements ContentPackSerializerPlugin {
 		} else {
 			root = new LayoutFolder("root");
 		}
+
+		// TODO remove this commented code, keeped for fixing index corruption
+		// after deletion
+		// root.forEachLeaf(n -> {
+		// LayoutElement leaf = (LayoutElement) n;
+		// if (leaf.getType() == ElementType.SPRITE_SHEET && leaf.getId() > 15) {
+		// leaf.setId(leaf.getId() - 1);
+		// }
+		// });
 		setElementReferences(contentPack);
 		insertMissingElements(contentPack);
 	}
 
 	@Override
 	public void write(ContentPack contentPack, ZipOutputStream zipOutputStream) {
+		updateIndexes();
 		try {
 			zipOutputStream.putNextEntry(new ZipEntry(LAYOUT_ENTRY));
 			yaml.dump(root, new OutputStreamWriter(zipOutputStream));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Update the indexes of the tree elements, wich are corrupted if a deletion was
+	 * made.
+	 */
+	private void updateIndexes() {
+		root.forEachLeaf(node -> {
+			LayoutElement leaf = (LayoutElement) node;
+			leaf.setId(leaf.getElement().getId());
+		});
 	}
 
 	private void setElementReferences(ContentPack contentPack) {

@@ -18,6 +18,7 @@ public enum EntityGroup {
 	EFFECT((w, id) -> new EffectEntity(), EffectEntity.class);
 
 	public static final byte END_MARKER = -1;
+	public static final byte REMOVE_ALL_MARKER = -2;
 
 	private @Getter EntitySupplier entitySupplier;
 

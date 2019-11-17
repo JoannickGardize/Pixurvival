@@ -147,8 +147,6 @@ public class TiledMap {
 
 	private void insertChunk(Chunk chunk) {
 		Chunk existingChunk = chunks.get(chunk.getPosition());
-		if (existingChunk != null) {
-		}
 		if (existingChunk == null || chunk.getUpdateTimestamp() > existingChunk.getUpdateTimestamp()) {
 			chunks.put(chunk.getPosition(), chunk);
 			// world.getEntityPool().sneakyAddAll(chunk.getEntities());
@@ -156,7 +154,10 @@ public class TiledMap {
 			if (updates != null) {
 				updates.forEach(u -> u.apply(chunk));
 			}
+			chunk.check();
 			listeners.forEach(l -> l.chunkLoaded(chunk));
+		} else {
+			existingChunk.check();
 		}
 	}
 

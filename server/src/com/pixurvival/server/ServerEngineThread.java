@@ -12,7 +12,7 @@ import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.WorldUpdate;
 
 import lombok.NonNull;
@@ -23,8 +23,8 @@ public class ServerEngineThread extends EngineThread {
 	private double sendUpdateIntervalMillis = 50;
 	private double sendUpdateTimer = 0;
 	private List<GameSession> sessions = new ArrayList<>();
-	private List<PlayerData> tmpPlayerData = new ArrayList<>();
 	private WorldUpdate worldUpdate = new WorldUpdate();
+	private List<SpectatorSession> tmpNewSpectators = new ArrayList<>();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
 
 	public ServerEngineThread(ServerGame game) {
@@ -45,9 +45,9 @@ public class ServerEngineThread extends EngineThread {
 		if (sendUpdateTimer > sendUpdateIntervalMillis) {
 			sessions.forEach(gs -> {
 				worldUpdate.setUpdateId(worldUpdate.getUpdateId() + 1);
-				sendWorldData(gs, buildPlayerData(gs));
-				gs.getRemovedEntities().clear();
-				gs.getChunkChangedEntities().clear();
+				sendWorldData(gs);
+				gs.clear();
+
 				gs.getWorld().getEntityPool().foreach(entity -> entity.setStateChanged(false));
 			});
 			sessions.forEach(gs -> gs.getWorld().getEntityPool().foreach(entity -> {
@@ -64,32 +64,17 @@ public class ServerEngineThread extends EngineThread {
 		}
 	}
 
-	private PlayerData[] buildPlayerData(GameSession gs) {
-		gs.foreachPlayers(p -> {
-			PlayerConnection connection = p.getConnection();
-			if (connection.isPlayerDataChanged()) {
-				tmpPlayerData.add(connection.getPlayerEntity().getData());
-				connection.setPlayerDataChanged(false);
-			}
-		});
-		PlayerData[] playerData = null;
-		if (!tmpPlayerData.isEmpty()) {
-			playerData = tmpPlayerData.toArray(new PlayerData[tmpPlayerData.size()]);
-			tmpPlayerData.clear();
-		}
-		return playerData;
-	}
-
-	private void sendWorldData(GameSession gs, PlayerData[] finalPlayerData) {
+	private void sendWorldData(GameSession gs) {
+		PlayerDead[] playerDeads = gs.extractPlayerDeads();
 		gs.foreachPlayers(session -> {
 			PlayerConnection connection = session.getConnection();
 			PlayerEntity playerEntity = connection.getPlayerEntity();
 			if (connection.isGameReady() && playerEntity != null) {
 				worldUpdate.clear();
 				ByteBuffer byteBuffer = worldUpdate.getEntityUpdateByteBuffer();
-				writeEntityUpdate(session, playerEntity, byteBuffer);
-				byteBuffer.put(EntityGroup.END_MARKER);
 				writeRemoveEntity(gs, session, byteBuffer);
+				byteBuffer.put(EntityGroup.END_MARKER);
+				writeEntityUpdate(session, playerEntity, byteBuffer);
 				byteBuffer.put(EntityGroup.END_MARKER);
 				writeDistantAllyPositions(playerEntity, byteBuffer);
 				session.extractStructureUpdatesToSend(worldUpdate.getStructureUpdates());
@@ -97,17 +82,53 @@ public class ServerEngineThread extends EngineThread {
 				if (byteBuffer.position() > 4 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
 					Log.debug("sendUDP to " + connection + " worldUpdate of size " + byteBuffer.position());
 					connection.sendUDP(worldUpdate);
+					tmpNewSpectators.clear();
+					session.getSpectators().values().forEach(spec -> {
+						if (spec.isNewlySpectating()) {
+							tmpNewSpectators.add(spec);
+						} else {
+							spec.getConnection().sendUDP(worldUpdate);
+						}
+						if (connection.isInventoryChanged()) {
+							spec.getConnection().sendTCP(playerEntity.getInventory());
+						}
+						if (playerDeads != null) {
+							spec.getConnection().sendTCP(playerDeads);
+						}
+					});
+					sendFullUpdateForNewSpectators(playerEntity);
 					game.notifyNetworkListeners(l -> l.sent(worldUpdate));
 				}
 				if (connection.isInventoryChanged()) {
 					connection.setInventoryChanged(false);
 					connection.sendTCP(playerEntity.getInventory());
 				}
-			}
-			if (finalPlayerData != null) {
-				connection.sendTCP(finalPlayerData);
+				if (playerDeads != null) {
+					connection.sendTCP(playerDeads);
+				}
 			}
 			session.clearPositionChanges();
+		});
+	}
+
+	public void sendFullUpdateForNewSpectators(PlayerEntity viewedPlayer) {
+		if (tmpNewSpectators.isEmpty()) {
+			return;
+		}
+		worldUpdate.clear();
+		ByteBuffer byteBuffer = worldUpdate.getEntityUpdateByteBuffer();
+		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
+		byteBuffer.put(EntityGroup.END_MARKER);
+		viewedPlayer.foreachChunkInView(chunk -> {
+			chunk.getEntities().writeUpdate(byteBuffer, true, viewedPlayer.getChunkVision());
+			worldUpdate.getCompressedChunks().add(chunk.getCompressed());
+		});
+		byteBuffer.put(EntityGroup.END_MARKER);
+		writeDistantAllyPositions(viewedPlayer, byteBuffer);
+		tmpNewSpectators.forEach(spec -> {
+			spec.getConnection().sendUDP(worldUpdate);
+			spec.getConnection().sendTCP(viewedPlayer.getInventory());
+			spec.setNewlySpectating(false);
 		});
 	}
 

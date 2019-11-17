@@ -1,6 +1,7 @@
 package com.pixurvival.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatListener;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.MapStructure;
@@ -21,6 +23,9 @@ import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
+import com.pixurvival.core.message.PlayerDead;
+import com.pixurvival.core.message.Spectate;
+import com.pixurvival.core.team.Team;
 
 import lombok.Getter;
 
@@ -28,8 +33,10 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
+	private Map<Long, SpectatorSession> spectators = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
+	private List<PlayerDead> playerDeadList = new ArrayList<>();
 
 	public GameSession(World world) {
 		this.world = world;
@@ -37,6 +44,12 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		world.getMap().addPlayerMapEventListener(this);
 		world.getEntityPool().addListener(this);
 		world.getChatManager().addListener(this);
+	}
+
+	public void clear() {
+		removedEntities.clear();
+		chunkChangedEntities.clear();
+		playerDeadList.clear();
 	}
 
 	public void addPlayer(PlayerConnection player) {
@@ -126,6 +139,65 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	public void entityRemoved(Entity e) {
 		if (e.getChunk() != null) {
 			removedEntities.computeIfAbsent(e.getChunk().getPosition(), position -> new ArrayList<>()).add(e);
+		}
+		// TODO avoid this if with specific events for PlayerEntities
+		if (e instanceof PlayerEntity) {
+			playerDeadList.add(new PlayerDead(e.getId()));
+			PlayerSession playerSession = players.remove(e.getId());
+			if (!players.isEmpty()) {
+				SpectatorSession spectatorSession = new SpectatorSession();
+				spectatorSession.setConnection(playerSession.getConnection());
+				spectators.put(spectatorSession.getConnection().getPlayerEntity().getId(), spectatorSession);
+				findBestSpectatorTarget(spectatorSession);
+			}
+			playerSession.getSpectators().values().forEach(this::findBestSpectatorTarget);
+		}
+	}
+
+	public PlayerDead[] extractPlayerDeads() {
+		if (playerDeadList.isEmpty()) {
+			return null;
+		} else {
+			PlayerDead[] result = playerDeadList.toArray(new PlayerDead[playerDeadList.size()]);
+			playerDeadList.clear();
+			return result;
+		}
+	}
+
+	private void findBestSpectatorTarget(SpectatorSession spec) {
+		unSpectate(spec);
+		Team team = spec.getConnection().getPlayerEntity().getTeam();
+		PlayerEntity spectatedPlayer = null;
+		if (!team.getAliveMembers().isEmpty()) {
+			spectatedPlayer = team.getAliveMembers().iterator().next();
+		} else {
+			Collection<Entity> collection = spec.getConnection().getPlayerEntity().getWorld().getEntityPool().get(EntityGroup.PLAYER);
+			if (!collection.isEmpty()) {
+				spectatedPlayer = (PlayerEntity) collection.iterator().next();
+			}
+		}
+		if (spectatedPlayer != null) {
+			PlayerSession playerSession = players.get(spectatedPlayer.getId());
+			if (playerSession != null) {
+				spectate(spec, playerSession);
+			}
+		}
+	}
+
+	private void spectate(SpectatorSession spec, PlayerSession player) {
+		spec.setSpectatedPlayer(player);
+		player.getSpectators().put(spec.getConnection().getPlayerEntity().getId(), spec);
+		spec.setNewlySpectating(true);
+		spec.getConnection().sendTCP(new Spectate(player.getConnection().getPlayerEntity()));
+	}
+
+	private void unSpectate(SpectatorSession spec) {
+		if (spec.getSpectatedPlayer() != null) {
+			PlayerSession playerSession = players.get(spec.getSpectatedPlayer().getConnection().getPlayerEntity().getId());
+			if (playerSession != null) {
+				playerSession.getSpectators().remove(spec.getConnection().getPlayerEntity().getId());
+			}
+			spec.setSpectatedPlayer(null);
 		}
 	}
 

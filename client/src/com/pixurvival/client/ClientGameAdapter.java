@@ -15,4 +15,8 @@ public class ClientGameAdapter implements ClientGameListener {
 	@Override
 	public void error(Throwable e) {
 	}
+
+	@Override
+	public void spectatorStarted() {
+	}
 }

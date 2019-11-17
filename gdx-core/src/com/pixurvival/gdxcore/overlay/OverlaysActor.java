@@ -50,7 +50,7 @@ public class OverlaysActor extends Actor implements EventListener {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		if (myPlayer != null) {
 			for (PlayerEntity ally : myPlayer.getTeam().getAliveMembers()) {
-				if (!ally.equals(myPlayer)) {
+				if (!ally.equals(myPlayer) && ally.isAlive()) {
 					distantAlliesDrawer.draw(batch, worldViewport, ally);
 				}
 			}

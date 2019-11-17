@@ -120,8 +120,6 @@ public class ServerGame {
 			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));
 			playerEntity.setName(playerConnection.toString());
 			playerEntity.getInventory().addListener(playerConnection);
-			playerEntity.getEquipment().addListener(playerConnection);
-			playerEntity.getStats().addListener(playerConnection);
 			playerConnection.setPlayerEntity(playerEntity);
 			session.addPlayer(playerConnection);
 		});

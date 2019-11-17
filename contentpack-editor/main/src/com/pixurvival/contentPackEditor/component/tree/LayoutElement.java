@@ -44,4 +44,9 @@ public class LayoutElement extends LayoutNode {
 		setValid(ContentPackEditionService.getInstance().editorOf(ElementType.of(element)).isValueValid(element));
 	}
 
+	@Override
+	public String toString() {
+		return element == null ? null : element.getName();
+	}
+
 }

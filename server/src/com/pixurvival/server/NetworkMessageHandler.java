@@ -103,7 +103,7 @@ class NetworkMessageHandler extends Listener {
 	private void handlePlayerActionRequest(ClientMessage m) {
 		PlayerConnection connection = m.getConnection();
 		PlayerEntity entity = connection.getPlayerEntity();
-		if (entity != null) {
+		if (entity != null && entity.isAlive()) {
 			((IPlayerActionRequest) m.getObject()).apply(entity);
 		}
 	}

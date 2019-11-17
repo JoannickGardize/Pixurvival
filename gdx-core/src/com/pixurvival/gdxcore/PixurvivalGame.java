@@ -25,6 +25,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
@@ -210,5 +211,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void error(Throwable e) {
+	}
+
+	@Override
+	public void spectatorStarted() {
+		DrawData drawData = (DrawData) getClient().getMyPlayer().getCustomData();
+		if (drawData != null) {
+			drawData.getDrawPosition().set(getClient().getMyPlayer().getPosition());
+		}
 	}
 }

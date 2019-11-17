@@ -88,10 +88,10 @@ public class WorldScreen implements Screen {
 		world.getChatManager().addListener(chatUI);
 		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
-		hudStage.addActor(ItemCraftTooltip.getInstance());
-		hudStage.addActor(ItemTooltip.getInstance());
 		hudStage.addActor(statusUI);
 		statusUI.updatePosition();
+		hudStage.addActor(ItemCraftTooltip.getInstance());
+		hudStage.addActor(ItemTooltip.getInstance());
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);

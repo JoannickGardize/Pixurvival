@@ -32,6 +32,7 @@ public class LayoutTree extends JTree {
 	private int currentContextY;
 
 	public LayoutTree() {
+		EventManager.getInstance().register(this);
 		getActionMap().put("cut", null);
 		getActionMap().put("copy", null);
 		getActionMap().put("paste", null);

@@ -31,9 +31,9 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	public static final byte UPDATE_CONTENT_MASK_OTHERS = 4;
 	public static final byte UPDATE_CONTENT_MASK_FORWARD = 8;
 	public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED = 16;
-	public static final byte UPDATE_CONTENT_MASK_ALL = UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
+	public static final byte NEXT_UPDATE_CONTENT_MASK = 32;
 
-	private byte updateContentFlags = UPDATE_CONTENT_MASK_ALL;
+	private byte updateContentFlags = getFullUpdateContentMask();
 
 	private float health;
 
@@ -336,7 +336,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 		// Building update flags
 
-		byte updateFlagsToSend = full ? UPDATE_CONTENT_MASK_ALL : updateContentFlags;
+		byte updateFlagsToSend = full ? getFullUpdateContentMask() : updateContentFlags;
 		if (isForward()) {
 			updateFlagsToSend |= UPDATE_CONTENT_MASK_FORWARD;
 		}
@@ -386,6 +386,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			buffer.putDouble(getForwardFactor());
 			writeAdditionnalOtherPart(buffer);
 		}
+		writeUpdate(buffer, updateFlagsToSend);
 	}
 
 	@Override
@@ -437,6 +438,15 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			setForwardFactor(buffer.getDouble());
 			applyAdditionnalOtherPart(buffer);
 		}
+		applyUpdate(buffer, updateContentFlag);
+	}
+
+	protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
+		// for override
+	}
+
+	protected void applyUpdate(ByteBuffer buffer, byte updateContentFlag) {
+		// for override
 	}
 
 	protected void writeAdditionnalOtherPart(ByteBuffer byteBuffer) {
@@ -451,5 +461,14 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 	public void prepareTargetedAlteration() {
 
+	}
+
+	/**
+	 * The update mask containing all flags for full update
+	 * 
+	 * @return
+	 */
+	public byte getFullUpdateContentMask() {
+		return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
 	}
 }

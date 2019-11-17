@@ -1,8 +1,10 @@
 package com.pixurvival.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -14,6 +16,7 @@ import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class PlayerSession {
@@ -25,6 +28,7 @@ public class PlayerSession {
 	private Set<ChunkPosition> missingChunks = new HashSet<>();
 	private Set<ChunkPosition> newPositions = new HashSet<>();
 	private Set<ChunkPosition> oldPositions = new HashSet<>();
+	private @Getter @Setter Map<Long, SpectatorSession> spectators = new HashMap<>();
 
 	public void addNewPosition(ChunkPosition position) {
 		newPositions.add(position);

@@ -72,7 +72,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private TeamSet teamSet = new TeamSet();
 	private @Getter CommandManager commandManager = new CommandManager();
 	private @Getter ChatManager chatManager = new ChatManager();
-	private PlayerEntity myPlayer;
+	private @Setter PlayerEntity myPlayer;
 	private @Getter Vector2 spawnCenter;
 	private @Getter Map<Long, PlayerEntity> playerEntities;
 
@@ -112,6 +112,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 				player.setName(playerInformation.getName());
 				player.setTeam(team);
 				player.setWorld(world);
+				player.initialize();
 				world.playerEntities.put(player.getId(), player);
 			}
 		}
@@ -173,8 +174,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();

@@ -1,6 +1,7 @@
 package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
@@ -9,6 +10,7 @@ import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
@@ -28,10 +30,10 @@ import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
-import com.pixurvival.core.message.PlayerData;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
@@ -50,6 +52,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public static final int CRAFT_ABILITY_ID = 1;
 	public static final int HARVEST_ABILITY_ID = 2;
 	public static final int USE_ITEM_ABILITY_ID = 3;
+
+	public static final byte UPDATE_CONTENT_MASK_EQUIPMENT = LivingEntity.NEXT_UPDATE_CONTENT_MASK;
 
 	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
 
@@ -81,6 +85,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
+			setStateChanged(true);
+			addUpdateContentMask(UPDATE_CONTENT_MASK_EQUIPMENT);
 			if (previousItemStack != null && getWorld().isServer()) {
 				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
 			}
@@ -125,7 +131,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	protected void onDeath() {
 		if (getWorld().isServer()) {
-			// TODO Send to the client the dead members of team
 			getTeam().addDead(this);
 		}
 	}
@@ -194,17 +199,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		startAbility(type.getAbilityId());
 	}
 
-	public PlayerData getData() {
-		PlayerData data = new PlayerData();
-		data.setId(getId());
-		data.setEquipment(equipment);
-		return data;
-	}
-
-	public void applyData(PlayerData data) {
-		equipment.set(data.getEquipment());
-	}
-
 	@Override
 	public AbilitySet getAbilitySet() {
 		return PLAYER_ABILITY_SET;
@@ -240,6 +234,27 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
+	protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
+		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_EQUIPMENT) != 0) {
+			ByteBufferUtils.writeItemOrNull(buffer, equipment.getClothing());
+			ByteBufferUtils.writeItemOrNull(buffer, equipment.getWeapon());
+			ByteBufferUtils.writeItemOrNull(buffer, equipment.getAccessory1());
+			ByteBufferUtils.writeItemOrNull(buffer, equipment.getAccessory2());
+		}
+	}
+
+	@Override
+	protected void applyUpdate(ByteBuffer buffer, byte updateContentFlag) {
+		if ((updateContentFlag & UPDATE_CONTENT_MASK_EQUIPMENT) != 0) {
+			List<Item> itemList = getWorld().getContentPack().getItems();
+			equipment.setClothing(ByteBufferUtils.readItemOrNullAsItemStack(buffer, itemList));
+			equipment.setWeapon(ByteBufferUtils.readItemOrNullAsItemStack(buffer, itemList));
+			equipment.setAccessory1(ByteBufferUtils.readItemOrNullAsItemStack(buffer, itemList));
+			equipment.setAccessory2(ByteBufferUtils.readItemOrNullAsItemStack(buffer, itemList));
+		}
+	}
+
+	@Override
 	protected void writeAdditionnalOtherPart(ByteBuffer byteBuffer) {
 		byteBuffer.putFloat(hunger);
 	}
@@ -247,5 +262,10 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	protected void applyAdditionnalOtherPart(ByteBuffer byteBuffer) {
 		hunger = byteBuffer.getFloat();
+	}
+
+	@Override
+	public byte getFullUpdateContentMask() {
+		return (byte) (super.getFullUpdateContentMask() | UPDATE_CONTENT_MASK_EQUIPMENT);
 	}
 }

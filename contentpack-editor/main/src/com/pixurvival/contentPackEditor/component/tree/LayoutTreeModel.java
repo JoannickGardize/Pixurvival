@@ -81,9 +81,10 @@ public class LayoutTreeModel implements TreeModel {
 					elementsMap.remove(layoutElement.getElement());
 				}
 			}
-			parent.forEachAncestor(LayoutNode::updateValidation);
+			root.forEachDeepFirst(LayoutNode::updateValidation);
 			TreeModelEvent event = new TreeModelEvent(this, parent.getPath(), new int[] { index }, new Object[] { node });
 			listeners.forEach(l -> l.treeNodesRemoved(event));
+			notifyNodeChanged(root);
 		}
 	}
 

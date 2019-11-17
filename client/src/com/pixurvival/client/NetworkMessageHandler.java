@@ -10,11 +10,13 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatEntry;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.PlayerData;
+import com.pixurvival.core.message.PlayerDead;
+import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeResponse;
 import com.pixurvival.core.message.WorldUpdate;
@@ -39,10 +41,16 @@ class NetworkMessageHandler extends Listener {
 			game.synchronizeTime(t);
 		});
 		putMessageAction(PlayerInventory.class, i -> game.getMyInventory().set(i));
-		putMessageAction(PlayerData[].class, game::offer);
 		putMessageAction(WorldUpdate.class, game::offer);
 		putMessageAction(StartGame.class, g -> game.addPlugin(new WorldUpdater()));
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
+		putMessageAction(Spectate.class, game::spectate);
+		putMessageAction(PlayerDead[].class, pd -> {
+			for (PlayerDead playerDead : pd) {
+				PlayerEntity player = game.getWorld().getPlayerEntities().get(playerDead.getId());
+				player.getTeam().addDead(player);
+			}
+		});
 	}
 
 	@Override

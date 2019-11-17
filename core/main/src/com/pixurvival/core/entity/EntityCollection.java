@@ -124,6 +124,24 @@ public class EntityCollection {
 
 	public void applyUpdate(ByteBuffer byteBuffer, World world) {
 		byte groupId;
+		// Entity removes
+		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
+			if (groupId == EntityGroup.REMOVE_ALL_MARKER) {
+				byteBuffer.get();
+				entities.clear();
+				break;
+			}
+			EntityGroup group = EntityGroup.values()[groupId];
+			Map<Long, Entity> groupMap = entities.get(group);
+			short size = byteBuffer.getShort();
+			for (int i = 0; i < size; i++) {
+				long entityId = byteBuffer.getLong();
+				Entity e = groupMap.get(entityId);
+				if (e != null) {
+					e.setAlive(false);
+				}
+			}
+		}
 		// Entity updates
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			EntityGroup group = EntityGroup.values()[groupId];
@@ -144,19 +162,6 @@ public class EntityCollection {
 					e.applyInitialization(byteBuffer);
 				}
 				e.applyUpdate(byteBuffer);
-			}
-		}
-		// Entity removes
-		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
-			EntityGroup group = EntityGroup.values()[groupId];
-			Map<Long, Entity> groupMap = entities.get(group);
-			short size = byteBuffer.getShort();
-			for (int i = 0; i < size; i++) {
-				long entityId = byteBuffer.getLong();
-				Entity e = groupMap.get(entityId);
-				if (e != null) {
-					e.setAlive(false);
-				}
 			}
 		}
 		// Far allies positions update

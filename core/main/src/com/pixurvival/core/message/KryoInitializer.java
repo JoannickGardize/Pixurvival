@@ -12,7 +12,6 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
@@ -60,7 +59,6 @@ public class KryoInitializer {
 		register(kryo, ItemStack.class);
 		register(kryo, Inventory.class);
 		register(kryo, PlayerInventory.class);
-		register(kryo, Equipment.class);
 		register(kryo, InventoryActionRequest.class);
 		register(kryo, CompressedChunk.class);
 		register(kryo, InteractStructureRequest.class);
@@ -69,8 +67,6 @@ public class KryoInitializer {
 		register(kryo, RemoveStructureUpdate.class);
 		register(kryo, CraftItemRequest.class);
 		register(kryo, DropItemRequest.class);
-		register(kryo, PlayerData.class);
-		register(kryo, PlayerData[].class);
 		register(kryo, EquipmentActionRequest.class);
 		register(kryo, PlaceStructureRequest.class);
 		register(kryo, PlayerEquipmentAbilityRequest.class);
@@ -82,6 +78,9 @@ public class KryoInitializer {
 		register(kryo, PlayerInformation[].class);
 		register(kryo, TeamComposition.class);
 		register(kryo, TeamComposition[].class);
+		register(kryo, Spectate.class);
+		register(kryo, PlayerDead.class);
+		register(kryo, PlayerDead[].class);
 	}
 
 	@SuppressWarnings("unchecked")

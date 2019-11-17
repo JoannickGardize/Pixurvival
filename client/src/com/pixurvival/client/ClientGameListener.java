@@ -9,4 +9,6 @@ public interface ClientGameListener {
 	void initializeGame();
 
 	void error(Throwable e);
+
+	void spectatorStarted();
 }
