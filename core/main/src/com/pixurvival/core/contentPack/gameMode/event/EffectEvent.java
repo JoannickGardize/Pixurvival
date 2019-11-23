@@ -41,18 +41,19 @@ public class EffectEvent extends Event {
 		if (forEachTeam) {
 			for (Team team : world.getTeamSet()) {
 				if (team != TeamSet.WILD_TEAM) {
-					perform(world, team.getAliveMembers(), repeatCount);
+					perform(world, team.getAliveMembers(), team.totalSize(), repeatCount);
 				}
 			}
 		} else {
-			perform(world, (Collection) world.getEntityPool().get(EntityGroup.PLAYER), repeatCount);
+			Collection players = world.getEntityPool().get(EntityGroup.PLAYER);
+			perform(world, players, players.size(), repeatCount);
 		}
 	}
 
-	private void perform(World world, Collection<PlayerEntity> players, int repeatCount) {
+	private void perform(World world, Collection<PlayerEntity> players, int numberOfPlayers, int repeatCount) {
 		EffectEventTeamMember teamMember = new EffectEventTeamMember(world);
 		position.apply(world, players, teamMember.getPosition(), teamMember.getTargetPosition());
-		teamMember.getStats().get(StatType.STRENGTH).setBase(players.size());
+		teamMember.getStats().get(StatType.STRENGTH).setBase(numberOfPlayers);
 		teamMember.getStats().get(StatType.AGILITY).setBase(repeatCount);
 		EffectEntity effectEntity = new EffectEntity(new OffsetAngleEffect(effect), teamMember);
 		world.getEntityPool().add(effectEntity);

@@ -82,7 +82,7 @@ public class ItemTooltip extends Table implements StatListener {
 	}
 
 	@Override
-	public void statChanged(StatValue statValue) {
+	public void statChanged(float oldValue, StatValue statValue) {
 		if (isVisible()) {
 			build();
 		} else {

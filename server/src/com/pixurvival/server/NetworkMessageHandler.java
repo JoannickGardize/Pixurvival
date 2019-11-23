@@ -41,9 +41,15 @@ class NetworkMessageHandler extends Listener {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {
 				connection.sendTCP(LoginResponse.ALREADY_LOGGED);
+				return;
+			}
+			String name = ((LoginRequest) m.getObject()).getPlayerName();
+			if (game.getPlayerConnection(name) != null) {
+				connection.sendTCP(LoginResponse.NAME_IN_USE);
+				return;
 			}
 			connection.setLogged(true);
-			connection.setName(((LoginRequest) m.getObject()).getPlayerName());
+			connection.setName(name);
 			game.addPlayerConnection(connection);
 			game.notify(l -> l.playerLoggedIn(connection));
 		});

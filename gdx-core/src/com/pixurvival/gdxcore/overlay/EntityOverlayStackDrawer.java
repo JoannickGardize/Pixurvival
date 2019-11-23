@@ -26,10 +26,6 @@ public class EntityOverlayStackDrawer<E extends Entity> implements OverlayDrawer
 	}
 
 	private void computeValues(Viewport worldViewport, E e) {
-		// infos.setScaleX(worldViewport.getScreenWidth() /
-		// worldViewport.getWorldWidth());
-		// infos.setScaleY(worldViewport.getScreenHeight() /
-		// worldViewport.getWorldHeight());
 		DrawData data = (DrawData) e.getCustomData();
 		infos.getReferencePosition().x = (float) data.getDrawPosition().getX();
 		infos.getReferencePosition().y = (float) data.getDrawPosition().getY() + data.getOverlayOffsetY();

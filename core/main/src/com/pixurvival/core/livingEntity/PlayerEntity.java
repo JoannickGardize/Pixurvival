@@ -83,6 +83,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private @Setter PlayerMovementRequest lastPlayerMovementRequest = new PlayerMovementRequest();
 
+	private @Setter int nextAccessorySwitch = Equipment.ACCESSORY1_INDEX;
+
 	public PlayerEntity() {
 		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
 			setStateChanged(true);

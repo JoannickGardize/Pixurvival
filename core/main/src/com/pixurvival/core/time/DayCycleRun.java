@@ -26,4 +26,6 @@ public interface DayCycleRun {
 	 *         started, and values close to 1 mean the moment will change soon.
 	 */
 	double currentMomentProgress();
+
+	long getDayCount();
 }

@@ -1,5 +1,8 @@
 package com.pixurvival.gdxcore.input.processor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
@@ -14,24 +17,37 @@ public class EquipmentAbilityProcessor implements InputActionProcessor {
 	/**
 	 * Static because common to all abilities
 	 */
-	private static boolean usingAbility = false;
+	private static List<EquipmentAbilityType> abilityStack = new ArrayList<>();
 
 	private EquipmentAbilityType equipmentAbilityType;
 
 	@Override
 	public void buttonDown() {
+		sendAbilityRequest(equipmentAbilityType);
+		abilityStack.add(equipmentAbilityType);
+	}
+
+	private void sendAbilityRequest(EquipmentAbilityType equipmentAbilityTypeToSend) {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		World world = PixurvivalGame.getClient().getWorld();
 		com.pixurvival.core.util.Vector2 targetPosition = world.getType().isClient() ? myPlayer.getTargetPosition() : null;
-		PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(equipmentAbilityType, targetPosition));
-		usingAbility = true;
+		PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(equipmentAbilityTypeToSend, targetPosition));
 	}
 
 	@Override
 	public void buttonUp() {
-		if (usingAbility) {
+		if (abilityStack.isEmpty()) {
+			return;
+		}
+		EquipmentAbilityType currentAbility = abilityStack.get(abilityStack.size() - 1);
+		abilityStack.removeIf(e -> e == equipmentAbilityType);
+		if (abilityStack.isEmpty()) {
 			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null, null));
-			usingAbility = false;
+		} else {
+			EquipmentAbilityType newAbility = abilityStack.get(abilityStack.size() - 1);
+			if (newAbility != currentAbility) {
+				sendAbilityRequest(newAbility);
+			}
 		}
 	}
 

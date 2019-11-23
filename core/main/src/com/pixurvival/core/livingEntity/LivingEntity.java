@@ -127,12 +127,11 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		super.initialize();
 		health = getMaxHealth();
 		if (getWorld().isServer()) {
-			stats.get(StatType.MAX_HEALTH).addListener(s -> {
-				if (getHealth() > s.getValue()) {
-					setHealth(s.getValue());
-				}
+			stats.get(StatType.MAX_HEALTH).addListener((o, s) -> {
+				float percentHealth = getHealth() / o;
+				setHealth(s.getValue() * percentHealth);
 			});
-			stats.addListener(s -> {
+			stats.addListener((o, s) -> {
 				setStateChanged(true);
 				addUpdateContentMask(UPDATE_CONTENT_MASK_STATS);
 			});
@@ -149,9 +148,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	public void teleport(Vector2 position) {
-		if (!getWorld().getMap().collide(getPosition().getX(), getPosition().getY(), getCollisionRadius())) {
-			getPosition().set(position);
-		}
+		getPosition().set(position);
 		setStateChanged(true);
 	}
 

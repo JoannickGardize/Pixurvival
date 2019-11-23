@@ -1,5 +1,6 @@
 package com.pixurvival.client;
 
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.message.LoginResponse;
 
 public class ClientGameAdapter implements ClientGameListener {
@@ -19,4 +20,11 @@ public class ClientGameAdapter implements ClientGameListener {
 	@Override
 	public void spectatorStarted() {
 	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

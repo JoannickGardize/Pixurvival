@@ -30,6 +30,8 @@ public class MapStructure implements Body, CustomDataHolder {
 	private Vector2 position;
 	private @Setter Object customData;
 
+	private @Setter long creationTime;
+
 	public MapStructure(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
 		this.definition = definition;
@@ -40,6 +42,7 @@ public class MapStructure implements Body, CustomDataHolder {
 		if (chunk != null) {
 			World world = chunk.getMap().getWorld();
 			if (world.isServer() && definition.getDuration() > 0) {
+				creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
 				world.getActionTimerManager().addActionTimer(() -> {
 					MapTile tile = chunk.tileAt(x, y);
 					if (tile instanceof TileAndStructure && ((TileAndStructure) tile).getStructure() == this) {
@@ -78,6 +81,9 @@ public class MapStructure implements Body, CustomDataHolder {
 	 * @param buffer
 	 */
 	public void writeData(ByteBuffer buffer) {
+		if (definition.getDuration() > 0) {
+			buffer.putLong(creationTime);
+		}
 	}
 
 	/**
@@ -86,6 +92,9 @@ public class MapStructure implements Body, CustomDataHolder {
 	 * @param buffer
 	 */
 	public void applyData(ByteBuffer buffer) {
+		if (definition.getDuration() > 0) {
+			creationTime = buffer.getLong();
+		}
 	}
 
 	/**

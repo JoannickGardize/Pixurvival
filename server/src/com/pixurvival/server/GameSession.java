@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatListener;
 import com.pixurvival.core.entity.Entity;
@@ -29,7 +31,7 @@ import com.pixurvival.core.team.Team;
 
 import lombok.Getter;
 
-public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener {
+public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener {
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
@@ -44,6 +46,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		world.getMap().addPlayerMapEventListener(this);
 		world.getEntityPool().addListener(this);
 		world.getChatManager().addListener(this);
+		world.addListener(this);
 	}
 
 	public void clear() {
@@ -86,7 +89,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void structureAdded(MapStructure mapStructure) {
-		StructureUpdate structureUpdate = new AddStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getDefinition().getId());
+		StructureUpdate structureUpdate = new AddStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getDefinition().getId(), mapStructure.getCreationTime());
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
@@ -211,5 +214,12 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	@Override
 	public void received(ChatEntry chatEntry) {
 		players.values().forEach(p -> p.getConnection().sendTCP(chatEntry));
+	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		players.values().forEach(p -> p.getConnection().sendTCP(data));
+		spectators.values().forEach(s -> s.getConnection().sendTCP(data));
+		// TODO Retour au lobby
 	}
 }

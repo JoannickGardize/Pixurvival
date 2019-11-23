@@ -291,3 +291,11 @@ arrow
   orig: 7, 6
   offset: 0, 0
   index: -1
+bar-cursor
+  rotate: false
+  xy: 120, 33
+  size : 13, 23
+  split: 6, 6, 11, 11
+  orig: 13, 23
+  offset: 0, 0
+  index: -1

@@ -12,18 +12,19 @@ import lombok.Getter;
 public class AddStructureUpdate extends StructureUpdate {
 
 	private int structureId;
+	private long creationTime;
 
-	public AddStructureUpdate(int x, int y, int structureId) {
+	public AddStructureUpdate(int x, int y, int structureId, long creationTime) {
 		super(x, y);
 		this.structureId = structureId;
+		this.creationTime = creationTime;
 	}
 
 	@Override
 	public void apply(Chunk chunk) {
 		Structure structure = chunk.getMap().getWorld().getContentPack().getStructures().get(structureId);
-		if (chunk.isEmpty(getX(), getY(), structure.getDimensions().getWidth(),
-				structure.getDimensions().getHeight())) {
-			chunk.addStructure(structure, getX(), getY());
+		if (chunk.isEmpty(getX(), getY(), structure.getDimensions().getWidth(), structure.getDimensions().getHeight())) {
+			chunk.addStructure(structure, getX(), getY()).setCreationTime(creationTime);
 		}
 	}
 
@@ -34,11 +35,12 @@ public class AddStructureUpdate extends StructureUpdate {
 			output.writeInt(object.getX());
 			output.writeInt(object.getY());
 			output.writeInt(object.structureId);
+			output.writeLong(object.creationTime);
 		}
 
 		@Override
 		public AddStructureUpdate read(Kryo kryo, Input input, Class<AddStructureUpdate> type) {
-			return new AddStructureUpdate(input.readInt(), input.readInt(), input.readInt());
+			return new AddStructureUpdate(input.readInt(), input.readInt(), input.readInt(), input.readLong());
 		}
 	}
 

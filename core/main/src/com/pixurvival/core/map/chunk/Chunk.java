@@ -30,7 +30,7 @@ public class Chunk {
 
 	private static final long KEEP_ALIVE_MILLIS = 10_000;
 
-	private static final SoftReference<CompressedChunk> NULL_COMPRESSED_REF = new SoftReference<CompressedChunk>(null);
+	private static final SoftReference<CompressedChunk> NULL_COMPRESSED_REF = new SoftReference<>(null);
 
 	private TiledMap map;
 
@@ -146,6 +146,7 @@ public class Chunk {
 		structures.computeIfAbsent(structure.getId(), id -> new ArrayList<>()).add(mapStructure);
 		structureCount++;
 		if (notify) {
+			updateTimestamp();
 			getMap().notifyListeners(l -> l.structureAdded(mapStructure));
 			fileSync = false;
 		}

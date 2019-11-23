@@ -51,8 +51,9 @@ public class StatValue implements StatListener {
 	 */
 	public void setValue(float value) {
 		if (this.value != value) {
+			float oldValue = this.value;
 			this.value = value;
-			listeners.forEach(l -> l.statChanged(this));
+			listeners.forEach(l -> l.statChanged(oldValue, this));
 		}
 	}
 
@@ -75,7 +76,7 @@ public class StatValue implements StatListener {
 	}
 
 	@Override
-	public void statChanged(StatValue statValue) {
+	public void statChanged(float oldValue, StatValue statValue) {
 		compute();
 	}
 
@@ -91,8 +92,9 @@ public class StatValue implements StatListener {
 		}
 		float newValue = MathUtils.clamp((base + type.getFormula().compute(statSet) + absoluteModifier) * relativeModifier, type.getMinimum(), type.getMaximum());
 		if (newValue != value) {
+			float oldValue = value;
 			value = newValue;
-			listeners.forEach(l -> l.statChanged(this));
+			listeners.forEach(l -> l.statChanged(oldValue, this));
 		}
 	}
 }

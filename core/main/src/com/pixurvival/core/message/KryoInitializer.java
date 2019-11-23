@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
@@ -37,6 +38,7 @@ public class KryoInitializer {
 
 	public static void apply(Kryo kryo) {
 		register(kryo, String[].class);
+		register(kryo, long[].class);
 		register(kryo, Direction.class);
 		register(kryo, Vector2.class);
 		register(kryo, PlayerMovementRequest.class);
@@ -81,6 +83,7 @@ public class KryoInitializer {
 		register(kryo, Spectate.class);
 		register(kryo, PlayerDead.class);
 		register(kryo, PlayerDead[].class);
+		register(kryo, EndGameData.class);
 	}
 
 	@SuppressWarnings("unchecked")

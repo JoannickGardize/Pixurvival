@@ -1,5 +1,8 @@
 package com.pixurvival.core.time;
 
+import lombok.Getter;
+
+@Getter
 public class DayNightCycleRun implements DayCycleRun {
 
 	private long dayDuration;
@@ -20,7 +23,7 @@ public class DayNightCycleRun implements DayCycleRun {
 	public boolean update(long time) {
 		long newDayCount = time / fullCycleDuration;
 		long dayTime = time % fullCycleDuration;
-		boolean newIsDay = dayTime < dayDuration;
+		boolean newIsDay = dayTime <= dayDuration;
 		if (newIsDay) {
 			currentMomentProgess = (double) dayTime / dayDuration;
 		} else {

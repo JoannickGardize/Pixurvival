@@ -20,14 +20,14 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 	public EventEditor() {
 		super("eventType", null);
 
-		TimeInput timeInput = new TimeInput();
-		BooleanCheckBox repeatCheckBox = new BooleanCheckBox();
+		TimeInput startTimeInput = new TimeInput();
+		TimeInput repeatTimeInput = new TimeInput();
 
-		bind(timeInput, Event::getTime, Event::setTime);
-		bind(repeatCheckBox, Event::isRepeat, Event::setRepeat);
+		bind(startTimeInput, Event::getStartTime, Event::setStartTime);
+		bind(repeatTimeInput, Event::getRepeatTime, Event::setRepeatTime);
 
 		setLayout(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
-		add(LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "generic.time", timeInput, "generic.repeat", repeatCheckBox), BorderLayout.NORTH);
+		add(LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "eventEditor.startTime", startTimeInput, "generic.repeat", repeatTimeInput), BorderLayout.NORTH);
 		add(getSpecificPartPanel(), BorderLayout.CENTER);
 	}
 
@@ -54,8 +54,8 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 
 	@Override
 	protected void initialize(Event oldInstance, Event newInstance) {
-		newInstance.setTime(oldInstance.getTime());
-		newInstance.setRepeat(oldInstance.isRepeat());
+		newInstance.setStartTime(oldInstance.getStartTime());
+		newInstance.setRepeatTime(oldInstance.getRepeatTime());
 	}
 
 }

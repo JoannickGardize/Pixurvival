@@ -49,6 +49,8 @@ public class Creature extends IdentifiedElement {
 	@ElementReference
 	private AbilitySet abilitySet;
 
+	private long lifetime;
+
 	@Override
 	public void initialize() {
 		if (abilitySet == null) {

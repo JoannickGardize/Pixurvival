@@ -15,9 +15,12 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 	public PlayerEntityOverlayDrawer() {
 		spectatedPlayerDrawer.add(new LifeHungerBarDrawer());
 		spectatedPlayerDrawer.add(new NameDrawer());
+		spectatedPlayerDrawer.add(new WorkingBarDrawer());
 		selfDrawer.add(new LifeHungerBarDrawer());
+		selfDrawer.add(new WorkingBarDrawer());
 		alliesDrawer.add(new LifeBarDrawer());
 		alliesDrawer.add(new NameDrawer());
+		alliesDrawer.add(new WorkingBarDrawer());
 		ennemiesDrawer.add(new LifeBarDrawer());
 		ennemiesDrawer.add(new NameDrawer());
 	}

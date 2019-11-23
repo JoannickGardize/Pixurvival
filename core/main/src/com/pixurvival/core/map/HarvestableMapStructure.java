@@ -49,11 +49,13 @@ public class HarvestableMapStructure extends MapStructure {
 
 	@Override
 	public void writeData(ByteBuffer buffer) {
+		super.writeData(buffer);
 		buffer.put(harvested ? (byte) 1 : (byte) 0);
 	}
 
 	@Override
 	public void applyData(ByteBuffer buffer) {
+		super.applyData(buffer);
 		harvested = buffer.get() == 1;
 	}
 

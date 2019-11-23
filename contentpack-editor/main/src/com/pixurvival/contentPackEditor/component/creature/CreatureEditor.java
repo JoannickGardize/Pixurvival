@@ -16,6 +16,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -54,15 +55,16 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		speedField.setEditable(false);
 		armorField.setEditable(false);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
+		TimeInput lifetimeInput = new TimeInput();
 
 		// Actions
 		strengthInput.addValueChangeListener(v -> statSet.get(StatType.STRENGTH).setBase(v));
 		agilityInput.addValueChangeListener(v -> statSet.get(StatType.AGILITY).setBase(v));
 		intelligenceInput.addValueChangeListener(v -> statSet.get(StatType.INTELLIGENCE).setBase(v));
-		statSet.get(StatType.MAX_HEALTH).addListener(v -> maxHealthField.setText(DECIMAL_FORMAT.format(v.getValue())));
+		statSet.get(StatType.MAX_HEALTH).addListener((o, v) -> maxHealthField.setText(DECIMAL_FORMAT.format(v.getValue())));
 
-		statSet.get(StatType.SPEED).addListener(v -> speedField.setText(DECIMAL_FORMAT.format(v.getValue())));
-		statSet.get(StatType.ARMOR).addListener(v -> armorField.setText(DECIMAL_FORMAT.format(v.getValue() * 100) + "%"));
+		statSet.get(StatType.SPEED).addListener((o, v) -> speedField.setText(DECIMAL_FORMAT.format(v.getValue())));
+		statSet.get(StatType.ARMOR).addListener((o, v) -> armorField.setText(DECIMAL_FORMAT.format(v.getValue() * 100) + "%"));
 
 		// Binding
 
@@ -75,6 +77,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		bind(agilityInput, Creature::getAgility, Creature::setAgility);
 		bind(intelligenceInput, Creature::getIntelligence, Creature::setIntelligence);
 		bind(solidCheckbox, Creature::isSolid, Creature::setSolid);
+		bind(lifetimeInput, Creature::getLifetime, Creature::setLifetime);
 
 		// Layouting
 
@@ -85,6 +88,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.behaviorSet", behaviorSetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.collisionRadius", collisionRadiusInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.lifetime", lifetimeInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.abilitySet", abilitySetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.itemReward", itemRewardChooser, gbc);

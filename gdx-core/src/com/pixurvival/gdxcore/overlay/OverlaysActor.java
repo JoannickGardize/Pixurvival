@@ -31,6 +31,7 @@ public class OverlaysActor extends Actor implements EventListener {
 	private Viewport worldViewport;
 
 	private DistantAllyMarkerDrawer distantAlliesDrawer = new DistantAllyMarkerDrawer();
+	private StructureOverlayDrawer structureOverlayDrawer = new StructureOverlayDrawer();
 
 	public OverlaysActor(Viewport worldViewport) {
 		this.worldViewport = worldViewport;
@@ -44,18 +45,19 @@ public class OverlaysActor extends Actor implements EventListener {
 		ScissorStack.pushScissors(scissors);
 		batch.setColor(1, 1, 1, 0.75f);
 		DrawUtils.foreachChunksInScreen(WorldScreen.getWorldStage(), 3, chunk -> {
+			chunk.getStructures().forEach(e -> e.getValue().forEach(ms -> structureOverlayDrawer.draw(batch, worldViewport, ms)));
 			EntityCollection entityPool = chunk.getEntities();
 			entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
 		});
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		if (myPlayer != null) {
 			for (PlayerEntity ally : myPlayer.getTeam().getAliveMembers()) {
-				if (!ally.equals(myPlayer) && ally.isAlive()) {
+				if (!ally.equals(myPlayer)) {
 					distantAlliesDrawer.draw(batch, worldViewport, ally);
 				}
 			}
 		}
-		batch.flush(); // Make sure nothing is clipped before we want it to.
+		batch.flush();
 		ScissorStack.popScissors();
 	}
 

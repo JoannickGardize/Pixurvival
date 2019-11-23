@@ -10,13 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.Dimensions;
 import com.pixurvival.core.contentPack.TranslationKey;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
@@ -43,6 +46,7 @@ public class ItemCharacteristicsRepresenter {
 		builders.put(ClothingItem.class, ItemCharacteristicsRepresenter::clothing);
 		builders.put(AccessoryItem.class, ItemCharacteristicsRepresenter::accessory);
 		builders.put(WeaponItem.class, ItemCharacteristicsRepresenter::weapon);
+		builders.put(StructureItem.class, ItemCharacteristicsRepresenter::structure);
 	}
 
 	public static Actor represents(Item item) {
@@ -103,6 +107,22 @@ public class ItemCharacteristicsRepresenter {
 			appendAbility(locale, contentPack, false, item, weaponItem.getSpecialAbility(), table);
 		}
 
+		return table;
+	}
+
+	private static Actor structure(Item item) {
+		Structure structure = ((StructureItem) item).getStructure();
+
+		Table table = new Table();
+		table.defaults().fill().pad(2);
+		Dimensions dimension = structure.getDimensions();
+		RepresenterUtils.appendLabelledRow(table, "hud.item.dimensions", dimension.getWidth() + "x" + dimension.getHeight());
+		if (structure.getDuration() > 0) {
+			RepresenterUtils.appendLabelledRow(table, "hud.item.duration", RepresenterUtils.formatHoursMinutesSecondes(structure.getDuration(), true));
+		}
+		if (structure.getLightEmissionRadius() > 0) {
+			RepresenterUtils.appendLabelledRow(table, "hud.item.lighEmission", RepresenterUtils.DECIMAL_FORMAT.format(structure.getLightEmissionRadius()));
+		}
 		return table;
 	}
 

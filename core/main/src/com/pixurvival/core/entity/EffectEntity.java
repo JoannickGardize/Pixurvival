@@ -58,7 +58,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
 			if (!delayedFollowingElements.isEmpty()) {
 				int repeat = (int) definition.getEffect().getRepeatFollowingElements().getValue(this);
-				numberOfDelayedFollowingElements = delayedFollowingElements.size() * repeat + 1;
+				numberOfDelayedFollowingElements = delayedFollowingElements.size() * (repeat + 1);
 				duration = Math.max(definition.getEffect().getDuration(), delayedFollowingElements.get(delayedFollowingElements.size() - 1).getDelay() * repeat);
 			} else {
 				duration = definition.getEffect().getDuration();
@@ -154,7 +154,6 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putDouble(getMovingAngle());
 		definition.getEffect().getMovement().writeUpdate(buffer, this);
-
 	}
 
 	@Override

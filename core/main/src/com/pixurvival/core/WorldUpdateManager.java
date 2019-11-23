@@ -6,7 +6,6 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.pixurvival.core.message.WorldUpdate;
-import com.pixurvival.core.util.LogUtils;
 import com.pixurvival.core.util.ObjectPools;
 import com.pixurvival.core.util.Plugin;
 
@@ -20,26 +19,30 @@ public class WorldUpdateManager implements Plugin<World> {
 	private List<WorldUpdate> waitingList = new ArrayList<>();
 	private NavigableMap<Long, WorldUpdate> history = new TreeMap<>();
 
-	public void offer(WorldUpdate syncWorldUpdate) {
-		waitingList.add(syncWorldUpdate);
+	public void offer(WorldUpdate worldUpdate) {
+		waitingList.add(worldUpdate);
 	}
 
 	@Override
 	public void update(World world) {
 		waitingList.sort((u1, u2) -> (int) (u1.getUpdateId() - u2.getUpdateId()));
-		for (int i = waitingList.size() - 1; i >= 0; i--) {
+		long smallestId = Long.MAX_VALUE;
+		for (int i = 0; i < waitingList.size(); i++) {
 			WorldUpdate worldUpdate = waitingList.get(i);
 			history.put(worldUpdate.getUpdateId(), worldUpdate);
-			history.tailMap(worldUpdate.getUpdateId(), true).values().forEach(u -> {
-				LogUtils.debug("Applying WorldUpdate  [", worldUpdate.getUpdateId(), "]");
-				if (worldUpdate.getEntityUpdateLength() > 0) {
-					worldUpdate.getEntityUpdateByteBuffer().position(0);
-					world.getEntityPool().applyUpdate(worldUpdate.getEntityUpdateByteBuffer());
-				}
-				world.getMap().addAllChunks(worldUpdate.getCompressedChunks());
-				world.getMap().applyUpdate(worldUpdate.getStructureUpdates());
-			});
+			if (worldUpdate.getUpdateId() < smallestId) {
+				smallestId = worldUpdate.getUpdateId();
+			}
 		}
+		history.tailMap(smallestId).values().forEach(u -> {
+			if (u.getEntityUpdateLength() > 0) {
+				u.getEntityUpdateByteBuffer().position(0);
+				world.getEntityPool().applyUpdate(u.getEntityUpdateByteBuffer());
+			}
+			world.getMap().addAllChunks(u.getCompressedChunks());
+			world.getMap().applyUpdate(u.getStructureUpdates());
+		});
+
 		waitingList.clear();
 		while (history.size() > HISTORY_SIZE) {
 			ObjectPools.getWorldUpdatePool().offer(history.pollFirstEntry().getValue());

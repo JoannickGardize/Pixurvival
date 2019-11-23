@@ -92,6 +92,7 @@
     accessory: { name: accessory, color: gray },
     panel: { name: panel, color: gray },
     greenArrow: { name: arrow, color: green },
+	bar-cursor: { name: bar-cursor, color: gray }
     
   },
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {

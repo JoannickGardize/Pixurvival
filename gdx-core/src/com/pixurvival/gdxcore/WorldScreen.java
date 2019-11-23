@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
@@ -23,11 +24,13 @@ import com.pixurvival.gdxcore.input.WorldMouseProcessor;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
+import com.pixurvival.gdxcore.ui.EndGameUI;
 import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.StatusUI;
+import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
@@ -56,6 +59,7 @@ public class WorldScreen implements Screen {
 	private UILayoutManager uiLayoutManager = new UILayoutManager();
 	private LightDrawer lightDrawer = new LightDrawer();
 	private StatusUI statusUI = new StatusUI();
+	private EndGameUI endGameUI = new EndGameUI();
 
 	public void setWorld(World world) {
 		this.world = world;
@@ -86,20 +90,26 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(craftUI);
 		ChatUI chatUI = new ChatUI();
 		world.getChatManager().addListener(chatUI);
+		TimeUI timeUI = new TimeUI();
+		hudStage.addActor(timeUI);
 		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(statusUI);
 		statusUI.updatePosition();
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		hudStage.addActor(ItemTooltip.getInstance());
+		hudStage.addActor(endGameUI);
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
+
 		uiLayoutManager.add(chatUI, UILayoutManager.LEFT_SIDE, 30);
 		uiLayoutManager.add(inventoryUI, UILayoutManager.LEFT_SIDE, 55);
 		uiLayoutManager.add(equipmentUI, UILayoutManager.LEFT_SIDE, 70);
 		uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
-		uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 100);
+		uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 80);
+		uiLayoutManager.add(timeUI, UILayoutManager.RIGHT_SIDE, 100);
+
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 		world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
 	}
@@ -110,6 +120,10 @@ public class WorldScreen implements Screen {
 
 	public void switchShowDebugInfos() {
 		debugInfosActors.setVisible(!debugInfosActors.isVisible());
+	}
+
+	public void showEndGame(EndGameData data) {
+		endGameUI.show(data);
 	}
 
 	@Override
@@ -169,6 +183,7 @@ public class WorldScreen implements Screen {
 		uiLayoutManager.resize(width, height, ((FitViewport) worldStage.getViewport()).getLeftGutterWidth());
 		lightDrawer.resize(width, height);
 		statusUI.updatePosition();
+		endGameUI.update(hudStage.getViewport());
 	}
 
 	@Override

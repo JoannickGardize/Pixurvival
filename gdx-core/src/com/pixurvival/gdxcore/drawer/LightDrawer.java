@@ -19,7 +19,8 @@ import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class LightDrawer {
 	public static final Color NIGHT_COLOR = new Color(0.4f, 0.4f, 0.4f, 1f);
-	public static final double START_FADE = 0.95;
+	public static final double START_FADE_OUT = 0.01;
+	public static final double START_FADE_IN = 0.95;
 
 	private Color tmpColor = new Color(NIGHT_COLOR);
 	private FrameBuffer lightBuffer;
@@ -82,7 +83,7 @@ public class LightDrawer {
 	private Color getAmbientColor() {
 		DayCycleRun dayCycle = PixurvivalGame.getWorld().getTime().getDayCycle();
 		if (dayCycle.isDay()) {
-			if (dayCycle.currentMomentProgress() < START_FADE) {
+			if (dayCycle.currentMomentProgress() > START_FADE_OUT && dayCycle.currentMomentProgress() < START_FADE_IN) {
 				return null;
 			} else {
 				float alpha = getAlpha(dayCycle);
@@ -91,17 +92,18 @@ public class LightDrawer {
 				tmpColor.b = 1 - (1 - NIGHT_COLOR.b) * alpha;
 			}
 		} else {
-			float alpha = 1 - getAlpha(dayCycle);
-			tmpColor.r = 1 - (1 - NIGHT_COLOR.r) * alpha;
-			tmpColor.g = 1 - (1 - NIGHT_COLOR.g) * alpha;
-			tmpColor.b = 1 - (1 - NIGHT_COLOR.b) * alpha;
+			tmpColor.r = NIGHT_COLOR.r;
+			tmpColor.g = NIGHT_COLOR.g;
+			tmpColor.b = NIGHT_COLOR.b;
 		}
 		return tmpColor;
 	}
 
 	private float getAlpha(DayCycleRun dayCycle) {
-		if (dayCycle.currentMomentProgress() >= START_FADE) {
-			return (float) ((dayCycle.currentMomentProgress() - START_FADE) / (1 - START_FADE));
+		if (dayCycle.currentMomentProgress() < START_FADE_OUT) {
+			return 1f - (float) (dayCycle.currentMomentProgress() / START_FADE_OUT);
+		} else if (dayCycle.currentMomentProgress() > START_FADE_IN) {
+			return (float) ((dayCycle.currentMomentProgress() - START_FADE_IN) / (1 - START_FADE_IN));
 		} else {
 			return 0;
 		}

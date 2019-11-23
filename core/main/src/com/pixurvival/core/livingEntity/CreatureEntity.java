@@ -49,6 +49,9 @@ public class CreatureEntity extends LivingEntity {
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 			spawnPosition = getPosition().copy();
+			if (definition.getLifetime() > 0) {
+				getWorld().getActionTimerManager().addActionTimer(() -> setAlive(false), definition.getLifetime());
+			}
 		}
 	}
 
@@ -142,11 +145,6 @@ public class CreatureEntity extends LivingEntity {
 		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
 	}
 
-	@Override
-	public TeamMember getOrigin() {
-		return master;
-	}
-
 	public void setMaster(TeamMember master) {
 		this.master = master;
 		setTeam(master.getTeam());
@@ -166,5 +164,10 @@ public class CreatureEntity extends LivingEntity {
 				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
 			}
 		}
+	}
+
+	@Override
+	public TeamMember getOrigin() {
+		return this;
 	}
 }

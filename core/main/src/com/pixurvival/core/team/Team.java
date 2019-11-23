@@ -44,4 +44,8 @@ public class Team implements Iterable<PlayerEntity> {
 	public Iterator<PlayerEntity> iterator() {
 		return aliveMembers.iterator();
 	}
+
+	public int totalSize() {
+		return aliveMembers.size() + deadMembers.size();
+	}
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
@@ -205,7 +206,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		worldScreen.setWorld(client.getWorld());
 		setScreen(worldScreen);
 		if (client.getWorld().getType() == World.Type.CLIENT) {
-			client.notifyReady();
+			client.sendGameReady();
 		}
 	}
 
@@ -218,6 +219,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		DrawData drawData = (DrawData) getClient().getMyPlayer().getCustomData();
 		if (drawData != null) {
 			drawData.getDrawPosition().set(getClient().getMyPlayer().getPosition());
+		}
+	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		Screen screen = getScreen();
+		if (screen instanceof WorldScreen) {
+			((WorldScreen) screen).showEndGame(data);
 		}
 	}
 }

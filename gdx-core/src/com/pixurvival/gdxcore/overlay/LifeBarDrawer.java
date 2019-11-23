@@ -6,9 +6,6 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class LifeBarDrawer implements OverlayStackElementDrawer<LivingEntity> {
 
 	private static final Rectangle tmpRectangle = new Rectangle();

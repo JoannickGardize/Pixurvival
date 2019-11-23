@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -51,6 +52,7 @@ class NetworkMessageHandler extends Listener {
 				player.getTeam().addDead(player);
 			}
 		});
+		putMessageAction(EndGameData.class, game::notifyGameEnded);
 	}
 
 	@Override

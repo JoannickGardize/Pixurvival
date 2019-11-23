@@ -1,7 +1,9 @@
 package com.pixurvival.core;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.esotericsoftware.minlog.Log;
@@ -14,6 +16,8 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
@@ -75,6 +79,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private @Setter PlayerEntity myPlayer;
 	private @Getter Vector2 spawnCenter;
 	private @Getter Map<Long, PlayerEntity> playerEntities;
+	private List<WorldListener> listeners = new ArrayList<>();
+	private boolean gameEnded = false;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -154,15 +160,25 @@ public class World extends PluginHolder<World> implements ChatSender {
 		return type.isServer();
 	}
 
+	public void addListener(WorldListener listener) {
+		listeners.add(listener);
+	}
+
 	public synchronized void update(double deltaTimeMillis) {
+		if (gameEnded) {
+			return;
+		}
 		updatePlugins(this);
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();
 		entityPool.update();
 		map.update();
-		if (gameMode.getEndGameCondition().update(this)) {
-			// TODO
-			Log.info("END OF GAME !");
+		if (isServer() && gameMode.getEndGameCondition().update(this)) {
+			long[] remainingPlayerIdArray = getEntityPool().get(EntityGroup.PLAYER).stream().filter(Entity::isAlive)
+					.sorted((p1, p2) -> ((PlayerEntity) p1).getTeam().getName().compareTo(((PlayerEntity) p2).getTeam().getName())).mapToLong(Entity::getId).toArray();
+			EndGameData endGameData = new EndGameData(time.getTimeMillis(), remainingPlayerIdArray);
+			listeners.forEach(l -> l.gameEnded(endGameData));
+			gameEnded = true;
 		}
 	}
 
@@ -174,13 +190,14 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();
 		initializeSpawns();
 		initializeEvents();
+		gameMode.getEndGameCondition().initialize(this);
 	}
 
 	private void initializeSpawns() {
@@ -206,7 +223,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 
 	private void initializeEvents() {
 		for (Event event : gameMode.getEvents()) {
-			actionTimerManager.addActionTimer(new EventAction(this, event), event.getTime());
+			actionTimerManager.addActionTimer(new EventAction(this, event), event.getStartTime());
 		}
 	}
 

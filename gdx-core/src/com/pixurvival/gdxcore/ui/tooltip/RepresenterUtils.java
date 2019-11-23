@@ -29,6 +29,30 @@ public class RepresenterUtils {
 
 	private static StringBuilder sb = new StringBuilder();
 
+	public static String formatHoursMinutesSecondes(long time) {
+		return formatHoursMinutesSecondes(time, false);
+	}
+
+	public static String formatHoursMinutesSecondes(long time, boolean optionalHours) {
+		long hours = time / 3_600_000;
+		long minutes = (time - hours * 3_600_000) / 60_000;
+		long sec = (time - hours * 3_600_000 - minutes * 60_000) / 1000;
+		sb.setLength(0);
+		if (!optionalHours || hours > 0) {
+			sb.append(twoDigits(hours)).append(":");
+		}
+		return sb.append(twoDigits(minutes)).append(":").append(twoDigits(sec)).toString();
+
+	}
+
+	public static String twoDigits(long value) {
+		if (value < 10) {
+			return "0" + value;
+		} else {
+			return String.valueOf(value);
+		}
+	}
+
 	public static void appendTime(StringBuilder sb, long time) {
 		long m = time / 60_000;
 		float s = (time - m) / 1000f;

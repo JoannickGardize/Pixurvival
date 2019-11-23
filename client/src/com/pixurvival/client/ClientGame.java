@@ -8,8 +8,10 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
+import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.WorldUpdateManager;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
@@ -36,17 +38,16 @@ import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
-public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor {
+public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
 
 	private Client client = new Client(8192, 8192);
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
-	private @Getter @Setter(AccessLevel.PACKAGE) World world = null;
+	private @Getter World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
 	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
@@ -74,6 +75,11 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		if (!Locale.getDefault().equals(Locale.US)) {
 			localePriorityList.add(Locale.US);
 		}
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
+		world.addListener(this);
 	}
 
 	public void addListener(ClientGameListener listener) {
@@ -141,7 +147,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			return;
 		}
 		currentLocale = LocaleUtils.findBestMatch(localePriorityList, localGamePack.getTranslations().keySet());
-		world = World.createLocalWorld(localGamePack, gameModeId);
+		setWorld(World.createLocalWorld(localGamePack, gameModeId));
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new IllegalStateException("The GameMode + " + gameMode.getName() + " cannot be played in solo.");
@@ -219,7 +225,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		}
 	}
 
-	public void notifyReady() {
+	public void sendGameReady() {
 		client.sendTCP(new GameReady());
 	}
 
@@ -232,4 +238,12 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		return true;
 	}
 
+	@Override
+	public void gameEnded(EndGameData data) {
+		notifyGameEnded(data);
+	}
+
+	void notifyGameEnded(EndGameData data) {
+		listeners.forEach(l -> l.gameEnded(data));
+	}
 }

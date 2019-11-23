@@ -16,4 +16,9 @@ public class EternalDayCycleRun implements DayCycleRun {
 	public double currentMomentProgress() {
 		return 0;
 	}
+
+	@Override
+	public long getDayCount() {
+		return 0;
+	}
 }

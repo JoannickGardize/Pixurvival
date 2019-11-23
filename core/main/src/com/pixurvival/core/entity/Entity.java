@@ -118,7 +118,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 				collisionLock = false;
 				collisionLockEnded();
 			}
-		} else if (antiCollisionLockEnabled() && getWorld().getMap().collide(this)) {
+		} else if (antiCollisionLockEnabled() && isSolid() && getWorld().getMap().collide(this)) {
 			// Get away from collision lock
 			collisionLock = true;
 			if (previousPosition.epsilonEquals(position, MathUtils.EPSILON)) {

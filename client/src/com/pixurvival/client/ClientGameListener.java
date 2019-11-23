@@ -1,5 +1,6 @@
 package com.pixurvival.client;
 
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.message.LoginResponse;
 
 public interface ClientGameListener {
@@ -11,4 +12,6 @@ public interface ClientGameListener {
 	void error(Throwable e);
 
 	void spectatorStarted();
+
+	void gameEnded(EndGameData data);
 }

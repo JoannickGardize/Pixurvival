@@ -9,6 +9,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
+import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.item.ItemStack;
 
@@ -95,6 +96,10 @@ public class Equipment {
 		default:
 			return false;
 		}
+	}
+
+	public static boolean canEquipAnywhere(ItemStack itemStack) {
+		return itemStack.getQuantity() == 1 && itemStack.getItem() instanceof EquipableItem;
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Equipment> {
