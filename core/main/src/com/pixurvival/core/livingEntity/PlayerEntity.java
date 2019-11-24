@@ -68,8 +68,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
 
-	// TODO false par défaut et créer le système pour op un joueur coté serveur
-	private @Getter @Setter boolean operator = true;
+	private @Getter @Setter boolean operator = false;
 
 	private @Setter String name = "Unknown";
 

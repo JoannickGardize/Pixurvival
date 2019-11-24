@@ -11,4 +11,8 @@ public class ItemTexture {
 	private Texture texture;
 	private Texture shadow;
 	private TextureMetrics metrics;
+
+	public void dispose() {
+		texture.dispose();
+	}
 }

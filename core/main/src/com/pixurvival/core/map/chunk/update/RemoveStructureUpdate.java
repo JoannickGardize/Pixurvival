@@ -28,5 +28,6 @@ public class RemoveStructureUpdate extends StructureUpdate {
 	@Override
 	public void apply(Chunk chunk) {
 		chunk.removeStructure(getX(), getY());
+		chunk.invalidateCompressed();
 	}
 }

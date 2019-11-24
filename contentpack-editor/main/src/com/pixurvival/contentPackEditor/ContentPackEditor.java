@@ -24,7 +24,6 @@ public class ContentPackEditor extends JFrame {
 		setSize(1300, 900);
 
 		setJMenuBar(new CPEMenuBar());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JScrollPane treeScrollPane = new JScrollPane(new LayoutTree());
 		treeScrollPane.setMinimumSize(new Dimension(150, 300));
@@ -40,13 +39,18 @@ public class ContentPackEditor extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
+		run(mainArgs);
+		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	public static void run(MainArgs mainArgs) {
 		// try {
 		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		// } catch (ClassNotFoundException | InstantiationException |
 		// IllegalAccessException | UnsupportedLookAndFeelException e) {
 		// e.printStackTrace();
 		// }
-		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
 
 		ContentPackEditor editor = new ContentPackEditor();
 		instance = editor;

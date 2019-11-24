@@ -26,6 +26,7 @@ public class AddStructureUpdate extends StructureUpdate {
 		if (chunk.isEmpty(getX(), getY(), structure.getDimensions().getWidth(), structure.getDimensions().getHeight())) {
 			chunk.addStructure(structure, getX(), getY()).setCreationTime(creationTime);
 		}
+		chunk.invalidateCompressed();
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<AddStructureUpdate> {

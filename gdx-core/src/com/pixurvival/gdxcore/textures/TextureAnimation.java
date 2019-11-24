@@ -80,6 +80,14 @@ public class TextureAnimation {
 		return textures.length;
 	}
 
+	public void dispose() {
+		for (Texture texture : textures) {
+			texture.dispose();
+		}
+		// do not dispose the shadow texture here, the ContentPackTextures is
+		// responsible of it.
+	}
+
 	private FrameOffset findFrameOffset(List<FrameOffset> frameOffsets, Frame frame) {
 		for (int i = 0; i < frameOffsets.size(); i++) {
 			FrameOffset frameOffset = frameOffsets.get(i);

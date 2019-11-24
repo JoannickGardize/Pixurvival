@@ -4,8 +4,10 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.gdxcore.input.processor.EquipmentAbilityProcessor;
 import com.pixurvival.gdxcore.input.processor.InputActionProcessor;
 import com.pixurvival.gdxcore.input.processor.MoveProcessor;
+import com.pixurvival.gdxcore.input.processor.RefreshProcessor;
 import com.pixurvival.gdxcore.input.processor.SwitchDebugInfosProcessor;
 import com.pixurvival.gdxcore.input.processor.SwitchDebugModeProcessor;
+import com.pixurvival.gdxcore.input.processor.SwitchFullScreenProcessor;
 import com.pixurvival.gdxcore.input.processor.UseItemInInventoryProcessor;
 import com.pixurvival.gdxcore.input.processor.UseItemOrStructureInteractionProcessor;
 import com.pixurvival.gdxcore.input.processor.WeaponBaseOrDropItemProcessor;
@@ -35,7 +37,9 @@ public enum InputAction {
 	INVENTORY9(new UseItemInInventoryProcessor(8)),
 	INVENTORY10(new UseItemInInventoryProcessor(9)),
 	SWITCH_DEBUG_MODE(new SwitchDebugModeProcessor()),
-	SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor());
+	SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor()),
+	SWITCH_FULLSCREEN(new SwitchFullScreenProcessor()),
+	REQUEST_REFRESH(new RefreshProcessor());
 
 	private @Getter InputActionProcessor processor;
 

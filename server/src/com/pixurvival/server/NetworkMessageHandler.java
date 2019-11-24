@@ -12,6 +12,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
@@ -73,6 +74,7 @@ class NetworkMessageHandler extends Listener {
 
 		messageActions.put(TimeRequest.class,
 				m -> m.getConnection().sendUDP(new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), m.getConnection().getPlayerEntity().getWorld().getTime().getTimeMillis())));
+		messageActions.put(RefreshRequest.class, m -> m.getConnection().setRequestedFullUpdate(true));
 
 	}
 

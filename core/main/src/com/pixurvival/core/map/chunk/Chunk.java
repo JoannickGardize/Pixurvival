@@ -97,6 +97,10 @@ public class Chunk {
 
 	public void updateTimestamp() {
 		updateTimestamp = map.getWorld().getTime().getTimeMillis();
+		invalidateCompressed();
+	}
+
+	public void invalidateCompressed() {
 		// The CompressedChunk is not up to date anymore
 		compressedChunkRef = NULL_COMPRESSED_REF;
 	}

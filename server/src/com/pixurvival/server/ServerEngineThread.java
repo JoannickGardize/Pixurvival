@@ -81,7 +81,9 @@ public class ServerEngineThread extends EngineThread {
 				session.extractChunksToSend(worldUpdate.getCompressedChunks());
 				if (byteBuffer.position() > 4 || !worldUpdate.getStructureUpdates().isEmpty() || !worldUpdate.getCompressedChunks().isEmpty()) {
 					Log.debug("sendUDP to " + connection + " worldUpdate of size " + byteBuffer.position());
-					connection.sendUDP(worldUpdate);
+					if (!connection.isRequestedFullUpdate()) {
+						connection.sendUDP(worldUpdate);
+					}
 					tmpNewSpectators.clear();
 					session.getSpectators().values().forEach(spec -> {
 						if (spec.isNewlySpectating()) {
@@ -98,6 +100,11 @@ public class ServerEngineThread extends EngineThread {
 					});
 					sendFullUpdateForNewSpectators(playerEntity);
 					game.notifyNetworkListeners(l -> l.sent(worldUpdate));
+					if (connection.isRequestedFullUpdate()) {
+						connection.setRequestedFullUpdate(false);
+						prepareFullUpdateFor(playerEntity);
+						connection.sendUDP(worldUpdate);
+					}
 				}
 				if (connection.isInventoryChanged()) {
 					connection.setInventoryChanged(false);
@@ -111,25 +118,29 @@ public class ServerEngineThread extends EngineThread {
 		});
 	}
 
-	public void sendFullUpdateForNewSpectators(PlayerEntity viewedPlayer) {
+	private void sendFullUpdateForNewSpectators(PlayerEntity viewedPlayer) {
 		if (tmpNewSpectators.isEmpty()) {
 			return;
 		}
-		worldUpdate.clear();
-		ByteBuffer byteBuffer = worldUpdate.getEntityUpdateByteBuffer();
-		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
-		byteBuffer.put(EntityGroup.END_MARKER);
-		viewedPlayer.foreachChunkInView(chunk -> {
-			chunk.getEntities().writeUpdate(byteBuffer, true, viewedPlayer.getChunkVision());
-			worldUpdate.getCompressedChunks().add(chunk.getCompressed());
-		});
-		byteBuffer.put(EntityGroup.END_MARKER);
-		writeDistantAllyPositions(viewedPlayer, byteBuffer);
+		prepareFullUpdateFor(viewedPlayer);
 		tmpNewSpectators.forEach(spec -> {
 			spec.getConnection().sendUDP(worldUpdate);
 			spec.getConnection().sendTCP(viewedPlayer.getInventory());
 			spec.setNewlySpectating(false);
 		});
+	}
+
+	private void prepareFullUpdateFor(PlayerEntity player) {
+		worldUpdate.clear();
+		ByteBuffer byteBuffer = worldUpdate.getEntityUpdateByteBuffer();
+		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
+		byteBuffer.put(EntityGroup.END_MARKER);
+		player.foreachChunkInView(chunk -> {
+			chunk.getEntities().writeUpdate(byteBuffer, true, player.getChunkVision());
+			worldUpdate.getCompressedChunks().add(chunk.getCompressed());
+		});
+		byteBuffer.put(EntityGroup.END_MARKER);
+		writeDistantAllyPositions(player, byteBuffer);
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {

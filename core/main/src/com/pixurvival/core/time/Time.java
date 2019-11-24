@@ -16,6 +16,7 @@ public class Time {
 	private @Getter double deltaTime = 0;
 	private @Getter double deltaTimeMillis = 0;
 	private long synchronizeTimeCounter = 0;
+	private @Getter double averagePing = 0;
 
 	public void update(double deltaTimeMillis) {
 		this.deltaTimeMillis = deltaTimeMillis;
@@ -33,6 +34,11 @@ public class Time {
 
 	public long synchronizeTime(TimeResponse timeResponse) {
 		long ping = (timeMillis - timeResponse.getRequesterTime()) / 2;
+		if (averagePing == 0) {
+			averagePing = ping;
+		} else {
+			averagePing = averagePing * 0.80 + ping * 0.2;
+		}
 		long difference = timeResponse.getResponderTime() - (timeMillis - ping);
 		if (synchronizeTimeCounter < 20) {
 			synchronizeTimeCounter++;

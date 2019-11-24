@@ -200,6 +200,11 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		worldStage.dispose();
+		hudStage.dispose();
+		lightDrawer.dispose();
+		PixurvivalGame.getContentPackTextures().dispose();
+		PixurvivalGame.getClient().getWorld().unload();
 	}
 
 	private void updateMouseTarget() {

@@ -106,6 +106,20 @@ public class ContentPackTextures {
 		return texture;
 	}
 
+	public void dispose() {
+		animationSet.values().forEach(TextureAnimationSet::dispose);
+		textureShadows.values().forEach(Texture::dispose);
+		lightTextures.values().forEach(Texture::dispose);
+		for (Texture[] textures : tileMapTextures) {
+			for (Texture texture : textures) {
+				texture.dispose();
+			}
+		}
+		for (ItemTexture texture : itemTextures) {
+			texture.dispose();
+		}
+	}
+
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
 		List<Tile> tilesbyId = pack.getTiles();
 		tileMapTextures = new Texture[tilesbyId.size()][];

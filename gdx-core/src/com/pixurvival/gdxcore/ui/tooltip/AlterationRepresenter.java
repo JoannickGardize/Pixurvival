@@ -20,7 +20,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AlterationRepresenter {
 
-	private static StringBuilder sb = new StringBuilder();
 	private static Map<Class<? extends Alteration>, Function<Alteration, Actor>> builders = new HashMap<>();
 
 	static {

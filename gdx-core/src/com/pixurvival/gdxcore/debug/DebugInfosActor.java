@@ -20,6 +20,7 @@ public class DebugInfosActor extends Actor {
 	public DebugInfosActor() {
 		lines.add(world -> "FPS : " + Gdx.graphics.getFramesPerSecond());
 		lines.add(world -> "Position : " + (world.getMyPlayer() == null ? "?" : world.getMyPlayer().getPosition()));
+		lines.add(world -> "Ping : " + Math.round(world.getTime().getAveragePing() * 2));
 		for (EntityGroup entityGroup : EntityGroup.values()) {
 			lines.add(world -> entityGroup.name() + " : " + world.getEntityPool().get(entityGroup).size());
 		}

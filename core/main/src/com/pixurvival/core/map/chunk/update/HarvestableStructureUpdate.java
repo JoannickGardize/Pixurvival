@@ -25,6 +25,7 @@ public class HarvestableStructureUpdate extends StructureUpdate {
 		if (mapTile.getStructure() instanceof HarvestableMapStructure) {
 			((HarvestableMapStructure) mapTile.getStructure()).setHarvested(harvested);
 		}
+		chunk.invalidateCompressed();
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<HarvestableStructureUpdate> {

@@ -19,6 +19,7 @@ public class PlayerConnection extends Connection implements InventoryListener {
 	private boolean worldReady = false;
 	private boolean inventoryChanged = true;
 	private String requestedTeamName = "Default";
+	private boolean requestedFullUpdate = false;
 
 	@Override
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {

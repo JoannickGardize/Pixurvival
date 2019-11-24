@@ -34,6 +34,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
     
+    
 }
 
 project(":core") {
@@ -75,6 +76,15 @@ project(":server") {
     	compileOnly "org.projectlombok:lombok:$lombokVersion"
     	testCompile 'junit:junit:4.12'
     }
+    
+    task fatJar(type: Jar) {
+	    manifest {
+	        attributes 'Main-Class': "com.pixurvival.server.console.ServerConsole"
+	    }
+	    baseName = "${rootProject.name}"+"-server"
+	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	    with jar
+	}
 }
 
 project(":gdx-desktop") {
@@ -85,9 +95,27 @@ project(":gdx-desktop") {
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        
-        
     }
+    
+    sourceSets {
+    	main {
+    		resources {
+    			srcDir '../gdx-core/assets'
+    			// TODO le dossier est présent dans le jar, mais vide
+    			exclude 'contentPacks'
+ 			}   		
+    	}
+    }
+
+	task fatJar(type: Jar) {
+	    manifest {
+	        attributes 'Main-Class': "com.pixurvival.desktop.DesktopLauncher"
+	    }
+	    baseName = "${rootProject.name}"
+	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	    with jar
+	}
+    
 }
 
 /*project(":gdx-html") {
@@ -110,6 +138,7 @@ project(":gdx-core") {
 
     dependencies {
     	compile project(":client")
+    	compile project(":contentpack-editor")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compileOnly "org.projectlombok:lombok:$lombokVersion"

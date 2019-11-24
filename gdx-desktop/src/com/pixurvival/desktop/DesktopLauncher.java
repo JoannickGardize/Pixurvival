@@ -3,8 +3,8 @@ package com.pixurvival.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.util.ClientMainArgs;
 
 public class DesktopLauncher {
 
@@ -16,6 +16,6 @@ public class DesktopLauncher {
 		// DisplayMode desktopMode =
 		// LwjglApplicationConfiguration.getDesktopDisplayMode();
 		// config.setFromDisplayMode(desktopMode);
-		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, CommonMainArgs.class)), config);
+		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);
 	}
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.util.Vector2;
+import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
 
 import lombok.NonNull;
@@ -29,7 +30,9 @@ public class CameraControlProcessor extends InputAdapter {
 
 	@Override
 	public boolean scrolled(int amount) {
-		((OrthographicCamera) viewport.getCamera()).zoom *= 1 + (amount * 0.2);
+		if (PixurvivalGame.getInstance().isZoomEnabled()) {
+			((OrthographicCamera) viewport.getCamera()).zoom *= 1 + (amount * 0.2);
+		}
 		return true;
 	}
 

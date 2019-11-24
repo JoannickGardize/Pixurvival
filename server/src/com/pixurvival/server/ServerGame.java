@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Server;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -29,7 +30,7 @@ import lombok.SneakyThrows;
 
 public class ServerGame {
 
-	private KryoServer server = new KryoServer();
+	private Server server = new KryoServer();
 	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
 	private List<NetworkListener> networkListeners = new ArrayList<>();

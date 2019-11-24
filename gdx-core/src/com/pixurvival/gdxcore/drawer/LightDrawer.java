@@ -43,11 +43,6 @@ public class LightDrawer {
 		batch.begin();
 		// light color
 		batch.setColor(1f, 1f, 1f, 1f);
-		// batch.draw(ColorTextures.get(Color.WHITE), camera.position.x -
-		// lightBufferRegion.getRegionWidth() / 2f + 1, camera.position.y -
-		// lightBufferRegion.getRegionHeight() / 2f + 2,
-		// lightBufferRegion.getRegionWidth() - 2,
-		// lightBufferRegion.getRegionHeight() - 2);
 		ContentPackTextures cpt = PixurvivalGame.getContentPackTextures();
 		DrawUtils.foreachChunksInScreen(worldStage, cpt.getLargestLightRadius(), chunk -> {
 			for (Light light : chunk.getLights()) {
@@ -74,10 +69,17 @@ public class LightDrawer {
 
 	public void resize(int screenWidth, int screenHeight) {
 		int size = Math.min(screenWidth, screenHeight);
+		dispose();
 		lightBuffer = new FrameBuffer(Format.RGBA8888, size, size, false);
 		lightBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
 		lightBufferRegion.flip(false, true);
+	}
+
+	public void dispose() {
+		if (lightBuffer != null) {
+			lightBuffer.dispose();
+		}
 	}
 
 	private Color getAmbientColor() {

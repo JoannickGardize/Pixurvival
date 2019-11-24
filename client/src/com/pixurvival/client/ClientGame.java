@@ -28,6 +28,7 @@ import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
@@ -227,6 +228,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	public void sendGameReady() {
 		client.sendTCP(new GameReady());
+	}
+
+	public void requestRefresh() {
+		client.sendUDP(new RefreshRequest());
 	}
 
 	public void offer(WorldUpdate worldUpdate) {

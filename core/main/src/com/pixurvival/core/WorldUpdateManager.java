@@ -11,10 +11,18 @@ import com.pixurvival.core.util.Plugin;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * This class simulate reliability of received {@link WorldUpdate}s, because of
+ * UDP protocol. <br>
+ * TODO request lost paquets
+ * 
+ * @author SharkHendrix
+ *
+ */
 @RequiredArgsConstructor
 public class WorldUpdateManager implements Plugin<World> {
 
-	public static final int HISTORY_SIZE = 16;
+	public static final int HISTORY_SIZE = 32;
 
 	private List<WorldUpdate> waitingList = new ArrayList<>();
 	private NavigableMap<Long, WorldUpdate> history = new TreeMap<>();
@@ -48,5 +56,4 @@ public class WorldUpdateManager implements Plugin<World> {
 			ObjectPools.getWorldUpdatePool().offer(history.pollFirstEntry().getValue());
 		}
 	}
-
 }

@@ -112,16 +112,18 @@ public class ItemStackEntity extends Entity {
 				speedInterpolation.update(getWorld());
 				setMovingAngle(angleToward(magnetTarget));
 				setForward(true);
-				if (getWorld().isServer() && collideDynamic(magnetTarget)) {
+				if (collideDynamic(magnetTarget)) {
 					setAlive(false);
-					ItemStack rest = magnetTarget.getInventory().add(itemStack);
-					if (rest != null) {
-						setAlive(true);
-						state = State.INHIBITED;
-						speedInterpolation.reset();
-						setForward(false);
-						itemStack = rest;
-						setStateChanged(true);
+					if (getWorld().isServer()) {
+						ItemStack rest = magnetTarget.getInventory().add(itemStack);
+						if (rest != null) {
+							setAlive(true);
+							state = State.INHIBITED;
+							speedInterpolation.reset();
+							setForward(false);
+							itemStack = rest;
+							setStateChanged(true);
+						}
 					}
 				}
 				break;

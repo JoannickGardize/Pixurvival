@@ -84,6 +84,7 @@ public class KryoInitializer {
 		register(kryo, PlayerDead.class);
 		register(kryo, PlayerDead[].class);
 		register(kryo, EndGameData.class);
+		register(kryo, RefreshRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

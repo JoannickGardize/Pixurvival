@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.contentPackEditor.ContentPackEditor;
+import com.pixurvival.contentPackEditor.MainArgs;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class MainMenuScreen implements Screen {
@@ -24,11 +26,14 @@ public class MainMenuScreen implements Screen {
 		Skin skin = PixurvivalGame.getSkin();
 		TextButton singleplayerButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer"), skin);
 		TextButton multiplayerButton = new TextButton(PixurvivalGame.getString("menu.main.multiplayer"), skin);
+		TextButton editorButton = new TextButton(PixurvivalGame.getString("menu.main.editor"), skin);
 		TextButton exitButton = new TextButton(PixurvivalGame.getString("menu.main.exit"), skin);
 
 		table.add(singleplayerButton);
 		table.row();
 		table.add(multiplayerButton);
+		table.row();
+		table.add(editorButton);
 		table.row();
 		table.add(exitButton);
 
@@ -46,6 +51,15 @@ public class MainMenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				PixurvivalGame.setScreen(MultiplayerMenuScreen.class);
+			}
+		});
+
+		editorButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				MainArgs mainArgs = new MainArgs();
+				mainArgs.setOpen("./contentPacks/Vanilla_1.0.zip");
+				ContentPackEditor.run(mainArgs);
 			}
 		});
 

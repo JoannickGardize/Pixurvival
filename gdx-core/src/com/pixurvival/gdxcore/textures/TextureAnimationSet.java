@@ -56,4 +56,8 @@ public class TextureAnimationSet {
 	public void foreachAnimations(Consumer<TextureAnimation> action) {
 		map.values().forEach(action);
 	}
+
+	public void dispose() {
+		map.values().forEach(TextureAnimation::dispose);
+	}
 }

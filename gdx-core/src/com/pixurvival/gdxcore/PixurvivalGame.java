@@ -25,11 +25,11 @@ import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.util.ClientMainArgs;
 
 import lombok.Getter;
 
@@ -94,11 +94,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private float interpolationTime = 0;
 	private ContentPackTextures contentPackTextures;
 	private Skin skin;
+	private @Getter boolean zoomEnabled;
 
-	public PixurvivalGame(CommonMainArgs clientArgs) {
+	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
 			throw new IllegalStateException("Cannot instantiate multiple instances of the game !");
 		}
+		zoomEnabled = clientArgs.isZoomEnabled();
 		instance = this;
 		client = new ClientGame(clientArgs);
 		client.addListener(this);

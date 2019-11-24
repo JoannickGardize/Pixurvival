@@ -61,7 +61,7 @@ public class CommandArgsUtils {
 		}
 	}
 
-	public static Entity singlePlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
+	public static PlayerEntity singlePlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
 		Collection<PlayerEntity> collection = playerCollection(executor, arg);
 		if (collection.size() == 1) {
 			return collection.iterator().next();

@@ -147,12 +147,12 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		if (e instanceof PlayerEntity) {
 			playerDeadList.add(new PlayerDead(e.getId()));
 			PlayerSession playerSession = players.remove(e.getId());
+			SpectatorSession spectatorSession = new SpectatorSession();
+			spectatorSession.setConnection(playerSession.getConnection());
 			if (!players.isEmpty()) {
-				SpectatorSession spectatorSession = new SpectatorSession();
-				spectatorSession.setConnection(playerSession.getConnection());
-				spectators.put(spectatorSession.getConnection().getPlayerEntity().getId(), spectatorSession);
 				findBestSpectatorTarget(spectatorSession);
 			}
+			spectators.put(spectatorSession.getConnection().getPlayerEntity().getId(), spectatorSession);
 			playerSession.getSpectators().values().forEach(this::findBestSpectatorTarget);
 		}
 	}

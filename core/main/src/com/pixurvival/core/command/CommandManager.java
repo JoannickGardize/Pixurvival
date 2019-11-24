@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.pixurvival.core.command.impl.GiveItemCommandProcessor;
 import com.pixurvival.core.command.impl.HealCommandProcessor;
+import com.pixurvival.core.command.impl.OpCommandProcessor;
 import com.pixurvival.core.command.impl.SpawnCommandProcessor;
 import com.pixurvival.core.command.impl.TeleportCommandProcessor;
 import com.pixurvival.core.contentPack.IdentifiedElement;
@@ -23,6 +24,8 @@ public class CommandManager {
 		commands.put("tp", new TeleportCommandProcessor());
 		commands.put("spawn", new SpawnCommandProcessor());
 		commands.put("heal", new HealCommandProcessor());
+		commands.put("op", new OpCommandProcessor());
+		commands.put("operator", new OpCommandProcessor());
 	}
 
 	public String process(CommandExecutor executor, String[] args) {
