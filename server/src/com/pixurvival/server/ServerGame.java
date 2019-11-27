@@ -103,6 +103,7 @@ public class ServerGame {
 		// TODO choix du contentPack
 		World world = World.createServerWorld(selectedContentPack, gameModeId);
 		GameSession session = new GameSession(world);
+		addListener(session);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
 		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getIdentifier()));
@@ -126,6 +127,7 @@ public class ServerGame {
 		});
 
 		TeamComposition[] teamCompositions = new TeamComposition[world.getTeamSet().size()];
+		session.setTeamCompositions(teamCompositions);
 		for (int i = 0; i < teamCompositions.length; i++) {
 			Team team = world.getTeamSet().get(i);
 			PlayerInformation[] playerInformations = new PlayerInformation[team.getAliveMembers().size()];
@@ -136,6 +138,7 @@ public class ServerGame {
 			teamCompositions[i] = new TeamComposition(team.getName(), playerInformations);
 		}
 		createWorld.setTeamCompositions(teamCompositions);
+
 		world.initializeGame();
 
 		foreachPlayers(playerConnection -> {
@@ -150,7 +153,7 @@ public class ServerGame {
 		foreachPlayers(playerConnection -> {
 			boolean messageSent = false;
 			while (!messageSent) {
-				if (playerConnection.isWorldReady()) {
+				if (playerConnection.isGameReady()) {
 					messageSent = true;
 				} else {
 					try {

@@ -50,16 +50,14 @@ public abstract class EngineThread extends Thread {
 				updateCount++;
 			}
 			long sleepTime = 0;
-			if (updateCount == 1) {
-				sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
-				if (sleepTime > 0) {
-					try {
-						Thread.sleep(sleepTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						running = false;
-						Thread.currentThread().interrupt();
-					}
+			sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);
+			if (sleepTime > 0) {
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					running = false;
+					Thread.currentThread().interrupt();
 				}
 			}
 			double currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;

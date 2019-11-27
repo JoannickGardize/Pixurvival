@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Deprecated
 public class TimeRequest {
 
 	private long requesterTime;

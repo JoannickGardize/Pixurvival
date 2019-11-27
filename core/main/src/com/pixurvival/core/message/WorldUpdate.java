@@ -37,6 +37,10 @@ public class WorldUpdate implements Poolable {
 		compressedChunks.clear();
 	}
 
+	public boolean isEmpty() {
+		return entityUpdateByteBuffer.position() <= 4 && structureUpdates.isEmpty() && compressedChunks.isEmpty();
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<WorldUpdate> {
 
 		@Override

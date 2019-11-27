@@ -13,6 +13,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatListener;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPoolListener;
@@ -25,13 +26,16 @@ import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
+import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.Spectate;
+import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener {
+public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener, ServerGameListener {
 
 	private @Getter World world;
 	private Map<Long, PlayerSession> players = new HashMap<>();
@@ -39,6 +43,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
 	private List<PlayerDead> playerDeadList = new ArrayList<>();
+	private @Setter TeamComposition[] teamCompositions;
 
 	public GameSession(World world) {
 		this.world = world;
@@ -221,5 +226,33 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		players.values().forEach(p -> p.getConnection().sendTCP(data));
 		spectators.values().forEach(s -> s.getConnection().sendTCP(data));
 		// TODO Retour au lobby
+	}
+
+	@Override
+	public void playerLoggedIn(PlayerConnection connection) {
+		for (PlayerSession ps : players.values()) {
+			if (!ps.getConnection().isConnected() && ps.getConnection().toString().equals(connection.toString())) {
+				PlayerConnection previousConnection = ps.getConnection();
+				PlayerEntity playerEntity = previousConnection.getPlayerEntity();
+				connection.setPlayerEntity(playerEntity);
+				ps.getKnownPositions().clear();
+				ps.clearChunkAndStructureUpdates();
+				ps.clearPositionChanges();
+				playerEntity.foreachChunkInView(c -> ps.addNewPosition(c.getPosition()));
+				CreateWorld createWorld = new CreateWorld();
+				createWorld.setId(world.getId());
+				createWorld.setContentPackIdentifier(new ContentPackIdentifier(world.getContentPack().getIdentifier()));
+				createWorld.setGameModeId(world.getGameMode().getId());
+				createWorld.setTeamCompositions(teamCompositions);
+				createWorld.setMyPlayerId(playerEntity.getId());
+				createWorld.setMyTeamId(playerEntity.getTeam().getId());
+				createWorld.setMyPosition(playerEntity.getPosition());
+				createWorld.setInventory(playerEntity.getInventory());
+				ps.setConnection(connection);
+				connection.setReconnected(true);
+				connection.setRequestedFullUpdate(true);
+				connection.sendTCP(createWorld);
+			}
+		}
 	}
 }

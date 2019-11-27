@@ -21,7 +21,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class PlayerSession {
 
-	private @NonNull @Getter PlayerConnection connection;
+	private @NonNull @Getter @Setter PlayerConnection connection;
 	private @Getter Set<ChunkPosition> knownPositions = new HashSet<>();
 	private List<CompressedChunk> chunksToSend = new ArrayList<>();
 	private List<StructureUpdate> structureUpdatesToSend = new ArrayList<>();
@@ -86,6 +86,11 @@ public class PlayerSession {
 
 	public void extractStructureUpdatesToSend(List<StructureUpdate> list) {
 		list.addAll(structureUpdatesToSend);
+		structureUpdatesToSend.clear();
+	}
+
+	public void clearChunkAndStructureUpdates() {
+		chunksToSend.clear();
 		structureUpdatesToSend.clear();
 	}
 }

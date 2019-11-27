@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@Deprecated
 public class TimeResponse {
 
 	private long requesterTime;

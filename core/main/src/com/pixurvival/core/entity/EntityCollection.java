@@ -128,11 +128,11 @@ public class EntityCollection {
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			if (groupId == EntityGroup.REMOVE_ALL_MARKER) {
 				byteBuffer.get();
-				entities.clear();
+				clear();
 				break;
 			}
 			EntityGroup group = EntityGroup.values()[groupId];
-			Map<Long, Entity> groupMap = entities.get(group);
+			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
 			short size = byteBuffer.getShort();
 			for (int i = 0; i < size; i++) {
 				long entityId = byteBuffer.getLong();

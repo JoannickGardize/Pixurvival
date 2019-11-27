@@ -120,9 +120,12 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	public void update() {
-		addHunger(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
+		addHungerSneaky(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
 		if (hunger <= 0) {
 			takeTrueDamageSneaky(HUNGER_DAMAGE * (float) getWorld().getTime().getDeltaTime());
+		}
+		if (getChunk() == null) {
+			foreachChunkInView(chunk -> getWorld().getMap().notifyEnterView(this, chunk.getPosition()));
 		}
 		super.update();
 		chunkVision.move(getPosition(), GameConstants.PLAYER_VIEW_DISTANCE, position -> getWorld().getMap().notifyEnterView(this, position),
@@ -139,6 +142,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public void initialize() {
 		super.initialize();
+		setAlive(true);
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(INVENTORY_SIZE));
 		}
@@ -171,9 +175,13 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	public void addHunger(float hungerToAdd) {
-		hunger = MathUtils.clamp(hunger + hungerToAdd, 0, MAX_HUNGER);
+		addHungerSneaky(hungerToAdd);
 		setStateChanged(true);
 		addUpdateContentMask(UPDATE_CONTENT_MASK_OTHERS);
+	}
+
+	public void addHungerSneaky(float hungerToAdd) {
+		hunger = MathUtils.clamp(hunger + hungerToAdd, 0, MAX_HUNGER);
 	}
 
 	public void craft(ItemCraft itemCraft) {

@@ -27,7 +27,6 @@ import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
-import com.pixurvival.core.message.playerRequest.UpdateTargetPositionRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
 import com.pixurvival.core.util.Vector2;
 
@@ -42,7 +41,6 @@ public class KryoInitializer {
 		register(kryo, Direction.class);
 		register(kryo, Vector2.class);
 		register(kryo, PlayerMovementRequest.class);
-		register(kryo, TimeRequest.class);
 		register(kryo, TimeResponse.class);
 		register(kryo, LoginRequest.class);
 		register(kryo, LoginResponse.class);
@@ -53,7 +51,6 @@ public class KryoInitializer {
 		kryo.register(UUID.class, new UUIDSerializer());
 		register(kryo, ContentPackIdentifier.class);
 		register(kryo, ContentPackIdentifier[].class);
-		register(kryo, WorldReady.class);
 		register(kryo, StartGame.class);
 		register(kryo, ContentPackPart.class);
 		register(kryo, RequestContentPacks.class);
@@ -72,7 +69,6 @@ public class KryoInitializer {
 		register(kryo, EquipmentActionRequest.class);
 		register(kryo, PlaceStructureRequest.class);
 		register(kryo, PlayerEquipmentAbilityRequest.class);
-		register(kryo, UpdateTargetPositionRequest.class);
 		register(kryo, ChatRequest.class);
 		register(kryo, ChatEntry.class);
 		register(kryo, UseItemRequest.class);
@@ -85,6 +81,9 @@ public class KryoInitializer {
 		register(kryo, PlayerDead[].class);
 		register(kryo, EndGameData.class);
 		register(kryo, RefreshRequest.class);
+		register(kryo, ClientStream.class);
+		register(kryo, TimeRequest.class);
+		register(kryo, TimeResponse.class);
 	}
 
 	@SuppressWarnings("unchecked")

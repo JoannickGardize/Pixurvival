@@ -189,11 +189,11 @@ public class ItemStackEntity extends Entity {
 		switch (state) {
 		case INHIBITED:
 			long magnetTargetId = buffer.getLong();
-			magnetTarget = (PlayerEntity) getWorld().getEntityPool().get(EntityGroup.PLAYER, magnetTargetId);
+			magnetTarget = getWorld().getPlayerEntities().get(magnetTargetId);
 			break;
 		case MAGNTIZED:
 			magnetTargetId = buffer.getLong();
-			magnetTarget = (PlayerEntity) getWorld().getEntityPool().get(EntityGroup.PLAYER, magnetTargetId);
+			magnetTarget = getWorld().getPlayerEntities().get(magnetTargetId);
 			speedInterpolation.setStartTimeMillis(buffer.getLong());
 			break;
 		case SPAWNING:

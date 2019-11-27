@@ -1,5 +1,9 @@
 package com.pixurvival.gdxcore;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,6 +108,17 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		instance = this;
 		client = new ClientGame(clientArgs);
 		client.addListener(this);
+		if (clientArgs.isRedirectErrorToFile()) {
+			File file = new File("err.txt");
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(file);
+				PrintStream ps = new PrintStream(fos);
+				System.setErr(ps);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

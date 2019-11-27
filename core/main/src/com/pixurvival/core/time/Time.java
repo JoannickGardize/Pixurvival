@@ -5,11 +5,12 @@ import com.pixurvival.core.message.TimeResponse;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 public class Time {
 
-	private @Getter long timeMillis = 0;
+	private @Setter @Getter long timeMillis = 0;
 	private double decimalAccumulator = 0;
 	private @Getter @NonNull DayCycleRun dayCycle;
 

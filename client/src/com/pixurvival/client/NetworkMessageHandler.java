@@ -43,7 +43,10 @@ class NetworkMessageHandler extends Listener {
 		});
 		putMessageAction(PlayerInventory.class, i -> game.getMyInventory().set(i));
 		putMessageAction(WorldUpdate.class, game::offer);
-		putMessageAction(StartGame.class, g -> game.addPlugin(new WorldUpdater()));
+		putMessageAction(StartGame.class, g -> {
+			game.addPlugin(new WorldUpdater());
+			game.getWorld().getTime().setTimeMillis(g.getWorldTime());
+		});
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 		putMessageAction(Spectate.class, game::spectate);
 		putMessageAction(PlayerDead[].class, pd -> {

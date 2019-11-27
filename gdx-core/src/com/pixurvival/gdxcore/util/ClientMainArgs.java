@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ClientMainArgs extends CommonMainArgs {
 
 	private boolean zoomEnabled = false;
+	private boolean redirectErrorToFile = true;
 }

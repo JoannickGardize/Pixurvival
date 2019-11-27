@@ -15,6 +15,10 @@ public class SimpleCommandProcessor implements CommandProcessor {
 		this(numArgs, numArgs, action);
 	}
 
+	public SimpleCommandProcessor(CommandProcessor action) {
+		this(Integer.MIN_VALUE, Integer.MAX_VALUE, action);
+	}
+
 	@Override
 	public void process(String[] args) {
 		if (args.length >= minArgs && args.length <= maxArgs) {

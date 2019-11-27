@@ -21,4 +21,6 @@ public class GameConstants {
 
 	public static final double PIXEL_SIZE = 1.0 / PIXEL_PER_UNIT;
 
+	public static final long CLIENT_STREAM_INTERVAL = 66;
+
 }

@@ -12,7 +12,6 @@ import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldListener;
-import com.pixurvival.core.WorldUpdateManager;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -23,6 +22,7 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.KryoInitializer;
@@ -32,7 +32,6 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeRequest;
 import com.pixurvival.core.message.TimeResponse;
-import com.pixurvival.core.message.WorldReady;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
@@ -128,11 +127,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			myTeamId = createWorld.getMyTeamId();
 			createWorld.getInventory().computeQuantities();
 			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
+			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());
 			removeAllPlugins();
 			notify(ClientGameListener::initializeGame);
-			addPlugin(new TargetPositionUpdateManager());
-			client.sendTCP(new WorldReady());
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 		}
@@ -178,6 +176,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		}
 	}
 
+	public void send(ClientStream clientStream) {
+		client.sendUDP(clientStream);
+	}
+
 	public void update(double deltaTimeMillis) {
 		this.deltaTimeMillis = deltaTimeMillis;
 		clientListener.consumeReceivedObjects();
@@ -205,7 +207,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	public void checkMissingPacks(ContentPackIdentifier identifier) {
 		// TODO Make the auto-download of contentPack great again
-
 		// List<ContentPackIdentifier> missingPacks = new ArrayList<>();
 		// for (ContentPackIdentifier identifier : identifiers) {
 		// if (!list.contains(identifier)) {

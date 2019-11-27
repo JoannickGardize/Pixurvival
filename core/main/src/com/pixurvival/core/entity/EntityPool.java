@@ -93,6 +93,12 @@ public class EntityPool extends EntityCollection {
 		applyUpdate(byteBuffer, world);
 	}
 
+	@Override
+	public void applyUpdate(ByteBuffer byteBuffer, World world) {
+		super.applyUpdate(byteBuffer, world);
+		flushNewEntities();
+	}
+
 	public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
 		byteBuffer.put((byte) entity.getGroup().ordinal());
 		byteBuffer.putLong(entity.getId());
@@ -101,11 +107,6 @@ public class EntityPool extends EntityCollection {
 	public Entity readEntityReference(ByteBuffer byteBuffer) {
 		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
 		return getEntities().get(group).get(byteBuffer.getLong());
-	}
-
-	@Override
-	public void remove(Entity entity) {
-		super.remove(entity);
 	}
 
 	/**
@@ -117,6 +118,16 @@ public class EntityPool extends EntityCollection {
 			listeners.forEach(l -> l.entityAdded(e));
 		}
 		newEntities.clear();
+	}
+
+	@Override
+	public void clear() {
+		getEntities().values().forEach(map -> map.values().forEach(entity -> {
+			if (entity.getChunk() != null) {
+				entity.getChunk().getEntities().remove(entity);
+			}
+		}));
+		super.clear();
 	}
 
 	@Override
