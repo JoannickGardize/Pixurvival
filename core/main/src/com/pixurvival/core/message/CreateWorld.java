@@ -16,5 +16,7 @@ public class CreateWorld {
 	private Vector2 myPosition;
 	private PlayerInventory inventory;
 	private TeamComposition[] teamCompositions;
+	private long[] playerDeadIds;
 	private int myTeamId;
+	private boolean spectator;
 }

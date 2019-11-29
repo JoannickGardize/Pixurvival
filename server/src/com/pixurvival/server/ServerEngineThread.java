@@ -2,6 +2,7 @@ package com.pixurvival.server;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.esotericsoftware.minlog.Log;
@@ -12,9 +13,10 @@ import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.chunk.CompressedChunk;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.WorldUpdate;
-import com.pixurvival.server.ClientAckManager.CheckResult;
 
 import lombok.NonNull;
 
@@ -24,11 +26,7 @@ public class ServerEngineThread extends EngineThread {
 	private List<GameSession> sessions = new ArrayList<>();
 	private WorldUpdate tmpDeltaWorldUpdate = new WorldUpdate();
 	private WorldUpdate tmpFullWorldUpdate = new WorldUpdate();
-	private List<SpectatorSession> tmpNewSpectators = new ArrayList<>();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
-	private boolean tmpDeltaWorldUpdateReady = false;
-	private boolean tmpFullWorldUpdateReady = false;
-	private boolean tmpFullWorldUpdateIncludesChunks = false;
 
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
@@ -45,18 +43,19 @@ public class ServerEngineThread extends EngineThread {
 		game.consumeReceivedObjects();
 		sessions.forEach(gs -> gs.getWorld().update(deltaTimeMillis));
 		sessions.forEach(gs -> {
-			tmpDeltaWorldUpdate.setUpdateId(tmpDeltaWorldUpdate.getUpdateId() + 1);
-			tmpFullWorldUpdate.setUpdateId(tmpDeltaWorldUpdate.getUpdateId());
+			if (gs.getWorld().getTime().getTickCount() % 2 == 0) {
+				// Send data every 2 frames only
+				return;
+			}
 			sendWorldData(gs);
 			gs.clear();
-
-			gs.getWorld().getEntityPool().foreach(entity -> entity.setStateChanged(false));
+			gs.getWorld().getEntityPool().foreach(entity -> {
+				entity.setStateChanged(false);
+				if (entity.getChunk() != null) {
+					entity.setPreviousUpdateChunkPosition(entity.getChunk().getPosition());
+				}
+			});
 		});
-		sessions.forEach(gs -> gs.getWorld().getEntityPool().foreach(entity -> {
-			if (entity.getChunk() != null) {
-				entity.setPreviousUpdateChunkPosition(entity.getChunk().getPosition());
-			}
-		}));
 	}
 
 	private void sendWorldData(GameSession gs) {
@@ -65,9 +64,6 @@ public class ServerEngineThread extends EngineThread {
 			PlayerConnection connection = session.getConnection();
 			PlayerEntity playerEntity = connection.getPlayerEntity();
 			if (connection.isGameReady() && playerEntity != null) {
-				tmpDeltaWorldUpdateReady = false;
-				tmpFullWorldUpdateReady = false;
-				tmpFullWorldUpdateIncludesChunks = false;
 				tmpFullWorldUpdate.clear();
 				sendWorldUpdate(gs, session, connection);
 				if (connection.isInventoryChanged()) {
@@ -77,21 +73,6 @@ public class ServerEngineThread extends EngineThread {
 				if (playerDeads != null) {
 					connection.sendTCP(playerDeads);
 				}
-				tmpNewSpectators.clear();
-				session.getSpectators().values().forEach(spec -> {
-					if (spec.isNewlySpectating()) {
-						tmpNewSpectators.add(spec);
-					} else {
-						sendWorldUpdate(gs, session, spec.getConnection());
-					}
-					if (connection.isInventoryChanged()) {
-						spec.getConnection().sendTCP(playerEntity.getInventory());
-					}
-					if (playerDeads != null) {
-						spec.getConnection().sendTCP(playerDeads);
-					}
-				});
-				sendFullUpdateForNewSpectators(playerEntity);
 				game.notifyNetworkListeners(l -> l.sent(tmpDeltaWorldUpdate));
 			}
 			session.clearPositionChanges();
@@ -103,73 +84,68 @@ public class ServerEngineThread extends EngineThread {
 		if (!connection.isConnected()) {
 			return;
 		}
-		CheckResult checkResult;
-		if ((checkResult = ClientAckManager.getInstance().check(connection)) == CheckResult.OK && !connection.isRequestedFullUpdate()) {
+		if (ClientAckManager.getInstance().check(connection) && !connection.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
 				int length = connection.sendUDP(tmpDeltaWorldUpdate);
 				// Log.info("delta update sent to " + connection + " ( entity :
 				// " +
 				// tmpDeltaWorldUpdate.getEntityUpdateByteBuffer().position() +
-				// " total : " + length + ")");
+				// " total : " + length + ", ping : " + connection.getPing()
+				// + ", multiplier : " + connection.getAckThresholdMultiplier()
+				// + ")");
 			}
 		} else {
-			prepareFullUpdate(session.getConnection().getPlayerEntity(), checkResult == CheckResult.REQUIRE_FULL || connection.isRequestedFullUpdate());
-			connection.setRequestedFullUpdate(false);
+			if (connection.isRequestedFullUpdate()) {
+				prepareFullUpdateForRefresh(session.getConnection().getPlayerEntity());
+				connection.setRequestedFullUpdate(false);
+			} else {
+				prepareFullUpdate(session.getConnection().getPlayerEntity());
+
+			}
 			int length = connection.sendUDP(tmpFullWorldUpdate);
-			Log.info("full update sent to " + connection + " ( entity : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + " total : " + length + ")");
+			Log.info("full update sent to " + connection + " ( entity : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + " total : " + length + ", ping : " + connection.getPing()
+					+ ", multiplier : " + connection.getAckThresholdMultiplier() + ")");
 		}
 	}
 
 	private void prepareDeltaUpdate(GameSession gs, PlayerSession session) {
-		if (tmpDeltaWorldUpdateReady) {
-			return;
-		}
-		tmpDeltaWorldUpdateReady = true;
+		tmpDeltaWorldUpdate.getCompressedChunks().clear();
+		tmpDeltaWorldUpdate.getStructureUpdates().clear();
+		session.extractStructureUpdatesToSend(tmpDeltaWorldUpdate.getStructureUpdates());
+		session.extractChunksToSend(tmpDeltaWorldUpdate.getCompressedChunks());
 		PlayerEntity playerEntity = session.getConnection().getPlayerEntity();
-		tmpDeltaWorldUpdate.clear();
 		ByteBuffer byteBuffer = tmpDeltaWorldUpdate.getEntityUpdateByteBuffer();
+		byteBuffer.position(0);
 		writeRemoveEntity(gs, session, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
 		writeEntityUpdate(session, playerEntity, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
 		writeDistantAllyPositions(playerEntity, byteBuffer);
-		session.extractStructureUpdatesToSend(tmpDeltaWorldUpdate.getStructureUpdates());
-		session.extractChunksToSend(tmpDeltaWorldUpdate.getCompressedChunks());
 	}
 
-	private void prepareFullUpdate(PlayerEntity player, boolean includeChunks) {
-		if (tmpFullWorldUpdateIncludesChunks != includeChunks) {
-			tmpFullWorldUpdate.getCompressedChunks().clear();
-			tmpFullWorldUpdateIncludesChunks = includeChunks;
-			if (includeChunks) {
-				player.foreachChunkInView(chunk -> tmpFullWorldUpdate.getCompressedChunks().add(chunk.getCompressed()));
-			}
-		}
-		if (tmpFullWorldUpdateReady) {
-			return;
-		}
+	private void prepareFullUpdate(PlayerEntity player) {
+		prepareFullUpdate(player, ClientAckManager.getInstance().getCompressedChunks(), ClientAckManager.getInstance().getStructureUpdates());
+	}
+
+	private void prepareFullUpdateForRefresh(PlayerEntity player) {
+		List<CompressedChunk> compressedChunks = new ArrayList<>();
+		player.foreachChunkInView(c -> compressedChunks.add(c.getCompressed()));
+		prepareFullUpdate(player, compressedChunks, Collections.emptyList());
+	}
+
+	private void prepareFullUpdate(PlayerEntity player, List<CompressedChunk> compressedChunks, List<StructureUpdate> structureUpdates) {
+		tmpFullWorldUpdate.getCompressedChunks().clear();
+		tmpFullWorldUpdate.getCompressedChunks().addAll(compressedChunks);
 		tmpFullWorldUpdate.getStructureUpdates().clear();
+		tmpFullWorldUpdate.getStructureUpdates().addAll(structureUpdates);
 		tmpFullWorldUpdate.getEntityUpdateByteBuffer().position(0);
-		tmpFullWorldUpdateReady = true;
 		ByteBuffer byteBuffer = tmpFullWorldUpdate.getEntityUpdateByteBuffer();
 		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
 		byteBuffer.put(EntityGroup.END_MARKER);
 		player.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, true, player.getChunkVision()));
 		byteBuffer.put(EntityGroup.END_MARKER);
 		writeDistantAllyPositions(player, byteBuffer);
-	}
-
-	private void sendFullUpdateForNewSpectators(PlayerEntity viewedPlayer) {
-		if (tmpNewSpectators.isEmpty()) {
-			return;
-		}
-		prepareFullUpdate(viewedPlayer, true);
-		tmpNewSpectators.forEach(spec -> {
-			spec.getConnection().sendUDP(tmpDeltaWorldUpdate);
-			spec.getConnection().sendTCP(viewedPlayer.getInventory());
-			spec.setNewlySpectating(false);
-		});
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {

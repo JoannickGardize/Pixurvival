@@ -99,8 +99,8 @@ public class CommandArgsUtils {
 	}
 
 	/**
-	 * Position in format x;y OR position of player reference OR special
-	 * reference to cursor
+	 * Position in format x;y OR position of player reference OR special reference
+	 * to cursor
 	 * 
 	 * @param executor
 	 * @param arg

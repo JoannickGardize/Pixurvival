@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -23,14 +24,15 @@ import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
-import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.server.util.ServerMainArgs;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
 
 public class ServerGame {
 
-	private Server server = new KryoServer();
+	private Server server;
 	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
 	private List<NetworkListener> networkListeners = new ArrayList<>();
@@ -42,7 +44,13 @@ public class ServerGame {
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 
 	@SneakyThrows
-	public ServerGame(CommonMainArgs serverArgs) {
+	public ServerGame(ServerMainArgs serverArgs) {
+		if (MathUtils.equals(serverArgs.getSimulatePacketLossRate(), 0)) {
+			server = new KryoServer();
+		} else {
+			server = new SimulatePacketLostKryoServer(serverArgs.getSimulatePacketLossRate());
+			Log.warn("Simulating UDP packet loss with a rate of " + serverArgs.getSimulatePacketLossRate());
+		}
 		serverArgs.apply(server, serverListener);
 		contentPackUploadManager.start();
 		addListener(contentPackUploadManager);
@@ -57,6 +65,7 @@ public class ServerGame {
 			defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		}
 		setSelectedContentPack(new ContentPackSerializer(defaultContentPack).load(id));
+		startServer(serverArgs.getDefaultPort());
 	}
 
 	public void addPlayerConnection(PlayerConnection playerConnection) {
@@ -117,6 +126,7 @@ public class ServerGame {
 
 		foreachPlayers(playerConnection -> {
 			PlayerEntity playerEntity = new PlayerEntity();
+			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
 			world.getEntityPool().add(playerEntity);
 			world.getEntityPool().flushNewEntities();
 			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));

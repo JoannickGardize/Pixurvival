@@ -15,6 +15,7 @@ public class DesktopLauncher {
 		config.foregroundFPS = 60;
 		config.width = 960;
 		config.height = 540;
+		config.title = "Pixurvival - pre-alpha";
 		// DisplayMode desktopMode =
 		// LwjglApplicationConfiguration.getDesktopDisplayMode();
 		// config.setFromDisplayMode(desktopMode);

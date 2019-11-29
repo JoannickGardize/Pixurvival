@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.core.util.CommonMainArgs;
+import com.pixurvival.server.util.ServerMainArgs;
 
 /**
  * Utility class that start the server automotically on port 7777, and start the
@@ -16,7 +16,7 @@ import com.pixurvival.core.util.CommonMainArgs;
 public class AutoRunTestServer implements ServerGameListener {
 	private ServerGame game;
 
-	public AutoRunTestServer(CommonMainArgs serverArgs) throws IOException {
+	public AutoRunTestServer(ServerMainArgs serverArgs) throws IOException {
 		game = new ServerGame(serverArgs);
 		game.addListener(this);
 		game.startServer(7777);
@@ -35,6 +35,6 @@ public class AutoRunTestServer implements ServerGameListener {
 	}
 
 	public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		new AutoRunTestServer(ArgsUtils.readArgs(args, CommonMainArgs.class));
+		new AutoRunTestServer(ArgsUtils.readArgs(args, ServerMainArgs.class));
 	}
 }

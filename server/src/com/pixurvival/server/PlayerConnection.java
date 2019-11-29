@@ -27,9 +27,13 @@ public class PlayerConnection extends Connection implements InventoryListener {
 	private long previousClientWorldTime = 0;
 	private boolean reconnected = false;
 	private Map<Long, WaitingAckEntry> waitingAcks = new HashMap<>();
+	private @Getter @Setter boolean spectator = false;
+
 	// TODO Put a big ping every game start, to avoid lot of full updates, when
 	// congestion
 	private double ping = 300;
+	private long nextUpdateId = 0;
+	private double ackThresholdMultiplier = 1;
 
 	@Override
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
@@ -37,6 +41,7 @@ public class PlayerConnection extends Connection implements InventoryListener {
 	}
 
 	public int sendUDP(WorldUpdate worldUpdate) {
+		worldUpdate.setUpdateId(nextUpdateId++);
 		ClientAckManager.getInstance().addExpectedAck(this, worldUpdate);
 		return sendUDP((Object) worldUpdate);
 	}

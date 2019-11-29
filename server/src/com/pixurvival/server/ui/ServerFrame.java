@@ -15,12 +15,12 @@ import javax.swing.event.DocumentListener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGame;
 import com.pixurvival.server.ServerGameListener;
 import com.pixurvival.server.console.CommandMultiplexer;
 import com.pixurvival.server.console.ServerCommands;
+import com.pixurvival.server.util.ServerMainArgs;
 
 public class ServerFrame extends JPanel implements ServerGameListener {
 
@@ -29,7 +29,7 @@ public class ServerFrame extends JPanel implements ServerGameListener {
 	private JTextPane outputTextPane = new JTextPane();
 	private JTextField inputTextField = new JTextField();
 
-	public ServerFrame(CommonMainArgs mainArgs) {
+	public ServerFrame(ServerMainArgs mainArgs) {
 		outputTextPane.setEditable(false);
 		System.setOut(new PrintStream(new TextPaneOutputStream(outputTextPane, Color.BLACK), true));
 		System.setErr(new PrintStream(new TextPaneOutputStream(outputTextPane, Color.RED), true));
@@ -74,7 +74,7 @@ public class ServerFrame extends JPanel implements ServerGameListener {
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("Pixurvival Server");
-		frame.setContentPane(new ServerFrame(ArgsUtils.readArgs(args, CommonMainArgs.class)));
+		frame.setContentPane(new ServerFrame(ArgsUtils.readArgs(args, ServerMainArgs.class)));
 		frame.setSize(800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);

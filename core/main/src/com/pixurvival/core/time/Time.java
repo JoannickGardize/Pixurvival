@@ -18,8 +18,10 @@ public class Time {
 	private @Getter double deltaTimeMillis = 0;
 	private long synchronizeTimeCounter = 0;
 	private @Getter double averagePing = 0;
+	private @Getter long tickCount = 0;
 
 	public void update(double deltaTimeMillis) {
+		tickCount++;
 		this.deltaTimeMillis = deltaTimeMillis;
 		deltaTime = deltaTimeMillis / 1000.0;
 		long integerPart = (long) deltaTimeMillis;

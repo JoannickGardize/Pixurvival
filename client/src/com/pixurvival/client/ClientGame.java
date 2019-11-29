@@ -44,7 +44,7 @@ import lombok.Setter;
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
 
-	private Client client = new Client(8192, 8192);
+	private Client client = new Client(16384, 16384);
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
@@ -62,7 +62,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private @Getter int myTeamId;
 
 	public ClientGame(CommonMainArgs clientArgs) {
-		client = new Client(8192, 8192);
 		KryoInitializer.apply(client.getKryo());
 		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
@@ -130,7 +129,18 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());
 			removeAllPlugins();
+			if (createWorld.getPlayerDeadIds() != null) {
+				for (long id : createWorld.getPlayerDeadIds()) {
+					PlayerEntity playerEntity = world.getPlayerEntities().get(id);
+					playerEntity.getTeam().addDead(playerEntity);
+					playerEntity.setAlive(false);
+				}
+			}
+			spectator = createWorld.isSpectator();
 			notify(ClientGameListener::initializeGame);
+			if (spectator) {
+				notify(ClientGameListener::spectatorStarted);
+			}
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 		}
@@ -177,7 +187,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	}
 
 	public void send(ClientStream clientStream) {
-		client.sendUDP(clientStream);
+		int length = client.sendUDP(clientStream);
 	}
 
 	public void update(double deltaTimeMillis) {

@@ -3,8 +3,10 @@ package com.pixurvival.server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.EndGameData;
@@ -38,12 +40,13 @@ import lombok.Setter;
 public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener, ServerGameListener {
 
 	private @Getter World world;
-	private Map<Long, PlayerSession> players = new HashMap<>();
-	private Map<Long, SpectatorSession> spectators = new HashMap<>();
+	private List<PlayerSession> players = new ArrayList<>();
+	private Map<Long, Set<PlayerSession>> sessionsByEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
 	private List<PlayerDead> playerDeadList = new ArrayList<>();
 	private @Setter TeamComposition[] teamCompositions;
+	private List<PlayerSession> tmpPlayerSessions = new ArrayList<>();
 
 	public GameSession(World world) {
 		this.world = world;
@@ -61,16 +64,18 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	public void addPlayer(PlayerConnection player) {
-		players.put(player.getPlayerEntity().getId(), new PlayerSession(player));
+		PlayerSession playerSession = new PlayerSession(player);
+		players.add(playerSession);
+		getSessionsForPlayerEntity(player.getPlayerEntity()).add(playerSession);
 	}
 
 	public void foreachPlayers(Consumer<PlayerSession> action) {
-		players.values().forEach(action);
+		players.forEach(action);
 	}
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
-		for (PlayerSession playerSession : players.values()) {
+		for (PlayerSession playerSession : players) {
 			if (playerSession.isMissingAndRemove(chunk.getPosition())
 					|| chunk.getPosition().insideSquare(playerSession.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
@@ -110,7 +115,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	private void addStructureUpdate(MapStructure mapStructure, StructureUpdate structureUpdate) {
-		for (PlayerSession player : players.values()) {
+		for (PlayerSession player : players) {
 			ChunkPosition chunkPosition = mapStructure.getChunk().getPosition();
 			if (chunkPosition.insideSquare(player.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				player.addStructureUpdate(structureUpdate);
@@ -122,8 +127,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void enterVision(PlayerEntity entity, ChunkPosition position) {
-		PlayerSession playerSession = players.get(entity.getId());
-		if (playerSession != null) {
+		for (PlayerSession playerSession : getSessionsForPlayerEntity(entity)) {
 			Chunk chunk = world.getMap().chunkAt(position);
 			addChunk(playerSession, position, chunk);
 			playerSession.addNewPosition(position);
@@ -132,9 +136,10 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void exitVision(PlayerEntity entity, ChunkPosition position) {
-		PlayerSession playerSession = players.get(entity.getId());
-		if (playerSession != null) {
-			playerSession.addOldPosition(position);
+		for (PlayerSession playerSession : getSessionsForPlayerEntity(entity)) {
+			if (playerSession != null) {
+				playerSession.addOldPosition(position);
+			}
 		}
 	}
 
@@ -151,14 +156,15 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		// TODO avoid this if with specific events for PlayerEntities
 		if (e instanceof PlayerEntity) {
 			playerDeadList.add(new PlayerDead(e.getId()));
-			PlayerSession playerSession = players.remove(e.getId());
-			SpectatorSession spectatorSession = new SpectatorSession();
-			spectatorSession.setConnection(playerSession.getConnection());
-			if (!players.isEmpty()) {
-				findBestSpectatorTarget(spectatorSession);
+			tmpPlayerSessions.clear();
+			tmpPlayerSessions.addAll(getSessionsForPlayerEntity(e));
+			// Iterate over a copy of the collection because it could be
+			// modified inside the
+			// loop
+			for (PlayerSession playerSession : tmpPlayerSessions) {
+				playerSession.getConnection().setSpectator(true);
+				findBestSpectatorTarget(playerSession);
 			}
-			spectators.put(spectatorSession.getConnection().getPlayerEntity().getId(), spectatorSession);
-			playerSession.getSpectators().values().forEach(this::findBestSpectatorTarget);
 		}
 	}
 
@@ -172,40 +178,25 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		}
 	}
 
-	private void findBestSpectatorTarget(SpectatorSession spec) {
-		unSpectate(spec);
-		Team team = spec.getConnection().getPlayerEntity().getTeam();
+	private void findBestSpectatorTarget(PlayerSession playerSession) {
+		PlayerEntity previousPlayer = playerSession.getConnection().getPlayerEntity();
+		Team team = previousPlayer.getTeam();
 		PlayerEntity spectatedPlayer = null;
 		if (!team.getAliveMembers().isEmpty()) {
 			spectatedPlayer = team.getAliveMembers().iterator().next();
+
 		} else {
-			Collection<Entity> collection = spec.getConnection().getPlayerEntity().getWorld().getEntityPool().get(EntityGroup.PLAYER);
+			Collection<Entity> collection = previousPlayer.getWorld().getEntityPool().get(EntityGroup.PLAYER);
 			if (!collection.isEmpty()) {
 				spectatedPlayer = (PlayerEntity) collection.iterator().next();
 			}
 		}
 		if (spectatedPlayer != null) {
-			PlayerSession playerSession = players.get(spectatedPlayer.getId());
-			if (playerSession != null) {
-				spectate(spec, playerSession);
-			}
-		}
-	}
-
-	private void spectate(SpectatorSession spec, PlayerSession player) {
-		spec.setSpectatedPlayer(player);
-		player.getSpectators().put(spec.getConnection().getPlayerEntity().getId(), spec);
-		spec.setNewlySpectating(true);
-		spec.getConnection().sendTCP(new Spectate(player.getConnection().getPlayerEntity()));
-	}
-
-	private void unSpectate(SpectatorSession spec) {
-		if (spec.getSpectatedPlayer() != null) {
-			PlayerSession playerSession = players.get(spec.getSpectatedPlayer().getConnection().getPlayerEntity().getId());
-			if (playerSession != null) {
-				playerSession.getSpectators().remove(spec.getConnection().getPlayerEntity().getId());
-			}
-			spec.setSpectatedPlayer(null);
+			getSessionsForPlayerEntity(previousPlayer).remove(playerSession);
+			getSessionsForPlayerEntity(spectatedPlayer).add(playerSession);
+			playerSession.getConnection().setPlayerEntity(spectatedPlayer);
+			playerSession.getConnection().setRequestedFullUpdate(true);
+			playerSession.getConnection().sendTCP(new Spectate(spectatedPlayer));
 		}
 	}
 
@@ -218,23 +209,23 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void received(ChatEntry chatEntry) {
-		players.values().forEach(p -> p.getConnection().sendTCP(chatEntry));
+		players.forEach(p -> p.getConnection().sendTCP(chatEntry));
 	}
 
 	@Override
 	public void gameEnded(EndGameData data) {
-		players.values().forEach(p -> p.getConnection().sendTCP(data));
-		spectators.values().forEach(s -> s.getConnection().sendTCP(data));
+		players.forEach(p -> p.getConnection().sendTCP(data));
 		// TODO Retour au lobby
 	}
 
 	@Override
 	public void playerLoggedIn(PlayerConnection connection) {
-		for (PlayerSession ps : players.values()) {
+		for (PlayerSession ps : players) {
 			if (!ps.getConnection().isConnected() && ps.getConnection().toString().equals(connection.toString())) {
 				PlayerConnection previousConnection = ps.getConnection();
 				PlayerEntity playerEntity = previousConnection.getPlayerEntity();
 				connection.setPlayerEntity(playerEntity);
+				connection.setSpectator(previousConnection.isSpectator());
 				ps.getKnownPositions().clear();
 				ps.clearChunkAndStructureUpdates();
 				ps.clearPositionChanges();
@@ -248,11 +239,31 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 				createWorld.setMyTeamId(playerEntity.getTeam().getId());
 				createWorld.setMyPosition(playerEntity.getPosition());
 				createWorld.setInventory(playerEntity.getInventory());
+				createWorld.setPlayerDeadIds(playerDeadIds(playerEntity.getWorld()));
+				createWorld.setSpectator(connection.isSpectator());
 				ps.setConnection(connection);
 				connection.setReconnected(true);
 				connection.setRequestedFullUpdate(true);
 				connection.sendTCP(createWorld);
 			}
 		}
+	}
+
+	private long[] playerDeadIds(World world) {
+		List<Long> list = new ArrayList<>();
+		world.getPlayerEntities().values().forEach(p -> {
+			if (!p.isAlive()) {
+				list.add(p.getId());
+			}
+		});
+		long[] result = new long[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			result[i] = list.get(i);
+		}
+		return result;
+	}
+
+	private Collection<PlayerSession> getSessionsForPlayerEntity(Entity playerEntity) {
+		return sessionsByEntities.computeIfAbsent(playerEntity.getId(), id -> new HashSet<>());
 	}
 }

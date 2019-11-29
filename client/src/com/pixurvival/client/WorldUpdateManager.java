@@ -42,11 +42,11 @@ public class WorldUpdateManager implements Plugin<World> {
 
 	@Override
 	public void update(World world) {
-		handeWorldUpdates(world);
+		handleWorldUpdates(world);
 		handleClientStream(world);
 	}
 
-	private void handeWorldUpdates(World world) {
+	private void handleWorldUpdates(World world) {
 		waitingList.sort((u1, u2) -> (int) (u1.getUpdateId() - u2.getUpdateId()));
 		long smallestId = Long.MAX_VALUE;
 		for (int i = 0; i < waitingList.size(); i++) {
@@ -56,6 +56,7 @@ public class WorldUpdateManager implements Plugin<World> {
 				smallestId = worldUpdate.getUpdateId();
 			}
 		}
+		waitingList.clear();
 		history.tailMap(smallestId).values().forEach(u -> {
 			if (u.getEntityUpdateLength() > 0) {
 				u.getEntityUpdateByteBuffer().position(0);
@@ -65,7 +66,6 @@ public class WorldUpdateManager implements Plugin<World> {
 			world.getMap().applyUpdate(u.getStructureUpdates());
 		});
 
-		waitingList.clear();
 		while (history.size() > HISTORY_SIZE) {
 			ObjectPools.getWorldUpdatePool().offer(history.pollFirstEntry().getValue());
 		}

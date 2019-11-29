@@ -191,6 +191,7 @@ public class Chunk {
 			}
 			structures.get(structure.getDefinition().getId()).remove(structure);
 			structureCount--;
+			updateTimestamp();
 			getMap().notifyListeners(l -> l.structureRemoved(structure));
 			fileSync = false;
 		}
