@@ -76,12 +76,6 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(overlayActor);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
-		// InventoryUI inventoryUI = new InventoryUI();
-		// hudStage.addActor(inventoryUI);
-		// inventoryUI.initialize();
-		// CraftUI craftUI = new CraftUI();
-		// hudStage.addActor(craftUI);
-		// craftUI.initialize();
 		EquipmentUI equipmentUI = new EquipmentUI();
 		hudStage.addActor(equipmentUI);
 		InventoryUI inventoryUI = new InventoryUI();

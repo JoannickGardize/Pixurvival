@@ -2,6 +2,7 @@ package com.pixurvival.desktop;
 
 import java.io.FileNotFoundException;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.pixurvival.core.util.ArgsUtils;
@@ -15,7 +16,8 @@ public class DesktopLauncher {
 		config.foregroundFPS = 60;
 		config.width = 960;
 		config.height = 540;
-		config.title = "Pixurvival - pre-alpha";
+		config.title = "Pixurvival - pre-alpha 2";
+		config.addIcon("icon.png", FileType.Internal);
 		// DisplayMode desktopMode =
 		// LwjglApplicationConfiguration.getDesktopDisplayMode();
 		// config.setFromDisplayMode(desktopMode);
