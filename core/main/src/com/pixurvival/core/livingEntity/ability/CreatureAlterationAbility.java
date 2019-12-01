@@ -9,5 +9,5 @@ public class CreatureAlterationAbility extends AlterationAbility {
 
 	private static final long serialVersionUID = 1L;
 
-	private double predictionBulletSpeed;
+	private float predictionBulletSpeed;
 }

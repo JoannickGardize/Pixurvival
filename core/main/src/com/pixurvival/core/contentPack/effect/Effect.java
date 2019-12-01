@@ -38,7 +38,7 @@ public class Effect extends IdentifiedElement {
 	private long duration;
 
 	@Bounds(min = 0)
-	private double collisionRadius;
+	private float collisionRadius;
 
 	@Required
 	@Valid

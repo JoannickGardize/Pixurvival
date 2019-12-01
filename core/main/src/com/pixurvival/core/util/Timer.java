@@ -28,8 +28,8 @@ public class Timer {
 		return world.getTime().getTimeMillis() - startTimeMillis;
 	}
 
-	public double getProgress() {
-		return MathUtils.clamp((double) getElapsedTimeMillis() / (double) durationMillis, 0, 1);
+	public float getProgress() {
+		return MathUtils.clamp((float) getElapsedTimeMillis() / durationMillis, 0, 1);
 	}
 
 	public boolean update(World world) {

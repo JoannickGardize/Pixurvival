@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class PlayerProximityEventPosition implements EventPosition {
 
-	private double distance;
+	private float distance;
 
 	@Override
 	public void apply(World world, Collection<PlayerEntity> players, Vector2 positionOut, Vector2 targetOut) {

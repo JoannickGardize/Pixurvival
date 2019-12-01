@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  */
 public class ChunkManager extends EngineThread {
 
-	private static final double UNLOAD_CHECK_RATE = 0.05;
+	private static final float UNLOAD_CHECK_RATE = 0.05f;
 
 	@RequiredArgsConstructor
 	private static class TiledMapEntry {
@@ -73,7 +73,7 @@ public class ChunkManager extends EngineThread {
 	}
 
 	@Override
-	public void update(double deltaTimeMillis) {
+	public void update(float deltaTimeMillis) {
 		synchronized (tiledMaps) {
 			supplyChunks();
 			unloadChunks();

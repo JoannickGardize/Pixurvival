@@ -53,8 +53,8 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
 	private long timeRequestFrequencyMillis = 1000;
-	private double timeRequestTimer = 0;
-	private double deltaTimeMillis = 0;
+	private float timeRequestTimer = 0;
+	private float deltaTimeMillis = 0;
 	private String[] gameBeginningCommands;
 	private @Getter @Setter List<Locale> localePriorityList = new ArrayList<>();
 	private @Getter Locale currentLocale;
@@ -190,7 +190,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		int length = client.sendUDP(clientStream);
 	}
 
-	public void update(double deltaTimeMillis) {
+	public void update(float deltaTimeMillis) {
 		this.deltaTimeMillis = deltaTimeMillis;
 		clientListener.consumeReceivedObjects();
 		updatePlugins(this);

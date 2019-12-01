@@ -82,7 +82,7 @@ public class ContentPackValidator {
 
 	private void handleBounds(VisitNode node, Annotation annotation) {
 		Bounds bounds = (Bounds) annotation;
-		double value = ((Number) node.getObject()).doubleValue();
+		float value = ((Number) node.getObject()).floatValue();
 		if (value < bounds.min() || value > bounds.max() || !bounds.minInclusive() && value == bounds.min() || !bounds.maxInclusive() && value == bounds.max()) {
 			invalidNodes.add(new InvalidNode(node, bounds));
 		}

@@ -34,8 +34,8 @@ public class ActionPreconditions {
 	public static boolean canPlace(PlayerEntity player, Structure structure, int x, int y) {
 		int x2 = x + structure.getDimensions().getWidth();
 		int y2 = y + structure.getDimensions().getHeight();
-		double centerX = (x + x2) / 2.0;
-		double centerY = (y + y2) / 2.0;
+		float centerX = (x + x2) / 2f;
+		float centerY = (y + y2) / 2f;
 		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE * GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
 			return false;
 		}

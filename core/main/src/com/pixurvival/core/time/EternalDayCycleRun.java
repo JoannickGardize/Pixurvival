@@ -13,7 +13,7 @@ public class EternalDayCycleRun implements DayCycleRun {
 	}
 
 	@Override
-	public double currentMomentProgress() {
+	public float currentMomentProgress() {
 		return 0;
 	}
 

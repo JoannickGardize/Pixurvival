@@ -11,8 +11,8 @@ public interface DayCycleRun {
 	/**
 	 * @param time
 	 *            current world time in milliseconds.
-	 * @return true if the current day moment switched from day to night, or from
-	 *         night to day
+	 * @return true if the current day moment switched from day to night, or
+	 *         from night to day
 	 */
 	boolean update(long time);
 
@@ -22,10 +22,11 @@ public interface DayCycleRun {
 	boolean isDay();
 
 	/**
-	 * @return the current moment (day or night) progress, 0 mean the moment just
-	 *         started, and values close to 1 mean the moment will change soon.
+	 * @return the current moment (day or night) progress, 0 mean the moment
+	 *         just started, and values close to 1 mean the moment will change
+	 *         soon.
 	 */
-	double currentMomentProgress();
+	float currentMomentProgress();
 
 	long getDayCount();
 }

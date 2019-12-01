@@ -19,6 +19,8 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 	 */
 	private EquipmentAbilityType type;
 	private Vector2 targetPosition;
+	// TODO add world time to allow the server to know if targetPosition is old
+	// or not against the clientStream's one
 
 	@Override
 	public void apply(PlayerEntity player) {
@@ -41,8 +43,8 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 				output.writeByte(-1);
 			} else {
 				output.writeByte(object.type.ordinal());
-				output.writeDouble(object.targetPosition.getX());
-				output.writeDouble(object.targetPosition.getY());
+				output.writeFloat(object.targetPosition.getX());
+				output.writeFloat(object.targetPosition.getY());
 			}
 		}
 
@@ -53,7 +55,7 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 				return new PlayerEquipmentAbilityRequest(null, null);
 			} else {
 
-				return new PlayerEquipmentAbilityRequest(EquipmentAbilityType.values()[ordinal], new Vector2(input.readDouble(), input.readDouble()));
+				return new PlayerEquipmentAbilityRequest(EquipmentAbilityType.values()[ordinal], new Vector2(input.readFloat(), input.readFloat()));
 			}
 		}
 	}

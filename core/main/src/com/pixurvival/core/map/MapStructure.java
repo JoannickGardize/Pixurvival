@@ -37,7 +37,7 @@ public class MapStructure implements Body, CustomDataHolder {
 		this.definition = definition;
 		tileX = x;
 		tileY = y;
-		position = new Vector2(x + definition.getDimensions().getWidth() / 2.0, y + definition.getDimensions().getHeight() / 2.0);
+		position = new Vector2(x + definition.getDimensions().getWidth() / 2f, y + definition.getDimensions().getHeight() / 2f);
 
 		if (chunk != null) {
 			World world = chunk.getMap().getWorld();
@@ -54,13 +54,13 @@ public class MapStructure implements Body, CustomDataHolder {
 	}
 
 	@Override
-	public double getHalfWidth() {
-		return definition.getDimensions().getWidth() / 2.0;
+	public float getHalfWidth() {
+		return definition.getDimensions().getWidth() / 2f;
 	}
 
 	@Override
-	public double getHalfHeight() {
-		return definition.getDimensions().getHeight() / 2.0;
+	public float getHalfHeight() {
+		return definition.getDimensions().getHeight() / 2f;
 	}
 
 	public int getWidth() {

@@ -4,9 +4,9 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 public class SimulatePacketLostKryoServer extends Server {
-	private double lostRate;
+	private float lostRate;
 
-	public SimulatePacketLostKryoServer(double lostRate) {
+	public SimulatePacketLostKryoServer(float lostRate) {
 		super(16384, 16384);
 		this.lostRate = lostRate;
 	}

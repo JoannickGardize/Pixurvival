@@ -29,7 +29,7 @@ public class ItemReward extends IdentifiedElement implements Serializable {
 		private ItemStack itemStack = new ItemStack();
 
 		@Bounds(min = 0, max = 1, maxInclusive = true)
-		private double probability = 1;
+		private float probability = 1;
 	}
 
 	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(ArrayList::new);
@@ -41,7 +41,7 @@ public class ItemReward extends IdentifiedElement implements Serializable {
 		List<ItemStack> result = tmpLists.get();
 		result.clear();
 		for (Entry entry : entries) {
-			if (random.nextDouble() <= entry.getProbability()) {
+			if (random.nextFloat() <= entry.getProbability()) {
 				result.add(new ItemStack(entry.getItemStack()));
 			}
 		}

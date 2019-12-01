@@ -8,14 +8,14 @@ import lombok.Getter;
 
 public class StartPositionProvider {
 
-	private double distanceStep = 256;
-	private double angleStep = Math.PI / 4;
+	private float distanceStep = 256;
+	private float angleStep = (float) Math.PI / 4;
 
-	private double initialAngle = 0;
+	private float initialAngle = 0;
 	private @Getter int step = 0;
 
 	public StartPositionProvider(Random random) {
-		initialAngle = random.nextDouble() * Math.PI * 2;
+		initialAngle = random.nextFloat() * (float) Math.PI * 2;
 	}
 
 	public Vector2 next() {

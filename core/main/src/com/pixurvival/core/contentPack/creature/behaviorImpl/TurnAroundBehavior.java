@@ -18,10 +18,10 @@ public class TurnAroundBehavior extends Behavior {
 	private BehaviorTarget targetType;
 
 	@Bounds(min = 0)
-	private double minDistance;
+	private float minDistance;
 
 	@Bounds(min = 0)
-	private double maxDistance;
+	private float maxDistance;
 
 	@Override
 	public void begin(CreatureEntity creature) {
@@ -37,13 +37,13 @@ public class TurnAroundBehavior extends Behavior {
 			creature.setForward(false);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 		} else {
-			double distanceSquared = creature.distanceSquared(target);
+			float distanceSquared = creature.distanceSquared(target);
 			if (distanceSquared > maxDistance * maxDistance) {
 				creature.moveToward(target);
 			} else if (distanceSquared < minDistance * minDistance) {
 				creature.getAwayFrom(target);
 			} else {
-				double aroundAngle = creature.getWorld().getRandom().nextBoolean() ? Math.PI / 2 : -Math.PI / 2;
+				float aroundAngle = creature.getWorld().getRandom().nextBoolean() ? (float) Math.PI / 2 : -(float) Math.PI / 2;
 				creature.move(creature.angleToward(target) + aroundAngle);
 			}
 			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);

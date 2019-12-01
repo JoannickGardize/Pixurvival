@@ -68,7 +68,7 @@ public class PositionTest {
 	public void toVector2Test() {
 		Position position = new Position(-1, -1);
 
-		Assert.assertTrue("expected : " + new Vector2(-15.5, -15.5) + ", actual : " + position.toVector2(16), new Vector2(-15.5, -15.5).epsilonEquals(position.toVector2(16), 0.00001));
+		Assert.assertTrue("expected : " + new Vector2(-15.5f, -15.5f) + ", actual : " + position.toVector2(16), new Vector2(-15.5f, -15.5f).epsilonEquals(position.toVector2(16), 0.00001f));
 	}
 
 }

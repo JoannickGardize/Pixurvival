@@ -10,34 +10,34 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Bounds {
-	private double min = Double.NEGATIVE_INFINITY;
+	private float min = Float.NEGATIVE_INFINITY;
 	private boolean excludeMin = false;
-	private double max = Double.POSITIVE_INFINITY;
+	private float max = Float.POSITIVE_INFINITY;
 	private boolean excludeMax = false;
 
-	public Bounds(double min, double max) {
+	public Bounds(float min, float max) {
 		this.min = min;
 		this.max = max;
 	}
 
-	public static Bounds min(double min) {
+	public static Bounds min(float min) {
 		return min(min, false);
 	}
 
-	public static Bounds min(double min, boolean exclude) {
-		return new Bounds(min, exclude, Double.POSITIVE_INFINITY, false);
+	public static Bounds min(float min, boolean exclude) {
+		return new Bounds(min, exclude, Float.POSITIVE_INFINITY, false);
 	}
 
-	public static Bounds max(double max) {
-		return new Bounds(Double.NEGATIVE_INFINITY, false, max, false);
+	public static Bounds max(float max) {
+		return new Bounds(Float.NEGATIVE_INFINITY, false, max, false);
 	}
 
-	public static Bounds max(double max, boolean exclude) {
-		return new Bounds(Double.NEGATIVE_INFINITY, false, max, exclude);
+	public static Bounds max(float max, boolean exclude) {
+		return new Bounds(Float.NEGATIVE_INFINITY, false, max, exclude);
 	}
 
 	public static Bounds none() {
-		return new Bounds(Double.NEGATIVE_INFINITY, false, Double.POSITIVE_INFINITY, false);
+		return new Bounds(Float.NEGATIVE_INFINITY, false, Float.POSITIVE_INFINITY, false);
 	}
 
 	public static Bounds positive() {
@@ -45,7 +45,7 @@ public class Bounds {
 	}
 
 	public boolean test(Number value) {
-		double doubleValue = value.doubleValue();
-		return (!excludeMin && doubleValue >= min || excludeMin && doubleValue > min) && (!excludeMax && doubleValue <= max || excludeMax && doubleValue < max);
+		float floatValue = value.floatValue();
+		return (!excludeMin && floatValue >= min || excludeMin && floatValue > min) && (!excludeMax && floatValue <= max || excludeMax && floatValue < max);
 	}
 }

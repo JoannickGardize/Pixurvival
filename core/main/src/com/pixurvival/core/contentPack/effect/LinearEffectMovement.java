@@ -18,18 +18,18 @@ public class LinearEffectMovement implements EffectMovement {
 
 	private static class MovementData {
 		Vector2 targetPosition;
-		double targetDistance;
+		float targetDistance;
 	}
 
-	private double initialDistance;
-	private double speed;
+	private float initialDistance;
+	private float speed;
 	private boolean relative;
 	private boolean destroyAtTargetPosition;
 
 	@Override
 	public void initialize(EffectEntity entity) {
 		TeamMember ancestor = entity.getAncestor();
-		double angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
+		float angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
 				+ entity.getWorld().getRandom().nextAngle(entity.getDefinition().getRandomAngle());
 		entity.getPosition().set(ancestor.getPosition());
 		if (initialDistance > 0) {
@@ -47,7 +47,7 @@ public class LinearEffectMovement implements EffectMovement {
 			entity.updateVelocity();
 		}
 		if (entity.getWorld().isServer() && destroyAtTargetPosition) {
-			double d = entity.getWorld().getTime().getDeltaTime() * entity.getSpeed();
+			float d = entity.getWorld().getTime().getDeltaTime() * entity.getSpeed();
 			data.targetPosition = ancestor.getTargetPosition().copy();
 			data.targetDistance = d * d;
 		}
@@ -64,17 +64,17 @@ public class LinearEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential(EffectEntity entity) {
+	public float getSpeedPotential(EffectEntity entity) {
 		return entity.isAlive() ? entity.getSpeed() : 0;
 	}
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
-		buffer.putDouble(entity.getSpeed());
+		buffer.putFloat(entity.getSpeed());
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
-		entity.setSpeed(buffer.getDouble());
+		entity.setSpeed(buffer.getFloat());
 	}
 }

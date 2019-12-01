@@ -10,7 +10,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
@@ -33,9 +33,9 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		IntegerIntervalEditor teamNumberInterval = new IntegerIntervalEditor("gameMode.teamNumber");
 		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
 		DayCycleEditor dayCycleDefinitionEditor = new DayCycleEditor();
-		DoubleInput spawnSquareSizeInput = new DoubleInput(Bounds.positive());
+		FloatInput spawnSquareSizeInput = new FloatInput(Bounds.positive());
 		BooleanCheckBox mapLimitEnabledInput = new BooleanCheckBox();
-		DoubleInput mapLimitSizeInput = new DoubleInput(Bounds.positive());
+		FloatInput mapLimitSizeInput = new FloatInput(Bounds.positive());
 		ListEditor<Event> eventsEditor = new VerticalListEditor<>(LayoutUtils.bordered(EventEditor::new), EffectEvent::new);
 		EndGameConditionEditor endGameConditionEditor = new EndGameConditionEditor();
 

@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class Light {
 
 	private Vector2 position;
-	private double radius;
+	private float radius;
 }

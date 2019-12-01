@@ -16,8 +16,8 @@ public class FixedMovementAlteration extends PersistentAlteration {
 
 	private AlterationTarget sourceType;
 	private SourceDirection sourceDirection;
-	private double relativeAngle;
-	private double randomAngle;
+	private float relativeAngle;
+	private float randomAngle;
 
 	private StatFormula speed = new StatFormula();
 
@@ -27,8 +27,8 @@ public class FixedMovementAlteration extends PersistentAlteration {
 		if (effectiveSource instanceof LivingEntity) {
 			((LivingEntity) effectiveSource).prepareTargetedAlteration();
 		}
-		double angle = sourceDirection.getDirection(effectiveSource, entity);
-		double speedValue = speed.getValue(effectiveSource.getStats());
+		float angle = sourceDirection.getDirection(effectiveSource, entity);
+		float speedValue = speed.getValue(effectiveSource.getStats());
 		entity.setFixedMovement(angle + relativeAngle + entity.getWorld().getRandom().nextAngle(randomAngle), speedValue);
 		return null;
 	}

@@ -40,7 +40,7 @@ public class TiledMap {
 	private World world;
 
 	private MapTile outsideTile;
-	private double chunkDistance;
+	private float chunkDistance;
 	@Getter
 	private MapTile[] mapTilesById;
 
@@ -170,7 +170,7 @@ public class TiledMap {
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
 	}
 
-	public Chunk chunkAt(double x, double y) {
+	public Chunk chunkAt(float x, float y) {
 		ChunkPosition position = new ChunkPosition(MathUtils.floor(x / GameConstants.CHUNK_SIZE), MathUtils.floor(y / GameConstants.CHUNK_SIZE));
 		return chunks.get(position);
 	}
@@ -286,7 +286,7 @@ public class TiledMap {
 		}
 	}
 
-	public void forEachChunk(Vector2 center, double halfSquareLength, Consumer<Chunk> action) {
+	public void forEachChunk(Vector2 center, float halfSquareLength, Consumer<Chunk> action) {
 		ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
 			Chunk chunk = chunks.get(position);
 			if (chunk != null) {
@@ -295,16 +295,16 @@ public class TiledMap {
 		});
 	}
 
-	public boolean forEachChunk(Vector2 center, double halfSquareLength, Predicate<Chunk> action) {
+	public boolean forEachChunk(Vector2 center, float halfSquareLength, Predicate<Chunk> action) {
 		return ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
 			Chunk chunk = chunks.get(position);
 			return chunk != null && action.test(chunk);
 		});
 	}
 
-	public void forEachEntities(EntityGroup group, Vector2 center, double radius, Consumer<Entity> action) {
+	public void forEachEntities(EntityGroup group, Vector2 center, float radius, Consumer<Entity> action) {
 		forEachChunk(center, radius, chunk -> {
-			double radiusSquared = radius * radius;
+			float radiusSquared = radius * radius;
 			for (Entity e : chunk.getEntities().get(group)) {
 				if (e.distanceSquared(center) <= radiusSquared) {
 					action.accept(e);
@@ -338,19 +338,19 @@ public class TiledMap {
 		return collide(e.getPosition().getX(), e.getPosition().getY(), e.getCollisionRadius());
 	}
 
-	public boolean collide(Entity e, double dx, double dy) {
+	public boolean collide(Entity e, float dx, float dy) {
 		return collide(e.getPosition().getX() + dx, e.getPosition().getY() + dy, e.getCollisionRadius());
 	}
 
-	public boolean collide(double x, double y, double radius) {
+	public boolean collide(float x, float y, float radius) {
 		int tileX = MathUtils.floor(x - radius);
 		int startY = MathUtils.floor(y - radius);
-		double right = x + radius;
+		float right = x + radius;
 		int endX = MathUtils.floor(right);
 		if (MathUtils.equals(right, endX)) {
 			endX--;
 		}
-		double top = y + radius;
+		float top = y + radius;
 		int endY = MathUtils.floor(top);
 		if (MathUtils.equals(endY, top)) {
 			endY--;
@@ -367,14 +367,14 @@ public class TiledMap {
 
 	public MapStructure findClosestStructure(int x, int y) {
 		MapStructure closest = null;
-		double closestDist = Double.POSITIVE_INFINITY;
+		float closestDist = Float.POSITIVE_INFINITY;
 		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
 			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
 				MapStructure structure = tileAt(dx, dy).getStructure();
 				if (structure != null) {
-					double diffX = structure.getPosition().getX() - x;
-					double diffY = structure.getPosition().getY() - y;
-					double dist = diffX * diffX + diffY * diffY;
+					float diffX = structure.getPosition().getX() - x;
+					float diffY = structure.getPosition().getY() - y;
+					float dist = diffX * diffX + diffY * diffY;
 					if (dist < closestDist) {
 						closestDist = dist;
 						closest = structure;

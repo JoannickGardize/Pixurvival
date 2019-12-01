@@ -5,7 +5,7 @@ import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
@@ -21,8 +21,8 @@ public class HeightmapEditor extends ElementEditor<Heightmap> {
 
 		StringInput nameInput = new StringInput(1);
 		IntegerInput numberOfOctaveInput = new IntegerInput(Bounds.min(1));
-		DoubleInput persistenceInput = new DoubleInput(Bounds.positive());
-		DoubleInput scaleInput = new DoubleInput(Bounds.positive());
+		FloatInput persistenceInput = new FloatInput(Bounds.positive());
+		FloatInput scaleInput = new FloatInput(Bounds.positive());
 
 		// Binding
 

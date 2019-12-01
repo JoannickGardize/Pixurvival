@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ItemStackEntity extends Entity {
 
-	public static final double MAGNET_DISTANCE = 2;
-	public static final double INHIBITION_DISTANCE = 2.5;
-	public static final double RANDOM_SPAWN_RADIUS = 2;
+	public static final float MAGNET_DISTANCE = 2;
+	public static final float INHIBITION_DISTANCE = 2.5f;
+	public static final float RANDOM_SPAWN_RADIUS = 2;
 	public static final long SPEED_INTERPOLATION_DURATION = 200;
-	public static final double START_SPEED = 2;
-	public static final double END_SPEED = 15;
+	public static final float START_SPEED = 2;
+	public static final float END_SPEED = 15;
 
 	public enum State {
 		WAITING,
@@ -44,14 +44,14 @@ public class ItemStackEntity extends Entity {
 		state = State.WAITING;
 	}
 
-	public void spawn(double distance, double angle) {
+	public void spawn(float distance, float angle) {
 		spawnProgress = 0;
-		spawnDistance = (float) distance;
+		spawnDistance = distance;
 		spawnTarget.setFromEuclidean(distance, angle).add(getPosition());
 		state = State.SPAWNING;
 	}
 
-	public void spawn(double angle) {
+	public void spawn(float angle) {
 		spawn(INHIBITION_DISTANCE, angle);
 	}
 
@@ -65,7 +65,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	public void spawnRandom() {
-		spawn(getWorld().getRandom().nextDouble() * RANDOM_SPAWN_RADIUS, getWorld().getRandom().nextDouble() * Math.PI * 2);
+		spawn(getWorld().getRandom().nextFloat() * RANDOM_SPAWN_RADIUS, getWorld().getRandom().nextAngle());
 	}
 
 	@Override
@@ -80,8 +80,8 @@ public class ItemStackEntity extends Entity {
 	}
 
 	@Override
-	public double getCollisionRadius() {
-		return 0.1;
+	public float getCollisionRadius() {
+		return 0.1f;
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class ItemStackEntity extends Entity {
 			case SPAWNING:
 				setForward(true);
 				setMovingAngle(getPosition().angleToward(spawnTarget));
-				double deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
+				float deltaSpeed = getSpeed() * getWorld().getTime().getDeltaTime();
 				spawnProgress += deltaSpeed;
 				if (getPosition().distanceSquared(spawnTarget) <= deltaSpeed * deltaSpeed) {
 					getPosition().set(spawnTarget);
@@ -160,8 +160,8 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, boolean full) {
-		buffer.putDouble(getPosition().getX());
-		buffer.putDouble(getPosition().getY());
+		buffer.putFloat(getPosition().getX());
+		buffer.putFloat(getPosition().getY());
 		buffer.put((byte) state.ordinal());
 		switch (state) {
 		case INHIBITED:
@@ -172,8 +172,8 @@ public class ItemStackEntity extends Entity {
 			buffer.putLong(speedInterpolation.getStartTimeMillis());
 			break;
 		case SPAWNING:
-			buffer.putDouble(spawnTarget.getX());
-			buffer.putDouble(spawnTarget.getY());
+			buffer.putFloat(spawnTarget.getX());
+			buffer.putFloat(spawnTarget.getY());
 			buffer.putFloat(spawnProgress);
 			buffer.putFloat(spawnDistance);
 			break;
@@ -184,7 +184,7 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		getPosition().set(buffer.getDouble(), buffer.getDouble());
+		getPosition().set(buffer.getFloat(), buffer.getFloat());
 		state = State.values()[buffer.get()];
 		switch (state) {
 		case INHIBITED:
@@ -197,7 +197,7 @@ public class ItemStackEntity extends Entity {
 			speedInterpolation.setStartTimeMillis(buffer.getLong());
 			break;
 		case SPAWNING:
-			spawnTarget.set(buffer.getDouble(), buffer.getDouble());
+			spawnTarget.set(buffer.getFloat(), buffer.getFloat());
 			spawnProgress = buffer.getFloat();
 			spawnDistance = buffer.getFloat();
 			break;
@@ -208,7 +208,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public float getSpeedPotential() {
 		if (state == State.MAGNTIZED) {
 			return MathUtils.linearInterpolate(START_SPEED, END_SPEED, speedInterpolation.getProgress());
 		} else {

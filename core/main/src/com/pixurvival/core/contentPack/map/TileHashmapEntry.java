@@ -20,5 +20,5 @@ public class TileHashmapEntry implements Serializable {
 	private Tile tile;
 
 	@Bounds(min = 0, max = 1)
-	private double next;
+	private float next;
 }

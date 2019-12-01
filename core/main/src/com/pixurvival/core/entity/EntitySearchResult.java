@@ -6,5 +6,5 @@ import lombok.Data;
 public class EntitySearchResult {
 
 	private Entity entity = null;
-	private double distanceSquared = Double.POSITIVE_INFINITY;
+	private float distanceSquared = Float.POSITIVE_INFINITY;
 }

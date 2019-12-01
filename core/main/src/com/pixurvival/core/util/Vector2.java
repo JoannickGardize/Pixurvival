@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 public class Vector2 {
 
 	private static final NumberFormat TO_STRING_FORMAT = new DecimalFormat("0.0#");
-	private double x = 0;
-	private double y = 0;
+	private float x = 0;
+	private float y = 0;
 
 	public Vector2(Vector2 v) {
 		x = v.getX();
@@ -35,28 +35,28 @@ public class Vector2 {
 		return this;
 	}
 
-	public Vector2 set(double x, double y) {
+	public Vector2 set(float x, float y) {
 		this.x = x;
 		this.y = y;
 		return this;
 	}
 
-	public static Vector2 fromEuclidean(double length, double direction) {
-		return new Vector2(Math.cos(direction) * length, Math.sin(direction) * length);
+	public static Vector2 fromEuclidean(float length, float direction) {
+		return new Vector2((float) Math.cos(direction) * length, (float) Math.sin(direction) * length);
 	}
 
-	public Vector2 setFromEuclidean(double length, double direction) {
-		x = Math.cos(direction) * length;
-		y = Math.sin(direction) * length;
+	public Vector2 setFromEuclidean(float length, float direction) {
+		x = (float) Math.cos(direction) * length;
+		y = (float) Math.sin(direction) * length;
 		return this;
 	}
 
-	public Vector2 addX(double x) {
+	public Vector2 addX(float x) {
 		this.x += x;
 		return this;
 	}
 
-	public Vector2 addY(double y) {
+	public Vector2 addY(float y) {
 		this.y += y;
 		return this;
 	}
@@ -67,13 +67,13 @@ public class Vector2 {
 		return this;
 	}
 
-	public Vector2 add(double x, double y) {
+	public Vector2 add(float x, float y) {
 		this.x += x;
 		this.y += y;
 		return this;
 	}
 
-	public Vector2 addEuclidean(double length, double direction) {
+	public Vector2 addEuclidean(float length, float direction) {
 		x += Math.cos(direction) * length;
 		y += Math.sin(direction) * length;
 		return this;
@@ -85,70 +85,70 @@ public class Vector2 {
 		return this;
 	}
 
-	public Vector2 mul(double d) {
+	public Vector2 mul(float d) {
 		x *= d;
 		y *= d;
 		return this;
 	}
 
-	public Vector2 div(double d) {
+	public Vector2 div(float d) {
 		x /= d;
 		y /= d;
 		return this;
 	}
 
-	public static double dot(Vector2 left, Vector2 right) {
+	public static float dot(Vector2 left, Vector2 right) {
 		return (left.x * right.x) + (left.y * right.y);
 	}
 
-	public Vector2 lerp(Vector2 target, double delta) {
+	public Vector2 lerp(Vector2 target, float delta) {
 		x += (target.x - x) * delta;
 		y += (target.y - y) * delta;
 		return this;
 	}
 
-	public double length() {
-		return Math.sqrt(x * x + y * y);
+	public float length() {
+		return (float) Math.sqrt(x * x + y * y);
 	}
 
-	public double lengthSquared() {
+	public float lengthSquared() {
 		return x * x + y * y;
 	}
 
-	public double angle() {
-		return Math.atan2(y, x);
+	public float angle() {
+		return (float) Math.atan2(y, x);
 	}
 
-	public double angleToward(Vector2 other) {
-		return Math.atan2(other.y - y, other.x - x);
+	public float angleToward(Vector2 other) {
+		return (float) Math.atan2(other.y - y, other.x - x);
 	}
 
-	public double angleToward(double x, double y) {
-		return Math.atan2(y - this.y, x - this.x);
+	public float angleToward(float x, float y) {
+		return (float) Math.atan2(y - this.y, x - this.x);
 	}
 
-	public double distanceSquared(Vector2 v) {
-		double dx = x - v.x;
-		double dy = y - v.y;
+	public float distanceSquared(Vector2 v) {
+		float dx = x - v.x;
+		float dy = y - v.y;
 		return dx * dx + dy * dy;
 	}
 
-	public double distance(Vector2 v) {
-		return Math.sqrt(distanceSquared(v));
+	public float distance(Vector2 v) {
+		return (float) Math.sqrt(distanceSquared(v));
 	}
 
-	public double distanceSquared(double x, double y) {
-		double dx = this.x - x;
-		double dy = this.y - y;
+	public float distanceSquared(float x, float y) {
+		float dx = this.x - x;
+		float dy = this.y - y;
 		return dx * dx + dy * dy;
 	}
 
-	public boolean epsilonEquals(Vector2 other, double epsilon) {
+	public boolean epsilonEquals(Vector2 other, float epsilon) {
 		return other != null && Math.abs(other.x - x) <= epsilon && Math.abs(other.y - y) <= epsilon;
 
 	}
 
-	public boolean insideSquare(Vector2 center, double halfLength) {
+	public boolean insideSquare(Vector2 center, float halfLength) {
 		return Math.abs(x - center.x) <= halfLength && Math.abs(y - center.y) <= halfLength;
 	}
 
@@ -167,13 +167,13 @@ public class Vector2 {
 
 		@Override
 		public void write(Kryo kryo, Output output, Vector2 object) {
-			output.writeDouble(object.x);
-			output.writeDouble(object.y);
+			output.writeFloat(object.x);
+			output.writeFloat(object.y);
 		}
 
 		@Override
 		public Vector2 read(Kryo kryo, Input input, Class<Vector2> type) {
-			return new Vector2(input.readDouble(), input.readDouble());
+			return new Vector2(input.readFloat(), input.readFloat());
 		}
 
 	}

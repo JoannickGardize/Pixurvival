@@ -5,7 +5,7 @@ import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.core.contentPack.item.ItemReward;
@@ -19,7 +19,7 @@ public class ItemRewardEntryEditor extends ElementEditor<ItemReward.Entry> {
 	private @Getter ItemStackEditor itemStackEditor = new ItemStackEditor();
 
 	public ItemRewardEntryEditor() {
-		DoubleInput probabilityInput = new DoubleInput(new Bounds(0, 1));
+		FloatInput probabilityInput = new FloatInput(new Bounds(0, 1));
 
 		bind(itemStackEditor, ItemReward.Entry::getItemStack, ItemReward.Entry::setItemStack);
 		bind(probabilityInput, ItemReward.Entry::getProbability, ItemReward.Entry::setProbability);

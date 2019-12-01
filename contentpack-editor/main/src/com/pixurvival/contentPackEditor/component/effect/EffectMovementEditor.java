@@ -6,7 +6,7 @@ import java.util.List;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
 import com.pixurvival.core.contentPack.effect.BoundEffectMovement;
@@ -28,21 +28,21 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 		List<ClassEntry> list = new ArrayList<>();
 
 		// StaticEffectMovement
-		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
-		DoubleInput maxDistanceInput = new DoubleInput(Bounds.positive());
+		FloatInput minDistanceInput = new FloatInput(Bounds.positive());
+		FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
 		bind(minDistanceInput, StaticEffectMovement::getMinDistance, StaticEffectMovement::setMinDistance, StaticEffectMovement.class);
 		bind(maxDistanceInput, StaticEffectMovement::getMaxDistance, StaticEffectMovement::setMaxDistance, StaticEffectMovement.class);
 		list.add(new ClassEntry(StaticEffectMovement.class,
 				LayoutUtils.createHorizontalBox(LayoutUtils.labelled("generic.minDistance", minDistanceInput), LayoutUtils.labelled("generic.maxDistance", maxDistanceInput))));
 
 		// BoundEffectMovement
-		DoubleInput distanceInput = new DoubleInput(Bounds.positive());
+		FloatInput distanceInput = new FloatInput(Bounds.positive());
 		bind(distanceInput, BoundEffectMovement::getDistance, BoundEffectMovement::setDistance, BoundEffectMovement.class);
 		list.add(new ClassEntry(BoundEffectMovement.class, LayoutUtils.labelled("generic.distance", distanceInput)));
 
 		// LinearEffectMovement
-		DoubleInput speedInput = new DoubleInput(Bounds.positive());
-		DoubleInput initialDistanceInput = new DoubleInput(Bounds.positive());
+		FloatInput speedInput = new FloatInput(Bounds.positive());
+		FloatInput initialDistanceInput = new FloatInput(Bounds.positive());
 		BooleanCheckBox destroyAtTargetPositionCheckBox = new BooleanCheckBox();
 		BooleanCheckBox relativeCheckBox = new BooleanCheckBox();
 		bind(speedInput, LinearEffectMovement::getSpeed, LinearEffectMovement::setSpeed, LinearEffectMovement.class);
@@ -53,7 +53,7 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 				"effectMovementEditor.relative", relativeCheckBox, "effectMovementEditor.initialDistance", initialDistanceInput, "statType.speed", speedInput)));
 
 		// BackToOriginEffectMovement
-		speedInput = new DoubleInput(Bounds.positive());
+		speedInput = new FloatInput(Bounds.positive());
 		bind(speedInput, BackToOriginEffectMovement::getSpeed, BackToOriginEffectMovement::setSpeed, BackToOriginEffectMovement.class);
 		list.add(new ClassEntry(BackToOriginEffectMovement.class, LayoutUtils.labelled("statType.speed", speedInput)));
 

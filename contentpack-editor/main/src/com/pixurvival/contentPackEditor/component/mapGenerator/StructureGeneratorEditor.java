@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
@@ -31,7 +31,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
 		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class);
-		DoubleInput densityInput = new DoubleInput(new Bounds(0, 1));
+		FloatInput densityInput = new FloatInput(new Bounds(0, 1));
 
 		// Binding
 

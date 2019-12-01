@@ -19,7 +19,7 @@ public class WeaponBaseOrDropItemProcessor implements InputActionProcessor {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		ItemStack heldItemStack = myPlayer.getInventory().getHeldItemStack();
 		if (heldItemStack != null) {
-			DropItemRequest request = new DropItemRequest((float) getActionAngle(myPlayer, Gdx.input.getX(), Gdx.input.getY()));
+			DropItemRequest request = new DropItemRequest(getActionAngle(myPlayer, Gdx.input.getX(), Gdx.input.getY()));
 			PixurvivalGame.getClient().sendAction(request);
 			dropingItem = true;
 		} else {
@@ -35,7 +35,7 @@ public class WeaponBaseOrDropItemProcessor implements InputActionProcessor {
 		}
 	}
 
-	private double getActionAngle(PlayerEntity player, int screenX, int screenY) {
+	private float getActionAngle(PlayerEntity player, int screenX, int screenY) {
 		Vector2 worldPoint = screenToWorld(screenX, screenY);
 		return player.getPosition().angleToward(worldPoint.x, worldPoint.y);
 	}

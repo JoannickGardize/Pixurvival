@@ -27,7 +27,7 @@ public class TileHashmap implements Serializable {
 	private List<TileHashmapEntry> entries = new ArrayList<>();
 
 	public Tile get(int x, int y) {
-		double noise = heightmap.getNoise(x, y);
+		float noise = heightmap.getNoise(x, y);
 		for (TileHashmapEntry entry : entries) {
 			if (noise < entry.getNext()) {
 				return entry.getTile();

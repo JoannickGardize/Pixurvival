@@ -133,7 +133,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public double getCollisionRadius() {
+	public float getCollisionRadius() {
 		return definition.getEffect().getCollisionRadius();
 	}
 
@@ -149,23 +149,23 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, boolean full) {
-		buffer.putDouble(getPosition().getX());
-		buffer.putDouble(getPosition().getY());
+		buffer.putFloat(getPosition().getX());
+		buffer.putFloat(getPosition().getY());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
-		buffer.putDouble(getMovingAngle());
+		buffer.putFloat(getMovingAngle());
 		definition.getEffect().getMovement().writeUpdate(buffer, this);
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
-		getPosition().set(buffer.getDouble(), buffer.getDouble());
+		getPosition().set(buffer.getFloat(), buffer.getFloat());
 		setForward(buffer.get() == 1);
-		setMovingAngle(buffer.getDouble());
+		setMovingAngle(buffer.getFloat());
 		definition.getEffect().getMovement().applyUpdate(buffer, this);
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public float getSpeedPotential() {
 		return definition.getEffect().getMovement().getSpeedPotential(this);
 	}
 

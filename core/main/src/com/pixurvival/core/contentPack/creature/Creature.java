@@ -31,7 +31,7 @@ public class Creature extends IdentifiedElement {
 	private SpriteSheet spriteSheet;
 
 	@Bounds(min = 0)
-	private double collisionRadius;
+	private float collisionRadius;
 
 	private float strength;
 	private float agility;

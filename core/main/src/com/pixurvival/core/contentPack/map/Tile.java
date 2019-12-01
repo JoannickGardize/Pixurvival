@@ -24,7 +24,7 @@ public class Tile extends IdentifiedElement implements Serializable {
 
 	private boolean solid = false;
 	@Bounds(min = 0)
-	private double velocityFactor = 1f;
+	private float velocityFactor = 1f;
 	@Valid
 	private List<Frame> frames = new ArrayList<>();
 

@@ -5,14 +5,14 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class MathUtils {
 
-	public static final double EPSILON = 0.00001;
+	public static final float EPSILON = 0.0001f;
 
-	public static boolean equals(double d1, double d2) {
+	public static boolean equals(float d1, float d2) {
 		return Math.abs(d1 - d2) < EPSILON;
 	}
 
-	public static double normalizeAngle(double angle) {
-		double result = angle;
+	public static float normalizeAngle(float angle) {
+		float result = angle;
 		while (result <= -Math.PI) {
 			result += Math.PI * 2;
 		}
@@ -20,16 +20,6 @@ public class MathUtils {
 			result -= Math.PI * 2;
 		}
 		return result;
-	}
-
-	public static double clamp(double value, double min, double max) {
-		if (value > max) {
-			return max;
-		} else if (value < min) {
-			return min;
-		} else {
-			return value;
-		}
 	}
 
 	public static float clamp(float value, float min, float max) {
@@ -42,32 +32,32 @@ public class MathUtils {
 		}
 	}
 
-	public static double linearInterpolate(double start, double end, double alpha) {
+	public static float linearInterpolate(float start, float end, float alpha) {
 		return start + (end - start) * alpha;
 	}
 
-	public static double oppositeDirection(double angle) {
-		return angle + Math.PI;
+	public static float oppositeDirection(float angle) {
+		return angle + (float) Math.PI;
 	}
 
 	/**
-	 * This method is <b>a lot</b> faster than {@link Math#floor(double)}
+	 * This method is <b>a lot</b> faster than {@link Math#floor(float)}
 	 * 
 	 * @param x
 	 * @return
 	 */
-	public static int floor(double x) {
+	public static int floor(float x) {
 		int xi = (int) x;
 		return x < xi ? xi - 1 : xi;
 	}
 
 	/**
-	 * This method is <b>a lot</b> faster than {@link Math#ceil(double)}
+	 * This method is <b>a lot</b> faster than {@link Math#ceil(float)}
 	 * 
 	 * @param x
 	 * @return
 	 */
-	public static int ceil(double x) {
+	public static int ceil(float x) {
 		int xi = (int) x;
 		return x > xi ? xi + 1 : xi;
 	}

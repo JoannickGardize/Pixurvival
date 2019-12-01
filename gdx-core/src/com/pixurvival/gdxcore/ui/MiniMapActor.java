@@ -28,7 +28,7 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	private Map<ChunkPosition, Texture> chunkTextures = new HashMap<>();
 	private Texture background;
 	private Texture mapElement;
-	private double worldViewSize = 200;
+	private float worldViewSize = 200;
 	private Color targetColor = new Color(0x4CA5FF);
 
 	public MiniMapActor() {
@@ -42,23 +42,23 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		batch.draw(background, getX(), getY(), getWidth(), getHeight());
-		double worldViewSizeX = getWidth() > getHeight() ? worldViewSize * getWidth() / getHeight() : worldViewSize;
-		double worldViewSizeY = getWidth() > getHeight() ? worldViewSize : worldViewSize * getHeight() / getWidth();
+		float worldViewSizeX = getWidth() > getHeight() ? worldViewSize * getWidth() / getHeight() : worldViewSize;
+		float worldViewSizeY = getWidth() > getHeight() ? worldViewSize : worldViewSize * getHeight() / getWidth();
 		Entity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		double worldStartX = myPlayer.getPosition().getX() - worldViewSizeX / 2;
-		double worldStartY = myPlayer.getPosition().getY() - worldViewSizeY / 2;
-		double worldEndX = myPlayer.getPosition().getX() + worldViewSizeX / 2 + GameConstants.CHUNK_SIZE;
-		double worldEndY = myPlayer.getPosition().getY() + worldViewSizeY / 2 + GameConstants.CHUNK_SIZE;
+		float worldStartX = myPlayer.getPosition().getX() - worldViewSizeX / 2;
+		float worldStartY = myPlayer.getPosition().getY() - worldViewSizeY / 2;
+		float worldEndX = myPlayer.getPosition().getX() + worldViewSizeX / 2 + GameConstants.CHUNK_SIZE;
+		float worldEndY = myPlayer.getPosition().getY() + worldViewSizeY / 2 + GameConstants.CHUNK_SIZE;
 		float minSize = Math.min(getWidth(), getHeight());
-		float drawWidth = (float) (GameConstants.CHUNK_SIZE / worldViewSize * minSize);
-		float drawHeight = (float) (GameConstants.CHUNK_SIZE / worldViewSize * minSize);
-		for (double worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
-			for (double worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
+		float drawWidth = GameConstants.CHUNK_SIZE / worldViewSize * minSize;
+		float drawHeight = GameConstants.CHUNK_SIZE / worldViewSize * minSize;
+		for (float worldX = worldStartX; worldX < worldEndX; worldX += GameConstants.CHUNK_SIZE) {
+			for (float worldY = worldStartY; worldY < worldEndY; worldY += GameConstants.CHUNK_SIZE) {
 				ChunkPosition position = new ChunkPosition(MathUtils.floor(worldX / GameConstants.CHUNK_SIZE), MathUtils.floor(worldY / GameConstants.CHUNK_SIZE));
 				Texture texture = chunkTextures.get(position);
 				if (texture != null) {
-					float drawX = (float) ((position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * minSize) + getX();
-					float drawY = (float) ((position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * minSize) + getY();
+					float drawX = (position.getX() * GameConstants.CHUNK_SIZE - worldStartX) / worldViewSize * minSize + getX();
+					float drawY = (position.getY() * GameConstants.CHUNK_SIZE - worldStartY) / worldViewSize * minSize + getY();
 					batch.draw(texture, drawX, drawY, drawWidth, drawHeight);
 				}
 			}

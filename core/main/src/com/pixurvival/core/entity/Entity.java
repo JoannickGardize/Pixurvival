@@ -39,10 +39,10 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Setter boolean alive = true;
 	private @Setter Object customData;
 
-	private double speed = 0;
-	private double movingAngle = 0;
+	private float speed = 0;
+	private float movingAngle = 0;
 	private boolean forward = false;
-	private double forwardFactor = 1;
+	private float forwardFactor = 1;
 	private Vector2 targetVelocity = new Vector2();
 	private Vector2 velocity = new Vector2();
 	private boolean velocityChanged = false;
@@ -60,7 +60,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		previousPosition.set(position);
 	}
 
-	public void setMovingAngle(double movingAngle) {
+	public void setMovingAngle(float movingAngle) {
 		if (this.movingAngle != movingAngle) {
 			this.movingAngle = movingAngle;
 			velocityChanged = true;
@@ -74,7 +74,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		}
 	}
 
-	public void setForwardFactor(double forwardFactor) {
+	public void setForwardFactor(float forwardFactor) {
 		if (forwardFactor != this.forwardFactor) {
 			this.forwardFactor = forwardFactor;
 			velocityChanged = true;
@@ -183,7 +183,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	private void stepY() {
-		double dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
+		float dy = targetVelocity.getY() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, 0, dy)) {
 			if (targetVelocity.getY() > 0) {
 				position.setY(MathUtils.ceil(position.getY() + getCollisionRadius()) - getCollisionRadius() - MathUtils.EPSILON);
@@ -198,7 +198,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 	}
 
 	private void stepX() {
-		double dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
+		float dx = targetVelocity.getX() * getWorld().getTime().getDeltaTime();
 		if (isSolid() && getWorld().getMap().collide(this, dx, 0)) {
 			if (targetVelocity.getX() > 0) {
 				position.setX(MathUtils.ceil(position.getX() + getCollisionRadius()) - getCollisionRadius() - MathUtils.EPSILON);
@@ -214,7 +214,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract EntityGroup getGroup();
 
-	public abstract double getCollisionRadius();
+	public abstract float getCollisionRadius();
 
 	/**
 	 * Write data required before a call to {@link this#initialize()}.
@@ -246,21 +246,21 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract void applyUpdate(ByteBuffer buffer);
 
-	public abstract double getSpeedPotential();
+	public abstract float getSpeedPotential();
 
 	public abstract boolean isSolid();
 
 	@Override
-	public double getHalfWidth() {
+	public float getHalfWidth() {
 		return getCollisionRadius();
 	}
 
 	@Override
-	public double getHalfHeight() {
+	public float getHalfHeight() {
 		return getCollisionRadius();
 	}
 
-	public boolean setSpeed(double speed) {
+	public boolean setSpeed(float speed) {
 		if (this.speed != speed) {
 			this.speed = speed;
 			velocityChanged = true;
@@ -280,12 +280,12 @@ public abstract class Entity implements Body, CustomDataHolder {
 	// * Utility methods *
 	// *******************
 
-	public EntitySearchResult findClosest(EntityGroup group, double maxSquareDistance) {
+	public EntitySearchResult findClosest(EntityGroup group, float maxSquareDistance) {
 		TiledMap map = world.getMap();
 
 		EntitySearchResult searchResult = new EntitySearchResult();
 		map.forEachChunk(position, maxSquareDistance, (Consumer<Chunk>) c -> c.getEntities().get(group).forEach(e -> {
-			double distance = distanceSquared(e);
+			float distance = distanceSquared(e);
 			if (distance < searchResult.getDistanceSquared()) {
 				searchResult.setDistanceSquared(distance);
 				searchResult.setEntity(e);
@@ -296,18 +296,17 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	/**
 	 * Used to find the closest in all the world. to avoid looping over all
-	 * entities, prefer the use of
-	 * {@link Entity#findClosest(EntityGroup, double)
+	 * entities, prefer the use of {@link Entity#findClosest(EntityGroup, float)
 	 * 
 	 * @param group
 	 * @param position
 	 * @return
 	 */
 	public Entity findClosest(EntityGroup group) {
-		double closestDistanceSquared = Double.POSITIVE_INFINITY;
+		float closestDistanceSquared = Float.POSITIVE_INFINITY;
 		Entity closestEntity = null;
 		for (Entity e : getWorld().getEntityPool().get(group)) {
-			double distanceSquared = e.distanceSquared(this);
+			float distanceSquared = e.distanceSquared(this);
 			if (e != this && distanceSquared < closestDistanceSquared) {
 				closestDistanceSquared = distanceSquared;
 				closestEntity = e;
@@ -316,19 +315,19 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return closestEntity;
 	}
 
-	public double distanceSquared(Entity other) {
+	public float distanceSquared(Entity other) {
 		return position.distanceSquared(other.position);
 	}
 
-	public double nullSafeDistanceSquared(Entity other) {
-		return other == null ? Double.POSITIVE_INFINITY : position.distanceSquared(other.position);
+	public float nullSafeDistanceSquared(Entity other) {
+		return other == null ? Float.POSITIVE_INFINITY : position.distanceSquared(other.position);
 	}
 
-	public double distanceSquared(Vector2 position) {
+	public float distanceSquared(Vector2 position) {
 		return this.position.distanceSquared(position);
 	}
 
-	public double angleToward(Positionnable other) {
+	public float angleToward(Positionnable other) {
 		return position.angleToward(other.getPosition());
 	}
 

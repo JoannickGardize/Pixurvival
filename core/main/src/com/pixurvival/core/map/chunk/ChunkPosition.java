@@ -27,10 +27,10 @@ public class ChunkPosition {
 	}
 
 	public static ChunkPosition fromWorldPosition(int x, int y) {
-		return new ChunkPosition(MathUtils.floor((double) x / GameConstants.CHUNK_SIZE), MathUtils.floor((double) y / GameConstants.CHUNK_SIZE));
+		return new ChunkPosition(MathUtils.floor((float) x / GameConstants.CHUNK_SIZE), MathUtils.floor((float) y / GameConstants.CHUNK_SIZE));
 	}
 
-	public boolean insideSquare(Vector2 center, double halfSquareLength) {
+	public boolean insideSquare(Vector2 center, float halfSquareLength) {
 		return x >= MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE) && x <= MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE)
 				&& y >= MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE) && y <= MathUtils.floor((center.getY() + halfSquareLength) / GameConstants.CHUNK_SIZE);
 	}
@@ -73,7 +73,7 @@ public class ChunkPosition {
 		return x << 16 ^ y;
 	}
 
-	public static void forEachChunkPosition(Vector2 center, double halfSquareLength, Consumer<ChunkPosition> action) {
+	public static void forEachChunkPosition(Vector2 center, float halfSquareLength, Consumer<ChunkPosition> action) {
 		int x = MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int yStart = MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int xEnd = MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);
@@ -86,7 +86,7 @@ public class ChunkPosition {
 		}
 	}
 
-	public static boolean forEachChunkPosition(Vector2 center, double halfSquareLength, Predicate<ChunkPosition> action) {
+	public static boolean forEachChunkPosition(Vector2 center, float halfSquareLength, Predicate<ChunkPosition> action) {
 		int x = MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int yStart = MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int xEnd = MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);

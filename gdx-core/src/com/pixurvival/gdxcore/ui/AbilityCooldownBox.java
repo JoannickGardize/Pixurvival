@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.AlterationAbility;
+import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.input.InputAction;
@@ -69,7 +69,7 @@ public class AbilityCooldownBox extends Actor {
 	}
 
 	private String toCooldownDisplay(long cooldown) {
-		double s = (cooldown / 1000.0) % 60;
+		float s = (cooldown / 1000f) % 60;
 		if (s >= 1) {
 			return secondsFormat.format(s);
 		} else {

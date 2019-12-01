@@ -23,9 +23,9 @@ public class StructureSpawner extends ChunkSpawner {
 
 	private Structure structure;
 
-	private double spawnRadius;
+	private float spawnRadius;
 
-	private double managedRadius;
+	private float managedRadius;
 
 	@Override
 	protected Object beginSpawn(Chunk chunk) {

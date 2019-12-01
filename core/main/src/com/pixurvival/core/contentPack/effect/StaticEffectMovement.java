@@ -14,21 +14,21 @@ public class StaticEffectMovement implements EffectMovement {
 
 	private static final long serialVersionUID = 1L;
 
-	private double minDistance;
-	private double maxDistance;
+	private float minDistance;
+	private float maxDistance;
 
 	@Override
 	public void initialize(EffectEntity entity) {
 		TeamMember ancestor = entity.getAncestor();
-		double distanceSquared = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
-		double angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
+		float distanceSquared = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
+		float angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
 				+ entity.getWorld().getRandom().nextAngle(entity.getDefinition().getRandomAngle());
 		if (distanceSquared <= minDistance * minDistance) {
 			entity.getPosition().set(ancestor.getPosition()).addEuclidean(minDistance, angle);
 		} else if (distanceSquared >= maxDistance * maxDistance) {
 			entity.getPosition().set(ancestor.getPosition()).addEuclidean(maxDistance, angle);
 		} else {
-			entity.getPosition().set(ancestor.getPosition()).addEuclidean(Math.sqrt(distanceSquared), angle);
+			entity.getPosition().set(ancestor.getPosition()).addEuclidean((float) Math.sqrt(distanceSquared), angle);
 		}
 	}
 
@@ -38,7 +38,7 @@ public class StaticEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential(EffectEntity entity) {
+	public float getSpeedPotential(EffectEntity entity) {
 		return 0;
 	}
 

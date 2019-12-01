@@ -87,7 +87,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		}
 	}
 
-	public void setFixedMovement(double movingAngle, double speed) {
+	public void setFixedMovement(float movingAngle, float speed) {
 		movementChangeEnabled = true;
 		setForwardFactor(1);
 		setMovingAngle(movingAngle);
@@ -98,7 +98,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	@Override
-	public boolean setSpeed(double speed) {
+	public boolean setSpeed(float speed) {
 		if (movementChangeEnabled && super.setSpeed(speed)) {
 			setStateChanged(true);
 			return true;
@@ -168,7 +168,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	@Override
-	public void setMovingAngle(double movingAngle) {
+	public void setMovingAngle(float movingAngle) {
 		if (movementChangeEnabled && movingAngle != getMovingAngle()) {
 			super.setMovingAngle(movingAngle);
 			setStateChanged(true);
@@ -176,7 +176,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	@Override
-	public void setForwardFactor(double forwardFactor) {
+	public void setForwardFactor(float forwardFactor) {
 		if (forwardFactor != getForwardFactor()) {
 			super.setForwardFactor(forwardFactor);
 			setStateChanged(true);
@@ -190,7 +190,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	}
 
 	@Override
-	public double getSpeedPotential() {
+	public float getSpeedPotential() {
 		if (movementChangeEnabled) {
 			if (isSolid()) {
 				return stats.getValue(StatType.SPEED) * getWorld().getMap().tileAt(getPosition()).getTileDefinition().getVelocityFactor();
@@ -344,11 +344,11 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 		// normal part
 
-		buffer.putDouble(getPosition().getX());
-		buffer.putDouble(getPosition().getY());
-		buffer.putDouble(getMovingAngle());
+		buffer.putFloat(getPosition().getX());
+		buffer.putFloat(getPosition().getY());
+		buffer.putFloat(getMovingAngle());
 		if (!movementChangeEnabled) {
-			buffer.putDouble(getSpeed());
+			buffer.putFloat(getSpeed());
 		}
 		buffer.putFloat(getHealth());
 
@@ -380,7 +380,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			buffer.putLong(stunTermTime);
 			buffer.putShort((short) getTeam().getId());
 			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
-			buffer.putDouble(getForwardFactor());
+			buffer.putFloat(getForwardFactor());
 			writeAdditionnalOtherPart(buffer);
 		}
 		writeUpdate(buffer, updateFlagsToSend);
@@ -393,13 +393,13 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 
 		// normal part
 
-		getPosition().set(buffer.getDouble(), buffer.getDouble());
+		getPosition().set(buffer.getFloat(), buffer.getFloat());
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED) != 0) {
 			stopFixedMovement();
 			setForward((updateContentFlag & UPDATE_CONTENT_MASK_FORWARD) != 0);
-			setMovingAngle(buffer.getDouble());
+			setMovingAngle(buffer.getFloat());
 		} else {
-			setFixedMovement(buffer.getDouble(), buffer.getDouble());
+			setFixedMovement(buffer.getFloat(), buffer.getFloat());
 		}
 		setHealth(buffer.getFloat());
 
@@ -432,7 +432,7 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			stunTermTime = buffer.getLong();
 			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
 			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
-			setForwardFactor(buffer.getDouble());
+			setForwardFactor(buffer.getFloat());
 			applyAdditionnalOtherPart(buffer);
 		}
 		applyUpdate(buffer, updateContentFlag);

@@ -14,14 +14,14 @@ public interface Body extends Positionnable {
 	/**
 	 * @return Moitié de la largeur de la bounding box
 	 */
-	double getHalfWidth();
+	float getHalfWidth();
 
 	/**
 	 * @return Moitié de la hauteur de la bounding box
 	 */
-	double getHalfHeight();
+	float getHalfHeight();
 
-	default double getDisplayDeath() {
+	default float getDisplayDeath() {
 		return getPosition().getY();
 	}
 }

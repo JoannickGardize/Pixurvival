@@ -15,7 +15,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	private static final long serialVersionUID = 1L;
 
-	private double speed;
+	private float speed;
 
 	@Override
 	public void initialize(EffectEntity entity) {
@@ -30,7 +30,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential(EffectEntity entity) {
+	public float getSpeedPotential(EffectEntity entity) {
 		return entity.isAlive() ? speed : 0;
 	}
 

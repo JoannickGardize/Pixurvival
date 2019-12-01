@@ -18,13 +18,13 @@ public class HeightmapCondition implements Serializable {
 	private Heightmap heightmap;
 
 	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private double min;
+	private float min;
 
 	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private double max;
+	private float max;
 
 	public boolean test(int x, int y) {
-		double noise = heightmap.getNoise(x, y);
+		float noise = heightmap.getNoise(x, y);
 		return noise >= min && noise < max;
 	}
 }

@@ -51,7 +51,7 @@ public class SpriteSheetPreview extends ResourcePreview {
 				if (image == null || imageRectange == null || !ContentPackEditionService.getInstance().isValidForPreview(spriteSheet)) {
 					return;
 				}
-				double scale = imageRectange.width / (double) image.getWidth(null);
+				float scale = imageRectange.width / (float) image.getWidth(null);
 				int x = (int) ((e.getX() - imageRectange.x) / (spriteSheet.getWidth() * scale));
 				int y = (int) ((e.getY() - imageRectange.y) / (spriteSheet.getHeight() * scale));
 				int pixelX = (int) ((e.getX() - imageRectange.x) / scale) - x * spriteSheet.getWidth();
@@ -95,17 +95,17 @@ public class SpriteSheetPreview extends ResourcePreview {
 		}
 		imageRectange = rec;
 		Image image = (Image) getObject();
-		double scaleX = 0;
-		double scaleY = 0;
+		float scaleX = 0;
+		float scaleY = 0;
 		if (spriteSheet.getWidth() > 0) {
-			scaleX = (double) rec.width / image.getWidth(null);
-			for (double x = rec.x; x <= rec.x + rec.width; x += spriteSheet.getWidth() * scaleX) {
+			scaleX = (float) rec.width / image.getWidth(null);
+			for (float x = rec.x; x <= rec.x + rec.width; x += spriteSheet.getWidth() * scaleX) {
 				g.drawLine((int) x, rec.y, (int) x, rec.y + rec.height);
 			}
 		}
 		if (spriteSheet.getHeight() > 0) {
-			scaleY = (double) rec.height / image.getHeight(null);
-			for (double y = rec.y; y <= rec.y + rec.height; y += spriteSheet.getHeight() * scaleY) {
+			scaleY = (float) rec.height / image.getHeight(null);
+			for (float y = rec.y; y <= rec.y + rec.height; y += spriteSheet.getHeight() * scaleY) {
 				g.drawLine(rec.x, (int) y, rec.x + rec.width, (int) y);
 			}
 		}

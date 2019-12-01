@@ -17,7 +17,7 @@ public class Area {
 	private int endY;
 
 	public Area(Vector2 position) {
-		this((int) Math.round(position.getX()), (int) Math.round(position.getY()));
+		this(Math.round(position.getX()), Math.round(position.getY()));
 	}
 
 	public Area(Position initialPosition) {
@@ -63,6 +63,6 @@ public class Area {
 	}
 
 	public Vector2 center() {
-		return new Vector2((startX + endX) / 2.0, (startY + endY) / 2.0);
+		return new Vector2((startX + endX) / 2f, (startY + endY) / 2f);
 	}
 }

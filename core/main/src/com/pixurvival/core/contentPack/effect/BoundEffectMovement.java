@@ -16,7 +16,7 @@ public class BoundEffectMovement implements EffectMovement {
 
 	private static final long serialVersionUID = 1L;
 
-	private double distance;
+	private float distance;
 
 	@Override
 	public void initialize(EffectEntity entity) {
@@ -38,21 +38,21 @@ public class BoundEffectMovement implements EffectMovement {
 	}
 
 	@Override
-	public double getSpeedPotential(EffectEntity entity) {
+	public float getSpeedPotential(EffectEntity entity) {
 		return entity.getSpeed();
 	}
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
 		Vector2 relative = (Vector2) entity.getMovementData();
-		buffer.putDouble(relative.getX());
-		buffer.putDouble(relative.getY());
+		buffer.putFloat(relative.getX());
+		buffer.putFloat(relative.getY());
 		entity.getWorld().getEntityPool().writeEntityReference(buffer, (Entity) entity.getAncestor());
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
-		entity.setMovementData(new Vector2(buffer.getDouble(), buffer.getDouble()));
+		entity.setMovementData(new Vector2(buffer.getFloat(), buffer.getFloat()));
 		entity.setAncestor((TeamMember) entity.getWorld().getEntityPool().readEntityReference(buffer));
 	}
 }

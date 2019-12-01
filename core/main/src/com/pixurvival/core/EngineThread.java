@@ -12,26 +12,26 @@ import lombok.Setter;
 public abstract class EngineThread extends Thread {
 
 	private boolean running = true;
-	private double frameDurationMillis = 1000.0 / GameConstants.FPS;
+	private float frameDurationMillis = 1000f / GameConstants.FPS;
 	private int maxUpdatePerFrame = 5;
 
-	private @Setter(AccessLevel.NONE) double load;
-	private double warnLoadTrigger = 100;
+	private @Setter(AccessLevel.NONE) float load;
+	private float warnLoadTrigger = 100;
 
 	public EngineThread(String name) {
 		super(name);
 	}
 
 	public void setUpdatePerSecond(int updatePerSecond) {
-		frameDurationMillis = 1000.0 / updatePerSecond;
+		frameDurationMillis = 1000f / updatePerSecond;
 	}
 
-	public abstract void update(double deltaTimeMillis);
+	public abstract void update(float deltaTimeMillis);
 
 	@Override
 	public void run() {
-		double halfFrameDuration = frameDurationMillis / 2;
-		double timeToConsume = 0;
+		float halfFrameDuration = frameDurationMillis / 2;
+		float timeToConsume = 0;
 		long startTime = System.currentTimeMillis();
 		long lastUpdate = startTime;
 		long now;
@@ -60,8 +60,8 @@ public abstract class EngineThread extends Thread {
 					Thread.currentThread().interrupt();
 				}
 			}
-			double currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;
-			load = MathUtils.linearInterpolate(load, currentLoad, 0.7);
+			float currentLoad = (frameDurationMillis - sleepTime) / frameDurationMillis;
+			load = MathUtils.linearInterpolate(load, currentLoad, 0.7f);
 			if (load >= warnLoadTrigger) {
 				Log.warn("Thread " + getName() + ", critical load : " + load);
 			}

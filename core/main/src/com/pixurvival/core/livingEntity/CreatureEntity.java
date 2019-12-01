@@ -27,7 +27,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
-	public static final double OBSTACLE_VISION_DISTANCE = 4;
+	public static final float OBSTACLE_VISION_DISTANCE = 4;
 
 	private @Getter @Setter Behavior currentBehavior;
 	private @Getter @Setter BehaviorData behaviorData;
@@ -77,21 +77,21 @@ public class CreatureEntity extends LivingEntity {
 		}
 	}
 
-	public void move(double direction, double forwardFactor) {
+	public void move(float direction, float forwardFactor) {
 		setForwardFactor(forwardFactor);
 		if (isSolid()) {
-			setMovingAngle(PseudoAIUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, Math.PI / 4));
+			setMovingAngle(PseudoAIUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, (float) Math.PI / 4));
 		} else {
 			setMovingAngle(direction);
 		}
 		setForward(true);
 	}
 
-	public void move(double direction) {
+	public void move(float direction) {
 		move(direction, 1);
 	}
 
-	public void moveIfNotNull(Positionnable entity, double direction) {
+	public void moveIfNotNull(Positionnable entity, float direction) {
 		if (entity == null) {
 			setForward(false);
 		} else {
@@ -111,7 +111,7 @@ public class CreatureEntity extends LivingEntity {
 		moveIfNotNull(target, this.angleToward(target));
 	}
 
-	public void moveToward(Positionnable target, double randomAngle) {
+	public void moveToward(Positionnable target, float randomAngle) {
 		moveIfNotNull(target, this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle)));
 	}
 
@@ -121,7 +121,7 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public double getCollisionRadius() {
+	public float getCollisionRadius() {
 		return definition.getCollisionRadius();
 	}
 
@@ -159,7 +159,7 @@ public class CreatureEntity extends LivingEntity {
 	public void prepareTargetedAlteration() {
 		if (targetEntity != null) {
 			getTargetPosition().set(targetEntity.getPosition());
-			double predictionBulletSpeed;
+			float predictionBulletSpeed;
 			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
 				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
 			}

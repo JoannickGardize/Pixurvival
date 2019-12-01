@@ -29,7 +29,7 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 	private static Grad grad3[] = { new Grad(1, 1), new Grad(-1, 1), new Grad(1, -1), new Grad(-1, -1), new Grad(1, 0), new Grad(-1, 0), new Grad(1, 0), new Grad(-1, 0), new Grad(0, 1),
 			new Grad(0, -1), new Grad(0, 1), new Grad(0, -1) };
 
-	// To remove the need for index wrapping, double the permutation table
+	// To remove the need for index wrapping, float the permutation table
 	// length
 	private short perm[] = new short[512];
 	private short permMod12[] = new short[512];
@@ -54,25 +54,25 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 	}
 
 	// Skewing and unskewing factors for 2, 3, and 4 dimensions
-	private static final double F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
-	private static final double G2 = (3.0 - Math.sqrt(3.0)) / 6.0;
+	private static final float F2 = 0.5f * ((float) Math.sqrt(3.0) - 1.0f);
+	private static final float G2 = (3.0f - (float) Math.sqrt(3.0)) / 6.0f;
 
-	private static double dot(Grad g, double x, double y) {
+	private static float dot(Grad g, float x, float y) {
 		return g.x * x + g.y * y;
 	}
 
 	// 2D simplex noise
-	public double noise(double xin, double yin) {
-		double n0, n1, n2; // Noise contributions from the three corners
+	public float noise(float xin, float yin) {
+		float n0, n1, n2; // Noise contributions from the three corners
 		// Skew the input space to determine which simplex cell we're in
-		double s = (xin + yin) * F2; // Hairy factor for 2D
+		float s = (xin + yin) * F2; // Hairy factor for 2D
 		int i = MathUtils.floor(xin + s);
 		int j = MathUtils.floor(yin + s);
-		double t = (i + j) * G2;
-		double X0 = i - t; // Unskew the cell origin back to (x,y) space
-		double Y0 = j - t;
-		double x0 = xin - X0; // The x,y distances from the cell origin
-		double y0 = yin - Y0;
+		float t = (i + j) * G2;
+		float X0 = i - t; // Unskew the cell origin back to (x,y) space
+		float Y0 = j - t;
+		float x0 = xin - X0; // The x,y distances from the cell origin
+		float y0 = yin - Y0;
 		// For the 2D case, the simplex shape is an equilateral triangle.
 		// Determine which simplex we are in.
 		int i1, j1; // Offsets for second (middle) corner of simplex in (i,j)
@@ -88,12 +88,12 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 			// A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
 			// a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
 			// c = (3-sqrt(3))/6
-		double x1 = x0 - i1 + G2; // Offsets for middle corner in (x,y) unskewed
+		float x1 = x0 - i1 + G2; // Offsets for middle corner in (x,y) unskewed
 									// coords
-		double y1 = y0 - j1 + G2;
-		double x2 = x0 - 1.0 + 2.0 * G2; // Offsets for last corner in (x,y)
+		float y1 = y0 - j1 + G2;
+		float x2 = x0 - 1.0f + 2.0f * G2; // Offsets for last corner in (x,y)
 											// unskewed coords
-		double y2 = y0 - 1.0 + 2.0 * G2;
+		float y2 = y0 - 1.0f + 2.0f * G2;
 		// Work out the hashed gradient indices of the three simplex corners
 		int ii = i & 255;
 		int jj = j & 255;
@@ -101,39 +101,39 @@ public class SimplexNoiseOctave { // Simplex noise in 2D, 3D and 4D
 		int gi1 = permMod12[ii + i1 + perm[jj + j1]];
 		int gi2 = permMod12[ii + 1 + perm[jj + 1]];
 		// Calculate the contribution from the three corners
-		double t0 = 0.5 - x0 * x0 - y0 * y0;
+		float t0 = 0.5f - x0 * x0 - y0 * y0;
 		if (t0 < 0) {
-			n0 = 0.0;
+			n0 = 0;
 		} else {
 			t0 *= t0;
 			n0 = t0 * t0 * dot(grad3[gi0], x0, y0); // (x,y) of grad3 used for
 													// 2D gradient
 		}
-		double t1 = 0.5 - x1 * x1 - y1 * y1;
+		float t1 = 0.5f - x1 * x1 - y1 * y1;
 		if (t1 < 0) {
-			n1 = 0.0;
+			n1 = 0;
 		} else {
 			t1 *= t1;
 			n1 = t1 * t1 * dot(grad3[gi1], x1, y1);
 		}
-		double t2 = 0.5 - x2 * x2 - y2 * y2;
+		float t2 = 0.5f - x2 * x2 - y2 * y2;
 		if (t2 < 0) {
-			n2 = 0.0;
+			n2 = 0;
 		} else {
 			t2 *= t2;
 			n2 = t2 * t2 * dot(grad3[gi2], x2, y2);
 		}
 		// Add contributions from each corner to get the final noise value.
 		// The result is scaled to return values in the interval [-1,1].
-		return 70.0 * (n0 + n1 + n2);
+		return 70.0f * (n0 + n1 + n2);
 	}
 
 	// Inner class to speed upp gradient computations
 	// (array access is a lot slower than member access)
 	@AllArgsConstructor
 	private static class Grad {
-		double x;
-		double y;
+		float x;
+		float y;
 	}
 
 }

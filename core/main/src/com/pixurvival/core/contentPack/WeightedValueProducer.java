@@ -20,20 +20,20 @@ public class WeightedValueProducer<E extends Serializable> implements Serializab
 
 		private static final long serialVersionUID = 1L;
 
-		private double probability;
+		private float probability;
 
 		private E element;
 	}
 
 	private @Getter @Setter List<Entry<E>> backingArray = new ArrayList<>();
 
-	private transient double probabilityWeight;
+	private transient float probabilityWeight;
 
-	private transient NavigableMap<Double, E> chooseMap;
+	private transient NavigableMap<Float, E> chooseMap;
 
 	public E next(Random random) {
 		ensureChooseMapBuilt();
-		return chooseMap.ceilingEntry(random.nextDouble() * probabilityWeight).getValue();
+		return chooseMap.ceilingEntry(random.nextFloat() * probabilityWeight).getValue();
 	}
 
 	private void ensureChooseMapBuilt() {

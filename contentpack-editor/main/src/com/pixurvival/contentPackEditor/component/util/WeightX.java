@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class WeightX extends LayoutPropertyMarker {
-	private double value;
+	private float value;
 
 	@Override
 	public void apply(GridBagConstraints gbc) {

@@ -171,13 +171,10 @@ public class EntityCollection {
 			long id = byteBuffer.getLong();
 			PlayerEntity e = groupMap.get(id);
 			if (e != null) {
-				e.getPosition().set(byteBuffer.getDouble(), byteBuffer.getDouble());
-				e.getVelocity().set(byteBuffer.getDouble(), byteBuffer.getDouble());
+				e.getPosition().set(byteBuffer.getFloat(), byteBuffer.getFloat());
+				e.getVelocity().set(byteBuffer.getFloat(), byteBuffer.getFloat());
 			} else {
-				byteBuffer.getDouble();
-				byteBuffer.getDouble();
-				byteBuffer.getDouble();
-				byteBuffer.getDouble();
+				byteBuffer.position(byteBuffer.position() + 16);
 			}
 		}
 	}

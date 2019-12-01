@@ -24,7 +24,7 @@ public class DayCycleBar extends Widget {
 		Time time = PixurvivalGame.getClient().getWorld().getTime();
 		if (time.getDayCycle() instanceof DayNightCycleRun) {
 			DayNightCycleRun dayNightCycleRun = (DayNightCycleRun) time.getDayCycle();
-			percentDay = (float) ((double) dayNightCycleRun.getDayDuration() / (double) dayNightCycleRun.getFullCycleDuration());
+			percentDay = (float) dayNightCycleRun.getDayDuration() / (float) dayNightCycleRun.getFullCycleDuration();
 		} else {
 			percentDay = 1;
 		}
@@ -42,8 +42,8 @@ public class DayCycleBar extends Widget {
 			batch.draw(ColorTextures.get(DAY_COLOR), x + HORIZONTAL_MARGIN, y + VERTICAL_MARGIN, dayWidth, height);
 			batch.draw(ColorTextures.get(NIGHT_COLOR), x + HORIZONTAL_MARGIN + dayWidth, y + VERTICAL_MARGIN, width * (1 - percentDay), height);
 			DayNightCycleRun dayNightCycleRun = (DayNightCycleRun) time.getDayCycle();
-			float cursorPosX = x + width
-					* (dayNightCycleRun.isDay() ? (float) dayNightCycleRun.getCurrentMomentProgess() * percentDay : (float) dayNightCycleRun.getCurrentMomentProgess() * (1 - percentDay) + percentDay);
+			float cursorPosX = x
+					+ width * (dayNightCycleRun.isDay() ? dayNightCycleRun.getCurrentMomentProgess() * percentDay : dayNightCycleRun.getCurrentMomentProgess() * (1 - percentDay) + percentDay);
 			batch.setColor(Color.WHITE);
 			barCursor.draw(batch, cursorPosX, y, HORIZONTAL_MARGIN * 2, getHeight());
 		}

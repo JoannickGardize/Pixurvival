@@ -1,8 +1,8 @@
 package com.pixurvival.gdxcore;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,8 +93,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private ClientGame client;
 	private @Getter AssetManager assetManager;
 	private @Getter InputMapping keyMapping;
-	private double frameDurationMillis = 1000.0 / 30;
-	private double frameCounter;
+	private float frameDurationMillis = 1000f / 30;
+	private float frameCounter;
 	private float interpolationTime = 0;
 	private ContentPackTextures contentPackTextures;
 	private Skin skin;
@@ -110,12 +110,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		client.addListener(this);
 		if (clientArgs.isRedirectErrorToFile()) {
 			File file = new File("err.txt");
-			FileOutputStream fos;
-			try {
-				fos = new FileOutputStream(file);
+			try (FileOutputStream fos = new FileOutputStream(file)) {
 				PrintStream ps = new PrintStream(fos);
 				System.setErr(ps);
-			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

@@ -78,7 +78,7 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 		// FileInputStream(file))) {
 		//
 		// int byteRead;
-		// int numberOfPart = (int) Math.ceil((double) file.length() /
+		// int numberOfPart = (int) Math.ceil((float) file.length() /
 		// ContentPackPart.MAX_PART_LENGTH);
 		// for (int i = 0; i < numberOfPart; i++) {
 		// ContentPackPart part = new ContentPackPart();

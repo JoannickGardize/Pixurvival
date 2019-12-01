@@ -37,7 +37,7 @@ public class Structure extends IdentifiedElement implements Serializable {
 
 	private List<Tile> bannedTiles = new ArrayList<>();
 
-	private double lightEmissionRadius = 0;
+	private float lightEmissionRadius = 0;
 
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
 		return new MapStructure(chunk, this, x, y);

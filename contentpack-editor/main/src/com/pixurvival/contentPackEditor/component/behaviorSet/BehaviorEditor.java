@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -81,7 +81,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// MOVE_TOWARD
 		targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		DoubleInput minDistanceInput = new DoubleInput(Bounds.positive());
+		FloatInput minDistanceInput = new FloatInput(Bounds.positive());
 		AngleInput randomAngleInput = new AngleInput();
 		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
 		bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
@@ -91,8 +91,8 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// TURN_AROUND
 		targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		minDistanceInput = new DoubleInput(Bounds.positive());
-		DoubleInput maxDistanceInput = new DoubleInput(Bounds.positive());
+		minDistanceInput = new FloatInput(Bounds.positive());
+		FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
 		bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
 		bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
 		bind(targetChooser, TurnAroundBehavior::getTargetType, TurnAroundBehavior::setTargetType, TurnAroundBehavior.class);
@@ -100,8 +100,8 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 				LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput)));
 
 		// WANDER
-		DoubleInput moveRateInput = new DoubleInput(Bounds.positive());
-		DoubleInput forwardFactorInput = new DoubleInput(Bounds.positive());
+		FloatInput moveRateInput = new FloatInput(Bounds.positive());
+		FloatInput forwardFactorInput = new FloatInput(Bounds.positive());
 		EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
 		bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
 		bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);

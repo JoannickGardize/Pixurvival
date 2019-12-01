@@ -99,8 +99,8 @@ public class CommandArgsUtils {
 	}
 
 	/**
-	 * Position in format x;y OR position of player reference OR special reference
-	 * to cursor
+	 * Position in format x;y OR position of player reference OR special
+	 * reference to cursor
 	 * 
 	 * @param executor
 	 * @param arg
@@ -126,7 +126,7 @@ public class CommandArgsUtils {
 		}
 		if (arg.matches("\\-?\\d+(\\.\\d+)?;\\-?\\d+(\\.\\d+)?")) {
 			String[] split = arg.split(";");
-			return new Vector2(Double.parseDouble(split[0]), Double.parseDouble(split[1]));
+			return new Vector2(Float.parseFloat(split[0]), Float.parseFloat(split[1]));
 		} else {
 			return singlePlayer(executor, arg).getPosition();
 		}

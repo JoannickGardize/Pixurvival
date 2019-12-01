@@ -13,17 +13,17 @@ import lombok.Setter;
 @Setter
 public class WanderBehavior extends Behavior {
 
-	public static final double MEAN_TIME = 700;
-	public static final double DEVIATON_TIME = 500;
-	public static final double MIN_TIME = 300;
-	public static final double MAX_TIME = 800;
-	private static final double MAX_ANCHOR_DISTANCE = 10;
+	public static final float MEAN_TIME = 700;
+	public static final float DEVIATON_TIME = 500;
+	public static final float MIN_TIME = 300;
+	public static final float MAX_TIME = 800;
+	private static final float MAX_ANCHOR_DISTANCE = 10;
 
 	private static final long serialVersionUID = 1L;
 
 	private WanderAnchor anchorType;
-	private double moveRate = 0.3;
-	private double forwardFactor = 1;
+	private float moveRate = 0.3f;
+	private float forwardFactor = 1;
 
 	@Override
 	protected void step(CreatureEntity creature) {
@@ -32,12 +32,12 @@ public class WanderBehavior extends Behavior {
 		if (anchorPosition != null && creature.getPosition().distanceSquared(anchorPosition) >= MAX_ANCHOR_DISTANCE * MAX_ANCHOR_DISTANCE) {
 			creature.move(creature.getPosition().angleToward(anchorPosition), forwardFactor);
 		} else {
-			if (random.nextDouble() < moveRate) {
+			if (random.nextFloat() < moveRate) {
 				creature.move(random.nextAngle(), forwardFactor);
 			} else {
 				creature.setForward(false);
 			}
 		}
-		creature.getBehaviorData().setNextUpdateDelayMillis((long) (MathUtils.clamp(MEAN_TIME + random.nextGaussian() * DEVIATON_TIME, MIN_TIME, MAX_TIME)));
+		creature.getBehaviorData().setNextUpdateDelayMillis((long) (MathUtils.clamp(MEAN_TIME + (float) random.nextGaussian() * DEVIATON_TIME, MIN_TIME, MAX_TIME)));
 	}
 }

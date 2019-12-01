@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
@@ -31,8 +31,8 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 
 		// Construction
 
-		DoubleInput spawnRadiusInput = new DoubleInput(Bounds.positive());
-		DoubleInput managedRadiusInput = new DoubleInput(Bounds.positive());
+		FloatInput spawnRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput managedRadiusInput = new FloatInput(Bounds.positive());
 		IntegerInput initialSpawnInput = new IntegerInput(Bounds.positive());
 		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
 		TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");

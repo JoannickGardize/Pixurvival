@@ -19,10 +19,10 @@ public class Heightmap extends IdentifiedElement implements Serializable {
 	private int numberOfoctaves;
 
 	@Bounds(min = 0)
-	private double persistence;
+	private float persistence;
 
 	@Bounds(min = 0)
-	private double scale;
+	private float scale;
 
 	private transient SimplexNoise simplexNoise;
 
@@ -30,7 +30,7 @@ public class Heightmap extends IdentifiedElement implements Serializable {
 		simplexNoise = new SimplexNoise(numberOfoctaves, persistence, scale, seed);
 	}
 
-	public double getNoise(int x, int y) {
+	public float getNoise(int x, int y) {
 		return simplexNoise.getNoise(x, y);
 	}
 }

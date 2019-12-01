@@ -7,42 +7,42 @@ import com.pixurvival.core.util.MathUtils;
 public class SimplexNoise {
 
 	private SimplexNoiseOctave[] octaves;
-	private double[] frequencies;
-	private double[] amplitudes;
+	private float[] frequencies;
+	private float[] amplitudes;
 
-	private double scale;
-	private double offsetX;
-	private double offsetY;
+	private float scale;
+	private float offsetX;
+	private float offsetY;
 
-	public SimplexNoise(int numberOfOctaves, double persistence, double scale, long seed) {
+	public SimplexNoise(int numberOfOctaves, float persistence, float scale, long seed) {
 
 		this.scale = scale;
 		octaves = new SimplexNoiseOctave[numberOfOctaves];
-		frequencies = new double[numberOfOctaves];
-		amplitudes = new double[numberOfOctaves];
+		frequencies = new float[numberOfOctaves];
+		amplitudes = new float[numberOfOctaves];
 
 		Random rnd = new Random(seed);
-		offsetX = rnd.nextDouble() * 10_000 - 5000;
-		offsetY = rnd.nextDouble() * 10_000 - 5000;
+		offsetX = rnd.nextFloat() * 10_000 - 5000;
+		offsetY = rnd.nextFloat() * 10_000 - 5000;
 
 		for (int i = 0; i < numberOfOctaves; i++) {
 			octaves[i] = new SimplexNoiseOctave(rnd.nextLong());
-			frequencies[i] = Math.pow(2, i);
-			amplitudes[i] = Math.pow(persistence, numberOfOctaves - i);
+			frequencies[i] = (float) Math.pow(2, i);
+			amplitudes[i] = (float) Math.pow(persistence, numberOfOctaves - i);
 		}
 	}
 
-	public double getNoise(double x, double y) {
+	public float getNoise(float x, float y) {
 
-		double result = 0;
+		float result = 0;
 
-		double sx = (x + offsetX) / scale;
-		double sy = (y + offsetY) / scale;
+		float sx = (x + offsetX) / scale;
+		float sy = (y + offsetY) / scale;
 		for (int i = 0; i < octaves.length; i++) {
 			result = result + octaves[i].noise(sx / frequencies[i], sy / frequencies[i]) * amplitudes[i];
 		}
 
-		return MathUtils.clamp(0.5 + result / 2, 0, 0.99999);
+		return MathUtils.clamp(0.5f + result / 2, 0, 0.99999f);
 
 	}
 }

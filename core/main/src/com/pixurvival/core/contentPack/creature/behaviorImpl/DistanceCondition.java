@@ -18,15 +18,15 @@ public class DistanceCondition extends ChangeCondition {
 	private BehaviorTarget targetType;
 
 	@Required
-	private DoubleComparison operator;
+	private FloatComparison operator;
 
 	@Bounds(min = 0)
-	private double targetDistance;
+	private float targetDistance;
 
 	@Override
 	public boolean test(CreatureEntity creature) {
 		Entity target = targetType.getEntityGetter().apply(creature);
-		double distance = creature.nullSafeDistanceSquared(target);
+		float distance = creature.nullSafeDistanceSquared(target);
 		return operator.test(distance, targetDistance * targetDistance);
 	}
 

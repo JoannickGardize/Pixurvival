@@ -31,9 +31,9 @@ public class PlayerConnection extends Connection implements InventoryListener {
 
 	// TODO Put a big ping every game start, to avoid lot of full updates, when
 	// congestion
-	private double ping = 300;
+	private float ping = 300;
 	private long nextUpdateId = 0;
-	private double ackThresholdMultiplier = 1;
+	private float ackThresholdMultiplier = 1;
 
 	@Override
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {

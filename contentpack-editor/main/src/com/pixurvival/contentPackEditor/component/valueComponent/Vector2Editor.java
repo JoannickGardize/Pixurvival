@@ -11,8 +11,8 @@ public class Vector2Editor extends ElementEditor<Vector2> {
 	private static final long serialVersionUID = 1L;
 
 	public Vector2Editor() {
-		DoubleInput xInput = new DoubleInput(Bounds.none());
-		DoubleInput yInput = new DoubleInput(Bounds.none());
+		FloatInput xInput = new FloatInput(Bounds.none());
+		FloatInput yInput = new FloatInput(Bounds.none());
 
 		bind(xInput, Vector2::getX, Vector2::setX);
 		bind(yInput, Vector2::getY, Vector2::setY);

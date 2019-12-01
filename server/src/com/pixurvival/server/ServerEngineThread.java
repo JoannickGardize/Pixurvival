@@ -31,7 +31,7 @@ public class ServerEngineThread extends EngineThread {
 	public ServerEngineThread(ServerGame game) {
 		super("Main Server Thread");
 		this.game = game;
-		setWarnLoadTrigger(0.8);
+		setWarnLoadTrigger(0.8f);
 	}
 
 	public synchronized void add(GameSession worldSession) {
@@ -39,7 +39,7 @@ public class ServerEngineThread extends EngineThread {
 	}
 
 	@Override
-	public synchronized void update(double deltaTimeMillis) {
+	public synchronized void update(float deltaTimeMillis) {
 		game.consumeReceivedObjects();
 		sessions.forEach(gs -> gs.getWorld().update(deltaTimeMillis));
 		sessions.forEach(gs -> {
@@ -182,10 +182,10 @@ public class ServerEngineThread extends EngineThread {
 		for (Entity ally : player.getTeam().getAliveMembers()) {
 			if (ally != player && ally.getChunk() != null && !ally.getChunk().getPosition().insideSquare(player.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				byteBuffer.putLong(ally.getId());
-				byteBuffer.putDouble(ally.getPosition().getX());
-				byteBuffer.putDouble(ally.getPosition().getY());
-				byteBuffer.putDouble(ally.getVelocity().getX());
-				byteBuffer.putDouble(ally.getVelocity().getY());
+				byteBuffer.putFloat(ally.getPosition().getX());
+				byteBuffer.putFloat(ally.getPosition().getY());
+				byteBuffer.putFloat(ally.getVelocity().getX());
+				byteBuffer.putFloat(ally.getVelocity().getY());
 				length++;
 			}
 		}

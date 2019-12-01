@@ -8,8 +8,8 @@ import lombok.Data;
 public class AreaSearchCriteria {
 
 	private int squareSize = 500;
-	private double minFreeArea = 0.4;
-	private double maxFreeArea = 1;
+	private float minFreeArea = 0.4f;
+	private float maxFreeArea = 1;
 	private int numberOfSpawnSpots = 1;
 
 	public boolean test(AreaAnalysisResult result) {
@@ -20,7 +20,7 @@ public class AreaSearchCriteria {
 		}
 		int pointSideCount = squareSize / result.getPointsInterval() + 1;
 		int maximumPointCount = pointSideCount * pointSideCount;
-		double freeArea = (double) result.getFreePositions().size() / maximumPointCount;
+		float freeArea = (float) result.getFreePositions().size() / maximumPointCount;
 		Log.debug("Free Area : " + freeArea);
 		return freeArea >= minFreeArea && freeArea <= maxFreeArea;
 	}

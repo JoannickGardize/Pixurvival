@@ -11,7 +11,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
@@ -42,7 +42,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
 		EnumChooser<DrawDepth> drawDepthChooser = new EnumChooser<>(DrawDepth.class);
 		TimeInput durationInput = new TimeInput();
-		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
+		FloatInput collisionRadiusInput = new FloatInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatFormulaEditor repeatFollowingElementsEditor = new StatFormulaEditor();

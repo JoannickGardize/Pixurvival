@@ -13,7 +13,7 @@ import lombok.Setter;
 
 public class BehaviorData {
 
-	public static final double TARGET_SEARCH_RADIUS = 64;
+	public static final float TARGET_SEARCH_RADIUS = 64;
 	public static final long MAX_UPDATE_DELAY_RELATIVE_TO_SPEED = 1000;
 	public static final long CHANGE_CONDITION_CHECK_DELAY = 300;
 
@@ -83,8 +83,8 @@ public class BehaviorData {
 	 *            La distance à parcourir utilisé pour calculer le temps de la
 	 *            prochaine mise à jour.
 	 */
-	public void setNextUpdateDelayRelativeToSpeed(double targetDistance) {
-		double speed = creature.getSpeed();
+	public void setNextUpdateDelayRelativeToSpeed(float targetDistance) {
+		float speed = creature.getSpeed();
 		long delayMillis = Math.min(Time.secToMillis(speed > 0 ? targetDistance / speed : DEFAULT_STANDBY_DELAY), MAX_UPDATE_DELAY_RELATIVE_TO_SPEED);
 		setNextUpdateDelayMillis(delayMillis);
 	}

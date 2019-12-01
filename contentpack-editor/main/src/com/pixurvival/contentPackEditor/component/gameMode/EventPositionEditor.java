@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.Vector2Editor;
 import com.pixurvival.core.contentPack.gameMode.event.EventPosition;
@@ -29,7 +29,7 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		DoubleInput distanceInput = new DoubleInput(Bounds.positive());
+		FloatInput distanceInput = new FloatInput(Bounds.positive());
 		bind(distanceInput, PlayerProximityEventPosition::getDistance, PlayerProximityEventPosition::setDistance, PlayerProximityEventPosition.class);
 		entries.add(new ClassEntry(PlayerProximityEventPosition.class, LayoutUtils.single(LayoutUtils.labelled("generic.distance", distanceInput))));
 

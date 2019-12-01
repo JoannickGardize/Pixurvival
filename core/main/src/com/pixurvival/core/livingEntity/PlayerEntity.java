@@ -120,9 +120,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	public void update() {
-		addHungerSneaky(-(float) (HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
+		addHungerSneaky(-(HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
 		if (hunger <= 0) {
-			takeTrueDamageSneaky(HUNGER_DAMAGE * (float) getWorld().getTime().getDeltaTime());
+			takeTrueDamageSneaky(HUNGER_DAMAGE * getWorld().getTime().getDeltaTime());
 		}
 		if (getChunk() == null) {
 			foreachChunkInView(chunk -> getWorld().getMap().notifyEnterView(this, chunk.getPosition()));
@@ -170,8 +170,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	}
 
 	@Override
-	public double getCollisionRadius() {
-		return 0.42;
+	public float getCollisionRadius() {
+		return 0.42f;
 	}
 
 	public void addHunger(float hungerToAdd) {

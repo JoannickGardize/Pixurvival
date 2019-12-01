@@ -20,7 +20,7 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 		DrawData data = (DrawData) o;
 		Vector2 drawPos = data.getDrawPosition();
 		Vector2 targetPosition = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
-		drawPos.lerp(targetPosition, 0.7);
+		drawPos.lerp(targetPosition, 0.7f);
 
 	}
 
@@ -34,14 +34,14 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 		}
 		Vector2 drawPos = data.getDrawPosition();
 		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
-		double distance = drawPos.distanceSquared(position);
-		double speed = Math.max(e.getSpeed(), 2);
-		double deltaSpeed = speed * Gdx.graphics.getDeltaTime();
+		float distance = drawPos.distanceSquared(position);
+		float speed = Math.max(e.getSpeed(), 2);
+		float deltaSpeed = speed * Gdx.graphics.getDeltaTime();
 		if (distance > 5 * 5 || distance <= deltaSpeed * deltaSpeed) {
 			drawPos.set(position);
 		} else {
-			double step = speed + (distance / (5 * 5)) * (speed * 3);
-			double angle = drawPos.angleToward(position);
+			float step = speed + (distance / (5 * 5)) * (speed * 3);
+			float angle = drawPos.angleToward(position);
 			drawPos.add(position.setFromEuclidean(step * Gdx.graphics.getDeltaTime(), angle));
 		}
 	}
@@ -49,8 +49,7 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 	@Override
 	public void drawDebug(ShapeRenderer renderer, E e) {
 		renderer.setColor(Color.WHITE);
-		renderer.circle((float) e.getPosition().getX(), (float) e.getPosition().getY(), (float) e.getCollisionRadius(), 16);
-		renderer.line((float) e.getPosition().getX(), (float) e.getPosition().getY(), (float) e.getPosition().getX() + (float) Math.cos(e.getMovingAngle()),
-				(float) e.getPosition().getY() + (float) Math.sin(e.getMovingAngle()));
+		renderer.circle(e.getPosition().getX(), e.getPosition().getY(), e.getCollisionRadius(), 16);
+		renderer.line(e.getPosition().getX(), e.getPosition().getY(), e.getPosition().getX() + (float) Math.cos(e.getMovingAngle()), e.getPosition().getY() + (float) Math.sin(e.getMovingAngle()));
 	}
 }

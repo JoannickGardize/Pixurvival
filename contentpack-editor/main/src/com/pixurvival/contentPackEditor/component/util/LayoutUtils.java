@@ -266,8 +266,8 @@ public class LayoutUtils {
 		int yOffset = 0;
 		int width;
 		int height;
-		double hScale = (double) destWidth / sourceWidth;
-		double vScale = (double) destHeight / sourceHeight;
+		float hScale = (float) destWidth / sourceWidth;
+		float vScale = (float) destHeight / sourceHeight;
 		if (vScale < hScale) {
 			width = (int) (sourceWidth * vScale);
 			height = destHeight;

@@ -9,7 +9,7 @@ import com.pixurvival.core.map.chunk.ChunkPosition;
  * This class is a purpose for a fast synchronized exploration of a
  * {@link TiledMap}, exploiting the unsynchronized {@link Chunk} generation
  * system. It keeps in track the current {@link Chunk} and requests in advance
- * all neighbors {@link Chunk}, to anticipate future calls.
+ * all neighbors {@link Chunk}s, to anticipate future calls.
  * 
  * @author SharkHendrix
  *

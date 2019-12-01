@@ -18,9 +18,9 @@ public class MoveTowardBehavior extends Behavior {
 	private BehaviorTarget targetType;
 
 	@Bounds(min = 0)
-	private double minDistance;
+	private float minDistance;
 
-	private double randomAngle;
+	private float randomAngle;
 
 	@Override
 	public void begin(CreatureEntity creature) {

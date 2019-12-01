@@ -44,7 +44,7 @@ public class ClientAckManager {
 
 	}
 
-	public static final double PING_TOLERANCE_MULTIPLIER = 3;
+	public static final float PING_TOLERANCE_MULTIPLIER = 3;
 
 	public static final @Getter ClientAckManager instance = new ClientAckManager();
 
@@ -69,7 +69,7 @@ public class ClientAckManager {
 			}
 		}
 		if (pingCount != 0) {
-			connection.setPing(MathUtils.linearInterpolate(connection.getPing(), (double) pingSum / pingCount, 0.1));
+			connection.setPing(MathUtils.linearInterpolate(connection.getPing(), (float) pingSum / pingCount, 0.1f));
 		}
 	}
 
@@ -89,10 +89,10 @@ public class ClientAckManager {
 			}
 		}
 		if (ok) {
-			connection.setAckThresholdMultiplier(1 + (connection.getAckThresholdMultiplier() - 1) * 0.99);
+			connection.setAckThresholdMultiplier(1 + (connection.getAckThresholdMultiplier() - 1) * 0.99f);
 			return true;
 		} else {
-			connection.setAckThresholdMultiplier(connection.getAckThresholdMultiplier() * 1.2);
+			connection.setAckThresholdMultiplier(connection.getAckThresholdMultiplier() * 1.2f);
 			compressedChunks.clear();
 			structureUpdates.clear();
 			for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {

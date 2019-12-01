@@ -44,11 +44,11 @@ public class GameMode extends IdentifiedElement {
 
 	private List<Event> events = new ArrayList<>();
 
-	private double spawnSquareSize = 490;
+	private float spawnSquareSize = 490;
 
 	private boolean mapLimitEnabled = false;
 
-	private double mapLimitSize = 500;
+	private float mapLimitSize = 500;
 
 	private float mapLimitDamagePerSecond = 5;
 

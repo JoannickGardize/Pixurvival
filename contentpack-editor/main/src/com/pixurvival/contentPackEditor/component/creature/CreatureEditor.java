@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
@@ -50,7 +50,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 		// Creation
 
-		DoubleInput collisionRadiusInput = new DoubleInput(Bounds.positive());
+		FloatInput collisionRadiusInput = new FloatInput(Bounds.positive());
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
 		armorField.setEditable(false);

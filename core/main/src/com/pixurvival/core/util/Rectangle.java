@@ -11,12 +11,12 @@ public class Rectangle implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private double startX;
-	private double startY;
-	private double endX;
-	private double endY;
+	private float startX;
+	private float startY;
+	private float endX;
+	private float endY;
 
-	public Rectangle(Vector2 center, double size) {
+	public Rectangle(Vector2 center, float size) {
 		startX = center.getX() - size / 2;
 		startY = center.getY() - size / 2;
 		endX = center.getX() + size / 2;

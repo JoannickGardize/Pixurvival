@@ -12,7 +12,7 @@ public class ChunkGroupChangeHelper {
 	private ChunkGroupRectangle rectangle = new ChunkGroupRectangle();
 	private DoubleBufferedValue<Set<ChunkPosition>> chunkPositions = new DoubleBufferedValue<>(HashSet::new);
 
-	public void move(Vector2 center, double halfSquareLength, Consumer<ChunkPosition> newPositionAction, Consumer<ChunkPosition> oldPositionAction) {
+	public void move(Vector2 center, float halfSquareLength, Consumer<ChunkPosition> newPositionAction, Consumer<ChunkPosition> oldPositionAction) {
 		if (!rectangle.set(center, halfSquareLength)) {
 			return;
 		}

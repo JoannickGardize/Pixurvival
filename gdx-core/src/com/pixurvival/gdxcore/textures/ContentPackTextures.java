@@ -26,15 +26,15 @@ public class ContentPackTextures {
 
 	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
-	private Map<Double, Texture> lightTextures;
+	private Map<Float, Texture> lightTextures;
 	private Texture[][] tileMapTextures;
 	private ItemTexture[] itemTextures;
 	private int[] tileAvgColors;
-	private @Getter double truePixelWidth;
-	private @Getter double largestLightRadius;
+	private @Getter float truePixelWidth;
+	private @Getter float largestLightRadius;
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
-		truePixelWidth = 1.0 / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
+		truePixelWidth = 1.0f / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
 		loadTileMapTextures(pack);
@@ -59,7 +59,7 @@ public class ContentPackTextures {
 		return itemTextures[id];
 	}
 
-	public Texture getLightTexture(double radius) {
+	public Texture getLightTexture(float radius) {
 		return lightTextures.get(radius);
 	}
 
@@ -185,7 +185,7 @@ public class ContentPackTextures {
 		largestLightRadius = 0;
 		lightTextures = new HashMap<>();
 		for (Structure structure : pack.getStructures()) {
-			double radius = structure.getLightEmissionRadius();
+			float radius = structure.getLightEmissionRadius();
 			if (radius > 0) {
 				lightTextures.put(radius, createLightTexture(radius));
 				if (largestLightRadius < radius) {
@@ -195,8 +195,8 @@ public class ContentPackTextures {
 		}
 	}
 
-	private Texture createLightTexture(double radius) {
-		int size = (int) Math.round(radius * GameConstants.PIXEL_PER_UNIT * 2);
+	private Texture createLightTexture(float radius) {
+		int size = Math.round(radius * GameConstants.PIXEL_PER_UNIT * 2);
 		Pixmap pixmap = new Pixmap(size, size, Format.RGBA8888);
 		pixmap.setColor(Color.rgba8888(1, 1, 1, 0));
 		pixmap.fill();

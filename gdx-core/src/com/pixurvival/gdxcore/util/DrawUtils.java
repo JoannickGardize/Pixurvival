@@ -59,16 +59,16 @@ public class DrawUtils {
 	public static void drawStandUpStyleTexture(Batch batch, TextureAnimationSet textureAnimationSet, ActionAnimation actionAnimation, int index, Vector2 position, float yOffset) {
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		float x = (float) (position.getX() - textureAnimationSet.getWidth() / 2);
-		float y = (float) position.getY() + textureAnimationSet.getYOffset();
+		float x = position.getX() - textureAnimationSet.getWidth() / 2;
+		float y = position.getY() + textureAnimationSet.getYOffset();
 		batch.draw(texture, x, y, textureAnimationSet.getWidth(), textureAnimationSet.getHeight() + yOffset, 0, 1 + yOffset, 1, 0);
 	}
 
 	public static void drawRotatedStandUpStyleTexture(Batch batch, TextureAnimationSet textureAnimationSet, ActionAnimation actionAnimation, int index, Vector2 position, float rotation) {
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		float x = (float) (position.getX() - textureAnimationSet.getWidth() / 2);
-		float y = (float) position.getY() + textureAnimationSet.getYOffset();
+		float x = position.getX() - textureAnimationSet.getWidth() / 2;
+		float y = position.getY() + textureAnimationSet.getYOffset();
 		batch.draw(texture, x, y, textureAnimationSet.getWidth() / 2f, textureAnimationSet.getHeight() / 2f, textureAnimationSet.getWidth(), textureAnimationSet.getHeight(), 1, 1, rotation, 0, 0,
 				texture.getWidth(), texture.getHeight(), false, false);
 	}
@@ -77,8 +77,8 @@ public class DrawUtils {
 			float rotation) {
 		TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
 		Texture texture = textureAnimation.getTexture(index);
-		float x = (float) (position.getX() - textureAnimationSet.getWidth() / 2);
-		float y = (float) position.getY() + textureAnimationSet.getYOffset();
+		float x = position.getX() - textureAnimationSet.getWidth() / 2;
+		float y = position.getY() + textureAnimationSet.getYOffset();
 		batch.draw(texture, x, y, textureAnimationSet.getWidth() / 2f, textureAnimationSet.getHeight() / 2f, textureAnimationSet.getWidth(), textureAnimationSet.getHeight() - yOffset, 1, 1, rotation,
 				0, 0, texture.getWidth(), texture.getHeight() - (int) (yOffset * texture.getHeight() / textureAnimationSet.getHeight()), false, false);
 	}
@@ -110,7 +110,7 @@ public class DrawUtils {
 		batch.draw(ColorTextures.get(color), rectangle.x, rectangle.y, rectangle.width, rectangle.height);
 	}
 
-	public static void foreachChunksInScreen(Stage worldStage, double margin, Consumer<Chunk> action) {
+	public static void foreachChunksInScreen(Stage worldStage, float margin, Consumer<Chunk> action) {
 		OrthographicCamera camera = (OrthographicCamera) worldStage.getCamera();
 		Vector3 camPos = camera.position;
 		float width = worldStage.getViewport().getWorldWidth() * camera.zoom;

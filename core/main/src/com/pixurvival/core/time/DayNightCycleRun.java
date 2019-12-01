@@ -11,7 +11,7 @@ public class DayNightCycleRun implements DayCycleRun {
 
 	private long dayCount = 0;
 	private boolean isDay = true;
-	private double currentMomentProgess;
+	private float currentMomentProgess;
 
 	public DayNightCycleRun(long dayDuration, long nightDuration) {
 		this.dayDuration = dayDuration;
@@ -25,9 +25,9 @@ public class DayNightCycleRun implements DayCycleRun {
 		long dayTime = time % fullCycleDuration;
 		boolean newIsDay = dayTime <= dayDuration;
 		if (newIsDay) {
-			currentMomentProgess = (double) dayTime / dayDuration;
+			currentMomentProgess = (float) dayTime / dayDuration;
 		} else {
-			currentMomentProgess = (double) (dayTime - dayDuration) / nightDuration;
+			currentMomentProgess = (float) (dayTime - dayDuration) / nightDuration;
 		}
 		if (newDayCount != dayCount || newIsDay != isDay) {
 			dayCount = newDayCount;
@@ -44,7 +44,7 @@ public class DayNightCycleRun implements DayCycleRun {
 	}
 
 	@Override
-	public double currentMomentProgress() {
+	public float currentMomentProgress() {
 		return currentMomentProgess;
 	}
 

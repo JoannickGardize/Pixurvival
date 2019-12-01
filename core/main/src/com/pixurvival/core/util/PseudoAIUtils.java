@@ -28,14 +28,14 @@ public class PseudoAIUtils {
 	 * @return un angle de déplacement, se voulant le plus proche possible de
 	 *         l'angle souhaité, sans entrer en collision.
 	 */
-	public static double avoidObstacles(Entity entity, double targetMovingAngle, int viewDistance, double angleGranularity) {
+	public static float avoidObstacles(Entity entity, float targetMovingAngle, int viewDistance, float angleGranularity) {
 		if (!collideInDirection(entity, targetMovingAngle, viewDistance)) {
 			return targetMovingAngle;
 		}
 		int maxLoop = (int) (Math.PI * 2 / angleGranularity);
-		double orientation = entity.getWorld().getRandom().nextBoolean() ? 1 : -1;
+		float orientation = entity.getWorld().getRandom().nextBoolean() ? 1 : -1;
 		for (int i = 1; i < maxLoop; i++) {
-			double currentAngle = targetMovingAngle + angleGranularity * (i / 2) * orientation;
+			float currentAngle = targetMovingAngle + angleGranularity * (i / 2) * orientation;
 			if (!collideInDirection(entity, currentAngle, viewDistance)) {
 				return MathUtils.normalizeAngle(currentAngle);
 			}
@@ -54,7 +54,7 @@ public class PseudoAIUtils {
 	 *            The distance of the test
 	 * @return true if the way is not free, false otherwise.
 	 */
-	public static boolean collideInDirection(Entity entity, double targetMovingAngle, int viewDistance) {
+	public static boolean collideInDirection(Entity entity, float targetMovingAngle, int viewDistance) {
 
 		Vector2 delta = Vector2.fromEuclidean(1, targetMovingAngle);
 		Vector2 testPoint = entity.getPosition().copy();
@@ -75,16 +75,16 @@ public class PseudoAIUtils {
 	 *            stored there.
 	 * @param targetVelocity
 	 */
-	public static void findTargetPositionPrediction(Vector2 shooterPosition, double bulletSpeed, Vector2 targetPosition, Vector2 targetVelocity) {
-		double a = (targetVelocity.getX() * targetVelocity.getX()) + (targetVelocity.getY() * targetVelocity.getY()) - (bulletSpeed * bulletSpeed);
-		double b = 2 * (targetVelocity.getX() * (targetPosition.getX() - shooterPosition.getX()) + targetVelocity.getY() * (targetPosition.getY() - shooterPosition.getY()));
-		double c = ((targetPosition.getX() - shooterPosition.getX()) * (targetPosition.getX() - shooterPosition.getX()))
+	public static void findTargetPositionPrediction(Vector2 shooterPosition, float bulletSpeed, Vector2 targetPosition, Vector2 targetVelocity) {
+		float a = (targetVelocity.getX() * targetVelocity.getX()) + (targetVelocity.getY() * targetVelocity.getY()) - (bulletSpeed * bulletSpeed);
+		float b = 2 * (targetVelocity.getX() * (targetPosition.getX() - shooterPosition.getX()) + targetVelocity.getY() * (targetPosition.getY() - shooterPosition.getY()));
+		float c = ((targetPosition.getX() - shooterPosition.getX()) * (targetPosition.getX() - shooterPosition.getX()))
 				+ ((targetPosition.getY() - shooterPosition.getY()) * (targetPosition.getY() - shooterPosition.getY()));
-		double disc = b * b - (4 * a * c);
+		float disc = b * b - (4 * a * c);
 		if (disc >= 0) {
-			double t1 = (-1 * b + Math.sqrt(disc)) / (2 * a);
-			double t2 = (-1 * b - Math.sqrt(disc)) / (2 * a);
-			double t = Math.max(t1, t2);
+			float t1 = (-1 * b + (float) Math.sqrt(disc)) / (2 * a);
+			float t2 = (-1 * b - (float) Math.sqrt(disc)) / (2 * a);
+			float t = Math.max(t1, t2);
 			targetPosition.set((targetVelocity.getX() * t) + targetPosition.getX(), (targetVelocity.getY() * t) + targetPosition.getY());
 		}
 	}

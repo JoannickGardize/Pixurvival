@@ -55,8 +55,8 @@ public class BooleanExtensibleGrid {
 			result.addX(position.getX());
 			result.addY(position.getY());
 		}
-		result.setX((int) Math.round((double) result.getX() / positions.size()));
-		result.setY((int) Math.round((double) result.getY() / positions.size()));
+		result.setX(Math.round((float) result.getX() / positions.size()));
+		result.setY(Math.round((float) result.getY() / positions.size()));
 		if (get(result)) {
 			return result;
 		}

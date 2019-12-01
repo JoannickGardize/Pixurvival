@@ -55,7 +55,7 @@ public class Position {
 	}
 
 	public Vector2 toVector2(int scale) {
-		return new Vector2(x * scale + 0.5, y * scale + 0.5);
+		return new Vector2(x * scale + 0.5f, y * scale + 0.5f);
 	}
 
 	public static Position fromWorldPosition(Vector2 position, int interval) {

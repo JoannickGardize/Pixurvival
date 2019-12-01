@@ -21,8 +21,8 @@ public class ClientStream {
 		@Override
 		public void write(Kryo kryo, Output output, ClientStream object) {
 			output.writeLong(object.time);
-			output.writeDouble(object.targetPosition.getX());
-			output.writeDouble(object.targetPosition.getY());
+			output.writeFloat(object.targetPosition.getX());
+			output.writeFloat(object.targetPosition.getY());
 			output.writeByte(object.acks.length);
 			for (long ack : object.acks) {
 				output.writeLong(ack);
@@ -33,7 +33,7 @@ public class ClientStream {
 		public ClientStream read(Kryo kryo, Input input, Class<ClientStream> type) {
 			ClientStream clientStream = new ClientStream();
 			clientStream.setTime(input.readLong());
-			clientStream.setTargetPosition(new Vector2(input.readDouble(), input.readDouble()));
+			clientStream.setTargetPosition(new Vector2(input.readFloat(), input.readFloat()));
 			int length = input.readByte();
 			long[] acks = new long[length];
 			for (int i = 0; i < length; i++) {

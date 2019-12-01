@@ -16,7 +16,7 @@ public interface EffectMovement extends Serializable {
 
 	void update(EffectEntity entity);
 
-	double getSpeedPotential(EffectEntity entity);
+	float getSpeedPotential(EffectEntity entity);
 
 	void writeUpdate(ByteBuffer buffer, EffectEntity entity);
 

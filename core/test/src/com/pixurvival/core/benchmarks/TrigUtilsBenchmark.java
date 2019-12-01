@@ -9,14 +9,14 @@ public class TrigUtilsBenchmark {
 	public static void main(String[] args) {
 		System.out.println("SIN_COUT " + TrigUtils.SIN_COUNT);
 		BenchmarkUtil.time("Math.sin", () -> {
-			double d = 0;
+			float d = 0;
 			for (int i = 0; i < LOOP_SIZE; i++) {
 				d += Math.sin(i);
 			}
 			System.out.println(d);
 		});
 		BenchmarkUtil.time("TrigUtils.sin", () -> {
-			double d = 0;
+			float d = 0;
 			for (int i = 0; i < LOOP_SIZE; i++) {
 				d += TrigUtils.sin(i);
 			}

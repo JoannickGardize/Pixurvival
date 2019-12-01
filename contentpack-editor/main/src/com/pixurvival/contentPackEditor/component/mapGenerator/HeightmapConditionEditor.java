@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.core.contentPack.map.Heightmap;
 import com.pixurvival.core.contentPack.map.HeightmapCondition;
@@ -22,8 +22,8 @@ public class HeightmapConditionEditor extends ElementEditor<HeightmapCondition> 
 		// Construction
 
 		ElementChooserButton<Heightmap> heightmapChooser = new ElementChooserButton<>(heightmapCollectionSupplier);
-		DoubleInput minInput = new DoubleInput(new Bounds(0, 1));
-		DoubleInput maxInput = new DoubleInput(new Bounds(0, 1));
+		FloatInput minInput = new FloatInput(new Bounds(0, 1));
+		FloatInput maxInput = new FloatInput(new Bounds(0, 1));
 
 		// Binding
 

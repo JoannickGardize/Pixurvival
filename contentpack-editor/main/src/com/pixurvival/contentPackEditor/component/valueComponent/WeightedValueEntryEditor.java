@@ -13,7 +13,7 @@ public class WeightedValueEntryEditor<E extends IdentifiedElement> extends Eleme
 	public WeightedValueEntryEditor(Class<E> elementType) {
 
 		elementChooser = new ElementChooserButton<>(elementType);
-		DoubleInput probability = new DoubleInput(Bounds.positive());
+		FloatInput probability = new FloatInput(Bounds.positive());
 
 		bind(elementChooser, Entry::getElement, Entry::setElement);
 		bind(probability, Entry::getProbability, Entry::setProbability);

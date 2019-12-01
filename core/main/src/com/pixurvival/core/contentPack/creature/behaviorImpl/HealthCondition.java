@@ -11,8 +11,8 @@ public class HealthCondition extends ChangeCondition {
 	private static final long serialVersionUID = 1L;
 
 	private BehaviorTarget targetType;
-	private DoubleComparison operator;
-	private double percentValue;
+	private FloatComparison operator;
+	private float percentValue;
 
 	@Override
 	public boolean test(CreatureEntity creature) {

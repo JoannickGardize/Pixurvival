@@ -32,7 +32,7 @@ public class SpriteSheet extends IdentifiedElement {
 	@ElementReference
 	private EquipmentOffset equipmentOffset;
 
-	private double heightOffset;
+	private float heightOffset;
 
 	private boolean shadow = true;
 

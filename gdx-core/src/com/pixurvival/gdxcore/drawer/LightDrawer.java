@@ -19,8 +19,8 @@ import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class LightDrawer {
 	public static final Color NIGHT_COLOR = new Color(0.4f, 0.4f, 0.4f, 1f);
-	public static final double START_FADE_OUT = 0.01;
-	public static final double START_FADE_IN = 0.95;
+	public static final float START_FADE_OUT = 0.01f;
+	public static final float START_FADE_IN = 0.95f;
 
 	private Color tmpColor = new Color(NIGHT_COLOR);
 	private FrameBuffer lightBuffer;
@@ -47,8 +47,7 @@ public class LightDrawer {
 		DrawUtils.foreachChunksInScreen(worldStage, cpt.getLargestLightRadius(), chunk -> {
 			for (Light light : chunk.getLights()) {
 				Texture texture = cpt.getLightTexture(light.getRadius());
-				batch.draw(texture, (float) (light.getPosition().getX() - light.getRadius()), (float) (light.getPosition().getY() - light.getRadius()), (float) (light.getRadius() * 2),
-						(float) (light.getRadius() * 2));
+				batch.draw(texture, light.getPosition().getX() - light.getRadius(), light.getPosition().getY() - light.getRadius(), light.getRadius() * 2, light.getRadius() * 2);
 			}
 		});
 		batch.end();
@@ -103,9 +102,9 @@ public class LightDrawer {
 
 	private float getAlpha(DayCycleRun dayCycle) {
 		if (dayCycle.currentMomentProgress() < START_FADE_OUT) {
-			return 1f - (float) (dayCycle.currentMomentProgress() / START_FADE_OUT);
+			return 1f - dayCycle.currentMomentProgress() / START_FADE_OUT;
 		} else if (dayCycle.currentMomentProgress() > START_FADE_IN) {
-			return (float) ((dayCycle.currentMomentProgress() - START_FADE_IN) / (1 - START_FADE_IN));
+			return (dayCycle.currentMomentProgress() - START_FADE_IN) / (1 - START_FADE_IN);
 		} else {
 			return 0;
 		}

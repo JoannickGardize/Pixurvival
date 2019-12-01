@@ -21,14 +21,14 @@ public class TextureAnimation {
 	private float[] offsetY;
 	private boolean[] back;
 	@Getter
-	private double frameDuration;
+	private float frameDuration;
 	private @Getter float rotationPerSecond;
 	private @Getter int shadowWidth;
 	private @Getter float worldShadowWidth;
 	private @Getter @Setter Texture shadow;
 
 	public TextureAnimation(TextureSheet textureSheet, Animation animation, EquipmentOffset equipmentOffset) {
-		frameDuration = (double) animation.getFrameDuration() / 1000;
+		frameDuration = (float) animation.getFrameDuration() / 1000;
 		rotationPerSecond = animation.getRotationPerSecond();
 		List<Frame> frames = animation.getFrames();
 		textures = new Texture[frames.size()];

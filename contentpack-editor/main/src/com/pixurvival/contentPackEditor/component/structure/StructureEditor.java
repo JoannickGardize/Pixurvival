@@ -12,7 +12,7 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
-import com.pixurvival.contentPackEditor.component.valueComponent.DoubleInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -33,7 +33,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		// Contruction
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
-		DoubleInput lightEmissionRadiusInput = new DoubleInput(Bounds.positive());
+		FloatInput lightEmissionRadiusInput = new FloatInput(Bounds.positive());
 		TimeInput durationInput = new TimeInput();
 		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
 			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, true);

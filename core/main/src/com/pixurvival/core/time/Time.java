@@ -1,6 +1,7 @@
 package com.pixurvival.core.time;
 
 import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,19 +12,19 @@ import lombok.Setter;
 public class Time {
 
 	private @Setter @Getter long timeMillis = 0;
-	private double decimalAccumulator = 0;
+	private float decimalAccumulator = 0;
 	private @Getter @NonNull DayCycleRun dayCycle;
 
-	private @Getter double deltaTime = 0;
-	private @Getter double deltaTimeMillis = 0;
+	private @Getter float deltaTime = 0;
+	private @Getter float deltaTimeMillis = 0;
 	private long synchronizeTimeCounter = 0;
-	private @Getter double averagePing = 0;
+	private @Getter float averagePing = 0;
 	private @Getter long tickCount = 0;
 
-	public void update(double deltaTimeMillis) {
+	public void update(float deltaTimeMillis) {
 		tickCount++;
 		this.deltaTimeMillis = deltaTimeMillis;
-		deltaTime = deltaTimeMillis / 1000.0;
+		deltaTime = deltaTimeMillis / 1000f;
 		long integerPart = (long) deltaTimeMillis;
 
 		decimalAccumulator += deltaTimeMillis - integerPart;
@@ -40,13 +41,13 @@ public class Time {
 		if (averagePing == 0) {
 			averagePing = ping;
 		} else {
-			averagePing = averagePing * 0.80 + ping * 0.2;
+			averagePing = MathUtils.linearInterpolate(averagePing, ping, 0.2f);
 		}
 		long difference = timeResponse.getResponderTime() - (timeMillis - ping);
 		if (synchronizeTimeCounter < 20) {
 			synchronizeTimeCounter++;
 		}
-		timeMillis += Math.round((double) difference / synchronizeTimeCounter);
+		timeMillis += Math.round((float) difference / synchronizeTimeCounter);
 		long absDiff = Math.abs(difference);
 		if (absDiff > 100) {
 			return 1000;
@@ -57,7 +58,7 @@ public class Time {
 		}
 	}
 
-	public static long secToMillis(double secondes) {
+	public static long secToMillis(float secondes) {
 		return (long) (secondes * 1000);
 	}
 }

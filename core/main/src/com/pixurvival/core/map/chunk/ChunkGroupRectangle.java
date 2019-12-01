@@ -18,7 +18,7 @@ public class ChunkGroupRectangle {
 	private int yStart;
 	private int yEnd;
 
-	public ChunkGroupRectangle(Vector2 center, double halfSquareLength) {
+	public ChunkGroupRectangle(Vector2 center, float halfSquareLength) {
 		set(center, halfSquareLength);
 	}
 
@@ -31,7 +31,7 @@ public class ChunkGroupRectangle {
 	 *            The half length of the square, in world space
 	 * @return true if the rectangle has changed
 	 */
-	public boolean set(Vector2 center, double halfSquareLength) {
+	public boolean set(Vector2 center, float halfSquareLength) {
 		int newXStart = MathUtils.floor((center.getX() - halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int newXEnd = MathUtils.floor((center.getX() + halfSquareLength) / GameConstants.CHUNK_SIZE);
 		int newYStart = MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE);

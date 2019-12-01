@@ -49,7 +49,7 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
 
-	private transient double maxLightRadius;
+	private transient float maxLightRadius;
 
 	private transient Map<Locale, Properties> translations = new HashMap<>();
 

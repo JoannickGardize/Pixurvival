@@ -20,15 +20,15 @@ public class OffsetAngleEffect implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Angle relative to the source angle (target angle, or angle of the ancestor
-	 * effect). In radians.
+	 * Angle relative to the source angle (target angle, or angle of the
+	 * ancestor effect). In radians.
 	 */
-	private double offsetAngle = 0;
+	private float offsetAngle = 0;
 
 	/**
 	 * Random angle in radians centered to the offset.
 	 */
-	private double randomAngle = 0;
+	private float randomAngle = 0;
 
 	private Effect effect;
 
