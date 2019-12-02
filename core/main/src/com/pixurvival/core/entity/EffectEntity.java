@@ -1,8 +1,8 @@
 package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import com.pixurvival.core.GameConstants;
@@ -30,15 +30,15 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	private @Getter @Setter Object movementData;
 
-	private long creationTime;
-
 	private int nextFollowingElementIndex = 0;
 
 	private Collection<Object> checkList;
+	private Collection<Object> tmpCheckList;
 
 	private int numberOfDelayedFollowingElements;
 
-	private long duration;
+	private long creationTime;
+	private long termTimeMillis;
 
 	public EffectEntity(OffsetAngleEffect definition, TeamMember ancestor) {
 		this.definition = definition;
@@ -54,14 +54,15 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		super.initialize();
 		if (getWorld().isServer()) {
 			definition.getEffect().getMovement().initialize(this);
-			creationTime = getWorld().getTime().getTimeMillis();
 			List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
 			if (!delayedFollowingElements.isEmpty()) {
+				creationTime = getWorld().getTime().getTimeMillis();
 				int repeat = (int) definition.getEffect().getRepeatFollowingElements().getValue(this);
 				numberOfDelayedFollowingElements = delayedFollowingElements.size() * (repeat + 1);
-				duration = Math.max(definition.getEffect().getDuration(), delayedFollowingElements.get(delayedFollowingElements.size() - 1).getDelay() * repeat);
+				termTimeMillis = Math.max(definition.getEffect().getDuration(), delayedFollowingElements.get(delayedFollowingElements.size() - 1).getDelay() * repeat)
+						+ getWorld().getTime().getTimeMillis();
 			} else {
-				duration = definition.getEffect().getDuration();
+				termTimeMillis = definition.getEffect().getDuration() + getWorld().getTime().getTimeMillis();
 			}
 		}
 	}
@@ -70,12 +71,12 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public void update() {
 		Effect effect = definition.getEffect();
 		effect.getMovement().update(this);
+		if (getWorld().getTime().getTimeMillis() >= termTimeMillis || effect.isSolid() && getWorld().getMap().collide(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius())) {
+			setAlive(false);
+			setSneakyDeath(true);
+		}
 		if (getWorld().isServer()) {
-			long age = getWorld().getTime().getTimeMillis() - creationTime;
-			if (age > duration || effect.isSolid() && getWorld().getMap().collide(this)) {
-				setAlive(false);
-			}
-			processFollowingElements(age);
+			processFollowingElements(getWorld().getTime().getTimeMillis() - creationTime);
 			processEffectTarget();
 		}
 		normalPositionUpdate();
@@ -89,6 +90,9 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
 					if (effectTarget.isDestroyWhenCollide()) {
 						setAlive(false);
+					} else if (checkList != null) {
+						checkList.addAll(tmpCheckList);
+						tmpCheckList.clear();
 					}
 				}
 			});
@@ -134,7 +138,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public float getCollisionRadius() {
-		return definition.getEffect().getCollisionRadius();
+		return definition.getEffect().getEntityCollisionRadius();
 	}
 
 	@Override
@@ -151,17 +155,19 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public void writeUpdate(ByteBuffer buffer, boolean full) {
 		buffer.putFloat(getPosition().getX());
 		buffer.putFloat(getPosition().getY());
-		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		buffer.putFloat(getMovingAngle());
+		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		definition.getEffect().getMovement().writeUpdate(buffer, this);
+		buffer.putInt((int) (termTimeMillis - getWorld().getTime().getTimeMillis()));
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer) {
 		getPosition().set(buffer.getFloat(), buffer.getFloat());
-		setForward(buffer.get() == 1);
 		setMovingAngle(buffer.getFloat());
+		setForward(buffer.get() == 1);
 		definition.getEffect().getMovement().applyUpdate(buffer, this);
+		termTimeMillis = buffer.getInt() + getWorld().getTime().getTimeMillis();
 	}
 
 	@Override
@@ -175,18 +181,17 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public boolean isChecked(Object object) {
+	public boolean check(Object object) {
 		if (checkList == null) {
-			checkList = new HashSet<>();
-			return false;
-		} else {
-			return checkList.contains(object);
+			checkList = new ArrayList<>(3);
+			tmpCheckList = new ArrayList<>(3);
 		}
-	}
-
-	@Override
-	public void check(Object object) {
-		checkList.add(object);
+		if (checkList.contains(object)) {
+			return true;
+		} else {
+			tmpCheckList.add(object);
+			return false;
+		}
 	}
 
 	@Override
@@ -207,5 +212,10 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	public TeamMember getOrigin() {
 		return ancestor.getOrigin();
+	}
+
+	@Override
+	public TeamMember findIfNotFound() {
+		return this;
 	}
 }

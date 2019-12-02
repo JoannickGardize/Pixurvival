@@ -62,7 +62,7 @@ public class AbilityCooldownBox extends Actor {
 		if (cooldown > 0 || ability == null || ability.isEmpty()) {
 			batch.draw(ColorTextures.get(Color.BLACK), getX(), getY(), getWidth(), getHeight());
 		}
-		if (cooldown > 0) {
+		if (cooldown > 0 && ability != null && !ability.isEmpty()) {
 			glyphLayout.setText(PixurvivalGame.getOverlayFont(), toCooldownDisplay(cooldown));
 			PixurvivalGame.getOverlayFont().draw(batch, glyphLayout, getX() + getWidth() / 2 - glyphLayout.width / 2, getY() + getHeight() / 2 + glyphLayout.height / 2);
 		}

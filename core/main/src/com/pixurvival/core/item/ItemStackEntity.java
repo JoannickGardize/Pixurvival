@@ -42,6 +42,7 @@ public class ItemStackEntity extends Entity {
 	public ItemStackEntity(ItemStack itemStack) {
 		this.itemStack = itemStack;
 		state = State.WAITING;
+		setSneakyDeath(true);
 	}
 
 	public void spawn(float distance, float angle) {

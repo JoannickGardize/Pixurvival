@@ -19,8 +19,7 @@ public abstract class UniqueAlteration extends Alteration {
 	public void targetedApply(TeamMember source, LivingEntity target) {
 		if (source instanceof CheckListHolder) {
 			CheckListHolder holder = (CheckListHolder) source;
-			if (!holder.isChecked(target)) {
-				holder.check(target);
+			if (!holder.check(target)) {
 				uniqueApply(source, target);
 			}
 		} else {

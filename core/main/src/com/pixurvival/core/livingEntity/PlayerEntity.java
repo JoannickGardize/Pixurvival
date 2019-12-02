@@ -85,33 +85,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	private @Setter int nextAccessorySwitch = Equipment.ACCESSORY1_INDEX;
 
 	public PlayerEntity() {
-		equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
-			setStateChanged(true);
-			addUpdateContentMask(UPDATE_CONTENT_MASK_EQUIPMENT);
-			if (previousItemStack != null && getWorld().isServer()) {
-				((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
-			}
-			if (newItemStack != null) {
-				if (getWorld().isServer()) {
-					((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
-				}
-				if (equipmentIndex == Equipment.WEAPON_INDEX) {
-					WeaponItem weaponItem = (WeaponItem) newItemStack.getItem();
-					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId());
-					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getBaseAbility().getCooldown());
-					abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId());
-					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getSpecialAbility().getCooldown());
-				} else if (equipmentIndex == Equipment.ACCESSORY1_INDEX) {
-					AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
-					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId());
-					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
-				} else if (equipmentIndex == Equipment.ACCESSORY2_INDEX) {
-					AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
-					CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId());
-					abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
-				}
-			}
-		});
 	}
 
 	public void setInventory(PlayerInventory inventory) {
@@ -145,6 +118,31 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		setAlive(true);
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(INVENTORY_SIZE));
+			equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
+				setStateChanged(true);
+				addUpdateContentMask(UPDATE_CONTENT_MASK_EQUIPMENT);
+				if (previousItemStack != null && getWorld().isServer()) {
+					((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+				}
+				if (newItemStack != null) {
+					((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
+					if (equipmentIndex == Equipment.WEAPON_INDEX) {
+						WeaponItem weaponItem = (WeaponItem) newItemStack.getItem();
+						CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId());
+						abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getBaseAbility().getCooldown());
+						abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId());
+						abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + weaponItem.getSpecialAbility().getCooldown());
+					} else if (equipmentIndex == Equipment.ACCESSORY1_INDEX) {
+						AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
+						CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId());
+						abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
+					} else if (equipmentIndex == Equipment.ACCESSORY2_INDEX) {
+						AccessoryItem accessoryItem = (AccessoryItem) newItemStack.getItem();
+						CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId());
+						abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
+					}
+				}
+			});
 		}
 	}
 

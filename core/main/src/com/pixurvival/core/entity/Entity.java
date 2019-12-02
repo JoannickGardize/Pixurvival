@@ -37,6 +37,13 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private Vector2 previousPosition = new Vector2();
 	private Vector2 position = new Vector2();
 	private @Setter boolean alive = true;
+
+	/**
+	 * When this is set to true, the death event will not be fired on death,
+	 * resulting to not sharing to clients the death data. The purpose is to avoid
+	 * to send death info if the client can know it by itself
+	 */
+	private @Setter boolean sneakyDeath = false;
 	private @Setter Object customData;
 
 	private float speed = 0;
@@ -49,14 +56,14 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean collisionLock = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server
-	 * will send data of this entity at the next data send tick to clients that
-	 * view this entity. Must be true at initialization to send the new entity
-	 * data.
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
 	 */
 	private @Setter boolean stateChanged = true;
 
 	public void initialize() {
+		setAlive(true);
 		previousPosition.set(position);
 	}
 
@@ -239,8 +246,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 * @param full
-	 *            true if all the data should be writen, for clients that
-	 *            discovers this entity.
+	 *            true if all the data should be writen, for clients that discovers
+	 *            this entity.
 	 */
 	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 

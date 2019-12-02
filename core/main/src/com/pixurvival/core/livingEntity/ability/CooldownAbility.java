@@ -26,6 +26,7 @@ public abstract class CooldownAbility extends Ability {
 
 	@Override
 	public boolean update(LivingEntity entity, AbilityData data) {
+
 		CooldownAbilityData cooldownData = (CooldownAbilityData) data;
 		long readyTimeMillis = cooldownData.getReadyTimeMillis();
 		long currentTimeMillis = entity.getWorld().getTime().getTimeMillis();

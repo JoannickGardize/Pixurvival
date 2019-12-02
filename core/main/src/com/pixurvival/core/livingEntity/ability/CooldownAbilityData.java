@@ -15,12 +15,12 @@ public class CooldownAbilityData implements AbilityData {
 
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
-		buffer.putLong(readyTimeMillis);
+		// No need to share cooldown
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		readyTimeMillis = buffer.getLong();
+		// No need to share cooldown
 	}
 
 }

@@ -7,6 +7,9 @@ import java.util.TreeMap;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.ObjectPools;
@@ -61,9 +64,23 @@ public class WorldUpdateManager implements Plugin<World> {
 			if (u.getEntityUpdateLength() > 0) {
 				u.getEntityUpdateByteBuffer().position(0);
 				world.getEntityPool().applyUpdate(u.getEntityUpdateByteBuffer());
+				float updateDelta = (world.getTime().getTimeMillis() - u.getTime()) / 1000f;
+				float deltaTime = world.getTime().getDeltaTime();
+				while (updateDelta > deltaTime / 2f) {
+					updateDelta -= deltaTime;
+					world.getEntityPool().update();
+				}
 			}
 			world.getMap().addAllChunks(u.getCompressedChunks());
 			world.getMap().applyUpdate(u.getStructureUpdates());
+			PlayerEntity playerEntity = client.getMyPlayer();
+			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[0]);
+			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[1]);
+			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[2]);
+			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[3]);
+			if (u.getLastPlayerMovementRequestId() > playerEntity.getLastPlayerMovementRequest().getId()) {
+				playerEntity.getLastPlayerMovementRequest().setId(u.getLastPlayerMovementRequestId());
+			}
 		});
 
 		while (history.size() > HISTORY_SIZE) {

@@ -37,6 +37,14 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	@Override
 	public void apply(PlayerEntity player) {
+		if (player.getWorld().isServer()) {
+			applyMovement(player);
+		} else {
+			player.getWorld().getActionTimerManager().addActionTimer(() -> applyMovement(player), (long) (player.getWorld().getTime().getAveragePing()));
+		}
+	}
+
+	private void applyMovement(PlayerEntity player) {
 		if (id >= player.getLastPlayerMovementRequest().getId()) {
 			player.setMovingAngle(direction.getAngle());
 			player.setForward(forward);
@@ -46,7 +54,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 
 	@Override
 	public boolean isClientPreapply() {
-		return false;
+		return true;
 	}
 
 	public void incrementsId() {

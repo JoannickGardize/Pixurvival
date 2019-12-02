@@ -21,17 +21,13 @@ public abstract class AlterationAbility extends CooldownAbility {
 
 	@Override
 	public boolean fire(LivingEntity entity) {
-		if (entity.getWorld().isServer()) {
-			if (!canFire(entity)) {
-				return false;
-			}
-			if (alterations != null) {
-				alterations.forEach(a -> a.apply(entity, entity));
-			}
-			return true;
-		} else {
+		if (!canFire(entity)) {
 			return false;
 		}
+		if (entity.getWorld().isServer() && alterations != null) {
+			alterations.forEach(a -> a.apply(entity, entity));
+		}
+		return true;
 
 	}
 

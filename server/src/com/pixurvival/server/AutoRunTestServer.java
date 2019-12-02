@@ -19,7 +19,6 @@ public class AutoRunTestServer implements ServerGameListener {
 	public AutoRunTestServer(ServerMainArgs serverArgs) throws IOException {
 		game = new ServerGame(serverArgs);
 		game.addListener(this);
-		game.startServer(7777);
 	}
 
 	@Override

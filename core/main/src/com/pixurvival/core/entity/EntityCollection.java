@@ -125,9 +125,12 @@ public class EntityCollection {
 	public void applyUpdate(ByteBuffer byteBuffer, World world) {
 		byte groupId;
 		// Entity removes
+		Map<Long, Entity> stash = Collections.emptyMap();
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			if (groupId == EntityGroup.REMOVE_ALL_MARKER) {
 				byteBuffer.get();
+				stash = new HashMap<>();
+				entities.values().forEach(stash::putAll);
 				clear();
 				break;
 			}
@@ -151,8 +154,10 @@ public class EntityCollection {
 				long entityId = byteBuffer.getLong();
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
-					e = createEntity(group, world, entityId);
-					e.setWorld(world);
+					if ((e = stash.get(entityId)) == null) {
+						e = createEntity(group, world, entityId);
+						e.setWorld(world);
+					}
 					e.applyInitialization(byteBuffer);
 					add(e);
 				} else {

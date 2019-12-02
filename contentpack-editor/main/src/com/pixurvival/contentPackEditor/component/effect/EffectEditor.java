@@ -11,8 +11,8 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
@@ -42,7 +42,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
 		EnumChooser<DrawDepth> drawDepthChooser = new EnumChooser<>(DrawDepth.class);
 		TimeInput durationInput = new TimeInput();
-		FloatInput collisionRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput entityCollisionRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput mapCollisionRadiusInput = new FloatInput(Bounds.positive());
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatFormulaEditor repeatFollowingElementsEditor = new StatFormulaEditor();
@@ -56,7 +57,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(solidCheckbox, Effect::isSolid, Effect::setSolid);
 		bind(loopAnimationCheckbox, Effect::isLoopAnimation, Effect::setLoopAnimation);
 		bind(durationInput, Effect::getDuration, Effect::setDuration);
-		bind(collisionRadiusInput, Effect::getCollisionRadius, Effect::setCollisionRadius);
+		bind(entityCollisionRadiusInput, Effect::getEntityCollisionRadius, Effect::setEntityCollisionRadius);
+		bind(mapCollisionRadiusInput, Effect::getMapCollisionRadius, Effect::setMapCollisionRadius);
 		bind(effectMovementEditor, Effect::getMovement, Effect::setMovement);
 		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
 		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
@@ -70,7 +72,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
 				loopAnimationCheckbox, "effectEditor.drawDepth", drawDepthChooser);
 		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
-		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "generic.collisionRadius", collisionRadiusInput);
+		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "effectEditor.entityCollisionRadius",
+				entityCollisionRadiusInput, "effectEditor.mapCollisionRadius", mapCollisionRadiusInput);
 		propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));
 		effectMovementEditor.setBorder(LayoutUtils.createGroupBorder("effectEditor.movement"));
 

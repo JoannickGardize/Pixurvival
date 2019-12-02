@@ -1,7 +1,7 @@
 package com.pixurvival.contentPackEditor;
 
 import java.awt.Image;
-import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,16 +18,20 @@ public class ImageService {
 
 	@SneakyThrows
 	private ImageService() {
-		File file = new File(getClass().getClassLoader().getResource("images").toURI());
-		for (File resourceFile : file.listFiles()) {
-			Image image = ImageIO.read(resourceFile);
-			String n = resourceFile.getName();
-			images.put(n.substring(0, n.lastIndexOf('.')), image);
-		}
+		loadImage("cross");
+		loadImage("down");
+		loadImage("elements_icons");
+		loadImage("remove");
+		loadImage("up");
+		loadImage("icon");
 	}
 
 	public Image get(String name) {
 		return images.get(name);
 	}
 
+	private void loadImage(String name) throws IOException {
+		Image image = ImageIO.read(getClass().getClassLoader().getResource("images/" + name + ".png"));
+		images.put(name, image);
+	}
 }

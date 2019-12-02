@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.team.NotFoundTeamMemberProxy;
+import com.pixurvival.core.team.TeamMember;
 
 /**
  * This class contains all entities of a given {@link World}, packed by group
@@ -82,7 +84,9 @@ public class EntityPool extends EntityCollection {
 						entity.getChunk().getEntities().remove(entity);
 					}
 					it.remove();
-					listeners.forEach(l -> l.entityRemoved(entity));
+					if (!entity.isSneakyDeath()) {
+						listeners.forEach(l -> l.entityRemoved(entity));
+					}
 				}
 			}
 		}
@@ -109,6 +113,17 @@ public class EntityPool extends EntityCollection {
 		return getEntities().get(group).get(byteBuffer.getLong());
 	}
 
+	public TeamMember readTeamMemberReference(ByteBuffer byteBuffer) {
+		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
+		long id = byteBuffer.getLong();
+		Entity e = getEntities().get(group).get(id);
+		if (e == null) {
+			return new NotFoundTeamMemberProxy(world, group, id);
+		} else {
+			return (TeamMember) e;
+		}
+	}
+
 	/**
 	 * Force adding the pending new entities without a call to update().
 	 */
@@ -125,6 +140,8 @@ public class EntityPool extends EntityCollection {
 		getEntities().values().forEach(map -> map.values().forEach(entity -> {
 			if (entity.getChunk() != null) {
 				entity.getChunk().getEntities().remove(entity);
+				// set the chunk to null for the case of the instance is reused by stash
+				entity.setChunk(null);
 			}
 		}));
 		super.clear();

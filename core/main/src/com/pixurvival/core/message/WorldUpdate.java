@@ -7,8 +7,6 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.World;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.KryoUtils;
@@ -24,11 +22,13 @@ public class WorldUpdate implements Poolable {
 	public static final int BUFFER_SIZE = 16384;
 
 	private @Setter long updateId;
-	private @Setter long worldId;
+	private @Setter long time;
 	private @Setter int entityUpdateLength;
 	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 	private List<StructureUpdate> structureUpdates = new ArrayList<>();
 	private List<CompressedChunk> compressedChunks = new ArrayList<>();
+	private long[] readyCooldowns = new long[4];
+	private @Setter long lastPlayerMovementRequestId;
 
 	@Override
 	public void clear() {
@@ -45,8 +45,14 @@ public class WorldUpdate implements Poolable {
 
 		@Override
 		public void write(Kryo kryo, Output output, WorldUpdate object) {
-			output.writeLong(object.worldId);
 			output.writeLong(object.updateId);
+			long time = object.time;
+			output.writeLong(time);
+			output.writeInt((int) (object.readyCooldowns[0] - time));
+			output.writeInt((int) (object.readyCooldowns[1] - time));
+			output.writeInt((int) (object.readyCooldowns[2] - time));
+			output.writeInt((int) (object.readyCooldowns[3] - time));
+			output.writeLong(object.lastPlayerMovementRequestId);
 			object.entityUpdateLength = object.entityUpdateByteBuffer.position();
 			output.writeInt(object.entityUpdateLength);
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
@@ -56,15 +62,15 @@ public class WorldUpdate implements Poolable {
 
 		@Override
 		public WorldUpdate read(Kryo kryo, Input input, Class<WorldUpdate> type) {
-			long worldId = input.readLong();
-			World world = World.getWorld(worldId);
-			if (world == null) {
-				Log.error("EntitiesUpdate received for an unknown world : " + worldId);
-				return null;
-			}
-			long updateId = input.readLong();
 			WorldUpdate worldUpdate = ObjectPools.getWorldUpdatePool().get();
-			worldUpdate.updateId = updateId;
+			worldUpdate.updateId = input.readLong();
+			long time = input.readLong();
+			worldUpdate.time = time;
+			worldUpdate.readyCooldowns[0] = input.readInt() + time;
+			worldUpdate.readyCooldowns[1] = input.readInt() + time;
+			worldUpdate.readyCooldowns[2] = input.readInt() + time;
+			worldUpdate.readyCooldowns[3] = input.readInt() + time;
+			worldUpdate.lastPlayerMovementRequestId = input.readLong();
 			worldUpdate.entityUpdateLength = input.readInt();
 			input.readBytes(worldUpdate.entityUpdateByteBuffer.array(), 0, worldUpdate.entityUpdateLength);
 			KryoUtils.readUnspecifiedClassList(kryo, input, worldUpdate.structureUpdates);

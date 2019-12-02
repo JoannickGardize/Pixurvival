@@ -139,6 +139,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
 		PlayerEntity playerEntity = new PlayerEntity();
+		playerEntity.setOperator(true);
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
 		world.getEntityPool().add(playerEntity);
 		world.myPlayer = playerEntity;

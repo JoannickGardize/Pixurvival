@@ -43,7 +43,7 @@ public class Time {
 		} else {
 			averagePing = MathUtils.linearInterpolate(averagePing, ping, 0.2f);
 		}
-		long difference = timeResponse.getResponderTime() - (timeMillis - ping);
+		long difference = timeResponse.getResponderTime() - timeMillis + ping;
 		if (synchronizeTimeCounter < 20) {
 			synchronizeTimeCounter++;
 		}

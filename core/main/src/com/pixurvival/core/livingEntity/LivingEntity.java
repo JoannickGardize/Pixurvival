@@ -284,7 +284,6 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		if (health <= 0 && getWorld().isServer()) {
 			setAlive(false);
 		}
-
 		if (currentAbility != null) {
 			if (!currentAbility.canMove() && isForward()) {
 				stopCurrentAbility();
@@ -377,7 +376,12 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		// others part
 
 		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_OTHERS) != 0) {
-			buffer.putLong(stunTermTime);
+			if (stunTermTime > getWorld().getTime().getTimeMillis()) {
+				buffer.put((byte) 1);
+				buffer.putLong(stunTermTime);
+			} else {
+				buffer.put((byte) 0);
+			}
 			buffer.putShort((short) getTeam().getId());
 			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
 			buffer.putFloat(getForwardFactor());
@@ -429,7 +433,11 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 		// others part
 
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
-			stunTermTime = buffer.getLong();
+			if (buffer.get() == 1) {
+				stunTermTime = buffer.getLong();
+			} else {
+				stunTermTime = 0;
+			}
 			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
 			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
 			setForwardFactor(buffer.getFloat());
@@ -467,5 +475,10 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	 */
 	public byte getFullUpdateContentMask() {
 		return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
+	}
+
+	@Override
+	public TeamMember findIfNotFound() {
+		return this;
 	}
 }

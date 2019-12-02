@@ -43,11 +43,9 @@ public abstract class EngineThread extends Thread {
 				timeToConsume = maxUpdatePerFrame * frameDurationMillis;
 				frameSkipped();
 			}
-			int updateCount = 0;
 			while (timeToConsume > halfFrameDuration) {
 				update(frameDurationMillis);
 				timeToConsume -= frameDurationMillis;
-				updateCount++;
 			}
 			long sleepTime = 0;
 			sleepTime = Math.round(frameDurationMillis) - (System.currentTimeMillis() - now);

@@ -365,11 +365,11 @@ public class TiledMap {
 		return false;
 	}
 
-	public MapStructure findClosestStructure(int x, int y) {
+	public MapStructure findClosestStructure(float x, float y) {
 		MapStructure closest = null;
 		float closestDist = Float.POSITIVE_INFINITY;
-		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
-			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
+		for (int dx = MathUtils.floor(x) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
+			for (int dy = MathUtils.floor(y) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
 				MapStructure structure = tileAt(dx, dy).getStructure();
 				if (structure != null) {
 					float diffX = structure.getPosition().getX() - x;

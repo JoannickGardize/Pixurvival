@@ -28,7 +28,7 @@ public class BoundEffectMovement implements EffectMovement {
 
 	@Override
 	public void update(EffectEntity entity) {
-		TeamMember ancestor = entity.getAncestor();
+		TeamMember ancestor = entity.getAncestor().findIfNotFound();
 		if (ancestor != null) {
 			entity.getPosition().set(ancestor.getPosition()).add((Vector2) entity.getMovementData());
 			if (ancestor instanceof Entity) {
@@ -53,6 +53,6 @@ public class BoundEffectMovement implements EffectMovement {
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
 		entity.setMovementData(new Vector2(buffer.getFloat(), buffer.getFloat()));
-		entity.setAncestor((TeamMember) entity.getWorld().getEntityPool().readEntityReference(buffer));
+		entity.setAncestor(entity.getWorld().getEntityPool().readTeamMemberReference(buffer));
 	}
 }

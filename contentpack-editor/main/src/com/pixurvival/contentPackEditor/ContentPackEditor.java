@@ -10,17 +10,22 @@ import javax.swing.JSplitPane;
 import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
 import com.pixurvival.contentPackEditor.component.tree.LayoutTree;
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.EventListener;
+import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.util.ArgsUtils;
 
 import lombok.Getter;
 
 public class ContentPackEditor extends JFrame {
 
+	private static final String TITLE_PREFFIX = "ContentPack Editor - ";
 	private static final long serialVersionUID = 1L;
 
 	private static @Getter ContentPackEditor instance;
 
 	public ContentPackEditor() {
+		EventManager.getInstance().register(this);
 		setSize(1300, 900);
 
 		setJMenuBar(new CPEMenuBar());
@@ -36,6 +41,7 @@ public class ContentPackEditor extends JFrame {
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, card);
 		setContentPane(splitPane);
 		setLocationRelativeTo(null);
+		setIconImage(ImageService.getInstance().get("icon"));
 	}
 
 	public static void main(String[] args) {
@@ -59,6 +65,16 @@ public class ContentPackEditor extends JFrame {
 			FileService.getInstance().newContentPack();
 		} else {
 			FileService.getInstance().open(new File(mainArgs.getOpen()));
+		}
+	}
+
+	@EventListener
+	public void contentPackLoaded(ContentPackLoadedEvent event) {
+		File currentFile = FileService.getInstance().getCurrentFile();
+		if (currentFile == null) {
+			setTitle(TITLE_PREFFIX + TranslationService.getInstance().getString("menuBar.file.new"));
+		} else {
+			setTitle(TITLE_PREFFIX + currentFile);
 		}
 	}
 }

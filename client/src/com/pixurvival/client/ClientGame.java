@@ -43,7 +43,6 @@ import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
-
 	private Client client = new Client(16384, 16384);
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();

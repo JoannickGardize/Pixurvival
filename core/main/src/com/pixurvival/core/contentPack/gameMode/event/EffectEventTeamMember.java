@@ -30,4 +30,9 @@ public class EffectEventTeamMember implements TeamMember {
 		return this;
 	}
 
+	@Override
+	public TeamMember findIfNotFound() {
+		return this;
+	}
+
 }

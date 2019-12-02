@@ -12,6 +12,8 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
+import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
@@ -100,8 +102,9 @@ public class ServerEngineThread extends EngineThread {
 				prepareFullUpdateForRefresh(session.getConnection().getPlayerEntity());
 				connection.setRequestedFullUpdate(false);
 			} else {
+				// TODO also add chunks and structure updates of the player
+				// session
 				prepareFullUpdate(session.getConnection().getPlayerEntity());
-
 			}
 			int length = connection.sendUDP(tmpFullWorldUpdate);
 			Log.info("full update sent to " + connection + " ( entity : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + " total : " + length + ", ping : " + connection.getPing()
@@ -121,7 +124,8 @@ public class ServerEngineThread extends EngineThread {
 		byteBuffer.put(EntityGroup.END_MARKER);
 		writeEntityUpdate(session, playerEntity, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
-		writeDistantAllyPositions(playerEntity, byteBuffer);
+		prepareCommonUpdatePart(tmpDeltaWorldUpdate, playerEntity, byteBuffer);
+
 	}
 
 	private void prepareFullUpdate(PlayerEntity player) {
@@ -145,7 +149,17 @@ public class ServerEngineThread extends EngineThread {
 		byteBuffer.put(EntityGroup.END_MARKER);
 		player.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, true, player.getChunkVision()));
 		byteBuffer.put(EntityGroup.END_MARKER);
+		prepareCommonUpdatePart(tmpFullWorldUpdate, player, byteBuffer);
+	}
+
+	private void prepareCommonUpdatePart(WorldUpdate worldUpdate, PlayerEntity player, ByteBuffer byteBuffer) {
 		writeDistantAllyPositions(player, byteBuffer);
+		worldUpdate.setTime(player.getWorld().getTime().getTimeMillis());
+		worldUpdate.getReadyCooldowns()[0] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId())).getReadyTimeMillis();
+		worldUpdate.getReadyCooldowns()[1] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).getReadyTimeMillis();
+		worldUpdate.getReadyCooldowns()[2] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).getReadyTimeMillis();
+		worldUpdate.getReadyCooldowns()[3] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).getReadyTimeMillis();
+		worldUpdate.setLastPlayerMovementRequestId(player.getLastPlayerMovementRequest().getId());
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {

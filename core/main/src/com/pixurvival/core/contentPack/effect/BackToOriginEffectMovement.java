@@ -26,7 +26,8 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void update(EffectEntity entity) {
-		entity.setMovingAngle(entity.angleToward((TeamMember) entity.getMovementData()));
+		TeamMember origin = ((TeamMember) entity.getMovementData()).findIfNotFound();
+		entity.setMovingAngle(entity.angleToward(origin));
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
-		entity.setMovementData(entity.getWorld().getEntityPool().readEntityReference(buffer));
+		entity.setMovementData(entity.getWorld().getEntityPool().readTeamMemberReference(buffer));
 	}
 
 }
