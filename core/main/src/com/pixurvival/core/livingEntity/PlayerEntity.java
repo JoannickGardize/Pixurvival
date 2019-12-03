@@ -15,6 +15,8 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -109,6 +111,22 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	protected void onDeath() {
 		if (getWorld().isServer()) {
 			getTeam().addDead(this);
+			for (int i = 0; i < Equipment.EQUIPMENT_SIZE; i++) {
+				dropItemOnDeath(equipment.get(i));
+			}
+			for (int i = 0; i < inventory.size(); i++) {
+				dropItemOnDeath(inventory.getSlot(i));
+			}
+			dropItemOnDeath(inventory.getHeldItemStack());
+		}
+	}
+
+	private void dropItemOnDeath(ItemStack itemStack) {
+		if (itemStack != null) {
+			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
+			getWorld().getEntityPool().add(itemStackEntity);
+			itemStackEntity.getPosition().set(getPosition());
+			itemStackEntity.spawnRandom();
 		}
 	}
 
