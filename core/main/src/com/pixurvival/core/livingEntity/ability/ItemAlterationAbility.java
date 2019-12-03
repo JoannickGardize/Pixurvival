@@ -24,7 +24,7 @@ public class ItemAlterationAbility extends AlterationAbility {
 	private boolean removeAmmunition(LivingEntity entity) {
 		if (entity instanceof InventoryHolder) {
 			Inventory inventory = ((InventoryHolder) entity).getInventory();
-			return inventory.remove(ammunition);
+			return inventory != null && inventory.remove(ammunition);
 		}
 		return true;
 	}

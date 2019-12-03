@@ -118,7 +118,6 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-
 		}
 	}
 
