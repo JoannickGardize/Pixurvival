@@ -65,7 +65,7 @@ public class EntityPool extends EntityCollection {
 			Map<Long, Entity> groupMap = getMap(group);
 			for (Entry<Long, Entity> entry : map.entrySet()) {
 				groupMap.remove(entry.getKey());
-				listeners.forEach(l -> l.entityRemoved(entry.getValue()));
+				notifyRemoved(entry.getValue());
 			}
 		});
 	}
@@ -84,13 +84,17 @@ public class EntityPool extends EntityCollection {
 						entity.getChunk().getEntities().remove(entity);
 					}
 					it.remove();
-					if (!entity.isSneakyDeath()) {
-						listeners.forEach(l -> l.entityRemoved(entity));
-					}
+					notifyRemoved(entity);
 				}
 			}
 		}
 		flushNewEntities();
+	}
+
+	private void notifyRemoved(Entity entity) {
+		if (!entity.isSneakyDeath() && !entity.isInvisible()) {
+			listeners.forEach(l -> l.entityRemoved(entity));
+		}
 	}
 
 	public void applyUpdate(ByteBuffer byteBuffer) {

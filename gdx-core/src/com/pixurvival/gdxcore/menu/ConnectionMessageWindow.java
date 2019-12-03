@@ -31,6 +31,7 @@ public class ConnectionMessageWindow extends Window {
 		okButton.setVisible(false);
 
 		add(connectionInfoLabel).expand().top();
+		setSize(400, 200);
 		row();
 		add(okButton).width(100);
 
@@ -44,8 +45,12 @@ public class ConnectionMessageWindow extends Window {
 		PixurvivalGame.getClient().addListener(new ClientGameAdapter() {
 			@Override
 			public void loginResponse(LoginResponse response) {
-				connectionInfoLabel.setText(response.name());
-				okButton.setVisible(true);
+				if (response == LoginResponse.OK) {
+					connectionInfoLabel.setText(PixurvivalGame.getString("menu.multiplayer.connectWindow.waiting"));
+				} else {
+					connectionInfoLabel.setText(response.name());
+					okButton.setVisible(true);
+				}
 			}
 		});
 	}

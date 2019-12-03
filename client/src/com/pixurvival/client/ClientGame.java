@@ -186,7 +186,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	}
 
 	public void send(ClientStream clientStream) {
-		int length = client.sendUDP(clientStream);
+		client.sendUDP(clientStream);
 	}
 
 	public void update(float deltaTimeMillis) {

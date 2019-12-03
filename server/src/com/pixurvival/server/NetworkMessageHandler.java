@@ -44,15 +44,20 @@ class NetworkMessageHandler extends Listener {
 				connection.sendTCP(LoginResponse.ALREADY_LOGGED);
 				return;
 			}
-			String name = ((LoginRequest) m.getObject()).getPlayerName();
+			String name = ((LoginRequest) m.getObject()).getPlayerName().trim();
 			if (game.getPlayerConnection(name) != null) {
 				connection.sendTCP(LoginResponse.NAME_IN_USE);
+				return;
+			}
+			if (name.length() > 30) {
+				connection.sendTCP(LoginResponse.INVALID_NAME);
 				return;
 			}
 			connection.setLogged(true);
 			connection.setName(name);
 			game.addPlayerConnection(connection);
 			game.notify(l -> l.playerLoggedIn(connection));
+			connection.sendTCP(LoginResponse.OK);
 		});
 		messageActions.put(PlayerMovementRequest.class, this::handlePlayerActionRequest);
 		messageActions.put(PlaceStructureRequest.class, this::handlePlayerActionRequest);

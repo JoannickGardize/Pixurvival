@@ -1,8 +1,6 @@
 package com.pixurvival.gdxcore.drawer;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.pixurvival.core.contentPack.effect.DrawDepth;
 import com.pixurvival.core.contentPack.effect.Effect;
@@ -51,17 +49,6 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 		if (e.getDefinition().getEffect().getDrawDepth() == DrawDepth.FOREGROUND) {
 			drawEffect(batch, e);
 		}
-	}
-
-	@Override
-	public void drawDebug(ShapeRenderer renderer, EffectEntity e) {
-		renderer.setColor(Color.WHITE);
-		renderer.circle(e.getPosition().getX(), e.getPosition().getY(), e.getCollisionRadius(), 16);
-		renderer.line(e.getPosition().getX(), e.getPosition().getY(), e.getPosition().getX() + (float) Math.cos(e.getMovingAngle()), e.getPosition().getY() + (float) Math.sin(e.getMovingAngle()));
-		renderer.flush();
-		renderer.setColor(Color.ORANGE);
-		renderer.circle(e.getPosition().getX(), e.getPosition().getY(), e.getDefinition().getEffect().getEntityCollisionRadius(), 16);
-		renderer.flush();
 	}
 
 	private void drawEffect(Batch batch, EffectEntity e) {

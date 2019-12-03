@@ -159,7 +159,7 @@ public class ServerEngineThread extends EngineThread {
 		worldUpdate.getReadyCooldowns()[1] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.getReadyCooldowns()[2] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.getReadyCooldowns()[3] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).getReadyTimeMillis();
-		worldUpdate.setLastPlayerMovementRequestId(player.getLastPlayerMovementRequest().getId());
+		worldUpdate.setLastPlayerMovementRequest(player.getLastPlayerMovementRequest());
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {

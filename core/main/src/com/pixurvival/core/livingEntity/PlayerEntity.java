@@ -227,7 +227,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	protected void fixedMovementEnded() {
-		lastPlayerMovementRequest.apply(this);
+		if (getWorld().isServer()) {
+			lastPlayerMovementRequest.apply(this);
+		}
 	}
 
 	public void silence(long duration) {
@@ -237,7 +239,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	protected void collisionLockEnded() {
-		lastPlayerMovementRequest.apply(this);
+		if (getWorld().isServer()) {
+			lastPlayerMovementRequest.apply(this);
+		}
 	}
 
 	@Override

@@ -353,4 +353,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 			return chunk.getPosition();
 		}
 	}
+
+	public boolean isInvisible() {
+		return false;
+	}
 }

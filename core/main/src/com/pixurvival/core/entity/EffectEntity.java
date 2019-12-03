@@ -218,4 +218,9 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public TeamMember findIfNotFound() {
 		return this;
 	}
+
+	@Override
+	public boolean isInvisible() {
+		return definition.getEffect().getSpriteSheet() == null;
+	}
 }

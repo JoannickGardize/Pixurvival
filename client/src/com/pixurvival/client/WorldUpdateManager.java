@@ -71,16 +71,16 @@ public class WorldUpdateManager implements Plugin<World> {
 					world.getEntityPool().update();
 				}
 			}
-			world.getMap().addAllChunks(u.getCompressedChunks());
-			world.getMap().applyUpdate(u.getStructureUpdates());
 			PlayerEntity playerEntity = client.getMyPlayer();
+			if (u.getLastPlayerMovementRequest().getId() > playerEntity.getLastPlayerMovementRequest().getId()) {
+				playerEntity.setLastPlayerMovementRequest(u.getLastPlayerMovementRequest());
+			}
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[0]);
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[1]);
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[2]);
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[3]);
-			if (u.getLastPlayerMovementRequestId() > playerEntity.getLastPlayerMovementRequest().getId()) {
-				playerEntity.getLastPlayerMovementRequest().setId(u.getLastPlayerMovementRequestId());
-			}
+			world.getMap().addAllChunks(u.getCompressedChunks());
+			world.getMap().applyUpdate(u.getStructureUpdates());
 		});
 
 		while (history.size() > HISTORY_SIZE) {

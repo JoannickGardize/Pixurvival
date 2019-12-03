@@ -80,17 +80,14 @@ public class EntityCollection {
 			short size = 0;
 			if (full) {
 				for (Entity e : entityMap.values()) {
-					writeEntity(byteBuffer, e, true);
+					size += writeEntity(byteBuffer, e, true);
 				}
-				size += entityMap.size();
 			} else {
 				for (Entity e : entityMap.values()) {
 					if (!chunkVision.contains(e.getPreviousUpdateChunkPosition())) {
-						size++;
-						writeEntity(byteBuffer, e, true);
+						size += writeEntity(byteBuffer, e, true);
 					} else if (e.isStateChanged()) {
-						size++;
-						writeEntity(byteBuffer, e, false);
+						size += writeEntity(byteBuffer, e, false);
 					}
 				}
 			}
@@ -102,10 +99,14 @@ public class EntityCollection {
 		}
 	}
 
-	private void writeEntity(ByteBuffer byteBuffer, Entity e, boolean full) {
+	private int writeEntity(ByteBuffer byteBuffer, Entity e, boolean full) {
+		if (e.isInvisible()) {
+			return 0;
+		}
 		byteBuffer.putLong(e.getId());
 		e.writeInitialization(byteBuffer);
 		e.writeUpdate(byteBuffer, full);
+		return 1;
 	}
 
 	public void writeAllIds(ByteBuffer byteBuffer) {

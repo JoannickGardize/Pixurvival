@@ -9,6 +9,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
+import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.util.KryoUtils;
 import com.pixurvival.core.util.ObjectPools;
 import com.pixurvival.core.util.Poolable;
@@ -28,7 +29,7 @@ public class WorldUpdate implements Poolable {
 	private List<StructureUpdate> structureUpdates = new ArrayList<>();
 	private List<CompressedChunk> compressedChunks = new ArrayList<>();
 	private long[] readyCooldowns = new long[4];
-	private @Setter long lastPlayerMovementRequestId;
+	private @Setter PlayerMovementRequest lastPlayerMovementRequest;
 
 	@Override
 	public void clear() {
@@ -52,7 +53,7 @@ public class WorldUpdate implements Poolable {
 			output.writeInt((int) (object.readyCooldowns[1] - time));
 			output.writeInt((int) (object.readyCooldowns[2] - time));
 			output.writeInt((int) (object.readyCooldowns[3] - time));
-			output.writeLong(object.lastPlayerMovementRequestId);
+			kryo.writeObject(output, object.lastPlayerMovementRequest);
 			object.entityUpdateLength = object.entityUpdateByteBuffer.position();
 			output.writeInt(object.entityUpdateLength);
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
@@ -70,7 +71,7 @@ public class WorldUpdate implements Poolable {
 			worldUpdate.readyCooldowns[1] = input.readInt() + time;
 			worldUpdate.readyCooldowns[2] = input.readInt() + time;
 			worldUpdate.readyCooldowns[3] = input.readInt() + time;
-			worldUpdate.lastPlayerMovementRequestId = input.readLong();
+			worldUpdate.lastPlayerMovementRequest = kryo.readObject(input, PlayerMovementRequest.class);
 			worldUpdate.entityUpdateLength = input.readInt();
 			input.readBytes(worldUpdate.entityUpdateByteBuffer.array(), 0, worldUpdate.entityUpdateLength);
 			KryoUtils.readUnspecifiedClassList(kryo, input, worldUpdate.structureUpdates);
