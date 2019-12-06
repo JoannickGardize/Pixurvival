@@ -7,6 +7,7 @@ import java.util.List;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
@@ -28,6 +29,7 @@ public class WorldUpdate implements Poolable {
 	private ByteBuffer entityUpdateByteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 	private List<StructureUpdate> structureUpdates = new ArrayList<>();
 	private List<CompressedChunk> compressedChunks = new ArrayList<>();
+	private List<SoundEffect> soundEffects = new ArrayList<>();
 	private long[] readyCooldowns = new long[4];
 	private @Setter PlayerMovementRequest lastPlayerMovementRequest;
 
@@ -36,10 +38,11 @@ public class WorldUpdate implements Poolable {
 		entityUpdateByteBuffer.position(0);
 		structureUpdates.clear();
 		compressedChunks.clear();
+		soundEffects.clear();
 	}
 
 	public boolean isEmpty() {
-		return entityUpdateByteBuffer.position() <= 4 && structureUpdates.isEmpty() && compressedChunks.isEmpty();
+		return entityUpdateByteBuffer.position() <= 4 && structureUpdates.isEmpty() && compressedChunks.isEmpty() && soundEffects.isEmpty();
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<WorldUpdate> {
@@ -59,6 +62,7 @@ public class WorldUpdate implements Poolable {
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
 			KryoUtils.writeUnspecifiedClassList(kryo, output, object.structureUpdates);
 			KryoUtils.writeUniqueClassList(kryo, output, object.compressedChunks);
+			KryoUtils.writeUniqueClassList(kryo, output, object.soundEffects);
 		}
 
 		@Override
@@ -76,6 +80,8 @@ public class WorldUpdate implements Poolable {
 			input.readBytes(worldUpdate.entityUpdateByteBuffer.array(), 0, worldUpdate.entityUpdateLength);
 			KryoUtils.readUnspecifiedClassList(kryo, input, worldUpdate.structureUpdates);
 			KryoUtils.readUniqueClassList(kryo, input, worldUpdate.compressedChunks, CompressedChunk.class);
+			KryoUtils.readUniqueClassList(kryo, input, worldUpdate.soundEffects, SoundEffect.class);
+
 			return worldUpdate;
 		}
 	}

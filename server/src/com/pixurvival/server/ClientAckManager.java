@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.WorldUpdate;
@@ -34,12 +35,14 @@ public class ClientAckManager {
 		private long time;
 		private List<CompressedChunk> compressedChunks;
 		private List<StructureUpdate> structureUpdates;
+		private List<SoundEffect> soundEffects;
 
-		public WaitingAckEntry(long time, List<CompressedChunk> compressedChunks, List<StructureUpdate> structureUpdates) {
+		public WaitingAckEntry(long time, List<CompressedChunk> compressedChunks, List<StructureUpdate> structureUpdates, List<SoundEffect> soundEffects) {
 			super();
 			this.time = time;
 			this.compressedChunks = new ArrayList<>(compressedChunks);
 			this.structureUpdates = new ArrayList<>(structureUpdates);
+			this.soundEffects = new ArrayList<>(soundEffects);
 		}
 
 	}
@@ -50,10 +53,11 @@ public class ClientAckManager {
 
 	private @Getter List<CompressedChunk> compressedChunks = new ArrayList<>();
 	private @Getter List<StructureUpdate> structureUpdates = new ArrayList<>();
+	private @Getter List<SoundEffect> soundEffects = new ArrayList<>();
 
 	public void addExpectedAck(PlayerConnection connection, WorldUpdate worldUpdate) {
-		connection.getWaitingAcks().put(worldUpdate.getUpdateId(),
-				new WaitingAckEntry(connection.getPlayerEntity().getWorld().getTime().getTimeMillis(), worldUpdate.getCompressedChunks(), worldUpdate.getStructureUpdates()));
+		connection.getWaitingAcks().put(worldUpdate.getUpdateId(), new WaitingAckEntry(connection.getPlayerEntity().getWorld().getTime().getTimeMillis(), worldUpdate.getCompressedChunks(),
+				worldUpdate.getStructureUpdates(), worldUpdate.getSoundEffects()));
 	}
 
 	public void acceptAcks(PlayerConnection connection, long[] acks) {
@@ -65,7 +69,6 @@ public class ClientAckManager {
 			if (entry != null) {
 				pingSum += time - entry.time;
 				pingCount++;
-			} else {
 			}
 		}
 		if (pingCount != 0) {
@@ -75,8 +78,8 @@ public class ClientAckManager {
 
 	/**
 	 * @param connection
-	 * @return true if acks are considered ok, false if ack is considered
-	 *         missing and a full update is required.
+	 * @return true if acks are considered ok, false if ack is considered missing
+	 *         and a full update is required.
 	 */
 	public boolean check(PlayerConnection connection) {
 		long time = connection.getPlayerEntity().getWorld().getTime().getTimeMillis();
@@ -95,11 +98,13 @@ public class ClientAckManager {
 			connection.setAckThresholdMultiplier(connection.getAckThresholdMultiplier() * 1.2f);
 			compressedChunks.clear();
 			structureUpdates.clear();
+			soundEffects.clear();
 			for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {
 				compressedChunks.addAll(entry.getCompressedChunks());
 				// TODO éviter le problème des structureUpadates qui écrasent un
 				// plus récent
 				structureUpdates.addAll(entry.getStructureUpdates());
+				soundEffects.addAll(entry.getSoundEffects());
 			}
 			connection.getWaitingAcks().clear();
 			return false;

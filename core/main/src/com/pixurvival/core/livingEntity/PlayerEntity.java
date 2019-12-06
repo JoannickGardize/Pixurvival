@@ -1,10 +1,12 @@
 package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
@@ -70,7 +72,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 	}
 
-	private @Getter @Setter boolean operator = false;
+	private @Setter boolean operator = false;
 
 	private @Setter String name = "Unknown";
 
@@ -78,7 +80,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private Equipment equipment = new Equipment();
 
-	private @Getter float hunger = MAX_HUNGER;
+	private float hunger = MAX_HUNGER;
 
 	private ChunkGroupChangeHelper chunkVision = new ChunkGroupChangeHelper();
 
@@ -86,8 +88,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private @Setter int nextAccessorySwitch = Equipment.ACCESSORY1_INDEX;
 
-	public PlayerEntity() {
-	}
+	private List<SoundEffect> soundEffectsToConsume = new ArrayList<>();
 
 	public void setInventory(PlayerInventory inventory) {
 		this.inventory = inventory;

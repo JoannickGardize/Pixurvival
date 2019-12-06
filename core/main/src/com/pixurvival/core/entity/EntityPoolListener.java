@@ -5,4 +5,6 @@ public interface EntityPoolListener {
 	void entityAdded(Entity e);
 
 	void entityRemoved(Entity e);
+
+	void sneakyEntityRemoved(Entity e);
 }

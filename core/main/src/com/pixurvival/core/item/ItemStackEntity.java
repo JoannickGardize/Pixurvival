@@ -12,9 +12,7 @@ import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class ItemStackEntity extends Entity {
 
 	public static final float MAGNET_DISTANCE = 2;
@@ -42,6 +40,10 @@ public class ItemStackEntity extends Entity {
 	public ItemStackEntity(ItemStack itemStack) {
 		this.itemStack = itemStack;
 		state = State.WAITING;
+		setSneakyDeath(true);
+	}
+
+	public ItemStackEntity() {
 		setSneakyDeath(true);
 	}
 

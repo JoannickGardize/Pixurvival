@@ -74,11 +74,11 @@ public class World extends PluginHolder<World> implements ChatSender {
 	private ChunkSupplier chunkSupplier;
 	private @Setter Object endGameConditionData;
 	private TeamSet teamSet = new TeamSet();
-	private @Getter CommandManager commandManager = new CommandManager();
-	private @Getter ChatManager chatManager = new ChatManager();
+	private CommandManager commandManager = new CommandManager();
+	private ChatManager chatManager = new ChatManager();
 	private @Setter PlayerEntity myPlayer;
-	private @Getter Vector2 spawnCenter;
-	private @Getter Map<Long, PlayerEntity> playerEntities = new HashMap<>();
+	private Vector2 spawnCenter;
+	private Map<Long, PlayerEntity> playerEntities = new HashMap<>();
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
 
@@ -123,6 +123,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 		}
 		PlayerEntity myPlayer = world.playerEntities.get(createWorld.getMyPlayerId());
 		myPlayer.getPosition().set(createWorld.getMyPosition());
+		createWorld.getInventory().computeQuantities();
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);
@@ -189,8 +190,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();

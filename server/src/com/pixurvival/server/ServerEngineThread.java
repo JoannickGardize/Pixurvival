@@ -8,6 +8,7 @@ import java.util.List;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
@@ -51,6 +52,7 @@ public class ServerEngineThread extends EngineThread {
 			}
 			sendWorldData(gs);
 			gs.clear();
+			gs.getWorld().getEntityPool().get(EntityGroup.PLAYER).forEach(p -> ((PlayerEntity) p).getSoundEffectsToConsume().clear());
 			gs.getWorld().getEntityPool().foreach(entity -> {
 				entity.setStateChanged(false);
 				if (entity.getChunk() != null) {
@@ -66,7 +68,6 @@ public class ServerEngineThread extends EngineThread {
 			PlayerConnection connection = session.getConnection();
 			PlayerEntity playerEntity = connection.getPlayerEntity();
 			if (connection.isGameReady() && playerEntity != null) {
-				tmpFullWorldUpdate.clear();
 				sendWorldUpdate(gs, session, connection);
 				if (connection.isInventoryChanged()) {
 					connection.setInventoryChanged(false);
@@ -75,7 +76,6 @@ public class ServerEngineThread extends EngineThread {
 				if (playerDeads != null) {
 					connection.sendTCP(playerDeads);
 				}
-				game.notifyNetworkListeners(l -> l.sent(tmpDeltaWorldUpdate));
 			}
 			session.clearPositionChanges();
 		});
@@ -89,13 +89,7 @@ public class ServerEngineThread extends EngineThread {
 		if (ClientAckManager.getInstance().check(connection) && !connection.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
-				int length = connection.sendUDP(tmpDeltaWorldUpdate);
-				// Log.info("delta update sent to " + connection + " ( entity :
-				// " +
-				// tmpDeltaWorldUpdate.getEntityUpdateByteBuffer().position() +
-				// " total : " + length + ", ping : " + connection.getPing()
-				// + ", multiplier : " + connection.getAckThresholdMultiplier()
-				// + ")");
+				connection.sendUDP(tmpDeltaWorldUpdate);
 			}
 		} else {
 			if (connection.isRequestedFullUpdate()) {
@@ -124,21 +118,26 @@ public class ServerEngineThread extends EngineThread {
 		byteBuffer.put(EntityGroup.END_MARKER);
 		writeEntityUpdate(session, playerEntity, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
-		prepareCommonUpdatePart(tmpDeltaWorldUpdate, playerEntity, byteBuffer);
+		prepareCommonUpdatePart(tmpDeltaWorldUpdate, playerEntity, playerEntity.getSoundEffectsToConsume());
 
 	}
 
 	private void prepareFullUpdate(PlayerEntity player) {
-		prepareFullUpdate(player, ClientAckManager.getInstance().getCompressedChunks(), ClientAckManager.getInstance().getStructureUpdates());
+		List<SoundEffect> resendSoundEffects = ClientAckManager.getInstance().getSoundEffects();
+		List<SoundEffect> newSoundEffects = player.getSoundEffectsToConsume();
+		List<SoundEffect> totalSoundEffects = new ArrayList<>(newSoundEffects.size() + resendSoundEffects.size());
+		totalSoundEffects.addAll(newSoundEffects);
+		totalSoundEffects.addAll(resendSoundEffects);
+		prepareFullUpdate(player, ClientAckManager.getInstance().getCompressedChunks(), ClientAckManager.getInstance().getStructureUpdates(), totalSoundEffects);
 	}
 
 	private void prepareFullUpdateForRefresh(PlayerEntity player) {
 		List<CompressedChunk> compressedChunks = new ArrayList<>();
 		player.foreachChunkInView(c -> compressedChunks.add(c.getCompressed()));
-		prepareFullUpdate(player, compressedChunks, Collections.emptyList());
+		prepareFullUpdate(player, compressedChunks, Collections.emptyList(), player.getSoundEffectsToConsume());
 	}
 
-	private void prepareFullUpdate(PlayerEntity player, List<CompressedChunk> compressedChunks, List<StructureUpdate> structureUpdates) {
+	private void prepareFullUpdate(PlayerEntity player, List<CompressedChunk> compressedChunks, List<StructureUpdate> structureUpdates, List<SoundEffect> soundEffects) {
 		tmpFullWorldUpdate.getCompressedChunks().clear();
 		tmpFullWorldUpdate.getCompressedChunks().addAll(compressedChunks);
 		tmpFullWorldUpdate.getStructureUpdates().clear();
@@ -149,17 +148,24 @@ public class ServerEngineThread extends EngineThread {
 		byteBuffer.put(EntityGroup.END_MARKER);
 		player.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, true, player.getChunkVision()));
 		byteBuffer.put(EntityGroup.END_MARKER);
-		prepareCommonUpdatePart(tmpFullWorldUpdate, player, byteBuffer);
+		prepareCommonUpdatePart(tmpFullWorldUpdate, player, soundEffects);
+
 	}
 
-	private void prepareCommonUpdatePart(WorldUpdate worldUpdate, PlayerEntity player, ByteBuffer byteBuffer) {
-		writeDistantAllyPositions(player, byteBuffer);
+	private void prepareCommonUpdatePart(WorldUpdate worldUpdate, PlayerEntity player, List<SoundEffect> soundEffects) {
+		writeDistantAllyPositions(player, worldUpdate.getEntityUpdateByteBuffer());
 		worldUpdate.setTime(player.getWorld().getTime().getTimeMillis());
 		worldUpdate.getReadyCooldowns()[0] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.WEAPON_BASE.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.getReadyCooldowns()[1] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.getReadyCooldowns()[2] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.getReadyCooldowns()[3] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.setLastPlayerMovementRequest(player.getLastPlayerMovementRequest());
+		worldUpdate.getSoundEffects().clear();
+		for (SoundEffect soundEffect : soundEffects) {
+			if (player.distanceSquared(soundEffect.getPosition()) <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
+				worldUpdate.getSoundEffects().addAll(soundEffects);
+			}
+		}
 	}
 
 	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {

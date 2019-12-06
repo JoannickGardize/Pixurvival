@@ -175,6 +175,5 @@ public class Vector2 {
 		public Vector2 read(Kryo kryo, Input input, Class<Vector2> type) {
 			return new Vector2(input.readFloat(), input.readFloat());
 		}
-
 	}
 }

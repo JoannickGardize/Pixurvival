@@ -31,7 +31,8 @@ public class EquipmentAbilityProcessor implements InputActionProcessor {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		World world = PixurvivalGame.getClient().getWorld();
 		com.pixurvival.core.util.Vector2 targetPosition = world.getType().isClient() ? myPlayer.getTargetPosition() : null;
-		PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(equipmentAbilityTypeToSend, targetPosition));
+		PixurvivalGame.getClient()
+				.sendAction(new PlayerEquipmentAbilityRequest(equipmentAbilityTypeToSend, myPlayer.getPosition().angleToward(targetPosition), myPlayer.getPosition().distance(targetPosition)));
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class EquipmentAbilityProcessor implements InputActionProcessor {
 		EquipmentAbilityType currentAbility = abilityStack.get(abilityStack.size() - 1);
 		abilityStack.removeIf(e -> e == equipmentAbilityType);
 		if (abilityStack.isEmpty()) {
-			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null, null));
+			PixurvivalGame.getClient().sendAction(new PlayerEquipmentAbilityRequest(null, 0, 0));
 		} else {
 			EquipmentAbilityType newAbility = abilityStack.get(abilityStack.size() - 1);
 			if (newAbility != currentAbility) {

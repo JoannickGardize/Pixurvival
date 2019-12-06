@@ -41,7 +41,10 @@ class NetworkMessageHandler extends Listener {
 			TimeResponse t = o;
 			game.synchronizeTime(t);
 		});
-		putMessageAction(PlayerInventory.class, i -> game.getMyInventory().set(i));
+		putMessageAction(PlayerInventory.class, i -> {
+			game.getMyInventory().set(i);
+			System.out.println("inv !!");
+		});
 		putMessageAction(WorldUpdate.class, game::offer);
 		putMessageAction(StartGame.class, g -> {
 			game.addPlugin(new WorldUpdater());

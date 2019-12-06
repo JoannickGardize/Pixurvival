@@ -71,6 +71,7 @@ import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
 import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
 import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
+import com.pixurvival.core.livingEntity.alteration.PlaySoundAlteration;
 import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
 import com.pixurvival.core.livingEntity.alteration.StatAlteration;
@@ -244,6 +245,7 @@ public class ContentPackSerializer {
 		addClassTag(representer, PlayerProximityEventPosition.class);
 		addClassTag(representer, EffectEvent.class);
 		addClassTag(representer, StatAlteration.class);
+		addClassTag(representer, PlaySoundAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

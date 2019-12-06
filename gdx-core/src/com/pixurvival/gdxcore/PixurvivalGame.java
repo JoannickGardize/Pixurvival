@@ -11,6 +11,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
@@ -41,7 +43,6 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	public static final String I18N_BUNDLE = "i18n/Bundle";
 	public static final String SKIN = "kenney-pixel/skin/skin.json";
-	// public static final String SKIN = "skin/pixurvival.json";
 	public static final String DEFAULT_FONT = "default_font.ttf";
 	public static final String DEFAULT_ITALIC_FONT = "default_italic_font.ttf";
 	public static final String OVERLAY_FONT = "overlay_font.ttf";
@@ -99,10 +100,15 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private ContentPackTextures contentPackTextures;
 	private Skin skin;
 	private @Getter boolean zoomEnabled;
+	private Sound[] sounds;
+	private @Getter float globalVolume = 1;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
 			throw new IllegalStateException("Cannot instantiate multiple instances of the game !");
+		}
+		if (clientArgs.isMute()) {
+			globalVolume = 0;
 		}
 		zoomEnabled = clientArgs.isZoomEnabled();
 		instance = this;
@@ -121,20 +127,39 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		}
 	}
 
+	public Sound getSound(SoundPreset sound) {
+		return sounds[sound.ordinal()];
+	}
+
 	@Override
 	public void create() {
 		assetManager = new AssetManager();
+		loadFonts();
+		loadSounds();
+		assetManager.load(I18N_BUNDLE, I18NBundle.class);
+		assetManager.load(ARROW, Texture.class);
+		// TODO barre de chargement
+		assetManager.finishLoading();
+		sounds = new Sound[SoundPreset.values().length];
+		for (int i = 0; i < sounds.length; i++) {
+			sounds[i] = assetManager.get(getSoundFileName(SoundPreset.values()[i]));
+		}
+		getDefaultFont().getData().markupEnabled = true;
+		skin = new Skin();
+		skin.add("default", getDefaultFont(), BitmapFont.class);
+		skin.add("default-italic", getDefaultItalicFont(), BitmapFont.class);
+		skin.addRegions(new TextureAtlas(Gdx.files.internal("kenney-pixel/skin/skin.atlas")));
+		skin.load(Gdx.files.internal(SKIN));
+		setScreen(MainMenuScreen.class);
+	}
+
+	private void loadFonts() {
 		assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(assetManager.getFileHandleResolver()));
 		assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(assetManager.getFileHandleResolver()));
 
 		FreeTypeFontLoaderParameter defaultFontParams = new FreeTypeFontLoaderParameter();
 		defaultFontParams.fontFileName = "OpenSans-Bold.ttf";
 		defaultFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 25);
-		// defaultFontParams.fontParameters.genMipMaps = true;
-		// defaultFontParams.fontParameters.minFilter =
-		// TextureFilter.MipMapNearestNearest;
-		// defaultFontParams.fontParameters.magFilter =
-		// TextureFilter.MipMapNearestNearest;
 
 		assetManager.load(DEFAULT_FONT, BitmapFont.class, defaultFontParams);
 
@@ -149,19 +174,16 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		overlayFontParams.fontParameters.borderColor = Color.BLACK;
 		overlayFontParams.fontParameters.borderWidth = 1;
 		assetManager.load(OVERLAY_FONT, BitmapFont.class, overlayFontParams);
+	}
 
-		assetManager.load(I18N_BUNDLE, I18NBundle.class);
-		assetManager.load(ARROW, Texture.class);
-		// TODO barre de chargement
-		assetManager.finishLoading();
-		getDefaultFont().getData().markupEnabled = true;
-		skin = new Skin();
-		skin.add("default", getDefaultFont(), BitmapFont.class);
-		skin.add("default-italic", getDefaultItalicFont(), BitmapFont.class);
-		skin.addRegions(new TextureAtlas(Gdx.files.internal("kenney-pixel/skin/skin.atlas")));
-		skin.load(Gdx.files.internal(SKIN));
+	private void loadSounds() {
+		for (SoundPreset soundEnum : SoundPreset.values()) {
+			assetManager.load(getSoundFileName(soundEnum), Sound.class);
+		}
+	}
 
-		setScreen(MainMenuScreen.class);
+	private String getSoundFileName(SoundPreset soundEnum) {
+		return "sounds/" + soundEnum.name().toLowerCase() + ".wav";
 	}
 
 	@Override

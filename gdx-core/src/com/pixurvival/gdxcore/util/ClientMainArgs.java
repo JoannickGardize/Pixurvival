@@ -11,4 +11,5 @@ public class ClientMainArgs extends CommonMainArgs {
 
 	private boolean zoomEnabled = false;
 	private boolean redirectErrorToFile = true;
+	private boolean mute = false;
 }

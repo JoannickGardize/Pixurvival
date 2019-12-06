@@ -123,7 +123,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
-			createWorld.getInventory().computeQuantities();
 			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());

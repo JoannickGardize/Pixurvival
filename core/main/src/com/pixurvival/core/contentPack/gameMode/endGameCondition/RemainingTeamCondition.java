@@ -47,4 +47,8 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 			world.setEndGameConditionData(true);
 		}
 	}
+
+	@Override
+	public void sneakyEntityRemoved(Entity e) {
+	}
 }

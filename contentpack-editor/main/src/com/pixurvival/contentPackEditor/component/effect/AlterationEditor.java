@@ -17,6 +17,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangin
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -31,6 +32,7 @@ import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
 import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
 import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
+import com.pixurvival.core.livingEntity.alteration.PlaySoundAlteration;
 import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
 import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
 import com.pixurvival.core.livingEntity.alteration.SourceDirection;
@@ -169,6 +171,11 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
 		entries.add(new ClassEntry(AddItemAlteration.class,
 				LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox))));
+
+		// PlaySoundAlteration
+		EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
+		bind(soundPresetChooser, PlaySoundAlteration::getPreset, PlaySoundAlteration::setPreset, PlaySoundAlteration.class);
+		entries.add(new ClassEntry(PlaySoundAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser))));
 
 		return entries;
 	}

@@ -14,6 +14,7 @@ import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.ObjectPools;
 import com.pixurvival.core.util.Plugin;
+import com.pixurvival.core.util.Vector2;
 
 /**
  * This is in charge to treat {@link WorldUpdate}s, because of UDP
@@ -72,6 +73,9 @@ public class WorldUpdateManager implements Plugin<World> {
 				}
 			}
 			PlayerEntity playerEntity = client.getMyPlayer();
+			playerEntity.getSoundEffectsToConsume().addAll(u.getSoundEffects());
+			// Avoid playing multiple times the same sound
+			u.getSoundEffects().clear();
 			if (u.getLastPlayerMovementRequest().getId() > playerEntity.getLastPlayerMovementRequest().getId()) {
 				playerEntity.setLastPlayerMovementRequest(u.getLastPlayerMovementRequest());
 			}
@@ -89,12 +93,18 @@ public class WorldUpdateManager implements Plugin<World> {
 	}
 
 	private void handleClientStream(World world) {
+		if (client.isSpectator()) {
+			return;
+		}
 		long time = world.getTime().getTimeMillis();
 		if (time - previousSendTime >= GameConstants.CLIENT_STREAM_INTERVAL) {
 			previousSendTime = time;
 			ClientStream clientStream = new ClientStream();
 			clientStream.setTime(world.getTime().getTimeMillis());
-			clientStream.setTargetPosition(client.getMyPlayer().getTargetPosition());
+			Vector2 myPlayerPosition = client.getMyPlayer().getPosition();
+			Vector2 targetPosition = client.getMyPlayer().getTargetPosition();
+			clientStream.setTargetAngle(myPlayerPosition.angleToward(targetPosition));
+			clientStream.setTargetDistance(myPlayerPosition.distance(targetPosition));
 			long[] acks = new long[ackList.size() + resendAckList.size()];
 			for (int i = 0; i < ackList.size(); i++) {
 				acks[i] = ackList.get(i);

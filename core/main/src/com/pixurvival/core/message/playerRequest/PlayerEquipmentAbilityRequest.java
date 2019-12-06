@@ -5,7 +5,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
-import com.pixurvival.core.util.Vector2;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,16 +17,15 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 	 * null means stop current ability
 	 */
 	private EquipmentAbilityType type;
-	private Vector2 targetPosition;
-	// TODO add world time to allow the server to know if targetPosition is old
-	// or not against the clientStream's one
+	private float angle;
+	private float distance;
 
 	@Override
 	public void apply(PlayerEntity player) {
-		if (targetPosition != null) {
-			player.getTargetPosition().set(targetPosition);
-		}
 		player.startEquipmentAbility(type);
+		if (type != null) {
+			player.getTargetPosition().set(player.getPosition()).addEuclidean(distance, angle);
+		}
 	}
 
 	@Override
@@ -43,8 +41,8 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 				output.writeByte(-1);
 			} else {
 				output.writeByte(object.type.ordinal());
-				output.writeFloat(object.targetPosition.getX());
-				output.writeFloat(object.targetPosition.getY());
+				output.writeFloat(object.angle);
+				output.writeFloat(object.distance);
 			}
 		}
 
@@ -52,10 +50,9 @@ public class PlayerEquipmentAbilityRequest implements IPlayerActionRequest {
 		public PlayerEquipmentAbilityRequest read(Kryo kryo, Input input, Class<PlayerEquipmentAbilityRequest> type) {
 			byte ordinal = input.readByte();
 			if (ordinal == -1) {
-				return new PlayerEquipmentAbilityRequest(null, null);
+				return new PlayerEquipmentAbilityRequest(null, 0, 0);
 			} else {
-
-				return new PlayerEquipmentAbilityRequest(EquipmentAbilityType.values()[ordinal], new Vector2(input.readFloat(), input.readFloat()));
+				return new PlayerEquipmentAbilityRequest(EquipmentAbilityType.values()[ordinal], input.readFloat(), input.readFloat());
 			}
 		}
 	}

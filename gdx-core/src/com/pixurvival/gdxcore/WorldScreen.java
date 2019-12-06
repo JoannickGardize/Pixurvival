@@ -4,14 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.SoundEffect;
+import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityPoolListener;
+import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.item.ItemStackEntity.State;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
@@ -63,6 +69,23 @@ public class WorldScreen implements Screen {
 
 	public void setWorld(World world) {
 		this.world = world;
+		world.getEntityPool().addListener(new EntityPoolListener() {
+
+			@Override
+			public void entityRemoved(Entity e) {
+			}
+
+			@Override
+			public void entityAdded(Entity e) {
+			}
+
+			@Override
+			public void sneakyEntityRemoved(Entity e) {
+				if (e instanceof ItemStackEntity && ((ItemStackEntity) e).getState() == State.MAGNTIZED) {
+					playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, e.getPosition()));
+				}
+			}
+		});
 		worldStage.clear();
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
@@ -146,20 +169,36 @@ public class WorldScreen implements Screen {
 		if (request != null) {
 			PixurvivalGame.getClient().sendAction(request);
 		}
+		PlayerEntity myPlayer = world.getMyPlayer();
+		playSounds(myPlayer);
 		worldStage.getViewport().apply();
 		updateMouseTarget();
 		worldStage.act();
-		Entity myPlayer = world.getMyPlayer();
-		if (myPlayer != null) {
-			DrawData data = (DrawData) myPlayer.getCustomData();
-			cameraControlProcessor.updateCameraPosition(data == null ? myPlayer.getPosition() : data.getDrawPosition());
-		}
+		DrawData data = (DrawData) myPlayer.getCustomData();
+		cameraControlProcessor.updateCameraPosition(data == null ? myPlayer.getPosition() : data.getDrawPosition());
 		worldStage.draw();
 		lightDrawer.draw(worldStage);
 
 		hudStage.getViewport().apply();
 		hudStage.act();
 		hudStage.draw();
+	}
+
+	private void playSounds(PlayerEntity myPlayer) {
+		for (SoundEffect soundEffect : myPlayer.getSoundEffectsToConsume()) {
+			playSound(myPlayer, soundEffect);
+		}
+		myPlayer.getSoundEffectsToConsume().clear();
+	}
+
+	private void playSound(PlayerEntity myPlayer, SoundEffect soundEffect) {
+		float distanceSquared = myPlayer.distanceSquared(soundEffect.getPosition());
+		if (distanceSquared <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
+			Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
+			float volume = 1f - 0.7f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
+			float pan = 0.2f + 0.8f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
+			sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1, pan);
+		}
 	}
 
 	@Override

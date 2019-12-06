@@ -13,7 +13,8 @@ import lombok.Setter;
 public class ClientStream {
 
 	private long time;
-	private Vector2 targetPosition;
+	private float targetAngle;
+	private float targetDistance;
 	private long[] acks;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<ClientStream> {
@@ -21,8 +22,8 @@ public class ClientStream {
 		@Override
 		public void write(Kryo kryo, Output output, ClientStream object) {
 			output.writeLong(object.time);
-			output.writeFloat(object.targetPosition.getX());
-			output.writeFloat(object.targetPosition.getY());
+			output.writeFloat(object.targetAngle);
+			output.writeFloat(object.targetDistance);
 			output.writeByte(object.acks.length);
 			for (long ack : object.acks) {
 				output.writeLong(ack);
@@ -33,7 +34,8 @@ public class ClientStream {
 		public ClientStream read(Kryo kryo, Input input, Class<ClientStream> type) {
 			ClientStream clientStream = new ClientStream();
 			clientStream.setTime(input.readLong());
-			clientStream.setTargetPosition(new Vector2(input.readFloat(), input.readFloat()));
+			clientStream.targetAngle = input.readFloat();
+			clientStream.targetDistance = input.readFloat();
 			int length = input.readByte();
 			long[] acks = new long[length];
 			for (int i = 0; i < length; i++) {

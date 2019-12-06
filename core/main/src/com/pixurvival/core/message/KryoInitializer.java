@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
@@ -84,6 +85,7 @@ public class KryoInitializer {
 		register(kryo, ClientStream.class);
 		register(kryo, TimeRequest.class);
 		register(kryo, TimeResponse.class);
+		register(kryo, SoundEffect.class);
 	}
 
 	@SuppressWarnings("unchecked")

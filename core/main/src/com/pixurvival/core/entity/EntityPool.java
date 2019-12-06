@@ -94,6 +94,8 @@ public class EntityPool extends EntityCollection {
 	private void notifyRemoved(Entity entity) {
 		if (!entity.isSneakyDeath() && !entity.isInvisible()) {
 			listeners.forEach(l -> l.entityRemoved(entity));
+		} else {
+			listeners.forEach(l -> l.sneakyEntityRemoved(entity));
 		}
 	}
 

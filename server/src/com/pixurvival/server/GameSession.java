@@ -244,6 +244,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 				ps.setConnection(connection);
 				connection.setReconnected(true);
 				connection.setRequestedFullUpdate(true);
+				playerEntity.getInventory().addListener(connection);
 				connection.sendTCP(createWorld);
 			}
 		}
@@ -265,5 +266,9 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	private Collection<PlayerSession> getSessionsForPlayerEntity(Entity playerEntity) {
 		return sessionsByEntities.computeIfAbsent(playerEntity.getId(), id -> new HashSet<>());
+	}
+
+	@Override
+	public void sneakyEntityRemoved(Entity e) {
 	}
 }
