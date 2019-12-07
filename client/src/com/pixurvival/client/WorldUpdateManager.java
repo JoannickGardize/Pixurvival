@@ -93,9 +93,6 @@ public class WorldUpdateManager implements Plugin<World> {
 	}
 
 	private void handleClientStream(World world) {
-		if (client.isSpectator()) {
-			return;
-		}
 		long time = world.getTime().getTimeMillis();
 		if (time - previousSendTime >= GameConstants.CLIENT_STREAM_INTERVAL) {
 			previousSendTime = time;

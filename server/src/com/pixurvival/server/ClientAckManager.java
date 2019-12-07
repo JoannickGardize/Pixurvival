@@ -78,12 +78,12 @@ public class ClientAckManager {
 
 	/**
 	 * @param connection
-	 * @return true if acks are considered ok, false if ack is considered missing
-	 *         and a full update is required.
+	 * @return true if acks are considered ok, false if ack is considered
+	 *         missing and a full update is required.
 	 */
 	public boolean check(PlayerConnection connection) {
 		long time = connection.getPlayerEntity().getWorld().getTime().getTimeMillis();
-		long threshold = (long) (((connection.getPing() * PING_TOLERANCE_MULTIPLIER) + GameConstants.CLIENT_STREAM_INTERVAL) * connection.getAckThresholdMultiplier());
+		long threshold = (long) (((connection.getPing() * PING_TOLERANCE_MULTIPLIER) + GameConstants.CLIENT_STREAM_INTERVAL + 66) * connection.getAckThresholdMultiplier());
 		boolean ok = true;
 		for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {
 			if (time - entry.time >= threshold) {
@@ -91,14 +91,14 @@ public class ClientAckManager {
 				break;
 			}
 		}
+		compressedChunks.clear();
+		structureUpdates.clear();
+		soundEffects.clear();
 		if (ok) {
 			connection.setAckThresholdMultiplier(1 + (connection.getAckThresholdMultiplier() - 1) * 0.99f);
 			return true;
 		} else {
 			connection.setAckThresholdMultiplier(connection.getAckThresholdMultiplier() * 1.2f);
-			compressedChunks.clear();
-			structureUpdates.clear();
-			soundEffects.clear();
 			for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {
 				compressedChunks.addAll(entry.getCompressedChunks());
 				// TODO éviter le problème des structureUpadates qui écrasent un

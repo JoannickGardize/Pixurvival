@@ -5,5 +5,7 @@ public enum SoundPreset {
 	SWORD_HIT,
 	LASER_HIT,
 	PUNCH,
-	POP;
+	POP,
+	BUBBLE,
+	SCRUNCH;
 }

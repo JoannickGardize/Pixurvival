@@ -126,15 +126,14 @@ class NetworkMessageHandler extends Listener {
 
 	private void handleClientStream(ClientMessage m) {
 		PlayerConnection connection = m.getConnection();
-		if (connection.isSpectator()) {
-			return;
-		}
 		ClientStream clientStream = (ClientStream) m.getObject();
-		PlayerEntity playerEntity = connection.getPlayerEntity();
 		ClientAckManager.getInstance().acceptAcks(connection, clientStream.getAcks());
 		if (clientStream.getTime() > connection.getPreviousClientWorldTime()) {
 			connection.setPreviousClientWorldTime(clientStream.getTime());
-			playerEntity.getTargetPosition().set(playerEntity.getPosition()).addEuclidean(clientStream.getTargetDistance(), clientStream.getTargetAngle());
+			if (!connection.isSpectator()) {
+				PlayerEntity playerEntity = connection.getPlayerEntity();
+				playerEntity.getTargetPosition().set(playerEntity.getPosition()).addEuclidean(clientStream.getTargetDistance(), clientStream.getTargetAngle());
+			}
 		}
 	}
 }

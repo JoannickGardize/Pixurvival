@@ -19,6 +19,11 @@ import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.item.ItemStackEntity.State;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.TiledMapListener;
+import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
@@ -84,6 +89,40 @@ public class WorldScreen implements Screen {
 				if (e instanceof ItemStackEntity && ((ItemStackEntity) e).getState() == State.MAGNTIZED) {
 					playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, e.getPosition()));
 				}
+			}
+		});
+		world.getMap().addListener(new TiledMapListener() {
+
+			@Override
+			public void structureRemoved(MapStructure mapStructure) {
+			}
+
+			@Override
+			public void structureChanged(MapStructure mapStructure) {
+				if (mapStructure instanceof HarvestableMapStructure) {
+					HarvestableMapStructure hms = (HarvestableMapStructure) mapStructure;
+					if (hms.isHarvested()) {
+						playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH, hms.getPosition()));
+					} else {
+						playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, hms.getPosition()));
+					}
+				}
+			}
+
+			@Override
+			public void structureAdded(MapStructure mapStructure) {
+			}
+
+			@Override
+			public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
+			}
+
+			@Override
+			public void chunkUnloaded(Chunk chunk) {
+			}
+
+			@Override
+			public void chunkLoaded(Chunk chunk) {
 			}
 		});
 		worldStage.clear();
@@ -195,9 +234,9 @@ public class WorldScreen implements Screen {
 		float distanceSquared = myPlayer.distanceSquared(soundEffect.getPosition());
 		if (distanceSquared <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
 			Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
-			float volume = 1f - 0.7f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
-			float pan = 0.2f + 0.8f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
-			sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1, pan);
+			float volume = 1f - 0.8f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
+			float pan = 0.1f + 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
+			sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1f, pan);
 		}
 	}
 

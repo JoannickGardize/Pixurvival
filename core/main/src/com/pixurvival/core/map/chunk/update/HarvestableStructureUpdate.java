@@ -23,7 +23,9 @@ public class HarvestableStructureUpdate extends StructureUpdate {
 	public void apply(Chunk chunk) {
 		MapTile mapTile = chunk.tileAt(getX(), getY());
 		if (mapTile.getStructure() instanceof HarvestableMapStructure) {
-			((HarvestableMapStructure) mapTile.getStructure()).setHarvested(harvested);
+			HarvestableMapStructure hms = (HarvestableMapStructure) mapTile.getStructure();
+			hms.setHarvested(harvested);
+			chunk.getMap().notifyListeners(l -> l.structureChanged(hms));
 		}
 		chunk.invalidateCompressed();
 	}

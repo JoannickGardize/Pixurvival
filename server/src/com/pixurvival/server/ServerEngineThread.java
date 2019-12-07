@@ -127,6 +127,7 @@ public class ServerEngineThread extends EngineThread {
 		List<SoundEffect> newSoundEffects = player.getSoundEffectsToConsume();
 		List<SoundEffect> totalSoundEffects = new ArrayList<>(newSoundEffects.size() + resendSoundEffects.size());
 		totalSoundEffects.addAll(newSoundEffects);
+		System.out.println(newSoundEffects.size() + ", " + resendSoundEffects.size());
 		totalSoundEffects.addAll(resendSoundEffects);
 		prepareFullUpdate(player, ClientAckManager.getInstance().getCompressedChunks(), ClientAckManager.getInstance().getStructureUpdates(), totalSoundEffects);
 	}
