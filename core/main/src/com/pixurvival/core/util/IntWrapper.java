@@ -12,6 +12,10 @@ import lombok.Setter;
 public class IntWrapper {
 	private int value;
 
+	public void add(int toAdd) {
+		value += toAdd;
+	}
+
 	public void increment() {
 		++value;
 	}

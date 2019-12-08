@@ -72,7 +72,11 @@ public class ClientAckManager {
 			}
 		}
 		if (pingCount != 0) {
-			connection.setPing(MathUtils.linearInterpolate(connection.getPing(), (float) pingSum / pingCount, 0.1f));
+			if (connection.getPing() == -1) {
+				connection.setPing((float) pingSum / pingCount);
+			} else {
+				connection.setPing(MathUtils.linearInterpolate(connection.getPing(), (float) pingSum / pingCount, 0.1f));
+			}
 		}
 	}
 

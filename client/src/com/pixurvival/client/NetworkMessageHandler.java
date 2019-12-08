@@ -19,7 +19,7 @@ import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.StartGame;
-import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
 
 class NetworkMessageHandler extends Listener {
@@ -37,13 +37,12 @@ class NetworkMessageHandler extends Listener {
 		// messageActions.put(RequestContentPacks.class, r -> {
 		// game.checkMissingPacks(((RequestContentPacks) r).getIdentifiers());
 		// });
-		putMessageAction(TimeResponse.class, o -> {
-			TimeResponse t = o;
+		putMessageAction(TimeSync.class, o -> {
+			TimeSync t = o;
 			game.synchronizeTime(t);
 		});
 		putMessageAction(PlayerInventory.class, i -> {
 			game.getMyInventory().set(i);
-			System.out.println("inv !!");
 		});
 		putMessageAction(WorldUpdate.class, game::offer);
 		putMessageAction(StartGame.class, g -> {

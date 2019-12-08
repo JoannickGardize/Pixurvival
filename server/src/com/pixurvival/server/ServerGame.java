@@ -35,7 +35,7 @@ public class ServerGame {
 	private Server server;
 	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
 	private List<ServerGameListener> listeners = new ArrayList<>();
-	private List<NetworkListener> networkListeners = new ArrayList<>();
+
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
 	// private @Getter ContentPacksContext contentPacksContext = new
 	// ContentPacksContext("contentPacks");
@@ -87,10 +87,6 @@ public class ServerGame {
 
 	public void addListener(ServerGameListener listener) {
 		listeners.add(listener);
-	}
-
-	public void addNetworkListener(NetworkListener listener) {
-		networkListeners.add(listener);
 	}
 
 	public void startServer(int port) throws IOException {
@@ -180,10 +176,6 @@ public class ServerGame {
 
 	void notify(Consumer<ServerGameListener> action) {
 		listeners.forEach(action);
-	}
-
-	void notifyNetworkListeners(Consumer<NetworkListener> action) {
-		networkListeners.forEach(action);
 	}
 
 	void consumeReceivedObjects() {

@@ -170,4 +170,15 @@ public class CreatureEntity extends LivingEntity {
 	public TeamMember getOrigin() {
 		return this;
 	}
+
+	@Override
+	public void writeRepositoryPart(ByteBuffer byteBuffer) {
+		byteBuffer.putFloat(spawnPosition.getX());
+		byteBuffer.putFloat(spawnPosition.getY());
+	}
+
+	@Override
+	public void applyRepositoryPart(ByteBuffer byteBuffer) {
+		spawnPosition.set(byteBuffer.getFloat(), byteBuffer.getFloat());
+	}
 }

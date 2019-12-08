@@ -20,6 +20,10 @@ import lombok.Getter;
 
 public class EntityCollection {
 
+	private interface GroupWriter {
+		short writeUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap);
+	}
+
 	private @Getter(AccessLevel.PROTECTED) Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 
 	public Collection<Entity> get(EntityGroup group) {
@@ -68,7 +72,19 @@ public class EntityCollection {
 		entityList.forEach(this::add);
 	}
 
-	public void writeUpdate(ByteBuffer byteBuffer, boolean full, ChunkGroupChangeHelper chunkVision) {
+	public void writeFullUpdate(ByteBuffer byteBuffer) {
+		writeUpdate(byteBuffer, this::writeFullUpdate);
+	}
+
+	public void writeDeltaUpdate(ByteBuffer byteBuffer, ChunkGroupChangeHelper chunkVision) {
+		writeUpdate(byteBuffer, (b, m) -> writeDeltaUpdate(b, m, chunkVision));
+	}
+
+	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
+		writeUpdate(byteBuffer, this::writeRepositoryUpdate);
+	}
+
+	public void writeUpdate(ByteBuffer byteBuffer, GroupWriter writer) {
 		for (Entry<EntityGroup, Map<Long, Entity>> groupEntry : entities.entrySet()) {
 			Map<Long, Entity> entityMap = groupEntry.getValue();
 			if (entityMap.isEmpty()) {
@@ -77,26 +93,43 @@ public class EntityCollection {
 			byteBuffer.put((byte) groupEntry.getKey().ordinal());
 			int sizePosition = byteBuffer.position();
 			byteBuffer.putShort((short) 0);
-			short size = 0;
-			if (full) {
-				for (Entity e : entityMap.values()) {
-					size += writeEntity(byteBuffer, e, true);
-				}
-			} else {
-				for (Entity e : entityMap.values()) {
-					if (!chunkVision.contains(e.getPreviousUpdateChunkPosition())) {
-						size += writeEntity(byteBuffer, e, true);
-					} else if (e.isStateChanged()) {
-						size += writeEntity(byteBuffer, e, false);
-					}
-				}
-			}
+			short size = writer.writeUpdate(byteBuffer, entityMap);
 			if (size == 0) {
 				byteBuffer.position(sizePosition - 1);
 			} else {
 				byteBuffer.putShort(sizePosition, size);
 			}
 		}
+	}
+
+	private short writeDeltaUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap, ChunkGroupChangeHelper chunkVision) {
+		short size = 0;
+		for (Entity e : entityMap.values()) {
+			if (!chunkVision.contains(e.getPreviousUpdateChunkPosition())) {
+				size += writeEntity(byteBuffer, e, true);
+			} else if (e.isStateChanged()) {
+				size += writeEntity(byteBuffer, e, false);
+			}
+		}
+		return size;
+	}
+
+	private short writeFullUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap) {
+		short size = 0;
+		for (Entity e : entityMap.values()) {
+			size += writeEntity(byteBuffer, e, true);
+		}
+		return size;
+	}
+
+	private short writeRepositoryUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap) {
+		for (Entity e : entityMap.values()) {
+			byteBuffer.putLong(e.getId());
+			e.writeInitialization(byteBuffer);
+			e.writeUpdate(byteBuffer, true);
+			e.writeRepositoryPart(byteBuffer);
+		}
+		return (short) entityMap.size();
 	}
 
 	private int writeEntity(ByteBuffer byteBuffer, Entity e, boolean full) {
@@ -124,6 +157,10 @@ public class EntityCollection {
 	}
 
 	public void applyUpdate(ByteBuffer byteBuffer, World world) {
+		applyUpdate(byteBuffer, world, false);
+	}
+
+	public void applyUpdate(ByteBuffer byteBuffer, World world, boolean repositoryMode) {
 		byte groupId;
 		// Entity removes
 		Map<Long, Entity> stash = Collections.emptyMap();
@@ -168,6 +205,9 @@ public class EntityCollection {
 					e.applyInitialization(byteBuffer);
 				}
 				e.applyUpdate(byteBuffer);
+				if (repositoryMode) {
+					e.applyRepositoryPart(byteBuffer);
+				}
 			}
 		}
 		// Far allies positions update

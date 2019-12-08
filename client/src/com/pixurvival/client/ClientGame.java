@@ -10,7 +10,6 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
-import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
@@ -30,8 +29,7 @@ import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
-import com.pixurvival.core.message.TimeRequest;
-import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
@@ -43,7 +41,7 @@ import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
-	private Client client = new Client(16384, 16384);
+	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2);
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
@@ -51,8 +49,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
-	private long timeRequestFrequencyMillis = 1000;
-	private float timeRequestTimer = 0;
 	private float deltaTimeMillis = 0;
 	private String[] gameBeginningCommands;
 	private @Getter @Setter List<Locale> localePriorityList = new ArrayList<>();
@@ -203,13 +199,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 				}
 			}
 			world.update(deltaTimeMillis);
-			if (world.getType() == Type.CLIENT) {
-				timeRequestTimer -= deltaTimeMillis;
-				if (timeRequestTimer <= 0) {
-					timeRequestTimer = timeRequestFrequencyMillis;
-					client.sendUDP(new TimeRequest(world.getTime().getTimeMillis()));
-				}
-			}
 		}
 	}
 
@@ -229,9 +218,9 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		// contentPackDownloadManager.setMissingList(missingPacks);
 	}
 
-	public void synchronizeTime(TimeResponse timeResponse) {
+	public void synchronizeTime(TimeSync timeResponse) {
 		if (world != null) {
-			timeRequestFrequencyMillis = world.getTime().synchronizeTime(timeResponse);
+			world.getTime().synchronizeTime(timeResponse);
 		}
 	}
 

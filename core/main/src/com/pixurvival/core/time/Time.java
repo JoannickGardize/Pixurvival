@@ -1,6 +1,6 @@
 package com.pixurvival.core.time;
 
-import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
@@ -20,6 +20,7 @@ public class Time {
 	private long synchronizeTimeCounter = 0;
 	private @Getter float averagePing = 0;
 	private @Getter long tickCount = 0;
+	private float timeDiffAccumulator = 0;
 
 	public void update(float deltaTimeMillis) {
 		tickCount++;
@@ -36,7 +37,7 @@ public class Time {
 		dayCycle.update(timeMillis);
 	}
 
-	public long synchronizeTime(TimeResponse timeResponse) {
+	public void synchronizeTime(TimeSync timeResponse) {
 		long ping = (timeMillis - timeResponse.getRequesterTime()) / 2;
 		if (averagePing == 0) {
 			averagePing = ping;
@@ -47,15 +48,10 @@ public class Time {
 		if (synchronizeTimeCounter < 20) {
 			synchronizeTimeCounter++;
 		}
-		timeMillis += Math.round((float) difference / synchronizeTimeCounter);
-		long absDiff = Math.abs(difference);
-		if (absDiff > 100) {
-			return 1000;
-		} else if (absDiff > 50) {
-			return 5000;
-		} else {
-			return 10_000;
-		}
+		float toAdd = (float) difference / synchronizeTimeCounter + timeDiffAccumulator;
+		int toAddInt = (int) toAdd;
+		timeDiffAccumulator = toAdd - toAddInt;
+		timeMillis += toAddInt;
 	}
 
 	public static long secToMillis(float secondes) {

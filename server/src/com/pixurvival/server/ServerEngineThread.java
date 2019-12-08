@@ -38,14 +38,20 @@ public class ServerEngineThread extends EngineThread {
 	}
 
 	public synchronized void add(GameSession worldSession) {
+		worldSession.setPreviousNetworkReportTime(System.currentTimeMillis());
 		sessions.add(worldSession);
 	}
 
 	@Override
 	public synchronized void update(float deltaTimeMillis) {
 		game.consumeReceivedObjects();
-		sessions.forEach(gs -> gs.getWorld().update(deltaTimeMillis));
 		sessions.forEach(gs -> {
+			gs.getWorld().update(deltaTimeMillis);
+			long elapsed = System.currentTimeMillis() - gs.getPreviousNetworkReportTime();
+			if (elapsed >= 10_000) {
+				gs.getNetworkReporter().report(elapsed);
+				gs.setPreviousNetworkReportTime(System.currentTimeMillis());
+			}
 			if (gs.getWorld().getTime().getTickCount() % 2 == 0) {
 				// Send data every 2 frames only
 				return;
@@ -89,7 +95,7 @@ public class ServerEngineThread extends EngineThread {
 		if (ClientAckManager.getInstance().check(connection) && !connection.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
-				connection.sendUDP(tmpDeltaWorldUpdate);
+				int size = connection.sendUDP(tmpDeltaWorldUpdate);
 			}
 		} else {
 			if (connection.isRequestedFullUpdate()) {
@@ -116,7 +122,7 @@ public class ServerEngineThread extends EngineThread {
 		byteBuffer.position(0);
 		writeRemoveEntity(gs, session, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
-		writeEntityUpdate(session, playerEntity, byteBuffer);
+		writeDeltaEntityUpdate(session, playerEntity, byteBuffer);
 		byteBuffer.put(EntityGroup.END_MARKER);
 		prepareCommonUpdatePart(tmpDeltaWorldUpdate, playerEntity, playerEntity.getSoundEffectsToConsume());
 
@@ -127,7 +133,6 @@ public class ServerEngineThread extends EngineThread {
 		List<SoundEffect> newSoundEffects = player.getSoundEffectsToConsume();
 		List<SoundEffect> totalSoundEffects = new ArrayList<>(newSoundEffects.size() + resendSoundEffects.size());
 		totalSoundEffects.addAll(newSoundEffects);
-		System.out.println(newSoundEffects.size() + ", " + resendSoundEffects.size());
 		totalSoundEffects.addAll(resendSoundEffects);
 		prepareFullUpdate(player, ClientAckManager.getInstance().getCompressedChunks(), ClientAckManager.getInstance().getStructureUpdates(), totalSoundEffects);
 	}
@@ -147,7 +152,7 @@ public class ServerEngineThread extends EngineThread {
 		ByteBuffer byteBuffer = tmpFullWorldUpdate.getEntityUpdateByteBuffer();
 		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
 		byteBuffer.put(EntityGroup.END_MARKER);
-		player.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, true, player.getChunkVision()));
+		player.foreachChunkInView(chunk -> chunk.getEntities().writeFullUpdate(byteBuffer));
 		byteBuffer.put(EntityGroup.END_MARKER);
 		prepareCommonUpdatePart(tmpFullWorldUpdate, player, soundEffects);
 
@@ -169,8 +174,14 @@ public class ServerEngineThread extends EngineThread {
 		}
 	}
 
-	private void writeEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
-		playerEntity.foreachChunkInView(chunk -> chunk.getEntities().writeUpdate(byteBuffer, session.isNewPosition(chunk.getPosition()), playerEntity.getChunkVision()));
+	private void writeDeltaEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
+		playerEntity.foreachChunkInView(chunk -> {
+			if (session.isNewPosition(chunk.getPosition())) {
+				chunk.getEntities().writeFullUpdate(byteBuffer);
+			} else {
+				chunk.getEntities().writeDeltaUpdate(byteBuffer, playerEntity.getChunkVision());
+			}
+		});
 	}
 
 	private void writeRemoveEntity(GameSession gs, PlayerSession session, ByteBuffer byteBuffer) {

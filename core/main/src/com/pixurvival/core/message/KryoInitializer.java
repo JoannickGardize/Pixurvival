@@ -42,7 +42,7 @@ public class KryoInitializer {
 		register(kryo, Direction.class);
 		register(kryo, Vector2.class);
 		register(kryo, PlayerMovementRequest.class);
-		register(kryo, TimeResponse.class);
+		register(kryo, TimeSync.class);
 		register(kryo, LoginRequest.class);
 		register(kryo, LoginResponse.class);
 		register(kryo, WorldUpdate.class);
@@ -83,8 +83,7 @@ public class KryoInitializer {
 		register(kryo, EndGameData.class);
 		register(kryo, RefreshRequest.class);
 		register(kryo, ClientStream.class);
-		register(kryo, TimeRequest.class);
-		register(kryo, TimeResponse.class);
+		register(kryo, TimeSync.class);
 		register(kryo, SoundEffect.class);
 	}
 

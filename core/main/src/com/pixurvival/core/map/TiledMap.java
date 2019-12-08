@@ -22,7 +22,10 @@ import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.map.chunk.ChunkRepository;
+import com.pixurvival.core.map.chunk.ChunkRepositoryEntry;
+import com.pixurvival.core.map.chunk.ClientChunkRepository;
 import com.pixurvival.core.map.chunk.CompressedChunk;
+import com.pixurvival.core.map.chunk.ServerChunkRepository;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
@@ -33,7 +36,7 @@ public class TiledMap {
 
 	private List<TiledMapListener> listeners = new ArrayList<>();
 	private List<PlayerMapEventListener> playerMapEventListeners = new ArrayList<>();
-	private List<Chunk> newChunks = new ArrayList<>();
+	private List<ChunkRepositoryEntry> newChunks = new ArrayList<>();
 	private List<Chunk> toRemoveChunks = new ArrayList<>();
 
 	@Getter
@@ -53,7 +56,7 @@ public class TiledMap {
 
 	private Map<ChunkPosition, ChunkPosition> waitingPositions = new ConcurrentHashMap<>();
 
-	private @Getter ChunkRepository repository = new ChunkRepository();
+	private @Getter ChunkRepository repository;
 
 	private Light tmpResult;
 
@@ -61,8 +64,10 @@ public class TiledMap {
 		this.world = world;
 
 		if (world.isServer()) {
+			repository = new ServerChunkRepository();
 			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
 		} else {
+			repository = new ClientChunkRepository();
 			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile()) {
 				@Override
 				public boolean isSolid() {
@@ -126,7 +131,7 @@ public class TiledMap {
 		}
 	}
 
-	public void addChunk(Chunk chunk) {
+	public void addChunk(ChunkRepositoryEntry chunk) {
 		newChunks.add(chunk);
 	}
 
@@ -164,9 +169,6 @@ public class TiledMap {
 	private void unloadChunk(Chunk chunk) {
 		repository.save(chunk);
 		chunks.remove(chunk.getPosition());
-		if (world.isServer()) {
-			world.getEntityPool().removeAll(chunk.getEntities());
-		}
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
 	}
 
@@ -210,7 +212,10 @@ public class TiledMap {
 		synchronized (this) {
 			toRemoveChunks.forEach(this::unloadChunk);
 			toRemoveChunks.clear();
-			newChunks.forEach(this::insertChunk);
+			newChunks.forEach(chunkEntry -> {
+				world.getEntityPool().applyUpdate(chunkEntry.getEntitiesData(), world, true);
+				insertChunk(chunkEntry.getChunk());
+			});
 			newChunks.clear();
 		}
 	}

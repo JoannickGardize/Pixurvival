@@ -16,8 +16,7 @@ import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.StartGame;
-import com.pixurvival.core.message.TimeRequest;
-import com.pixurvival.core.message.TimeResponse;
+import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
@@ -29,6 +28,7 @@ import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
+import com.pixurvival.core.util.MathUtils;
 
 class NetworkMessageHandler extends Listener {
 
@@ -80,8 +80,6 @@ class NetworkMessageHandler extends Listener {
 				m.getConnection().sendTCP(new StartGame());
 			}
 		});
-		messageActions.put(TimeRequest.class,
-				m -> m.getConnection().sendUDP(new TimeResponse(((TimeRequest) m.getObject()).getRequesterTime(), m.getConnection().getPlayerEntity().getWorld().getTime().getTimeMillis())));
 		messageActions.put(RefreshRequest.class, m -> m.getConnection().setRequestedFullUpdate(true));
 
 	}
@@ -128,12 +126,17 @@ class NetworkMessageHandler extends Listener {
 		PlayerConnection connection = m.getConnection();
 		ClientStream clientStream = (ClientStream) m.getObject();
 		ClientAckManager.getInstance().acceptAcks(connection, clientStream.getAcks());
+		PlayerEntity playerEntity = connection.getPlayerEntity();
 		if (clientStream.getTime() > connection.getPreviousClientWorldTime()) {
 			connection.setPreviousClientWorldTime(clientStream.getTime());
 			if (!connection.isSpectator()) {
-				PlayerEntity playerEntity = connection.getPlayerEntity();
 				playerEntity.getTargetPosition().set(playerEntity.getPosition()).addEuclidean(clientStream.getTargetDistance(), clientStream.getTargetAngle());
 			}
+		}
+		connection.setSmoothedTimeDiff(
+				MathUtils.linearInterpolate(connection.getSmoothedTimeDiff(), clientStream.getTime() - playerEntity.getWorld().getTime().getTimeMillis() + connection.getPing() / 2, 0.1f));
+		if (Math.abs(connection.getSmoothedTimeDiff()) > 10) {
+			connection.sendUDP(new TimeSync(clientStream.getTime(), playerEntity.getWorld().getTime().getTimeMillis()));
 		}
 	}
 }

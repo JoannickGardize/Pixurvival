@@ -9,23 +9,22 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Deprecated
-public class TimeResponse {
+public class TimeSync {
 
 	private long requesterTime;
 	private long responderTime;
 
-	public static class Serializer extends com.esotericsoftware.kryo.Serializer<TimeResponse> {
+	public static class Serializer extends com.esotericsoftware.kryo.Serializer<TimeSync> {
 
 		@Override
-		public void write(Kryo kryo, Output output, TimeResponse object) {
+		public void write(Kryo kryo, Output output, TimeSync object) {
 			output.writeLong(object.requesterTime);
 			output.writeLong(object.responderTime);
 		}
 
 		@Override
-		public TimeResponse read(Kryo kryo, Input input, Class<TimeResponse> type) {
-			return new TimeResponse(input.readLong(), input.readLong());
+		public TimeSync read(Kryo kryo, Input input, Class<TimeSync> type) {
+			return new TimeSync(input.readLong(), input.readLong());
 		}
 
 	}

@@ -47,6 +47,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	private List<PlayerDead> playerDeadList = new ArrayList<>();
 	private @Setter TeamComposition[] teamCompositions;
 	private List<PlayerSession> tmpPlayerSessions = new ArrayList<>();
+	private @Getter @Setter long previousNetworkReportTime;
+	private @Getter NetworkStatisticsReporter networkReporter = new NetworkStatisticsReporter();
 
 	public GameSession(World world) {
 		this.world = world;
@@ -67,6 +69,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		PlayerSession playerSession = new PlayerSession(player);
 		players.add(playerSession);
 		getSessionsForPlayerEntity(player.getPlayerEntity()).add(playerSession);
+		player.setNetworkListener(networkReporter);
 	}
 
 	public void foreachPlayers(Consumer<PlayerSession> action) {

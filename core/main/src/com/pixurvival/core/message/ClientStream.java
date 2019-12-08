@@ -3,7 +3,6 @@ package com.pixurvival.core.message;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
 import lombok.Setter;

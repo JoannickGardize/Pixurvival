@@ -50,7 +50,7 @@ public class ChunkManager extends EngineThread {
 
 	private final Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
 	private final List<ChunkPosition> tmpPositions = new ArrayList<>();
-	private final List<Chunk> tmpChunks = new ArrayList<>();
+	private final List<ChunkRepositoryEntry> tmpChunks = new ArrayList<>();
 
 	private ChunkManager() {
 		super("Chunk Manager");
@@ -89,20 +89,21 @@ public class ChunkManager extends EngineThread {
 			}
 			tmpChunks.clear();
 			tmpPositions.forEach(p -> {
-				Chunk chunk = entry.map.getRepository().load(p);
-				if (chunk == null && entry.map.getWorld().isServer()) {
-					chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
+				ChunkRepositoryEntry chunkEntry = entry.map.getRepository().load(p);
+				if (chunkEntry == null && entry.map.getWorld().isServer()) {
+					Chunk chunk = entry.map.getWorld().getChunkSupplier().get(p.getX(), p.getY());
 					chunk.setNewlyCreated(true);
+					chunkEntry = new ChunkRepositoryEntry(chunk);
 				}
-				if (chunk != null) {
-					tmpChunks.add(chunk);
+				if (chunkEntry != null) {
+					tmpChunks.add(chunkEntry);
 				}
 			});
 
 			synchronized (entry.map) {
 				tmpChunks.forEach(c -> {
 					entry.map.addChunk(c);
-					entry.map.notifyChunkAvailable(c.getPosition());
+					entry.map.notifyChunkAvailable(c.getChunk().getPosition());
 				});
 			}
 		});
