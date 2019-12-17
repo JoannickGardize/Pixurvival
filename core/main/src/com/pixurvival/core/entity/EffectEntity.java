@@ -76,8 +76,12 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			setSneakyDeath(true);
 		}
 		if (getWorld().isServer()) {
-			processFollowingElements(getWorld().getTime().getTimeMillis() - creationTime);
-			processEffectTarget();
+			if (definition.getEffect().getMovement().isDestroyWithAncestor() && !getAncestor().isAlive()) {
+				setAlive(false);
+			} else {
+				processFollowingElements(getWorld().getTime().getTimeMillis() - creationTime);
+				processEffectTarget();
+			}
 		}
 		normalPositionUpdate();
 		updateChunk();

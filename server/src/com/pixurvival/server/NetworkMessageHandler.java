@@ -8,15 +8,12 @@ import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.RequestContentPacks;
-import com.pixurvival.core.message.StartGame;
-import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
@@ -28,15 +25,14 @@ import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
-import com.pixurvival.core.util.MathUtils;
 
 class NetworkMessageHandler extends Listener {
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(15);
-	private ServerGame game;
+	private PixurvivalServer game;
 
-	public NetworkMessageHandler(ServerGame game) {
+	public NetworkMessageHandler(PixurvivalServer game) {
 		this.game = game;
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
@@ -56,32 +52,26 @@ class NetworkMessageHandler extends Listener {
 			connection.setLogged(true);
 			connection.setName(name);
 			game.addPlayerConnection(connection);
-			game.notify(l -> l.playerLoggedIn(connection));
-			connection.sendTCP(LoginResponse.OK);
+			game.playerLoggedIn(connection);
+
 		});
-		messageActions.put(PlayerMovementRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(PlaceStructureRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(InventoryActionRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(InteractStructureRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(EquipmentActionRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(DropItemRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(CraftItemRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(PlayerEquipmentAbilityRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(ClientStream.class, this::handleClientStream);
-		messageActions.put(UseItemRequest.class, this::handlePlayerActionRequest);
-		messageActions.put(ChatRequest.class, this::handlePlayerActionRequest);
+		messageActions.put(PlayerMovementRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(PlaceStructureRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(InventoryActionRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(InteractStructureRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(EquipmentActionRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(DropItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(CraftItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(PlayerEquipmentAbilityRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(ClientStream.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleClientStream((ClientStream) m.getObject())));
+		messageActions.put(UseItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(ChatRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(RequestContentPacks.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
 		});
-		messageActions.put(GameReady.class, m -> {
-			m.getConnection().setGameReady(true);
-			if (m.getConnection().isReconnected()) {
-				m.getConnection().sendTCP(new StartGame());
-			}
-		});
-		messageActions.put(RefreshRequest.class, m -> m.getConnection().setRequestedFullUpdate(true));
-
+		messageActions.put(GameReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleGameReady((GameReady) m.getObject())));
+		messageActions.put(RefreshRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleRefreshRequest((RefreshRequest) m.getObject())));
 	}
 
 	public void consumeReceivedObjects() {
@@ -97,12 +87,9 @@ class NetworkMessageHandler extends Listener {
 	}
 
 	@Override
-	public void connected(Connection connection) {
-	}
-
-	@Override
 	public void disconnected(Connection connection) {
 		game.removePlayerConnection(connection.toString());
+		((PlayerConnection) connection).disconnected();
 	}
 
 	@Override
@@ -111,32 +98,6 @@ class NetworkMessageHandler extends Listener {
 			synchronized (clientMessages) {
 				clientMessages.add(new ClientMessage((PlayerConnection) connection, object));
 			}
-		}
-	}
-
-	private void handlePlayerActionRequest(ClientMessage m) {
-		PlayerConnection connection = m.getConnection();
-		PlayerEntity entity = connection.getPlayerEntity();
-		if (!connection.isSpectator() && entity != null && entity.isAlive()) {
-			((IPlayerActionRequest) m.getObject()).apply(entity);
-		}
-	}
-
-	private void handleClientStream(ClientMessage m) {
-		PlayerConnection connection = m.getConnection();
-		ClientStream clientStream = (ClientStream) m.getObject();
-		ClientAckManager.getInstance().acceptAcks(connection, clientStream.getAcks());
-		PlayerEntity playerEntity = connection.getPlayerEntity();
-		if (clientStream.getTime() > connection.getPreviousClientWorldTime()) {
-			connection.setPreviousClientWorldTime(clientStream.getTime());
-			if (!connection.isSpectator()) {
-				playerEntity.getTargetPosition().set(playerEntity.getPosition()).addEuclidean(clientStream.getTargetDistance(), clientStream.getTargetAngle());
-			}
-		}
-		connection.setSmoothedTimeDiff(
-				MathUtils.linearInterpolate(connection.getSmoothedTimeDiff(), clientStream.getTime() - playerEntity.getWorld().getTime().getTimeMillis() + connection.getPing() / 2, 0.1f));
-		if (Math.abs(connection.getSmoothedTimeDiff()) > 10) {
-			connection.sendUDP(new TimeSync(clientStream.getTime(), playerEntity.getWorld().getTime().getTimeMillis()));
 		}
 	}
 }

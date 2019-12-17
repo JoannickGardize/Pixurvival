@@ -55,41 +55,41 @@ public class ClientAckManager {
 	private @Getter List<StructureUpdate> structureUpdates = new ArrayList<>();
 	private @Getter List<SoundEffect> soundEffects = new ArrayList<>();
 
-	public void addExpectedAck(PlayerConnection connection, WorldUpdate worldUpdate) {
-		connection.getWaitingAcks().put(worldUpdate.getUpdateId(), new WaitingAckEntry(connection.getPlayerEntity().getWorld().getTime().getTimeMillis(), worldUpdate.getCompressedChunks(),
+	public void addExpectedAck(PlayerGameSession session, WorldUpdate worldUpdate) {
+		session.getWaitingAcks().put(worldUpdate.getUpdateId(), new WaitingAckEntry(session.getPlayerEntity().getWorld().getTime().getTimeMillis(), worldUpdate.getCompressedChunks(),
 				worldUpdate.getStructureUpdates(), worldUpdate.getSoundEffects()));
 	}
 
-	public void acceptAcks(PlayerConnection connection, long[] acks) {
-		long time = connection.getPlayerEntity().getWorld().getTime().getTimeMillis();
+	public void acceptAcks(PlayerGameSession session, long[] acks) {
+		long time = session.getPlayerEntity().getWorld().getTime().getTimeMillis();
 		long pingSum = 0;
 		long pingCount = 0;
 		for (long ack : acks) {
-			WaitingAckEntry entry = connection.getWaitingAcks().remove(ack);
+			WaitingAckEntry entry = session.getWaitingAcks().remove(ack);
 			if (entry != null) {
 				pingSum += time - entry.time;
 				pingCount++;
 			}
 		}
 		if (pingCount != 0) {
-			if (connection.getPing() == -1) {
-				connection.setPing((float) pingSum / pingCount);
+			if (session.getPing() == -1) {
+				session.setPing((float) pingSum / pingCount);
 			} else {
-				connection.setPing(MathUtils.linearInterpolate(connection.getPing(), (float) pingSum / pingCount, 0.1f));
+				session.setPing(MathUtils.linearInterpolate(session.getPing(), (float) pingSum / pingCount, 0.1f));
 			}
 		}
 	}
 
 	/**
-	 * @param connection
-	 * @return true if acks are considered ok, false if ack is considered
-	 *         missing and a full update is required.
+	 * @param session
+	 * @return true if acks are considered ok, false if ack is considered missing
+	 *         and a full update is required.
 	 */
-	public boolean check(PlayerConnection connection) {
-		long time = connection.getPlayerEntity().getWorld().getTime().getTimeMillis();
-		long threshold = (long) (((connection.getPing() * PING_TOLERANCE_MULTIPLIER) + GameConstants.CLIENT_STREAM_INTERVAL + 66) * connection.getAckThresholdMultiplier());
+	public boolean check(PlayerGameSession session) {
+		long time = session.getPlayerEntity().getWorld().getTime().getTimeMillis();
+		long threshold = (long) (((session.getPing() * PING_TOLERANCE_MULTIPLIER) + GameConstants.CLIENT_STREAM_INTERVAL + 66) * session.getAckThresholdMultiplier());
 		boolean ok = true;
-		for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {
+		for (WaitingAckEntry entry : session.getWaitingAcks().values()) {
 			if (time - entry.time >= threshold) {
 				ok = false;
 				break;
@@ -99,18 +99,18 @@ public class ClientAckManager {
 		structureUpdates.clear();
 		soundEffects.clear();
 		if (ok) {
-			connection.setAckThresholdMultiplier(1 + (connection.getAckThresholdMultiplier() - 1) * 0.99f);
+			session.setAckThresholdMultiplier(1 + (session.getAckThresholdMultiplier() - 1) * 0.99f);
 			return true;
 		} else {
-			connection.setAckThresholdMultiplier(connection.getAckThresholdMultiplier() * 1.2f);
-			for (WaitingAckEntry entry : connection.getWaitingAcks().values()) {
+			session.setAckThresholdMultiplier(session.getAckThresholdMultiplier() * 1.2f);
+			for (WaitingAckEntry entry : session.getWaitingAcks().values()) {
 				compressedChunks.addAll(entry.getCompressedChunks());
 				// TODO éviter le problème des structureUpadates qui écrasent un
 				// plus récent
 				structureUpdates.addAll(entry.getStructureUpdates());
 				soundEffects.addAll(entry.getSoundEffects());
 			}
-			connection.getWaitingAcks().clear();
+			session.getWaitingAcks().clear();
 			return false;
 		}
 	}

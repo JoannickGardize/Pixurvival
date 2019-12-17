@@ -15,9 +15,9 @@ public class EventAction implements Action {
 
 	@Override
 	public void perform() {
+		repeatCount++;
 		event.perform(world, repeatCount);
 		if (event.getRepeatTime() > 0) {
-			repeatCount++;
 			world.getActionTimerManager().addActionTimer(this, event.getRepeatTime());
 		}
 	}

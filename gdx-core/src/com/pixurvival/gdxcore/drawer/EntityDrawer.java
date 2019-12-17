@@ -9,21 +9,6 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E> {
 
-	@Deprecated
-	public void updateOld(E e) {
-		Object o = e.getCustomData();
-		if (o == null) {
-			o = new DrawData();
-			((DrawData) o).getDrawPosition().set(e.getPosition());
-			e.setCustomData(o);
-		}
-		DrawData data = (DrawData) o;
-		Vector2 drawPos = data.getDrawPosition();
-		Vector2 targetPosition = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
-		drawPos.lerp(targetPosition, 0.7f);
-
-	}
-
 	@Override
 	public void update(E e) {
 		DrawData data = (DrawData) e.getCustomData();

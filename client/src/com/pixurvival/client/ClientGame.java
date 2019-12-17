@@ -80,6 +80,10 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		listeners.add(listener);
 	}
 
+	public void removeListener(ClientGameListener listener) {
+		listeners.remove(listener);
+	}
+
 	void notify(Consumer<ClientGameListener> action) {
 		listeners.forEach(action);
 	}

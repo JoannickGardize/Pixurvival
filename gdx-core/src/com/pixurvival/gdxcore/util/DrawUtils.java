@@ -130,6 +130,14 @@ public class DrawUtils {
 		}
 	}
 
+	public static boolean isInsideScreen(Stage worldStage, Vector2 position) {
+		OrthographicCamera camera = (OrthographicCamera) worldStage.getCamera();
+		float width2 = worldStage.getViewport().getWorldWidth() * camera.zoom / 2f;
+		float height2 = worldStage.getViewport().getWorldHeight() * camera.zoom / 2f;
+		Vector3 camPos = camera.position;
+		return position.getX() > camPos.x - width2 && position.getX() < camPos.x + width2 && position.getY() > camPos.y - height2 && position.getY() < camPos.y + height2;
+	}
+
 	public static void setTooltipPosition(Actor actor) {
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight() - Gdx.input.getY();

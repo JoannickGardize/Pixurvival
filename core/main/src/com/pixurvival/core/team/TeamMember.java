@@ -15,4 +15,6 @@ public interface TeamMember extends Positionnable {
 	TeamMember getOrigin();
 
 	TeamMember findIfNotFound();
+
+	boolean isAlive();
 }

@@ -93,6 +93,5 @@ public class CompressedChunk {
 			int length = input.readInt();
 			return new CompressedChunk(world.getMap(), input.readBytes(length));
 		}
-
 	}
 }

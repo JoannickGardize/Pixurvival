@@ -31,8 +31,10 @@ import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
+import com.pixurvival.core.message.lobby.LobbyList;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
+import com.pixurvival.gdxcore.lobby.LobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
@@ -266,6 +268,18 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		Screen screen = getScreen();
 		if (screen instanceof WorldScreen) {
 			((WorldScreen) screen).showEndGame(data);
+		}
+	}
+
+	@Override
+	public void enterLobby() {
+		setScreen(LobbyScreen.class);
+	}
+
+	@Override
+	public void lobbyListReceived(LobbyList list) {
+		if (getScreen() instanceof LobbyScreen) {
+			((LobbyScreen) getScreen()).setTeams(list.getPlayers());
 		}
 	}
 }

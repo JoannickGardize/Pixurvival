@@ -62,6 +62,8 @@ public class WorldUpdateManager implements Plugin<World> {
 		}
 		waitingList.clear();
 		history.tailMap(smallestId).values().forEach(u -> {
+			world.getMap().addAllChunks(u.getCompressedChunks());
+			world.getMap().applyUpdate(u.getStructureUpdates());
 			if (u.getEntityUpdateLength() > 0) {
 				u.getEntityUpdateByteBuffer().position(0);
 				world.getEntityPool().applyUpdate(u.getEntityUpdateByteBuffer());
@@ -83,8 +85,6 @@ public class WorldUpdateManager implements Plugin<World> {
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.WEAPON_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[1]);
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY1_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[2]);
 			((CooldownAbilityData) playerEntity.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).setReadyTimeMillis(u.getReadyCooldowns()[3]);
-			world.getMap().addAllChunks(u.getCompressedChunks());
-			world.getMap().applyUpdate(u.getStructureUpdates());
 		});
 
 		while (history.size() > HISTORY_SIZE) {

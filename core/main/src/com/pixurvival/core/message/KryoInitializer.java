@@ -19,6 +19,15 @@ import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
+import com.pixurvival.core.message.lobby.ChangeTeamRequest;
+import com.pixurvival.core.message.lobby.CreateTeamRequest;
+import com.pixurvival.core.message.lobby.EnterLobby;
+import com.pixurvival.core.message.lobby.LobbyList;
+import com.pixurvival.core.message.lobby.LobbyPlayer;
+import com.pixurvival.core.message.lobby.LobbyTeam;
+import com.pixurvival.core.message.lobby.ReadyRequest;
+import com.pixurvival.core.message.lobby.RemoveTeamRequest;
+import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
@@ -85,6 +94,17 @@ public class KryoInitializer {
 		register(kryo, ClientStream.class);
 		register(kryo, TimeSync.class);
 		register(kryo, SoundEffect.class);
+		register(kryo, ChangeTeamRequest.class);
+		register(kryo, CreateTeamRequest.class);
+		register(kryo, EnterLobby.class);
+		register(kryo, LobbyList.class);
+		register(kryo, LobbyPlayer.class);
+		register(kryo, LobbyPlayer[].class);
+		register(kryo, LobbyTeam.class);
+		register(kryo, LobbyTeam[].class);
+		register(kryo, ReadyRequest.class);
+		register(kryo, RemoveTeamRequest.class);
+		register(kryo, RenameTeamRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

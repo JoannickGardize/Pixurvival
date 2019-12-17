@@ -25,27 +25,27 @@ import lombok.NonNull;
 
 public class ServerEngineThread extends EngineThread {
 
-	private @NonNull ServerGame game;
-	private List<GameSession> sessions = new ArrayList<>();
+	private @NonNull PixurvivalServer game;
+	private List<GameSession> gameSessions = new ArrayList<>();
 	private WorldUpdate tmpDeltaWorldUpdate = new WorldUpdate();
 	private WorldUpdate tmpFullWorldUpdate = new WorldUpdate();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
 
-	public ServerEngineThread(ServerGame game) {
+	public ServerEngineThread(PixurvivalServer game) {
 		super("Main Server Thread");
 		this.game = game;
 		setWarnLoadTrigger(0.8f);
 	}
 
-	public synchronized void add(GameSession worldSession) {
-		worldSession.setPreviousNetworkReportTime(System.currentTimeMillis());
-		sessions.add(worldSession);
+	public synchronized void add(GameSession gameSession) {
+		gameSession.setPreviousNetworkReportTime(System.currentTimeMillis());
+		gameSessions.add(gameSession);
 	}
 
 	@Override
-	public synchronized void update(float deltaTimeMillis) {
+	public void update(float deltaTimeMillis) {
 		game.consumeReceivedObjects();
-		sessions.forEach(gs -> {
+		gameSessions.forEach(gs -> {
 			gs.getWorld().update(deltaTimeMillis);
 			long elapsed = System.currentTimeMillis() - gs.getPreviousNetworkReportTime();
 			if (elapsed >= 10_000) {
@@ -71,53 +71,50 @@ public class ServerEngineThread extends EngineThread {
 	private void sendWorldData(GameSession gs) {
 		PlayerDead[] playerDeads = gs.extractPlayerDeads();
 		gs.foreachPlayers(session -> {
-			PlayerConnection connection = session.getConnection();
-			PlayerEntity playerEntity = connection.getPlayerEntity();
-			if (connection.isGameReady() && playerEntity != null) {
-				sendWorldUpdate(gs, session, connection);
-				if (connection.isInventoryChanged()) {
-					connection.setInventoryChanged(false);
-					connection.sendTCP(playerEntity.getInventory());
+			PlayerEntity playerEntity = session.getPlayerEntity();
+			if (session.isGameReady() && playerEntity != null) {
+				sendWorldUpdate(gs, session);
+				if (session.isInventoryChanged()) {
+					session.setInventoryChanged(false);
+					session.getConnection().sendTCP(playerEntity.getInventory());
 				}
 				if (playerDeads != null) {
-					connection.sendTCP(playerDeads);
+					session.getConnection().sendTCP(playerDeads);
 				}
 			}
 			session.clearPositionChanges();
 		});
-
 	}
 
-	private void sendWorldUpdate(GameSession gs, PlayerSession session, PlayerConnection connection) {
-		if (!connection.isConnected()) {
+	private void sendWorldUpdate(GameSession gs, PlayerGameSession session) {
+		if (!session.getConnection().isConnected()) {
 			return;
 		}
-		if (ClientAckManager.getInstance().check(connection) && !connection.isRequestedFullUpdate()) {
+		if (ClientAckManager.getInstance().check(session) && !session.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
-				int size = connection.sendUDP(tmpDeltaWorldUpdate);
+				session.sendUDP(tmpDeltaWorldUpdate);
 			}
 		} else {
-			if (connection.isRequestedFullUpdate()) {
-				prepareFullUpdateForRefresh(session.getConnection().getPlayerEntity());
-				connection.setRequestedFullUpdate(false);
+			if (session.isRequestedFullUpdate()) {
+				prepareFullUpdateForRefresh(session.getPlayerEntity());
+				session.setRequestedFullUpdate(false);
 			} else {
 				// TODO also add chunks and structure updates of the player
 				// session
-				prepareFullUpdate(session.getConnection().getPlayerEntity());
+				prepareFullUpdate(session.getPlayerEntity());
 			}
-			int length = connection.sendUDP(tmpFullWorldUpdate);
-			Log.info("full update sent to " + connection + " ( entity : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + " total : " + length + ", ping : " + connection.getPing()
-					+ ", multiplier : " + connection.getAckThresholdMultiplier() + ")");
+			int length = session.sendUDP(tmpFullWorldUpdate);
+			Log.info("full update sent to " + session.getConnection() + " entity size : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
 		}
 	}
 
-	private void prepareDeltaUpdate(GameSession gs, PlayerSession session) {
+	private void prepareDeltaUpdate(GameSession gs, PlayerGameSession session) {
 		tmpDeltaWorldUpdate.getCompressedChunks().clear();
 		tmpDeltaWorldUpdate.getStructureUpdates().clear();
 		session.extractStructureUpdatesToSend(tmpDeltaWorldUpdate.getStructureUpdates());
 		session.extractChunksToSend(tmpDeltaWorldUpdate.getCompressedChunks());
-		PlayerEntity playerEntity = session.getConnection().getPlayerEntity();
+		PlayerEntity playerEntity = session.getPlayerEntity();
 		ByteBuffer byteBuffer = tmpDeltaWorldUpdate.getEntityUpdateByteBuffer();
 		byteBuffer.position(0);
 		writeRemoveEntity(gs, session, byteBuffer);
@@ -148,8 +145,8 @@ public class ServerEngineThread extends EngineThread {
 		tmpFullWorldUpdate.getCompressedChunks().addAll(compressedChunks);
 		tmpFullWorldUpdate.getStructureUpdates().clear();
 		tmpFullWorldUpdate.getStructureUpdates().addAll(structureUpdates);
-		tmpFullWorldUpdate.getEntityUpdateByteBuffer().position(0);
 		ByteBuffer byteBuffer = tmpFullWorldUpdate.getEntityUpdateByteBuffer();
+		byteBuffer.position(0);
 		byteBuffer.put(EntityGroup.REMOVE_ALL_MARKER);
 		byteBuffer.put(EntityGroup.END_MARKER);
 		player.foreachChunkInView(chunk -> chunk.getEntities().writeFullUpdate(byteBuffer));
@@ -174,7 +171,7 @@ public class ServerEngineThread extends EngineThread {
 		}
 	}
 
-	private void writeDeltaEntityUpdate(PlayerSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
+	private void writeDeltaEntityUpdate(PlayerGameSession session, PlayerEntity playerEntity, ByteBuffer byteBuffer) {
 		playerEntity.foreachChunkInView(chunk -> {
 			if (session.isNewPosition(chunk.getPosition())) {
 				chunk.getEntities().writeFullUpdate(byteBuffer);
@@ -184,9 +181,8 @@ public class ServerEngineThread extends EngineThread {
 		});
 	}
 
-	private void writeRemoveEntity(GameSession gs, PlayerSession session, ByteBuffer byteBuffer) {
-		PlayerConnection connection = session.getConnection();
-		PlayerEntity playerEntity = connection.getPlayerEntity();
+	private void writeRemoveEntity(GameSession gs, PlayerGameSession session, ByteBuffer byteBuffer) {
+		PlayerEntity playerEntity = session.getPlayerEntity();
 		TiledMap map = playerEntity.getWorld().getMap();
 		tmpRemoveEntityCollection.clear();
 		session.foreachOldPosition(position -> map.ifChunkExists(position, chunk -> tmpRemoveEntityCollection.addAll(chunk.getEntities())));

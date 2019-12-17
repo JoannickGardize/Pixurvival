@@ -24,7 +24,7 @@ public class ContentPackUploadManager extends Thread implements ServerGameListen
 		private RequestContentPacks request;
 	}
 
-	private @NonNull ServerGame game;
+	private @NonNull PixurvivalServer game;
 	private ContentPackIdentifier[] dependencyList;
 	private @Setter boolean running = true;
 

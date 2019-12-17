@@ -134,7 +134,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	public void initialize() {
 		super.initialize();
-		setAlive(true);
 		if (getWorld().isServer()) {
 			setInventory(new PlayerInventory(INVENTORY_SIZE));
 			equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {

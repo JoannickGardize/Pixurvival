@@ -35,4 +35,9 @@ public class EffectEventTeamMember implements TeamMember {
 		return this;
 	}
 
+	@Override
+	public boolean isAlive() {
+		return true;
+	}
+
 }

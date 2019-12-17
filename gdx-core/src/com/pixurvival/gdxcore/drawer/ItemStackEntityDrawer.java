@@ -21,8 +21,8 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 		TextureMetrics metrics = itemTexture.getMetrics();
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.getX() - metrics.getWorldWidth() / 2);
-		float y = (float) (drawPosition.getY());
+		float x = drawPosition.getX() - metrics.getWorldWidth() / 2;
+		float y = (drawPosition.getY());
 		batch.draw(shadow, x, y - metrics.getWorldWidth() / 4, metrics.getWorldWidth(), metrics.getWorldWidth() / 2);
 	}
 
@@ -34,8 +34,8 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 		TextureMetrics metrics = itemTexture.getMetrics();
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.getX());
-		float y = (float) (drawPosition.getY());
+		float x = drawPosition.getX();
+		float y = drawPosition.getY();
 		if (e.getItemStack().getQuantity() == 1) {
 			ItemDrawer.draw(batch, contentPackTextures, texture, metrics, x, y);
 		} else if (e.getItemStack().getQuantity() == 2) {

@@ -6,18 +6,18 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
 import com.pixurvival.server.PlayerConnection;
-import com.pixurvival.server.ServerGame;
+import com.pixurvival.server.PixurvivalServer;
 import com.pixurvival.server.ServerGameListener;
 import com.pixurvival.server.util.ServerMainArgs;
 
 public class ServerConsole implements Runnable, ServerGameListener {
 
 	private boolean running = true;
-	private ServerGame game;
+	private PixurvivalServer game;
 	private CommandMultiplexer rootCommandProcessor;
 
 	public ServerConsole(ServerMainArgs mainArgs) {
-		game = new ServerGame(mainArgs);
+		game = new PixurvivalServer(mainArgs);
 		game.addListener(this);
 
 		rootCommandProcessor = new ServerCommands(game);

@@ -1,56 +1,29 @@
 package com.pixurvival.server;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.pixurvival.core.item.Inventory;
-import com.pixurvival.core.item.InventoryListener;
-import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.message.WorldUpdate;
-import com.pixurvival.server.ClientAckManager.WaitingAckEntry;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PlayerConnection extends Connection implements InventoryListener {
+public class PlayerConnection extends Connection {
 
+	private @Getter List<PlayerConnectionListener> playerConnectionListeners = new ArrayList<>();
 	private boolean logged = false;
-	private PlayerEntity playerEntity = null;
-	private boolean gameReady = false;
-	private boolean inventoryChanged = true;
-	private String requestedTeamName = "Default";
-	private boolean requestedFullUpdate = false;
-	private long previousClientWorldTime = 0;
-	private boolean reconnected = false;
-	private Map<Long, WaitingAckEntry> waitingAcks = new HashMap<>();
-	private @Getter @Setter boolean spectator = false;
-	private @Getter @Setter float smoothedTimeDiff;
-	private float ping = -1;
-	private long nextUpdateId = 0;
-	private float ackThresholdMultiplier = 1;
-	private @Setter NetworkActivityListener networkListener;
 
-	@Override
-	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
-		inventoryChanged = true;
+	public void addPlayerConnectionMessageListeners(PlayerConnectionListener playerConnectionMessageListener) {
+		playerConnectionListeners.add(playerConnectionMessageListener);
 	}
 
-	public int sendUDP(WorldUpdate worldUpdate) {
-		worldUpdate.setUpdateId(nextUpdateId++);
-		ClientAckManager.getInstance().addExpectedAck(this, worldUpdate);
-		return sendUDP((Object) worldUpdate);
+	public void removePlayerConnectionMessageListeners(PlayerConnectionListener playerConnectionMessageListener) {
+		playerConnectionListeners.remove(playerConnectionMessageListener);
 	}
 
-	@Override
-	public int sendUDP(Object object) {
-		int size = super.sendUDP(object);
-		if (networkListener != null) {
-			networkListener.sent(this, object, size);
-		}
-		return size;
+	public void disconnected() {
+		playerConnectionListeners.forEach(PlayerConnectionListener::handleDisconnected);
 	}
 }

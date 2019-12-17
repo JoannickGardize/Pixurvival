@@ -146,7 +146,8 @@ public class EntityPool extends EntityCollection {
 		getEntities().values().forEach(map -> map.values().forEach(entity -> {
 			if (entity.getChunk() != null) {
 				entity.getChunk().getEntities().remove(entity);
-				// set the chunk to null for the case of the instance is reused by stash
+				// set the chunk to null for the case of the instance is reused
+				// by stash
 				entity.setChunk(null);
 			}
 		}));
@@ -156,7 +157,11 @@ public class EntityPool extends EntityCollection {
 	@Override
 	protected Entity createEntity(EntityGroup group, World world, long id) {
 		Entity e = super.createEntity(group, world, id);
-		e.setChunk(null);
+		if (e.getChunk() != null) {
+			e.getChunk().getEntities().remove(e);
+			e.setChunk(null);
+
+		}
 		e.setAlive(true);
 		return e;
 	}

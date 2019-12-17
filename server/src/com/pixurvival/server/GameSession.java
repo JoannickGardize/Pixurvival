@@ -40,13 +40,13 @@ import lombok.Setter;
 public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener, ServerGameListener {
 
 	private @Getter World world;
-	private List<PlayerSession> players = new ArrayList<>();
-	private Map<Long, Set<PlayerSession>> sessionsByEntities = new HashMap<>();
+	private List<PlayerGameSession> players = new ArrayList<>();
+	private Map<Long, Set<PlayerGameSession>> sessionsByEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
 	private List<PlayerDead> playerDeadList = new ArrayList<>();
 	private @Setter TeamComposition[] teamCompositions;
-	private List<PlayerSession> tmpPlayerSessions = new ArrayList<>();
+	private List<PlayerGameSession> tmpPlayerSessions = new ArrayList<>();
 	private @Getter @Setter long previousNetworkReportTime;
 	private @Getter NetworkStatisticsReporter networkReporter = new NetworkStatisticsReporter();
 
@@ -65,22 +65,24 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		playerDeadList.clear();
 	}
 
-	public void addPlayer(PlayerConnection player) {
-		PlayerSession playerSession = new PlayerSession(player);
+	public PlayerGameSession createPlayerSession(PlayerConnection player, PlayerEntity playerEntity) {
+		PlayerGameSession playerSession = new PlayerGameSession(player, playerEntity);
 		players.add(playerSession);
-		getSessionsForPlayerEntity(player.getPlayerEntity()).add(playerSession);
-		player.setNetworkListener(networkReporter);
+		getSessionsForPlayerEntity(playerEntity).add(playerSession);
+		playerSession.setNetworkListener(networkReporter);
+		playerEntity.getInventory().addListener(playerSession);
+		player.addPlayerConnectionMessageListeners(playerSession);
+		return playerSession;
 	}
 
-	public void foreachPlayers(Consumer<PlayerSession> action) {
+	public void foreachPlayers(Consumer<PlayerGameSession> action) {
 		players.forEach(action);
 	}
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
-		for (PlayerSession playerSession : players) {
-			if (playerSession.isMissingAndRemove(chunk.getPosition())
-					|| chunk.getPosition().insideSquare(playerSession.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+		for (PlayerGameSession playerSession : players) {
+			if (playerSession.isMissingAndRemove(chunk.getPosition()) || chunk.getPosition().insideSquare(playerSession.getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
 			}
 		}
@@ -92,7 +94,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
-	private void addChunk(PlayerSession session, ChunkPosition position, Chunk chunk) {
+	private void addChunk(PlayerGameSession session, ChunkPosition position, Chunk chunk) {
 		if (chunk == null) {
 			session.addMissingChunk(position);
 		} else {
@@ -118,9 +120,9 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	private void addStructureUpdate(MapStructure mapStructure, StructureUpdate structureUpdate) {
-		for (PlayerSession player : players) {
+		for (PlayerGameSession player : players) {
 			ChunkPosition chunkPosition = mapStructure.getChunk().getPosition();
-			if (chunkPosition.insideSquare(player.getConnection().getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+			if (chunkPosition.insideSquare(player.getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				player.addStructureUpdate(structureUpdate);
 			} else {
 				player.invalidateChunk(chunkPosition);
@@ -130,7 +132,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void enterVision(PlayerEntity entity, ChunkPosition position) {
-		for (PlayerSession playerSession : getSessionsForPlayerEntity(entity)) {
+		for (PlayerGameSession playerSession : getSessionsForPlayerEntity(entity)) {
 			Chunk chunk = world.getMap().chunkAt(position);
 			addChunk(playerSession, position, chunk);
 			playerSession.addNewPosition(position);
@@ -139,7 +141,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void exitVision(PlayerEntity entity, ChunkPosition position) {
-		for (PlayerSession playerSession : getSessionsForPlayerEntity(entity)) {
+		for (PlayerGameSession playerSession : getSessionsForPlayerEntity(entity)) {
 			if (playerSession != null) {
 				playerSession.addOldPosition(position);
 			}
@@ -164,8 +166,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 			// Iterate over a copy of the collection because it could be
 			// modified inside the
 			// loop
-			for (PlayerSession playerSession : tmpPlayerSessions) {
-				playerSession.getConnection().setSpectator(true);
+			for (PlayerGameSession playerSession : tmpPlayerSessions) {
+				playerSession.setSpectator(true);
 				findBestSpectatorTarget(playerSession);
 			}
 		}
@@ -181,8 +183,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		}
 	}
 
-	private void findBestSpectatorTarget(PlayerSession playerSession) {
-		PlayerEntity previousPlayer = playerSession.getConnection().getPlayerEntity();
+	private void findBestSpectatorTarget(PlayerGameSession playerSession) {
+		PlayerEntity previousPlayer = playerSession.getPlayerEntity();
 		Team team = previousPlayer.getTeam();
 		PlayerEntity spectatedPlayer = null;
 		if (!team.getAliveMembers().isEmpty()) {
@@ -197,8 +199,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		if (spectatedPlayer != null) {
 			getSessionsForPlayerEntity(previousPlayer).remove(playerSession);
 			getSessionsForPlayerEntity(spectatedPlayer).add(playerSession);
-			playerSession.getConnection().setPlayerEntity(spectatedPlayer);
-			playerSession.getConnection().setRequestedFullUpdate(true);
+			playerSession.setPlayerEntity(spectatedPlayer);
+			playerSession.setRequestedFullUpdate(true);
 			playerSession.getConnection().sendTCP(new Spectate(spectatedPlayer));
 		}
 	}
@@ -223,15 +225,15 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void playerLoggedIn(PlayerConnection connection) {
-		for (PlayerSession ps : players) {
+		for (PlayerGameSession ps : players) {
 			if (!ps.getConnection().isConnected() && ps.getConnection().toString().equals(connection.toString())) {
-				PlayerConnection previousConnection = ps.getConnection();
-				PlayerEntity playerEntity = previousConnection.getPlayerEntity();
-				connection.setPlayerEntity(playerEntity);
-				connection.setSpectator(previousConnection.isSpectator());
 				ps.getKnownPositions().clear();
 				ps.clearChunkAndStructureUpdates();
 				ps.clearPositionChanges();
+				PlayerEntity playerEntity = ps.getPlayerEntity();
+				if (playerEntity.getLastPlayerMovementRequest() != null) {
+					playerEntity.getLastPlayerMovementRequest().setId(-1);
+				}
 				playerEntity.foreachChunkInView(c -> ps.addNewPosition(c.getPosition()));
 				CreateWorld createWorld = new CreateWorld();
 				createWorld.setId(world.getId());
@@ -243,11 +245,13 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 				createWorld.setMyPosition(playerEntity.getPosition());
 				createWorld.setInventory(playerEntity.getInventory());
 				createWorld.setPlayerDeadIds(playerDeadIds(playerEntity.getWorld()));
-				createWorld.setSpectator(connection.isSpectator());
+				createWorld.setSpectator(ps.isSpectator());
 				ps.setConnection(connection);
-				connection.setReconnected(true);
-				connection.setRequestedFullUpdate(true);
-				playerEntity.getInventory().addListener(connection);
+				ps.setReconnected(true);
+				ps.setRequestedFullUpdate(true);
+				connection.addPlayerConnectionMessageListeners(ps);
+				ps.setGameReady(false);
+				ps.resetNetworkData();
 				connection.sendTCP(createWorld);
 			}
 		}
@@ -267,7 +271,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		return result;
 	}
 
-	private Collection<PlayerSession> getSessionsForPlayerEntity(Entity playerEntity) {
+	private Collection<PlayerGameSession> getSessionsForPlayerEntity(Entity playerEntity) {
 		return sessionsByEntities.computeIfAbsent(playerEntity.getId(), id -> new HashSet<>());
 	}
 

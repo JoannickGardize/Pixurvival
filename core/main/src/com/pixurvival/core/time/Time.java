@@ -27,7 +27,6 @@ public class Time {
 		this.deltaTimeMillis = deltaTimeMillis;
 		deltaTime = deltaTimeMillis / 1000f;
 		long integerPart = (long) deltaTimeMillis;
-
 		decimalAccumulator += deltaTimeMillis - integerPart;
 		while (decimalAccumulator > 0.5) {
 			timeMillis++;
@@ -42,7 +41,7 @@ public class Time {
 		if (averagePing == 0) {
 			averagePing = ping;
 		} else {
-			averagePing = MathUtils.linearInterpolate(averagePing, ping, 0.2f);
+			averagePing = MathUtils.linearInterpolate(averagePing, ping, 0.1f);
 		}
 		long difference = timeResponse.getResponderTime() - timeMillis + ping;
 		if (synchronizeTimeCounter < 20) {

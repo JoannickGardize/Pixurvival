@@ -16,21 +16,16 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.ChunkManager;
-import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.KryoInitializer;
-import com.pixurvival.core.message.PlayerInformation;
-import com.pixurvival.core.message.StartGame;
-import com.pixurvival.core.message.TeamComposition;
-import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.server.lobby.LobbySession;
 import com.pixurvival.server.util.ServerMainArgs;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-public class ServerGame {
+public class PixurvivalServer {
 
 	private Server server;
 	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
@@ -39,12 +34,14 @@ public class ServerGame {
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
 	// private @Getter ContentPacksContext contentPacksContext = new
 	// ContentPacksContext("contentPacks");
+	@Deprecated
 	private @Getter ContentPack selectedContentPack;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
+	private List<LobbySession> lobbySessions = new ArrayList<>();
 
 	@SneakyThrows
-	public ServerGame(ServerMainArgs serverArgs) {
+	public PixurvivalServer(ServerMainArgs serverArgs) {
 		if (MathUtils.equals(serverArgs.getSimulatePacketLossRate(), 0)) {
 			server = new KryoServer();
 		} else {
@@ -65,7 +62,20 @@ public class ServerGame {
 			defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		}
 		setSelectedContentPack(new ContentPackSerializer(defaultContentPack).load(id));
+		addLobbySession(new LobbySession(this));
 		startServer(serverArgs.getDefaultPort());
+	}
+
+	public void runGame(GameSession session) {
+		engineThread.add(session);
+	}
+
+	public void addLobbySession(LobbySession lobby) {
+		lobbySessions.add(lobby);
+	}
+
+	public void removeLobbySession(LobbySession lobby) {
+		lobbySessions.remove(lobby);
 	}
 
 	public void addPlayerConnection(PlayerConnection playerConnection) {
@@ -104,78 +114,13 @@ public class ServerGame {
 		World.getWorlds().forEach(World::unload);
 	}
 
-	public void startGame(int gameModeId) {
-		// TODO choix du contentPack
-		World world = World.createServerWorld(selectedContentPack, gameModeId);
-		GameSession session = new GameSession(world);
-		addListener(session);
-		CreateWorld createWorld = new CreateWorld();
-		createWorld.setId(world.getId());
-		createWorld.setContentPackIdentifier(new ContentPackIdentifier(selectedContentPack.getIdentifier()));
-		createWorld.setGameModeId(gameModeId);
-		foreachPlayers(playerConnection -> {
-			Team team = world.getTeamSet().get(playerConnection.getRequestedTeamName());
-			if (team == null) {
-				team = world.getTeamSet().createTeam(playerConnection.getRequestedTeamName());
-			}
-		});
-
-		foreachPlayers(playerConnection -> {
-			PlayerEntity playerEntity = new PlayerEntity();
-			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
-			world.getEntityPool().add(playerEntity);
-			world.getEntityPool().flushNewEntities();
-			playerEntity.setTeam(world.getTeamSet().get(playerConnection.getRequestedTeamName()));
-			playerEntity.setName(playerConnection.toString());
-			playerEntity.getInventory().addListener(playerConnection);
-			playerConnection.setPlayerEntity(playerEntity);
-			session.addPlayer(playerConnection);
-		});
-
-		TeamComposition[] teamCompositions = new TeamComposition[world.getTeamSet().size()];
-		session.setTeamCompositions(teamCompositions);
-		for (int i = 0; i < teamCompositions.length; i++) {
-			Team team = world.getTeamSet().get(i);
-			PlayerInformation[] playerInformations = new PlayerInformation[team.getAliveMembers().size()];
-			int j = 0;
-			for (PlayerEntity player : team.getAliveMembers()) {
-				playerInformations[j++] = new PlayerInformation(player.getId(), player.getName());
-			}
-			teamCompositions[i] = new TeamComposition(team.getName(), playerInformations);
+	void playerLoggedIn(PlayerConnection playerConnection) {
+		if (lobbySessions.size() == 1) {
+			LobbySession gameLobby = lobbySessions.get(0);
+			gameLobby.addPlayer(playerConnection);
+		} else {
+			listeners.forEach(l -> l.playerLoggedIn(playerConnection));
 		}
-		createWorld.setTeamCompositions(teamCompositions);
-
-		world.initializeGame();
-
-		foreachPlayers(playerConnection -> {
-			PlayerEntity playerEntity = playerConnection.getPlayerEntity();
-			createWorld.setMyPlayerId(playerEntity.getId());
-			createWorld.setMyTeamId(playerEntity.getTeam().getId());
-			createWorld.setMyPosition(playerEntity.getPosition());
-			createWorld.setInventory(playerEntity.getInventory());
-			playerConnection.sendTCP(createWorld);
-		});
-
-		foreachPlayers(playerConnection -> {
-			boolean messageSent = false;
-			while (!messageSent) {
-				if (playerConnection.isGameReady()) {
-					messageSent = true;
-				} else {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-		foreachPlayers(playerConnection -> playerConnection.sendTCP(new StartGame()));
-		engineThread.add(session);
-	}
-
-	void notify(Consumer<ServerGameListener> action) {
-		listeners.forEach(action);
 	}
 
 	void consumeReceivedObjects() {

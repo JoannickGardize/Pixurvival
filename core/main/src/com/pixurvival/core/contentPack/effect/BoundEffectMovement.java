@@ -55,4 +55,9 @@ public class BoundEffectMovement implements EffectMovement {
 		entity.setMovementData(new Vector2(buffer.getFloat(), buffer.getFloat()));
 		entity.setAncestor(entity.getWorld().getEntityPool().readTeamMemberReference(buffer));
 	}
+
+	@Override
+	public boolean isDestroyWithAncestor() {
+		return true;
+	}
 }

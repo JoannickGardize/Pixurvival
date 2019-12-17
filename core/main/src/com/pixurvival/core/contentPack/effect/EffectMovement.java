@@ -21,4 +21,8 @@ public interface EffectMovement extends Serializable {
 	void writeUpdate(ByteBuffer buffer, EffectEntity entity);
 
 	void applyUpdate(ByteBuffer buffer, EffectEntity entity);
+
+	default boolean isDestroyWithAncestor() {
+		return false;
+	}
 }

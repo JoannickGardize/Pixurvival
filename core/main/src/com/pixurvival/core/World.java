@@ -190,8 +190,8 @@ public class World extends PluginHolder<World> implements ChatSender {
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();

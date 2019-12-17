@@ -45,4 +45,9 @@ public class NotFoundTeamMemberProxy implements TeamMember {
 		return (TeamMember) world.getEntityPool().get(group, id);
 	}
 
+	@Override
+	public boolean isAlive() {
+		return true;
+	}
+
 }

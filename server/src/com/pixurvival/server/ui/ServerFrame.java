@@ -16,7 +16,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
 import com.pixurvival.server.PlayerConnection;
-import com.pixurvival.server.ServerGame;
+import com.pixurvival.server.PixurvivalServer;
 import com.pixurvival.server.ServerGameListener;
 import com.pixurvival.server.console.CommandMultiplexer;
 import com.pixurvival.server.console.ServerCommands;
@@ -33,7 +33,7 @@ public class ServerFrame extends JPanel implements ServerGameListener {
 		outputTextPane.setEditable(false);
 		System.setOut(new PrintStream(new TextPaneOutputStream(outputTextPane, Color.BLACK), true));
 		System.setErr(new PrintStream(new TextPaneOutputStream(outputTextPane, Color.RED), true));
-		ServerGame game = new ServerGame(mainArgs);
+		PixurvivalServer game = new PixurvivalServer(mainArgs);
 		game.addListener(this);
 		CommandMultiplexer commands = new ServerCommands(game);
 		setLayout(new BorderLayout());

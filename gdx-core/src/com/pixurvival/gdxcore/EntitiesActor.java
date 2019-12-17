@@ -57,6 +57,7 @@ public class EntitiesActor extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		objectsToDraw.clear();
+		ensureMyPlayerInScreen();
 		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> {
 			chunk.getEntities().foreach((group, map) -> {
 				ElementDrawer<Entity> drawer = (ElementDrawer<Entity>) drawers.get(group.getType());
@@ -102,8 +103,8 @@ public class EntitiesActor extends Actor {
 			shapes.setColor(Color.YELLOW);
 			PlayerEntity player = PixurvivalGame.getClient().getMyPlayer();
 			if (player != null) {
-				shapes.rect((float) (player.getPosition().getX() - GameConstants.PLAYER_VIEW_DISTANCE), (float) (player.getPosition().getY() - GameConstants.PLAYER_VIEW_DISTANCE),
-						(float) (GameConstants.PLAYER_VIEW_DISTANCE * 2), (float) (GameConstants.PLAYER_VIEW_DISTANCE * 2));
+				shapes.rect(player.getPosition().getX() - GameConstants.PLAYER_VIEW_DISTANCE, player.getPosition().getY() - GameConstants.PLAYER_VIEW_DISTANCE, GameConstants.PLAYER_VIEW_DISTANCE * 2,
+						GameConstants.PLAYER_VIEW_DISTANCE * 2);
 			}
 		}
 	}
@@ -119,6 +120,15 @@ public class EntitiesActor extends Actor {
 			boolean valid = ActionPreconditions.canPlace(myPlayer, structure, x, y);
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);
 			objectsToDraw.add(ghostStructure);
+		}
+	}
+
+	private void ensureMyPlayerInScreen() {
+		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+		if (!DrawUtils.isInsideScreen(getStage(), myPlayer.getPosition())) {
+			Vector3 camPos = getStage().getCamera().position;
+			camPos.x = myPlayer.getPosition().getX();
+			camPos.y = myPlayer.getPosition().getY();
 		}
 	}
 }
