@@ -13,9 +13,7 @@ import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.Version;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.util.MathUtils;
@@ -32,10 +30,7 @@ public class PixurvivalServer {
 	private List<ServerGameListener> listeners = new ArrayList<>();
 
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
-	// private @Getter ContentPacksContext contentPacksContext = new
-	// ContentPacksContext("contentPacks");
-	@Deprecated
-	private @Getter ContentPack selectedContentPack;
+	private @Getter ContentPackSerialization contentPackSerializer;
 	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 	private List<LobbySession> lobbySessions = new ArrayList<>();
@@ -53,15 +48,14 @@ public class PixurvivalServer {
 		addListener(contentPackUploadManager);
 		KryoInitializer.apply(server.getKryo());
 		// TODO selection dynamique des packs
-		ContentPackIdentifier id = new ContentPackIdentifier("Vanilla", new Version("1.0"));
-
 		File defaultContentPack;
 		if (serverArgs.getContentPackDirectory() == null) {
 			defaultContentPack = new File("contentPacks");
 		} else {
 			defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		}
-		setSelectedContentPack(new ContentPackSerializer(defaultContentPack).load(id));
+		contentPackSerializer = new ContentPackSerialization(defaultContentPack);
+		// setSelectedContentPack(contentPackSerializer.load(id));
 		addLobbySession(new LobbySession(this));
 		startServer(serverArgs.getDefaultPort());
 	}
@@ -91,7 +85,6 @@ public class PixurvivalServer {
 	}
 
 	public void setSelectedContentPack(ContentPack contentPack) {
-		selectedContentPack = contentPack;
 		contentPackUploadManager.setSelectedContentPack(contentPack);
 	}
 

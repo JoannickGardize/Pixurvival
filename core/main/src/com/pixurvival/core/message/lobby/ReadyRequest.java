@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class ReadyRequest extends LobbyRequest {
 
 	private boolean ready;
+	private int modCount;
 }

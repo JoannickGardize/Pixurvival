@@ -1,6 +1,8 @@
 package com.pixurvival.server.lobby;
 
+import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.lobby.LobbyMessage;
+import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.PlayerConnectionListener;
 
@@ -13,11 +15,13 @@ public class PlayerLobbySession implements PlayerConnectionListener {
 	private LobbySession lobbySession;
 	private PlayerConnection connection;
 	private @Setter String teamName;
-	private @Setter boolean ready;
+	private LobbyPlayer lobbyPlayer = new LobbyPlayer();
 
 	public PlayerLobbySession(LobbySession lobbySession, PlayerConnection connection) {
 		this.lobbySession = lobbySession;
 		this.connection = connection;
+		lobbyPlayer.setReady(false);
+		lobbyPlayer.setPlayerName(connection.toString());
 	}
 
 	@Override
@@ -28,5 +32,10 @@ public class PlayerLobbySession implements PlayerConnectionListener {
 	@Override
 	public void handleDisconnected() {
 		lobbySession.removePlayer(this);
+	}
+
+	@Override
+	public void handleGameReady(GameReady gameReady) {
+		lobbySession.receivedGameReady();
 	}
 }

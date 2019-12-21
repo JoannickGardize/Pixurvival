@@ -20,8 +20,8 @@ public class NetworkStatisticsReporter implements NetworkActivityListener {
 
 	public void report(long elapsedTime) {
 		counters.keySet().removeIf(p -> !p.getConnection().isConnected());
-		counters.forEach((conn, counter) -> {
-			System.out.print(conn);
+		counters.forEach((s, counter) -> {
+			System.out.print(s.getConnection());
 			counter.forEach((type, count) -> {
 				System.out.print(" - ");
 				System.out.print(type.getSimpleName());

@@ -18,7 +18,7 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ClientStream;
@@ -31,6 +31,7 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.message.lobby.LobbyRequest;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
@@ -46,7 +47,7 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
 	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer(new File("contentPacks"));
+	private ContentPackSerialization contentPackSerializer = new ContentPackSerialization(new File("contentPacks"));
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
 	private float deltaTimeMillis = 0;
@@ -252,5 +253,9 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	void notifyGameEnded(EndGameData data) {
 		listeners.forEach(l -> l.gameEnded(data));
+	}
+
+	public void send(LobbyRequest request) {
+		client.sendTCP(request);
 	}
 }

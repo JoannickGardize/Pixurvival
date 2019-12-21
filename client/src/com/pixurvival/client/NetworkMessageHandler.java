@@ -22,7 +22,7 @@ import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.EnterLobby;
-import com.pixurvival.core.message.lobby.LobbyList;
+import com.pixurvival.core.message.lobby.LobbyData;
 
 class NetworkMessageHandler extends Listener {
 
@@ -61,7 +61,7 @@ class NetworkMessageHandler extends Listener {
 		});
 		putMessageAction(EndGameData.class, game::notifyGameEnded);
 		putMessageAction(EnterLobby.class, e -> game.notify(ClientGameListener::enterLobby));
-		putMessageAction(LobbyList.class, ll -> game.notify(l -> l.lobbyListReceived(ll)));
+		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyListReceived(ll)));
 	}
 
 	@Override

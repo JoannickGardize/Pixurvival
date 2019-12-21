@@ -17,7 +17,11 @@ public class LocaleUtils {
 		List<LanguageRange> languageRanges = toLanguageRanges(requested);
 		List<Locale> allMatches = Locale.filter(languageRanges, allAvailableLocales);
 		Locale bestMatch = Locale.lookup(toLanguageRanges(allMatches), supported);
-		return bestMatch;
+		if (bestMatch == null) {
+			return supported.iterator().next();
+		} else {
+			return bestMatch;
+		}
 	}
 
 	private static List<LanguageRange> toLanguageRanges(Collection<Locale> locales) {

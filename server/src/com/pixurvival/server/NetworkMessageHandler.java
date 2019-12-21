@@ -14,6 +14,11 @@ import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.RequestContentPacks;
+import com.pixurvival.core.message.lobby.ChangeTeamRequest;
+import com.pixurvival.core.message.lobby.CreateTeamRequest;
+import com.pixurvival.core.message.lobby.ReadyRequest;
+import com.pixurvival.core.message.lobby.RemoveTeamRequest;
+import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
@@ -72,6 +77,11 @@ class NetworkMessageHandler extends Listener {
 		});
 		messageActions.put(GameReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleGameReady((GameReady) m.getObject())));
 		messageActions.put(RefreshRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleRefreshRequest((RefreshRequest) m.getObject())));
+		messageActions.put(CreateTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((CreateTeamRequest) m.getObject())));
+		messageActions.put(RenameTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RenameTeamRequest) m.getObject())));
+		messageActions.put(RemoveTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RemoveTeamRequest) m.getObject())));
+		messageActions.put(ChangeTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ChangeTeamRequest) m.getObject())));
+		messageActions.put(ReadyRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ReadyRequest) m.getObject())));
 	}
 
 	public void consumeReceivedObjects() {

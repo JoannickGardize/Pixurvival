@@ -40,6 +40,7 @@ public class ChatUI extends UIWindow implements ChatListener {
 					history.add(inputArea.getText());
 					PixurvivalGame.getClient().sendAction(new ChatRequest(inputArea.getText()));
 					inputArea.setText("");
+					getStage().unfocusAll();
 					currentHistoryIndex = -1;
 					break;
 				case Keys.ESCAPE:

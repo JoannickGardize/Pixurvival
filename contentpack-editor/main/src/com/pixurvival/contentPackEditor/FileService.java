@@ -13,7 +13,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerializer;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 
 import lombok.Getter;
 
@@ -24,7 +24,7 @@ public class FileService {
 	private @Getter ContentPack currentContentPack;
 	private @Getter File currentFile;
 	private JFileChooser fileChooser = new JFileChooser();
-	private ContentPackSerializer contentPackSerializer = new ContentPackSerializer();
+	private ContentPackSerialization contentPackSerializer = new ContentPackSerialization();
 
 	private FileService() {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

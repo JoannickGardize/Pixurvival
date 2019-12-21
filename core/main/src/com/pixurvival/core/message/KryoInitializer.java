@@ -22,7 +22,7 @@ import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
-import com.pixurvival.core.message.lobby.LobbyList;
+import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
@@ -97,7 +97,7 @@ public class KryoInitializer {
 		register(kryo, ChangeTeamRequest.class);
 		register(kryo, CreateTeamRequest.class);
 		register(kryo, EnterLobby.class);
-		register(kryo, LobbyList.class);
+		register(kryo, LobbyData.class);
 		register(kryo, LobbyPlayer.class);
 		register(kryo, LobbyPlayer[].class);
 		register(kryo, LobbyTeam.class);

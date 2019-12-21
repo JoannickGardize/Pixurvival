@@ -2,7 +2,7 @@ package com.pixurvival.client;
 
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.lobby.LobbyList;
+import com.pixurvival.core.message.lobby.LobbyData;
 
 public interface ClientGameListener {
 
@@ -18,5 +18,5 @@ public interface ClientGameListener {
 
 	void enterLobby();
 
-	void lobbyListReceived(LobbyList list);
+	void lobbyListReceived(LobbyData list);
 }

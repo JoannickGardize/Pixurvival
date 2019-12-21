@@ -80,13 +80,14 @@ import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 import com.pixurvival.core.util.FileUtils;
 
 /**
- * ContentPack serializer, create a zip containing all resources and a yaml file
- * for all elements definitions.
+ * IO for {@link ContentPack}s, create or read the zip containing all resources
+ * and a yaml file for all elements definitions. It also has a context, with a
+ * working directory, wich can be scanned to list available ContentPacks.
  * 
  * @author SharkHendrix
  *
  */
-public class ContentPackSerializer {
+public class ContentPackSerialization {
 
 	public static final String SERIALIZATION_ENTRY_NAME = "contentPack.yml";
 
@@ -100,7 +101,7 @@ public class ContentPackSerializer {
 	private Map<String, Class<?>> classFromSimpleName = new HashMap<>();
 	private List<ContentPackSerializerPlugin> plugins = new ArrayList<>();
 
-	public ContentPackSerializer(File workingDirectory) {
+	public ContentPackSerialization(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
 		Representer representer = new Representer();
 		representer.setPropertyUtils(new DeclarationPropertyOrderUtils());
@@ -124,7 +125,7 @@ public class ContentPackSerializer {
 		yaml.setBeanAccess(BeanAccess.FIELD);
 	}
 
-	public ContentPackSerializer() {
+	public ContentPackSerialization() {
 		this(null);
 	}
 

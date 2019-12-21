@@ -31,7 +31,7 @@ import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.lobby.LobbyList;
+import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.LobbyScreen;
@@ -277,9 +277,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	@Override
-	public void lobbyListReceived(LobbyList list) {
+	public void lobbyListReceived(LobbyData list) {
 		if (getScreen() instanceof LobbyScreen) {
-			((LobbyScreen) getScreen()).setTeams(list.getPlayers());
+			((LobbyScreen) getScreen()).setLobbyData(list);
 		}
 	}
 }
