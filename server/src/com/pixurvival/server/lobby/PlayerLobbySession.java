@@ -36,6 +36,6 @@ public class PlayerLobbySession implements PlayerConnectionListener {
 
 	@Override
 	public void handleGameReady(GameReady gameReady) {
-		lobbySession.receivedGameReady();
+		lobbySession.received(this, gameReady);
 	}
 }

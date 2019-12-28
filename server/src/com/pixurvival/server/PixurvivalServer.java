@@ -12,7 +12,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.KryoInitializer;
@@ -30,8 +29,8 @@ public class PixurvivalServer {
 	private List<ServerGameListener> listeners = new ArrayList<>();
 
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
-	private @Getter ContentPackSerialization contentPackSerializer;
-	private @Getter ContentPackUploadManager contentPackUploadManager = new ContentPackUploadManager(this);
+	private @Getter ContentPackSerialization contentPackSerialization;
+	private @Getter ContentPackUploader contentPackUploader = new ContentPackUploader(this);
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 	private List<LobbySession> lobbySessions = new ArrayList<>();
 
@@ -44,18 +43,10 @@ public class PixurvivalServer {
 			Log.warn("Simulating UDP packet loss with a rate of " + serverArgs.getSimulatePacketLossRate());
 		}
 		serverArgs.apply(server, serverListener);
-		contentPackUploadManager.start();
-		addListener(contentPackUploadManager);
+		contentPackUploader.start();
 		KryoInitializer.apply(server.getKryo());
-		// TODO selection dynamique des packs
-		File defaultContentPack;
-		if (serverArgs.getContentPackDirectory() == null) {
-			defaultContentPack = new File("contentPacks");
-		} else {
-			defaultContentPack = new File(serverArgs.getContentPackDirectory());
-		}
-		contentPackSerializer = new ContentPackSerialization(defaultContentPack);
-		// setSelectedContentPack(contentPackSerializer.load(id));
+		File defaultContentPack = new File(serverArgs.getContentPackDirectory());
+		contentPackSerialization = new ContentPackSerialization(defaultContentPack);
 		addLobbySession(new LobbySession(this));
 		startServer(serverArgs.getDefaultPort());
 	}
@@ -84,10 +75,6 @@ public class PixurvivalServer {
 		return connectionsByName.get(name);
 	}
 
-	public void setSelectedContentPack(ContentPack contentPack) {
-		contentPackUploadManager.setSelectedContentPack(contentPack);
-	}
-
 	public void addListener(ServerGameListener listener) {
 		listeners.add(listener);
 	}
@@ -102,7 +89,7 @@ public class PixurvivalServer {
 		server.stop();
 		server.close();
 		engineThread.setRunning(false);
-		contentPackUploadManager.setRunning(false);
+		contentPackUploader.setRunning(false);
 		ChunkManager.getInstance().setRunning(false);
 		World.getWorlds().forEach(World::unload);
 	}

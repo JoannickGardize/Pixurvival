@@ -65,6 +65,9 @@ public class TeamPanel extends Table {
 	}
 
 	public void setPlayerList(LobbyPlayer[] players) {
+		if (players == null) {
+			return;
+		}
 		playerList.clear();
 		for (LobbyPlayer player : players) {
 			playerList.add(new PlayerRow(player));

@@ -9,14 +9,19 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.pixurvival.core.message.ClientStream;
+import com.pixurvival.core.message.ContentPackRequest;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
-import com.pixurvival.core.message.RequestContentPacks;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
+import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
+import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
+import com.pixurvival.core.message.lobby.GameModeListRequest;
+import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.ReadyRequest;
+import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
 import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
@@ -71,10 +76,6 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(ClientStream.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleClientStream((ClientStream) m.getObject())));
 		messageActions.put(UseItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(ChatRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
-		messageActions.put(RequestContentPacks.class, m -> {
-			PlayerConnection connection = m.getConnection();
-			game.getContentPackUploadManager().sendContentPacks(connection, (RequestContentPacks) m.getObject());
-		});
 		messageActions.put(GameReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleGameReady((GameReady) m.getObject())));
 		messageActions.put(RefreshRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleRefreshRequest((RefreshRequest) m.getObject())));
 		messageActions.put(CreateTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((CreateTeamRequest) m.getObject())));
@@ -82,6 +83,11 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(RemoveTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RemoveTeamRequest) m.getObject())));
 		messageActions.put(ChangeTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ChangeTeamRequest) m.getObject())));
 		messageActions.put(ReadyRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ReadyRequest) m.getObject())));
+		messageActions.put(GameModeListRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((GameModeListRequest) m.getObject())));
+		messageActions.put(ChooseGameModeRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((LobbyMessage) m.getObject())));
+		messageActions.put(RefuseContentPack.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RefuseContentPack) m.getObject())));
+		messageActions.put(ContentPackReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ContentPackReady) m.getObject())));
+		messageActions.put(ContentPackRequest.class, m -> game.getContentPackUploader().sendContentPack(m.getConnection(), ((ContentPackRequest) m.getObject()).getIdentifier()));
 	}
 
 	public void consumeReceivedObjects() {

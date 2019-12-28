@@ -24,9 +24,9 @@ import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 import com.pixurvival.core.livingEntity.stats.StatModifier.OperationType;
+import com.pixurvival.core.util.Cache;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ui.Separator;
-import com.pixurvival.gdxcore.util.Cache;
 
 import lombok.experimental.UtilityClass;
 

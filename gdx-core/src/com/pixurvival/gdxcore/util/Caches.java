@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.utils.Align;
+import com.pixurvival.core.util.Cache;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.experimental.UtilityClass;

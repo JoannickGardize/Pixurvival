@@ -30,8 +30,10 @@ import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.lobby.LobbyData;
+import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.LobbyScreen;
@@ -277,9 +279,21 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	@Override
-	public void lobbyListReceived(LobbyData list) {
+	public void lobbyMessageReceived(LobbyMessage message) {
 		if (getScreen() instanceof LobbyScreen) {
-			((LobbyScreen) getScreen()).setLobbyData(list);
+			((LobbyScreen) getScreen()).receivedLobbyMessage(message);
+		}
+	}
+
+	@Override
+	public void contentPackAvailable(ContentPackIdentifier identifier) {
+
+	}
+
+	@Override
+	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
+		if (getScreen() instanceof LobbyScreen) {
+			((LobbyScreen) getScreen()).questionDownloadContentPack(identifier, checkResult);
 		}
 	}
 }

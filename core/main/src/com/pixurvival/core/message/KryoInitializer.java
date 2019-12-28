@@ -1,5 +1,6 @@
 package com.pixurvival.core.message;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -20,12 +21,17 @@ import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
+import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
+import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
+import com.pixurvival.core.message.lobby.GameModeList;
+import com.pixurvival.core.message.lobby.GameModeListRequest;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
+import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
 import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
@@ -63,7 +69,6 @@ public class KryoInitializer {
 		register(kryo, ContentPackIdentifier[].class);
 		register(kryo, StartGame.class);
 		register(kryo, ContentPackPart.class);
-		register(kryo, RequestContentPacks.class);
 		register(kryo, GameReady.class);
 		register(kryo, ItemStack.class);
 		register(kryo, Inventory.class);
@@ -105,6 +110,16 @@ public class KryoInitializer {
 		register(kryo, ReadyRequest.class);
 		register(kryo, RemoveTeamRequest.class);
 		register(kryo, RenameTeamRequest.class);
+		register(kryo, Locale.class);
+		register(kryo, Locale[].class);
+		register(kryo, GameModeListRequest.class);
+		register(kryo, GameModeList.class);
+		register(kryo, ChooseGameModeRequest.class);
+		register(kryo, ContentPackCheck.class);
+		register(kryo, ContentPackReady.class);
+		register(kryo, RefuseContentPack.class);
+		register(kryo, ContentPackRequest.class);
+
 	}
 
 	@SuppressWarnings("unchecked")

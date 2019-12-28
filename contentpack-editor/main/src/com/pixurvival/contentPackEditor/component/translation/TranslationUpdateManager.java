@@ -16,8 +16,8 @@ import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.item.Item;
-import com.pixurvival.core.contentPack.item.ResourceItem;
+
+import lombok.SneakyThrows;
 
 public class TranslationUpdateManager {
 
@@ -66,9 +66,10 @@ public class TranslationUpdateManager {
 	}
 
 	@EventListener
+	@SneakyThrows
 	public void elementRenamed(ElementRenamedEvent event) {
 		List<String> newKeys = ContentPack.getAllTranslationKeys(event.getElement());
-		Item fakeItem = new ResourceItem();
+		IdentifiedElement fakeItem = event.getElement().getClass().newInstance();
 		fakeItem.setName(event.getOldName());
 		List<String> oldKeys = ContentPack.getAllTranslationKeys(fakeItem);
 		for (Properties properties : FileService.getInstance().getCurrentContentPack().getTranslations().values()) {

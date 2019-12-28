@@ -24,6 +24,11 @@ public class ContentPackIdentifier implements Serializable {
 	@Valid
 	private Version version = new Version(1, 0);
 
+	public ContentPackIdentifier(String name, int majorVersion, int minorVersion) {
+		this.name = name;
+		version = new Version(majorVersion, minorVersion);
+	}
+
 	public ContentPackIdentifier(ContentPackIdentifier other) {
 		name = other.name;
 		version = other.version;
@@ -38,5 +43,24 @@ public class ContentPackIdentifier implements Serializable {
 
 	public String fileName() {
 		return new StringBuilder().append(name).append("_").append(version).append(".zip").toString();
+	}
+
+	public static boolean matchesContentPackFileName(String fileName) {
+		return fileName != null && fileName.matches("[a-zA-Z0-9\\-]+_\\d+\\.\\d+\\.zip");
+	}
+
+	public static ContentPackIdentifier getIndentifierIfValid(String fileName) {
+		if (matchesContentPackFileName(fileName)) {
+			ContentPackIdentifier identifier = new ContentPackIdentifier(fileName);
+			if (identifier.fileName().equals(fileName)) {
+				return identifier;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + version;
 	}
 }

@@ -1,11 +1,14 @@
 package com.pixurvival.core.contentPack.serialization;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -79,9 +82,12 @@ import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 import com.pixurvival.core.util.FileUtils;
 
+import lombok.Getter;
+import lombok.SneakyThrows;
+
 /**
  * IO for {@link ContentPack}s, create or read the zip containing all resources
- * and a yaml file for all elements definitions. It also has a context, with a
+ * and the yaml file for all elements definitions. It also has a context, with a
  * working directory, wich can be scanned to list available ContentPacks.
  * 
  * @author SharkHendrix
@@ -95,14 +101,17 @@ public class ContentPackSerialization {
 
 	private static final String TRANSLATIONS_ROOT = "translations/";
 
-	private File workingDirectory;
+	private @Getter File workingDirectory;
 	private Yaml yaml;
 	private NameAnchorGenerator nameAnchorGenerator = new NameAnchorGenerator();
 	private Map<String, Class<?>> classFromSimpleName = new HashMap<>();
-	private List<ContentPackSerializerPlugin> plugins = new ArrayList<>();
+	private List<ContentPackSerializationPlugin> plugins = new ArrayList<>();
 
 	public ContentPackSerialization(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
+		if (workingDirectory != null && !workingDirectory.isDirectory()) {
+			throw new IllegalStateException("Not a directory : " + workingDirectory);
+		}
 		Representer representer = new Representer();
 		representer.setPropertyUtils(new DeclarationPropertyOrderUtils());
 		representer.getPropertyUtils().setSkipMissingProperties(true);
@@ -129,20 +138,47 @@ public class ContentPackSerialization {
 		this(null);
 	}
 
-	public void addPlugin(ContentPackSerializerPlugin plugin) {
+	public void addPlugin(ContentPackSerializationPlugin plugin) {
 		plugins.add(plugin);
 	}
 
-	public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
-		String fileName = identifier.fileName();
-		File file = new File(workingDirectory, fileName);
+	public List<ContentPackIdentifier> list() {
+		if (workingDirectory == null) {
+			throw new IllegalStateException("No working directory defined");
+		}
+		List<ContentPackIdentifier> list = new ArrayList<>();
+		for (File file : workingDirectory.listFiles()) {
+			ContentPackIdentifier identifier = ContentPackIdentifier.getIndentifierIfValid(file.getName());
+			if (identifier != null) {
+				list.add(identifier);
+			}
+		}
+		return list;
+	}
 
-		return load(file);
+	public File fileOf(ContentPackIdentifier identifier) {
+		return new File(workingDirectory, identifier.fileName());
+	}
+
+	public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
+		return load(fileOf(identifier));
+	}
+
+	public ContentPack load(ContentPackIdentifier identifier, boolean loadResources) throws ContentPackException {
+		return load(fileOf(identifier), false);
 	}
 
 	public ContentPack load(File file) throws ContentPackException {
+		return load(file, true);
+	}
+
+	public ContentPack load(File file, boolean loadResources) throws ContentPackException {
 		if (!file.exists()) {
 			throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
+		}
+		ContentPackIdentifier identifier = ContentPackIdentifier.getIndentifierIfValid(file.getName());
+		if (identifier == null) {
+			throw new ContentPackException(file.getName() + " is not a valid Content Pack file name.");
 		}
 		try (ZipFile zipFile = new ZipFile(file)) {
 			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
@@ -154,7 +190,7 @@ public class ContentPackSerialization {
 				if (entry.isDirectory()) {
 					continue;
 				}
-				if (entry.getName().startsWith(RESOURCES_ROOT)) {
+				if (entry.getName().startsWith(RESOURCES_ROOT) && loadResources) {
 					contentPack.addResource(entry.getName().substring(10), FileUtils.readBytes(zipFile.getInputStream(entry)));
 				} else if (entry.getName().startsWith(TRANSLATIONS_ROOT)) {
 					Properties properties = new Properties();
@@ -163,9 +199,10 @@ public class ContentPackSerialization {
 					contentPack.addTranslation(locale, properties);
 				}
 			}
-			for (ContentPackSerializerPlugin plugin : plugins) {
+			for (ContentPackSerializationPlugin plugin : plugins) {
 				plugin.read(contentPack, zipFile);
 			}
+			contentPack.setIdentifier(identifier);
 			return contentPack;
 		} catch (IOException e) {
 			throw new ContentPackException(e);
@@ -185,10 +222,37 @@ public class ContentPackSerialization {
 				zipOutputStream.putNextEntry(new ZipEntry(TRANSLATIONS_ROOT + "translation_" + translation.getKey().toLanguageTag() + ".properties"));
 				translation.getValue().store(zipOutputStream, null);
 			}
-			for (ContentPackSerializerPlugin plugin : plugins) {
+			for (ContentPackSerializationPlugin plugin : plugins) {
 				plugin.write(contentPack, zipOutputStream);
 			}
 			zipOutputStream.closeEntry();
+		}
+	}
+
+	public ContentPackValidityCheckResult checkValidity(ContentPackIdentifier identifier, byte[] checksum) {
+		if (!list().contains(identifier)) {
+			return ContentPackValidityCheckResult.NOT_FOUND;
+		} else if (!Arrays.equals(getChecksum(identifier), checksum)) {
+			return ContentPackValidityCheckResult.NOT_SAME;
+		} else {
+			return ContentPackValidityCheckResult.OK;
+		}
+	}
+
+	public byte[] getChecksum(ContentPackIdentifier identifier) {
+		return getChecksum(fileOf(identifier));
+	}
+
+	@SneakyThrows
+	private byte[] getChecksum(File file) {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		try (FileInputStream is = new FileInputStream(file)) {
+			byte[] buffer = new byte[1024];
+			int size;
+			while ((size = is.read()) != -1) {
+				digest.update(buffer, 0, size);
+			}
+			return digest.digest();
 		}
 	}
 

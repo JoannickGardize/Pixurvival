@@ -55,9 +55,7 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Long, StatFormula> statFormulas = new HashMap<>();
 
-	@Valid
-	@Required
-	private ContentPackIdentifier identifier = new ContentPackIdentifier();
+	private transient ContentPackIdentifier identifier = new ContentPackIdentifier();
 
 	@Valid
 	@ElementCollection(AnimationTemplate.class)
@@ -136,7 +134,6 @@ public class ContentPack implements Serializable {
 
 	public void addTranslation(Locale locale, Properties file) {
 		translations.put(locale, file);
-
 	}
 
 	public void removeResource(String resource) {
@@ -213,6 +210,12 @@ public class ContentPack implements Serializable {
 		for (Item item : items) {
 			getAllTranslationKeys(result, item);
 		}
+		for (Structure structure : structures) {
+			getAllTranslationKeys(result, structure);
+		}
+		for (GameMode gameMode : gameModes) {
+			getAllTranslationKeys(result, gameMode);
+		}
 		return result;
 	}
 
@@ -233,7 +236,7 @@ public class ContentPack implements Serializable {
 				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_NAME.getKey(element));
 				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_DESCRIPTION.getKey(element));
 			}
-		} else if (element instanceof Structure) {
+		} else if (element instanceof Structure || element instanceof GameMode) {
 			resultStore.add(TranslationKey.NAME.getKey(element));
 		}
 	}
@@ -251,11 +254,13 @@ public class ContentPack implements Serializable {
 	}
 
 	public String getTranslation(Locale locale, IdentifiedElement item, TranslationKey key) {
-		return translations.get(locale).getProperty(key.getKey(item));
+		String result = translations.get(locale).getProperty(key.getKey(item));
+		return result == null ? "" : result;
 	}
 
 	public String getTranslation(Locale locale, String key) {
-		return translations.get(locale).getProperty(key);
+		String result = translations.get(locale).getProperty(key);
+		return result == null ? "" : result;
 	}
 
 }

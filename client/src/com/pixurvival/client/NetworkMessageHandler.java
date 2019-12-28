@@ -13,6 +13,7 @@ import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.LoginResponse;
@@ -22,6 +23,7 @@ import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.EnterLobby;
+import com.pixurvival.core.message.lobby.GameModeList;
 import com.pixurvival.core.message.lobby.LobbyData;
 
 class NetworkMessageHandler extends Listener {
@@ -61,7 +63,9 @@ class NetworkMessageHandler extends Listener {
 		});
 		putMessageAction(EndGameData.class, game::notifyGameEnded);
 		putMessageAction(EnterLobby.class, e -> game.notify(ClientGameListener::enterLobby));
-		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyListReceived(ll)));
+		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyMessageReceived(ll)));
+		putMessageAction(GameModeList.class, gml -> game.notify(l -> l.lobbyMessageReceived(gml)));
+		putMessageAction(ContentPackCheck.class, cpc -> game.checkContentPackValidity(cpc));
 	}
 
 	@Override

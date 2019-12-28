@@ -1,5 +1,7 @@
 package com.pixurvival.core.message;
 
-public class GameReady {
+import com.pixurvival.core.message.lobby.LobbyRequest;
+
+public class GameReady extends LobbyRequest {
 
 }

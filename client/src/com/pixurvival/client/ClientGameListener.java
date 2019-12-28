@@ -1,8 +1,10 @@
 package com.pixurvival.client;
 
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.message.LoginResponse;
-import com.pixurvival.core.message.lobby.LobbyData;
+import com.pixurvival.core.message.lobby.LobbyMessage;
 
 public interface ClientGameListener {
 
@@ -18,5 +20,9 @@ public interface ClientGameListener {
 
 	void enterLobby();
 
-	void lobbyListReceived(LobbyData list);
+	void lobbyMessageReceived(LobbyMessage message);
+
+	void contentPackAvailable(ContentPackIdentifier identifier);
+
+	void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult);
 }

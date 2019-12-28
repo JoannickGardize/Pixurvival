@@ -127,12 +127,15 @@ public class World extends PluginHolder<World> implements ChatSender {
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);
+		worlds.clear();
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
 	public static World createServerWorld(ContentPack contentPack, int gameModeId) {
 		World world = new World(nextId++, Type.SERVER, contentPack, gameModeId);
+		// TODO manage multiples worlds
+		worlds.clear();
 		worlds.put(world.getId(), world);
 		return world;
 	}
@@ -144,6 +147,7 @@ public class World extends PluginHolder<World> implements ChatSender {
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
 		world.getEntityPool().add(playerEntity);
 		world.myPlayer = playerEntity;
+		worlds.clear();
 		worlds.put(world.getId(), world);
 		return world;
 	}

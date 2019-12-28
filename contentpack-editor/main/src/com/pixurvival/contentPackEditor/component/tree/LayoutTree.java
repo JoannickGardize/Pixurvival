@@ -18,6 +18,7 @@ import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.Utils;
+import com.pixurvival.contentPackEditor.event.ElementRenamedEvent;
 import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.util.MenuBuilder;
@@ -136,8 +137,10 @@ public class LayoutTree extends JTree {
 			LayoutElement layoutElement = (LayoutElement) selectedNode;
 			String newName = showChooseElementNameDialog(ElementType.of(layoutElement.getElement()), layoutElement.getElement().getName());
 			if (newName != null) {
+				String oldName = layoutElement.getElement().getName();
 				layoutElement.getElement().setName(newName);
 				((LayoutTreeModel) getModel()).notifyNodeChanged(selectedNode);
+				EventManager.getInstance().fire(new ElementRenamedEvent(oldName, layoutElement.getElement()));
 			}
 		}
 	}

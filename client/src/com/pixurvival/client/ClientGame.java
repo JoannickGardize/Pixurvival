@@ -19,9 +19,12 @@ import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
+import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ClientStream;
+import com.pixurvival.core.message.ContentPackCheck;
+import com.pixurvival.core.message.ContentPackRequest;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.KryoInitializer;
@@ -31,7 +34,9 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.LobbyRequest;
+import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
@@ -42,12 +47,13 @@ import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
+
 	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2);
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
-	private @Getter ContentPackDownloadManager contentPackDownloadManager = new ContentPackDownloadManager();
-	private ContentPackSerialization contentPackSerializer = new ContentPackSerialization(new File("contentPacks"));
+	private @Getter ContentPackSerialization contentPackSerialization;
+	private @Getter ContentPackDownloader contentPackDownloadManager = new ContentPackDownloader(this);
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
 	private float deltaTimeMillis = 0;
@@ -56,9 +62,11 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private @Getter Locale currentLocale;
 	private @Getter boolean spectator;
 	private @Getter int myTeamId;
+	private ContentPackIdentifier waitingContentPack;
 
 	public ClientGame(CommonMainArgs clientArgs) {
 		KryoInitializer.apply(client.getKryo());
+		contentPackSerialization = new ContentPackSerialization(new File(clientArgs.getContentPackDirectory()));
 		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
 		if (clientArgs.getOnGameBeginning() != null) {
@@ -67,8 +75,8 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 			gameBeginningCommands = new String[0];
 		}
 		localePriorityList.add(Locale.getDefault());
-		if (!Locale.getDefault().equals(Locale.US)) {
-			localePriorityList.add(Locale.US);
+		if (!Locale.getDefault().equals(new Locale("en", "US"))) {
+			localePriorityList.add(new Locale("en", "US"));
 		}
 	}
 
@@ -121,12 +129,34 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		}
 	}
 
+	public Locale getLocaleFor(ContentPack contentPack) {
+		return LocaleUtils.findBestMatch(localePriorityList, contentPack.getTranslations().keySet());
+	}
+
+	public void checkContentPackValidity(ContentPackCheck check) {
+		ContentPackValidityCheckResult result = contentPackSerialization.checkValidity(check.getIdentifier(), check.getChecksum());
+		if (result == ContentPackValidityCheckResult.OK) {
+			client.sendTCP(new ContentPackReady(check.getIdentifier()));
+		} else {
+			listeners.forEach(l -> l.questionDownloadContentPack(check.getIdentifier(), result));
+		}
+	}
+
+	public void refuseContentPack(ContentPackIdentifier identifier) {
+		client.sendTCP(new RefuseContentPack(identifier));
+	}
+
+	public void acceptContentPack(ContentPackIdentifier identifier) {
+		waitingContentPack = identifier;
+		client.sendTCP(new ContentPackRequest(identifier));
+	}
+
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
-			setWorld(World.createClientWorld(createWorld, contentPackSerializer));
+			setWorld(World.createClientWorld(createWorld, contentPackSerialization));
 			world.addPlugin(new WorldUpdateManager(this));
-			currentLocale = LocaleUtils.findBestMatch(localePriorityList, world.getContentPack().getTranslations().keySet());
+			currentLocale = getLocaleFor(world.getContentPack());
 			removeAllPlugins();
 			if (createWorld.getPlayerDeadIds() != null) {
 				for (long id : createWorld.getPlayerDeadIds()) {
@@ -149,12 +179,12 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
-			localGamePack = contentPackSerializer.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
+			localGamePack = contentPackSerialization.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 			return;
 		}
-		currentLocale = LocaleUtils.findBestMatch(localePriorityList, localGamePack.getTranslations().keySet());
+		currentLocale = getLocaleFor(world.getContentPack());
 		setWorld(World.createLocalWorld(localGamePack, gameModeId));
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
@@ -207,22 +237,6 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		}
 	}
 
-	public void checkMissingPacks(ContentPackIdentifier identifier) {
-		// TODO Make the auto-download of contentPack great again
-		// List<ContentPackIdentifier> missingPacks = new ArrayList<>();
-		// for (ContentPackIdentifier identifier : identifiers) {
-		// if (!list.contains(identifier)) {
-		// missingPacks.add(identifier);
-		// }
-		// }
-		// if (!missingPacks.isEmpty()) {
-		// client.sendTCP(
-		// new RequestContentPacks(missingPacks.toArray(new
-		// ContentPackIdentifier[missingPacks.size()])));
-		// }
-		// contentPackDownloadManager.setMissingList(missingPacks);
-	}
-
 	public void synchronizeTime(TimeSync timeResponse) {
 		if (world != null) {
 			world.getTime().synchronizeTime(timeResponse);
@@ -257,5 +271,13 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 
 	public void send(LobbyRequest request) {
 		client.sendTCP(request);
+	}
+
+	public void notifyContentPackAvailable(ContentPackIdentifier identifier) {
+		if (identifier.equals(waitingContentPack)) {
+			waitingContentPack = null;
+			client.sendTCP(new ContentPackReady(identifier));
+		}
+		listeners.forEach(l -> l.contentPackAvailable(identifier));
 	}
 }

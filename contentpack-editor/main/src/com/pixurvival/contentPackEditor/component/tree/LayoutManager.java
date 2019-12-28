@@ -20,13 +20,13 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerializerPlugin;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerializationPlugin;
 import com.pixurvival.core.contentPack.serialization.DeclarationPropertyOrderUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class LayoutManager implements ContentPackSerializerPlugin {
+public class LayoutManager implements ContentPackSerializationPlugin {
 
 	public static final String LAYOUT_ENTRY = "layout.yml";
 

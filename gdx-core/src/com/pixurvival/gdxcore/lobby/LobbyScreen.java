@@ -12,7 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.message.lobby.GameModeList;
 import com.pixurvival.core.message.lobby.LobbyData;
+import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
@@ -26,6 +30,7 @@ public class LobbyScreen implements Screen {
 	private GameModeChooser gameModeChooser;
 	private Table teamsTable;
 	private TeamNameWindow teamNameWindow = new TeamNameWindow();
+	private QuestionWindow questionWindow;
 	private TextButton readyButton;
 	private int modCount;
 	private LobbyPlayer myPlayer;
@@ -36,7 +41,7 @@ public class LobbyScreen implements Screen {
 		mainGroup.setFillParent(true);
 
 		gameModeChooser = new GameModeChooser();
-		mainGroup.add(gameModeChooser).expandY().fill();
+		mainGroup.add(gameModeChooser).expandY().fill().pad(2);
 
 		teamsTable = new Table();
 		teamsTable.defaults().expand().fill().pad(2);
@@ -79,8 +84,15 @@ public class LobbyScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	public void setLobbyData(LobbyData lobbyData) {
-		teamsTable.clear();
+	public void receivedLobbyMessage(LobbyMessage message) {
+		if (message instanceof LobbyData) {
+			setLobbyData((LobbyData) message);
+		} else if (message instanceof GameModeList) {
+			gameModeChooser.acceptGameModeList((GameModeList) message);
+		}
+	}
+
+	private void setLobbyData(LobbyData lobbyData) {
 		modCount = lobbyData.getModCount();
 		myPlayer = lobbyData.getMyPlayer();
 		if (myPlayer.isReady()) {
@@ -88,6 +100,12 @@ public class LobbyScreen implements Screen {
 		} else {
 			readyButton.setText(PixurvivalGame.getString("lobby.ready"));
 		}
+		setTeamTable(lobbyData);
+		gameModeChooser.setData(lobbyData);
+	}
+
+	private void setTeamTable(LobbyData lobbyData) {
+		teamsTable.clear();
 		int count = 0;
 		for (LobbyTeam team : lobbyData.getPlayers()) {
 			TeamPanel teamPanel;
@@ -118,6 +136,9 @@ public class LobbyScreen implements Screen {
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		teamNameWindow.update(stage.getViewport());
+		if (questionWindow != null) {
+			questionWindow.update(stage.getViewport());
+		}
 	}
 
 	@Override
@@ -139,6 +160,15 @@ public class LobbyScreen implements Screen {
 			stage.dispose();
 			stage = null;
 		}
+	}
+
+	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
+		String messageKey = checkResult == ContentPackValidityCheckResult.NOT_FOUND ? "lobby.downloadContentPack.notFound" : "lobby.downloadContentPack.checksum";
+		questionWindow = new QuestionWindow("lobby.downloadContentPack.title", messageKey, () -> PixurvivalGame.getClient().acceptContentPack(identifier),
+				() -> PixurvivalGame.getClient().refuseContentPack(identifier));
+		stage.addActor(questionWindow);
+		questionWindow.update(stage.getViewport());
+		questionWindow.setVisible(true);
 	}
 
 }

@@ -18,9 +18,6 @@ public class DesktopLauncher {
 		config.height = 540;
 		config.title = "Pixurvival - pre-alpha 2";
 		config.addIcon("icon.png", FileType.Internal);
-		// DisplayMode desktopMode =
-		// LwjglApplicationConfiguration.getDesktopDisplayMode();
-		// config.setFromDisplayMode(desktopMode);
 		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);
 	}
 }
