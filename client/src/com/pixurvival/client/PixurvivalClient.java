@@ -16,7 +16,6 @@ import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
@@ -34,7 +33,9 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
+import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyRequest;
 import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
@@ -46,7 +47,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
-public class ClientGame extends PluginHolder<ClientGame> implements CommandExecutor, WorldListener {
+public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements CommandExecutor, WorldListener {
 
 	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2);
 	private NetworkMessageHandler clientListener;
@@ -63,8 +64,9 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	private @Getter boolean spectator;
 	private @Getter int myTeamId;
 	private ContentPackIdentifier waitingContentPack;
+	private SingleplayerLobby singlePlayerLobby;
 
-	public ClientGame(CommonMainArgs clientArgs) {
+	public PixurvivalClient(CommonMainArgs clientArgs) {
 		KryoInitializer.apply(client.getKryo());
 		contentPackSerialization = new ContentPackSerialization(new File(clientArgs.getContentPackDirectory()));
 		clientListener = new NetworkMessageHandler(this);
@@ -175,17 +177,20 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		}
 	}
 
-	public void startLocalGame(int gameModeId) {
+	public void startLocalGame() {
+		if (singlePlayerLobby == null) {
+			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
+		}
 		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
-			localGamePack = contentPackSerialization.load(new ContentPackIdentifier("Vanilla", new Version(1, 0)));
+			localGamePack = contentPackSerialization.load(singlePlayerLobby.getSelectedContentPackIdentifier());
 		} catch (ContentPackException e) {
 			e.printStackTrace();
 			return;
 		}
-		currentLocale = getLocaleFor(world.getContentPack());
-		setWorld(World.createLocalWorld(localGamePack, gameModeId));
+		currentLocale = getLocaleFor(localGamePack);
+		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new IllegalStateException("The GameMode + " + gameMode.getName() + " cannot be played in solo.");
@@ -196,6 +201,18 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 		for (String command : gameBeginningCommands) {
 			world.getCommandManager().process(this, CommandArgsUtils.splitArgs(command));
 		}
+		singlePlayerLobby = null;
+	}
+
+	public SingleplayerLobby getSinglePlayerLobby() {
+		if (singlePlayerLobby == null) {
+			singlePlayerLobby = new SingleplayerLobby(this);
+		}
+		return singlePlayerLobby;
+	}
+
+	public LobbyData getSinglePlayerLobbyData() {
+		return getSinglePlayerLobby().getLobbyData();
 	}
 
 	public void sendAction(IPlayerActionRequest request) {
@@ -270,7 +287,11 @@ public class ClientGame extends PluginHolder<ClientGame> implements CommandExecu
 	}
 
 	public void send(LobbyRequest request) {
-		client.sendTCP(request);
+		if (client.isConnected()) {
+			client.sendTCP(request);
+		} else if (request instanceof ChooseGameModeRequest) {
+			getSinglePlayerLobby().handle((ChooseGameModeRequest) request);
+		}
 	}
 
 	public void notifyContentPackAvailable(ContentPackIdentifier identifier) {

@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatManager;
 import com.pixurvival.core.chat.ChatSender;
+import com.pixurvival.core.command.CommandArgsUtils;
+import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -46,7 +49,7 @@ import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
-public class World extends PluginHolder<World> implements ChatSender {
+public class World extends PluginHolder<World> implements ChatSender, CommandExecutor {
 
 	@Getter
 	@AllArgsConstructor
@@ -204,6 +207,20 @@ public class World extends PluginHolder<World> implements ChatSender {
 		gameMode.getEndGameCondition().initialize(this);
 	}
 
+	public void received(ChatEntry chatEntry) {
+		String text = chatEntry.getText();
+		if (text.startsWith("/")) {
+			if (text.length() > 1) {
+				String returnText = commandManager.process((CommandExecutor) chatEntry.getSender(), CommandArgsUtils.splitArgs(text.substring(1)));
+				if (returnText != null) {
+					chatManager.received(new ChatEntry(this, returnText));
+				}
+			}
+		} else {
+			chatManager.received(chatEntry);
+		}
+	}
+
 	private void initializeSpawns() {
 		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
 		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.size());
@@ -250,5 +267,15 @@ public class World extends PluginHolder<World> implements ChatSender {
 	@Override
 	public String getName() {
 		return "World";
+	}
+
+	@Override
+	public boolean isOperator() {
+		return true;
+	}
+
+	@Override
+	public World getWorld() {
+		return this;
 	}
 }

@@ -5,8 +5,8 @@ import java.util.Scanner;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.PixurvivalServer;
+import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGameListener;
 import com.pixurvival.server.util.ServerMainArgs;
 
@@ -25,6 +25,7 @@ public class ServerConsole implements Runnable, ServerGameListener {
 		rootCommandProcessor.addProcessor("exit", new SimpleCommandProcessor(1, args -> {
 			game.stopServer();
 			running = false;
+			return true;
 		}));
 	}
 
@@ -38,9 +39,12 @@ public class ServerConsole implements Runnable, ServerGameListener {
 		Scanner reader = new Scanner(System.in);
 		while (running) {
 			System.out.print(" -> ");
-			String[] args = CommandArgsUtils.splitArgs(reader.nextLine());
+			String line = reader.nextLine();
+			String[] args = CommandArgsUtils.splitArgs(line);
 			try {
-				rootCommandProcessor.process(args);
+				if (!rootCommandProcessor.process(args)) {
+					game.sendCommand(line);
+				}
 			} catch (Exception e) {
 				Log.error("Command execution fail", e);
 			}

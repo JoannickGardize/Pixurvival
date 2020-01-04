@@ -76,8 +76,8 @@ public class GameModeChooser extends Table {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!programmaticChangeList) {
-					PixurvivalGame.getClient().send(new ChooseGameModeRequest(contentPackIdentifierList.getSelectedIndex(), 0));
 					event.cancel();
+					PixurvivalGame.getClient().send(new ChooseGameModeRequest(contentPackIdentifierList.getSelectedIndex(), 0));
 				}
 			}
 		});
@@ -86,8 +86,8 @@ public class GameModeChooser extends Table {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				if (!programmaticChangeList) {
-					PixurvivalGame.getClient().send(new ChooseGameModeRequest(contentPackIdentifierList.getSelectedIndex(), gameModeList.getSelectedIndex()));
 					event.cancel();
+					PixurvivalGame.getClient().send(new ChooseGameModeRequest(contentPackIdentifierList.getSelectedIndex(), gameModeList.getSelectedIndex()));
 				}
 			}
 		});

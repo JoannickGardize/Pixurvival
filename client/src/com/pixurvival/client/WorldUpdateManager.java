@@ -33,9 +33,9 @@ public class WorldUpdateManager implements Plugin<World> {
 	private List<WorldUpdate> waitingList = new ArrayList<>();
 	private NavigableMap<Long, WorldUpdate> history = new TreeMap<>();
 	private long previousSendTime = 0;
-	private ClientGame client;
+	private PixurvivalClient client;
 
-	public WorldUpdateManager(ClientGame client) {
+	public WorldUpdateManager(PixurvivalClient client) {
 		this.client = client;
 	}
 

@@ -25,6 +25,7 @@ import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.drawer.LightDrawer;
@@ -216,7 +217,9 @@ public class WorldScreen implements Screen {
 		DrawData data = (DrawData) myPlayer.getCustomData();
 		cameraControlProcessor.updateCameraPosition(data == null ? myPlayer.getPosition() : data.getDrawPosition());
 		worldStage.draw();
-		lightDrawer.draw(worldStage);
+		if (!(world.getTime().getDayCycle() instanceof EternalDayCycleRun)) {
+			lightDrawer.draw(worldStage);
+		}
 
 		hudStage.getViewport().apply();
 		hudStage.act();

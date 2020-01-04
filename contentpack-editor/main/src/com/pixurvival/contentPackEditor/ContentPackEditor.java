@@ -2,6 +2,7 @@ package com.pixurvival.contentPackEditor;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -26,7 +27,7 @@ public class ContentPackEditor extends JFrame {
 
 	public ContentPackEditor() {
 		EventManager.getInstance().register(this);
-		setSize(1300, 900);
+		setSize(1300, 800);
 
 		setJMenuBar(new CPEMenuBar());
 
@@ -45,6 +46,10 @@ public class ContentPackEditor extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		String language = Locale.getDefault().getLanguage();
+		if (!"fr".equals(language) && !"en".equals(language)) {
+			Locale.setDefault(Locale.ENGLISH);
+		}
 		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
 		run(mainArgs);
 		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

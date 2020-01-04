@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ContentPackDownloader {
 
 	private Map<ContentPackIdentifier, OutputStream> writingMap = new HashMap<>();
-	private @NonNull ClientGame client;
+	private @NonNull PixurvivalClient client;
 
 	public void accept(ContentPackPart contentPackPart) {
 		OutputStream output = null;

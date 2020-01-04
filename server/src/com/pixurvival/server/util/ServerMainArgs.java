@@ -9,5 +9,5 @@ public class ServerMainArgs extends CommonMainArgs {
 
 	private float simulatePacketLossRate = 0;
 
-	private int defaultPort = 7777;
+	private int port = 7777;
 }

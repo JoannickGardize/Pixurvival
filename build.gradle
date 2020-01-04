@@ -16,7 +16,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
+	version = '0.0.1'
     ext {
         appName = "Pixurvival"
         gdxVersion = '1.9.8'
@@ -65,6 +65,15 @@ project(":contentpack-editor") {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
     }
+    
+    task fatJar(type: Jar) {
+	    manifest {
+	        attributes 'Main-Class': "com.pixurvival.contentPackEditor.ContentPackEditor"
+	    }
+	    archiveName = "content-pack-editor.jar"
+	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	    with jar
+	}
 }
 
 
@@ -81,7 +90,7 @@ project(":server") {
 	    manifest {
 	        attributes 'Main-Class': "com.pixurvival.server.console.ServerConsole"
 	    }
-	    baseName = "${rootProject.name}"+"-server"
+	    archiveName = "server.jar"
 	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 	    with jar
 	}
@@ -112,7 +121,7 @@ project(":gdx-desktop") {
 	    manifest {
 	        attributes 'Main-Class': "com.pixurvival.desktop.DesktopLauncher"
 	    }
-	    baseName = "${rootProject.name}"
+	    archiveName = "pixurvival.jar"
 	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 	    with jar
 	}
@@ -145,6 +154,16 @@ project(":gdx-core") {
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompile 'junit:junit:4.12'
     }
+}
+
+task packageDistribution(type: Zip) {
+	archiveName = "pixurvival-0.0.1.zip"
+    destinationDir = file("$buildDir")
+    
+	from 'gdx-core/assets/contentPacks'
+	into 'contentPacks'
+	from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
+	
 }
 
 tasks.eclipse.doLast {

@@ -16,7 +16,7 @@ public class DesktopLauncher {
 		config.foregroundFPS = 60;
 		config.width = 960;
 		config.height = 540;
-		config.title = "Pixurvival - pre-alpha 2";
+		config.title = "Pixurvival - 0.0.1";
 		config.addIcon("icon.png", FileType.Internal);
 		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);
 	}

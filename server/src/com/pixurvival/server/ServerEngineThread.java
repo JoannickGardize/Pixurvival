@@ -4,11 +4,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.SoundEffect;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
@@ -31,10 +33,16 @@ public class ServerEngineThread extends EngineThread {
 	private WorldUpdate tmpFullWorldUpdate = new WorldUpdate();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
 
+	private List<String> requestedCommands = new Vector<>();
+
 	public ServerEngineThread(PixurvivalServer game) {
 		super("Main Server Thread");
 		this.game = game;
 		setWarnLoadTrigger(0.8f);
+	}
+
+	public void requestCommand(String command) {
+		requestedCommands.add(command);
 	}
 
 	public synchronized void add(GameSession gameSession) {
@@ -46,12 +54,16 @@ public class ServerEngineThread extends EngineThread {
 	public void update(float deltaTimeMillis) {
 		game.consumeReceivedObjects();
 		gameSessions.forEach(gs -> {
-			gs.getWorld().update(deltaTimeMillis);
-			long elapsed = System.currentTimeMillis() - gs.getPreviousNetworkReportTime();
-			if (elapsed >= 10_000) {
-				gs.getNetworkReporter().report(elapsed);
-				gs.setPreviousNetworkReportTime(System.currentTimeMillis());
+			while (!requestedCommands.isEmpty()) {
+				gs.getWorld().received(new ChatEntry(gs.getWorld(), requestedCommands.remove(0)));
 			}
+			gs.getWorld().update(deltaTimeMillis);
+			// long elapsed = System.currentTimeMillis() -
+			// gs.getPreviousNetworkReportTime();
+			// if (elapsed >= 10_000) {
+			// gs.getNetworkReporter().report(elapsed);
+			// gs.setPreviousNetworkReportTime(System.currentTimeMillis());
+			// }
 			if (gs.getWorld().getTime().getTickCount() % 2 == 0) {
 				// Send data every 2 frames only
 				return;
@@ -105,7 +117,10 @@ public class ServerEngineThread extends EngineThread {
 				prepareFullUpdate(session.getPlayerEntity());
 			}
 			int length = session.sendUDP(tmpFullWorldUpdate);
-			Log.info("full update sent to " + session.getConnection() + " entity size : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
+			// Log.info("full update sent to " + session.getConnection() + "
+			// entity size : " +
+			// tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ",
+			// size : " + length);
 		}
 	}
 

@@ -10,7 +10,7 @@ public class InputManager {
 
 	private static @Getter InputManager instance = new InputManager();
 
-	private @Getter @Setter InputMapping mapping = InputMappingDefaults.azertyRightHanded();
+	private @Getter @Setter InputMapping mapping = InputMappingDefaults.findBestDefaultMatch();
 	private boolean[] pressedActions = new boolean[InputAction.values().length];
 	private @Setter boolean playerMovementChanged = false;
 	private PlayerMovementRequest movementRequest = new PlayerMovementRequest();

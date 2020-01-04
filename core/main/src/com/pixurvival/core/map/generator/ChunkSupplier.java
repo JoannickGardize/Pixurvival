@@ -6,7 +6,6 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.map.EmptyTile;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -47,14 +46,13 @@ public class ChunkSupplier {
 		int y = chunk.getPosition().getY();
 		Random chunkRandom = new Random(seed << 32 ^ x << 16 ^ y);
 		for (int cx = 0; cx < GameConstants.CHUNK_SIZE; cx++) {
-			for (int cy = 0; cy < GameConstants.CHUNK_SIZE; cy++) {
+			// Desceding Y to put them in the right order for drawing
+			for (int cy = GameConstants.CHUNK_SIZE - 1; cy >= 0; cy--) {
 				MapTile mapTile = chunk.tileAtLocal(cx, cy);
-				if (mapTile instanceof EmptyTile) {
-					Structure structure = mapGenerator.getStructureAt(x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, mapTile.getTileDefinition(), chunkRandom);
-					if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth() && cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
-							&& chunk.isEmptyLocal(cx, cy, structure.getDimensions().getWidth(), structure.getDimensions().getHeight())) {
-						chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, false);
-					}
+				Structure structure = mapGenerator.getStructureAt(x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, mapTile.getTileDefinition(), chunkRandom);
+				if (structure != null && cx <= GameConstants.CHUNK_SIZE - structure.getDimensions().getWidth() && cy <= GameConstants.CHUNK_SIZE - structure.getDimensions().getHeight()
+						&& chunk.isEmptyLocal(cx, cy, structure.getDimensions().getWidth(), structure.getDimensions().getHeight())) {
+					chunk.addStructure(structure, x * GameConstants.CHUNK_SIZE + cx, y * GameConstants.CHUNK_SIZE + cy, false);
 				}
 			}
 		}

@@ -133,7 +133,7 @@ public class Chunk {
 	}
 
 	public MapStructure addStructure(Structure structure, int x, int y, boolean notify) {
-		// TODO ajouter les structure sur tout les chunks plutôt qu'un seul
+		// TODO ajouter les structure sur tous les chunks plutôt qu'un seul
 		MapStructure mapStructure = structure.newMapStructure(this, x, y);
 		if (structure.getLightEmissionRadius() > 0) {
 			lights.put(mapStructure, new Light(mapStructure.getPosition(), structure.getLightEmissionRadius()));

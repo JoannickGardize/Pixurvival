@@ -16,6 +16,10 @@ public class TranslationService {
 
 	}
 
+	public boolean containsKey(String key) {
+		return bundle.containsKey(key);
+	}
+
 	public String getString(String key) {
 		try {
 			String result = bundle.getString(key);

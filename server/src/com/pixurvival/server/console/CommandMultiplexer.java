@@ -15,16 +15,18 @@ public class CommandMultiplexer implements CommandProcessor {
 	}
 
 	@Override
-	public void process(String[] args) throws Exception {
+	public boolean process(String[] args) throws Exception {
 		if (args.length == 0) {
 			Log.warn("Cannot treat empty command");
-			return;
+			return true;
 		}
 		CommandProcessor processor = processors.get(args[0]);
 		if (processor == null) {
-			Log.warn("Unknown command : " + args[0]);
+			// Log.warn("Unknown command : " + args[0]);
+			return false;
 		} else {
 			processor.process(CommandArgsUtils.subArgs(args));
+			return true;
 		}
 	}
 }

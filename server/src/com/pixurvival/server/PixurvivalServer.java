@@ -48,7 +48,11 @@ public class PixurvivalServer {
 		File defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		contentPackSerialization = new ContentPackSerialization(defaultContentPack);
 		addLobbySession(new LobbySession(this));
-		startServer(serverArgs.getDefaultPort());
+		startServer(serverArgs.getPort());
+	}
+
+	public void sendCommand(String command) {
+		engineThread.requestCommand(command);
 	}
 
 	public void runGame(GameSession session) {

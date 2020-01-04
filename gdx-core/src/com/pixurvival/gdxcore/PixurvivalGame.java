@@ -24,8 +24,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoa
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.client.ClientGame;
 import com.pixurvival.client.ClientGameListener;
+import com.pixurvival.client.PixurvivalClient;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
@@ -36,7 +36,8 @@ import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
-import com.pixurvival.gdxcore.lobby.LobbyScreen;
+import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
+import com.pixurvival.gdxcore.lobby.SingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
@@ -56,7 +57,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		return instance.skin;
 	}
 
-	public static ClientGame getClient() {
+	public static PixurvivalClient getClient() {
 		return instance.client;
 	}
 
@@ -95,7 +96,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private static @Getter PixurvivalGame instance = null;
 
 	private Map<Class<? extends Screen>, Screen> screens = new HashMap<>();
-	private ClientGame client;
+	private PixurvivalClient client;
 	private @Getter AssetManager assetManager;
 	private @Getter InputMapping keyMapping;
 	private float frameDurationMillis = 1000f / 30;
@@ -116,7 +117,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		}
 		zoomEnabled = clientArgs.isZoomEnabled();
 		instance = this;
-		client = new ClientGame(clientArgs);
+		client = new PixurvivalClient(clientArgs);
 		client.addListener(this);
 		if (clientArgs.isRedirectErrorToFile()) {
 			File file = new File("err.txt");
@@ -275,13 +276,15 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void enterLobby() {
-		setScreen(LobbyScreen.class);
+		setScreen(MultiplayerLobbyScreen.class);
 	}
 
 	@Override
 	public void lobbyMessageReceived(LobbyMessage message) {
-		if (getScreen() instanceof LobbyScreen) {
-			((LobbyScreen) getScreen()).receivedLobbyMessage(message);
+		if (getScreen() instanceof MultiplayerLobbyScreen) {
+			((MultiplayerLobbyScreen) getScreen()).receivedLobbyMessage(message);
+		} else if (getScreen() instanceof SingleplayerLobbyScreen) {
+			((SingleplayerLobbyScreen) getScreen()).received(message);
 		}
 	}
 
@@ -292,8 +295,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
-		if (getScreen() instanceof LobbyScreen) {
-			((LobbyScreen) getScreen()).questionDownloadContentPack(identifier, checkResult);
+		if (getScreen() instanceof MultiplayerLobbyScreen) {
+			((MultiplayerLobbyScreen) getScreen()).questionDownloadContentPack(identifier, checkResult);
 		}
 	}
 }

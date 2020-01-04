@@ -11,6 +11,8 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.Constants;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -24,6 +26,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 	private ElementChooserButton<Tile> outsideTileChooser = new ElementChooserButton<>(Tile.class);
 
 	public ConstantsEditor() {
+		EventManager.getInstance().register(this);
 		defaultCharacterChooser.getSearchPopup().setModal(true);
 		outsideTileChooser.getSearchPopup().setModal(true);
 		// Construction
@@ -40,6 +43,11 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 		LayoutUtils.addHorizontalLabelledItem(this, "constants.defaultCharacter", defaultCharacterChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(this, "constants.outsideTile", outsideTileChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(this, "constants.tileAnimationSpeed", tileAnimationSpeedInput, gbc);
+	}
+
+	@EventListener
+	public void contentPackloaded(ContentPackLoadedEvent event) {
+		setValue(event.getContentPack().getConstants());
 	}
 
 	@Override

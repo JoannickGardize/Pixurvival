@@ -1,7 +1,13 @@
 package com.pixurvival.gdxcore.input;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.pixurvival.core.util.LocaleUtils;
+import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.experimental.UtilityClass;
 
@@ -13,6 +19,18 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class InputMappingDefaults {
+
+	public static InputMapping findBestDefaultMatch() {
+		List<Locale> defaultKeyboards = new ArrayList<>();
+		defaultKeyboards.add(Locale.FRENCH);
+		defaultKeyboards.add(Locale.ENGLISH);
+		Locale locale = LocaleUtils.findBestMatch(PixurvivalGame.getClient().getLocalePriorityList(), defaultKeyboards);
+		if (locale.equals(Locale.ENGLISH)) {
+			return InputMappingDefaults.qwertyRightHanded();
+		} else {
+			return InputMappingDefaults.azertyRightHanded();
+		}
+	}
 
 	/**
 	 * I put this first because I AM left handed and I AM important.
@@ -40,6 +58,18 @@ public class InputMappingDefaults {
 		mapping.bind(InputAction.MOVE_RIGHT, InputButton.keyboard(Keys.D));
 		mapping.bind(InputAction.MOVE_DOWN, InputButton.keyboard(Keys.S));
 		mapping.bind(InputAction.ACCESSORY1_SPECIAL, InputButton.keyboard(Keys.A));
+		mapping.bind(InputAction.ACCESSORY2_SPECIAL, InputButton.keyboard(Keys.E));
+		return mapping;
+	}
+
+	public static InputMapping qwertyRightHanded() {
+		InputMapping mapping = new InputMapping();
+		commonPart(mapping);
+		mapping.bind(InputAction.MOVE_UP, InputButton.keyboard(Keys.W));
+		mapping.bind(InputAction.MOVE_LEFT, InputButton.keyboard(Keys.A));
+		mapping.bind(InputAction.MOVE_RIGHT, InputButton.keyboard(Keys.D));
+		mapping.bind(InputAction.MOVE_DOWN, InputButton.keyboard(Keys.S));
+		mapping.bind(InputAction.ACCESSORY1_SPECIAL, InputButton.keyboard(Keys.Q));
 		mapping.bind(InputAction.ACCESSORY2_SPECIAL, InputButton.keyboard(Keys.E));
 		return mapping;
 	}

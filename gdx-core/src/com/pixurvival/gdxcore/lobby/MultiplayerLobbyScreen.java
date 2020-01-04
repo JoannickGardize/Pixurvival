@@ -22,7 +22,7 @@ import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
-public class LobbyScreen implements Screen {
+public class MultiplayerLobbyScreen implements Screen {
 
 	public static final int MAX_TEAM_PER_ROW = 4;
 

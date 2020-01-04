@@ -32,7 +32,7 @@ class NetworkMessageHandler extends Listener {
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
-	public NetworkMessageHandler(ClientGame game) {
+	public NetworkMessageHandler(PixurvivalClient game) {
 		putMessageAction(LoginResponse.class, r -> game.notify(l -> l.loginResponse(r)));
 		putMessageAction(CreateWorld.class, game::initializeNetworkWorld);
 		putMessageAction(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept(p));

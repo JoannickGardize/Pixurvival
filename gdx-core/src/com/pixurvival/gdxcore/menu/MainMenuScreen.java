@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.contentPackEditor.ContentPackEditor;
 import com.pixurvival.contentPackEditor.MainArgs;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.lobby.SingleplayerLobbyScreen;
 
 public class MainMenuScreen implements Screen {
 
@@ -42,8 +43,7 @@ public class MainMenuScreen implements Screen {
 		singleplayerButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// TODO Choix du GameMode
-				PixurvivalGame.getClient().startLocalGame(0);
+				PixurvivalGame.setScreen(SingleplayerLobbyScreen.class);
 			}
 		});
 

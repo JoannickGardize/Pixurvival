@@ -2,7 +2,7 @@ package com.pixurvival.client;
 
 public interface IClientGamePlugin {
 
-	void initialize(ClientGame client);
+	void initialize(PixurvivalClient client);
 
-	void update(ClientGame client);
+	void update(PixurvivalClient client);
 }

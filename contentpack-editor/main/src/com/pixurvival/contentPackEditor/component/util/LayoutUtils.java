@@ -29,7 +29,11 @@ public class LayoutUtils {
 	public static final int DEFAULT_GAP = 5;
 
 	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
-		addHorizontalLabelledItem(parent, labelKey, null, component, gbc);
+		String tooltipKey = labelKey + ".tooltip";
+		if (!TranslationService.getInstance().containsKey(tooltipKey)) {
+			tooltipKey = null;
+		}
+		addHorizontalLabelledItem(parent, labelKey, tooltipKey, component, gbc);
 	}
 
 	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {

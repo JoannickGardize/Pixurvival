@@ -20,7 +20,7 @@ public class SimpleCommandProcessor implements CommandProcessor {
 	}
 
 	@Override
-	public void process(String[] args) {
+	public boolean process(String[] args) {
 		if (args.length >= minArgs && args.length <= maxArgs) {
 			try {
 				action.process(args);
@@ -30,6 +30,7 @@ public class SimpleCommandProcessor implements CommandProcessor {
 		} else {
 			Log.warn("Wrong number of args, must be in range [" + minArgs + ", " + maxArgs + "]");
 		}
+		return true;
 	}
 
 }
