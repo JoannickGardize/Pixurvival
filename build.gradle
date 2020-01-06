@@ -156,14 +156,24 @@ project(":gdx-core") {
     }
 }
 
-task packageDistribution(type: Zip) {
+task packageDistribution(type: GradleBuild) {
+     tasks = ['copyJars', 'copyContentPack', 'zipPackage']
+}
+
+task copyJars(type: Copy) {
+	from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
+	into 'build/package'
+}
+
+task copyContentPack(type: Copy) {
+	from 'gdx-core/assets/contentPacks'
+	into 'build/package/contentPacks'
+}
+
+task zipPackage(type: Zip) {
 	archiveName = "pixurvival-0.0.1.zip"
     destinationDir = file("$buildDir")
-    
-	from 'gdx-core/assets/contentPacks'
-	into 'contentPacks'
-	from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
-	
+    from 'build/package'
 }
 
 tasks.eclipse.doLast {
