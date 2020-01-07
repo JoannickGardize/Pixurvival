@@ -130,6 +130,10 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
+		if (world.getGameMode().isMapLimitEnabled()) {
+			worldStage.addActor(new MapLimitActor(world.getMapLimits().getRectangle()));
+
+		}
 		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();

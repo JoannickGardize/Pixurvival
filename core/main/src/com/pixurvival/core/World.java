@@ -84,6 +84,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private Map<Long, PlayerEntity> playerEntities = new HashMap<>();
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
+	private MapLimits mapLimits = MapLimits.NO_LIMITS;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -197,8 +198,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();
@@ -235,7 +236,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 				spawnTeam(team, spawnPosition);
 			}
 			if (gameMode.isMapLimitEnabled()) {
-				addPlugin(new MapLimitsManager(new Rectangle(spawnCenter, gameMode.getMapLimitSize()), gameMode.getMapLimitDamagePerSecond()));
+				mapLimits.setRectangle(new Rectangle(spawnCenter, gameMode.getMapLimitSize()));
+				mapLimits.setTrueDamagePerSecond(gameMode.getMapLimitDamagePerSecond());
+				addPlugin(new MapLimitsManager());
 			}
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");

@@ -6,21 +6,15 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.Plugin;
 import com.pixurvival.core.util.Rectangle;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public class MapLimitsManager implements Plugin<World> {
-
-	private Rectangle rectangle;
-	private float trueDamagePerSecond;
 
 	@Override
 	public void update(World world) {
+		MapLimits mapLimits = world.getMapLimits();
+		Rectangle rectangle = mapLimits.getRectangle();
 		for (Entity e : world.getEntityPool().get(EntityGroup.PLAYER)) {
 			if (!rectangle.contains(e.getPosition())) {
-				((LivingEntity) e).takeTrueDamage(trueDamagePerSecond * (float) world.getTime().getDeltaTime());
+				((LivingEntity) e).takeTrueDamage(mapLimits.getTrueDamagePerSecond() * world.getTime().getDeltaTime());
 			}
 		}
 	}
