@@ -16,6 +16,8 @@ public interface ClientGameListener {
 
 	void spectatorStarted();
 
+	void gameStarted();
+
 	void gameEnded(EndGameData data);
 
 	void enterLobby();

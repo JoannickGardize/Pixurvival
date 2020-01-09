@@ -52,6 +52,9 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(StartGame.class, g -> {
 			game.addPlugin(new WorldUpdater());
 			game.getWorld().getTime().setTimeMillis(g.getWorldTime());
+			game.getWorld().setSpawnCenter(g.getSpawnCenter());
+			game.getWorld().initializeMapLimits();
+			game.notify(ClientGameListener::gameStarted);
 		});
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 		putMessageAction(Spectate.class, game::spectate);
@@ -65,7 +68,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(EnterLobby.class, e -> game.notify(ClientGameListener::enterLobby));
 		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyMessageReceived(ll)));
 		putMessageAction(GameModeList.class, gml -> game.notify(l -> l.lobbyMessageReceived(gml)));
-		putMessageAction(ContentPackCheck.class, cpc -> game.checkContentPackValidity(cpc));
+		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
 	}
 
 	@Override

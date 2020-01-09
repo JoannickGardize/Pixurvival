@@ -1,5 +1,6 @@
-package com.pixurvival.contentPackEditor.component.abilitySet;
+package com.pixurvival.contentPackEditor.component.item;
 
+import com.pixurvival.contentPackEditor.component.abilitySet.AlterationAbilityEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 

@@ -38,7 +38,6 @@ import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
 import com.pixurvival.core.util.PluginHolder;
-import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
@@ -80,11 +79,11 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private CommandManager commandManager = new CommandManager();
 	private ChatManager chatManager = new ChatManager();
 	private @Setter PlayerEntity myPlayer;
-	private Vector2 spawnCenter;
+	private @Setter Vector2 spawnCenter;
 	private Map<Long, PlayerEntity> playerEntities = new HashMap<>();
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
-	private MapLimits mapLimits = MapLimits.NO_LIMITS;
+	private @Setter MapLimitsRun mapLimitsRun;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
@@ -198,14 +197,15 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();
 		initializeSpawns();
 		initializeEvents();
 		gameMode.getEndGameCondition().initialize(this);
+		initializeMapLimits();
 	}
 
 	public void received(ChatEntry chatEntry) {
@@ -235,11 +235,6 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 				Vector2 spawnPosition = config.getSpawnSpots()[i];
 				spawnTeam(team, spawnPosition);
 			}
-			if (gameMode.isMapLimitEnabled()) {
-				mapLimits.setRectangle(new Rectangle(spawnCenter, gameMode.getMapLimitSize()));
-				mapLimits.setTrueDamagePerSecond(gameMode.getMapLimitDamagePerSecond());
-				addPlugin(new MapLimitsManager());
-			}
 		} catch (MapAnalyticsException e) {
 			Log.error("MapAnalyticsException");
 		}
@@ -264,6 +259,14 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 					break;
 				}
 			}
+		}
+	}
+
+	public void initializeMapLimits() {
+		if (gameMode.getMapLimits() != null) {
+			MapLimitsManager mapLimitsManager = new MapLimitsManager();
+			mapLimitsManager.initialize(this, spawnCenter);
+			addPlugin(mapLimitsManager);
 		}
 	}
 

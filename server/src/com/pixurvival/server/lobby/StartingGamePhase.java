@@ -94,7 +94,8 @@ public class StartingGamePhase implements LobbyPhase {
 			readySessions.add(playerSession);
 			if (readySessions.size() == session.getPlayerSessions().size()) {
 				session.terminate();
-				waitingGameSession.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame()));
+
+				waitingGameSession.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0, waitingGameSession.getWorld().getSpawnCenter())));
 				session.getServer().runGame(waitingGameSession);
 				session.getServer().addListener(waitingGameSession);
 			}

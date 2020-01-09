@@ -1,6 +1,5 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.contentPackEditor.component.abilitySet.ItemAlterationAbilityEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 

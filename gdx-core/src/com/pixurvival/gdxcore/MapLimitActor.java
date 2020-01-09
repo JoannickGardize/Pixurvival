@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MapLimitActor extends Actor {
 
-	public static final Color LIMIT_COLOR = new Color(0.95f, 0, 0, 0.5f);
+	public static final Color LIMIT_COLOR = new Color(1, 1, 1, 0.6f);
 	public static final float BORDER_SIZE = 0.2f;
 
 	private Rectangle limitRectangle;

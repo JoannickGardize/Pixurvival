@@ -50,4 +50,8 @@ public class ClientGameAdapter implements ClientGameListener {
 	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
 	}
 
+	@Override
+	public void gameStarted() {
+	}
+
 }

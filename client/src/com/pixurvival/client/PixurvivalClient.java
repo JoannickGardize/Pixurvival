@@ -202,6 +202,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			world.getCommandManager().process(this, CommandArgsUtils.splitArgs(command));
 		}
 		singlePlayerLobby = null;
+		notify(ClientGameListener::gameStarted);
 	}
 
 	public SingleplayerLobby getSinglePlayerLobby() {

@@ -37,12 +37,10 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	@Override
 	public void setValue(E value) {
 		this.value = value;
-		for (SubValueEntry entry : subValues) {
-			if (entry.getCondition().test(value)) {
-				if (value != null) {
+		if (value != null) {
+			for (SubValueEntry entry : subValues) {
+				if (entry.getCondition().test(value)) {
 					entry.getComponent().setValue(entry.getGetter().apply(value));
-				} else {
-					entry.getComponent().setValue(null);
 				}
 			}
 		}
@@ -53,7 +51,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	@Override
 	public boolean isValueValid(E value) {
 		if (value == null) {
-			return false;
+			return isNullable();
 		}
 		for (SubValueEntry entry : subValues) {
 			if (entry.getCondition().test(value) && !entry.getComponent().isValueValid(entry.getGetter().apply(value))) {
@@ -111,4 +109,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		// optional overwrite
 	}
 
+	protected boolean isNullable() {
+		return false;
+	}
 }

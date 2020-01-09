@@ -130,10 +130,6 @@ public class WorldScreen implements Screen {
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
-		if (world.getGameMode().isMapLimitEnabled()) {
-			worldStage.addActor(new MapLimitActor(world.getMapLimits().getRectangle()));
-
-		}
 		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
@@ -173,6 +169,12 @@ public class WorldScreen implements Screen {
 
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 		world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
+	}
+
+	public void gameStarted() {
+		if (world.getMapLimitsRun() != null) {
+			worldStage.addActor(new MapLimitActor(world.getMapLimitsRun().getRectangle()));
+		}
 	}
 
 	public void switchShowCollisionBoxes() {

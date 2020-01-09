@@ -26,4 +26,16 @@ public class Rectangle implements Serializable {
 	public boolean contains(Vector2 position) {
 		return position.getX() >= startX && position.getX() <= endX && position.getY() >= startY && position.getY() <= endY;
 	}
+
+	public Vector2 getCenter() {
+		return new Vector2((startX + endX) / 2, (startY + endY) / 2);
+	}
+
+	public float getWidth() {
+		return endX - startX;
+	}
+
+	public float getHeight() {
+		return endY - startY;
+	}
 }

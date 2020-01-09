@@ -46,10 +46,6 @@ public class GameMode extends IdentifiedElement {
 
 	private float spawnSquareSize = 490;
 
-	private boolean mapLimitEnabled = false;
-
-	private float mapLimitSize = 500;
-
-	private float mapLimitDamagePerSecond = 5;
+	private MapLimits mapLimits;
 
 }

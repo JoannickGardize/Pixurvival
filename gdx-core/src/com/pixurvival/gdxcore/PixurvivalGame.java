@@ -299,4 +299,12 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			((MultiplayerLobbyScreen) getScreen()).questionDownloadContentPack(identifier, checkResult);
 		}
 	}
+
+	@Override
+	public void gameStarted() {
+		Screen screen = getScreen();
+		if (screen instanceof WorldScreen) {
+			((WorldScreen) screen).gameStarted();
+		}
+	}
 }
