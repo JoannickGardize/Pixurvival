@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.PixurvivalException;
 import com.pixurvival.core.World;
 import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.command.CommandArgsUtils;
@@ -177,7 +178,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
-	public void startLocalGame() {
+	public void startLocalGame() throws PixurvivalException {
 		if (singlePlayerLobby == null) {
 			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
 		}
@@ -193,7 +194,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
-			throw new IllegalStateException("The GameMode + " + gameMode.getName() + " cannot be played in solo.");
+			throw new PixurvivalException("The GameMode " + gameMode.getName() + " cannot be played in solo.");
 		}
 		world.initializeGame();
 		notify(ClientGameListener::initializeGame);

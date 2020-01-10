@@ -9,9 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.pixurvival.core.PixurvivalException;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.menu.MessageWindow;
 
 public class SingleplayerLobbyScreen implements Screen {
 	private Stage stage;
@@ -19,11 +21,13 @@ public class SingleplayerLobbyScreen implements Screen {
 	private GameModeChooser gameModeChooser;
 
 	private LobbyData lobbyDataToApply = null;
+	private MessageWindow errorWindow = new MessageWindow("generic.error");
 
 	@Override
 	public void show() {
 		Table mainGroup = new Table();
 		mainGroup.setFillParent(true);
+		errorWindow.getOkButton().setVisible(true);
 
 		gameModeChooser = new GameModeChooser();
 		gameModeChooser.setData(PixurvivalGame.getClient().getSinglePlayerLobbyData());
@@ -35,7 +39,12 @@ public class SingleplayerLobbyScreen implements Screen {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				PixurvivalGame.getClient().startLocalGame();
+				try {
+					PixurvivalGame.getClient().startLocalGame();
+				} catch (PixurvivalException e) {
+					errorWindow.getContentLabel().setText(e.getMessage());
+					errorWindow.setVisible(true);
+				}
 			}
 		});
 
@@ -43,6 +52,7 @@ public class SingleplayerLobbyScreen implements Screen {
 
 		stage = new Stage(new ScreenViewport());
 		stage.addActor(mainGroup);
+		stage.addActor(errorWindow);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -66,6 +76,7 @@ public class SingleplayerLobbyScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
+		errorWindow.update(stage.getViewport());
 	}
 
 	@Override
