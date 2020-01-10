@@ -6,13 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.WorldScreen;
+import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.ui.tooltip.RepresenterUtils;
 
 public class EndGameUI extends UIWindow {
@@ -20,6 +25,8 @@ public class EndGameUI extends UIWindow {
 	public EndGameUI() {
 		super("endGame");
 		setVisible(false);
+		setModal(true);
+
 	}
 
 	public void show(EndGameData endGameData) {
@@ -44,6 +51,19 @@ public class EndGameUI extends UIWindow {
 			}
 		}
 		add().colspan(2).expand();
+		TextButton okButton = new TextButton(PixurvivalGame.getString("generic.ok"), PixurvivalGame.getSkin());
+
+		okButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				setVisible(false);
+				if (PixurvivalGame.getInstance().getScreen() instanceof WorldScreen) {
+					PixurvivalGame.setScreen(MainMenuScreen.class);
+				}
+			}
+		});
+		row();
+		add(okButton).colspan(2).expand();
 		setVisible(true);
 	}
 

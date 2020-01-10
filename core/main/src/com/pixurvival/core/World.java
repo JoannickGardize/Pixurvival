@@ -184,15 +184,15 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			long[] remainingPlayerIdArray = getEntityPool().get(EntityGroup.PLAYER).stream().filter(Entity::isAlive)
 					.sorted((p1, p2) -> ((PlayerEntity) p1).getTeam().getName().compareTo(((PlayerEntity) p2).getTeam().getName())).mapToLong(Entity::getId).toArray();
 			EndGameData endGameData = new EndGameData(time.getTimeMillis(), remainingPlayerIdArray);
-			listeners.forEach(l -> l.gameEnded(endGameData));
 			gameEnded = true;
+			unload();
+			listeners.forEach(l -> l.gameEnded(endGameData));
 		}
 	}
 
 	public void unload() {
 		synchronized (map) {
 			ChunkManager.getInstance().stopManaging(map);
-			// FileUtils.delete(saveDirectory);
 		}
 	}
 

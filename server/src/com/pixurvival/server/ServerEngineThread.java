@@ -22,6 +22,7 @@ import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.server.lobby.LobbySession;
 
 import lombok.NonNull;
 
@@ -29,6 +30,7 @@ public class ServerEngineThread extends EngineThread {
 
 	private @NonNull PixurvivalServer game;
 	private List<GameSession> gameSessions = new ArrayList<>();
+	private List<GameSession> tmpRemovedSessions = new ArrayList<>();
 	private WorldUpdate tmpDeltaWorldUpdate = new WorldUpdate();
 	private WorldUpdate tmpFullWorldUpdate = new WorldUpdate();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
@@ -57,6 +59,13 @@ public class ServerEngineThread extends EngineThread {
 			while (!requestedCommands.isEmpty()) {
 				gs.getWorld().received(new ChatEntry(gs.getWorld(), requestedCommands.remove(0)));
 			}
+			if (gs.isEnded()) {
+				LobbySession lobbySession = new LobbySession(game);
+				gs.foreachPlayers(p -> lobbySession.addPlayer(p.getConnection()));
+				game.addLobbySession(lobbySession);
+				tmpRemovedSessions.add(gs);
+				return;
+			}
 			gs.getWorld().update(deltaTimeMillis);
 			// long elapsed = System.currentTimeMillis() -
 			// gs.getPreviousNetworkReportTime();
@@ -78,6 +87,8 @@ public class ServerEngineThread extends EngineThread {
 				}
 			});
 		});
+		gameSessions.removeAll(tmpRemovedSessions);
+		tmpRemovedSessions.clear();
 	}
 
 	private void sendWorldData(GameSession gs) {

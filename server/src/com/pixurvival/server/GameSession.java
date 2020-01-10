@@ -49,6 +49,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	private List<PlayerGameSession> tmpPlayerSessions = new ArrayList<>();
 	private @Getter @Setter long previousNetworkReportTime;
 	private @Getter NetworkStatisticsReporter networkReporter = new NetworkStatisticsReporter();
+	private @Getter boolean ended = false;
 
 	public GameSession(World world) {
 		this.world = world;
@@ -219,8 +220,11 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void gameEnded(EndGameData data) {
-		players.forEach(p -> p.getConnection().sendTCP(data));
-		// TODO Retour au lobby
+		players.forEach(p -> {
+			p.getConnection().sendTCP(data);
+			p.getConnection().removePlayerConnectionMessageListeners(p);
+		});
+		ended = true;
 	}
 
 	@Override

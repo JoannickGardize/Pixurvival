@@ -276,7 +276,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void enterLobby() {
-		setScreen(MultiplayerLobbyScreen.class);
+		if (getScreen() instanceof WorldScreen) {
+			WorldScreen worldScreen = (WorldScreen) getScreen();
+			setScreen(MultiplayerLobbyScreen.class);
+			((MultiplayerLobbyScreen) getScreen()).showEndGameUI(worldScreen.getEndGameUI());
+		} else {
+			setScreen(MultiplayerLobbyScreen.class);
+		}
 	}
 
 	@Override

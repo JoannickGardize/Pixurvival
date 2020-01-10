@@ -57,7 +57,7 @@ public class WorldScreen implements Screen {
 	public static final float VIEWPORT_WORLD_WIDTH = CAMERA_BOUNDS * 2;
 
 	private @Getter World world;
-	private static @Getter Stage worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
+	private static @Getter Stage worldStage;
 
 	// private Stage worldStage = new Stage(new
 	// ExtendViewport(VIEWPORT_WORLD_WIDTH
@@ -65,15 +65,17 @@ public class WorldScreen implements Screen {
 	// VIEWPORT_WORLD_WIDTH));
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private WorldKeyboardProcessor keyboardInputProcessor = new WorldKeyboardProcessor();
-	private CameraControlProcessor cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
+	private CameraControlProcessor cameraControlProcessor;
 	private EntitiesActor entitiesActor;
 	private DebugInfosActor debugInfosActors;
 	private UILayoutManager uiLayoutManager = new UILayoutManager();
 	private LightDrawer lightDrawer = new LightDrawer();
 	private StatusUI statusUI = new StatusUI();
-	private EndGameUI endGameUI = new EndGameUI();
+	private @Getter EndGameUI endGameUI = new EndGameUI();
 
 	public void setWorld(World world) {
+		worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
+		cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 		this.world = world;
 		world.getEntityPool().addListener(new EntityPoolListener() {
 
@@ -277,6 +279,7 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void hide() {
+		dispose();
 	}
 
 	@Override

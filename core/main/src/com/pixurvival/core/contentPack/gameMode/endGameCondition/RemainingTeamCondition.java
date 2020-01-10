@@ -33,6 +33,7 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 
 	@Override
 	public void entityRemoved(Entity e) {
+		// TODO Use a kind of listener that only informs of players deaths
 		if (!(e instanceof PlayerEntity)) {
 			return;
 		}

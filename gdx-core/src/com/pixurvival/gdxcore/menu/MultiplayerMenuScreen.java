@@ -41,7 +41,7 @@ public class MultiplayerMenuScreen implements Screen {
 
 		Table buttonTable = new Table();
 		buttonTable.defaults().pad(0, 5, 0, 5).prefWidth(100);
-		TextButton backButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.back"), skin);
+		TextButton backButton = new TextButton(PixurvivalGame.getString("generic.back"), skin);
 		buttonTable.add(backButton).center();
 		TextButton connectButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.connect"), skin);
 		buttonTable.add(connectButton).center();

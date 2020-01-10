@@ -27,7 +27,7 @@ public class MessageWindow extends Window {
 
 		contentLabel = new Label("", skin);
 		contentLabel.setWrap(true);
-		okButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.connectWindow.ok"), skin);
+		okButton = new TextButton(PixurvivalGame.getString("generic.ok"), skin);
 		okButton.setVisible(false);
 
 		add(contentLabel).expand().top();

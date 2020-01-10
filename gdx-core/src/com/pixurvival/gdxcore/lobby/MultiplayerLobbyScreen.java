@@ -21,6 +21,7 @@ import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.ui.EndGameUI;
 
 public class MultiplayerLobbyScreen implements Screen {
 
@@ -34,6 +35,7 @@ public class MultiplayerLobbyScreen implements Screen {
 	private TextButton readyButton;
 	private int modCount;
 	private LobbyPlayer myPlayer;
+	private EndGameUI endGameUI;
 
 	@Override
 	public void show() {
@@ -82,6 +84,13 @@ public class MultiplayerLobbyScreen implements Screen {
 		stage.addActor(mainGroup);
 		stage.addActor(teamNameWindow);
 		Gdx.input.setInputProcessor(stage);
+	}
+
+	public void showEndGameUI(EndGameUI endGameUI) {
+		if (this.endGameUI != null) {
+			this.endGameUI.remove();
+		}
+		stage.addActor(endGameUI);
 	}
 
 	public void receivedLobbyMessage(LobbyMessage message) {
@@ -138,6 +147,9 @@ public class MultiplayerLobbyScreen implements Screen {
 		teamNameWindow.update(stage.getViewport());
 		if (questionWindow != null) {
 			questionWindow.update(stage.getViewport());
+		}
+		if (endGameUI != null) {
+			endGameUI.update(stage.getViewport());
 		}
 	}
 
