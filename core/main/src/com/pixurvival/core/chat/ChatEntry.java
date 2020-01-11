@@ -4,7 +4,6 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +47,7 @@ public class ChatEntry {
 			World world = World.getWorld(input.readLong());
 			byte senderType = input.readByte();
 			if (senderType == PLAYER_TYPE) {
-				sender = (PlayerEntity) world.getEntityPool().get(EntityGroup.PLAYER, input.readLong());
+				sender = world.getPlayerEntities().get(input.readLong());
 			} else {
 				sender = world;
 			}

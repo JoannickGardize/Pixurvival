@@ -122,12 +122,18 @@ public class LayoutUtils {
 	}
 
 	public static JPanel labelled(String labelKey, Component component) {
+		String tooltipKey = labelKey + ".tooltip";
 		JPanel panel = new JPanel(new BorderLayout(DEFAULT_GAP, 0));
 		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
 		panel.add(label, BorderLayout.WEST);
 		panel.add(component, BorderLayout.CENTER);
 		if (component instanceof ValueComponent) {
 			((ValueComponent<?>) component).setAssociatedLabel(label);
+		}
+		if (TranslationService.getInstance().containsKey(tooltipKey)) {
+			String toolTipText = TranslationService.getInstance().getString(tooltipKey);
+			((JComponent) component).setToolTipText(toolTipText);
+			label.setToolTipText(toolTipText);
 		}
 		return panel;
 	}
