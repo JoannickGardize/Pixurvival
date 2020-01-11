@@ -16,7 +16,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-	version = '0.0.1'
+	version = '0.0.2'
     ext {
         appName = "Pixurvival"
         gdxVersion = '1.9.8'
@@ -148,7 +148,6 @@ project(":gdx-core") {
 
     dependencies {
     	compile project(":client")
-    	compile project(":contentpack-editor")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
