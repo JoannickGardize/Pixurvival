@@ -1,7 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
 /**
@@ -16,7 +15,7 @@ public abstract class UniqueAlteration extends Alteration {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void targetedApply(TeamMember source, LivingEntity target) {
+	public void targetedApply(TeamMember source, TeamMember target) {
 		if (source instanceof CheckListHolder) {
 			CheckListHolder holder = (CheckListHolder) source;
 			if (!holder.check(target)) {
@@ -27,5 +26,5 @@ public abstract class UniqueAlteration extends Alteration {
 		}
 	}
 
-	public abstract void uniqueApply(TeamMember source, LivingEntity entity);
+	public abstract void uniqueApply(TeamMember source, TeamMember entity);
 }

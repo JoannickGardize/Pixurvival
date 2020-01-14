@@ -22,20 +22,20 @@ public class FixedMovementAlteration extends PersistentAlteration {
 	private StatFormula speed = new StatFormula();
 
 	@Override
-	public Object begin(TeamMember source, LivingEntity entity) {
-		TeamMember effectiveSource = sourceType.getFunction().apply(source, entity);
+	public Object begin(TeamMember source, LivingEntity target) {
+		TeamMember effectiveSource = sourceType.getFunction().apply(source, target);
 		if (effectiveSource instanceof LivingEntity) {
 			((LivingEntity) effectiveSource).prepareTargetedAlteration();
 		}
-		float angle = sourceDirection.getDirection(effectiveSource, entity);
+		float angle = sourceDirection.getDirection(effectiveSource, target);
 		float speedValue = speed.getValue(effectiveSource.getStats());
-		entity.setFixedMovement(angle + relativeAngle + entity.getWorld().getRandom().nextAngle(randomAngle), speedValue);
+		target.setFixedMovement(angle + relativeAngle + target.getWorld().getRandom().nextAngle(randomAngle), speedValue);
 		return null;
 	}
 
 	@Override
-	public void end(TeamMember source, LivingEntity entity, Object data) {
-		entity.stopFixedMovement();
+	public void end(TeamMember source, LivingEntity target, Object data) {
+		target.stopFixedMovement();
 	}
 
 	@Override

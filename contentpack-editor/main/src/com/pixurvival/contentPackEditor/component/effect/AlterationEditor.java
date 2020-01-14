@@ -44,15 +44,20 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 	private static final long serialVersionUID = 1L;
 
-	public AlterationEditor() {
-		this(true);
+	public AlterationEditor(AlterationTarget... targetElements) {
+		this(true, targetElements);
 	}
 
-	public AlterationEditor(boolean showDelayedAlteration) {
+	public AlterationEditor(boolean showDelayedAlteration, AlterationTarget... targetElements) {
 		super("alterationType", showDelayedAlteration);
-		EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, AlterationTarget.TARGET, AlterationTarget.ORIGIN);
-		bind(alterationTargetChooser, Alteration::getTargetType, Alteration::setTargetType);
-		LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "generic.target", alterationTargetChooser), getSpecificPartPanel());
+		if (targetElements.length > 0) {
+			EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, targetElements);
+			bind(alterationTargetChooser, Alteration::getTargetType, Alteration::setTargetType);
+			LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "alterationEditor.applyTo", alterationTargetChooser), getSpecificPartPanel());
+		} else {
+			LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
+
+		}
 	}
 
 	@Override
@@ -123,8 +128,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// TeleportationAlteration
 		entries.add(new ClassEntry(TeleportationAlteration.class, new JPanel()));
 
-		// DelayedAlteration
 		if (Boolean.TRUE.equals(params)) {
+			// DelayedAlteration
 			TimeInput delayInput = new TimeInput();
 			AlterationEditor alterationEditor = new AlterationEditor(false);
 			bind(delayInput, DelayedAlteration::getDuration, DelayedAlteration::setDuration, DelayedAlteration.class);

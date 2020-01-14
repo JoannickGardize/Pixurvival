@@ -1,6 +1,5 @@
 package com.pixurvival.core.livingEntity.alteration;
 
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -16,7 +15,7 @@ public class InstantEatAlteration extends Alteration {
 	private StatFormula amount = new StatFormula();
 
 	@Override
-	public void targetedApply(TeamMember source, LivingEntity entity) {
+	public void targetedApply(TeamMember source, TeamMember entity) {
 		if (entity instanceof PlayerEntity) {
 			((PlayerEntity) entity).addHunger(amount.getValue(source));
 		}

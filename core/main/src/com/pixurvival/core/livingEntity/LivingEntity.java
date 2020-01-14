@@ -10,6 +10,7 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
 import com.pixurvival.core.livingEntity.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -25,6 +26,8 @@ import lombok.Setter;
 
 @Getter
 public abstract class LivingEntity extends Entity implements Damageable, TeamMember {
+
+	public static final int SILENCE_ABILITY_ID = 0;
 
 	public static final byte UPDATE_CONTENT_MASK_STATS = 1;
 	public static final byte UPDATE_CONTENT_MASK_ABILITY = 2;
@@ -325,6 +328,11 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 			setStateChanged(true);
 			addUpdateContentMask(UPDATE_CONTENT_MASK_ABILITY);
 		}
+	}
+
+	public void silence(long duration) {
+		startAbility(SILENCE_ABILITY_ID);
+		((SilenceAbilityData) getAbilityData(SILENCE_ABILITY_ID)).setEndTime(getWorld().getTime().getTimeMillis() + duration);
 	}
 
 	@Override

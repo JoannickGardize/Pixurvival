@@ -3,7 +3,6 @@ package com.pixurvival.core.livingEntity.alteration;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class AddItemAlteration extends UniqueAlteration {
 	private boolean dropRemainder;
 
 	@Override
-	public void uniqueApply(TeamMember source, LivingEntity entity) {
+	public void uniqueApply(TeamMember source, TeamMember entity) {
 		if (entity instanceof InventoryHolder) {
 			ItemStack remainder = ((InventoryHolder) entity).getInventory().add(itemStack);
 			if (dropRemainder && remainder != null) {

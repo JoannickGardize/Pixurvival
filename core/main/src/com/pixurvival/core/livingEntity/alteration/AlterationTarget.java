@@ -2,7 +2,6 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.function.BiFunction;
 
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +13,5 @@ public enum AlterationTarget {
 	SELF((s, t) -> s),
 	TARGET((s, t) -> t);
 
-	private @Getter BiFunction<TeamMember, LivingEntity, TeamMember> function;
+	private @Getter BiFunction<TeamMember, TeamMember, TeamMember> function;
 }

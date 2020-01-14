@@ -17,8 +17,8 @@ public abstract class PersistentAlteration extends Alteration {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Enum that define how the same alteration (i.e. alteration definition from
-	 * the same source instance) is stacked to a single target.
+	 * Enum that define how the same alteration (i.e. alteration definition from the
+	 * same source instance) is stacked to a single target.
 	 * 
 	 * @author SharkHendrix
 	 *
@@ -31,13 +31,11 @@ public abstract class PersistentAlteration extends Alteration {
 		 */
 		STACK,
 		/**
-		 * The alteration is added once, and will not be replaced if already
-		 * present.
+		 * The alteration is added once, and will not be replaced if already present.
 		 */
 		IGNORE,
 		/**
-		 * The alteration is added once, and will be replaced if already
-		 * present.
+		 * The alteration is added once, and will be replaced if already present.
 		 */
 		REPLACE;
 
@@ -47,19 +45,21 @@ public abstract class PersistentAlteration extends Alteration {
 	private StackPolicy stackPolicy = StackPolicy.REPLACE;
 
 	@Override
-	public void targetedApply(TeamMember source, LivingEntity target) {
-		target.applyPersistentAlteration(source, this);
+	public void targetedApply(TeamMember source, TeamMember target) {
+		if (target instanceof LivingEntity) {
+			((LivingEntity) target).applyPersistentAlteration(source, this);
+		}
 	}
 
-	public Object begin(TeamMember source, LivingEntity entity) {
+	public Object begin(TeamMember source, LivingEntity target) {
 		return null;
 	}
 
-	public Object update(TeamMember source, LivingEntity entity, Object data) {
+	public Object update(TeamMember source, LivingEntity target, Object data) {
 		return data;
 	}
 
-	public void end(TeamMember source, LivingEntity entity, Object data) {
+	public void end(TeamMember source, LivingEntity target, Object data) {
 	}
 
 }

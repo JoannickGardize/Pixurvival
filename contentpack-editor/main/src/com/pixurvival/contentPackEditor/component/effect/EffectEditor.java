@@ -21,10 +21,10 @@ import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.DrawDepth;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
-import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
+import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
 
 public class EffectEditor extends RootElementEditor<Effect> {
 
@@ -47,8 +47,11 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatFormulaEditor repeatFollowingElementsEditor = new StatFormulaEditor();
-		ListEditor<FollowingElement> deathFollowingElements = new VerticalListEditor<>(FollowingElementEditor::new, BeanFactory.of(FollowingElement.class), VerticalListEditor.HORIZONTAL);
-		ListEditor<Alteration> deathAlterations = new VerticalListEditor<>(AlterationEditor::new, BeanFactory.of(Alteration.class), VerticalListEditor.HORIZONTAL);
+		ListEditor<Alteration> deathAlterations = new VerticalListEditor<>(() -> new AlterationEditor(AlterationTarget.ORIGIN, AlterationTarget.SELF), () -> {
+			Alteration alteration = BeanFactory.newInstance(Alteration.class);
+			alteration.setTargetType(AlterationTarget.SELF);
+			return alteration;
+		}, VerticalListEditor.HORIZONTAL);
 
 		// Binding
 
@@ -63,7 +66,6 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
 		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
 		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
-		bind(deathFollowingElements, Effect::getDeathFollowingElements, Effect::setDeathFollowingElements);
 		bind(deathAlterations, Effect::getDeathAlterations, Effect::setDeathAlterations);
 		bind(drawDepthChooser, Effect::getDrawDepth, Effect::setDrawDepth);
 
@@ -84,7 +86,6 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		followingElementsPanel.add(LayoutUtils.single(LayoutUtils.labelled("generic.repeat", repeatFollowingElementsEditor)), BorderLayout.NORTH);
 		followingElementsPanel.add(followingElementsEditor, BorderLayout.CENTER);
 		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.delayedFollowingElements"), followingElementsPanel);
-		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.deathFollowingElements"), deathFollowingElements);
 		tabbedPane.addTab(TranslationService.getInstance().getString("effectEditor.deathAlterations"), deathAlterations);
 		LayoutUtils.fill(this, tabbedPane);
 	}

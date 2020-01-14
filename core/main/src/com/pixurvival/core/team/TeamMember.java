@@ -17,4 +17,8 @@ public interface TeamMember extends Positionnable {
 	TeamMember findIfNotFound();
 
 	boolean isAlive();
+
+	void takeDamage(float amount);
+
+	void takeHeal(float value);
 }

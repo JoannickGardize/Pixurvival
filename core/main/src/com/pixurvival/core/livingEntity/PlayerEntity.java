@@ -28,7 +28,6 @@ import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
-import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.map.HarvestableMapStructure;
@@ -52,7 +51,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	public static final int INVENTORY_SIZE = 32;
 
-	public static final int SILENCE_ABILITY_ID = 0;
 	public static final int CRAFT_ABILITY_ID = 1;
 	public static final int HARVEST_ABILITY_ID = 2;
 	public static final int USE_ITEM_ABILITY_ID = 3;
@@ -248,11 +246,6 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		if (getWorld().isServer()) {
 			lastPlayerMovementRequest.apply(this);
 		}
-	}
-
-	public void silence(long duration) {
-		startAbility(SILENCE_ABILITY_ID);
-		((SilenceAbilityData) getAbilityData(SILENCE_ABILITY_ID)).setEndTime(getWorld().getTime().getTimeMillis() + duration);
 	}
 
 	@Override

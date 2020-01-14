@@ -40,4 +40,16 @@ public class EffectEventTeamMember implements TeamMember {
 		return true;
 	}
 
+	@Override
+	public void takeDamage(float amount) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void takeHeal(float value) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

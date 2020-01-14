@@ -1,7 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -16,9 +15,9 @@ public class SilenceAlteration extends Alteration {
 	private long duration;
 
 	@Override
-	public void targetedApply(TeamMember source, LivingEntity entity) {
-		if (entity instanceof PlayerEntity) {
-			((PlayerEntity) entity).silence(duration);
+	public void targetedApply(TeamMember source, TeamMember entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).silence(duration);
 		}
 	}
 }

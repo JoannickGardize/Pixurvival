@@ -16,8 +16,10 @@ public class FollowingElementAlteration extends UniqueAlteration {
 	private FollowingElement followingElement;
 
 	@Override
-	public void uniqueApply(TeamMember source, LivingEntity entity) {
-		entity.prepareTargetedAlteration();
+	public void uniqueApply(TeamMember source, TeamMember entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).prepareTargetedAlteration();
+		}
 		followingElement.apply(entity);
 	}
 }

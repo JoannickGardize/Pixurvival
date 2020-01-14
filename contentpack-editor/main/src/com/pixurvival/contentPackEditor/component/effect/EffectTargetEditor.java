@@ -11,6 +11,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
+import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 
 public class EffectTargetEditor extends ElementEditor<EffectTarget> {
@@ -22,7 +23,7 @@ public class EffectTargetEditor extends ElementEditor<EffectTarget> {
 		// Construction
 		EnumChooser<TargetType> targetTypeChooser = new EnumChooser<>(TargetType.class);
 		BooleanCheckBox destroyCheckBox = new BooleanCheckBox();
-		ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(AlterationEditor::new, InstantDamageAlteration::new, ListEditor.HORIZONTAL, false);
+		ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(AlterationTarget.values()), InstantDamageAlteration::new, ListEditor.HORIZONTAL, false);
 
 		// Binding
 		bind(targetTypeChooser, EffectTarget::getTargetType, EffectTarget::setTargetType);

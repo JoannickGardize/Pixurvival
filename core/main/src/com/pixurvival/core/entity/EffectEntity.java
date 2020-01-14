@@ -9,9 +9,7 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
-import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
-import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -123,14 +121,9 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	protected void onDeath() {
 		if (getWorld().isServer()) {
-			for (FollowingElement followingElement : definition.getEffect().getDeathFollowingElements()) {
-				followingElement.apply(this);
-			}
-			if (getOrigin() instanceof LivingEntity) {
-				LivingEntity origin = (LivingEntity) getOrigin();
-				for (Alteration alteration : definition.getEffect().getDeathAlterations()) {
-					alteration.apply(this, origin);
-				}
+			TeamMember origin = getOrigin();
+			for (Alteration alteration : definition.getEffect().getDeathAlterations()) {
+				alteration.apply(this, origin);
 			}
 		}
 	}
@@ -226,5 +219,16 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	@Override
 	public boolean isInvisible() {
 		return definition.getEffect().getSpriteSheet() == null;
+	}
+
+	@Override
+	public void takeDamage(float amount) {
+		// An effect cannot take damage
+	}
+
+	@Override
+	public void takeHeal(float value) {
+		// TODO Auto-generated method stub
+
 	}
 }

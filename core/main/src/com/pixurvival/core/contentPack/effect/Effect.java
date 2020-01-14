@@ -60,9 +60,6 @@ public class Effect extends IdentifiedElement {
 	 */
 	private List<DelayedFollowingElement> delayedFollowingElements = new ArrayList<>();
 
-	// TODO Fusionner avec deathAlterations
-	private List<FollowingElement> deathFollowingElements = new ArrayList<>();
-
 	private List<Alteration> deathAlterations = new ArrayList<>();
 
 	@Override

@@ -15,8 +15,10 @@ public class InvincibleAlteration extends Alteration {
 	private long duration;
 
 	@Override
-	public void targetedApply(TeamMember source, LivingEntity entity) {
-		entity.setInvincible(duration);
+	public void targetedApply(TeamMember source, TeamMember entity) {
+		if (entity instanceof LivingEntity) {
+			((LivingEntity) entity).setInvincible(duration);
+		}
 	}
 
 }
