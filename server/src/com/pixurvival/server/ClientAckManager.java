@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
  * responsibility and exclusivity of {@link PlayerConnection#getWaitingAcks()}
  * attribute.
  * 
- * TODO packet loss statistics for congestion management
  * 
  * @author SharkHendrix
  *
@@ -82,8 +81,8 @@ public class ClientAckManager {
 
 	/**
 	 * @param session
-	 * @return true if acks are considered ok, false if ack is considered missing
-	 *         and a full update is required.
+	 * @return true if acks are considered ok, false if ack is considered
+	 *         missing and a full update is required.
 	 */
 	public boolean check(PlayerGameSession session) {
 		long time = session.getPlayerEntity().getWorld().getTime().getTimeMillis();

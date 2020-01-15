@@ -190,9 +190,11 @@ public class ServerEngineThread extends EngineThread {
 		worldUpdate.getReadyCooldowns()[3] = ((CooldownAbilityData) player.getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId())).getReadyTimeMillis();
 		worldUpdate.setLastPlayerMovementRequest(player.getLastPlayerMovementRequest());
 		worldUpdate.getSoundEffects().clear();
-		for (SoundEffect soundEffect : soundEffects) {
+		int size = Math.min(soundEffects.size(), 10);
+		for (int i = 0; i < size; i++) {
+			SoundEffect soundEffect = soundEffects.get(i);
 			if (player.distanceSquared(soundEffect.getPosition()) <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
-				worldUpdate.getSoundEffects().addAll(soundEffects);
+				worldUpdate.getSoundEffects().add(soundEffect);
 			}
 		}
 	}
