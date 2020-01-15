@@ -79,11 +79,13 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		entries.add(new ClassEntry(Structure.class, new JPanel()));
+		entries.add(new ClassEntry(Structure.class, JPanel::new));
 
-		HarvestablePanel harvestablePanel = new HarvestablePanel();
-		harvestablePanel.bindTo(this);
-		entries.add(new ClassEntry(HarvestableStructure.class, harvestablePanel));
+		entries.add(new ClassEntry(HarvestableStructure.class, () -> {
+			HarvestablePanel harvestablePanel = new HarvestablePanel();
+			harvestablePanel.bindTo(this);
+			return harvestablePanel;
+		}));
 
 		return entries;
 	}

@@ -65,122 +65,151 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		List<ClassEntry> entries = new ArrayList<>();
 
 		// InstantDamageAlteration
-		StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
-		bind(damageAmountEditor, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
-		entries.add(new ClassEntry(InstantDamageAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor))));
+		entries.add(new ClassEntry(InstantDamageAlteration.class, () -> {
+			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
+			bind(damageAmountEditor, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor));
+		}));
 
 		// ContinuousDamageAlteration
-		damageAmountEditor = new StatFormulaEditor();
-		bind(damageAmountEditor, ContinuousDamageAlteration::getDamagePerSecond, ContinuousDamageAlteration::setDamagePerSecond, ContinuousDamageAlteration.class);
-		entries.add(new ClassEntry(ContinuousDamageAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor))));
+		entries.add(new ClassEntry(ContinuousDamageAlteration.class, () -> {
+			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
+			bind(damageAmountEditor, ContinuousDamageAlteration::getDamagePerSecond, ContinuousDamageAlteration::setDamagePerSecond, ContinuousDamageAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor));
+		}));
 
 		// InstantHealAlteration
-		StatFormulaEditor healAmountEditor = new StatFormulaEditor();
-		bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
-		entries.add(new ClassEntry(InstantHealAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", healAmountEditor))));
+		entries.add(new ClassEntry(InstantHealAlteration.class, () -> {
+			StatFormulaEditor healAmountEditor = new StatFormulaEditor();
+			bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", healAmountEditor));
+		}));
 
 		// InstantEatAlteration
-		StatFormulaEditor eatAmountEditor = new StatFormulaEditor();
-		bind(eatAmountEditor, InstantEatAlteration::getAmount, InstantEatAlteration::setAmount, InstantEatAlteration.class);
-		entries.add(new ClassEntry(InstantEatAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", eatAmountEditor))));
+		entries.add(new ClassEntry(InstantEatAlteration.class, () -> {
+			StatFormulaEditor eatAmountEditor = new StatFormulaEditor();
+			bind(eatAmountEditor, InstantEatAlteration::getAmount, InstantEatAlteration::setAmount, InstantEatAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", eatAmountEditor));
+		}));
 
 		// StatAlteration
-		TimeInput durationInput = new TimeInput();
-		EnumChooser<PersistentAlteration.StackPolicy> stackPolicyChooser = new EnumChooser<>(PersistentAlteration.StackPolicy.class);
-		StatModifierEditor statModifierEditor = new StatModifierEditor();
-		bind(durationInput, StatAlteration::getDuration, StatAlteration::setDuration, StatAlteration.class);
-		bind(stackPolicyChooser, StatAlteration::getStackPolicy, StatAlteration::setStackPolicy, StatAlteration.class);
-		bind(statModifierEditor, StatAlteration::getStatModifier, StatAlteration::setStatModifier, StatAlteration.class);
-		JPanel statAlterationPanel = new JPanel(new BorderLayout());
-		statAlterationPanel.add(LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.stackPolicy", stackPolicyChooser), BorderLayout.WEST);
-		statAlterationPanel.add(statModifierEditor, BorderLayout.CENTER);
-		entries.add(new ClassEntry(StatAlteration.class, statAlterationPanel));
+		entries.add(new ClassEntry(StatAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			EnumChooser<PersistentAlteration.StackPolicy> stackPolicyChooser = new EnumChooser<>(PersistentAlteration.StackPolicy.class);
+			StatModifierEditor statModifierEditor = new StatModifierEditor();
+			bind(durationInput, StatAlteration::getDuration, StatAlteration::setDuration, StatAlteration.class);
+			bind(stackPolicyChooser, StatAlteration::getStackPolicy, StatAlteration::setStackPolicy, StatAlteration.class);
+			bind(statModifierEditor, StatAlteration::getStatModifier, StatAlteration::setStatModifier, StatAlteration.class);
+			JPanel statAlterationPanel = new JPanel(new BorderLayout());
+			statAlterationPanel.add(LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.stackPolicy", stackPolicyChooser), BorderLayout.WEST);
+			statAlterationPanel.add(statModifierEditor, BorderLayout.CENTER);
+			return statAlterationPanel;
+		}));
 
 		// FixedMovementAlteration
-		durationInput = new TimeInput();
-		EnumChooser<AlterationTarget> sourceTypeChooser = new EnumChooser<>(AlterationTarget.class);
-		EnumChooser<SourceDirection> sourceDirectionChooser = new EnumChooser<>(SourceDirection.class);
-		AngleInput relativeAngleInput = new AngleInput();
-		AngleInput randomAngleInput = new AngleInput();
-		StatFormulaEditor speedEditor = new StatFormulaEditor();
-		bind(durationInput, FixedMovementAlteration::getDuration, FixedMovementAlteration::setDuration, FixedMovementAlteration.class);
-		bind(sourceTypeChooser, FixedMovementAlteration::getSourceType, FixedMovementAlteration::setSourceType, FixedMovementAlteration.class);
-		bind(sourceDirectionChooser, FixedMovementAlteration::getSourceDirection, FixedMovementAlteration::setSourceDirection, FixedMovementAlteration.class);
-		bind(relativeAngleInput, FixedMovementAlteration::getRelativeAngle, FixedMovementAlteration::setRelativeAngle, FixedMovementAlteration.class);
-		bind(randomAngleInput, FixedMovementAlteration::getRandomAngle, FixedMovementAlteration::setRandomAngle, FixedMovementAlteration.class);
-		bind(speedEditor, FixedMovementAlteration::getSpeed, FixedMovementAlteration::setSpeed, FixedMovementAlteration.class);
-		JPanel fmaPanel = new JPanel();
-		LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "generic.source", sourceTypeChooser),
-				LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "generic.randomAngle", randomAngleInput),
-				LayoutUtils.createVerticalLabelledBox("alterationEditor.direction", sourceDirectionChooser, "statType.speed", speedEditor));
-		entries.add(new ClassEntry(FixedMovementAlteration.class, fmaPanel));
+		entries.add(new ClassEntry(FixedMovementAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			EnumChooser<AlterationTarget> sourceTypeChooser = new EnumChooser<>(AlterationTarget.class);
+			EnumChooser<SourceDirection> sourceDirectionChooser = new EnumChooser<>(SourceDirection.class);
+			AngleInput relativeAngleInput = new AngleInput();
+			AngleInput randomAngleInput = new AngleInput();
+			StatFormulaEditor speedEditor = new StatFormulaEditor();
+			bind(durationInput, FixedMovementAlteration::getDuration, FixedMovementAlteration::setDuration, FixedMovementAlteration.class);
+			bind(sourceTypeChooser, FixedMovementAlteration::getSourceType, FixedMovementAlteration::setSourceType, FixedMovementAlteration.class);
+			bind(sourceDirectionChooser, FixedMovementAlteration::getSourceDirection, FixedMovementAlteration::setSourceDirection, FixedMovementAlteration.class);
+			bind(relativeAngleInput, FixedMovementAlteration::getRelativeAngle, FixedMovementAlteration::setRelativeAngle, FixedMovementAlteration.class);
+			bind(randomAngleInput, FixedMovementAlteration::getRandomAngle, FixedMovementAlteration::setRandomAngle, FixedMovementAlteration.class);
+			bind(speedEditor, FixedMovementAlteration::getSpeed, FixedMovementAlteration::setSpeed, FixedMovementAlteration.class);
+			JPanel fmaPanel = new JPanel();
+			LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "generic.source", sourceTypeChooser),
+					LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "generic.randomAngle", randomAngleInput),
+					LayoutUtils.createVerticalLabelledBox("alterationEditor.direction", sourceDirectionChooser, "statType.speed", speedEditor));
+			return fmaPanel;
+		}));
 
 		// StunAlteration
-		durationInput = new TimeInput();
-		bind(durationInput, StunAlteration::getDuration, StunAlteration::setDuration, StunAlteration.class);
-		entries.add(new ClassEntry(StunAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+		entries.add(new ClassEntry(StunAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			bind(durationInput, StunAlteration::getDuration, StunAlteration::setDuration, StunAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
+		}));
 
 		// InvincibleAlteration
-		durationInput = new TimeInput();
-		bind(durationInput, InvincibleAlteration::getDuration, InvincibleAlteration::setDuration, InvincibleAlteration.class);
-		entries.add(new ClassEntry(InvincibleAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+		entries.add(new ClassEntry(InvincibleAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			bind(durationInput, InvincibleAlteration::getDuration, InvincibleAlteration::setDuration, InvincibleAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
+		}));
 
 		// TeleportationAlteration
-		entries.add(new ClassEntry(TeleportationAlteration.class, new JPanel()));
+		entries.add(new ClassEntry(TeleportationAlteration.class, JPanel::new));
 
 		if (Boolean.TRUE.equals(params)) {
 			// DelayedAlteration
-			TimeInput delayInput = new TimeInput();
-			AlterationEditor alterationEditor = new AlterationEditor(false);
-			bind(delayInput, DelayedAlteration::getDuration, DelayedAlteration::setDuration, DelayedAlteration.class);
-			bind(alterationEditor, DelayedAlteration::getAlteration, DelayedAlteration::setAlteration, DelayedAlteration.class);
-			JPanel panel = new JPanel(new BorderLayout());
-			panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
-			panel.add(alterationEditor);
-			entries.add(new ClassEntry(DelayedAlteration.class, panel));
+			entries.add(new ClassEntry(DelayedAlteration.class, () -> {
+				TimeInput delayInput = new TimeInput();
+				AlterationEditor alterationEditor = new AlterationEditor(false);
+				bind(delayInput, DelayedAlteration::getDuration, DelayedAlteration::setDuration, DelayedAlteration.class);
+				bind(alterationEditor, DelayedAlteration::getAlteration, DelayedAlteration::setAlteration, DelayedAlteration.class);
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
+				panel.add(alterationEditor, BorderLayout.CENTER);
+				return panel;
+			}));
 
 			// RepeatAlteration
-			IntegerInput numberOfRepeatInput = new IntegerInput(Bounds.positive());
-			TimeInput intervalInput = new TimeInput();
-			alterationEditor = new AlterationEditor(false);
-			bind(numberOfRepeatInput, RepeatAlteration::getNumberOfRepeat, RepeatAlteration::setNumberOfRepeat, RepeatAlteration.class);
-			bind(intervalInput, RepeatAlteration::getInterval, RepeatAlteration::setInterval, RepeatAlteration.class);
-			bind(alterationEditor, RepeatAlteration::getAlteration, RepeatAlteration::setAlteration, RepeatAlteration.class);
-			panel = new JPanel(new BorderLayout());
-			panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
-			panel.add(alterationEditor);
-			entries.add(new ClassEntry(RepeatAlteration.class, panel));
+			entries.add(new ClassEntry(RepeatAlteration.class, () -> {
+				IntegerInput numberOfRepeatInput = new IntegerInput(Bounds.positive());
+				TimeInput intervalInput = new TimeInput();
+				AlterationEditor alterationEditor = new AlterationEditor(false);
+				bind(numberOfRepeatInput, RepeatAlteration::getNumberOfRepeat, RepeatAlteration::setNumberOfRepeat, RepeatAlteration.class);
+				bind(intervalInput, RepeatAlteration::getInterval, RepeatAlteration::setInterval, RepeatAlteration.class);
+				bind(alterationEditor, RepeatAlteration::getAlteration, RepeatAlteration::setAlteration, RepeatAlteration.class);
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
+				panel.add(alterationEditor);
+				return panel;
+			}));
 		}
 
 		// FollowingElementAlteration
-		FollowingElementEditor followingElementEditor = new FollowingElementEditor();
-		bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
-		entries.add(new ClassEntry(FollowingElementAlteration.class, LayoutUtils.single(followingElementEditor)));
+		entries.add(new ClassEntry(FollowingElementAlteration.class, () -> {
+			FollowingElementEditor followingElementEditor = new FollowingElementEditor();
+			bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
+			return LayoutUtils.single(followingElementEditor);
+		}));
 
 		// SilenceAlteration
-		durationInput = new TimeInput();
-		bind(durationInput, SilenceAlteration::getDuration, SilenceAlteration::setDuration, SilenceAlteration.class);
-		entries.add(new ClassEntry(SilenceAlteration.class, LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput))));
+		entries.add(new ClassEntry(SilenceAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			bind(durationInput, SilenceAlteration::getDuration, SilenceAlteration::setDuration, SilenceAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
+		}));
 
 		// OverridingSpriteSheetEditor
-		durationInput = new TimeInput();
-		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
-		bind(durationInput, OverridingSpriteSheetAlteration::getDuration, OverridingSpriteSheetAlteration::setDuration, OverridingSpriteSheetAlteration.class);
-		bind(spriteSheetChooser, OverridingSpriteSheetAlteration::getSpriteSheet, OverridingSpriteSheetAlteration::setSpriteSheet, OverridingSpriteSheetAlteration.class);
-		entries.add(new ClassEntry(OverridingSpriteSheetAlteration.class, LayoutUtils.createHorizontalLabelledBox("generic.duration", durationInput, "elementType.spriteSheet", spriteSheetChooser)));
+		entries.add(new ClassEntry(OverridingSpriteSheetAlteration.class, () -> {
+			TimeInput durationInput = new TimeInput();
+			ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
+			bind(durationInput, OverridingSpriteSheetAlteration::getDuration, OverridingSpriteSheetAlteration::setDuration, OverridingSpriteSheetAlteration.class);
+			bind(spriteSheetChooser, OverridingSpriteSheetAlteration::getSpriteSheet, OverridingSpriteSheetAlteration::setSpriteSheet, OverridingSpriteSheetAlteration.class);
+			return LayoutUtils.createHorizontalLabelledBox("generic.duration", durationInput, "elementType.spriteSheet", spriteSheetChooser);
+		}));
 
 		// AddItemAlteration
-		ItemStackEditor itemStackEditor = new ItemStackEditor();
-		BooleanCheckBox dropRemainderCheckbox = new BooleanCheckBox();
-		bind(itemStackEditor, AddItemAlteration::getItemStack, AddItemAlteration::setItemStack, AddItemAlteration.class);
-		bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
-		entries.add(new ClassEntry(AddItemAlteration.class,
-				LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox))));
+		entries.add(new ClassEntry(AddItemAlteration.class, () -> {
+			ItemStackEditor itemStackEditor = new ItemStackEditor();
+			BooleanCheckBox dropRemainderCheckbox = new BooleanCheckBox();
+			bind(itemStackEditor, AddItemAlteration::getItemStack, AddItemAlteration::setItemStack, AddItemAlteration.class);
+			bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
+			return LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox));
+		}));
 
 		// PlaySoundAlteration
-		EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
-		bind(soundPresetChooser, PlaySoundAlteration::getPreset, PlaySoundAlteration::setPreset, PlaySoundAlteration.class);
-		entries.add(new ClassEntry(PlaySoundAlteration.class, LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser))));
+		entries.add(new ClassEntry(PlaySoundAlteration.class, () -> {
+			EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
+			bind(soundPresetChooser, PlaySoundAlteration::getPreset, PlaySoundAlteration::setPreset, PlaySoundAlteration.class);
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser));
+		}));
 
 		return entries;
 	}

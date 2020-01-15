@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -75,53 +75,59 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// GET_AWAY
-		EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		bind(targetChooser, GetAwayBehavior::getTargetType, GetAwayBehavior::setTargetType, GetAwayBehavior.class);
-		classEntries.add(new ClassEntry(GetAwayBehavior.class, LayoutUtils.createHorizontalBox(targetChooser)));
+		classEntries.add(new ClassEntry(GetAwayBehavior.class, () -> {
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			bind(targetChooser, GetAwayBehavior::getTargetType, GetAwayBehavior::setTargetType, GetAwayBehavior.class);
+			return LayoutUtils.createHorizontalBox(targetChooser);
+		}));
 
 		// MOVE_TOWARD
-		targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		FloatInput minDistanceInput = new FloatInput(Bounds.positive());
-		AngleInput randomAngleInput = new AngleInput();
-		bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
-		bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
-		bind(randomAngleInput, MoveTowardBehavior::getRandomAngle, MoveTowardBehavior::setRandomAngle, MoveTowardBehavior.class);
-		classEntries.add(new ClassEntry(MoveTowardBehavior.class,
-				LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput)));
+		classEntries.add(new ClassEntry(MoveTowardBehavior.class, () -> {
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			FloatInput minDistanceInput = new FloatInput(Bounds.positive());
+			AngleInput randomAngleInput = new AngleInput();
+			bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
+			bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
+			bind(randomAngleInput, MoveTowardBehavior::getRandomAngle, MoveTowardBehavior::setRandomAngle, MoveTowardBehavior.class);
+			return LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput);
+		}));
 
 		// TURN_AROUND
-		targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		minDistanceInput = new FloatInput(Bounds.positive());
-		FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
-		bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
-		bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
-		bind(targetChooser, TurnAroundBehavior::getTargetType, TurnAroundBehavior::setTargetType, TurnAroundBehavior.class);
-		classEntries.add(new ClassEntry(TurnAroundBehavior.class,
-				LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput)));
+		classEntries.add(new ClassEntry(TurnAroundBehavior.class, () -> {
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			FloatInput minDistanceInput = new FloatInput(Bounds.positive());
+			FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
+			bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
+			bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
+			bind(targetChooser, TurnAroundBehavior::getTargetType, TurnAroundBehavior::setTargetType, TurnAroundBehavior.class);
+			return LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput);
+		}));
 
 		// WANDER
-		FloatInput moveRateInput = new FloatInput(Bounds.positive());
-		FloatInput forwardFactorInput = new FloatInput(Bounds.positive());
-		EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
-		bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
-		bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);
-		bind(forwardFactorInput, WanderBehavior::getForwardFactor, WanderBehavior::setForwardFactor, WanderBehavior.class);
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
-		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", wanderAnchorChooser, gbc);
-		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.moveRate", moveRateInput, gbc);
-		LayoutUtils.nextColumn(gbc);
-		LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.forwardFactor", forwardFactorInput, gbc);
-		classEntries.add(new ClassEntry(WanderBehavior.class, panel));
+		classEntries.add(new ClassEntry(WanderBehavior.class, () -> {
+			FloatInput moveRateInput = new FloatInput(Bounds.positive());
+			FloatInput forwardFactorInput = new FloatInput(Bounds.positive());
+			EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
+			bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
+			bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);
+			bind(forwardFactorInput, WanderBehavior::getForwardFactor, WanderBehavior::setForwardFactor, WanderBehavior.class);
+			JPanel panel = new JPanel(new GridBagLayout());
+			GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+			LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", wanderAnchorChooser, gbc);
+			LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.moveRate", moveRateInput, gbc);
+			LayoutUtils.nextColumn(gbc);
+			LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.forwardFactor", forwardFactorInput, gbc);
+			return panel;
+		}));
 
 		// GET_AWAY_FROM_LIGHT
-		classEntries.add(new ClassEntry(GetAwayFromLightBehavior.class, new JPanel()));
+		classEntries.add(new ClassEntry(GetAwayFromLightBehavior.class, JPanel::new));
 
 		// VANISH
-		classEntries.add(new ClassEntry(VanishBehavior.class, new JPanel()));
+		classEntries.add(new ClassEntry(VanishBehavior.class, JPanel::new));
 
 		// Do nothing
-		classEntries.add(new ClassEntry(DoNothingBehavior.class, new JPanel()));
+		classEntries.add(new ClassEntry(DoNothingBehavior.class, JPanel::new));
 
 		return classEntries;
 	}

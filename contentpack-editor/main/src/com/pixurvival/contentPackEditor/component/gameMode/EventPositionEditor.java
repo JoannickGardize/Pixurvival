@@ -28,14 +28,17 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	@Override
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
+		entries.add(new ClassEntry(PlayerProximityEventPosition.class, () -> {
+			FloatInput distanceInput = new FloatInput(Bounds.positive());
+			bind(distanceInput, PlayerProximityEventPosition::getDistance, PlayerProximityEventPosition::setDistance, PlayerProximityEventPosition.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.distance", distanceInput));
+		}));
 
-		FloatInput distanceInput = new FloatInput(Bounds.positive());
-		bind(distanceInput, PlayerProximityEventPosition::getDistance, PlayerProximityEventPosition::setDistance, PlayerProximityEventPosition.class);
-		entries.add(new ClassEntry(PlayerProximityEventPosition.class, LayoutUtils.single(LayoutUtils.labelled("generic.distance", distanceInput))));
-
-		Vector2Editor positionEditor = new Vector2Editor();
-		bind(positionEditor, StaticEventPosition::getPosition, StaticEventPosition::setPosition, StaticEventPosition.class);
-		entries.add(new ClassEntry(StaticEventPosition.class, LayoutUtils.single(LayoutUtils.labelled("generic.position", positionEditor))));
+		entries.add(new ClassEntry(StaticEventPosition.class, () -> {
+			Vector2Editor positionEditor = new Vector2Editor();
+			bind(positionEditor, StaticEventPosition::getPosition, StaticEventPosition::setPosition, StaticEventPosition.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.position", positionEditor));
+		}));
 
 		return entries;
 	}

@@ -99,27 +99,37 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		entries.add(new ClassEntry(ResourceItem.class, new JPanel()));
+		entries.add(new ClassEntry(ResourceItem.class, JPanel::new));
 
-		EdiblePanel ediblePanel = new EdiblePanel();
-		ediblePanel.bindTo(this);
-		entries.add(new ClassEntry(EdibleItem.class, ediblePanel));
+		entries.add(new ClassEntry(EdibleItem.class, () -> {
+			EdiblePanel ediblePanel = new EdiblePanel();
+			ediblePanel.bindTo(this);
+			return ediblePanel;
+		}));
 
-		WeaponPanel weaponPanel = new WeaponPanel();
-		weaponPanel.bindTo(this);
-		entries.add(new ClassEntry(WeaponItem.class, weaponPanel));
+		entries.add(new ClassEntry(WeaponItem.class, () -> {
+			WeaponPanel panel = new WeaponPanel();
+			panel.bindTo(this);
+			return panel;
+		}));
 
-		AccessoryPanel accessoryPanel = new AccessoryPanel();
-		accessoryPanel.bindTo(this);
-		entries.add(new ClassEntry(AccessoryItem.class, accessoryPanel));
+		entries.add(new ClassEntry(AccessoryItem.class, () -> {
+			AccessoryPanel accessoryPanel = new AccessoryPanel();
+			accessoryPanel.bindTo(this);
+			return accessoryPanel;
+		}));
 
-		ClothingPanel clothingPanel = new ClothingPanel();
-		clothingPanel.bindTo(this);
-		entries.add(new ClassEntry(ClothingItem.class, clothingPanel));
+		entries.add(new ClassEntry(ClothingItem.class, () -> {
+			ClothingPanel clothingPanel = new ClothingPanel();
+			clothingPanel.bindTo(this);
+			return clothingPanel;
+		}));
 
-		StructurePanel structurePanel = new StructurePanel();
-		structurePanel.bindTo(this);
-		entries.add(new ClassEntry(StructureItem.class, structurePanel));
+		entries.add(new ClassEntry(StructureItem.class, () -> {
+			StructurePanel structurePanel = new StructurePanel();
+			structurePanel.bindTo(this);
+			return structurePanel;
+		}));
 
 		return entries;
 	}

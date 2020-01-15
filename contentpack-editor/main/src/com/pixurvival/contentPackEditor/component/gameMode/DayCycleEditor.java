@@ -24,13 +24,14 @@ public class DayCycleEditor extends InstanceChangingElementEditor<DayCycle> {
 	@Override
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> classEntries = new ArrayList<>();
-		classEntries.add(new ClassEntry(EternalDayCycle.class, new JPanel()));
-		TimeInput dayDurationInput = new TimeInput();
-		TimeInput nightDurationInput = new TimeInput();
-		bind(dayDurationInput, DayNightCycle::getDayDuration, DayNightCycle::setDayDuration, DayNightCycle.class);
-		bind(nightDurationInput, DayNightCycle::getNightDuration, DayNightCycle::setNightDuration, DayNightCycle.class);
-		classEntries
-				.add(new ClassEntry(DayNightCycle.class, LayoutUtils.createHorizontalLabelledBox("dayNightCycle.dayDuration", dayDurationInput, "dayNightCycle.nightDuration", nightDurationInput)));
+		classEntries.add(new ClassEntry(EternalDayCycle.class, JPanel::new));
+		classEntries.add(new ClassEntry(DayNightCycle.class, () -> {
+			TimeInput dayDurationInput = new TimeInput();
+			TimeInput nightDurationInput = new TimeInput();
+			bind(dayDurationInput, DayNightCycle::getDayDuration, DayNightCycle::setDayDuration, DayNightCycle.class);
+			bind(nightDurationInput, DayNightCycle::getNightDuration, DayNightCycle::setNightDuration, DayNightCycle.class);
+			return LayoutUtils.createHorizontalLabelledBox("dayNightCycle.dayDuration", dayDurationInput, "dayNightCycle.nightDuration", nightDurationInput);
+		}));
 		return classEntries;
 	}
 

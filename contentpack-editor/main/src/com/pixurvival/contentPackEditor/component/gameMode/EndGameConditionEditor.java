@@ -27,11 +27,13 @@ public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGam
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		entries.add(new ClassEntry(NoEndCondition.class, new JPanel()));
+		entries.add(new ClassEntry(NoEndCondition.class, JPanel::new));
 
-		IntegerInput remainingTeamCondition = new IntegerInput(Bounds.positive());
-		bind(remainingTeamCondition, RemainingTeamCondition::getRemainingTeamCondition, RemainingTeamCondition::setRemainingTeamCondition, RemainingTeamCondition.class);
-		entries.add(new ClassEntry(RemainingTeamCondition.class, LayoutUtils.single(LayoutUtils.labelled("remainingTeamConditionEditor.remainingTeamCondition", remainingTeamCondition))));
+		entries.add(new ClassEntry(RemainingTeamCondition.class, () -> {
+			IntegerInput remainingTeamCondition = new IntegerInput(Bounds.positive());
+			bind(remainingTeamCondition, RemainingTeamCondition::getRemainingTeamCondition, RemainingTeamCondition::setRemainingTeamCondition, RemainingTeamCondition.class);
+			return LayoutUtils.single(LayoutUtils.labelled("remainingTeamConditionEditor.remainingTeamCondition", remainingTeamCondition));
+		}));
 		return entries;
 	}
 

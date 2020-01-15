@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
+import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.creature.Behavior;
@@ -53,28 +53,32 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		List<ClassEntry> classEntries = new ArrayList<>();
 
 		// DistanceCondition
-		EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-		EnumChooser<FloatComparison> operatorChooser = new EnumChooser<>(FloatComparison.class);
-		FloatInput targetDistanceInput = new FloatInput(Bounds.positive());
-		bind(targetChooser, DistanceCondition::getTargetType, DistanceCondition::setTargetType, DistanceCondition.class);
-		bind(operatorChooser, DistanceCondition::getOperator, DistanceCondition::setOperator, DistanceCondition.class);
-		bind(targetDistanceInput, DistanceCondition::getTargetDistance, DistanceCondition::setTargetDistance, DistanceCondition.class);
-		Component testComponent = LayoutUtils.labelled("generic.distance", operatorChooser);
-		classEntries.add(new ClassEntry(DistanceCondition.class, LayoutUtils.createHorizontalBox(targetChooser, testComponent, targetDistanceInput)));
+		classEntries.add(new ClassEntry(DistanceCondition.class, () -> {
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			EnumChooser<FloatComparison> operatorChooser = new EnumChooser<>(FloatComparison.class);
+			FloatInput targetDistanceInput = new FloatInput(Bounds.positive());
+			bind(targetChooser, DistanceCondition::getTargetType, DistanceCondition::setTargetType, DistanceCondition.class);
+			bind(operatorChooser, DistanceCondition::getOperator, DistanceCondition::setOperator, DistanceCondition.class);
+			bind(targetDistanceInput, DistanceCondition::getTargetDistance, DistanceCondition::setTargetDistance, DistanceCondition.class);
+			Component testComponent = LayoutUtils.labelled("generic.distance", operatorChooser);
+			return LayoutUtils.createHorizontalBox(targetChooser, testComponent, targetDistanceInput);
+		}));
 
 		// TimeCondition
-		TimeInput timeInput = new TimeInput();
-		bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
-		classEntries.add(new ClassEntry(TimeCondition.class, LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput))));
+		classEntries.add(new ClassEntry(TimeCondition.class, () -> {
+			TimeInput timeInput = new TimeInput();
+			bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
+			return LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput));
+		}));
 
 		// TookDamageCondition
-		classEntries.add(new ClassEntry(TookDamageCondition.class, new JPanel()));
+		classEntries.add(new ClassEntry(TookDamageCondition.class, JPanel::new));
 
 		// InLightCondition
-		classEntries.add(new ClassEntry(InLightCondition.class, new JPanel()));
+		classEntries.add(new ClassEntry(InLightCondition.class, JPanel::new));
 
 		// IsDayCondition
-		classEntries.add(new ClassEntry(IsDayCondition.class, new JPanel()));
+		classEntries.add(new ClassEntry(IsDayCondition.class, JPanel::new));
 
 		return classEntries;
 	}

@@ -37,6 +37,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	@Override
 	public void setValue(E value) {
 		this.value = value;
+		valueChanging();
 		if (value != null) {
 			for (SubValueEntry entry : subValues) {
 				if (entry.getCondition().test(value)) {
@@ -97,6 +98,10 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 
 	public void notifyValueChanged() {
 		listeners.forEach(l -> l.valueChanged(value));
+	}
+
+	protected void valueChanging() {
+		// For override
 	}
 
 	/**

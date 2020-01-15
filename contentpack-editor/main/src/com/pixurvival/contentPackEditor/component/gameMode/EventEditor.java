@@ -37,17 +37,19 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 
-		ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);
-		BooleanCheckBox forEachTeamCheckBox = new BooleanCheckBox();
-		EventPositionEditor eventPositionEditor = new EventPositionEditor();
-		bind(effectChooser, EffectEvent::getEffect, EffectEvent::setEffect, EffectEvent.class);
-		bind(forEachTeamCheckBox, EffectEvent::isForEachTeam, EffectEvent::setForEachTeam, EffectEvent.class);
-		bind(eventPositionEditor, EffectEvent::getPosition, EffectEvent::setPosition, EffectEvent.class);
-		JPanel panel = new JPanel(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
-		panel.add(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox), BorderLayout.NORTH);
-		eventPositionEditor.setBorder(LayoutUtils.createGroupBorder("generic.position"));
-		panel.add(eventPositionEditor, BorderLayout.CENTER);
-		entries.add(new ClassEntry(EffectEvent.class, panel));
+		entries.add(new ClassEntry(EffectEvent.class, () -> {
+			ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);
+			BooleanCheckBox forEachTeamCheckBox = new BooleanCheckBox();
+			EventPositionEditor eventPositionEditor = new EventPositionEditor();
+			bind(effectChooser, EffectEvent::getEffect, EffectEvent::setEffect, EffectEvent.class);
+			bind(forEachTeamCheckBox, EffectEvent::isForEachTeam, EffectEvent::setForEachTeam, EffectEvent.class);
+			bind(eventPositionEditor, EffectEvent::getPosition, EffectEvent::setPosition, EffectEvent.class);
+			JPanel panel = new JPanel(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
+			panel.add(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox), BorderLayout.NORTH);
+			eventPositionEditor.setBorder(LayoutUtils.createGroupBorder("generic.position"));
+			panel.add(eventPositionEditor, BorderLayout.CENTER);
+			return panel;
+		}));
 
 		return entries;
 	}
