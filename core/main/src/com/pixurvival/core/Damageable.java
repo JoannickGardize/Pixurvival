@@ -8,8 +8,6 @@ public interface Damageable {
 
 	void takeDamage(float amount);
 
-	void takeHeal(float amount);
-
 	default float getPercentHealth() {
 		return getHealth() / getMaxHealth();
 	}

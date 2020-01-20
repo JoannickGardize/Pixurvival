@@ -8,7 +8,6 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
@@ -40,11 +39,6 @@ public class HarvestableMapStructure extends MapStructure {
 			getChunk().updateTimestamp();
 		}, ((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));
 		return ((HarvestableStructure) getDefinition()).getItemReward().produce(random);
-	}
-
-	@Override
-	public boolean canInteract(PlayerEntity entity) {
-		return !harvested && super.canInteract(entity);
 	}
 
 	@Override

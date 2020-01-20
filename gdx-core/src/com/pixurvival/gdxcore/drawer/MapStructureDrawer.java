@@ -29,8 +29,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 			action = ActionAnimation.HARVESTED;
 		}
 		TextureAnimation animation = animationSet.get(action);
-		float y = (float) e.getPosition().getY();
-		batch.draw(animation.getShadow(), (float) e.getPosition().getX() - animation.getWorldShadowWidth() / 2, y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),
+		float y = e.getPosition().getY();
+		batch.draw(animation.getShadow(), e.getPosition().getX() - animation.getWorldShadowWidth() / 2, y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),
 				animation.getWorldShadowWidth() / 2);
 	}
 
@@ -40,8 +40,8 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		if (animationSet == null) {
 			return;
 		}
-		float x = (float) (e.getPosition().getX() - animationSet.getWidth() / 2);
-		float y = (float) e.getPosition().getY();
+		float x = e.getPosition().getX() - animationSet.getWidth() / 2;
+		float y = e.getPosition().getY();
 		ActionAnimation action = ActionAnimation.DEFAULT;
 		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
 			action = ActionAnimation.HARVESTED;
@@ -58,7 +58,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	@Override
 	public void drawDebug(ShapeRenderer renderer, MapStructure e) {
 		renderer.setColor(Color.WHITE);
-		renderer.rect((float) (e.getPosition().getX() - e.getHalfWidth()), (float) (e.getPosition().getY() - e.getHalfHeight()), (float) (e.getHalfWidth() * 2), (float) (e.getHalfHeight() * 2));
+		renderer.rect(e.getPosition().getX() - e.getHalfWidth(), e.getPosition().getY() - e.getHalfHeight(), e.getHalfWidth() * 2, e.getHalfHeight() * 2);
 	}
 
 	@Override

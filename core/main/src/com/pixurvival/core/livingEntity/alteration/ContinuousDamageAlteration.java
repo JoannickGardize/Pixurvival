@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.Damageable;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -17,7 +18,9 @@ public class ContinuousDamageAlteration extends Alteration {
 
 	@Override
 	public void targetedApply(TeamMember source, TeamMember target) {
-		target.takeDamage(damagePerSecond.getValue(source.getStats()) * target.getWorld().getTime().getDeltaTime());
+		if (target instanceof Damageable) {
+			((Damageable) target).takeDamage(damagePerSecond.getValue(source.getStats()) * target.getWorld().getTime().getDeltaTime());
+		}
 	}
 
 	@Override

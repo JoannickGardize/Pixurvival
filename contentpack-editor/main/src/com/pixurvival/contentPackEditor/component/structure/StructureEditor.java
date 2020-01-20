@@ -19,6 +19,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 
@@ -35,6 +36,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
 		FloatInput lightEmissionRadiusInput = new FloatInput(Bounds.positive());
 		TimeInput durationInput = new TimeInput();
+		TimeInput deconstructionDuration = new TimeInput();
 		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
 			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, true);
 			tileChooser.setBorder(LayoutUtils.createBorder());
@@ -49,6 +51,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		bind(durationInput, Structure::getDuration, Structure::setDuration);
 		bind(bannedTilesEditor, Structure::getBannedTiles, Structure::setBannedTiles);
 		bind(lightEmissionRadiusInput, Structure::getLightEmissionRadius, Structure::setLightEmissionRadius);
+		bind(deconstructionDuration, Structure::getDeconstructionDuration, Structure::setDeconstructionDuration);
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -63,7 +66,11 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		gbc.weightx = 1;
 		gbc.insets.top = 4;
 		gbc.insets.bottom = 4;
+		gbc.gridwidth = 2;
 		northPanel.add(dimensionsEditor, gbc);
+		gbc.gridy = 4;
+		gbc.weighty = 0;
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.deconstructionDuration", deconstructionDuration, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
@@ -85,6 +92,12 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 			HarvestablePanel harvestablePanel = new HarvestablePanel();
 			harvestablePanel.bindTo(this);
 			return harvestablePanel;
+		}));
+
+		entries.add(new ClassEntry(DamageableStructure.class, () -> {
+			FloatInput healthInput = new FloatInput();
+			bind(healthInput, DamageableStructure::getMaxHealth, DamageableStructure::setMaxHealth, DamageableStructure.class);
+			return LayoutUtils.single(LayoutUtils.labelled("structureEditor.damageable.health", healthInput));
 		}));
 
 		return entries;

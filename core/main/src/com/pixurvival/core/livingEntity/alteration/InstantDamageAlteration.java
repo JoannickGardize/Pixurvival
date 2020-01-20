@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.Damageable;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -16,8 +17,10 @@ public class InstantDamageAlteration extends UniqueAlteration {
 	private StatFormula amount = new StatFormula();
 
 	@Override
-	public void uniqueApply(TeamMember source, TeamMember entity) {
-		entity.takeDamage(amount.getValue(source));
+	public void uniqueApply(TeamMember source, TeamMember target) {
+		if (target instanceof Damageable) {
+			((Damageable) target).takeDamage(amount.getValue(source));
+		}
 	}
 
 	@Override

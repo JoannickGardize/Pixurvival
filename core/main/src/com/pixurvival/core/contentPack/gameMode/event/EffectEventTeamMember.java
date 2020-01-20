@@ -31,25 +31,7 @@ public class EffectEventTeamMember implements TeamMember {
 	}
 
 	@Override
-	public TeamMember findIfNotFound() {
-		return this;
-	}
-
-	@Override
 	public boolean isAlive() {
 		return true;
 	}
-
-	@Override
-	public void takeDamage(float amount) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void takeHeal(float value) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

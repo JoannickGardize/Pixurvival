@@ -4,10 +4,8 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
-import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
@@ -69,10 +67,6 @@ public class MapStructure implements Body, CustomDataHolder {
 
 	public int getHeight() {
 		return definition.getDimensions().getHeight();
-	}
-
-	public boolean canInteract(PlayerEntity entity) {
-		return entity.getCurrentAbility() == null && entity.distanceSquared(getPosition()) <= GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE * GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE;
 	}
 
 	/**

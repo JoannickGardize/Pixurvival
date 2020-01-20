@@ -14,11 +14,9 @@ public interface TeamMember extends Positionnable {
 
 	TeamMember getOrigin();
 
-	TeamMember findIfNotFound();
+	default TeamMember findIfNotFound() {
+		return this;
+	}
 
 	boolean isAlive();
-
-	void takeDamage(float amount);
-
-	void takeHeal(float value);
 }

@@ -369,6 +369,26 @@ public class TiledMap {
 		return false;
 	}
 
+	public void forEachTile(float x, float y, float radius, Consumer<MapTile> action) {
+		int tileX = MathUtils.floor(x - radius);
+		int startY = MathUtils.floor(y - radius);
+		float right = x + radius;
+		int endX = MathUtils.floor(right);
+		if (MathUtils.equals(right, endX)) {
+			endX--;
+		}
+		float top = y + radius;
+		int endY = MathUtils.floor(top);
+		if (MathUtils.equals(endY, top)) {
+			endY--;
+		}
+		for (; tileX <= endX; tileX++) {
+			for (int tileY = startY; tileY <= endY; tileY++) {
+				action.accept(tileAt(tileX, tileY));
+			}
+		}
+	}
+
 	public MapStructure findClosestStructure(float x, float y) {
 		MapStructure closest = null;
 		float closestDist = Float.POSITIVE_INFINITY;

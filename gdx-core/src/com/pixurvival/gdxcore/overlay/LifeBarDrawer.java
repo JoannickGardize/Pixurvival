@@ -20,4 +20,5 @@ public class LifeBarDrawer implements OverlayStackElementDrawer<LivingEntity> {
 				e.getTeam().getId() == PixurvivalGame.getClient().getMyTeamId() ? OverlayConstants.ALLY_LIFE_BAR_COLOR : OverlayConstants.ENNEMY_LIFE_BAR_COLOR);
 		return tmpRectangle.height;
 	}
+
 }

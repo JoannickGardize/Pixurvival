@@ -22,6 +22,7 @@ import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
+import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -32,6 +33,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.util.ReflectionUtils;
@@ -56,6 +58,7 @@ public class ContentPack implements Serializable {
 	private transient Map<Long, StatFormula> statFormulas = new HashMap<>();
 
 	private transient ContentPackIdentifier identifier = new ContentPackIdentifier();
+	private transient float maxLivingEntityRadius;
 
 	@Valid
 	@ElementCollection(AnimationTemplate.class)
@@ -162,16 +165,27 @@ public class ContentPack implements Serializable {
 			elementsByName.put(field.getAnnotation(ElementCollection.class).value(), typeMap);
 			for (IdentifiedElement element : list) {
 				typeMap.put(element.getName(), element);
+				element.initialize();
 			}
 		}
-		ecosystems.forEach(Ecosystem::initialize);
 		for (Structure structure : structures) {
 			if (structure.getLightEmissionRadius() > maxLightRadius) {
 				maxLightRadius = structure.getLightEmissionRadius();
 			}
+			if (structure.getDeconstructionDuration() > 0) {
+				for (Item item : items) {
+					if (item instanceof StructureItem && ((StructureItem) item).getStructure() == structure) {
+						structure.setDeconstructionItem(item);
+						break;
+					}
+				}
+			}
 		}
+		maxLivingEntityRadius = PlayerEntity.COLLISION_RADIUS;
 		for (Creature creature : creatures) {
-			creature.initialize();
+			if (creature.getCollisionRadius() > maxLivingEntityRadius) {
+				maxLivingEntityRadius = creature.getCollisionRadius();
+			}
 		}
 	}
 

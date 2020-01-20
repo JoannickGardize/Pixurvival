@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
@@ -69,17 +68,29 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public void update() {
 		Effect effect = definition.getEffect();
 		effect.getMovement().update(this);
-		if (getWorld().getTime().getTimeMillis() >= termTimeMillis || effect.isSolid() && getWorld().getMap().collide(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius())) {
+		if (getWorld().getTime().getTimeMillis() >= termTimeMillis) {
 			setAlive(false);
 			setSneakyDeath(true);
 		}
 		if (getWorld().isServer()) {
+			if (definition.getEffect().getTileCollisionAction() != null) {
+				getWorld().getMap().forEachTile(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius(), tile -> {
+					definition.getEffect().getTileCollisionAction().accept(this, tile);
+				});
+			}
 			if (definition.getEffect().getMovement().isDestroyWithAncestor() && !getAncestor().isAlive()) {
 				setAlive(false);
 			} else {
 				processFollowingElements(getWorld().getTime().getTimeMillis() - creationTime);
 				processEffectTarget();
 			}
+		} else if (definition.getEffect().isSolid()) {
+			getWorld().getMap().forEachTile(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius(), tile -> {
+				if (tile.isSolid()) {
+					setAlive(false);
+					setSneakyDeath(true);
+				}
+			});
 		}
 		normalPositionUpdate();
 		updateChunk();
@@ -87,14 +98,13 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	private void processEffectTarget() {
 		for (EffectTarget effectTarget : definition.getEffect().getTargets()) {
-			EntitySearchUtils.forEach(this, effectTarget.getTargetType(), GameConstants.EFFECT_TARGET_DISTANCE_CHECK, e -> {
+			EntitySearchUtils.forEach(this, effectTarget.getTargetType(), getCollisionRadius() + getWorld().getContentPack().getMaxLivingEntityRadius(), e -> {
 				if (collideDynamic(e)) {
 					effectTarget.getAlterations().forEach(a -> a.apply(this, e));
 					if (effectTarget.isDestroyWhenCollide()) {
 						setAlive(false);
-					} else if (checkList != null) {
-						checkList.addAll(tmpCheckList);
-						tmpCheckList.clear();
+					} else {
+						flushCheckList();
 					}
 				}
 			});
@@ -212,23 +222,20 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public TeamMember findIfNotFound() {
-		return this;
-	}
-
-	@Override
 	public boolean isInvisible() {
 		return definition.getEffect().getSpriteSheet() == null;
 	}
 
 	@Override
-	public void takeDamage(float amount) {
-		// An effect cannot take damage
+	protected boolean antiCollisionLockEnabled() {
+		return false;
 	}
 
 	@Override
-	public void takeHeal(float value) {
-		// TODO Auto-generated method stub
-
+	public void flushCheckList() {
+		if (checkList != null) {
+			checkList.addAll(tmpCheckList);
+			tmpCheckList.clear();
+		}
 	}
 }

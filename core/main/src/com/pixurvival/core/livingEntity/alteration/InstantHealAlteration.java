@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.Healable;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -16,8 +17,10 @@ public class InstantHealAlteration extends UniqueAlteration {
 	private StatFormula amount = new StatFormula();
 
 	@Override
-	public void uniqueApply(TeamMember source, TeamMember entity) {
-		entity.takeHeal(amount.getValue(source));
+	public void uniqueApply(TeamMember source, TeamMember target) {
+		if (target instanceof Healable) {
+			((Healable) target).takeHeal(amount.getValue(source));
+		}
 	}
 
 	@Override

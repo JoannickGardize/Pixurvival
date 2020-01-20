@@ -23,6 +23,8 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
 import com.pixurvival.core.livingEntity.ability.CraftAbilityData;
+import com.pixurvival.core.livingEntity.ability.DeconstructAbility;
+import com.pixurvival.core.livingEntity.ability.DeconstructAbilityData;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
@@ -31,6 +33,7 @@ import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
@@ -45,6 +48,7 @@ import lombok.Setter;
 @Getter
 public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder, CommandExecutor, ChatSender {
 
+	public static final float COLLISION_RADIUS = 0.42f;
 	public static final float MAX_HUNGER = 100;
 	public static final float HUNGER_DECREASE = 100f / (60 * 10);
 	public static final float HUNGER_DAMAGE = 10;
@@ -54,6 +58,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public static final int CRAFT_ABILITY_ID = 1;
 	public static final int HARVEST_ABILITY_ID = 2;
 	public static final int USE_ITEM_ABILITY_ID = 3;
+	public static final int DECONSTRUCT_ABILITY_ID = 4;
 
 	public static final byte UPDATE_CONTENT_MASK_EQUIPMENT = LivingEntity.NEXT_UPDATE_CONTENT_MASK;
 
@@ -64,6 +69,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new CraftAbility());
 		PLAYER_ABILITY_SET.add(new HarvestAbility());
 		PLAYER_ABILITY_SET.add(new UseItemAbility());
+		PLAYER_ABILITY_SET.add(new DeconstructAbility());
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_BASE));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
@@ -185,7 +191,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	public float getCollisionRadius() {
-		return 0.42f;
+		return COLLISION_RADIUS;
 	}
 
 	public void addHunger(float hungerToAdd) {
@@ -206,6 +212,11 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	public void harvest(HarvestableMapStructure harvestableStructure) {
 		((HarvestAbilityData) getAbilityData(HARVEST_ABILITY_ID)).setStructure(harvestableStructure);
 		startAbility(HARVEST_ABILITY_ID);
+	}
+
+	public void deconstruct(MapStructure structure) {
+		((DeconstructAbilityData) getAbilityData(DECONSTRUCT_ABILITY_ID)).setStructure(structure);
+		startAbility(DECONSTRUCT_ABILITY_ID);
 	}
 
 	public void useItem(EdibleItem edibleItem, int slotIndex) {

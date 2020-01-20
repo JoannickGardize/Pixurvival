@@ -3,8 +3,10 @@ package com.pixurvival.core;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 import lombok.experimental.UtilityClass;
 
@@ -39,6 +41,10 @@ public class ActionPreconditions {
 		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE * GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
 			return false;
 		}
+		// TODO Remove when structure at multiple chunks solved
+		if (!ChunkPosition.fromWorldPosition(x, y).equals(ChunkPosition.fromWorldPosition(x2, y2))) {
+			return false;
+		}
 		for (int xi = x; xi < x2; xi++) {
 			for (int yi = y; yi < y2; yi++) {
 				MapTile mapTile = player.getWorld().getMap().tileAt(x, y);
@@ -48,5 +54,11 @@ public class ActionPreconditions {
 			}
 		}
 		return true;
+	}
+
+	public static boolean canInteract(PlayerEntity entity, MapStructure structure) {
+		return entity.getCurrentAbility() == null && structure != null
+				&& (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0)
+				&& entity.distanceSquared(structure.getPosition()) <= GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE * GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE;
 	}
 }

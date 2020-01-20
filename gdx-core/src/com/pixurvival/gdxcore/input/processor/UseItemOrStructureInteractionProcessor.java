@@ -8,7 +8,6 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
-import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
@@ -35,7 +34,7 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 		} else {
 			Vector2 position = getWorldCursorPosition();
 			MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(position.x, position.y);
-			if (structure instanceof HarvestableMapStructure && structure.canInteract(myPlayer)) {
+			if (ActionPreconditions.canInteract(myPlayer, structure)) {
 				PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 			}
 		}

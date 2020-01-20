@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.Damageable;
+import com.pixurvival.core.Healable;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.ability.Ability;
@@ -25,7 +25,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class LivingEntity extends Entity implements Damageable, TeamMember {
+public abstract class LivingEntity extends Entity implements Healable, TeamMember {
 
 	public static final int SILENCE_ABILITY_ID = 0;
 
@@ -483,10 +483,5 @@ public abstract class LivingEntity extends Entity implements Damageable, TeamMem
 	 */
 	public byte getFullUpdateContentMask() {
 		return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
-	}
-
-	@Override
-	public TeamMember findIfNotFound() {
-		return this;
 	}
 }

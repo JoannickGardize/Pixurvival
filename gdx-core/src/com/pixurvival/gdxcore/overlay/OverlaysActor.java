@@ -48,6 +48,7 @@ public class OverlaysActor extends Actor implements EventListener {
 			chunk.getStructures().forEach(e -> e.getValue().forEach(ms -> structureOverlayDrawer.draw(batch, worldViewport, ms)));
 			EntityCollection entityPool = chunk.getEntities();
 			entityOverlayDrawers.forEach((group, drawer) -> entityPool.get(group).forEach(e -> drawer.draw(batch, worldViewport, e)));
+
 		});
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		if (myPlayer != null) {

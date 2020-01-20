@@ -1,13 +1,10 @@
 package com.pixurvival.gdxcore.input;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.im.InputContext;
 import java.util.Locale;
 
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
-import com.pixurvival.core.util.LocaleUtils;
-import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.experimental.UtilityClass;
 
@@ -21,14 +18,11 @@ import lombok.experimental.UtilityClass;
 public class InputMappingDefaults {
 
 	public static InputMapping findBestDefaultMatch() {
-		List<Locale> defaultKeyboards = new ArrayList<>();
-		defaultKeyboards.add(Locale.FRENCH);
-		defaultKeyboards.add(Locale.ENGLISH);
-		Locale locale = LocaleUtils.findBestMatch(PixurvivalGame.getClient().getLocalePriorityList(), defaultKeyboards);
-		if (locale.equals(Locale.ENGLISH)) {
-			return InputMappingDefaults.qwertyRightHanded();
-		} else {
+		Locale locale = InputContext.getInstance().getLocale();
+		if (locale.getLanguage().equals(Locale.FRENCH.getLanguage())) {
 			return InputMappingDefaults.azertyRightHanded();
+		} else {
+			return InputMappingDefaults.qwertyRightHanded();
 		}
 	}
 

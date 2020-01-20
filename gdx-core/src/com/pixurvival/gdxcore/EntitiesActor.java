@@ -25,6 +25,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.util.MathUtils;
@@ -47,6 +48,7 @@ public class EntitiesActor extends Actor {
 		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
 		drawers.put(HarvestableMapStructure.class, mapStructureDrawer);
 		drawers.put(MapStructure.class, mapStructureDrawer);
+		drawers.put(DamageableMapStructure.class, mapStructureDrawer);
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackEntityDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());

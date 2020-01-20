@@ -18,6 +18,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
+import com.pixurvival.core.map.chunk.update.DamageableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
@@ -119,7 +120,7 @@ public class KryoInitializer {
 		register(kryo, ContentPackReady.class);
 		register(kryo, RefuseContentPack.class);
 		register(kryo, ContentPackRequest.class);
-
+		register(kryo, DamageableStructureUpdate.class);
 	}
 
 	@SuppressWarnings("unchecked")

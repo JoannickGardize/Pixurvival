@@ -50,12 +50,4 @@ public class NotFoundTeamMemberProxy implements TeamMember {
 		return true;
 	}
 
-	@Override
-	public void takeDamage(float amount) {
-	}
-
-	@Override
-	public void takeHeal(float value) {
-	}
-
 }
