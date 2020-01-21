@@ -42,7 +42,7 @@ public class ActionPreconditions {
 			return false;
 		}
 		// TODO Remove when structure at multiple chunks solved
-		if (!ChunkPosition.fromWorldPosition(x, y).equals(ChunkPosition.fromWorldPosition(x2, y2))) {
+		if (!ChunkPosition.fromWorldPosition(x, y).equals(ChunkPosition.fromWorldPosition(x2 - 1, y2 - 1))) {
 			return false;
 		}
 		for (int xi = x; xi < x2; xi++) {

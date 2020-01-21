@@ -1,3 +1,0 @@
-Exception in thread "main" java.lang.NullPointerException
-	at com.pixurvival.gdxcore.PixurvivalGame.<init>(PixurvivalGame.java:122)
-	at com.pixurvival.desktop.DesktopLauncher.main(DesktopLauncher.java:21)

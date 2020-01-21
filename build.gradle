@@ -16,8 +16,8 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-	version = '0.0.2'
     ext {
+    	version = rootProject.file('core/main/resources/version.txt').text.trim()
         appName = "Pixurvival"
         gdxVersion = '1.9.8'
         roboVMVersion = '2.3.1'
@@ -46,6 +46,14 @@ project(":core") {
         compileOnly "org.projectlombok:lombok:$lombokVersion"
     	testCompile 'junit:junit:4.12'
     	compile "org.yaml:snakeyaml:1.24"
+    }
+    
+    sourceSets {
+    	main {
+    		resources {
+    			srcDirs "src/main/resources"
+ 			}   		
+    	}
     }
 }
 
@@ -170,7 +178,7 @@ task copyContentPack(type: Copy) {
 }
 
 task zipPackage(type: Zip) {
-	archiveName = "pixurvival-0.0.1.zip"
+	archiveName = "pixurvival-"+project.ext.version+".zip"
     destinationDir = file("$buildDir")
     from 'build/package'
 }

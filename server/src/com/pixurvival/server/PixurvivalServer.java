@@ -16,6 +16,7 @@ import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.core.util.ReleaseVersion;
 import com.pixurvival.server.lobby.LobbySession;
 import com.pixurvival.server.util.ServerMainArgs;
 
@@ -36,6 +37,7 @@ public class PixurvivalServer {
 
 	@SneakyThrows
 	public PixurvivalServer(ServerMainArgs serverArgs) {
+		Log.info("Starting server version " + ReleaseVersion.getValue());
 		if (MathUtils.equals(serverArgs.getSimulatePacketLossRate(), 0)) {
 			server = new KryoServer();
 		} else {

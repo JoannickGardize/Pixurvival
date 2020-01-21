@@ -11,6 +11,7 @@ import com.pixurvival.core.map.chunk.update.DamageableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -18,7 +19,6 @@ import lombok.Setter;
 
 public class DamageableMapStructure extends MapStructure implements TeamMember, Damageable {
 
-	private @Getter @Setter Team team;
 	private @Getter @Setter float health;
 
 	public DamageableMapStructure(Chunk chunk, Structure definition, int x, int y) {
@@ -29,14 +29,12 @@ public class DamageableMapStructure extends MapStructure implements TeamMember, 
 	@Override
 	public void writeData(ByteBuffer buffer) {
 		super.writeData(buffer);
-		buffer.put((byte) team.getId());
 		buffer.putFloat(health);
 	}
 
 	@Override
 	public void applyData(ByteBuffer buffer) {
 		super.applyData(buffer);
-		team = getChunk().getMap().getWorld().getTeamSet().get(buffer.get());
 		health = buffer.getFloat();
 	}
 
@@ -80,5 +78,10 @@ public class DamageableMapStructure extends MapStructure implements TeamMember, 
 	@Override
 	public StructureUpdate getUpdate() {
 		return new DamageableStructureUpdate(getTileX(), getTileY(), health);
+	}
+
+	@Override
+	public Team getTeam() {
+		return TeamSet.WILD_TEAM;
 	}
 }

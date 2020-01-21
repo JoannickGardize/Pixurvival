@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.util.ArgsUtils;
+import com.pixurvival.core.util.ReleaseVersion;
 
 import lombok.Getter;
 
@@ -77,9 +78,9 @@ public class ContentPackEditor extends JFrame {
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		File currentFile = FileService.getInstance().getCurrentFile();
 		if (currentFile == null) {
-			setTitle(TITLE_PREFFIX + TranslationService.getInstance().getString("menuBar.file.new"));
+			setTitle(TITLE_PREFFIX + ReleaseVersion.getValue() + " - " + TranslationService.getInstance().getString("menuBar.file.new"));
 		} else {
-			setTitle(TITLE_PREFFIX + currentFile);
+			setTitle(TITLE_PREFFIX + ReleaseVersion.getValue() + " - " + currentFile);
 		}
 	}
 }
