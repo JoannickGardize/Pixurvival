@@ -31,7 +31,7 @@ public class InputButton {
 			case Buttons.BACK:
 				return "Wheel up";
 			default:
-				return "Unknown button";
+				return "Button " + code;
 			}
 		} else {
 			return Keys.toString(code);

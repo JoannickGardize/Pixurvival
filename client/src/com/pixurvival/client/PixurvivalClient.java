@@ -11,6 +11,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.PixurvivalException;
 import com.pixurvival.core.World;
+import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
@@ -302,5 +303,15 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			client.sendTCP(new ContentPackReady(identifier));
 		}
 		listeners.forEach(l -> l.contentPackAvailable(identifier));
+	}
+
+	public void requestPause(boolean pause) {
+		if (world.getType() == Type.LOCAL) {
+			if (pause) {
+				removePlugin(WorldUpdater.class);
+			} else {
+				addPlugin(new WorldUpdater());
+			}
+		}
 	}
 }

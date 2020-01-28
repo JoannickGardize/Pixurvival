@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EngineThread;
@@ -35,7 +34,7 @@ public class ServerEngineThread extends EngineThread {
 	private WorldUpdate tmpFullWorldUpdate = new WorldUpdate();
 	private EntityCollection tmpRemoveEntityCollection = new EntityCollection();
 
-	private List<String> requestedCommands = new Vector<>();
+	private List<String> requestedCommands = new ArrayList<>();
 
 	public ServerEngineThread(PixurvivalServer game) {
 		super("Main Server Thread");
@@ -44,7 +43,9 @@ public class ServerEngineThread extends EngineThread {
 	}
 
 	public void requestCommand(String command) {
-		requestedCommands.add(command);
+		synchronized (requestedCommands) {
+			requestedCommands.add(command);
+		}
 	}
 
 	public synchronized void add(GameSession gameSession) {
@@ -56,8 +57,10 @@ public class ServerEngineThread extends EngineThread {
 	public void update(float deltaTimeMillis) {
 		game.consumeReceivedObjects();
 		gameSessions.forEach(gs -> {
-			while (!requestedCommands.isEmpty()) {
-				gs.getWorld().received(new ChatEntry(gs.getWorld(), requestedCommands.remove(0)));
+			synchronized (requestedCommands) {
+				while (!requestedCommands.isEmpty()) {
+					gs.getWorld().received(new ChatEntry(gs.getWorld(), requestedCommands.remove(0)));
+				}
 			}
 			if (gs.isEnded()) {
 				LobbySession lobbySession = new LobbySession(game);
@@ -178,7 +181,6 @@ public class ServerEngineThread extends EngineThread {
 		player.foreachChunkInView(chunk -> chunk.getEntities().writeFullUpdate(byteBuffer));
 		byteBuffer.put(EntityGroup.END_MARKER);
 		prepareCommonUpdatePart(tmpFullWorldUpdate, player, soundEffects);
-
 	}
 
 	private void prepareCommonUpdatePart(WorldUpdate worldUpdate, PlayerEntity player, List<SoundEffect> soundEffects) {

@@ -11,6 +11,10 @@ public class PluginHolder<T> {
 		plugins.put(plugin.getClass(), plugin);
 	}
 
+	public void removePlugin(Class<? extends Plugin<T>> type) {
+		plugins.remove(type);
+	}
+
 	public void removeAllPlugins() {
 		plugins.clear();
 	}

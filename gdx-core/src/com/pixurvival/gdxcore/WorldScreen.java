@@ -4,26 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.SoundEffect;
-import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
-import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityPoolListener;
-import com.pixurvival.core.item.ItemStackEntity;
-import com.pixurvival.core.item.ItemStackEntity.State;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
-import com.pixurvival.core.map.TiledMapListener;
-import com.pixurvival.core.map.chunk.Chunk;
-import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
@@ -41,11 +30,13 @@ import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
+import com.pixurvival.gdxcore.ui.PauseUI;
 import com.pixurvival.gdxcore.ui.StatusUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
+import com.pixurvival.gdxcore.util.FillActor;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -72,68 +63,22 @@ public class WorldScreen implements Screen {
 	private LightDrawer lightDrawer = new LightDrawer();
 	private StatusUI statusUI = new StatusUI();
 	private @Getter EndGameUI endGameUI = new EndGameUI();
+	private PauseUI pauseUI = new PauseUI();
+	private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
+	private DefaultSoundsPlayer defaultSoundsPlayer;
 
 	public void setWorld(World world) {
 		worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
 		cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 		this.world = world;
-		world.getEntityPool().addListener(new EntityPoolListener() {
-
-			@Override
-			public void entityRemoved(Entity e) {
-			}
-
-			@Override
-			public void entityAdded(Entity e) {
-			}
-
-			@Override
-			public void sneakyEntityRemoved(Entity e) {
-				if (e instanceof ItemStackEntity && ((ItemStackEntity) e).getState() == State.MAGNTIZED) {
-					playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, e.getPosition()));
-				}
-			}
-		});
-		world.getMap().addListener(new TiledMapListener() {
-
-			@Override
-			public void structureRemoved(MapStructure mapStructure) {
-			}
-
-			@Override
-			public void structureChanged(MapStructure mapStructure) {
-				if (mapStructure instanceof HarvestableMapStructure) {
-					HarvestableMapStructure hms = (HarvestableMapStructure) mapStructure;
-					if (hms.isHarvested()) {
-						playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH, hms.getPosition()));
-					} else {
-						playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, hms.getPosition()));
-					}
-				}
-			}
-
-			@Override
-			public void structureAdded(MapStructure mapStructure) {
-			}
-
-			@Override
-			public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
-			}
-
-			@Override
-			public void chunkUnloaded(Chunk chunk) {
-			}
-
-			@Override
-			public void chunkLoaded(Chunk chunk) {
-			}
-		});
 		worldStage.clear();
 		worldStage.addActor(new MapActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
 		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
+		hudStage.addActor(pauseUI);
+		hudStage.addActor(pauseUI.getControlsPanel().getWaitingKeyWindow());
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI();
 		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
@@ -161,6 +106,8 @@ public class WorldScreen implements Screen {
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
 		hudStage.addActor(debugInfosActors);
+		blackPauseBackground.setVisible(false);
+		hudStage.addActor(blackPauseBackground);
 
 		uiLayoutManager.add(chatUI, UILayoutManager.LEFT_SIDE, 30);
 		uiLayoutManager.add(inventoryUI, UILayoutManager.LEFT_SIDE, 55);
@@ -171,6 +118,7 @@ public class WorldScreen implements Screen {
 
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
 		world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
+		defaultSoundsPlayer = new DefaultSoundsPlayer(world);
 	}
 
 	public void gameStarted() {
@@ -218,7 +166,6 @@ public class WorldScreen implements Screen {
 			PixurvivalGame.getClient().sendAction(request);
 		}
 		PlayerEntity myPlayer = world.getMyPlayer();
-		playSounds(myPlayer);
 		worldStage.getViewport().apply();
 		updateMouseTarget();
 		worldStage.act();
@@ -232,23 +179,7 @@ public class WorldScreen implements Screen {
 		hudStage.getViewport().apply();
 		hudStage.act();
 		hudStage.draw();
-	}
-
-	private void playSounds(PlayerEntity myPlayer) {
-		for (SoundEffect soundEffect : myPlayer.getSoundEffectsToConsume()) {
-			playSound(myPlayer, soundEffect);
-		}
-		myPlayer.getSoundEffectsToConsume().clear();
-	}
-
-	private void playSound(PlayerEntity myPlayer, SoundEffect soundEffect) {
-		float distanceSquared = myPlayer.distanceSquared(soundEffect.getPosition());
-		if (distanceSquared <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
-			Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
-			float volume = 1f - 0.8f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
-			float pan = 0.1f + 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
-			sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1f, pan);
-		}
+		defaultSoundsPlayer.playSounds();
 	}
 
 	@Override
@@ -267,6 +198,7 @@ public class WorldScreen implements Screen {
 		lightDrawer.resize(width, height);
 		statusUI.updatePosition();
 		endGameUI.update(hudStage.getViewport());
+		pauseUI.update(hudStage.getViewport());
 	}
 
 	@Override
@@ -295,5 +227,13 @@ public class WorldScreen implements Screen {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		Vector2 worldPoint = worldStage.getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		myPlayer.getTargetPosition().set(worldPoint.x, worldPoint.y);
+	}
+
+	public void switchPauseMenu() {
+		pauseUI.toFront();
+		boolean pausing = !pauseUI.isVisible();
+		pauseUI.setVisible(pausing);
+		blackPauseBackground.setVisible(pausing);
+		PixurvivalGame.getClient().requestPause(pausing);
 	}
 }
