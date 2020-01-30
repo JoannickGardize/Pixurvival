@@ -16,10 +16,11 @@ import com.pixurvival.gdxcore.input.InputAction;
 import com.pixurvival.gdxcore.input.InputButton;
 import com.pixurvival.gdxcore.input.InputButton.Type;
 import com.pixurvival.gdxcore.input.InputMapping;
+import com.pixurvival.gdxcore.util.AutoScrollFocusListener;
 
 import lombok.Getter;
 
-public class ControlsPanel extends ScrollPane {
+public class ControlsPanel extends Table {
 
 	private TextButton[] actionButtons = new TextButton[InputAction.values().length];
 	private InputMapping mapping = new InputMapping();
@@ -27,23 +28,51 @@ public class ControlsPanel extends ScrollPane {
 	private InputProcessor previousInputProcessor;
 
 	public ControlsPanel() {
-		super(new Table(), PixurvivalGame.getSkin());
-		setScrollingDisabled(true, false);
-		setOverscroll(false, false);
-		setForceScroll(false, true);
-		setFadeScrollBars(false);
+
 		waitingKeyWindow.getContentLabel().setText(PixurvivalGame.getString("controlPanel.waitingWindow.content"));
-		Table table = (Table) getActor();
-		table.defaults().fill().pad(2);
+		Table keysTable = createKeysTable();
+		ScrollPane keysScrollPane = new ScrollPane(keysTable, PixurvivalGame.getSkin());
+		keysScrollPane.setScrollingDisabled(true, false);
+		keysScrollPane.setOverscroll(false, false);
+		keysScrollPane.setForceScroll(false, true);
+		keysScrollPane.setFadeScrollBars(false);
+		keysScrollPane.addListener(new AutoScrollFocusListener());
+
+		Table topTable = new Table();
+
+	}
+
+	public void setMapping(InputMapping mapping) {
+		this.mapping.set(mapping);
+		for (InputAction action : InputAction.values()) {
+			InputButton button = mapping.getButton(action);
+			TextButton textButton = actionButtons[action.ordinal()];
+			if (button == null) {
+				textButton.setText("");
+			} else {
+				textButton.setText(button.toString());
+			}
+		}
+	}
+
+	private void bind(InputAction action, InputButton button) {
+		waitingKeyWindow.setVisible(false);
+		mapping.bind(action, button);
+		actionButtons[action.ordinal()].setText(button.toString());
+		Gdx.input.setInputProcessor(previousInputProcessor);
+	}
+
+	private Table createKeysTable() {
+		Table keysTable = new Table();
+		keysTable.defaults().fill().pad(2);
 		for (InputAction action : InputAction.values()) {
 			Label label = new Label(PixurvivalGame.getString("controlPanel.inputAction." + CaseUtils.upperToCamelCase(action.name())), PixurvivalGame.getSkin());
 			label.setAlignment(Align.right);
-			// label.setWrap(true);
-			table.add(label);
+			keysTable.add(label);
 			TextButton button = new TextButton("", PixurvivalGame.getSkin());
 			actionButtons[action.ordinal()] = button;
-			table.add(button).minWidth(100);
-			table.row();
+			keysTable.add(button).minWidth(120);
+			keysTable.row();
 
 			button.addListener(new ClickListener() {
 				@Override
@@ -69,25 +98,6 @@ public class ControlsPanel extends ScrollPane {
 				}
 			});
 		}
-	}
-
-	public void setMapping(InputMapping mapping) {
-		this.mapping.set(mapping);
-		for (InputAction action : InputAction.values()) {
-			InputButton button = mapping.getButton(action);
-			TextButton textButton = actionButtons[action.ordinal()];
-			if (button == null) {
-				textButton.setText("");
-			} else {
-				textButton.setText(button.toString());
-			}
-		}
-	}
-
-	private void bind(InputAction action, InputButton button) {
-		waitingKeyWindow.setVisible(false);
-		mapping.bind(action, button);
-		actionButtons[action.ordinal()].setText(button.toString());
-		Gdx.input.setInputProcessor(previousInputProcessor);
+		return keysTable;
 	}
 }

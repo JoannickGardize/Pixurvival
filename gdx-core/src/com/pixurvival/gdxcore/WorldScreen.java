@@ -198,7 +198,7 @@ public class WorldScreen implements Screen {
 		lightDrawer.resize(width, height);
 		statusUI.updatePosition();
 		endGameUI.update(hudStage.getViewport());
-		pauseUI.update(hudStage.getViewport());
+		pauseUI.update();
 	}
 
 	@Override

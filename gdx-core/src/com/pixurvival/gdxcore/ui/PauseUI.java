@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.menu.ControlsPanel;
 import com.pixurvival.gdxcore.menu.MenuButton;
-import com.pixurvival.gdxcore.util.AutoScrollFocusListener;
+import com.pixurvival.gdxcore.util.Scene2dUtils;
 
 import lombok.Getter;
 
@@ -26,6 +26,8 @@ public class PauseUI extends Window {
 		mainMenuTable.add(new MenuButton("hud.pause.resume", () -> setVisible(false)));
 		mainMenuTable.row();
 		mainMenuTable.add(new MenuButton("hud.pause.options", () -> {
+			mainMenuTable.setVisible(false);
+			controlsPanel.setVisible(true);
 		}));
 		mainMenuTable.row();
 		mainMenuTable.add(new MenuButton("hud.pause.save", () -> {
@@ -35,15 +37,15 @@ public class PauseUI extends Window {
 		}));
 
 		Stack stack = new Stack(mainMenuTable, controlsPanel);
-		mainMenuTable.setVisible(false);
+		controlsPanel.setVisible(false);
 
 		add(stack).expand().fill();
-
-		addListener(new AutoScrollFocusListener());
 	}
 
-	public void update(Viewport viewport) {
-		setSize(Math.min(600, viewport.getWorldWidth()), Math.min(800, viewport.getWorldHeight()));
-		setPosition((viewport.getWorldWidth() - getWidth()) / 2, (viewport.getWorldHeight() - getHeight()) / 2);
+	public void update() {
+		Viewport viewport = getStage().getViewport();
+		setSize(Math.min(800, viewport.getWorldWidth()), Math.min(900, viewport.getWorldHeight()));
+		Scene2dUtils.positionToCenter(this);
+		Scene2dUtils.positionToCenter(controlsPanel.getWaitingKeyWindow());
 	}
 }
