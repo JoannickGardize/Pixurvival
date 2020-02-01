@@ -172,7 +172,8 @@ public class TiledMap {
 	}
 
 	public Chunk chunkAt(float x, float y) {
-		ChunkPosition position = new ChunkPosition(MathUtils.floor(x / GameConstants.CHUNK_SIZE), MathUtils.floor(y / GameConstants.CHUNK_SIZE));
+		ChunkPosition position = new ChunkPosition(MathUtils.floor(x / GameConstants.CHUNK_SIZE),
+				MathUtils.floor(y / GameConstants.CHUNK_SIZE));
 		return chunks.get(position);
 	}
 
@@ -261,8 +262,7 @@ public class TiledMap {
 	/**
 	 * Returns the chunk at the given position, waiting for it if necessary.
 	 * 
-	 * @param position
-	 *            The position of the requested chunk
+	 * @param position The position of the requested chunk
 	 * @return The chunk at the given position
 	 */
 	public Chunk chunkAtWait(ChunkPosition position) {
@@ -278,7 +278,7 @@ public class TiledMap {
 			while ((chunk = chunkAt(position)) == null) {
 				try {
 					Log.info("Waiting for chunk at " + position);
-					positionLock.wait(500);
+					positionLock.wait(100);
 				} catch (InterruptedException e) {
 					Log.error("Error when waiting chunk", e);
 					Thread.currentThread().interrupt();
@@ -322,7 +322,8 @@ public class TiledMap {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
 				ChunkPosition position = new ChunkPosition(structureUpdate.getX(), structureUpdate.getY());
-				List<StructureUpdate> waitingList = waitingStructureUpdates.computeIfAbsent(position, p -> new ArrayList<>());
+				List<StructureUpdate> waitingList = waitingStructureUpdates.computeIfAbsent(position,
+						p -> new ArrayList<>());
 				waitingList.add(structureUpdate);
 			} else {
 				structureUpdate.apply(chunk);
@@ -392,8 +393,10 @@ public class TiledMap {
 	public MapStructure findClosestStructure(float x, float y) {
 		MapStructure closest = null;
 		float closestDist = Float.POSITIVE_INFINITY;
-		for (int dx = MathUtils.floor(x) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
-			for (int dy = MathUtils.floor(y) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
+		for (int dx = MathUtils.floor(x) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x
+				+ (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
+			for (int dy = MathUtils.floor(y) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y
+					+ (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
 				MapStructure structure = tileAt(dx, dy).getStructure();
 				if (structure != null) {
 					float diffX = structure.getPosition().getX() - x;
@@ -410,8 +413,10 @@ public class TiledMap {
 	}
 
 	public MapStructure findStructure(Structure structure, int x, int y) {
-		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
-			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
+		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x
+				+ (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
+			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y
+					+ (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
 				MapStructure mapStructure = tileAt(dx, dy).getStructure();
 				if (mapStructure != null && mapStructure.getDefinition() == structure) {
 					return mapStructure;

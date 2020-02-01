@@ -45,7 +45,6 @@ public class ControlsPanel extends Table {
 		keysScrollPane.addListener(new AutoScrollFocusListener());
 
 		Table resetDefaultsTable = new Table();
-		resetDefaultsTable.setBackground(PixurvivalGame.getSkin().getDrawable("light-panel"));
 		resetDefaultsTable.defaults().pad(4).fill();
 		SelectBox<InputMapping> defaultsBox = new SelectBox<>(PixurvivalGame.getSkin());
 		if (PixurvivalGame.getClient().getLocalePriorityList().get(0).getLanguage().equals("fr")) {
@@ -70,9 +69,13 @@ public class ControlsPanel extends Table {
 		defaults().pad(2).fill();
 		add(keysScrollPane).expand();
 		row();
-		add(resetDefaultsTable);
-		row();
-		add(buttonsTable);
+		Table bottomTable = new Table();
+		bottomTable.defaults().pad(2).expand().fill();
+		bottomTable.setBackground(PixurvivalGame.getSkin().getDrawable("light-panel"));
+		bottomTable.add(resetDefaultsTable);
+		bottomTable.row();
+		bottomTable.add(buttonsTable);
+		add(bottomTable);
 	}
 
 	public void showWaitingWindow() {

@@ -29,7 +29,7 @@
     buttonUp: { name: Button-white, color: gray },
     buttonOver: { name: Button-gray, color: gray },
     buttonDown: { name: Button-gray-reversed, color: gray },
-    buttonDisabled: { name: base, color: disabled },
+    buttonDisabled: { name: Button-white, color: light-gray },
     buttonChecked: { name: base, color: checked },
     buttonCheckedOver: { name: base, color: checkedOver },
     checkBoxOn: { name: check-on, color: up },

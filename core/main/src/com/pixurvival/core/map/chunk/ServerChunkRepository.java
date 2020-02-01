@@ -15,7 +15,7 @@ public class ServerChunkRepository implements ChunkRepository {
 
 	@Getter
 	@AllArgsConstructor
-	private static class ChunkEntry {
+	public static class ChunkEntry {
 		private CompressedChunk compressedChunk;
 		private byte[] entitiesData;
 	}
@@ -26,7 +26,6 @@ public class ServerChunkRepository implements ChunkRepository {
 
 	@Override
 	public void save(Chunk chunk) {
-
 		// TODO mettre ailleurs la suppression des entités ?
 		chunk.getMap().getWorld().getEntityPool().removeAll(chunk.getEntities());
 		entityByteBuffer.position(0);
