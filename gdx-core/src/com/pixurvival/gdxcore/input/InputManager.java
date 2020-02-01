@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore.input;
 
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.gdxcore.util.UserDirectory;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ public class InputManager {
 
 	private static @Getter InputManager instance = new InputManager();
 
-	private @Getter @Setter InputMapping mapping = InputMappingDefaults.findBestDefaultMatch();
+	private @Getter @Setter InputMapping mapping = UserDirectory.loadInputMapping();
 	private boolean[] pressedActions = new boolean[InputAction.values().length];
 	private @Setter boolean playerMovementChanged = false;
 	private PlayerMovementRequest movementRequest = new PlayerMovementRequest();

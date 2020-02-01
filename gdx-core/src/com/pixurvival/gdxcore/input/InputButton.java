@@ -3,18 +3,53 @@ package com.pixurvival.gdxcore.input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 
 @Value
+@AllArgsConstructor
 public class InputButton {
 
+	@Getter
+	@AllArgsConstructor
 	public enum Type {
-		MOUSE,
-		KEYBOARD
+		MOUSE("M"),
+		KEYBOARD("K");
+
+		private String code;
 	}
 
 	private Type type;
 	private int code;
+
+	public static InputButton fromCode(String code) {
+		if (code.length() < 2) {
+			return null;
+		}
+		String typeCode = code.substring(0, 1);
+		Type type;
+		switch (typeCode) {
+		case "M":
+			type = Type.MOUSE;
+			break;
+		case "K":
+			type = Type.KEYBOARD;
+			break;
+		default:
+			return null;
+		}
+		String intCode = code.substring(1);
+		if (intCode.matches("\\d+")) {
+			return new InputButton(type, Integer.parseInt(intCode));
+		} else {
+			return null;
+		}
+	}
+
+	public String toStringCode() {
+		return type.getCode() + code;
+	}
 
 	@Override
 	public String toString() {

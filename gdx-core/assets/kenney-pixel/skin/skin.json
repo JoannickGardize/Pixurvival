@@ -3,6 +3,7 @@
     white: { r: 1, g: 1, b: 1, a: 1 },
     red: { r: 1, g: 0, b: 0, a: 1 },
     gray: { r: 0.5, g: 0.5, b: 0.5, a: 1 },
+    light-gray: { r: 0.6, g: 0.6, b: 0.6, a: 1 },
     black: { r: 0, g: 0, b: 0, a: 1 },
     dark: { r: 0.2, g: 0.2, b: 0.2, a: 1 },
     green: {r: 0.1, g: 0.9, b: 0.1, a: 1},
@@ -91,6 +92,7 @@
     weapon: { name: weapon, color: gray },
     accessory: { name: accessory, color: gray },
     panel: { name: panel, color: gray },
+    light-panel: { name: panel, color: light-gray },
     greenArrow: { name: arrow, color: green },
 	bar-cursor: { name: bar-cursor, color: gray }
     

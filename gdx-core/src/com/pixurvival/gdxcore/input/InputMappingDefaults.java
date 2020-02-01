@@ -20,32 +20,14 @@ public class InputMappingDefaults {
 	public static InputMapping findBestDefaultMatch() {
 		Locale locale = InputContext.getInstance().getLocale();
 		if (locale.getLanguage().equals(Locale.FRENCH.getLanguage())) {
-			return InputMappingDefaults.azertyRightHanded();
+			return InputMappingDefaults.azerty();
 		} else {
-			return InputMappingDefaults.qwertyRightHanded();
+			return InputMappingDefaults.qwerty();
 		}
 	}
 
-	/**
-	 * I put this first because I AM left handed and I AM important.
-	 * 
-	 * @return
-	 */
-	public static InputMapping azertyLeftHanded() {
-		InputMapping mapping = new InputMapping();
-		commonPart(mapping);
-		mapping.bind(InputAction.MOVE_UP, InputButton.keyboard(Keys.O));
-		mapping.bind(InputAction.MOVE_LEFT, InputButton.keyboard(Keys.K));
-		mapping.bind(InputAction.MOVE_RIGHT, InputButton.keyboard(Keys.M));
-		mapping.bind(InputAction.MOVE_DOWN, InputButton.keyboard(Keys.L));
-		mapping.bind(InputAction.ACCESSORY1_SPECIAL, InputButton.keyboard(Keys.I));
-		mapping.bind(InputAction.ACCESSORY2_SPECIAL, InputButton.keyboard(Keys.P));
-
-		return mapping;
-	}
-
-	public static InputMapping azertyRightHanded() {
-		InputMapping mapping = new InputMapping();
+	public static InputMapping azerty() {
+		InputMapping mapping = new InputMapping("AZERTY");
 		commonPart(mapping);
 		mapping.bind(InputAction.MOVE_UP, InputButton.keyboard(Keys.Z));
 		mapping.bind(InputAction.MOVE_LEFT, InputButton.keyboard(Keys.Q));
@@ -56,8 +38,8 @@ public class InputMappingDefaults {
 		return mapping;
 	}
 
-	public static InputMapping qwertyRightHanded() {
-		InputMapping mapping = new InputMapping();
+	public static InputMapping qwerty() {
+		InputMapping mapping = new InputMapping("QWERTY");
 		commonPart(mapping);
 		mapping.bind(InputAction.MOVE_UP, InputButton.keyboard(Keys.W));
 		mapping.bind(InputAction.MOVE_LEFT, InputButton.keyboard(Keys.A));

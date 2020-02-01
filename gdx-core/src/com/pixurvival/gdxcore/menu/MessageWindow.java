@@ -30,6 +30,7 @@ public class MessageWindow extends Window {
 		okButton = new TextButton(PixurvivalGame.getString("generic.ok"), skin);
 		okButton.setVisible(false);
 
+		defaults().pad(2);
 		add(contentLabel).expand().fill().top();
 		setSize(400, 200);
 		row();

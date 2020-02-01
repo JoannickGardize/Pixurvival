@@ -78,7 +78,7 @@ public class WorldScreen implements Screen {
 		// worldStage.addActor(new MapAnalyticsDebugActor());
 		hudStage.clear();
 		hudStage.addActor(pauseUI);
-		hudStage.addActor(pauseUI.getControlsPanel().getWaitingKeyWindow());
+		hudStage.addActor(pauseUI.getControlsPanel().getPopupWindow());
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
 		MiniMapUI miniMapUI = new MiniMapUI();
 		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());

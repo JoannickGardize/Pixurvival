@@ -13,7 +13,8 @@ import lombok.Getter;
 
 public class PauseUI extends Window {
 
-	private @Getter ControlsPanel controlsPanel = new ControlsPanel();
+	private @Getter ControlsPanel controlsPanel = new ControlsPanel(this::backToMainMenu);
+	private Table mainMenuTable = new Table();
 
 	public PauseUI() {
 		super(PixurvivalGame.getString("hud.pause.title"), PixurvivalGame.getSkin());
@@ -21,11 +22,13 @@ public class PauseUI extends Window {
 		setVisible(false);
 		setModal(true);
 		setMovable(false);
-		Table mainMenuTable = new Table();
 		mainMenuTable.defaults().pad(2).fill();
 		mainMenuTable.add(new MenuButton("hud.pause.resume", () -> setVisible(false)));
+//		mainMenuTable.row();
+//		mainMenuTable.add(new MenuButton("hud.pause.settings", () -> {
+//		}));
 		mainMenuTable.row();
-		mainMenuTable.add(new MenuButton("hud.pause.options", () -> {
+		mainMenuTable.add(new MenuButton("hud.pause.controls", () -> {
 			mainMenuTable.setVisible(false);
 			controlsPanel.setVisible(true);
 		}));
@@ -42,10 +45,23 @@ public class PauseUI extends Window {
 		add(stack).expand().fill();
 	}
 
+	public void backToMainMenu() {
+		mainMenuTable.setVisible(true);
+		controlsPanel.setVisible(false);
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && !isVisible()) {
+			backToMainMenu();
+		}
+		super.setVisible(visible);
+	}
+
 	public void update() {
 		Viewport viewport = getStage().getViewport();
 		setSize(Math.min(800, viewport.getWorldWidth()), Math.min(900, viewport.getWorldHeight()));
 		Scene2dUtils.positionToCenter(this);
-		Scene2dUtils.positionToCenter(controlsPanel.getWaitingKeyWindow());
+		Scene2dUtils.positionToCenter(controlsPanel.getPopupWindow());
 	}
 }

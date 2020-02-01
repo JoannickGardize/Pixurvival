@@ -7,6 +7,11 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class UILabel extends Label {
 
+	public UILabel(String textKey) {
+		super(PixurvivalGame.getString(textKey), PixurvivalGame.getSkin(), "default");
+		setAlignment(Align.right);
+	}
+
 	public UILabel(String textKey, Color color) {
 		super(PixurvivalGame.getString(textKey), PixurvivalGame.getSkin(), "default", color);
 		setAlignment(Align.right);

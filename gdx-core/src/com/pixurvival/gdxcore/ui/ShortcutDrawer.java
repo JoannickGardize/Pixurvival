@@ -1,5 +1,10 @@
 package com.pixurvival.gdxcore.ui;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,13 +23,36 @@ public class ShortcutDrawer {
 	private static final int PADDING = 5;
 	private static final Color COLOR = new Color(1, 0.95f, 0, 0.75f);
 
+	private static List<WeakReference<ShortcutDrawer>> instances = new ArrayList<>();
+
 	private Actor actor;
 	private int position;
 	private GlyphLayout text;
+	private InputAction action;
 
 	public ShortcutDrawer(Actor actor, InputAction action, int position) {
+		this.action = action;
 		this.actor = actor;
 		this.position = position;
+		updateText();
+		instances.add(new WeakReference<ShortcutDrawer>(this));
+	}
+
+	public static void updateTexts() {
+		ListIterator<WeakReference<ShortcutDrawer>> it = instances.listIterator();
+		while (it.hasNext()) {
+			WeakReference<ShortcutDrawer> ref = it.next();
+			ShortcutDrawer drawer = ref.get();
+			if (drawer == null) {
+				it.remove();
+			} else {
+				drawer.updateText();
+			}
+		}
+
+	}
+
+	public void updateText() {
 		String s = InputManager.getInstance().getMapping().getButton(action).toString();
 		BitmapFont font = PixurvivalGame.getOverlayFont();
 		text = new GlyphLayout(font, s, COLOR, 0, Align.left, false);
