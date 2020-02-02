@@ -30,7 +30,7 @@ import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
-import com.pixurvival.gdxcore.ui.PauseUI;
+import com.pixurvival.gdxcore.ui.PauseMenu;
 import com.pixurvival.gdxcore.ui.StatusUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
@@ -63,7 +63,7 @@ public class WorldScreen implements Screen {
 	private LightDrawer lightDrawer = new LightDrawer();
 	private StatusUI statusUI = new StatusUI();
 	private @Getter EndGameUI endGameUI = new EndGameUI();
-	private PauseUI pauseUI = new PauseUI();
+	private PauseMenu pauseUI = new PauseMenu();
 	private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
 	private DefaultSoundsPlayer defaultSoundsPlayer;
 

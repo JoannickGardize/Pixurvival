@@ -1,29 +1,36 @@
 package com.pixurvival.gdxcore.ui;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.WorldScreen;
 import com.pixurvival.gdxcore.menu.ControlsPanel;
 import com.pixurvival.gdxcore.menu.MenuButton;
 import com.pixurvival.gdxcore.util.Scene2dUtils;
 
 import lombok.Getter;
 
-public class PauseUI extends Window {
+public class PauseMenu extends Window {
 
 	private @Getter ControlsPanel controlsPanel = new ControlsPanel(this::backToMainMenu);
 	private Table mainMenuTable = new Table();
 
-	public PauseUI() {
+	public PauseMenu() {
 		super(PixurvivalGame.getString("hud.pause.title"), PixurvivalGame.getSkin());
 
 		setVisible(false);
 		setModal(true);
 		setMovable(false);
 		mainMenuTable.defaults().pad(2).fill();
-		mainMenuTable.add(new MenuButton("hud.pause.resume", () -> setVisible(false)));
+		mainMenuTable.add(new MenuButton("hud.pause.resume", () -> {
+			Screen screen = PixurvivalGame.getInstance().getScreen();
+			if (screen instanceof WorldScreen) {
+				((WorldScreen) screen).switchPauseMenu();
+			}
+		}));
 //		mainMenuTable.row();
 //		mainMenuTable.add(new MenuButton("hud.pause.settings", () -> {
 //		}));
