@@ -17,6 +17,7 @@ import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.chunk.CompressedChunk;
+import com.pixurvival.core.map.chunk.ServerChunkRepository.ChunkEntry;
 import com.pixurvival.core.map.chunk.update.AddStructureUpdate;
 import com.pixurvival.core.map.chunk.update.DamageableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
@@ -45,6 +46,9 @@ import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
+import com.pixurvival.core.time.DayNightCycleRun;
+import com.pixurvival.core.time.EternalDayCycleRun;
+import com.pixurvival.core.time.Time;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -121,6 +125,10 @@ public class KryoInitializer {
 		register(kryo, RefuseContentPack.class);
 		register(kryo, ContentPackRequest.class);
 		register(kryo, DamageableStructureUpdate.class);
+		register(kryo, ChunkEntry.class);
+		register(kryo, Time.class);
+		register(kryo, DayNightCycleRun.class);
+		register(kryo, EternalDayCycleRun.class);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,7 +136,8 @@ public class KryoInitializer {
 		try {
 			Class<?>[] internalClasses = clazz.getClasses();
 			for (Class<?> internalClass : internalClasses) {
-				if (internalClass.getSimpleName().equals("Serializer") && internalClass.getSuperclass() == Serializer.class) {
+				if (internalClass.getSimpleName().equals("Serializer")
+						&& internalClass.getSuperclass() == Serializer.class) {
 					kryo.register(clazz, ((Class<? extends Serializer<?>>) internalClass).newInstance());
 					return;
 				}

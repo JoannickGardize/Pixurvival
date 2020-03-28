@@ -20,14 +20,14 @@ import lombok.Getter;
 public class CompressedChunk {
 
 	private TiledMap map;
+	private @Getter ChunkPosition position;
 	private @Getter byte[] data;
 
 	public CompressedChunk(Chunk chunk) {
 		map = chunk.getMap();
+		position = chunk.getPosition();
 		ByteBuffer buffer = ByteBufferUtils.getThreadSafeInstance();
 		buffer.reset();
-		buffer.putInt(chunk.getPosition().getX());
-		buffer.putInt(chunk.getPosition().getY());
 		buffer.putLong(chunk.getUpdateTimestamp());
 		MapTile currentTile = null;
 		byte currentLength = 0;
@@ -57,9 +57,7 @@ public class CompressedChunk {
 
 	public Chunk buildChunk() {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
-		int x = buffer.getInt();
-		int y = buffer.getInt();
-		Chunk chunk = new Chunk(map, x, y);
+		Chunk chunk = new Chunk(map, position);
 		chunk.setUpdateTimestamp(buffer.getLong());
 		MapTile[] chunkData = chunk.getTiles();
 		int dataPosition = 0;
@@ -71,7 +69,9 @@ public class CompressedChunk {
 		}
 		int structureCount = buffer.getShort();
 		for (int i = 0; i < structureCount; i++) {
-			MapStructure structure = chunk.addStructure(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
+			MapStructure structure = chunk.addStructure(
+					map.getWorld().getContentPack().getStructures().get(buffer.get()),
+					buffer.get() + chunk.getOffsetX(), buffer.get() + chunk.getOffsetY(), false);
 			structure.applyData(buffer);
 		}
 		chunk.setCompressed(this);
@@ -83,6 +83,7 @@ public class CompressedChunk {
 		@Override
 		public void write(Kryo kryo, Output output, CompressedChunk object) {
 			output.writeLong(object.map.getWorld().getId());
+			kryo.writeObject(output, object.position);
 			output.writeInt(object.data.length);
 			output.write(object.data);
 		}
@@ -90,8 +91,9 @@ public class CompressedChunk {
 		@Override
 		public CompressedChunk read(Kryo kryo, Input input, Class<CompressedChunk> type) {
 			World world = World.getWorld(input.readLong());
+			ChunkPosition position = kryo.readObject(input, ChunkPosition.class);
 			int length = input.readInt();
-			return new CompressedChunk(world.getMap(), input.readBytes(length));
+			return new CompressedChunk(world.getMap(), position, input.readBytes(length));
 		}
 	}
 }

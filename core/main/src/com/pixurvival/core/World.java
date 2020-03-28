@@ -1,11 +1,15 @@
 package com.pixurvival.core;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatManager;
@@ -15,11 +19,13 @@ import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
+import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -32,11 +38,13 @@ import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
+import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
@@ -61,6 +69,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		private boolean server;
 	}
 
+	private Kryo serializer;
 	private static long nextId = 0;
 	private static Map<Long, World> worlds = new HashMap<>();
 	private static @Getter ContentPack currentContentPack;
@@ -97,18 +106,18 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
-		// TODO make the world persistence great again
-		// saveDirectory = new File(GlobalSettings.getSaveDirectory(),
-		// uid.toString());
-		// FileUtils.delete(saveDirectory);
-		// saveDirectory.mkdirs();
+		if (type == Type.LOCAL) {
+			serializer = new Kryo();
+			KryoInitializer.apply(serializer);
+		}
 	}
 
 	public static World getWorld(long id) {
 		return worlds.get(id);
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPackSerialization loader) throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPackSerialization loader)
+			throws ContentPackException {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
@@ -181,8 +190,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		entityPool.update();
 		map.update();
 		if (isServer() && gameMode.getEndGameCondition().update(this)) {
-			long[] remainingPlayerIdArray = getEntityPool().get(EntityGroup.PLAYER).stream().filter(Entity::isAlive)
-					.sorted((p1, p2) -> ((PlayerEntity) p1).getTeam().getName().compareTo(((PlayerEntity) p2).getTeam().getName())).mapToLong(Entity::getId).toArray();
+			long[] remainingPlayerIdArray = getEntityPool()
+					.get(EntityGroup.PLAYER).stream().filter(Entity::isAlive).sorted((p1, p2) -> ((PlayerEntity) p1)
+							.getTeam().getName().compareTo(((PlayerEntity) p2).getTeam().getName()))
+					.mapToLong(Entity::getId).toArray();
 			EndGameData endGameData = new EndGameData(time.getTimeMillis(), remainingPlayerIdArray);
 			gameEnded = true;
 			unload();
@@ -197,8 +208,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeGame() {
 		entityPool.flushNewEntities();
@@ -212,7 +223,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		String text = chatEntry.getText();
 		if (text.startsWith("/")) {
 			if (text.length() > 1) {
-				String returnText = commandManager.process((CommandExecutor) chatEntry.getSender(), CommandArgsUtils.splitArgs(text.substring(1)));
+				String returnText = commandManager.process((CommandExecutor) chatEntry.getSender(),
+						CommandArgsUtils.splitArgs(text.substring(1)));
 				if (returnText != null) {
 					chatManager.received(new ChatEntry(this, returnText));
 				}
@@ -251,7 +263,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		for (PlayerEntity player : team) {
 			player.getPosition().set(spawnPosition);
 			for (int j = 0; j < 4; j++) {
-				if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
+				if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(),
+						(int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
 					currentDirection = currentDirection.getNext();
 				} else {
 					spawnPosition.addX(currentDirection.getNormalX());
@@ -268,6 +281,39 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			mapLimitsManager.initialize(this, spawnCenter);
 			addPlugin(mapLimitsManager);
 		}
+	}
+
+	public void save(Kryo kryo, Output output) {
+		output.writeLong(id);
+		kryo.writeObject(output, contentPack.getIdentifier());
+		output.writeInt(gameMode.getId());
+		kryo.writeObject(output, spawnCenter);
+		EntityCollection playersCollection = new EntityCollection();
+		playersCollection.addAll(playerEntities.values());
+		ByteBuffer buffer = ByteBufferUtils.getThreadSafeInstance();
+		buffer.position(0);
+		playersCollection.writeRepositoryUpdate(buffer);
+		output.writeInt(buffer.position());
+		output.write(buffer.array(), 0, buffer.position());
+		kryo.writeObject(output, getMyPlayer().getId());
+		kryo.writeObject(output, getMyPlayer().getPosition());
+		output.writeLong(chunkSupplier.getSeed());
+		kryo.writeObject(output, time);
+		map.save(kryo, output);
+		// TODO extract players from the map
+		// TODO Save action events
+	}
+
+	public static World loadSavedLocalWorld(Kryo kryo, Input input, ContentPackSerialization contentPackSerialization)
+			throws ContentPackException {
+		long id = input.readLong();
+		ContentPackIdentifier identifier = kryo.readObject(input, ContentPackIdentifier.class);
+		ContentPack contentPack = contentPackSerialization.load(identifier);
+		World world = new World(id, Type.LOCAL, contentPack, input.readInt());
+		world.spawnCenter = kryo.readObject(input, Vector2.class);
+		EntityCollection playersCollection = new EntityCollection();
+		int buffLength = input.readInt();
+		playersCollection.applyUpdate(byteBuffer, world, repositoryMode);
 	}
 
 	@Override
