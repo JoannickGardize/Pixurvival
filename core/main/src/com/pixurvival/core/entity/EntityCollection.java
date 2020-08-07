@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -23,8 +24,7 @@ public class EntityCollection {
 		short writeUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap);
 	}
 
-	private @Getter(AccessLevel.PROTECTED) Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(
-			EntityGroup.class);
+	private @Getter(AccessLevel.PROTECTED) Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 
 	public Collection<Entity> get(EntityGroup group) {
 		Map<Long, Entity> groupMap = entities.get(group);
@@ -65,11 +65,10 @@ public class EntityCollection {
 	}
 
 	public void addAll(EntityCollection other) {
-		other.entities.entrySet().forEach(
-				entry -> entities.computeIfAbsent(entry.getKey(), key -> new HashMap<>()).putAll(entry.getValue()));
+		other.entities.entrySet().forEach(entry -> entities.computeIfAbsent(entry.getKey(), key -> new HashMap<>()).putAll(entry.getValue()));
 	}
 
-	public void addAll(Collection<? extends Entity> entityList) {
+	public void addAll(List<Entity> entityList) {
 		entityList.forEach(this::add);
 	}
 
@@ -103,8 +102,7 @@ public class EntityCollection {
 		}
 	}
 
-	private short writeDeltaUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap,
-			ChunkGroupChangeHelper chunkVision) {
+	private short writeDeltaUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap, ChunkGroupChangeHelper chunkVision) {
 		short size = 0;
 		for (Entity e : entityMap.values()) {
 			if (!chunkVision.contains(e.getPreviousUpdateChunkPosition())) {

@@ -61,12 +61,8 @@ public class Chunk {
 	private short structureCount = 0;
 
 	public Chunk(TiledMap map, int x, int y) {
-		this(map, new ChunkPosition(x, y));
-	}
-
-	public Chunk(TiledMap map, ChunkPosition position) {
 		this.map = map;
-		this.position = position;
+		this.position = new ChunkPosition(x, y);
 		updateTimestamp = map.getWorld().getTime().getTimeMillis();
 		offsetX = position.getX() * GameConstants.CHUNK_SIZE;
 		offsetY = position.getY() * GameConstants.CHUNK_SIZE;

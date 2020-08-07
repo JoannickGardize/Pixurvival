@@ -5,14 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
@@ -30,7 +26,6 @@ import com.pixurvival.core.map.chunk.ChunkRepositoryEntry;
 import com.pixurvival.core.map.chunk.ClientChunkRepository;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.ServerChunkRepository;
-import com.pixurvival.core.map.chunk.ServerChunkRepository.ChunkEntry;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
@@ -67,6 +62,7 @@ public class TiledMap {
 
 	public TiledMap(World world) {
 		this.world = world;
+
 		if (world.isServer()) {
 			repository = new ServerChunkRepository();
 			outsideTile = new EmptyTile(world.getContentPack().getConstants().getOutsideTile());
@@ -94,46 +90,6 @@ public class TiledMap {
 		if (world.isServer()) {
 			addListener(new ChunkCreatureSpawnManager());
 		}
-	}
-
-	public void save(Kryo kryo, Output output) {
-		if (!(repository instanceof ServerChunkRepository)) {
-			throw new IllegalStateException("Save not authorized for a client instance");
-		}
-		synchronized (this) {
-			flushChunks();
-			flushWaitingStructureUpdates();
-			ServerChunkRepository serverRepo = (ServerChunkRepository) repository;
-			Collection<ChunkEntry> repoEntries = serverRepo.getEntries();
-			int chunkCount = repoEntries.size() + chunks.size();
-			output.writeInt(chunkCount);
-			for (ChunkEntry entry : repoEntries) {
-				kryo.writeObject(output, entry);
-			}
-			chunks.values().forEach(chunk -> kryo.writeObject(output, serverRepo.writeChunkEntry(chunk)));
-		}
-	}
-
-	public void load(Kryo kryo, Input input) {
-		if (!(repository instanceof ServerChunkRepository)) {
-			throw new IllegalStateException("Load not authorized for a client instance");
-		}
-		synchronized (this) {
-			int chunkCount = input.readInt();
-			ServerChunkRepository serverRepo = (ServerChunkRepository) repository;
-			for (int i = 0; i < chunkCount; i++) {
-				ChunkEntry chunkEntry = kryo.readObject(input, ChunkEntry.class);
-				serverRepo.put(chunkEntry);
-			}
-		}
-	}
-
-	private void flushWaitingStructureUpdates() {
-		for (Entry<ChunkPosition, List<StructureUpdate>> chunkStructureUpdates : waitingStructureUpdates.entrySet()) {
-			Chunk chunk = chunkAtWait(chunkStructureUpdates.getKey());
-			chunkStructureUpdates.getValue().forEach(u -> u.apply(chunk));
-		}
-		waitingStructureUpdates.clear();
 	}
 
 	public void addListener(TiledMapListener listener) {
@@ -310,14 +266,15 @@ public class TiledMap {
 	 * @return The chunk at the given position
 	 */
 	public Chunk chunkAtWait(ChunkPosition position) {
-		Chunk chunk = chunkAt(position);
-		if (chunk != null) {
-			return chunk;
-		}
 		requestChunk(position);
 		flushChunks();
 		ChunkPosition positionLock = waitingPositions.computeIfAbsent(new ChunkPosition(position), p -> p);
 		synchronized (positionLock) {
+			Chunk chunk = chunkAt(position);
+			if (chunk != null) {
+				return chunk;
+			}
+			waitingPositions.put(positionLock, positionLock);
 			while ((chunk = chunkAt(position)) == null) {
 				try {
 					Log.info("Waiting for chunk at " + position);

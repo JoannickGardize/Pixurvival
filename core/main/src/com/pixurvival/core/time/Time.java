@@ -1,8 +1,5 @@
 package com.pixurvival.core.time;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.util.MathUtils;
 
@@ -58,23 +55,5 @@ public class Time {
 
 	public static long secToMillis(float secondes) {
 		return (long) (secondes * 1000);
-	}
-
-	public static class Serializer extends com.esotericsoftware.kryo.Serializer<Time> {
-
-		@Override
-		public void write(Kryo kryo, Output output, Time object) {
-			kryo.writeClassAndObject(output, object.dayCycle);
-			output.writeLong(object.timeMillis);
-			output.writeFloat(object.decimalAccumulator);
-		}
-
-		@Override
-		public Time read(Kryo kryo, Input input, Class<Time> type) {
-			Time time = new Time((DayCycleRun) kryo.readClassAndObject(input));
-			time.timeMillis = input.readLong();
-			time.decimalAccumulator = input.readFloat();
-			return time;
-		}
 	}
 }

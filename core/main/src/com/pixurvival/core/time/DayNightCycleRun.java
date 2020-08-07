@@ -1,9 +1,5 @@
 package com.pixurvival.core.time;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-
 import lombok.Getter;
 
 @Getter
@@ -52,23 +48,4 @@ public class DayNightCycleRun implements DayCycleRun {
 		return currentMomentProgess;
 	}
 
-	public static class Serializer extends com.esotericsoftware.kryo.Serializer<DayNightCycleRun> {
-
-		@Override
-		public void write(Kryo kryo, Output output, DayNightCycleRun object) {
-			output.writeLong(object.dayDuration);
-			output.writeLong(object.nightDuration);
-			output.writeLong(object.dayCount);
-			output.writeBoolean(object.isDay());
-		}
-
-		@Override
-		public DayNightCycleRun read(Kryo kryo, Input input, Class<DayNightCycleRun> type) {
-			DayNightCycleRun result = new DayNightCycleRun(input.readLong(), input.readLong());
-			result.dayCount = input.readLong();
-			result.isDay = input.readBoolean();
-			return result;
-		}
-
-	}
 }
