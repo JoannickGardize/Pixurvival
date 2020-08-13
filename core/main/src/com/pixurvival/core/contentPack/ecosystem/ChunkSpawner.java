@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.LongInterval;
 import com.pixurvival.core.contentPack.WeightedValueProducer;
@@ -15,12 +18,13 @@ import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ChunkSpawner implements Serializable {
+public abstract class ChunkSpawner implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +39,11 @@ public class ChunkSpawner implements Serializable {
 	private LongInterval respawnTime = new LongInterval();
 
 	private transient Set<Creature> creatureSet;
+
+	/**
+	 * Unique id in Ecosystem
+	 */
+	private transient int id;
 
 	public void spawn(Chunk chunk) {
 		Object data = beginSpawn(chunk);
@@ -109,4 +118,19 @@ public class ChunkSpawner implements Serializable {
 		return creature != null && (!creature.isSolid() || !chunk.getMap().collide(position.getX(), position.getY(), creature.getCollisionRadius()));
 	}
 
+	@AllArgsConstructor
+	public static class Serializer extends com.esotericsoftware.kryo.Serializer<ChunkSpawner> {
+
+		private Ecosystem ecosystem;
+
+		@Override
+		public void write(Kryo kryo, Output output, ChunkSpawner object) {
+			output.writeInt(object.getId());
+		}
+
+		@Override
+		public ChunkSpawner read(Kryo kryo, Input input, Class<ChunkSpawner> type) {
+			return ecosystem.getChunkSpawnerById(input.readInt());
+		}
+	}
 }

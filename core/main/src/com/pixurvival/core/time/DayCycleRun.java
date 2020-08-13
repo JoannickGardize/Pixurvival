@@ -1,5 +1,7 @@
 package com.pixurvival.core.time;
 
+import java.nio.ByteBuffer;
+
 /**
  * Base interface for day / night cycle management.
  * 
@@ -24,9 +26,16 @@ public interface DayCycleRun {
 	/**
 	 * @return the current moment (day or night) progress, 0 mean the moment
 	 *         just started, and values close to 1 mean the moment will change
-	 *         soon.
+	 *         soon
 	 */
 	float currentMomentProgress();
 
+	/**
+	 * @return number of days since the beginning of the game, starting to zero
+	 */
 	long getDayCount();
+
+	void write(ByteBuffer buffer);
+
+	void apply(ByteBuffer buffer);
 }

@@ -18,6 +18,10 @@ public class RemainingTeamCondition implements EndGameCondition, EntityPoolListe
 	@Override
 	public void initialize(World world) {
 		world.getEntityPool().addListener(this);
+	}
+
+	@Override
+	public void initializeNewGameData(World world) {
 		world.setEndGameConditionData(false);
 	}
 

@@ -1,10 +1,12 @@
 package com.pixurvival.gdxcore.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pixurvival.core.World;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
 import com.pixurvival.gdxcore.menu.ControlsPanel;
@@ -31,20 +33,22 @@ public class PauseMenu extends Window {
 				((WorldScreen) screen).switchPauseMenu();
 			}
 		}));
-//		mainMenuTable.row();
-//		mainMenuTable.add(new MenuButton("hud.pause.settings", () -> {
-//		}));
+		// mainMenuTable.row();
+		// mainMenuTable.add(new MenuButton("hud.pause.settings", () -> {
+		// }));
 		mainMenuTable.row();
 		mainMenuTable.add(new MenuButton("hud.pause.controls", () -> {
 			mainMenuTable.setVisible(false);
 			controlsPanel.setVisible(true);
 		}));
 		mainMenuTable.row();
-		mainMenuTable.add(new MenuButton("hud.pause.save", () -> {
-		}));
+		MenuButton saveButton = new MenuButton("hud.pause.save", () -> {
+			// TODO
+		});
+		saveButton.setDisabled(PixurvivalGame.getClient().getWorld().getType() != World.Type.LOCAL);
+		mainMenuTable.add(saveButton);
 		mainMenuTable.row();
-		mainMenuTable.add(new MenuButton("hud.pause.quit", () -> {
-		}));
+		mainMenuTable.add(new MenuButton("hud.pause.quit", Gdx.app::exit));
 
 		Stack stack = new Stack(mainMenuTable, controlsPanel);
 		controlsPanel.setVisible(false);

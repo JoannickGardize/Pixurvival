@@ -12,11 +12,11 @@ import lombok.Getter;
 public class ChunkRepositoryEntry {
 
 	private Chunk chunk;
-	private ByteBuffer entitiesData;
+	private ByteBuffer entityData;
 
 	public ChunkRepositoryEntry(Chunk chunk) {
 		this.chunk = chunk;
-		entitiesData = emptyByteArray();
+		entityData = emptyByteArray();
 	}
 
 	private ByteBuffer emptyByteArray() {

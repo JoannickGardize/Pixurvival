@@ -78,6 +78,11 @@ public class CompressedChunk {
 		return chunk;
 	}
 
+	public ChunkPosition getPosition() {
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		return new ChunkPosition(buffer.getInt(), buffer.getInt());
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<CompressedChunk> {
 
 		@Override

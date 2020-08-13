@@ -26,10 +26,29 @@ public class Ecosystem extends IdentifiedElement {
 	@Override
 	public void initialize() {
 		structureSpawnersPerStructure = new HashMap<>();
+		for (int i = 0; i < structureSpawners.size(); i++) {
+			StructureSpawner spawner = structureSpawners.get(i);
+			spawner.setId(i);
+			spawner.buildCreatureSet();
+			structureSpawnersPerStructure.computeIfAbsent(spawner.getStructure().getId(), ArrayList::new).add(spawner);
+		}
 		structureSpawners.forEach(s -> {
-			s.buildCreatureSet();
-			structureSpawnersPerStructure.computeIfAbsent(s.getStructure().getId(), ArrayList::new).add(s);
 		});
 		darknessSpawner.buildCreatureSet();
+		darknessSpawner.setId(-1);
+	}
+
+	/**
+	 * Make sure to use this after a call of {@link #initialize()}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public ChunkSpawner getChunkSpawnerById(int id) {
+		if (id == -1) {
+			return darknessSpawner;
+		} else {
+			return structureSpawners.get(id);
+		}
 	}
 }

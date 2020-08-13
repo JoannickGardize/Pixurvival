@@ -197,7 +197,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new PixurvivalException("The GameMode " + gameMode.getName() + " cannot be played in solo.");
 		}
-		world.initializeGame();
+		world.initializeNewGame();
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
 		for (String command : gameBeginningCommands) {

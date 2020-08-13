@@ -203,6 +203,7 @@ public class ContentPackSerialization {
 				plugin.read(contentPack, zipFile);
 			}
 			contentPack.setIdentifier(identifier);
+			contentPack.initialize();
 			return contentPack;
 		} catch (IOException e) {
 			throw new ContentPackException(e);

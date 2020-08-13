@@ -19,6 +19,7 @@ public class DesktopLauncher {
 		config.height = 540;
 		config.title = "Pixurvival - " + ReleaseVersion.getValue();
 		config.addIcon("icon.png", FileType.Internal);
+		config.forceExit = false;
 		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);
 	}
 }

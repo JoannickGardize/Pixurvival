@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.lobby.SingleplayerLobbyScreen;
+import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
 
 public class MainMenuScreen implements Screen {
 
@@ -23,13 +23,16 @@ public class MainMenuScreen implements Screen {
 		table.defaults().prefWidth(400).prefHeight(50).pad(5, 0, 5, 0);
 
 		Skin skin = PixurvivalGame.getSkin();
-		TextButton singleplayerButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer"), skin);
+		TextButton singleplayerNewButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer.new"), skin);
+		TextButton singleplayerLoadButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer.load"), skin);
 		TextButton multiplayerButton = new TextButton(PixurvivalGame.getString("menu.main.multiplayer"), skin);
 		// TextButton editorButton = new
 		// TextButton(PixurvivalGame.getString("menu.main.editor"), skin);
 		TextButton exitButton = new TextButton(PixurvivalGame.getString("menu.main.exit"), skin);
 
-		table.add(singleplayerButton);
+		table.add(singleplayerNewButton);
+		table.row();
+		table.add(singleplayerLoadButton);
 		table.row();
 		table.add(multiplayerButton);
 		table.row();
@@ -39,10 +42,10 @@ public class MainMenuScreen implements Screen {
 
 		stage.addActor(table);
 
-		singleplayerButton.addListener(new ClickListener() {
+		singleplayerNewButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				PixurvivalGame.setScreen(SingleplayerLobbyScreen.class);
+				PixurvivalGame.setScreen(NewSingleplayerLobbyScreen.class);
 			}
 		});
 

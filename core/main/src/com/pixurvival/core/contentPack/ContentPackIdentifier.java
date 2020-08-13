@@ -35,7 +35,7 @@ public class ContentPackIdentifier implements Serializable {
 	}
 
 	public ContentPackIdentifier(String fileName) {
-		int separation = fileName.lastIndexOf("_");
+		int separation = fileName.lastIndexOf('_');
 		int extensionIndex = fileName.lastIndexOf('.');
 		name = fileName.substring(0, separation);
 		version = new Version(fileName.substring(separation + 1, extensionIndex));

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.badlogic.gdx.Game;
@@ -37,7 +38,7 @@ import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
-import com.pixurvival.gdxcore.lobby.SingleplayerLobbyScreen;
+import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
@@ -115,6 +116,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		if (clientArgs.isMute()) {
 			globalVolume = 0;
 		}
+		if (clientArgs.getLanguage() != null) {
+			Locale.setDefault(Locale.forLanguageTag(clientArgs.getLanguage()));
+		}
+
 		zoomEnabled = clientArgs.isZoomEnabled();
 		instance = this;
 		client = new PixurvivalClient(clientArgs);
@@ -215,6 +220,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			}
 		});
 		setScreen(screen);
+		// TODO test if followign code is required
+		// if (screenClass != WorldScreen.class) {
+		// screen = screens.remove(WorldScreen.class);
+		// if (screen != null) {
+		// screen.dispose();
+		// }
+		// }
 	}
 
 	@Override
@@ -289,8 +301,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	public void lobbyMessageReceived(LobbyMessage message) {
 		if (getScreen() instanceof MultiplayerLobbyScreen) {
 			((MultiplayerLobbyScreen) getScreen()).receivedLobbyMessage(message);
-		} else if (getScreen() instanceof SingleplayerLobbyScreen) {
-			((SingleplayerLobbyScreen) getScreen()).received(message);
+		} else if (getScreen() instanceof NewSingleplayerLobbyScreen) {
+			((NewSingleplayerLobbyScreen) getScreen()).received(message);
 		}
 	}
 

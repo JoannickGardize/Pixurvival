@@ -1,6 +1,7 @@
 package com.pixurvival.core.util;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
@@ -12,8 +13,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ByteBufferUtils {
 
+	private static final Charset CHARSET = Charset.forName("UTF-8");
+
+	public static final int BUFFER_SIZE = 8192;
+
 	private static ThreadLocal<ByteBuffer> bufferLocal = ThreadLocal.withInitial(() -> {
-		ByteBuffer buffer = ByteBuffer.allocate(8192);
+		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		buffer.mark();
 		return buffer;
 	});
@@ -62,5 +67,29 @@ public class ByteBufferUtils {
 
 	public static boolean getBoolean(ByteBuffer buffer) {
 		return buffer.get() == 1;
+	}
+
+	public static void putString(ByteBuffer buffer, String s) {
+		byte[] data = s.getBytes(CHARSET);
+		buffer.putInt(data.length);
+		buffer.put(data);
+	}
+
+	public static String getString(ByteBuffer buffer) {
+		byte[] data = new byte[buffer.getInt()];
+		buffer.get(data);
+		return new String(data, CHARSET);
+	}
+
+	public static void putBytes(ByteBuffer buffer, byte[] bytes) {
+		buffer.putInt(bytes.length);
+		buffer.put(bytes);
+	}
+
+	public static byte[] getBytes(ByteBuffer buffer) {
+		int length = buffer.getInt();
+		byte[] result = new byte[length];
+		buffer.get(new byte[length]);
+		return result;
 	}
 }

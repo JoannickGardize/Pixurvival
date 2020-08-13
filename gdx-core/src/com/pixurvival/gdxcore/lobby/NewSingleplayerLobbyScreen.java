@@ -15,7 +15,7 @@ import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.menu.MessageWindow;
 
-public class SingleplayerLobbyScreen implements Screen {
+public class NewSingleplayerLobbyScreen implements Screen {
 	private Stage stage;
 
 	private GameModeChooser gameModeChooser;

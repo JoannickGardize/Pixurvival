@@ -15,10 +15,9 @@ import lombok.RequiredArgsConstructor;
 /**
  * Manage chunk generating and unloading of multiples {@link TiledMap}s. It run
  * in a separated thread, to prevent FPS drop of the main game thread. Unload
- * chunks that are too far for a fixed amount of time, they are compressed and
- * stored in local files.
+ * chunks that are too far for a fixed amount of time, they are compressed.
  * 
- * @author jojog
+ * @author SharkHendrix
  *
  */
 public class ChunkManager extends EngineThread {
@@ -60,7 +59,7 @@ public class ChunkManager extends EngineThread {
 	}
 
 	public void requestChunk(TiledMap map, ChunkPosition position) {
-		synchronized (map) {
+		synchronized (tiledMaps) {
 			TiledMapEntry entry = tiledMaps.computeIfAbsent(map, TiledMapEntry::new);
 			entry.requestedPositions.add(position);
 		}

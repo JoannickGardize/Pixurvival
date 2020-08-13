@@ -50,7 +50,7 @@ public class CreatureEntity extends LivingEntity {
 			currentBehavior.begin(this);
 			spawnPosition = getPosition().copy();
 			if (definition.getLifetime() > 0) {
-				getWorld().getActionTimerManager().addActionTimer(() -> setAlive(false), definition.getLifetime());
+				getWorld().getActionTimerManager().addActionTimer(new KillCreatureEntityAction(getId()), definition.getLifetime());
 			}
 		}
 	}

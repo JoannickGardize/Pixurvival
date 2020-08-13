@@ -9,6 +9,10 @@ public interface EndGameCondition extends Serializable {
 	default void initialize(World world) {
 	}
 
+	default void initializeNewGameData(World world) {
+
+	}
+
 	/**
 	 * @param world
 	 * @return true if the game is over

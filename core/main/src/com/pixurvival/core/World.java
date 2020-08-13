@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatEntry;
@@ -16,13 +17,13 @@ import com.pixurvival.core.command.CommandManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
-import com.pixurvival.core.contentPack.gameMode.event.Event;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.ChunkCreatureSpawnManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.AreaSearchCriteria;
 import com.pixurvival.core.map.analytics.CardinalDirection;
@@ -31,6 +32,8 @@ import com.pixurvival.core.map.analytics.MapAnalytics;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
+import com.pixurvival.core.mapLimits.MapLimitsManager;
+import com.pixurvival.core.mapLimits.MapLimitsRun;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
@@ -41,6 +44,7 @@ import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -84,24 +88,23 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
 	private @Setter MapLimitsRun mapLimitsRun;
+	private @Setter(AccessLevel.PACKAGE) ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
+		this(id, type, contentPack, gameModeId, new Random().nextLong());
+	}
+
+	private World(long id, Type type, ContentPack contentPack, int gameModeId, long seed) {
 		if (gameModeId < 0 || gameModeId >= contentPack.getGameModes().size()) {
 			throw new IllegalArgumentException("No game mode with id " + gameModeId);
 		}
 		this.id = id;
 		this.type = type;
 		this.contentPack = contentPack;
-		contentPack.initialize();
 		this.gameMode = contentPack.getGameModes().get(gameModeId);
 		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), random.nextLong());
-		// TODO make the world persistence great again
-		// saveDirectory = new File(GlobalSettings.getSaveDirectory(),
-		// uid.toString());
-		// FileUtils.delete(saveDirectory);
-		// saveDirectory.mkdirs();
+		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), seed);
 	}
 
 	public static World getWorld(long id) {
@@ -145,14 +148,26 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
+		initializeLocalWorld(world);
+		return world;
+	}
+
+	public static World createLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
+		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId, seed);
+		initializeLocalWorld(world);
+		return world;
+	}
+
+	private static void initializeLocalWorld(World world) {
 		PlayerEntity playerEntity = new PlayerEntity();
 		playerEntity.setOperator(true);
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
+		// Player id will always be zero so the player entity will be merged when
+		// loading a saved game
 		world.getEntityPool().add(playerEntity);
 		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
-		return world;
 	}
 
 	public static Collection<World> getWorlds() {
@@ -197,15 +212,21 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
-	public void initializeGame() {
+	public void initializeNewGame() {
 		entityPool.flushNewEntities();
 		initializeSpawns();
 		initializeEvents();
 		gameMode.getEndGameCondition().initialize(this);
+		gameMode.getEndGameCondition().initializeNewGameData(this);
 		initializeMapLimits();
+	}
+
+	public void initializeLoadedGame() {
+		entityPool.flushNewEntities();
+		gameMode.getEndGameCondition().initialize(this);
 	}
 
 	public void received(ChatEntry chatEntry) {
@@ -241,8 +262,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	private void initializeEvents() {
-		for (Event event : gameMode.getEvents()) {
-			actionTimerManager.addActionTimer(new EventAction(this, event), event.getStartTime());
+		for (int i = 0; i < gameMode.getEvents().size(); i++) {
+			actionTimerManager.addActionTimer(new EventAction(i), gameMode.getEvents().get(i).getStartTime());
 		}
 	}
 
@@ -268,6 +289,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			mapLimitsManager.initialize(this, spawnCenter);
 			addPlugin(mapLimitsManager);
 		}
+	}
+
+	public long getSeed() {
+		return chunkSupplier.getSeed();
 	}
 
 	@Override

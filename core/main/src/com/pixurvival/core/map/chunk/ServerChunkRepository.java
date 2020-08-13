@@ -2,32 +2,28 @@ package com.pixurvival.core.map.chunk;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.message.WorldUpdate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
+/**
+ * Chunk repository for server and local games.
+ * 
+ * @author SharkHendrix
+ *
+ */
 public class ServerChunkRepository implements ChunkRepository {
-
-	@Getter
-	@AllArgsConstructor
-	public static class ChunkEntry {
-		private CompressedChunk compressedChunk;
-		private byte[] entitiesData;
-	}
 
 	private ByteBuffer entityByteBuffer = ByteBuffer.allocate(WorldUpdate.BUFFER_SIZE * 2);
 
-	private Map<ChunkPosition, ChunkEntry> store = new HashMap<>();
+	private Map<ChunkPosition, CompressedChunkAndEntityData> store = new HashMap<>();
 
 	@Override
-	public void save(Chunk chunk) {
-		// TODO mettre ailleurs la suppression des entités ?
-		chunk.getMap().getWorld().getEntityPool().removeAll(chunk.getEntities());
+	public synchronized void save(Chunk chunk) {
 		entityByteBuffer.position(0);
 		entityByteBuffer.put(EntityGroup.END_MARKER);
 		chunk.getEntities().writeRepositoryUpdate(entityByteBuffer);
@@ -35,18 +31,28 @@ public class ServerChunkRepository implements ChunkRepository {
 		entityByteBuffer.putShort((short) 0);
 		byte[] bufferArray = entityByteBuffer.array();
 		byte[] chunkEntities = Arrays.copyOf(bufferArray, bufferArray.length);
-		store.put(chunk.getPosition(), new ChunkEntry(chunk.getCompressed(), chunkEntities));
+		store.put(chunk.getPosition(), new CompressedChunkAndEntityData(chunk.getCompressed(), chunkEntities));
 	}
 
 	@Override
-	public ChunkRepositoryEntry load(ChunkPosition position) {
-		ChunkEntry entry = store.get(position);
+	public synchronized ChunkRepositoryEntry load(ChunkPosition position) {
+		CompressedChunkAndEntityData entry = store.get(position);
 		if (entry == null) {
 			return null;
 		} else {
 			Chunk chunk = entry.getCompressedChunk().buildChunk();
-			ByteBuffer byteBuffer = ByteBuffer.wrap(entry.entitiesData);
+			ByteBuffer byteBuffer = ByteBuffer.wrap(entry.getEntityData());
 			return new ChunkRepositoryEntry(chunk, byteBuffer);
 		}
+	}
+
+	@Override
+	public Collection<CompressedChunkAndEntityData> getAll() {
+		return Collections.unmodifiableCollection(store.values());
+	}
+
+	@Override
+	public void add(CompressedChunkAndEntityData data) {
+		store.put(data.getCompressedChunk().getPosition(), data);
 	}
 }

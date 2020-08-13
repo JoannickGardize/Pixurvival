@@ -10,11 +10,13 @@ import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.chunk.Chunk;
 
+import lombok.Getter;
+
 public class ChunkSupplier {
 
 	private TiledMap map;
 	private MapGenerator mapGenerator;
-	private long seed;
+	private @Getter long seed;
 
 	public ChunkSupplier(World world, MapGenerator mapGenerator, long seed) {
 		map = world.getMap();

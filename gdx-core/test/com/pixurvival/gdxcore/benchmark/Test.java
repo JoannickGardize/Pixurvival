@@ -1,24 +1,20 @@
 package com.pixurvival.gdxcore.benchmark;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.pixurvival.core.benchmarks.BenchmarkUtil;
+import net.arikia.dev.drpc.DiscordEventHandlers;
+import net.arikia.dev.drpc.DiscordRPC;
+import net.arikia.dev.drpc.DiscordRichPresence;
 
 public class Test {
-	public static void main(String[] args) {
-		BenchmarkUtil.time("sqrt", () -> {
-			double d = 0;
-			for (double i = 0; i < 10_000; i++) {
-				d += Math.cos(i);
-			}
-			System.out.println(d);
-		});
+	public static void main(String[] args) throws InterruptedException {
+		DiscordRPC.discordInitialize("742825259190714439", new DiscordEventHandlers.Builder().setReadyEventHandler(user -> System.out.println(user + " is Ready !")).build(), true);
 
-		BenchmarkUtil.time("invsqrt", () -> {
-			float d = 0;
-			for (float i = 0; i < 10_000; i++) {
-				d += MathUtils.cos(i);
-			}
-			System.out.println(d);
-		});
+		for (int i = 0; i < 10; i++) {
+			Thread.sleep(1000);
+			DiscordRPC.discordRunCallbacks();
+			DiscordRichPresence rich = new DiscordRichPresence.Builder("Testing").setDetails("Testing Discord API !").setBigImage("pixurvival_cover", "Pixurvival cover").build();
+			DiscordRPC.discordUpdatePresence(rich);
+		}
+
+		DiscordRPC.discordShutdown();
 	}
 }

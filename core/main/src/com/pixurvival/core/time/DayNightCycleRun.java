@@ -1,8 +1,15 @@
 package com.pixurvival.core.time;
 
+import java.nio.ByteBuffer;
+
+import com.pixurvival.core.util.ByteBufferUtils;
+
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class DayNightCycleRun implements DayCycleRun {
 
 	private long dayDuration;
@@ -46,6 +53,23 @@ public class DayNightCycleRun implements DayCycleRun {
 	@Override
 	public float currentMomentProgress() {
 		return currentMomentProgess;
+	}
+
+	@Override
+	public void write(ByteBuffer buffer) {
+		buffer.putLong(dayDuration);
+		buffer.putLong(nightDuration);
+		buffer.putLong(dayCount);
+		ByteBufferUtils.putBoolean(buffer, isDay);
+	}
+
+	@Override
+	public void apply(ByteBuffer buffer) {
+		dayDuration = buffer.getLong();
+		nightDuration = buffer.getLong();
+		dayCount = buffer.getLong();
+		isDay = ByteBufferUtils.getBoolean(buffer);
+		fullCycleDuration = dayDuration + nightDuration;
 	}
 
 }

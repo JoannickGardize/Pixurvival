@@ -1,5 +1,6 @@
 package com.pixurvival.core.map.chunk;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,5 +17,15 @@ public class ClientChunkRepository implements ChunkRepository {
 	public ChunkRepositoryEntry load(ChunkPosition position) {
 		CompressedChunk compressed = store.get(position);
 		return compressed == null ? null : new ChunkRepositoryEntry(compressed.buildChunk());
+	}
+
+	@Override
+	public Collection<CompressedChunkAndEntityData> getAll() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void add(CompressedChunkAndEntityData data) {
+		throw new UnsupportedOperationException();
 	}
 }

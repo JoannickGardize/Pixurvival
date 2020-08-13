@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.util.WorkingDirectory;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.input.InputMappingDefaults;
 
@@ -17,16 +18,8 @@ public class UserDirectory {
 
 	private static final String INPUT_MAPPING_FILE_NAME = "key-config.properties";
 
-	public static File getUserDirectory() {
-		File file = new File(System.getProperty("user.home"), ".pixurvival");
-		if (!file.exists()) {
-			file.mkdir();
-		}
-		return file;
-	}
-
 	public static InputMapping loadInputMapping() {
-		File file = new File(getUserDirectory(), INPUT_MAPPING_FILE_NAME);
+		File file = new File(WorkingDirectory.get(), INPUT_MAPPING_FILE_NAME);
 		if (file.exists()) {
 			try (FileInputStream fis = new FileInputStream(file)) {
 				Properties properties = new Properties();
@@ -40,7 +33,7 @@ public class UserDirectory {
 	}
 
 	public static void saveInputMapping(InputMapping mapping) {
-		File file = new File(getUserDirectory(), INPUT_MAPPING_FILE_NAME);
+		File file = new File(WorkingDirectory.get(), INPUT_MAPPING_FILE_NAME);
 		Properties properties = mapping.toProperties();
 		try (FileOutputStream fos = new FileOutputStream(file)) {
 			properties.store(fos, null);

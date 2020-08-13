@@ -41,12 +41,7 @@ public class MapStructure implements Body, CustomDataHolder {
 			World world = chunk.getMap().getWorld();
 			if (world.isServer() && definition.getDuration() > 0) {
 				creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
-				world.getActionTimerManager().addActionTimer(() -> {
-					MapTile tile = chunk.tileAt(x, y);
-					if (tile instanceof TileAndStructure && ((TileAndStructure) tile).getStructure() == this) {
-						chunk.removeStructure(x, y);
-					}
-				}, definition.getDuration());
+				world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(x, y), definition.getDuration());
 			}
 		}
 	}

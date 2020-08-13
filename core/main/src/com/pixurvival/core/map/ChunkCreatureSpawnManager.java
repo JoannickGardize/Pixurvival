@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
 import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
@@ -18,36 +17,24 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
-import lombok.AllArgsConstructor;
-
 public class ChunkCreatureSpawnManager implements TiledMapListener {
 
-	@AllArgsConstructor
-	private class SpawnAction implements Action {
+	/**
+	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the
+	 * chunk is unloaded then reloaded, we can know if we have to spawn
+	 * immediately or just wait for the next event.
+	 */
+	private Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
-		private World world;
-		private ChunkPosition chunkPosition;
-		private ChunkSpawner spawner;
-
-		@Override
-		public void perform() {
-			Chunk chunk = world.getMap().chunkAt(chunkPosition);
-			if (chunk != null && spawner.isChunkEligible(chunk)) {
-				spawner.spawn(chunk);
-				world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunkPosition, spawner), spawner.getRespawnTime().next(world.getRandom()));
-			} else {
-				Set<ChunkSpawner> spawnerSet = actionMemory.get(chunkPosition);
-				if (spawnerSet != null) {
-					spawnerSet.remove(spawner);
-					if (spawnerSet.isEmpty()) {
-						actionMemory.remove(chunkPosition);
-					}
-				}
+	public void removeChunkSpawnerMemory(ChunkPosition chunkPosition, ChunkSpawner spawner) {
+		Set<ChunkSpawner> spawnerSet = actionMemory.get(chunkPosition);
+		if (spawnerSet != null) {
+			spawnerSet.remove(spawner);
+			if (spawnerSet.isEmpty()) {
+				actionMemory.remove(chunkPosition);
 			}
 		}
 	}
-
-	private Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
 	@Override
 	public void chunkLoaded(Chunk chunk) {
@@ -81,7 +68,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 		if (spawner instanceof DarknessSpawner) {
 			// TODO WTF ?
 		}
-		world.getActionTimerManager().addActionTimer(new SpawnAction(world, chunk.getPosition(), spawner), spawner.getRespawnTime().next(world.getRandom()));
+		world.getActionTimerManager().addActionTimer(new SpawnAction(chunk.getPosition(), spawner), spawner.getRespawnTime().next(world.getRandom()));
 		actionMemory.computeIfAbsent(chunk.getPosition(), p -> new HashSet<>()).add(spawner);
 	}
 

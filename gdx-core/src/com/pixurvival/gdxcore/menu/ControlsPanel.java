@@ -61,6 +61,7 @@ public class ControlsPanel extends Table {
 			UserDirectory.saveInputMapping(mapping);
 			InputManager.getInstance().getMapping().set(mapping);
 			ShortcutDrawer.updateTexts();
+			saveButton.setDisabled(true);
 		});
 		Button backButton = new MenuButton("generic.back", backAction);
 		Table buttonsTable = new Table();
@@ -88,8 +89,7 @@ public class ControlsPanel extends Table {
 
 	public void showKeyInUseMessage(InputAction usingAction) {
 		popupWindow.getTitleLabel().setText(PixurvivalGame.getString("controlPanel.keyInUseWindow.title"));
-		popupWindow.getContentLabel().setText(PixurvivalGame.getString("controlPanel.keyInUseWindow.content") + " "
-				+ getInputActionTranslation(usingAction));
+		popupWindow.getContentLabel().setText(PixurvivalGame.getString("controlPanel.keyInUseWindow.content") + " " + getInputActionTranslation(usingAction));
 		popupWindow.getOkButton().setVisible(true);
 		popupWindow.setVisible(true);
 		popupWindow.toFront();

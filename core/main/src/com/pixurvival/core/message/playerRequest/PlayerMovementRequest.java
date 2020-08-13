@@ -40,7 +40,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 		if (player.getWorld().isServer()) {
 			applyMovement(player);
 		} else {
-			player.getWorld().getActionTimerManager().addActionTimer(() -> applyMovement(player), (long) (player.getWorld().getTime().getAveragePing()));
+			player.getWorld().getActionTimerManager().addActionTimer(world -> applyMovement(player), (long) (player.getWorld().getTime().getAveragePing()));
 		}
 	}
 

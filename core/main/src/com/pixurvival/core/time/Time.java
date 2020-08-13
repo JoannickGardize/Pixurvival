@@ -1,5 +1,7 @@
 package com.pixurvival.core.time;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.util.MathUtils;
 
@@ -55,5 +57,19 @@ public class Time {
 
 	public static long secToMillis(float secondes) {
 		return (long) (secondes * 1000);
+	}
+
+	public void write(ByteBuffer buffer) {
+		buffer.putLong(tickCount);
+		buffer.putFloat(decimalAccumulator);
+		buffer.putLong(timeMillis);
+		dayCycle.write(buffer);
+	}
+
+	public void apply(ByteBuffer buffer) {
+		tickCount = buffer.getLong();
+		decimalAccumulator = buffer.getFloat();
+		timeMillis = buffer.getLong();
+		dayCycle.apply(buffer);
 	}
 }

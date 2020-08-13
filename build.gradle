@@ -32,6 +32,9 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        flatDir {
+        	dirs 'libs'
+        }
     }
     
     
@@ -158,6 +161,7 @@ project(":gdx-core") {
     	compile project(":client")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile name: "discord-rpc"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompile 'junit:junit:4.12'
     }

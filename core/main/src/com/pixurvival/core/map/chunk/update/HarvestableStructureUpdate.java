@@ -1,16 +1,22 @@
 package com.pixurvival.core.map.chunk.update;
 
+import java.util.Collections;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.Action;
+import com.pixurvival.core.World;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class HarvestableStructureUpdate extends StructureUpdate {
+@NoArgsConstructor
+public class HarvestableStructureUpdate extends StructureUpdate implements Action {
 
 	private boolean harvested;
 
@@ -30,6 +36,11 @@ public class HarvestableStructureUpdate extends StructureUpdate {
 		chunk.invalidateCompressed();
 	}
 
+	@Override
+	public void perform(World world) {
+		world.getMap().applyUpdate(Collections.singleton(this));
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<HarvestableStructureUpdate> {
 
 		@Override
@@ -44,4 +55,5 @@ public class HarvestableStructureUpdate extends StructureUpdate {
 			return new HarvestableStructureUpdate(input.readInt(), input.readInt(), input.readBoolean());
 		}
 	}
+
 }
