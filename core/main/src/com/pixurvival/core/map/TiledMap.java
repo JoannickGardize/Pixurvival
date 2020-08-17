@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -278,6 +279,7 @@ public class TiledMap {
 			waitingPositions.put(positionLock, positionLock);
 			while ((chunk = chunkAt(position)) == null) {
 				try {
+					// TODO
 					Log.info("Waiting for chunk at " + position);
 					positionLock.wait(100);
 				} catch (InterruptedException e) {
@@ -441,6 +443,11 @@ public class TiledMap {
 	}
 
 	public void saveAll() {
+		for (Entry<ChunkPosition, List<StructureUpdate>> updateEntry : waitingStructureUpdates.entrySet()) {
+			Chunk chunk = chunkAtWait(updateEntry.getKey());
+			updateEntry.getValue().forEach(update -> update.apply(chunk));
+		}
+		waitingStructureUpdates.clear();
 		synchronized (repository) {
 			chunks.values().forEach(c -> repository.save(c));
 		}

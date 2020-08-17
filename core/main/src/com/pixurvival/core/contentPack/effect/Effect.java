@@ -72,10 +72,16 @@ public class Effect extends IdentifiedElement {
 	private List<Alteration> deathAlterations = new ArrayList<>();
 
 	@Override
-	public void forEachStatFormulas(Consumer<StatFormula> action) {
+	public void forEachStatFormula(Consumer<StatFormula> action) {
 		action.accept(repeatFollowingElements);
 		targets.forEach(t -> t.getAlterations().forEach(a -> a.forEachStatFormulas(action)));
 		deathAlterations.forEach(a -> a.forEachStatFormulas(action));
+	}
+
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		targets.forEach(t -> t.getAlterations().forEach(action::accept));
+		deathAlterations.forEach(action::accept);
 	}
 
 	@Override

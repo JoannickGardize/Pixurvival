@@ -55,9 +55,9 @@ public class LinearEffectMovement implements EffectMovement {
 
 	@Override
 	public void update(EffectEntity entity) {
-		if (entity.getWorld().isServer()) {
+		if (entity.getWorld().isServer() && destroyAtTargetPosition) {
 			MovementData data = (MovementData) entity.getMovementData();
-			if (destroyAtTargetPosition && entity.getPosition().distanceSquared(data.targetPosition) <= data.targetDistance) {
+			if (entity.getPosition().distanceSquared(data.targetPosition) <= data.targetDistance) {
 				entity.setAlive(false);
 			}
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
@@ -46,7 +47,12 @@ public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
 	}
 
 	@Override
-	public void forEachStatFormulas(Consumer<StatFormula> action) {
+	public void forEachStatFormula(Consumer<StatFormula> action) {
 		abilities.forEach(a -> a.forEachStatFormulas(action));
+	}
+
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		abilities.forEach(a -> a.forEachAlteration(action));
 	}
 }

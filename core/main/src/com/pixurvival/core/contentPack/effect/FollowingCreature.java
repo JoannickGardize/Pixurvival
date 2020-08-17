@@ -35,7 +35,7 @@ public class FollowingCreature extends FollowingElement {
 		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(originStats));
 		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(originStats));
 		creatureEntity.getPosition().set(ancestor.getPosition());
-		ancestor.getWorld().getEntityPool().add(creatureEntity);
+		ancestor.getWorld().getEntityPool().create(creatureEntity);
 	}
 
 }

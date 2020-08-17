@@ -3,7 +3,6 @@ package com.pixurvival.core.livingEntity.stats;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.util.MathUtils;
 
 import lombok.Getter;
@@ -18,7 +17,6 @@ public class StatValue implements StatListener {
 	private float base;
 
 	private List<StatListener> listeners = new ArrayList<>();
-	private float[] equipmentBonuses = new float[Equipment.EQUIPMENT_SIZE];
 	private List<StatModifier> modifiers = new ArrayList<>();
 
 	public void addListener(StatListener listener) {
@@ -45,7 +43,7 @@ public class StatValue implements StatListener {
 	}
 
 	/**
-	 * Directly set the value, used by the client side
+	 * Directly set the value, by-passing the regular computed value
 	 * 
 	 * @param value
 	 */

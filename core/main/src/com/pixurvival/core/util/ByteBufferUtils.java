@@ -89,7 +89,7 @@ public class ByteBufferUtils {
 	public static byte[] getBytes(ByteBuffer buffer) {
 		int length = buffer.getInt();
 		byte[] result = new byte[length];
-		buffer.get(new byte[length]);
+		buffer.get(result);
 		return result;
 	}
 }

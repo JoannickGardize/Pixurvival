@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -17,8 +19,8 @@ public abstract class PersistentAlteration extends Alteration {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Enum that define how the same alteration (i.e. alteration definition from the
-	 * same source instance) is stacked to a single target.
+	 * Enum that define how the same alteration (i.e. alteration definition from
+	 * the same source instance) is stacked to a single target.
 	 * 
 	 * @author SharkHendrix
 	 *
@@ -31,11 +33,13 @@ public abstract class PersistentAlteration extends Alteration {
 		 */
 		STACK,
 		/**
-		 * The alteration is added once, and will not be replaced if already present.
+		 * The alteration is added once, and will not be replaced if already
+		 * present.
 		 */
 		IGNORE,
 		/**
-		 * The alteration is added once, and will be replaced if already present.
+		 * The alteration is added once, and will be replaced if already
+		 * present.
 		 */
 		REPLACE;
 
@@ -55,11 +59,21 @@ public abstract class PersistentAlteration extends Alteration {
 		return null;
 	}
 
+	public void restore(TeamMember source, LivingEntity target, Object data) {
+	}
+
 	public Object update(TeamMember source, LivingEntity target, Object data) {
 		return data;
 	}
 
 	public void end(TeamMember source, LivingEntity target, Object data) {
+	}
+
+	public void writeData(ByteBuffer buffer, Object data) {
+	}
+
+	public Object readData(ByteBuffer buffer) {
+		return null;
 	}
 
 }

@@ -17,14 +17,17 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ChunkCreatureSpawnManager implements TiledMapListener {
 
 	/**
-	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the
-	 * chunk is unloaded then reloaded, we can know if we have to spawn
-	 * immediately or just wait for the next event.
+	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the chunk
+	 * is unloaded then reloaded, we can know if we have to spawn immediately or
+	 * just wait for the next event.
 	 */
-	private Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
+	private @Getter @Setter Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
 	public void removeChunkSpawnerMemory(ChunkPosition chunkPosition, ChunkSpawner spawner) {
 		Set<ChunkSpawner> spawnerSet = actionMemory.get(chunkPosition);

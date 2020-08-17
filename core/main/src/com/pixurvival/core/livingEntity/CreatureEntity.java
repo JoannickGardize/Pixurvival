@@ -14,6 +14,7 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.PseudoAIUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -36,6 +37,8 @@ public class CreatureEntity extends LivingEntity {
 	private @Getter Vector2 spawnPosition;
 	private @Getter TeamMember master = this;
 
+	private long creationTime;
+
 	@Override
 	public void initialize() {
 		// Add instead of setting base for the case that bonuses are applied at
@@ -45,7 +48,14 @@ public class CreatureEntity extends LivingEntity {
 		getStats().get(StatType.INTELLIGENCE).addToBase(definition.getIntelligence());
 		super.initialize();
 		behaviorData = new BehaviorData(this);
+	}
+
+	@Override
+	public void initializeAtCreation() {
+		super.initializeAtCreation();
+		// TODO remove this useless if (and test)
 		if (getWorld().isServer()) {
+			creationTime = getWorld().getTime().getTimeMillis();
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
 			spawnPosition = getPosition().copy();
@@ -172,13 +182,38 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void writeRepositoryPart(ByteBuffer byteBuffer) {
+	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
+		byteBuffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
+		byteBuffer.putFloat(getStats().get(StatType.AGILITY).getBase());
+		byteBuffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
+		super.writeRepositoryUpdate(byteBuffer);
 		byteBuffer.putFloat(spawnPosition.getX());
 		byteBuffer.putFloat(spawnPosition.getY());
+		if (getDefinition().getLifetime() > 0) {
+			byteBuffer.putLong(creationTime);
+		}
+		TeamMemberSerialization.writeNullSafe(byteBuffer, master, true);
+		byteBuffer.putShort((short) currentBehavior.getId());
 	}
 
 	@Override
-	public void applyRepositoryPart(ByteBuffer byteBuffer) {
-		spawnPosition.set(byteBuffer.getFloat(), byteBuffer.getFloat());
+	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
+		getStats().get(StatType.STRENGTH).setBase(byteBuffer.getFloat());
+		getStats().get(StatType.AGILITY).setBase(byteBuffer.getFloat());
+		getStats().get(StatType.INTELLIGENCE).setBase(byteBuffer.getFloat());
+		super.applyRepositoryUpdate(byteBuffer);
+		spawnPosition = new Vector2(byteBuffer.getFloat(), byteBuffer.getFloat());
+		if (getDefinition().getLifetime() > 0) {
+			creationTime = byteBuffer.getLong();
+			if (getWorld().getTime().getTimeMillis() - creationTime >= getDefinition().getLifetime()) {
+				setAlive(false);
+			}
+			// If this is not time to die, that means that an ActionTimer to
+			// kill it on time is still present
+		}
+		master = TeamMemberSerialization.readNullSafe(byteBuffer, getWorld(), true);
+		currentBehavior = definition.getBehaviorSet().getBehaviors().get(byteBuffer.getShort());
+		currentBehavior.begin(this);
+		// TODO smart reste behavior
 	}
 }

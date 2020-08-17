@@ -50,7 +50,7 @@ public class StartingGamePhase implements LobbyPhase {
 			for (int j = 0; j < members.size(); j++) {
 				PlayerLobbySession p = members.get(j);
 				PlayerEntity playerEntity = new PlayerEntity();
-				world.getEntityPool().add(playerEntity);
+				world.getEntityPool().create(playerEntity);
 				world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
 				world.getEntityPool().flushNewEntities();
 				playerEntity.setTeam(team);

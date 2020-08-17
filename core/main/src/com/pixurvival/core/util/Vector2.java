@@ -1,5 +1,6 @@
 package com.pixurvival.core.util;
 
+import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
@@ -150,6 +151,16 @@ public class Vector2 {
 
 	public boolean insideSquare(Vector2 center, float halfLength) {
 		return Math.abs(x - center.x) <= halfLength && Math.abs(y - center.y) <= halfLength;
+	}
+
+	public void write(ByteBuffer buffer) {
+		buffer.putFloat(x);
+		buffer.putFloat(y);
+	}
+
+	public void apply(ByteBuffer buffer) {
+		x = buffer.getFloat();
+		y = buffer.getFloat();
 	}
 
 	@Override

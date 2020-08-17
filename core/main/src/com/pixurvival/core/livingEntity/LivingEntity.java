@@ -17,6 +17,7 @@ import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.Vector2;
@@ -130,16 +131,24 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		super.initialize();
 		health = getMaxHealth();
 		if (getWorld().isServer()) {
-			stats.get(StatType.MAX_HEALTH).addListener((o, s) -> {
-				float percentHealth = getHealth() / o;
-				setHealth(s.getValue() * percentHealth);
-			});
 			stats.addListener((o, s) -> {
 				setStateChanged(true);
 				addUpdateContentMask(UPDATE_CONTENT_MASK_STATS);
 			});
 		}
 		initializeAbilityData();
+	}
+
+	@Override
+	public void initializeAtCreation() {
+		addHealthAdapterListener();
+	}
+
+	public void addHealthAdapterListener() {
+		stats.get(StatType.MAX_HEALTH).addListener((o, s) -> {
+			float percentHealth = getHealth() / o;
+			setHealth(s.getValue() * percentHealth);
+		});
 	}
 
 	private void initializeAbilityData() {
@@ -336,11 +345,21 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	}
 
 	@Override
-	public void writeUpdate(ByteBuffer buffer, boolean full) {
+	public final void writeUpdate(ByteBuffer buffer, boolean full) {
 
-		// Building update flags
+		writeUpdate(buffer, full ? getFullUpdateContentMask() : updateContentFlags);
+	}
 
-		byte updateFlagsToSend = full ? getFullUpdateContentMask() : updateContentFlags;
+	@Override
+	public void applyUpdate(ByteBuffer buffer) {
+		applyUpdate(buffer, buffer.get());
+
+	}
+
+	protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
+
+		// set flag
+
 		if (isForward()) {
 			updateFlagsToSend |= UPDATE_CONTENT_MASK_FORWARD;
 		}
@@ -362,15 +381,11 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		// stats part
 
 		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_STATS) != 0) {
-			buffer.putFloat(getStats().getValue(StatType.STRENGTH));
-			buffer.putFloat(getStats().getValue(StatType.AGILITY));
-			buffer.putFloat(getStats().getValue(StatType.INTELLIGENCE));
-			buffer.putFloat(getStats().getValue(StatType.MAX_HEALTH));
-			buffer.putFloat(getStats().getValue(StatType.ARMOR));
-			buffer.putFloat(getStats().getValue(StatType.SPEED));
+			getStats().writeValues(buffer);
 		}
 
 		// ability part
+
 		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_ABILITY) != 0) {
 			if (getCurrentAbility() == null) {
 				buffer.put(Ability.NONE_ID);
@@ -395,13 +410,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 			buffer.putFloat(getForwardFactor());
 			writeAdditionnalOtherPart(buffer);
 		}
-		writeUpdate(buffer, updateFlagsToSend);
 	}
 
-	@Override
-	public void applyUpdate(ByteBuffer buffer) {
-
-		byte updateContentFlag = buffer.get();
+	protected void applyUpdate(ByteBuffer buffer, byte updateContentFlag) {
 
 		// normal part
 
@@ -418,12 +429,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		// stats part
 
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_STATS) != 0) {
-			getStats().get(StatType.STRENGTH).setValue(buffer.getFloat());
-			getStats().get(StatType.AGILITY).setValue(buffer.getFloat());
-			getStats().get(StatType.INTELLIGENCE).setValue(buffer.getFloat());
-			getStats().get(StatType.MAX_HEALTH).setValue(buffer.getFloat());
-			getStats().get(StatType.ARMOR).setValue(buffer.getFloat());
-			getStats().get(StatType.SPEED).setValue(buffer.getFloat());
+			getStats().applyValues(buffer);
 		}
 
 		// ability part
@@ -451,15 +457,6 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 			setForwardFactor(buffer.getFloat());
 			applyAdditionnalOtherPart(buffer);
 		}
-		applyUpdate(buffer, updateContentFlag);
-	}
-
-	protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
-		// for override
-	}
-
-	protected void applyUpdate(ByteBuffer buffer, byte updateContentFlag) {
-		// for override
 	}
 
 	protected void writeAdditionnalOtherPart(ByteBuffer byteBuffer) {
@@ -468,6 +465,35 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
 	protected void applyAdditionnalOtherPart(ByteBuffer byteBuffer) {
 		// For override
+	}
+
+	@Override
+	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		writeUpdate(buffer, (byte) (getFullUpdateContentMask() & ~UPDATE_CONTENT_MASK_STATS));
+		buffer.putShort((short) persistentAlterationEntries.size());
+		for (PersistentAlterationEntry entry : persistentAlterationEntries) {
+			TeamMemberSerialization.write(buffer, entry.getSource(), true);
+			buffer.putInt(entry.getAlteration().getId());
+			buffer.putLong(entry.getTermTimeMillis());
+			entry.getAlteration().writeData(buffer, entry.getData());
+		}
+
+	}
+
+	@Override
+	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		super.applyRepositoryUpdate(buffer);
+		short size = buffer.getShort();
+		for (short i = 0; i < size; i++) {
+			TeamMember source = TeamMemberSerialization.read(buffer, getWorld(), true);
+			PersistentAlteration alteration = (PersistentAlteration) getWorld().getContentPack().getAlterations().get(buffer.getInt());
+			PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
+			entry.setTermTimeMillis(buffer.getLong());
+			entry.setData(alteration.readData(buffer));
+			persistentAlterationEntries.add(entry);
+			alteration.restore(source, this, entry.getData());
+		}
+		addHealthAdapterListener();
 	}
 
 	public abstract AbilitySet getAbilitySet();

@@ -30,7 +30,7 @@ public class ServerChunkRepository implements ChunkRepository {
 		entityByteBuffer.put(EntityGroup.END_MARKER);
 		entityByteBuffer.putShort((short) 0);
 		byte[] bufferArray = entityByteBuffer.array();
-		byte[] chunkEntities = Arrays.copyOf(bufferArray, bufferArray.length);
+		byte[] chunkEntities = Arrays.copyOf(bufferArray, entityByteBuffer.position());
 		store.put(chunk.getPosition(), new CompressedChunkAndEntityData(chunk.getCompressed(), chunkEntities));
 	}
 

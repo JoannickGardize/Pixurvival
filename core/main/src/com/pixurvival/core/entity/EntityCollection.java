@@ -84,7 +84,7 @@ public class EntityCollection {
 		writeUpdate(byteBuffer, this::writeRepositoryUpdate);
 	}
 
-	public void writeUpdate(ByteBuffer byteBuffer, GroupWriter writer) {
+	private void writeUpdate(ByteBuffer byteBuffer, GroupWriter writer) {
 		for (Entry<EntityGroup, Map<Long, Entity>> groupEntry : entities.entrySet()) {
 			Map<Long, Entity> entityMap = groupEntry.getValue();
 			if (entityMap.isEmpty()) {
@@ -126,8 +126,7 @@ public class EntityCollection {
 		for (Entity e : entityMap.values()) {
 			byteBuffer.putLong(e.getId());
 			e.writeInitialization(byteBuffer);
-			e.writeUpdate(byteBuffer, true);
-			e.writeRepositoryPart(byteBuffer);
+			e.writeRepositoryUpdate(byteBuffer);
 		}
 		return (short) entityMap.size();
 	}
@@ -204,9 +203,10 @@ public class EntityCollection {
 					// perdus.
 					e.applyInitialization(byteBuffer);
 				}
-				e.applyUpdate(byteBuffer);
 				if (repositoryMode) {
-					e.applyRepositoryPart(byteBuffer);
+					e.applyRepositoryUpdate(byteBuffer);
+				} else {
+					e.applyUpdate(byteBuffer);
 				}
 			}
 		}

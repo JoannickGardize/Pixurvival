@@ -62,7 +62,7 @@ public class ItemStackEntity extends Entity {
 		for (ItemStack itemStack : items) {
 			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
 			itemStackEntity.getPosition().set(position.getX(), position.getY());
-			world.getEntityPool().add(itemStackEntity);
+			world.getEntityPool().create(itemStackEntity);
 			itemStackEntity.spawnRandom();
 		}
 	}

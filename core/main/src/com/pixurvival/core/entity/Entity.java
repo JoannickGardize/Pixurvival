@@ -39,9 +39,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Setter boolean alive = true;
 
 	/**
-	 * When this is set to true, the death event will not be fired on death,
-	 * resulting to not sharing to clients the death data. The purpose is to
-	 * avoid to send death info if the client can know it by itself
+	 * When set to true, the death event will not be fired, resulting to not
+	 * sharing to clients the death data. The purpose is to avoid to send death
+	 * info if the client can know it by itself
 	 */
 	private @Setter boolean sneakyDeath = false;
 	private @Setter Object customData;
@@ -63,9 +63,20 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 */
 	private @Setter boolean stateChanged = true;
 
+	/**
+	 * Always called when added
+	 */
 	public void initialize() {
 		setAlive(true);
 		previousPosition.set(position);
+	}
+
+	/**
+	 * Only called if the entity is "new", after {@link #initialize()}
+	 */
+	public void initializeAtCreation() {
+		// Nothing by default
+
 	}
 
 	public void setMovingAngle(float movingAngle) {
@@ -258,12 +269,12 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract boolean isSolid();
 
-	public void writeRepositoryPart(ByteBuffer byteBuffer) {
-
+	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
+		writeUpdate(byteBuffer, true);
 	}
 
-	public void applyRepositoryPart(ByteBuffer byteBuffer) {
-
+	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
+		applyUpdate(byteBuffer);
 	}
 
 	@Override

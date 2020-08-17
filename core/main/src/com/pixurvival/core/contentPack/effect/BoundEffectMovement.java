@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -47,13 +48,13 @@ public class BoundEffectMovement implements EffectMovement {
 		Vector2 relative = (Vector2) entity.getMovementData();
 		buffer.putFloat(relative.getX());
 		buffer.putFloat(relative.getY());
-		entity.getWorld().getEntityPool().writeEntityReference(buffer, (Entity) entity.getAncestor());
+		TeamMemberSerialization.write(buffer, entity.getAncestor(), false);
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
 		entity.setMovementData(new Vector2(buffer.getFloat(), buffer.getFloat()));
-		entity.setAncestor(entity.getWorld().getEntityPool().readTeamMemberReference(buffer));
+		entity.setAncestor(TeamMemberSerialization.read(buffer, entity.getWorld(), false));
 	}
 
 	@Override

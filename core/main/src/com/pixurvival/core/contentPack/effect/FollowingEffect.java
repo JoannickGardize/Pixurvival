@@ -17,6 +17,6 @@ public class FollowingEffect extends FollowingElement {
 	@Override
 	public void apply(TeamMember origin) {
 		EffectEntity following = new EffectEntity(offsetAngleEffect, origin);
-		origin.getWorld().getEntityPool().add(following);
+		origin.getWorld().getEntityPool().create(following);
 	}
 }

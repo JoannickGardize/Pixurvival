@@ -44,7 +44,6 @@ import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorldRandom;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -88,7 +87,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
 	private @Setter MapLimitsRun mapLimitsRun;
-	private @Setter(AccessLevel.PACKAGE) ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
+	private ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
+	private @Setter String saveName;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		this(id, type, contentPack, gameModeId, new Random().nextLong());
@@ -113,6 +113,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackSerialization loader) throws ContentPackException {
 		ContentPack pack = loader.load(createWorld.getContentPackIdentifier());
+		pack.initialize();
 		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
 		for (TeamComposition teamComposition : createWorld.getTeamCompositions()) {
@@ -132,13 +133,14 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		createWorld.getInventory().computeQuantities();
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
-		world.getEntityPool().add(myPlayer);
+		world.getEntityPool().create(myPlayer);
 		worlds.clear();
 		worlds.put(world.getId(), world);
 		return world;
 	}
 
 	public static World createServerWorld(ContentPack contentPack, int gameModeId) {
+		contentPack.initialize();
 		World world = new World(nextId++, Type.SERVER, contentPack, gameModeId);
 		// TODO manage multiples worlds
 		worlds.clear();
@@ -147,27 +149,32 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
+		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
-		initializeLocalWorld(world);
+		world.getEntityPool().create(initializeLocalWorld(world));
 		return world;
 	}
 
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
+		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId, seed);
-		initializeLocalWorld(world);
+		// Add the player with default id 0
+		world.getEntityPool().add(initializeLocalWorld(world));
 		return world;
 	}
 
-	private static void initializeLocalWorld(World world) {
+	private static PlayerEntity initializeLocalWorld(World world) {
+		World.currentContentPack = world.getContentPack();
 		PlayerEntity playerEntity = new PlayerEntity();
 		playerEntity.setOperator(true);
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
-		// Player id will always be zero so the player entity will be merged when
+		// Player id will always be zero so the player entity will be merged
+		// when
 		// loading a saved game
-		world.getEntityPool().add(playerEntity);
 		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
+		return playerEntity;
 	}
 
 	public static Collection<World> getWorlds() {
@@ -212,8 +219,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeNewGame() {
 		entityPool.flushNewEntities();
@@ -225,8 +232,11 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	public void initializeLoadedGame() {
-		entityPool.flushNewEntities();
+		// getMyPlayer().setChunk(getMap().chunkAt(getMyPlayer().getPosition().getX(),
+		// getMyPlayer().getPosition().getY()));
 		gameMode.getEndGameCondition().initialize(this);
+		playerEntities.put(getMyPlayer().getId(), getMyPlayer());
+		entityPool.flushNewEntities();
 	}
 
 	public void received(ChatEntry chatEntry) {

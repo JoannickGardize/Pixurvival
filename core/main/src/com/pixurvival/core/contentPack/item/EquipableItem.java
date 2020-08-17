@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 
 import lombok.Getter;
@@ -19,6 +20,7 @@ public abstract class EquipableItem extends Item {
 	@ElementReference
 	private SpriteSheet spriteSheet;
 
+	@Valid
 	private List<StatModifier> statModifiers = new ArrayList<>();
 
 }

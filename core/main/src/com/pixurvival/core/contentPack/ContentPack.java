@@ -35,7 +35,9 @@ import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
+import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
@@ -57,8 +59,12 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Long, StatFormula> statFormulas = new HashMap<>();
 
+	private transient Map<Integer, Alteration> alterations = new HashMap<>();
+
 	private transient ContentPackIdentifier identifier = new ContentPackIdentifier();
 	private transient float maxLivingEntityRadius;
+	@Getter
+	private transient boolean initialized = false;
 
 	@Valid
 	@ElementCollection(AnimationTemplate.class)
@@ -157,7 +163,12 @@ public class ContentPack implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void initialize() {
+		if (initialized) {
+			return;
+		}
+		initialized = true;
 		initializeStatFormulaMap();
+		initializeAlterationMap();
 		elementsByName = new HashMap<>();
 		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
 			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
@@ -194,10 +205,24 @@ public class ContentPack implements Serializable {
 		forEachStatFormulas(f -> statFormulas.put(f.getId(), f));
 	}
 
+	public void initializeAlterationMap() {
+		IntWrapper nextId = new IntWrapper();
+		forEachAlteration(a -> {
+			a.setId(nextId.increment());
+			alterations.put(a.getId(), a);
+		});
+	}
+
 	public void forEachStatFormulas(Consumer<StatFormula> action) {
-		items.forEach(i -> i.forEachStatFormulas(action));
-		creatures.forEach(c -> c.forEachStatFormulas(action));
-		effects.forEach(e -> e.forEachStatFormulas(action));
+		items.forEach(i -> i.forEachStatFormula(action));
+		creatures.forEach(c -> c.forEachStatFormula(action));
+		effects.forEach(e -> e.forEachStatFormula(action));
+	}
+
+	private void forEachAlteration(Consumer<Alteration> action) {
+		items.forEach(i -> i.forEachAlteration(action));
+		creatures.forEach(c -> c.forEachAlteration(action));
+		effects.forEach(e -> e.forEachAlteration(action));
 	}
 
 	@SuppressWarnings("unchecked")

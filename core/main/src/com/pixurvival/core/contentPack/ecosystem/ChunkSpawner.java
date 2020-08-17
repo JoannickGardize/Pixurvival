@@ -56,7 +56,7 @@ public abstract class ChunkSpawner implements Serializable {
 		if (isSpawnValid(chunk, creature, randomPosition)) {
 			CreatureEntity entity = new CreatureEntity(creature);
 			entity.getPosition().set(randomPosition);
-			chunk.getMap().getWorld().getEntityPool().add(entity);
+			chunk.getMap().getWorld().getEntityPool().create(entity);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.pixurvival.client;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -13,6 +14,7 @@ import com.pixurvival.core.PixurvivalException;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldListener;
+import com.pixurvival.core.WorldSerialization;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -179,7 +181,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
-	public void startLocalGame() throws PixurvivalException {
+	public void startNewLocalGame(String saveName) throws PixurvivalException {
 		if (singlePlayerLobby == null) {
 			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
 		}
@@ -189,10 +191,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			localGamePack = contentPackSerialization.load(singlePlayerLobby.getSelectedContentPackIdentifier());
 		} catch (ContentPackException e) {
 			e.printStackTrace();
-			return;
+			throw new PixurvivalException(e.getMessage());
 		}
 		currentLocale = getLocaleFor(localGamePack);
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
+		world.setSaveName(saveName);
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new PixurvivalException("The GameMode " + gameMode.getName() + " cannot be played in solo.");
@@ -205,6 +208,22 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 		singlePlayerLobby = null;
 		notify(ClientGameListener::gameStarted);
+	}
+
+	public void loadAndStartLocalGame(String saveName) throws PixurvivalException {
+		try {
+			setWorld(WorldSerialization.load(saveName, contentPackSerialization));
+			world.setSaveName(saveName);
+			currentLocale = getLocaleFor(world.getContentPack());
+			world.initializeLoadedGame();
+			notify(ClientGameListener::initializeGame);
+			addPlugin(new WorldUpdater());
+			singlePlayerLobby = null;
+			notify(ClientGameListener::gameStarted);
+		} catch (IOException | ContentPackException e) {
+			e.printStackTrace();
+			throw new PixurvivalException(e.getMessage());
+		}
 	}
 
 	public SingleplayerLobby getSinglePlayerLobby() {

@@ -14,6 +14,8 @@ public abstract class Alteration implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private transient int id;
+
 	private AlterationTarget targetType = AlterationTarget.TARGET;
 
 	/**
@@ -33,4 +35,5 @@ public abstract class Alteration implements Serializable {
 	public void forEachStatFormulas(Consumer<StatFormula> action) {
 		// for override
 	}
+
 }

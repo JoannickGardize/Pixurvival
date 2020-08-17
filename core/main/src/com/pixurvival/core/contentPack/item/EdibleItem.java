@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
@@ -16,11 +18,19 @@ public class EdibleItem extends Item {
 
 	private static final long serialVersionUID = 1L;
 
+	@Bounds(min = 0)
 	private long duration;
+
+	@Valid
 	private List<Alteration> alterations = new ArrayList<>();
 
 	@Override
-	public void forEachStatFormulas(Consumer<StatFormula> action) {
+	public void forEachStatFormula(Consumer<StatFormula> action) {
 		alterations.forEach(a -> a.forEachStatFormulas(action));
+	}
+
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		alterations.forEach(action);
 	}
 }

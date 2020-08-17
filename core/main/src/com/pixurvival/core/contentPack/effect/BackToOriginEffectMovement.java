@@ -3,8 +3,8 @@ package com.pixurvival.core.contentPack.effect;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,15 +19,16 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void initialize(EffectEntity entity) {
-		entity.setMovementData(entity.getOrigin());
 		entity.getPosition().set(entity.getAncestor().getPosition());
 		entity.setForward(true);
 	}
 
 	@Override
 	public void update(EffectEntity entity) {
-		TeamMember origin = ((TeamMember) entity.getMovementData()).findIfNotFound();
-		entity.setMovingAngle(entity.angleToward(origin));
+		TeamMember origin = entity.getAncestor().findIfNotFound().getOrigin().findIfNotFound();
+		if (origin != null) {
+			entity.setMovingAngle(entity.angleToward(origin));
+		}
 	}
 
 	@Override
@@ -37,13 +38,12 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
-
-		entity.getWorld().getEntityPool().writeEntityReference(buffer, (Entity) entity.getMovementData());
+		TeamMemberSerialization.write(buffer, entity.getAncestor(), false);
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
-		entity.setMovementData(entity.getWorld().getEntityPool().readTeamMemberReference(buffer));
+		entity.setAncestor(TeamMemberSerialization.read(buffer, entity.getWorld(), false));
 	}
 
 }

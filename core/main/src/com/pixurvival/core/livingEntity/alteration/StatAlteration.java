@@ -22,6 +22,11 @@ public class StatAlteration extends PersistentAlteration {
 	}
 
 	@Override
+	public void restore(TeamMember source, LivingEntity target, Object data) {
+		target.getStats().addModifier(statModifier);
+	}
+
+	@Override
 	public void end(TeamMember source, LivingEntity entity, Object data) {
 		entity.getStats().removeModifier(statModifier);
 	}

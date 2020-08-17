@@ -115,4 +115,8 @@ public class FileUtils {
 		}
 	}
 
+	public static boolean isValidFileName(String name) {
+		return name.trim().matches("[a-zA-Z0-9\\-\\s_]+");
+	}
+
 }

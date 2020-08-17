@@ -10,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.tree.LayoutFolder;
 import com.pixurvival.contentPackEditor.component.tree.LayoutManager;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.ContentPackSavedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -80,6 +81,7 @@ public class FileService {
 				currentFile.createNewFile();
 			}
 			contentPackSerializer.save(currentFile, currentContentPack);
+			EventManager.getInstance().fire(new ContentPackSavedEvent());
 		} catch (IOException e) {
 			Utils.showErrorDialog(e);
 		}

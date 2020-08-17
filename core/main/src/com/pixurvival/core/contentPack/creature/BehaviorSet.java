@@ -20,4 +20,11 @@ public class BehaviorSet extends IdentifiedElement implements Serializable {
 	@Valid
 	@ElementCollection(value = Behavior.class, isRoot = false)
 	private List<Behavior> behaviors = new ArrayList<>();
+
+	@Override
+	public void initialize() {
+		for (int i = 0; i < behaviors.size(); i++) {
+			behaviors.get(i).setId(i);
+		}
+	}
 }

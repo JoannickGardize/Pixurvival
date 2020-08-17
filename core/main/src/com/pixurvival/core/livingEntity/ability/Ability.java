@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
@@ -45,7 +46,8 @@ public abstract class Ability implements Serializable {
 	/**
 	 * Indicates if the entity can move or not when using this ability.
 	 * 
-	 * @return true if the entity can move when using this ability, false otherwise.
+	 * @return true if the entity can move when using this ability, false
+	 *         otherwise.
 	 */
 	public boolean canMove() {
 		return true;
@@ -54,7 +56,8 @@ public abstract class Ability implements Serializable {
 	/**
 	 * @param entity
 	 *            the entity using this ability
-	 * @return The animation to play, or null if no special animation is required.
+	 * @return The animation to play, or null if no special animation is
+	 *         required.
 	 */
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
 		return null;
@@ -63,16 +66,17 @@ public abstract class Ability implements Serializable {
 	/**
 	 * @param entity
 	 *            the entity using this ability
-	 * @return The item to draw on top of the animation, or null if none to draw.
+	 * @return The item to draw on top of the animation, or null if none to
+	 *         draw.
 	 */
 	public Item getAnimationItem(LivingEntity entity) {
 		return null;
 	}
 
 	/**
-	 * Called when the entity starts using this ability. If data is needed to start
-	 * this ability (e.g. The item to craft), The {@link AbilityData} must be set
-	 * correctly before.
+	 * Called when the entity starts using this ability. If data is needed to
+	 * start this ability (e.g. The item to craft), The {@link AbilityData} must
+	 * be set correctly before.
 	 * 
 	 * @param entity
 	 * @return true if the ability has started successfully, false otherwise (it
@@ -93,16 +97,20 @@ public abstract class Ability implements Serializable {
 	}
 
 	/**
-	 * Called when the ability is interrupted, or terminated by returning true in
-	 * the {@link #update(LivingEntity)} method.
+	 * Called when the ability is interrupted, or terminated by returning true
+	 * in the {@link #update(LivingEntity)} method.
 	 * 
 	 * @param entity
-	 * @return true if the ability has ended successfully, false otherwise (it will
-	 *         continue).
+	 * @return true if the ability has ended successfully, false otherwise (it
+	 *         will continue).
 	 */
 	public abstract boolean stop(LivingEntity entity);
 
 	public void forEachStatFormulas(Consumer<StatFormula> action) {
+		// For override
+	}
+
+	public void forEachAlteration(Consumer<Alteration> action) {
 		// For override
 	}
 }

@@ -26,8 +26,8 @@ public class EffectEvent extends Event {
 	private EventPosition position;
 
 	/**
-	 * The Effect will have as ancestor a virtual TeamMember of the WILD team.
-	 * The ancestor's stats are filled with special values :
+	 * The Effect will have as ancestor a virtual TeamMember of the WILD team. The
+	 * ancestor's stats are filled with special values :
 	 * <ul>
 	 * <li>Strength : number of concerned players
 	 * <li>Agility : number of repeat (starting to zero)
@@ -58,7 +58,7 @@ public class EffectEvent extends Event {
 		teamMember.getStats().get(StatType.AGILITY).setBase(repeatCount);
 		teamMember.getStats().get(StatType.INTELLIGENCE).setBase(numberOfPlayers * repeatCount);
 		EffectEntity effectEntity = new EffectEntity(new OffsetAngleEffect(effect), teamMember);
-		world.getEntityPool().add(effectEntity);
+		world.getEntityPool().create(effectEntity);
 	}
 
 }

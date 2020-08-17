@@ -92,6 +92,7 @@ public class MapAnalytics {
 		explorationQueue.add(startPosition);
 		while (!explorationQueue.isEmpty()) {
 			Position currentPosition = explorationQueue.remove();
+			System.out.println("Infinite loop tracker : " + currentPosition);
 			forEachNeighbors(currentPosition, position -> {
 				if (!exploredGrid.get(position, POINTS_INTERVAL) && area.enclosingWidth(position) <= maxSquareSize && area.enclosingHeight(position) <= maxSquareSize
 						&& isConnected(cursor, currentPosition, position, MAX_FAIL_POSITION_CHECK)) {

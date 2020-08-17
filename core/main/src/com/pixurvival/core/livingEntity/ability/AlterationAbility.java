@@ -44,4 +44,8 @@ public abstract class AlterationAbility extends CooldownAbility {
 		alterations.forEach(a -> a.forEachStatFormulas(action));
 	}
 
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		alterations.forEach(action::accept);
+	}
 }

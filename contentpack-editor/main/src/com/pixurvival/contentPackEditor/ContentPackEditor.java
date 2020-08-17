@@ -12,6 +12,7 @@ import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
 import com.pixurvival.contentPackEditor.component.tree.LayoutTree;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
+import com.pixurvival.contentPackEditor.event.ContentPackSavedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.util.ArgsUtils;
@@ -76,6 +77,15 @@ public class ContentPackEditor extends JFrame {
 
 	@EventListener
 	public void contentPackLoaded(ContentPackLoadedEvent event) {
+		updateWindowTitle();
+	}
+
+	@EventListener
+	public void contentPackSaved(ContentPackSavedEvent event) {
+		updateWindowTitle();
+	}
+
+	private void updateWindowTitle() {
 		File currentFile = FileService.getInstance().getCurrentFile();
 		if (currentFile == null) {
 			setTitle(TITLE_PREFFIX + ReleaseVersion.getValue() + " - " + TranslationService.getInstance().getString("menuBar.file.new"));

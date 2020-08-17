@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatSender;
@@ -64,6 +67,8 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
 
+	private static final Kryo INVENTORY_KRYO = new Kryo();
+
 	static {
 		PLAYER_ABILITY_SET.add(new SilenceAbility());
 		PLAYER_ABILITY_SET.add(new CraftAbility());
@@ -74,6 +79,9 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
+
+		INVENTORY_KRYO.register(ItemStack.class, new ItemStack.Serializer());
+		INVENTORY_KRYO.register(PlayerInventory.class, new PlayerInventory.Serializer());
 	}
 
 	private @Setter boolean operator = false;
@@ -129,7 +137,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	private void dropItemOnDeath(ItemStack itemStack) {
 		if (itemStack != null) {
 			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-			getWorld().getEntityPool().add(itemStackEntity);
+			getWorld().getEntityPool().create(itemStackEntity);
 			itemStackEntity.getPosition().set(getPosition());
 			itemStackEntity.spawnRandom();
 		}
@@ -268,6 +276,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
+		super.writeUpdate(buffer, updateFlagsToSend);
 		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_EQUIPMENT) != 0) {
 			ByteBufferUtils.writeItemOrNull(buffer, equipment.getClothing());
 			ByteBufferUtils.writeItemOrNull(buffer, equipment.getWeapon());
@@ -278,6 +287,7 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 
 	@Override
 	protected void applyUpdate(ByteBuffer buffer, byte updateContentFlag) {
+		super.applyUpdate(buffer, updateContentFlag);
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_EQUIPMENT) != 0) {
 			List<Item> itemList = getWorld().getContentPack().getItems();
 			equipment.setClothing(ByteBufferUtils.readItemOrNullAsItemStack(buffer, itemList));
@@ -295,6 +305,26 @@ public class PlayerEntity extends LivingEntity implements InventoryHolder, Equip
 	@Override
 	protected void applyAdditionnalOtherPart(ByteBuffer byteBuffer) {
 		hunger = byteBuffer.getFloat();
+	}
+
+	@Override
+	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
+		super.writeRepositoryUpdate(byteBuffer);
+		try (Output output = new Output(byteBuffer.array())) {
+			output.setPosition(byteBuffer.position());
+			INVENTORY_KRYO.writeObject(output, inventory);
+			byteBuffer.position(output.position());
+		}
+	}
+
+	@Override
+	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
+		super.applyRepositoryUpdate(byteBuffer);
+		try (Input input = new Input(byteBuffer.array())) {
+			input.setPosition(byteBuffer.position());
+			inventory.set(INVENTORY_KRYO.readObject(input, PlayerInventory.class));
+			byteBuffer.position(input.position());
+		}
 	}
 
 	@Override

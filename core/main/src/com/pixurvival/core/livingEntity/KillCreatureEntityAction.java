@@ -20,6 +20,8 @@ public class KillCreatureEntityAction implements Action {
 		if (e != null) {
 			e.setAlive(false);
 		}
+		// If the entity is not found because stored in repository, it will instantly
+		// kill himself when loaded thanks to the check with its creationTime
 	}
 
 }

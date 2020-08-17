@@ -21,7 +21,7 @@ public class SpawnAction implements Action {
 		Chunk chunk = world.getMap().chunkAt(chunkPosition);
 		if (chunk != null && spawner.isChunkEligible(chunk)) {
 			spawner.spawn(chunk);
-			world.getActionTimerManager().addActionTimer(new SpawnAction(chunkPosition, spawner), spawner.getRespawnTime().next(world.getRandom()));
+			world.getActionTimerManager().addActionTimer(this, spawner.getRespawnTime().next(world.getRandom()));
 		} else {
 			world.getChunkCreatureSpawnManager().removeChunkSpawnerMemory(chunkPosition, spawner);
 		}

@@ -3,6 +3,7 @@ package com.pixurvival.core.contentPack.item;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
@@ -18,8 +19,14 @@ public class WeaponItem extends EquipableItem {
 	private ItemAlterationAbility specialAbility;
 
 	@Override
-	public void forEachStatFormulas(Consumer<StatFormula> action) {
+	public void forEachStatFormula(Consumer<StatFormula> action) {
 		baseAbility.forEachStatFormulas(action);
 		specialAbility.forEachStatFormulas(action);
+	}
+
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		baseAbility.forEachAlteration(action::accept);
+		specialAbility.forEachAlteration(action::accept);
 	}
 }

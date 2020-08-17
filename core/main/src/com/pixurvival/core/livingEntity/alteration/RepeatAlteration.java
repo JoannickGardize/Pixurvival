@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import java.nio.ByteBuffer;
+
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -18,6 +20,7 @@ public class RepeatAlteration extends PersistentAlteration {
 
 	@Override
 	public Object begin(TeamMember source, LivingEntity entity) {
+		// TODO set this at ContentPack initialization
 		setDuration(numberOfRepeat * interval);
 		return source.getWorld().getTime().getTimeMillis();
 	}
@@ -31,5 +34,15 @@ public class RepeatAlteration extends PersistentAlteration {
 			nextTrigger += interval;
 		}
 		return nextTrigger;
+	}
+
+	@Override
+	public void writeData(ByteBuffer buffer, Object data) {
+		buffer.putLong((long) data);
+	}
+
+	@Override
+	public Object readData(ByteBuffer buffer) {
+		return buffer.getLong();
 	}
 }

@@ -14,6 +14,7 @@ import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -47,8 +48,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public void initialize() {
-		super.initialize();
+	public void initializeAtCreation() {
 		if (getWorld().isServer()) {
 			definition.getEffect().getMovement().initialize(this);
 			List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
@@ -74,9 +74,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		}
 		if (getWorld().isServer()) {
 			if (definition.getEffect().getTileCollisionAction() != null) {
-				getWorld().getMap().forEachTile(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius(), tile -> {
-					definition.getEffect().getTileCollisionAction().accept(this, tile);
-				});
+				getWorld().getMap().forEachTile(getPosition().getX(), getPosition().getY(), effect.getMapCollisionRadius(), tile -> definition.getEffect().getTileCollisionAction().accept(this, tile));
 			}
 			if (definition.getEffect().getMovement().isDestroyWithAncestor() && !getAncestor().isAlive()) {
 				setAlive(false);
@@ -165,7 +163,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		buffer.putFloat(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		definition.getEffect().getMovement().writeUpdate(buffer, this);
-		buffer.putInt((int) (termTimeMillis - getWorld().getTime().getTimeMillis()));
+		buffer.putLong(termTimeMillis);
 	}
 
 	@Override
@@ -174,7 +172,29 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		setMovingAngle(buffer.getFloat());
 		setForward(buffer.get() == 1);
 		definition.getEffect().getMovement().applyUpdate(buffer, this);
-		termTimeMillis = buffer.getInt() + getWorld().getTime().getTimeMillis();
+		termTimeMillis = buffer.getLong();
+	}
+
+	@Override
+	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
+		super.writeRepositoryUpdate(byteBuffer);
+		TeamMemberSerialization.write(byteBuffer, ancestor, true);
+		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
+			byteBuffer.putLong(creationTime);
+			byteBuffer.putInt(numberOfDelayedFollowingElements);
+			byteBuffer.putInt(nextFollowingElementIndex);
+		}
+	}
+
+	@Override
+	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
+		super.applyRepositoryUpdate(byteBuffer);
+		ancestor = TeamMemberSerialization.read(byteBuffer, getWorld(), true);
+		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
+			creationTime = byteBuffer.getLong();
+			numberOfDelayedFollowingElements = byteBuffer.getInt();
+			nextFollowingElementIndex = byteBuffer.getInt();
+		}
 	}
 
 	@Override
@@ -208,17 +228,17 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public Team getTeam() {
-		return ancestor.getTeam();
+		return ancestor.findIfNotFound().getTeam();
 	}
 
 	@Override
 	public StatSet getStats() {
-		return ancestor.getStats();
+		return ancestor.findIfNotFound().getStats();
 	}
 
 	@Override
 	public TeamMember getOrigin() {
-		return ancestor.getOrigin();
+		return ancestor.findIfNotFound().getOrigin().findIfNotFound();
 	}
 
 	@Override

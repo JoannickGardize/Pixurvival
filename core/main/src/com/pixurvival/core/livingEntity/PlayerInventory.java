@@ -23,7 +23,9 @@ public class PlayerInventory extends Inventory {
 	@Override
 	public void set(Inventory other) {
 		super.set(other);
-		setHeldItemStack(((PlayerInventory) other).heldItemStack);
+		if (other instanceof PlayerInventory) {
+			setHeldItemStack(((PlayerInventory) other).heldItemStack);
+		}
 	}
 
 	public void setHeldItemStack(ItemStack itemStack) {

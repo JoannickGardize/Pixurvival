@@ -24,7 +24,7 @@ public class AddItemAlteration extends UniqueAlteration {
 			if (dropRemainder && remainder != null) {
 				ItemStackEntity itemStackEntity = new ItemStackEntity(remainder);
 				itemStackEntity.getPosition().set(source.getPosition());
-				entity.getWorld().getEntityPool().add(itemStackEntity);
+				entity.getWorld().getEntityPool().create(itemStackEntity);
 			}
 		}
 	}

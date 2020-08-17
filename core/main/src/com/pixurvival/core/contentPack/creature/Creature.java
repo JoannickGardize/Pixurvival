@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
@@ -61,9 +62,16 @@ public class Creature extends IdentifiedElement {
 	}
 
 	@Override
-	public void forEachStatFormulas(Consumer<StatFormula> action) {
+	public void forEachStatFormula(Consumer<StatFormula> action) {
 		if (abilitySet != null) {
-			abilitySet.forEachStatFormulas(action);
+			abilitySet.forEachStatFormula(action);
+		}
+	}
+
+	@Override
+	public void forEachAlteration(Consumer<Alteration> action) {
+		if (abilitySet != null) {
+			abilitySet.forEachAlteration(action);
 		}
 	}
 }

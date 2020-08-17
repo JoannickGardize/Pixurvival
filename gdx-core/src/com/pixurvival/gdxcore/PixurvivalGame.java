@@ -33,6 +33,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
@@ -236,6 +237,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			client.getWorld().unload();
 		}
 		super.dispose();
+		ChunkManager.getInstance().setRunning(false);
 	}
 
 	@Override

@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.team.NotFoundTeamMemberProxy;
-import com.pixurvival.core.team.TeamMember;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class contains all entities of a given {@link World}, packed by group
@@ -21,7 +22,7 @@ import com.pixurvival.core.team.TeamMember;
  */
 public class EntityPool extends EntityCollection {
 	private World world;
-	private long nextId = 0;
+	private @Getter @Setter long nextId = 0;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
 	private List<Entity> newEntities = new ArrayList<>();
 
@@ -38,10 +39,15 @@ public class EntityPool extends EntityCollection {
 		newEntities.add(e);
 		if (world.isServer()) {
 			e.setWorld(world);
-			e.setId(nextId++);
 			e.updateChunk();
 		}
 		e.initialize();
+	}
+
+	public void create(Entity e) {
+		e.setId(nextId++);
+		add(e);
+		e.initializeAtCreation();
 	}
 
 	/**
@@ -109,26 +115,15 @@ public class EntityPool extends EntityCollection {
 		flushNewEntities();
 	}
 
-	public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
-		byteBuffer.put((byte) entity.getGroup().ordinal());
-		byteBuffer.putLong(entity.getId());
-	}
-
-	public Entity readEntityReference(ByteBuffer byteBuffer) {
-		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
-		return getEntities().get(group).get(byteBuffer.getLong());
-	}
-
-	public TeamMember readTeamMemberReference(ByteBuffer byteBuffer) {
-		EntityGroup group = EntityGroup.values()[byteBuffer.get()];
-		long id = byteBuffer.getLong();
-		Entity e = getEntities().get(group).get(id);
-		if (e == null) {
-			return new NotFoundTeamMemberProxy(world, group, id);
-		} else {
-			return (TeamMember) e;
-		}
-	}
+	// public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
+	// byteBuffer.put((byte) entity.getGroup().ordinal());
+	// byteBuffer.putLong(entity.getId());
+	// }
+	//
+	// public Entity readEntityReference(ByteBuffer byteBuffer) {
+	// EntityGroup group = EntityGroup.values()[byteBuffer.get()];
+	// return getEntities().get(group).get(byteBuffer.getLong());
+	// }
 
 	/**
 	 * Force adding the pending new entities without a call to update().

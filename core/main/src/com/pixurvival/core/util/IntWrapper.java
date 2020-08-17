@@ -16,8 +16,8 @@ public class IntWrapper {
 		value += toAdd;
 	}
 
-	public void increment() {
-		++value;
+	public int increment() {
+		return value++;
 	}
 
 	public void decrement() {

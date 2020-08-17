@@ -2,11 +2,9 @@ package com.pixurvival.core.livingEntity.stats;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class StatModifier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
