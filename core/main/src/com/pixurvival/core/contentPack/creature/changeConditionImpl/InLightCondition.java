@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.creature.behaviorImpl;
+package com.pixurvival.core.contentPack.creature.changeConditionImpl;
 
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.livingEntity.CreatureEntity;

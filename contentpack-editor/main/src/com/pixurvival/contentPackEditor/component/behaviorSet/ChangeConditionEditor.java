@@ -6,24 +6,32 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.FloatComparison;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.InLightCondition;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.IsDayCondition;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.TimeCondition;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.TookDamageCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.DistanceCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.FloatComparison;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.InLightCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.InventoryContainsCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.IsDayCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.NothingToDoCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.TaskFinishedCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.TimeCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.TookDamageCondition;
+import com.pixurvival.core.contentPack.item.Item;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
 
@@ -80,6 +88,23 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		// IsDayCondition
 		classEntries.add(new ClassEntry(IsDayCondition.class, JPanel::new));
 
+		// TaskFinishedCondition
+		classEntries.add(new ClassEntry(TaskFinishedCondition.class, JPanel::new));
+
+		// NothingToDoCondition
+		classEntries.add(new ClassEntry(NothingToDoCondition.class, JPanel::new));
+
+		classEntries.add(new ClassEntry(InventoryContainsCondition.class, () -> {
+			EnumChooser<FloatComparison> operatorChooser = new EnumChooser<>(FloatComparison.class);
+			IntegerInput valueInput = new IntegerInput(Bounds.positive());
+			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
+			bind(operatorChooser, InventoryContainsCondition::getOperator, InventoryContainsCondition::setOperator, InventoryContainsCondition.class);
+			bind(valueInput, InventoryContainsCondition::getValue, InventoryContainsCondition::setValue, InventoryContainsCondition.class);
+			bind(itemSetEditor, InventoryContainsCondition::getItems, InventoryContainsCondition::setItems, InventoryContainsCondition.class);
+
+			return LayoutUtils.createVerticalBox(itemSetEditor,
+					LayoutUtils.createHorizontalBox(new JLabel(TranslationService.getInstance().getString("behaviorEditor.sum")), operatorChooser, valueInput));
+		}));
 		return classEntries;
 	}
 

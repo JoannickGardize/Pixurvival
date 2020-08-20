@@ -3,12 +3,13 @@ package com.pixurvival.core.team;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.EntityGroup;
 
+import lombok.Getter;
 import lombok.NonNull;
 
 public class EntityNotFoundProxy extends FlatTeamMember {
 
-	private EntityGroup group;
-	private long id;
+	private @Getter EntityGroup group;
+	private @Getter long id;
 	private TeamMember member = null;
 
 	public EntityNotFoundProxy(@NonNull World world, EntityGroup group, long id) {

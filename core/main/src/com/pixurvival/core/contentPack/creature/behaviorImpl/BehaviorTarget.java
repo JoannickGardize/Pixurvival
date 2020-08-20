@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum BehaviorTarget {
 	CLOSEST_ENNEMY(c -> c.getBehaviorData().getClosestEnnemy()),
 	MASTER(c -> c.getMaster() instanceof Entity ? (Entity) c.getMaster() : null),
-	SELF(c -> c);
+	SELF(c -> c),
+	NONE(c -> null);
 
 	private @Getter Function<CreatureEntity, Entity> entityGetter;
 }

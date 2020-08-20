@@ -2,6 +2,7 @@ package com.pixurvival.core;
 
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
@@ -24,9 +25,7 @@ public class ActionPreconditions {
 	public static boolean canCraft(PlayerEntity playerEntity, ItemCraft itemCraft) {
 		Structure requiredStructure = itemCraft.getRequiredStructure();
 		if (requiredStructure != null) {
-			MapStructure foundStructure = playerEntity.getWorld().getMap().findStructure(requiredStructure, (int) playerEntity.getPosition().getX(), (int) playerEntity.getPosition().getY());
-			if (foundStructure == null || foundStructure.getDefinition() != requiredStructure
-					|| playerEntity.getPosition().distanceSquared(foundStructure.getPosition()) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE * GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
+			if (playerEntity.getWorld().getMap().findClosestStructure(playerEntity.getPosition(), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE, requiredStructure.getId()) == null) {
 				return false;
 			}
 		}
@@ -56,9 +55,8 @@ public class ActionPreconditions {
 		return true;
 	}
 
-	public static boolean canInteract(PlayerEntity entity, MapStructure structure) {
-		return entity.getCurrentAbility() == null && structure != null
-				&& (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0)
+	public static boolean canInteract(LivingEntity entity, MapStructure structure) {
+		return structure != null && (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0)
 				&& entity.distanceSquared(structure.getPosition()) <= GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE * GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE;
 	}
 }

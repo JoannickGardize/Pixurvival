@@ -19,7 +19,7 @@ public class VanishBehavior extends Behavior {
 		}
 		if (closestPlayer.getPosition().insideSquare(creature.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 			creature.getAwayFrom(closestPlayer);
-			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
+			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed();
 		} else {
 			creature.setAlive(false);
 		}

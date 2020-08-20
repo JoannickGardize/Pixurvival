@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import com.esotericsoftware.minlog.Log;
@@ -15,7 +16,6 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.map.MapGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
-import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -279,7 +279,7 @@ public class TiledMap {
 			waitingPositions.put(positionLock, positionLock);
 			while ((chunk = chunkAt(position)) == null) {
 				try {
-					// TODO
+					// TODO ???
 					Log.info("Waiting for chunk at " + position);
 					positionLock.wait(100);
 				} catch (InterruptedException e) {
@@ -289,6 +289,7 @@ public class TiledMap {
 				}
 				flushChunks();
 			}
+			System.out.println("end wait");
 			return chunk;
 		}
 	}
@@ -392,36 +393,43 @@ public class TiledMap {
 		}
 	}
 
-	public MapStructure findClosestStructure(float x, float y) {
-		MapStructure closest = null;
-		float closestDist = Float.POSITIVE_INFINITY;
-		for (int dx = MathUtils.floor(x) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
-			for (int dy = MathUtils.floor(y) - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
-				MapStructure structure = tileAt(dx, dy).getStructure();
-				if (structure != null) {
-					float diffX = structure.getPosition().getX() - x;
-					float diffY = structure.getPosition().getY() - y;
-					float dist = diffX * diffX + diffY * diffY;
-					if (dist < closestDist) {
-						closestDist = dist;
-						closest = structure;
+	private static class FindClosestStructureRun {
+		MapStructure structure;
+		float distance = Float.POSITIVE_INFINITY;
+	}
+
+	public MapStructure findClosestStructure(Vector2 position, float searchRadius, IntPredicate groupFilter, Predicate<MapStructure> structureFilter) {
+		FindClosestStructureRun run = new FindClosestStructureRun();
+		forEachChunk(position, searchRadius, chunk -> chunk.getStructures().forEach(entry -> {
+			if (groupFilter.test(entry.getKey())) {
+				for (MapStructure structure : entry.getValue()) {
+					if (structureFilter.test(structure)) {
+						float distance = position.distanceSquared(structure.getPosition());
+						if (distance <= searchRadius * searchRadius && distance < run.distance) {
+							run.structure = structure;
+							run.distance = distance;
+						}
 					}
 				}
 			}
-		}
-		return closest;
+		}));
+		return run.structure;
 	}
 
-	public MapStructure findStructure(Structure structure, int x, int y) {
-		for (int dx = x - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx <= x + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dx++) {
-			for (int dy = y - (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy <= y + (int) GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE; dy++) {
-				MapStructure mapStructure = tileAt(dx, dy).getStructure();
-				if (mapStructure != null && mapStructure.getDefinition() == structure) {
-					return mapStructure;
-				}
-			}
-		}
-		return null;
+	public MapStructure findClosestStructure(Vector2 position, float searchRadius) {
+		return findClosestStructure(position, searchRadius, type -> true, s -> true);
+	}
+
+	public MapStructure findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds) {
+		return findClosestStructure(position, searchRadius, structureTypeIds::contains, s -> true);
+	}
+
+	public MapStructure findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds, Predicate<MapStructure> filter) {
+		return findClosestStructure(position, searchRadius, structureTypeIds::contains, filter);
+	}
+
+	public MapStructure findClosestStructure(Vector2 position, float searchRadius, int structureTypeId) {
+		return findClosestStructure(position, searchRadius, t -> t == structureTypeId, s -> true);
 	}
 
 	public boolean isInAnyLight(Vector2 position) {

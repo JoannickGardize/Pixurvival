@@ -66,6 +66,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 
 	private static long nextId = 0;
 	private static Map<Long, World> worlds = new HashMap<>();
+	// TODO deprecate this for multiworld
 	private static @Getter ContentPack currentContentPack;
 	private Type type;
 	private Time time;
@@ -133,7 +134,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		createWorld.getInventory().computeQuantities();
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
-		world.getEntityPool().create(myPlayer);
+		world.getEntityPool().add(myPlayer);
 		worlds.clear();
 		worlds.put(world.getId(), world);
 		return world;
@@ -219,8 +220,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeNewGame() {
 		entityPool.flushNewEntities();

@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -34,8 +35,12 @@ public class HarvestAbility extends WorkAbility {
 		World world = entity.getWorld();
 		if (world.isServer()) {
 			HarvestableMapStructure structure = ((HarvestAbilityData) getAbilityData(entity)).getStructure();
+			if (structure == null) {
+				// TODO remove this when ability is restored correctly after repository update
+				return;
+			}
 			MapStructure actual = world.getMap().tileAt(structure.getTileX(), structure.getTileY()).getStructure();
-			if (structure == actual && !structure.isHarvested()) {
+			if (structure == actual && ActionPreconditions.canInteract(entity, structure) && !structure.isHarvested()) {
 				ItemStack[] items = structure.harvest(world.getRandom());
 				ItemStackEntity.spawn(world, items, structure.getPosition());
 			}

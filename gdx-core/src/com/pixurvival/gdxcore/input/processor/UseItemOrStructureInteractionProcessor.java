@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore.input.processor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.pixurvival.core.ActionPreconditions;
+import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
@@ -33,7 +34,7 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 			PixurvivalGame.getClient().sendAction(new UseItemRequest(PlayerInventory.HELD_ITEM_STACK_INDEX));
 		} else {
 			Vector2 position = getWorldCursorPosition();
-			MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(position.x, position.y);
+			MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
 			if (ActionPreconditions.canInteract(myPlayer, structure)) {
 				PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
 			}

@@ -18,10 +18,12 @@ public class GetAwayFromLightBehavior extends Behavior {
 		}
 		if (light == null) {
 			creature.setForward(false);
+			creature.getBehaviorData().setTaskFinished(true);
+			creature.getBehaviorData().setNothingToDo(true);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 		} else {
 			creature.getAwayFrom(light.getPosition());
-			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
+			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed();
 		}
 	}
 }

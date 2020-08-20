@@ -32,6 +32,16 @@ public class TeamMemberSerialization {
 		} else if (teamMember instanceof EffectEventTeamMember) {
 			buffer.put(EFFECT_EVENT_TYPE);
 			writeFlatTeamMember(buffer, teamMember);
+		} else if (teamMember instanceof EntityNotFoundProxy) {
+			EntityNotFoundProxy proxy = (EntityNotFoundProxy) teamMember;
+			buffer.put(ENTITY_TYPE);
+			buffer.put((byte) proxy.getGroup().ordinal());
+			buffer.putLong(proxy.getId());
+			if (safeMode) {
+				writeFlatTeamMember(buffer, teamMember);
+			}
+		} else {
+			throw new IllegalArgumentException();
 		}
 
 	}

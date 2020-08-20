@@ -29,16 +29,15 @@ public abstract class Behavior extends IdentifiedElement {
 		if (creature.getWorld().getTime().getTimeMillis() >= behaviorData.getNextUpdateTimeMillis()) {
 			nextBehavior(creature);
 			behaviorData.beforeStep();
-			step(creature);
-		}
-		if (behaviorData.mustCheckChangeCondition()) {
-			nextBehavior(creature);
+			// Get the current behavior in case it has been changed
+			creature.getCurrentBehavior().step(creature);
 		}
 	}
 
 	public void begin(CreatureEntity creature) {
-		creature.setBehaviorData(new BehaviorData(creature));
+		creature.getBehaviorData().reset();
 		creature.startAbility(abilityToUseId);
+		creature.setTargetEntity(null);
 	}
 
 	protected abstract void step(CreatureEntity creature);
@@ -54,7 +53,7 @@ public abstract class Behavior extends IdentifiedElement {
 				break;
 			}
 		}
-		creature.getBehaviorData().updatePreviousChangeConditionCheck();
+		creature.getBehaviorData().updateForNextChangeConditionCheck();
 	}
 
 	private void pass(CreatureEntity creature, Behavior nextBehavior) {

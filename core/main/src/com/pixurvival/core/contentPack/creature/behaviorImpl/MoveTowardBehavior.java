@@ -24,22 +24,34 @@ public class MoveTowardBehavior extends Behavior {
 
 	@Override
 	public void begin(CreatureEntity creature) {
+		super.begin(creature);
 		Entity target = targetType.getEntityGetter().apply(creature);
 		creature.setTargetEntity(target);
-		super.begin(creature);
 	}
 
 	@Override
 	protected void step(CreatureEntity creature) {
 		Entity target = targetType.getEntityGetter().apply(creature);
-		if (target != null && creature.distanceSquared(target) > minDistance * minDistance) {
-			creature.moveToward(target, randomAngle);
-			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
-			creature.getTargetPosition().set(target.getPosition());
+		if (target != null) {
+			float distanceSquared = creature.distanceSquared(target);
+			if (distanceSquared > minDistance * minDistance) {
+				float distance = (float) Math.sqrt(distanceSquared);
+				creature.moveTowardPrecisely(target, distance);
+				creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(distance - minDistance);
+				creature.getTargetPosition().set(target.getPosition());
+			} else {
+				stop(creature);
+				creature.getBehaviorData().setTaskFinished(true);
+			}
 		} else {
-			creature.setForward(false);
-			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
+			stop(creature);
+			creature.getBehaviorData().setNothingToDo(true);
 		}
 		creature.setTargetEntity(target);
+	}
+
+	private void stop(CreatureEntity creature) {
+		creature.setForward(false);
+		creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 	}
 }

@@ -2,6 +2,7 @@ package com.pixurvival.core.entity;
 
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
@@ -39,9 +40,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Setter boolean alive = true;
 
 	/**
-	 * When set to true, the death event will not be fired, resulting to not
-	 * sharing to clients the death data. The purpose is to avoid to send death
-	 * info if the client can know it by itself
+	 * When set to true, the death event will not be fired, resulting to not sharing
+	 * to clients the death data. The purpose is to avoid to send death info if the
+	 * client can know it by itself
 	 */
 	private @Setter boolean sneakyDeath = false;
 	private @Setter Object customData;
@@ -56,10 +57,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean collisionLock = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server
-	 * will send data of this entity at the next data send tick to clients that
-	 * view this entity. Must be true at initialization to send the new entity
-	 * data.
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -258,8 +258,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 * @param full
-	 *            true if all the data should be writen, for clients that
-	 *            discovers this entity.
+	 *            true if all the data should be writen, for clients that discovers
+	 *            this entity.
 	 */
 	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 
@@ -308,10 +308,17 @@ public abstract class Entity implements Body, CustomDataHolder {
 	// *******************
 
 	public EntitySearchResult findClosest(EntityGroup group, float maxSquareDistance) {
+		return findClosest(group, maxSquareDistance, e -> true);
+	}
+
+	public EntitySearchResult findClosest(EntityGroup group, float maxSquareDistance, Predicate<Entity> filter) {
 		TiledMap map = world.getMap();
 
 		EntitySearchResult searchResult = new EntitySearchResult();
 		map.forEachChunk(position, maxSquareDistance, (Consumer<Chunk>) c -> c.getEntities().get(group).forEach(e -> {
+			if (!filter.test(e)) {
+				return;
+			}
 			float distance = distanceSquared(e);
 			if (distance < searchResult.getDistanceSquared()) {
 				searchResult.setDistanceSquared(distance);
@@ -342,8 +349,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return closestEntity;
 	}
 
-	public float distanceSquared(Entity other) {
-		return position.distanceSquared(other.position);
+	public float distanceSquared(Positionnable other) {
+		return position.distanceSquared(other.getPosition());
 	}
 
 	public float nullSafeDistanceSquared(Entity other) {

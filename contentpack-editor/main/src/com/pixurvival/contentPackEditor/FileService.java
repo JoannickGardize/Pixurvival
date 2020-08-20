@@ -49,6 +49,9 @@ public class FileService {
 		if (!savePrevious()) {
 			return;
 		}
+		if (currentFile != null) {
+			fileChooser.setSelectedFile(currentFile);
+		}
 		int option = fileChooser.showOpenDialog(null);
 		if (option != JFileChooser.APPROVE_OPTION) {
 			return;

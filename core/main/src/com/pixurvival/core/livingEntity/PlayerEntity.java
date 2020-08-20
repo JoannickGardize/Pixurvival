@@ -19,7 +19,6 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -49,7 +48,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class PlayerEntity extends LivingEntity implements InventoryHolder, EquipmentHolder, CommandExecutor, ChatSender {
+public class PlayerEntity extends LivingEntity implements EquipmentHolder, CommandExecutor, ChatSender {
 
 	public static final float COLLISION_RADIUS = 0.42f;
 	public static final float MAX_HUNGER = 100;

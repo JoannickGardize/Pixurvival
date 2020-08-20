@@ -6,7 +6,8 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
-import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;
@@ -22,6 +23,7 @@ public class ItemStackEntity extends Entity {
 	public static final float START_SPEED = 2;
 	public static final float END_SPEED = 15;
 
+	// TODO states classes with behavior instead of enum
 	public enum State {
 		WAITING,
 		MAGNTIZED,
@@ -30,7 +32,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	private @Getter ItemStack itemStack;
-	private PlayerEntity magnetTarget = null;
+	private LivingEntity magnetTarget = null;
 	private @Getter State state;
 	private float spawnProgress;
 	private float spawnDistance;
@@ -103,11 +105,12 @@ public class ItemStackEntity extends Entity {
 				if (getWorld().isServer()) {
 					EntitySearchResult result = findClosest(EntityGroup.PLAYER, MAGNET_DISTANCE);
 					if (result.getDistanceSquared() <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
-						setStateChanged(true);
-						magnetTarget = (PlayerEntity) result.getEntity();
-						state = State.MAGNTIZED;
-						speedInterpolation.reset();
-
+						setMagnetizedTo((LivingEntity) result.getEntity());
+					} else {
+						result = findClosest(EntityGroup.CREATURE, MAGNET_DISTANCE, e -> ((CreatureEntity) e).getDefinition().getInventorySize() > 0);
+						if (result.getDistanceSquared() <= MAGNET_DISTANCE * MAGNET_DISTANCE) {
+							setMagnetizedTo((LivingEntity) result.getEntity());
+						}
 					}
 				}
 				break;
@@ -120,12 +123,10 @@ public class ItemStackEntity extends Entity {
 					if (getWorld().isServer()) {
 						ItemStack rest = magnetTarget.getInventory().add(itemStack);
 						if (rest != null) {
-							setAlive(true);
-							state = State.INHIBITED;
-							speedInterpolation.reset();
-							setForward(false);
-							itemStack = rest;
-							setStateChanged(true);
+							ItemStackEntity newEntity = new ItemStackEntity(rest);
+							newEntity.state = State.INHIBITED;
+							newEntity.magnetTarget = magnetTarget;
+							getWorld().getEntityPool().create(newEntity);
 						}
 					}
 				}
@@ -144,6 +145,13 @@ public class ItemStackEntity extends Entity {
 			}
 		}
 		super.update();
+	}
+
+	public void setMagnetizedTo(LivingEntity target) {
+		setStateChanged(true);
+		magnetTarget = target;
+		state = State.MAGNTIZED;
+		speedInterpolation.reset();
 	}
 
 	@Override

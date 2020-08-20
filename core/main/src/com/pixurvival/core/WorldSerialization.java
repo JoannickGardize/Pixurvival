@@ -39,6 +39,7 @@ import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.CompressedChunkAndEntityData;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.mapLimits.MapLimitsAnchorRun;
+import com.pixurvival.core.mapLimits.MapLimitsManager;
 import com.pixurvival.core.mapLimits.MapLimitsRun;
 import com.pixurvival.core.mapLimits.NextMapLimitAnchorAction;
 import com.pixurvival.core.message.WorldUpdate;
@@ -128,6 +129,10 @@ public class WorldSerialization {
 			world.setSpawnCenter(kryo.readObject(kryoInput, Vector2.class));
 			world.getMyPlayer().getPosition().set(kryo.readObject(kryoInput, Vector2.class));
 			buffer.position(kryoInput.position());
+		}
+		if (world.getMapLimitsRun() != null) {
+			MapLimitsManager mapLimitsManager = new MapLimitsManager();
+			world.addPlugin(mapLimitsManager);
 		}
 		return world;
 	}

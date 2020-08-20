@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
@@ -23,15 +24,20 @@ import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEdi
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.DistanceCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoNothingBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.DropItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.HarvestBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.PickUpItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderAnchor;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.WanderBehavior;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.DistanceCondition;
+import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.structure.Structure;
 
 public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
@@ -128,6 +134,39 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// Do nothing
 		classEntries.add(new ClassEntry(DoNothingBehavior.class, JPanel::new));
+
+		// HarvestBehavior
+		classEntries.add(new ClassEntry(HarvestBehavior.class, () -> {
+			FloatInput searchDistanceInput = new FloatInput(Bounds.positive());
+			ElementSetEditor<Structure> structureSetEditor = new ElementSetEditor<>(Structure.class);
+			bind(searchDistanceInput, HarvestBehavior::getSearchDistance, HarvestBehavior::setSearchDistance, HarvestBehavior.class);
+			bind(structureSetEditor, HarvestBehavior::getStructures, HarvestBehavior::setStructures, HarvestBehavior.class);
+			structureSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.consideredStructures"));
+			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("generic.searchDistance", searchDistanceInput), structureSetEditor);
+		}));
+
+		// PickUpItemsBehavior
+		classEntries.add(new ClassEntry(PickUpItemsBehavior.class, () -> {
+			FloatInput searchDistanceInput = new FloatInput(Bounds.positive());
+			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
+			bind(searchDistanceInput, PickUpItemsBehavior::getSearchDistance, PickUpItemsBehavior::setSearchDistance, PickUpItemsBehavior.class);
+			bind(itemSetEditor, PickUpItemsBehavior::getItems, PickUpItemsBehavior::setItems, PickUpItemsBehavior.class);
+			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemsToPickUp"));
+			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("generic.searchDistance", searchDistanceInput), itemSetEditor);
+		}));
+
+		// DropItemsBehavior
+		classEntries.add(new ClassEntry(DropItemsBehavior.class, () -> {
+			IntegerInput maxQuantityInput = new IntegerInput(Bounds.positive());
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
+			bind(maxQuantityInput, DropItemsBehavior::getMaxQuantity, DropItemsBehavior::setMaxQuantity, DropItemsBehavior.class);
+			bind(targetChooser, DropItemsBehavior::getTargetDirection, DropItemsBehavior::setTargetDirection, DropItemsBehavior.class);
+			bind(itemSetEditor, DropItemsBehavior::getItems, DropItemsBehavior::setItems, DropItemsBehavior.class);
+			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemToDrop"));
+			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1,
+					LayoutUtils.createHorizontalLabelledBox("behaviorEditor.targetDirection", targetChooser, "behaviorEditor.maxQuantity", maxQuantityInput), itemSetEditor);
+		}));
 
 		return classEntries;
 	}

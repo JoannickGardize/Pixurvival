@@ -14,6 +14,7 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
@@ -55,6 +56,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		armorField.setEditable(false);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		TimeInput lifetimeInput = new TimeInput();
+		IntegerInput inventorySizeInput = new IntegerInput(Bounds.positive());
 
 		// Actions
 		strengthInput.addValueChangeListener(v -> statSet.get(StatType.STRENGTH).setBase(v));
@@ -77,6 +79,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		bind(intelligenceInput, Creature::getIntelligence, Creature::setIntelligence);
 		bind(solidCheckbox, Creature::isSolid, Creature::setSolid);
 		bind(lifetimeInput, Creature::getLifetime, Creature::setLifetime);
+		bind(inventorySizeInput, Creature::getInventorySize, Creature::setInventorySize);
 
 		// Layouting
 
@@ -94,6 +97,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.solid", solidCheckbox, gbc);
 
 		JPanel statsPanel = new JPanel(new GridBagLayout());
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.inventorySize", inventorySizeInput, gbc);
 		statsPanel.setBorder(LayoutUtils.createGroupBorder("creatureEditor.stats"));
 		gbc = LayoutUtils.createGridBagConstraints();
 		gbc.insets.bottom = 2;

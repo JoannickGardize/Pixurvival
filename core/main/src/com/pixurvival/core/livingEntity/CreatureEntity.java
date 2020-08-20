@@ -2,17 +2,24 @@ package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.item.EmptyInventoryProxy;
+import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
+import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.PseudoAIUtils;
@@ -28,7 +35,7 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CreatureEntity extends LivingEntity {
 
-	public static final float OBSTACLE_VISION_DISTANCE = 4;
+	public static final float DEFAULT_OBSTACLE_VISION_DISTANCE = 4;
 
 	private @Getter @Setter Behavior currentBehavior;
 	private @Getter @Setter BehaviorData behaviorData;
@@ -36,8 +43,16 @@ public class CreatureEntity extends LivingEntity {
 	private @Getter @Setter Entity targetEntity;
 	private @Getter Vector2 spawnPosition;
 	private @Getter TeamMember master = this;
+	private @Getter Inventory inventory = EmptyInventoryProxy.getInstance();
 
 	private long creationTime;
+
+	private static final Kryo INVENTORY_KRYO = new Kryo();
+
+	static {
+		INVENTORY_KRYO.register(ItemStack.class, new ItemStack.Serializer());
+		INVENTORY_KRYO.register(Inventory.class, new Inventory.Serializer());
+	}
 
 	@Override
 	public void initialize() {
@@ -48,6 +63,9 @@ public class CreatureEntity extends LivingEntity {
 		getStats().get(StatType.INTELLIGENCE).addToBase(definition.getIntelligence());
 		super.initialize();
 		behaviorData = new BehaviorData(this);
+		if (getWorld().isServer() && definition.getInventorySize() > 0) {
+			inventory = new Inventory(definition.getInventorySize());
+		}
 	}
 
 	@Override
@@ -81,31 +99,54 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	protected void onDeath() {
-		if (getWorld().isServer() && definition.getItemReward() != null) {
-			ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());
-			ItemStackEntity.spawn(getWorld(), items, getPosition());
+		if (getWorld().isServer()) {
+			if (definition.getItemReward() != null) {
+				ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());
+				ItemStackEntity.spawn(getWorld(), items, getPosition());
+			}
+			for (int i = 0; i < inventory.size(); i++) {
+				ItemStack itemStack = inventory.getSlot(i);
+				if (itemStack != null) {
+					ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
+					itemStackEntity.getPosition().set(getPosition());
+					getWorld().getEntityPool().create(itemStackEntity);
+					itemStackEntity.spawnRandom();
+				}
+			}
 		}
-	}
-
-	public void move(float direction, float forwardFactor) {
-		setForwardFactor(forwardFactor);
-		if (isSolid()) {
-			setMovingAngle(PseudoAIUtils.avoidObstacles(this, direction, (int) OBSTACLE_VISION_DISTANCE, (float) Math.PI / 4));
-		} else {
-			setMovingAngle(direction);
-		}
-		setForward(true);
 	}
 
 	public void move(float direction) {
 		move(direction, 1);
 	}
 
+	public void move(float direction, float forwardFactor) {
+		move(direction, forwardFactor, (int) DEFAULT_OBSTACLE_VISION_DISTANCE);
+	}
+
+	public void move(float direction, float forwardFactor, int obstacleVisionDistance) {
+		setForwardFactor(forwardFactor);
+		if (isSolid() && obstacleVisionDistance > 0) {
+			setMovingAngle(PseudoAIUtils.avoidObstacles(this, direction, (int) Math.min(DEFAULT_OBSTACLE_VISION_DISTANCE, obstacleVisionDistance), (float) Math.PI / 4));
+		} else {
+			setMovingAngle(direction);
+		}
+		setForward(true);
+	}
+
 	public void moveIfNotNull(Positionnable entity, float direction) {
 		if (entity == null) {
 			setForward(false);
 		} else {
-			move(direction);
+			move(direction, 1);
+		}
+	}
+
+	public void moveIfNotNull(Positionnable entity, float direction, float obstacleVisionDistance) {
+		if (entity == null) {
+			setForward(false);
+		} else {
+			move(direction, 1, (int) obstacleVisionDistance);
 		}
 	}
 
@@ -121,8 +162,18 @@ public class CreatureEntity extends LivingEntity {
 		moveIfNotNull(target, this.angleToward(target));
 	}
 
+	public void moveTowardPrecisely(Positionnable target, float obstacleVisionDistance) {
+		moveIfNotNull(target, this.angleToward(target), obstacleVisionDistance);
+	}
+
 	public void moveToward(Positionnable target, float randomAngle) {
 		moveIfNotNull(target, this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle)));
+	}
+
+	public void harvest(HarvestableMapStructure harvestableStructure) {
+		int abilityId = getDefinition().getHarvestAbilityId();
+		((HarvestAbilityData) getAbilityData(abilityId)).setStructure(harvestableStructure);
+		startAbility(abilityId);
 	}
 
 	@Override
@@ -167,7 +218,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void prepareTargetedAlteration() {
-		if (targetEntity != null) {
+		if (targetEntity != null && targetEntity.isAlive()) {
 			getTargetPosition().set(targetEntity.getPosition());
 			float predictionBulletSpeed;
 			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
@@ -192,8 +243,15 @@ public class CreatureEntity extends LivingEntity {
 		if (getDefinition().getLifetime() > 0) {
 			byteBuffer.putLong(creationTime);
 		}
-		TeamMemberSerialization.writeNullSafe(byteBuffer, master, true);
+		TeamMemberSerialization.writeNullSafe(byteBuffer, master == this ? null : master, true);
 		byteBuffer.putShort((short) currentBehavior.getId());
+		if (definition.getInventorySize() > 0) {
+			try (Output output = new Output(byteBuffer.array())) {
+				output.setPosition(byteBuffer.position());
+				INVENTORY_KRYO.writeObject(output, inventory);
+				byteBuffer.position(output.position());
+			}
+		}
 	}
 
 	@Override
@@ -211,9 +269,19 @@ public class CreatureEntity extends LivingEntity {
 			// If this is not time to die, that means that an ActionTimer to
 			// kill it on time is still present
 		}
-		master = TeamMemberSerialization.readNullSafe(byteBuffer, getWorld(), true);
+		TeamMember newMaster = TeamMemberSerialization.readNullSafe(byteBuffer, getWorld(), true);
+		if (newMaster != null) {
+			master = newMaster;
+		}
 		currentBehavior = definition.getBehaviorSet().getBehaviors().get(byteBuffer.getShort());
+		// TODO smart reset behavior
 		currentBehavior.begin(this);
-		// TODO smart reste behavior
+		if (definition.getInventorySize() > 0) {
+			try (Input input = new Input(byteBuffer.array())) {
+				input.setPosition(byteBuffer.position());
+				inventory.set(INVENTORY_KRYO.readObject(input, Inventory.class));
+				byteBuffer.position(input.position());
+			}
+		}
 	}
 }

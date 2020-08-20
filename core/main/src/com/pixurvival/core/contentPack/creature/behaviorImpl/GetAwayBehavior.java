@@ -18,9 +18,10 @@ public class GetAwayBehavior extends Behavior {
 
 	@Override
 	public void begin(CreatureEntity creature) {
+		// TODO remove this ?
+		super.begin(creature);
 		Entity target = targetType.getEntityGetter().apply(creature);
 		creature.setTargetEntity(target);
-		super.begin(creature);
 	}
 
 	@Override
@@ -29,9 +30,10 @@ public class GetAwayBehavior extends Behavior {
 		if (target == null) {
 			creature.setForward(false);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
+			creature.getBehaviorData().setNothingToDo(true);
 		} else {
 			creature.getAwayFrom(target);
-			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(CreatureEntity.OBSTACLE_VISION_DISTANCE);
+			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed();
 		}
 		creature.setTargetEntity(target);
 	}

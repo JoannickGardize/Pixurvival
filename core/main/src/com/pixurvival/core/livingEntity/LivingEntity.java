@@ -7,6 +7,7 @@ import java.util.List;
 import com.pixurvival.core.Healable;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -26,7 +27,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public abstract class LivingEntity extends Entity implements Healable, TeamMember {
+public abstract class LivingEntity extends Entity implements Healable, TeamMember, InventoryHolder {
 
 	public static final int SILENCE_ABILITY_ID = 0;
 

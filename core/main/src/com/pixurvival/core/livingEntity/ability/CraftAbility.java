@@ -5,7 +5,6 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.Inventory;
-import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
@@ -24,7 +23,7 @@ public class CraftAbility extends WorkAbility {
 		if (itemCraft == null) {
 			return false;
 		}
-		Inventory inventory = ((InventoryHolder) entity).getInventory();
+		Inventory inventory = entity.getInventory();
 		if (itemCraft.getRecipes() == null) {
 			Log.warn("itemCraft invalide : " + itemCraft);
 			return false;
@@ -51,7 +50,7 @@ public class CraftAbility extends WorkAbility {
 	@Override
 	public void workFinished(LivingEntity entity) {
 		if (entity.getWorld().isServer()) {
-			Inventory inventory = ((InventoryHolder) entity).getInventory();
+			Inventory inventory = entity.getInventory();
 			CraftAbilityData data = (CraftAbilityData) getAbilityData(entity);
 			if (inventory.remove(data.getItemCraft().getRecipes())) {
 				ItemStack craftedItem = data.getItemCraft().getResult();

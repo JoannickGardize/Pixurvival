@@ -18,19 +18,10 @@ public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
 
 	private @Getter @Setter List<Ability> abilities = new ArrayList<>();
 
-	public void add(Ability ability) {
+	public int add(Ability ability) {
 		ability.setId((byte) abilities.size());
 		abilities.add(ability);
-	}
-
-	public void addSilence() {
-		if (!abilities.isEmpty() && abilities.get(0) instanceof SilenceAbility) {
-			return;
-		}
-		abilities.add(0, new SilenceAbility());
-		for (int i = 0; i < abilities.size(); i++) {
-			abilities.get(i).setId((byte) i);
-		}
+		return ability.getId();
 	}
 
 	public Ability get(int id) {
