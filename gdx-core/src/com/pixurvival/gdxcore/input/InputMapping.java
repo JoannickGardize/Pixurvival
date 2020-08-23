@@ -33,7 +33,13 @@ public class InputMapping {
 					bind(action, button);
 				}
 			}
-
+		}
+		// Bind missing actions with the default one
+		InputMapping mappingDefaults = InputMappingDefaults.findBestDefaultMatch();
+		for (Entry<InputButton, InputAction> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
+			if (getButton(defaultEntries.getValue()) == null) {
+				bind(defaultEntries.getValue(), defaultEntries.getKey());
+			}
 		}
 	}
 
@@ -46,6 +52,8 @@ public class InputMapping {
 	}
 
 	public void bind(InputAction action, InputButton button) {
+		actionByButton.remove(buttonByAction.get(action));
+		buttonByAction.remove(actionByButton.get(button));
 		buttonByAction.put(action, button);
 		actionByButton.put(button, action);
 	}

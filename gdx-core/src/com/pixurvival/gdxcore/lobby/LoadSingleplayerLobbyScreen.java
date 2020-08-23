@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.PixurvivalException;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.menu.BackButton;
 import com.pixurvival.gdxcore.menu.MessageWindow;
 
 public class LoadSingleplayerLobbyScreen implements Screen {
@@ -23,6 +24,7 @@ public class LoadSingleplayerLobbyScreen implements Screen {
 	public void show() {
 		Table mainGroup = new Table();
 		mainGroup.setFillParent(true);
+		mainGroup.defaults().pad(2);
 		errorWindow.getOkButton().setVisible(true);
 
 		saveChooser.update();
@@ -41,9 +43,11 @@ public class LoadSingleplayerLobbyScreen implements Screen {
 			}
 		});
 
-		mainGroup.add(saveChooser);
+		mainGroup.add(saveChooser).fill().colspan(2);
 		mainGroup.row();
-		mainGroup.add(playButton).fill().pad(4);
+
+		mainGroup.add(new BackButton()).fill();
+		mainGroup.add(playButton).fill();
 
 		stage = new Stage(new ScreenViewport());
 		stage.addActor(mainGroup);

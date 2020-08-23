@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.lobby.LoadSingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
+import com.pixurvival.gdxcore.notificationpush.Notification;
+import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 
 public class MainMenuScreen implements Screen {
 
@@ -84,6 +86,7 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
+		NotificationPushManager.getInstance().push(Notification.builder().status("In menus").build());
 	}
 
 	@Override

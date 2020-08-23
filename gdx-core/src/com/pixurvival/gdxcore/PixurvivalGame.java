@@ -41,6 +41,7 @@ import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
 import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
+import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
 
@@ -161,6 +162,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		skin.add("default-italic", getDefaultItalicFont(), BitmapFont.class);
 		skin.addRegions(new TextureAtlas(Gdx.files.internal("kenney-pixel/skin/skin.atlas")));
 		skin.load(Gdx.files.internal(SKIN));
+		NotificationPushManager.getInstance().start();
 		setScreen(MainMenuScreen.class);
 	}
 
@@ -199,16 +201,22 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void render() {
-		frameCounter += Gdx.graphics.getDeltaTime() * 1000;
-		interpolationTime += Gdx.graphics.getDeltaTime();
-		while (frameCounter >= frameDurationMillis) {
-			client.update(frameDurationMillis);
-			frameCounter -= frameDurationMillis;
-			interpolationTime = 0;
+		try {
+			frameCounter += Gdx.graphics.getDeltaTime() * 1000;
+			interpolationTime += Gdx.graphics.getDeltaTime();
+			while (frameCounter >= frameDurationMillis) {
+				client.update(frameDurationMillis);
+				frameCounter -= frameDurationMillis;
+				interpolationTime = 0;
+				NotificationPushManager.getInstance().update();
+			}
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			super.render();
+		} catch (Exception e) {
+			ChunkManager.getInstance().setRunning(false);
+			throw e;
 		}
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		super.render();
 	}
 
 	private void setScreenInternal(Class<? extends Screen> screenClass) {
@@ -238,6 +246,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		}
 		super.dispose();
 		ChunkManager.getInstance().setRunning(false);
+		NotificationPushManager.getInstance().stop();
 	}
 
 	@Override
@@ -325,6 +334,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		Screen screen = getScreen();
 		if (screen instanceof WorldScreen) {
 			((WorldScreen) screen).gameStarted();
+		}
+	}
+
+	public void focusChat() {
+		Screen screen = getScreen();
+		if (screen instanceof WorldScreen) {
+			((WorldScreen) screen).getChatUI().focusTextInput();
 		}
 	}
 }

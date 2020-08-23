@@ -53,8 +53,8 @@ public class ItemStack implements Serializable {
 	}
 
 	/**
-	 * Return the overflowing quantity if added to the quantity of this item stack,
-	 * according to {@link Item#getMaxStackSize()}.
+	 * Return the overflowing quantity if added to the quantity of this item
+	 * stack, according to {@link Item#getMaxStackSize()}.
 	 * 
 	 * @param quantity
 	 *            the quantity to add.
@@ -70,8 +70,8 @@ public class ItemStack implements Serializable {
 	}
 
 	/**
-	 * Substract one from this ItemStack and returns the result as a new ItemStack.
-	 * if the quantity become zero, null is returned.
+	 * Substract one from this ItemStack and returns the result as a new
+	 * ItemStack. if the quantity become zero, null is returned.
 	 * 
 	 * @param quantity
 	 * @return
@@ -91,7 +91,8 @@ public class ItemStack implements Serializable {
 		return new ItemStack(item, this.quantity + quantity);
 	}
 
-	public String toMessageString() {
+	@Override
+	public String toString() {
 		return quantity + " " + item.getName();
 	}
 

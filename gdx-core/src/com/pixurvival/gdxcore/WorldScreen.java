@@ -1,5 +1,7 @@
 package com.pixurvival.gdxcore;
 
+import java.time.Instant;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
@@ -22,6 +24,9 @@ import com.pixurvival.gdxcore.input.CameraControlProcessor;
 import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
 import com.pixurvival.gdxcore.input.WorldMouseProcessor;
+import com.pixurvival.gdxcore.notificationpush.Notification;
+import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
+import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
@@ -66,6 +71,7 @@ public class WorldScreen implements Screen {
 	private PauseMenu pauseUI = new PauseMenu();
 	private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
 	private DefaultSoundsPlayer defaultSoundsPlayer;
+	private @Getter ChatUI chatUI = new ChatUI();
 
 	public void setWorld(World world) {
 		worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
@@ -92,7 +98,6 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(inventoryUI);
 		CraftUI craftUI = new CraftUI();
 		hudStage.addActor(craftUI);
-		ChatUI chatUI = new ChatUI();
 		world.getChatManager().addListener(chatUI);
 		TimeUI timeUI = new TimeUI();
 		hudStage.addActor(timeUI);
@@ -125,6 +130,8 @@ public class WorldScreen implements Screen {
 		if (world.getMapLimitsRun() != null) {
 			worldStage.addActor(new MapLimitActor(world.getMapLimitsRun().getRectangle()));
 		}
+		NotificationPushManager.getInstance()
+				.push(Notification.builder().status("In game").party(new Party(world.getPlayerEntities().size(), world.getPlayerEntities().size())).startTime(Instant.now().getEpochSecond()).build());
 	}
 
 	public void switchShowCollisionBoxes() {

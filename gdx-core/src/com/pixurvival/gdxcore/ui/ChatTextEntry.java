@@ -19,9 +19,12 @@ public class ChatTextEntry {
 
 	private GlyphLayout glyphLayout;
 
-	public void buildGlyphLayout(BitmapFont font) {
-		if (glyphLayout == null) {
-			glyphLayout = new GlyphLayout(font, text, 0, text.length(), Color.BLACK, 0, Align.left, false, null);
+	private float targetWidth;
+
+	public void buildGlyphLayout(BitmapFont font, float targetWidth) {
+		if (glyphLayout == null || this.targetWidth != targetWidth) {
+			this.targetWidth = targetWidth;
+			glyphLayout = new GlyphLayout(font, text, 0, text.length(), Color.BLACK, targetWidth, Align.left, true, null);
 		}
 	}
 

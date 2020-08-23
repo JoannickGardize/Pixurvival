@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.pixurvival.core.command.impl.GiveItemCommandProcessor;
 import com.pixurvival.core.command.impl.HealCommandProcessor;
+import com.pixurvival.core.command.impl.ListCommandProcessor;
 import com.pixurvival.core.command.impl.OpCommandProcessor;
 import com.pixurvival.core.command.impl.SpawnCommandProcessor;
 import com.pixurvival.core.command.impl.TeleportCommandProcessor;
@@ -26,6 +27,9 @@ public class CommandManager {
 		commands.put("heal", new HealCommandProcessor());
 		commands.put("op", new OpCommandProcessor());
 		commands.put("operator", new OpCommandProcessor());
+		ListCommandProcessor listCommandProcessor = new ListCommandProcessor();
+		commands.put("list", listCommandProcessor);
+		commands.put("ls", listCommandProcessor);
 	}
 
 	public String process(CommandExecutor executor, String[] args) {
@@ -52,7 +56,7 @@ public class CommandManager {
 		}
 		Class<?> argType = processor.getAutocompleteArgType(args.length - 1);
 		if (argType == null) {
-			return null;
+			return input;
 		}
 		Iterator<String> stringIterator;
 		if (IdentifiedElement.class.isAssignableFrom(argType)) {
@@ -62,8 +66,17 @@ public class CommandManager {
 		} else {
 			return input;
 		}
-		String argToAutocomplete = args[args.length - 1];
-		String autocompletedArg = findAutoComplete(stringIterator, argToAutocomplete);
+		String previousElements = args[args.length - 1];
+		int lastElementIndex = previousElements.lastIndexOf(',');
+		String lastElement;
+		if (lastElementIndex != -1 && lastElementIndex < previousElements.length() - 1) {
+			lastElement = previousElements.substring(lastElementIndex + 1);
+			previousElements = previousElements.substring(0, lastElementIndex + 1);
+		} else {
+			lastElement = previousElements;
+			previousElements = "";
+		}
+		String autocompletedArg = findAutoComplete(stringIterator, lastElement);
 		if (autocompletedArg == null) {
 			return input;
 		}
@@ -72,7 +85,7 @@ public class CommandManager {
 			sb.append(addQuotes(args[i]));
 			sb.append(" ");
 		}
-		sb.append(addQuotes(autocompletedArg));
+		sb.append(addQuotes(previousElements + autocompletedArg));
 		return sb.toString();
 
 	}

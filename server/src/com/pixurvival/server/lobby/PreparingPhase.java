@@ -10,6 +10,7 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.TranslationKey;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
@@ -222,6 +223,8 @@ public class PreparingPhase implements LobbyPhase {
 		message.setAvailableContentPacks(availableContentPacks);
 		message.setSelectedContentPackIndex(selectedContentPackIndex);
 		message.setSelectedGameModeIndex(selectedGameModeIndex);
+		GameMode gm = contentPackCache.get(availableContentPacks[selectedContentPackIndex]).getGameModes().get(selectedGameModeIndex);
+		message.setMaxPlayer(gm.getTeamNumberInterval().getMax() * gm.getTeamSizeInterval().getMax());
 		session.getPlayerSessions().forEach(s -> {
 			message.setMyPlayer(s.getLobbyPlayer());
 			message.setMyTeamName(s.getTeamName());

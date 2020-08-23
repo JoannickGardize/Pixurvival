@@ -13,11 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 
 public class MultiplayerMenuScreen implements Screen {
 
 	private Stage stage = new Stage(new ScreenViewport());
 	private ConnectionMessageWindow connectionMessageWindow;
+
+	private TextField nameField;
 
 	public MultiplayerMenuScreen() {
 		Skin skin = PixurvivalGame.getSkin();
@@ -35,14 +38,13 @@ public class MultiplayerMenuScreen implements Screen {
 		table.row();
 
 		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.playerName"), skin)).right();
-		TextField nameField = new TextField("Bob", skin);
+		nameField = new TextField("Bob", skin);
 		table.add(nameField);
 		table.row();
 
 		Table buttonTable = new Table();
 		buttonTable.defaults().pad(0, 5, 0, 5).prefWidth(100);
-		TextButton backButton = new TextButton(PixurvivalGame.getString("generic.back"), skin);
-		buttonTable.add(backButton).center();
+		buttonTable.add(new BackButton()).center();
 		TextButton connectButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.connect"), skin);
 		buttonTable.add(connectButton).center();
 
@@ -60,19 +62,16 @@ public class MultiplayerMenuScreen implements Screen {
 				new Thread(() -> PixurvivalGame.getClient().connectToServer(ipField.getText(), Integer.valueOf(portField.getText()), nameField.getText())).start();
 			}
 		});
-
-		backButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				PixurvivalGame.setScreen(MainMenuScreen.class);
-			}
-		});
 	}
 
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
-
+		String username = NotificationPushManager.getInstance().getUsername();
+		if (username != null) {
+			nameField.setText(username);
+		}
+		connectionMessageWindow.setVisible(false);
 	}
 
 	@Override

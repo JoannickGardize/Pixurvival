@@ -24,7 +24,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        lombokVersion = '1.18.4'
+        lombokVersion = '1.18.12'
     }
 
     repositories {
@@ -47,6 +47,7 @@ project(":core") {
     dependencies {
     	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     	testCompile 'junit:junit:4.12'
     	compile "org.yaml:snakeyaml:1.24"
     }
@@ -66,6 +67,7 @@ project(":client") {
     dependencies {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     }
 }
 
@@ -75,9 +77,10 @@ project(":contentpack-editor") {
     dependencies {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     }
     
-    task fatJar(type: Jar) {
+    task editorFatJar(type: Jar) {
 	    manifest {
 	        attributes 'Main-Class': "com.pixurvival.contentPackEditor.ContentPackEditor"
 	    }
@@ -94,10 +97,11 @@ project(":server") {
     dependencies {
     	compile project(":core")
     	compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
     	testCompile 'junit:junit:4.12'
     }
     
-    task fatJar(type: Jar) {
+    task serverFatJar(type: Jar) {
 	    manifest {
 	        attributes 'Main-Class': "com.pixurvival.server.console.ServerConsole"
 	    }
@@ -128,7 +132,7 @@ project(":gdx-desktop") {
     	}
     }
 
-	task fatJar(type: Jar) {
+	task clientFatJar(type: Jar) {
 	    manifest {
 	        attributes 'Main-Class': "com.pixurvival.desktop.DesktopLauncher"
 	    }
@@ -163,12 +167,14 @@ project(":gdx-core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile name: "discord-rpc"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompile 'junit:junit:4.12'
+        testCompile project(':core').sourceSets.test.output
     }
 }
 
 task packageDistribution(type: GradleBuild) {
-     tasks = ['copyJars', 'copyContentPack', 'zipPackage']
+     tasks = ['clientFatJar', 'serverFatJar', 'editorFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
 }
 
 task copyJars(type: Copy) {

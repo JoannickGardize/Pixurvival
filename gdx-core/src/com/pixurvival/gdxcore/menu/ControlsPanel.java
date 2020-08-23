@@ -58,10 +58,12 @@ public class ControlsPanel extends Table {
 		resetDefaultsTable.add(applyButton);
 		resetDefaultsTable.row();
 		saveButton = new MenuButton("generic.save", () -> {
-			UserDirectory.saveInputMapping(mapping);
-			InputManager.getInstance().getMapping().set(mapping);
-			ShortcutDrawer.updateTexts();
-			saveButton.setDisabled(true);
+			if (!saveButton.isDisabled()) {
+				UserDirectory.saveInputMapping(mapping);
+				InputManager.getInstance().getMapping().set(mapping);
+				ShortcutDrawer.updateTexts();
+				saveButton.setDisabled(true);
+			}
 		});
 		Button backButton = new MenuButton("generic.back", backAction);
 		Table buttonsTable = new Table();
@@ -126,7 +128,7 @@ public class ControlsPanel extends Table {
 			actionButtons[action.ordinal()].setText(button.toString());
 			saveButton.setDisabled(mapping.equals(InputManager.getInstance().getMapping()));
 		} else {
-			showKeyInUseMessage(action);
+			showKeyInUseMessage(currentAction);
 		}
 	}
 

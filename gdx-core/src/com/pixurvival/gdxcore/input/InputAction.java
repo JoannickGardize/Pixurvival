@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore.input;
 
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
+import com.pixurvival.gdxcore.input.processor.ChatProcessor;
 import com.pixurvival.gdxcore.input.processor.EquipmentAbilityProcessor;
 import com.pixurvival.gdxcore.input.processor.InputActionProcessor;
 import com.pixurvival.gdxcore.input.processor.MoveProcessor;
@@ -37,6 +38,7 @@ public enum InputAction {
 	INVENTORY8(new UseItemInInventoryProcessor(7)),
 	INVENTORY9(new UseItemInInventoryProcessor(8)),
 	INVENTORY10(new UseItemInInventoryProcessor(9)),
+	CHAT(new ChatProcessor()),
 	SWITCH_DEBUG_MODE(new SwitchDebugModeProcessor()),
 	SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor()),
 	SWITCH_FULLSCREEN(new SwitchFullScreenProcessor()),

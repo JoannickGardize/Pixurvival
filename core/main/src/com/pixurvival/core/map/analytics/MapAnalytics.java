@@ -26,8 +26,8 @@ public class MapAnalytics {
 	private @NonNull Random random;
 
 	/**
-	 * Analyzes the given map, to find an initial game configuration according to
-	 * the given criteria.
+	 * Analyzes the given map, to find an initial game configuration according
+	 * to the given criteria.
 	 * 
 	 * @param map
 	 *            the map to analyze
@@ -65,9 +65,7 @@ public class MapAnalytics {
 	AreaAnalysisResult findArea(TiledMapCursor cursor, AreaSearchCriteria criteria) {
 		StartPositionProvider startPositionProvider = new StartPositionProvider(random);
 		while (startPositionProvider.getStep() < MAX_START_POINT_TRY) {
-			System.out.println("begin analyze");
 			AreaAnalysisResult result = analyzeArea(cursor, startPositionProvider.next(), criteria.getSquareSize());
-			System.out.println("end analyze");
 			if (criteria.test(result)) {
 				return result;
 			}
@@ -94,7 +92,6 @@ public class MapAnalytics {
 		explorationQueue.add(startPosition);
 		while (!explorationQueue.isEmpty()) {
 			Position currentPosition = explorationQueue.remove();
-			System.out.println("Infinite loop tracker : " + currentPosition);
 			forEachNeighbors(currentPosition, position -> {
 				if (!exploredGrid.get(position, POINTS_INTERVAL) && area.enclosingWidth(position) <= maxSquareSize && area.enclosingHeight(position) <= maxSquareSize
 						&& isConnected(cursor, currentPosition, position, MAX_FAIL_POSITION_CHECK)) {
@@ -123,8 +120,8 @@ public class MapAnalytics {
 	 * @param position1
 	 * @param position2
 	 * @param maxFail
-	 *            Maximum number of "fail" of the algorithm, a "fail" happens each
-	 *            time an obstacle is encountered.
+	 *            Maximum number of "fail" of the algorithm, a "fail" happens
+	 *            each time an obstacle is encountered.
 	 * @return true if the two positions are connected, false if they are
 	 *         <b>maybe</b> not connected.
 	 */

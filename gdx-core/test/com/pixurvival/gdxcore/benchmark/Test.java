@@ -11,7 +11,8 @@ public class Test {
 		for (int i = 0; i < 10; i++) {
 			Thread.sleep(1000);
 			DiscordRPC.discordRunCallbacks();
-			DiscordRichPresence rich = new DiscordRichPresence.Builder("Testing").setDetails("Testing Discord API !").setBigImage("pixurvival_cover", "Pixurvival cover").build();
+			DiscordRichPresence rich = new DiscordRichPresence.Builder("Testing").setParty("Party test", 1, 10).setDetails("This is the details").setBigImage("pixurvival_cover", "Pixurvival cover")
+					.build();
 			DiscordRPC.discordUpdatePresence(rich);
 		}
 

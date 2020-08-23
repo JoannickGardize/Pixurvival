@@ -1,22 +1,21 @@
 package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.util.FloatWrapper;
 import com.pixurvival.gdxcore.util.TruncatingQueue;
 
 public class ChatHistory extends Widget implements Cullable {
 
-	private TruncatingQueue<ChatTextEntry> queue;
-	private int drawStartIndex;
-	private int drawSize;
+	private static final float MARGIN = 13;
 
-	private float prefWidth;
+	private TruncatingQueue<ChatTextEntry> queue;
+	private float drawStartY;
+	private float drawEndY;
+
 	private float prefHeight;
 
 	public ChatHistory(int historySize) {
@@ -32,45 +31,39 @@ public class ChatHistory extends Widget implements Cullable {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		validate();
-		int size = drawStartIndex + drawSize > queue.size() ? queue.size() - drawStartIndex : drawSize;
-		IntWrapper i = new IntWrapper(drawStartIndex);
-		queue.forEachRange(drawStartIndex, size, chatEntry -> {
-			PixurvivalGame.getDefaultFont().draw(batch, chatEntry.getGlyphLayout(), getX(), getY() + getHeight() - i.getValue() * PixurvivalGame.getDefaultFont().getLineHeight());
-			i.increment();
+		FloatWrapper currentHeight = new FloatWrapper(MARGIN);
+		queue.forEachReverse(chatEntry -> {
+			if (currentHeight.getValue() + chatEntry.getGlyphLayout().height > drawStartY) {
+				PixurvivalGame.getDefaultFont().draw(batch, chatEntry.getGlyphLayout(), getX(), getY() + currentHeight.getValue() + chatEntry.getGlyphLayout().height);
+			}
+			currentHeight.setValue(currentHeight.getValue() + chatEntry.getGlyphLayout().height + MARGIN);
+			return currentHeight.getValue() >= drawEndY;
 		});
 	}
 
 	@Override
 	public void setCullingArea(Rectangle cullingArea) {
-		drawStartIndex = Math.max(0, (int) ((getPrefHeight() - cullingArea.y - cullingArea.height) / PixurvivalGame.getDefaultFont().getLineHeight()));
-		drawSize = (int) Math.ceil(cullingArea.height / PixurvivalGame.getDefaultFont().getLineHeight()) + 1;
+		drawStartY = cullingArea.y;
+		drawEndY = cullingArea.y + cullingArea.height;
 	}
 
 	@Override
 	public void layout() {
-		FloatWrapper newWidth = new FloatWrapper();
+		prefHeight = MARGIN;
 		queue.forEach(chatEntry -> {
-			chatEntry.buildGlyphLayout(PixurvivalGame.getDefaultFont());
-			GlyphLayout glyphLayout = chatEntry.getGlyphLayout();
-			if (glyphLayout.width > newWidth.getValue()) {
-				newWidth.setValue(glyphLayout.width);
-			}
+			chatEntry.buildGlyphLayout(PixurvivalGame.getDefaultFont(), getWidth());
+			prefHeight += chatEntry.getGlyphLayout().height + MARGIN;
 		});
-		// setSize(newWidth.getValue(),
-		// PixurvivalGame.getDefaultFont().getLineHeight() * queue.size());
-		prefWidth = newWidth.getValue();
-		prefHeight = PixurvivalGame.getDefaultFont().getLineHeight() * queue.size();
-	}
-
-	@Override
-	public float getPrefWidth() {
-		validate();
-		return prefWidth;
 	}
 
 	@Override
 	public float getPrefHeight() {
 		validate();
 		return prefHeight;
+	}
+
+	@Override
+	protected void sizeChanged() {
+		invalidateHierarchy();
 	}
 }

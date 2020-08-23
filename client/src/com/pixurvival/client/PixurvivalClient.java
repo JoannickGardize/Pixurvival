@@ -122,16 +122,20 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 
 	public void connectToServer(String address, int port, String playerName) {
 		try {
-			if (client.isConnected()) {
-				client.stop();
-				client.close();
-			}
+			disconnectFromServer();
 			client.start();
 			client.connect(5000, address, port, port);
 			client.sendTCP(new LoginRequest(playerName));
 		} catch (Exception e) {
 			Log.error("Error when trying to connect to server.", e);
 			listeners.forEach(l -> l.loginResponse(LoginResponse.INTERNAL_ERROR));
+		}
+	}
+
+	public void disconnectFromServer() {
+		if (client.isConnected()) {
+			client.stop();
+			client.close();
 		}
 	}
 

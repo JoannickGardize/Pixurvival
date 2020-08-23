@@ -162,7 +162,7 @@ public class CommandArgsUtils {
 		String[] split = arg.split("\\,");
 		ItemStack[] result = new ItemStack[split.length];
 		for (int i = 0; i < split.length; i++) {
-			result[i] = itemStack(executor, split[i]);
+			result[i] = itemStack(executor, split[i].trim());
 		}
 		return result;
 	}

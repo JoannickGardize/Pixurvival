@@ -21,6 +21,10 @@ import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.menu.MainMenuScreen;
+import com.pixurvival.gdxcore.notificationpush.Notification;
+import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
+import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.ui.EndGameUI;
 
 public class MultiplayerLobbyScreen implements Screen {
@@ -73,8 +77,18 @@ public class MultiplayerLobbyScreen implements Screen {
 			}
 		});
 
+		TextButton backButton = new TextButton(PixurvivalGame.getString("generic.back"), PixurvivalGame.getSkin());
+		backButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				PixurvivalGame.getClient().disconnectFromServer();
+				PixurvivalGame.setScreen(MainMenuScreen.class);
+			}
+		});
+
 		Table buttonGroup = new Table();
 		buttonGroup.defaults().prefWidth(150);
+		buttonGroup.add(backButton).padRight(20);
 		buttonGroup.add(addTeamButton);
 		buttonGroup.add(readyButton);
 		mainGroup.add(buttonGroup).colspan(2).expandX().align(Align.center);
@@ -111,6 +125,7 @@ public class MultiplayerLobbyScreen implements Screen {
 		}
 		setTeamTable(lobbyData);
 		gameModeChooser.setData(lobbyData);
+		NotificationPushManager.getInstance().push(Notification.builder().status("In lobby").party(new Party(lobbyData.getPlayers().length, lobbyData.getMaxPlayer())).build());
 	}
 
 	private void setTeamTable(LobbyData lobbyData) {
@@ -182,5 +197,4 @@ public class MultiplayerLobbyScreen implements Screen {
 		questionWindow.update(stage.getViewport());
 		questionWindow.setVisible(true);
 	}
-
 }

@@ -36,8 +36,6 @@ public class LinearEffectMovement implements EffectMovement {
 			entity.getPosition().add(Vector2.fromEuclidean(initialDistance, angle));
 		}
 		entity.setForward(true);
-		MovementData data = new MovementData();
-		entity.setMovementData(data);
 		if (relative && ancestor instanceof Entity && ((Entity) ancestor).isForward()) {
 			Vector2 velocityVector = Vector2.fromEuclidean(speed, angle).add(((Entity) ancestor).getTargetVelocity());
 			entity.setVelocityDirect(velocityVector);
@@ -47,6 +45,8 @@ public class LinearEffectMovement implements EffectMovement {
 			entity.updateVelocity();
 		}
 		if (entity.getWorld().isServer() && destroyAtTargetPosition) {
+			MovementData data = new MovementData();
+			entity.setMovementData(data);
 			float d = entity.getWorld().getTime().getDeltaTime() * entity.getSpeed();
 			data.targetPosition = ancestor.getTargetPosition().copy();
 			data.targetDistance = d * d;
@@ -76,5 +76,26 @@ public class LinearEffectMovement implements EffectMovement {
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
 		entity.setSpeed(buffer.getFloat());
+	}
+
+	@Override
+	public void writeRepositoryUpdate(ByteBuffer buffer, EffectEntity entity) {
+		if (destroyAtTargetPosition) {
+			MovementData data = (MovementData) entity.getMovementData();
+			data.targetPosition.write(buffer);
+			buffer.putFloat(data.targetDistance);
+		}
+	}
+
+	@Override
+	public void applyRepositoryUpdate(ByteBuffer buffer, EffectEntity entity) {
+		if (destroyAtTargetPosition) {
+			MovementData data = new MovementData();
+			data.targetPosition = new Vector2();
+			entity.setMovementData(data);
+			data.targetPosition.apply(buffer);
+			data.targetDistance = buffer.getFloat();
+		}
+
 	}
 }

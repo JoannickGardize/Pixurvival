@@ -34,7 +34,7 @@ public class TruncatingQueue<E> {
 		}
 	}
 
-	public void forEachFromHead(Predicate<E> action) {
+	public void forEachReverse(Predicate<E> action) {
 
 		int index = previousIndex(head);
 		for (int i = 0; i < size; i++) {

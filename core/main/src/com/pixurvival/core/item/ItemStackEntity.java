@@ -8,6 +8,8 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;
@@ -32,7 +34,7 @@ public class ItemStackEntity extends Entity {
 	}
 
 	private @Getter ItemStack itemStack;
-	private LivingEntity magnetTarget = null;
+	private TeamMember magnetTarget = null;
 	private @Getter State state;
 	private float spawnProgress;
 	private float spawnDistance;
@@ -95,6 +97,7 @@ public class ItemStackEntity extends Entity {
 			switch (state) {
 			case INHIBITED:
 				setForward(false);
+				magnetTarget = magnetTarget.findIfNotFound();
 				if (this.distanceSquared(magnetTarget) > INHIBITION_DISTANCE * INHIBITION_DISTANCE) {
 					state = State.WAITING;
 					magnetTarget = null;
@@ -118,10 +121,11 @@ public class ItemStackEntity extends Entity {
 				speedInterpolation.update(getWorld());
 				setMovingAngle(angleToward(magnetTarget));
 				setForward(true);
-				if (collideDynamic(magnetTarget)) {
+				magnetTarget = magnetTarget.findIfNotFound();
+				if (magnetTarget instanceof Entity && collideDynamic((Entity) magnetTarget)) {
 					setAlive(false);
 					if (getWorld().isServer()) {
-						ItemStack rest = magnetTarget.getInventory().add(itemStack);
+						ItemStack rest = ((InventoryHolder) magnetTarget).getInventory().add(itemStack);
 						if (rest != null) {
 							ItemStackEntity newEntity = new ItemStackEntity(rest);
 							newEntity.state = State.INHIBITED;
@@ -176,10 +180,10 @@ public class ItemStackEntity extends Entity {
 		buffer.put((byte) state.ordinal());
 		switch (state) {
 		case INHIBITED:
-			buffer.putLong(magnetTarget.getId());
+			TeamMemberSerialization.write(buffer, magnetTarget, false);
 			break;
 		case MAGNTIZED:
-			buffer.putLong(magnetTarget.getId());
+			TeamMemberSerialization.write(buffer, magnetTarget, false);
 			buffer.putLong(speedInterpolation.getStartTimeMillis());
 			break;
 		case SPAWNING:
@@ -199,12 +203,11 @@ public class ItemStackEntity extends Entity {
 		state = State.values()[buffer.get()];
 		switch (state) {
 		case INHIBITED:
-			long magnetTargetId = buffer.getLong();
-			magnetTarget = getWorld().getPlayerEntities().get(magnetTargetId);
+			// TODO change this when structures can be the target
+			magnetTarget = TeamMemberSerialization.read(buffer, getWorld(), false);
 			break;
 		case MAGNTIZED:
-			magnetTargetId = buffer.getLong();
-			magnetTarget = getWorld().getPlayerEntities().get(magnetTargetId);
+			magnetTarget = TeamMemberSerialization.read(buffer, getWorld(), false);
 			speedInterpolation.setStartTimeMillis(buffer.getLong());
 			break;
 		case SPAWNING:

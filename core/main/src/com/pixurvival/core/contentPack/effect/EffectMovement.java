@@ -25,4 +25,12 @@ public interface EffectMovement extends Serializable {
 	default boolean isDestroyWithAncestor() {
 		return false;
 	}
+
+	default void writeRepositoryUpdate(ByteBuffer buffer, EffectEntity entity) {
+
+	}
+
+	default void applyRepositoryUpdate(ByteBuffer buffer, EffectEntity entity) {
+
+	}
 }

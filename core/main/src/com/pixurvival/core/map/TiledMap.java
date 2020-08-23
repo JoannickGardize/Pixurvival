@@ -268,9 +268,9 @@ public class TiledMap {
 	 * @return The chunk at the given position
 	 */
 	public Chunk chunkAtWait(ChunkPosition position) {
+		ChunkPosition positionLock = waitingPositions.computeIfAbsent(new ChunkPosition(position), p -> p);
 		requestChunk(position);
 		flushChunks();
-		ChunkPosition positionLock = waitingPositions.computeIfAbsent(new ChunkPosition(position), p -> p);
 		synchronized (positionLock) {
 			Chunk chunk = chunkAt(position);
 			if (chunk != null) {
@@ -289,7 +289,6 @@ public class TiledMap {
 				}
 				flushChunks();
 			}
-			System.out.println("end wait");
 			return chunk;
 		}
 	}
@@ -400,7 +399,7 @@ public class TiledMap {
 
 	public MapStructure findClosestStructure(Vector2 position, float searchRadius, IntPredicate groupFilter, Predicate<MapStructure> structureFilter) {
 		FindClosestStructureRun run = new FindClosestStructureRun();
-		forEachChunk(position, searchRadius, chunk -> chunk.getStructures().forEach(entry -> {
+		forEachChunk(position, searchRadius, (Consumer<Chunk>) chunk -> chunk.getStructures().forEach(entry -> {
 			if (groupFilter.test(entry.getKey())) {
 				for (MapStructure structure : entry.getValue()) {
 					if (structureFilter.test(structure)) {

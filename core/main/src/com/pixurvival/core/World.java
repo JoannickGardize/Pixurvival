@@ -153,6 +153,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
 		world.getEntityPool().create(initializeLocalWorld(world));
+
 		return world;
 	}
 
@@ -175,6 +176,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
+		world.playerEntities.put(playerEntity.getId(), playerEntity);
 		return playerEntity;
 	}
 
@@ -220,8 +222,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 */
 	public void initializeNewGame() {
 		entityPool.flushNewEntities();
@@ -241,16 +243,13 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	public void received(ChatEntry chatEntry) {
+		chatManager.received(chatEntry);
 		String text = chatEntry.getText();
-		if (text.startsWith("/")) {
-			if (text.length() > 1) {
-				String returnText = commandManager.process((CommandExecutor) chatEntry.getSender(), CommandArgsUtils.splitArgs(text.substring(1)));
-				if (returnText != null) {
-					chatManager.received(new ChatEntry(this, returnText));
-				}
+		if (text.startsWith("/") && text.length() > 1) {
+			String returnText = commandManager.process((CommandExecutor) chatEntry.getSender(), CommandArgsUtils.splitArgs(text.substring(1)));
+			if (returnText != null) {
+				chatManager.received(new ChatEntry(this, returnText));
 			}
-		} else {
-			chatManager.received(chatEntry);
 		}
 	}
 

@@ -179,6 +179,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
 		super.writeRepositoryUpdate(byteBuffer);
 		TeamMemberSerialization.write(byteBuffer, ancestor, true);
+		definition.getEffect().getMovement().writeRepositoryUpdate(byteBuffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
 			byteBuffer.putLong(creationTime);
 			byteBuffer.putInt(numberOfDelayedFollowingElements);
@@ -190,6 +191,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
 		super.applyRepositoryUpdate(byteBuffer);
 		ancestor = TeamMemberSerialization.read(byteBuffer, getWorld(), true);
+		definition.getEffect().getMovement().applyRepositoryUpdate(byteBuffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
 			creationTime = byteBuffer.getLong();
 			numberOfDelayedFollowingElements = byteBuffer.getInt();

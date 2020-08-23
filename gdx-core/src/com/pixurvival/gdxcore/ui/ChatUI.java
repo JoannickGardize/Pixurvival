@@ -30,11 +30,12 @@ public class ChatUI extends UIWindow implements ChatListener {
 	public ChatUI() {
 		super("chat");
 		displayAreScrollPane = new ScrollPane(chatHistory, PixurvivalGame.getSkin());
+		displayAreScrollPane.setScrollingDisabled(true, false);
 
-		inputArea = new TextField("test", PixurvivalGame.getSkin());
+		inputArea = new TextField("", PixurvivalGame.getSkin());
 		inputArea.addCaptureListener(new InputListener() {
 			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
+			public boolean keyUp(InputEvent event, int keycode) {
 				switch (keycode) {
 				case Keys.ENTER:
 					history.add(inputArea.getText());
@@ -85,13 +86,28 @@ public class ChatUI extends UIWindow implements ChatListener {
 		pack();
 	}
 
+	public void focusTextInput() {
+		getStage().setKeyboardFocus(inputArea);
+		inputArea.getOnscreenKeyboard().show(true);
+	}
+
 	@Override
 	public void received(ChatEntry chatEntry) {
-		StringBuilder sb = new StringBuilder("[");
+		StringBuilder sb = new StringBuilder();
+		if (chatEntry.getSender() instanceof PlayerEntity) {
+			if (((PlayerEntity) chatEntry.getSender()).getTeam() == PixurvivalGame.getClient().getMyPlayer().getTeam()) {
+				sb.append("[GREEN]");
+			} else {
+				sb.append("[RED]");
+			}
+		} else {
+			sb.append("[BLUE]");
+		}
+		sb.append("[[");
 		sb.append(dateFormat.format(new Date(chatEntry.getDateMillis())));
 		sb.append("] ");
 		sb.append(chatEntry.getSender().getName());
-		sb.append(" : ");
+		sb.append("[] : ");
 		sb.append(chatEntry.getText());
 		chatHistory.push(new ChatTextEntry(sb.toString()));
 		validate();

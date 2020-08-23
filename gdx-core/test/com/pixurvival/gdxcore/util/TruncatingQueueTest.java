@@ -15,7 +15,7 @@ public class TruncatingQueueTest {
 		queue.push(2);
 		queue.push(3);
 		List<Integer> actual = new ArrayList<>();
-		queue.forEachFromHead(i -> {
+		queue.forEachReverse(i -> {
 			actual.add(i);
 			return i == 2;
 		});
@@ -29,7 +29,7 @@ public class TruncatingQueueTest {
 		queue.push(6);
 		actual.clear();
 		expected.clear();
-		queue.forEachFromHead(i -> {
+		queue.forEachReverse(i -> {
 			actual.add(i);
 			return false;
 		});

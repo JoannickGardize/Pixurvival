@@ -15,8 +15,8 @@ public class DesktopLauncher {
 	public static void main(String[] args) throws FileNotFoundException {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.foregroundFPS = 60;
-		config.width = 960;
-		config.height = 540;
+		config.width = 1600;
+		config.height = 900;
 		config.title = "Pixurvival - " + ReleaseVersion.getValue();
 		config.addIcon("icon.png", FileType.Internal);
 		config.forceExit = false;

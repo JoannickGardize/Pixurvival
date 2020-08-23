@@ -20,6 +20,7 @@ public class LobbyData extends LobbyMessage {
 	private ContentPackIdentifier[] availableContentPacks;
 	private int selectedContentPackIndex;
 	private int selectedGameModeIndex;
+	private int maxPlayer;
 
 	/**
 	 * modCount to check if the teams structures is the the as the one that the

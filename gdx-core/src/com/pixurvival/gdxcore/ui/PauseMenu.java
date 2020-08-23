@@ -46,10 +46,12 @@ public class PauseMenu extends Window {
 		}));
 		mainMenuTable.row();
 		MenuButton saveButton = new MenuButton("hud.pause.save", () -> {
+			if (PixurvivalGame.getClient().getWorld().getType() != World.Type.LOCAL) {
+				return;
+			}
 			try {
 				WorldSerialization.save(PixurvivalGame.getWorld(), PixurvivalGame.getClient().getContentPackSerialization());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});

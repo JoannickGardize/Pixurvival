@@ -17,6 +17,7 @@ import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.menu.BackButton;
 import com.pixurvival.gdxcore.menu.MessageWindow;
 
 public class NewSingleplayerLobbyScreen implements Screen {
@@ -62,7 +63,8 @@ public class NewSingleplayerLobbyScreen implements Screen {
 			}
 		});
 
-		mainGroup.add(playButton).fill().colspan(2);
+		mainGroup.add(new BackButton()).fill();
+		mainGroup.add(playButton).fill();
 
 		stage = new Stage(new ScreenViewport());
 		stage.addActor(mainGroup);
