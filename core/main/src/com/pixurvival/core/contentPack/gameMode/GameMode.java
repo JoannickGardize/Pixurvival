@@ -9,7 +9,7 @@ import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
@@ -31,7 +31,7 @@ public class GameMode extends IdentifiedElement {
 
 	@Required
 	@ElementReference
-	private MapGenerator mapGenerator;
+	private ProcedurallyGeneratedMapProvider mapGenerator;
 
 	@Required
 	@ElementReference

@@ -12,7 +12,7 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
@@ -39,7 +39,7 @@ public enum ElementType {
 	CREATURE(Creature.class),
 	TILE(Tile.class),
 	STRUCTURE(Structure.class),
-	MAP_GENERATOR(MapGenerator.class),
+	MAP_GENERATOR(ProcedurallyGeneratedMapProvider.class),
 	ECOSYSTEM(Ecosystem.class),
 	GAME_MODE(GameMode.class);
 

@@ -18,14 +18,14 @@ import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 
 public class GameModeEditor extends RootElementEditor<GameMode> {
 
 	private static final long serialVersionUID = 1L;
 
 	private ElementChooserButton<Ecosystem> ecosystemChooser = new ElementChooserButton<>(Ecosystem.class);
-	private ElementChooserButton<MapGenerator> mapGeneratorChooser = new ElementChooserButton<>(MapGenerator.class);
+	private ElementChooserButton<ProcedurallyGeneratedMapProvider> mapGeneratorChooser = new ElementChooserButton<>(ProcedurallyGeneratedMapProvider.class);
 
 	public GameModeEditor() {
 

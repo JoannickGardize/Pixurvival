@@ -24,7 +24,7 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
@@ -114,8 +114,8 @@ public class ContentPack implements Serializable {
 	private List<Structure> structures = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(MapGenerator.class)
-	private List<MapGenerator> mapGenerators = new ArrayList<>();
+	@ElementCollection(ProcedurallyGeneratedMapProvider.class)
+	private List<ProcedurallyGeneratedMapProvider> mapGenerators = new ArrayList<>();
 
 	@ElementCollection(Ecosystem.class)
 	private List<Ecosystem> ecosystems = new ArrayList<>();

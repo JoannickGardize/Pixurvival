@@ -15,12 +15,12 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.map.Heightmap;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StructureGenerator;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.map.TileGenerator;
 
-public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
+public class MapGeneratorEditor extends RootElementEditor<ProcedurallyGeneratedMapProvider> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,10 +50,10 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 
 		// Binding
 
-		bind(heightmapsEditor, MapGenerator::getHeightmaps, MapGenerator::setHeightmaps);
-		bind(tileGeneratorsEditor, MapGenerator::getTileGenerators, MapGenerator::setTileGenerators);
-		bind(defaultTileChooser, MapGenerator::getDefaultTile, MapGenerator::setDefaultTile);
-		bind(structureGeneratorsEditor, MapGenerator::getStructureGenerators, MapGenerator::setStructureGenerators);
+		bind(heightmapsEditor, ProcedurallyGeneratedMapProvider::getHeightmaps, ProcedurallyGeneratedMapProvider::setHeightmaps);
+		bind(tileGeneratorsEditor, ProcedurallyGeneratedMapProvider::getTileGenerators, ProcedurallyGeneratedMapProvider::setTileGenerators);
+		bind(defaultTileChooser, ProcedurallyGeneratedMapProvider::getDefaultTile, ProcedurallyGeneratedMapProvider::setDefaultTile);
+		bind(structureGeneratorsEditor, ProcedurallyGeneratedMapProvider::getStructureGenerators, ProcedurallyGeneratedMapProvider::setStructureGenerators);
 
 		// Layouting
 
@@ -71,11 +71,11 @@ public class MapGeneratorEditor extends RootElementEditor<MapGenerator> {
 	}
 
 	@Override
-	public boolean isValueValid(MapGenerator value) {
+	public boolean isValueValid(ProcedurallyGeneratedMapProvider value) {
 		if (value == null) {
 			return false;
 		}
-		MapGenerator previousValue = getValue();
+		ProcedurallyGeneratedMapProvider previousValue = getValue();
 		setValue(value);
 		boolean result = super.isValueValid(value);
 		setValue(previousValue);

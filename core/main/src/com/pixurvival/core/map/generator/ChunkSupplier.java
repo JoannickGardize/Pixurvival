@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
@@ -15,10 +15,10 @@ import lombok.Getter;
 public class ChunkSupplier {
 
 	private TiledMap map;
-	private MapGenerator mapGenerator;
+	private ProcedurallyGeneratedMapProvider mapGenerator;
 	private @Getter long seed;
 
-	public ChunkSupplier(World world, MapGenerator mapGenerator, long seed) {
+	public ChunkSupplier(World world, ProcedurallyGeneratedMapProvider mapGenerator, long seed) {
 		map = world.getMap();
 
 		mapGenerator.initialize(seed);

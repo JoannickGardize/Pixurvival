@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.map.MapGenerator;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -121,7 +121,7 @@ public class TiledMap {
 	 * @param x
 	 * @param y
 	 * @return The tile at the given position. If the chunk of the tile is not
-	 *         generated, returns the default tile of the {@link MapGenerator}.
+	 *         generated, returns the default tile of the {@link ProcedurallyGeneratedMapProvider}.
 	 */
 	public MapTile tileAt(int x, int y) {
 		Chunk chunk = chunkAt(x, y);
