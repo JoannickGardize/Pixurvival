@@ -15,7 +15,7 @@ public class AccessoryItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 
-	private ItemAlterationAbility ability;
+	private ItemAlterationAbility ability = new ItemAlterationAbility();
 
 	@Override
 	public void forEachStatFormula(Consumer<StatFormula> action) {

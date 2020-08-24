@@ -44,7 +44,7 @@ public class TiledMap {
 	private World world;
 
 	private MapTile outsideTile;
-	private float chunkDistance;
+	private final float chunkDistance;
 	@Getter
 	private MapTile[] mapTilesById;
 
@@ -230,9 +230,6 @@ public class TiledMap {
 		} else {
 			ChunkPosition.forEachChunkPosition(e.getPosition(), chunkDistance, position -> {
 				if (!chunks.containsKey(position)) {
-					// Putting the position key is very important, it
-					// prevent the chunk to be
-					// requested every frame until it is generated.
 					requestChunk(position);
 				} else {
 					Chunk chunk = chunks.get(position);
@@ -246,6 +243,9 @@ public class TiledMap {
 
 	public void requestChunk(ChunkPosition position) {
 		if (!chunks.containsKey(position)) {
+			// Putting the position key is very important, it
+			// prevent the chunk to be
+			// requested every frame until it is generated.
 			chunks.put(position, null);
 			ChunkManager.getInstance().requestChunk(this, position);
 		}
@@ -324,7 +324,7 @@ public class TiledMap {
 		for (StructureUpdate structureUpdate : structureUpdates) {
 			Chunk chunk = chunkAt(structureUpdate.getX(), structureUpdate.getY());
 			if (chunk == null) {
-				ChunkPosition position = new ChunkPosition(structureUpdate.getX(), structureUpdate.getY());
+				ChunkPosition position = ChunkPosition.fromWorldPosition(structureUpdate.getX(), structureUpdate.getY());
 				List<StructureUpdate> waitingList = waitingStructureUpdates.computeIfAbsent(position, p -> new ArrayList<>());
 				waitingList.add(structureUpdate);
 			} else {

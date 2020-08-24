@@ -92,7 +92,7 @@ class NetworkMessageHandler extends Listener {
 				if (action != null) {
 					action.accept(object);
 				} else {
-					Log.warn("Received unknown object type  : " + object.getClass().getSimpleName());
+					Log.debug("Received unknown object type  : " + object.getClass().getSimpleName());
 				}
 			}
 			receivedObjects.clear();
