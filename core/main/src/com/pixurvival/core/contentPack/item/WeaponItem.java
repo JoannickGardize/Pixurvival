@@ -15,8 +15,8 @@ public class WeaponItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 
-	private ItemAlterationAbility baseAbility;
-	private ItemAlterationAbility specialAbility;
+	private ItemAlterationAbility baseAbility = new ItemAlterationAbility();
+	private ItemAlterationAbility specialAbility = new ItemAlterationAbility();
 
 	@Override
 	public void forEachStatFormula(Consumer<StatFormula> action) {

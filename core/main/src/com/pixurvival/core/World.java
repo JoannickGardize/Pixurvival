@@ -68,7 +68,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private static Map<Long, World> worlds = new HashMap<>();
 	// TODO deprecate this for multiworld
 	private static @Getter ContentPack currentContentPack;
-	private Type type;
+	private final Type type;
 	private Time time;
 	private TiledMap map;
 	private EntityPool entityPool = new EntityPool(this);

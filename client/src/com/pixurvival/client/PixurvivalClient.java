@@ -139,6 +139,18 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
+	public void dispose() {
+		if (world != null) {
+			world.unload();
+		}
+		disconnectFromServer();
+		try {
+			client.dispose();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public Locale getLocaleFor(ContentPack contentPack) {
 		return LocaleUtils.findBestMatch(localePriorityList, contentPack.getTranslations().keySet());
 	}

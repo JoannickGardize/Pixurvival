@@ -214,7 +214,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			super.render();
 		} catch (Exception e) {
-			ChunkManager.getInstance().setRunning(false);
+			dispose();
 			throw e;
 		}
 	}
@@ -240,11 +240,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void dispose() {
-		assetManager.dispose();
-		if (client.getWorld() != null) {
-			client.getWorld().unload();
-		}
 		super.dispose();
+		assetManager.dispose();
+		client.dispose();
 		ChunkManager.getInstance().setRunning(false);
 		NotificationPushManager.getInstance().stop();
 	}

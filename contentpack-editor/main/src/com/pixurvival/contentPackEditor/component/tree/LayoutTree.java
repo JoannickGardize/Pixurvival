@@ -85,7 +85,8 @@ public class LayoutTree extends JTree {
 	}
 
 	private LayoutNode getRightClickedNode() {
-		return (LayoutNode) getClosestPathForLocation(currentContextX, currentContextY).getLastPathComponent();
+		TreePath path = getClosestPathForLocation(currentContextX, currentContextY);
+		return path == null ? LayoutManager.getInstance().getRoot() : (LayoutNode) path.getLastPathComponent();
 
 	}
 
