@@ -6,16 +6,25 @@ import java.util.Map;
 
 import com.esotericsoftware.kryo.util.IntMap;
 
+import lombok.Getter;
+
+/**
+ * Contains player teams of a party
+ * 
+ * @author SharkHendrix
+ *
+ */
 public class TeamSet implements Iterable<Team> {
 
 	/**
 	 * The Wild team represents all creatures excepts the ones owned by players.
 	 */
-	public static final Team WILD_TEAM = new Team(-1, "Wild");
+	public static final Team WILD_TEAM = new Team(-1, "Wild", false);
 
 	private IntMap<Team> teams = new IntMap<>();
 	private Map<String, Team> teamsByName = new HashMap<>();
 	private int nextId = 0;
+	private @Getter int playerTeamSize = 0;
 
 	public TeamSet() {
 		teams.put(WILD_TEAM.getId(), WILD_TEAM);
@@ -29,6 +38,7 @@ public class TeamSet implements Iterable<Team> {
 		Team team = new Team(nextId++, name);
 		teams.put(team.getId(), team);
 		teamsByName.put(name, team);
+		playerTeamSize++;
 		return team;
 	}
 
@@ -41,10 +51,10 @@ public class TeamSet implements Iterable<Team> {
 	}
 
 	/**
-	 * @return The number of teams, without the special "Wild" team.
+	 * @return The number of player team.
 	 */
 	public int size() {
-		return teamsByName.size() - 1;
+		return teamsByName.size();
 	}
 
 	public String[] getNames() {

@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.mapGenerator;
+package com.pixurvival.contentPackEditor.component.mapProvider;
 
 import java.awt.BorderLayout;
 import java.util.Collection;

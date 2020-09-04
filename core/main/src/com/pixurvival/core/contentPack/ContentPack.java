@@ -24,7 +24,7 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
-import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
+import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
@@ -114,8 +114,8 @@ public class ContentPack implements Serializable {
 	private List<Structure> structures = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(ProcedurallyGeneratedMapProvider.class)
-	private List<ProcedurallyGeneratedMapProvider> mapGenerators = new ArrayList<>();
+	@ElementCollection(MapProvider.class)
+	private List<MapProvider> mapProviders = new ArrayList<>();
 
 	@ElementCollection(Ecosystem.class)
 	private List<Ecosystem> ecosystems = new ArrayList<>();
@@ -161,7 +161,6 @@ public class ContentPack implements Serializable {
 		return resources.containsKey(resource);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void initialize() {
 		if (initialized) {
 			return;
@@ -170,6 +169,22 @@ public class ContentPack implements Serializable {
 		initializeStatFormulaMap();
 		initializeAlterationMap();
 		elementsByName = new HashMap<>();
+		callElementsInitializeMethod();
+		initializeStructures();
+		computeMaxLivingEntityRadius();
+	}
+
+	private void computeMaxLivingEntityRadius() {
+		maxLivingEntityRadius = PlayerEntity.COLLISION_RADIUS;
+		for (Creature creature : creatures) {
+			if (creature.getCollisionRadius() > maxLivingEntityRadius) {
+				maxLivingEntityRadius = creature.getCollisionRadius();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void callElementsInitializeMethod() {
 		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
 			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
 			Map<String, IdentifiedElement> typeMap = new HashMap<>();
@@ -179,6 +194,9 @@ public class ContentPack implements Serializable {
 				element.initialize();
 			}
 		}
+	}
+
+	private void initializeStructures() {
 		for (Structure structure : structures) {
 			if (structure.getLightEmissionRadius() > maxLightRadius) {
 				maxLightRadius = structure.getLightEmissionRadius();
@@ -190,12 +208,6 @@ public class ContentPack implements Serializable {
 						break;
 					}
 				}
-			}
-		}
-		maxLivingEntityRadius = PlayerEntity.COLLISION_RADIUS;
-		for (Creature creature : creatures) {
-			if (creature.getCollisionRadius() > maxLivingEntityRadius) {
-				maxLivingEntityRadius = creature.getCollisionRadius();
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatManager;
 import com.pixurvival.core.chat.ChatSender;
@@ -25,11 +24,6 @@ import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkCreatureSpawnManager;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.map.analytics.AreaSearchCriteria;
-import com.pixurvival.core.map.analytics.CardinalDirection;
-import com.pixurvival.core.map.analytics.GameAreaConfiguration;
-import com.pixurvival.core.map.analytics.MapAnalytics;
-import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.mapLimits.MapLimitsManager;
@@ -90,6 +84,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private @Setter MapLimitsRun mapLimitsRun;
 	private ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
 	private @Setter String saveName;
+	private long seed;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		this(id, type, contentPack, gameModeId, new Random().nextLong());
@@ -103,9 +98,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		this.type = type;
 		this.contentPack = contentPack;
 		this.gameMode = contentPack.getGameModes().get(gameModeId);
+		this.seed = seed;
 		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(this, gameMode.getMapGenerator(), seed);
+		chunkSupplier = new ChunkSupplier(this, gameMode.getMapProvider());
 	}
 
 	public static World getWorld(long id) {
@@ -222,12 +218,12 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 */
 	public void initializeNewGame() {
 		entityPool.flushNewEntities();
-		initializeSpawns();
+		gameMode.getPlayerSpawn().apply(this);
 		initializeEvents();
 		gameMode.getEndGameCondition().initialize(this);
 		gameMode.getEndGameCondition().initializeNewGameData(this);
@@ -253,43 +249,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		}
 	}
 
-	private void initializeSpawns() {
-		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
-		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.size());
-		areaSearchCriteria.setSquareSize((int) gameMode.getSpawnSquareSize());
-		MapAnalytics mapAnalytics = new MapAnalytics(random);
-		try {
-			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(map, areaSearchCriteria);
-			spawnCenter = config.getArea().center();
-			for (int i = 0; i < teamSet.size(); i++) {
-				Team team = teamSet.get(i);
-				Vector2 spawnPosition = config.getSpawnSpots()[i];
-				spawnTeam(team, spawnPosition);
-			}
-		} catch (MapAnalyticsException e) {
-			Log.error("MapAnalyticsException");
-		}
-	}
-
 	private void initializeEvents() {
 		for (int i = 0; i < gameMode.getEvents().size(); i++) {
 			actionTimerManager.addActionTimer(new EventAction(i), gameMode.getEvents().get(i).getStartTime());
-		}
-	}
-
-	private void spawnTeam(Team team, Vector2 spawnPosition) {
-		CardinalDirection currentDirection = CardinalDirection.EAST;
-		for (PlayerEntity player : team) {
-			player.getPosition().set(spawnPosition);
-			for (int j = 0; j < 4; j++) {
-				if (map.tileAt((int) spawnPosition.getX() + currentDirection.getNormalX(), (int) spawnPosition.getY() + currentDirection.getNormalY()).isSolid()) {
-					currentDirection = currentDirection.getNext();
-				} else {
-					spawnPosition.addX(currentDirection.getNormalX());
-					spawnPosition.addY(currentDirection.getNormalY());
-					break;
-				}
-			}
 		}
 	}
 
@@ -299,10 +261,6 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			mapLimitsManager.initialize(this, spawnCenter);
 			addPlugin(mapLimitsManager);
 		}
-	}
-
-	public long getSeed() {
-		return chunkSupplier.getSeed();
 	}
 
 	@Override

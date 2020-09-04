@@ -24,6 +24,7 @@ public class ImageService {
 		loadImage("remove");
 		loadImage("up");
 		loadImage("icon");
+		loadImage("color_picker");
 	}
 
 	public Image get(String name) {

@@ -71,6 +71,8 @@ import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
+import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -333,6 +335,8 @@ public class ContentPackSerialization {
 		addClassTag(representer, InclusiveElementSet.class);
 		addClassTag(representer, ExclusiveElementSet.class);
 		addClassTag(representer, DamageableStructure.class);
+		addClassTag(representer, ProcedurallyGeneratedMapProvider.class);
+		addClassTag(representer, StaticMapProvider.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

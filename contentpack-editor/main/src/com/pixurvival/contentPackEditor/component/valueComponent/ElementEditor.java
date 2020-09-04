@@ -33,19 +33,25 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	private List<SubValueEntry> subValues = new ArrayList<>();
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void setValue(E value) {
+		setValue(value, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setValue(E value, boolean sneaky) {
 		this.value = value;
-		valueChanging();
 		if (value != null) {
+			valueChanging();
 			for (SubValueEntry entry : subValues) {
 				if (entry.getCondition().test(value)) {
 					entry.getComponent().setValue(entry.getGetter().apply(value));
 				}
 			}
 		}
-		valueChanged(this);
+		if (!sneaky) {
+			valueChanged(this);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,8 +111,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields has
-	 * been updated.
+	 * Called after the value of this editor has been changed and all sub fields
+	 * has been updated.
 	 * 
 	 * @param value
 	 */
@@ -117,4 +123,5 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	protected boolean isNullable() {
 		return false;
 	}
+
 }

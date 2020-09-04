@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 
 public class LayoutTreeModel implements TreeModel {
@@ -39,6 +40,13 @@ public class LayoutTreeModel implements TreeModel {
 		root.forEachDeepFirst(LayoutNode::updateValidation);
 		TreeModelEvent event = new TreeModelEvent(this, root.getPath());
 		listeners.forEach(l -> l.treeStructureChanged(event));
+	}
+
+	@EventListener
+	public void resourceListChanged(ResourceListChangedEvent event) {
+		root.forEachDeepFirst(LayoutNode::updateValidation);
+		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
+		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
 	}
 
 	@EventListener

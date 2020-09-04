@@ -35,6 +35,10 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	private Class<?> currentClass;
 	private Map<Class<? extends E>, CachedSupplier<JPanel>> classEntries = new HashMap<>();
 
+	public InstanceChangingElementEditor(String translationPreffix) {
+		this(translationPreffix, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	public InstanceChangingElementEditor(String translationPreffix, Object params) {
 		for (ClassEntry classEntry : getClassEntries(params)) {

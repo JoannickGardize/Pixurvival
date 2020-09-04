@@ -9,7 +9,9 @@ import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
-import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
+import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
+import com.pixurvival.core.contentPack.gameMode.spawn.PlayerSpawn;
+import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
@@ -31,7 +33,7 @@ public class GameMode extends IdentifiedElement {
 
 	@Required
 	@ElementReference
-	private ProcedurallyGeneratedMapProvider mapGenerator;
+	private MapProvider mapProvider;
 
 	@Required
 	@ElementReference
@@ -44,8 +46,7 @@ public class GameMode extends IdentifiedElement {
 
 	private List<Event> events = new ArrayList<>();
 
-	private float spawnSquareSize = 490;
-
 	private MapLimits mapLimits;
 
+	private PlayerSpawn playerSpawn = new AutoSquarePlayerSpawn();
 }

@@ -21,6 +21,8 @@ import com.pixurvival.contentPackEditor.ImageService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 
+import lombok.Setter;
+
 public class VerticalListEditor<E> extends ListEditor<E> {
 
 	public static final int HORIZONTAL = 0;
@@ -29,6 +31,8 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	private static final long serialVersionUID = 1L;
 
 	private int buttonAlignment;
+
+	private transient @Setter Supplier<Component> addOnButton = () -> null;
 
 	public <F extends E> VerticalListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier) {
 		this(elementEditorSupplier, valueSupplier, VERTICAL);
@@ -59,9 +63,13 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	protected void addEditor(ValueComponent<E> editor) {
 		((JComponent) editor).setBorder(BorderFactory.createCompoundBorder(new EmptyBorder(3, 2, 3, 2), ((JComponent) editor).getBorder()));
 		int index = listPanel.getComponentCount();
-		if (index > 0 && listPanel.getComponent(index - 1) instanceof JButton) {
-			listPanel.remove(--index);
+		if (index > 0) {
+			JComponent lastComponent = (JComponent) listPanel.getComponent(index - 1);
+			if (lastComponent instanceof JButton || !(LayoutUtils.componentAtIfExists(lastComponent, 0) instanceof ValueComponent)) {
+				listPanel.remove(--index);
+			}
 		}
+
 		final int finalIndex = index;
 		CPEButton upButton = new CPEButton(ImageService.getInstance().get("up"), () -> {
 			if (finalIndex > 0) {
@@ -124,6 +132,12 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		gbc.weighty = 0;
 		gbc.insets = new Insets(3, 2, 3, 2);
 		gbc.gridy = listPanel.getComponentCount();
-		listPanel.add(new CPEButton("generic.add", () -> add(valueSupplier.get())), gbc);
+		JButton addButton = new CPEButton("generic.add", () -> add(valueSupplier.get()));
+		Component addOnComp = addOnButton.get();
+		if (addOnComp == null) {
+			listPanel.add(addButton, gbc);
+		} else {
+			listPanel.add(LayoutUtils.createHorizontalBox(addButton, addOnComp), gbc);
+		}
 	}
 }

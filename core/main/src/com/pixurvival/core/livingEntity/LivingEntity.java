@@ -53,6 +53,10 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
 	private @Setter Team team = TeamSet.WILD_TEAM;
 
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
 	private @Setter boolean movementChangeEnabled = true;
 	private SpriteSheet overridingSpriteSheet = null;
 

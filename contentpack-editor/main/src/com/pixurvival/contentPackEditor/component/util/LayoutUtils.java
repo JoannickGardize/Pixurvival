@@ -143,7 +143,8 @@ public class LayoutUtils {
 	}
 
 	public static Border createBorder() {
-		return BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+		return BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),
+				BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 	}
 
 	public static void addHorizontally(Container panel, Component... components) {
@@ -329,6 +330,14 @@ public class LayoutUtils {
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		wrapper.add(component, gbc);
 		return wrapper;
+	}
+
+	public static Component componentAtIfExists(Container container, int index) {
+		if (index < 0 || index >= container.getComponentCount()) {
+			return null;
+		} else {
+			return container.getComponent(index);
+		}
 	}
 
 }

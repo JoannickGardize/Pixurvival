@@ -6,15 +6,20 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
 
 public class ElementTypePanelCard extends JPanel {
 
 	public static final String NONE_CARD = "NONE";
 
 	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("rawtypes")
+	private ElementEditor currentEditor;
 
 	public ElementTypePanelCard() {
 		setLayout(new CardLayout());
@@ -31,6 +36,15 @@ public class ElementTypePanelCard extends JPanel {
 	public void elementSelected(ElementSelectedEvent event) {
 		ElementType type = ElementType.of(event.getElement());
 		((CardLayout) getLayout()).show(this, type.name());
+		currentEditor = ContentPackEditionService.getInstance().editorOf(type);
 		ContentPackEditionService.getInstance().editorOf(type).setValue(event.getElement());
+	}
+
+	@SuppressWarnings("unchecked")
+	@EventListener
+	public void resourceListChanged(ResourceListChangedEvent event) {
+		if (currentEditor != null) {
+			currentEditor.setValue(currentEditor.getValue());
+		}
 	}
 }

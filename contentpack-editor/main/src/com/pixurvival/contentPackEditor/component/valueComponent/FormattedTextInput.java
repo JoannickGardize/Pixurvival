@@ -30,16 +30,21 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 	public FormattedTextInput(int columns) {
 		super(columns);
 		getDocument().addDocumentListener(new DocumentAdapter(e -> updateValue()));
+
 		addFocusListener(new FocusListener() {
 
 			@Override
 			public void focusLost(FocusEvent e) {
 				if (value != null) {
+					settingValue = true;
 					setText(format(value));
+					settingValue = false;
 					if (isValueValid()) {
-						setForeground(Color.BLACK);
+						setForeground(getValidForeground());
+						onValueChanged();
 					} else {
 						setForeground(Color.RED);
+						onInvalidInput();
 					}
 				}
 			}
@@ -49,6 +54,10 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 			}
 		});
 		setForeground(Color.RED);
+	}
+
+	public Color getValidForeground() {
+		return Color.BLACK;
 	}
 
 	@Override
@@ -78,9 +87,10 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 		} else {
 			setText(format(value));
 		}
-		setForeground(isValueValid(value) ? Color.BLACK : Color.RED);
 		this.value = value;
+		setForeground(isValueValid(value) ? getValidForeground() : Color.RED);
 		settingValue = false;
+		onValueChanged();
 	}
 
 	@Override
@@ -90,12 +100,15 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 
 	/**
 	 * @param text
-	 * @return the value represented by text, or null if the text is invalid
-	 *         format.
+	 * @return the value represented by text, or null if the text is invalid format.
 	 */
 	protected abstract T parse(String text);
 
 	protected abstract String format(T value);
+
+	public void notifyValueChanged() {
+		listeners.forEach(l -> l.valueChanged(value));
+	}
 
 	private void updateValue() {
 		if (settingValue) {
@@ -105,14 +118,23 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 		String text = getText().trim();
 		T newValue = parse(text);
 		if (isValueValid(newValue)) {
-			setForeground(Color.BLACK);
 			if (!Objects.equals(newValue, value)) {
 				value = newValue;
-				listeners.forEach(l -> l.valueChanged(value));
+				notifyValueChanged();
+				onValueChanged();
 			}
+			setForeground(getValidForeground());
 		} else {
 			setForeground(Color.RED);
+			onInvalidInput();
 		}
 	}
 
+	protected void onValueChanged() {
+		// For override
+	}
+
+	protected void onInvalidInput() {
+		// For override
+	}
 }

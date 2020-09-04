@@ -18,6 +18,8 @@ import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ResourceItem;
+import com.pixurvival.core.contentPack.map.MapProvider;
+import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
@@ -61,6 +63,8 @@ public class BeanFactory {
 			effect.setMovement(new LinearEffectMovement());
 			return effect;
 		});
+
+		suppliers.put(MapProvider.class, ProcedurallyGeneratedMapProvider::new);
 	}
 
 	@SneakyThrows

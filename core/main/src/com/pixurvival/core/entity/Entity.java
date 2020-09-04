@@ -20,7 +20,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Classe mère de tout objet du monde : joueur, créatures, items, projectiles...
+ * Root class of all elements of the game: Players, Creatures, Items, Effects...
+ * 
  * 
  * 
  * @author SharkHendrix
@@ -40,9 +41,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private @Setter boolean alive = true;
 
 	/**
-	 * When set to true, the death event will not be fired, resulting to not
-	 * sharing to clients the death data. The purpose is to avoid to send death
-	 * info if the client can know it by itself
+	 * When set to true, the death event will not be fired, resulting to not sharing
+	 * to clients the death data. The purpose is to avoid to send death info if the
+	 * client can know it by itself
 	 */
 	private @Setter boolean sneakyDeath = false;
 	private @Setter Object customData;
@@ -57,10 +58,9 @@ public abstract class Entity implements Body, CustomDataHolder {
 	private boolean collisionLock = false;
 
 	/**
-	 * Indicate if the state of this entity has changed, if true, the server
-	 * will send data of this entity at the next data send tick to clients that
-	 * view this entity. Must be true at initialization to send the new entity
-	 * data.
+	 * Indicate if the state of this entity has changed, if true, the server will
+	 * send data of this entity at the next data send tick to clients that view this
+	 * entity. Must be true at initialization to send the new entity data.
 	 */
 	private @Setter boolean stateChanged = true;
 
@@ -138,7 +138,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 				collisionLock = false;
 				collisionLockEnded();
 			}
-		} else if (antiCollisionLockEnabled() && isSolid() && getWorld().getMap().collide(this)) {
+		} else if (antiCollisionLockEnabled() && isSolid() && getChunk() != null && getWorld().getMap().collide(this)) {
 			// Get away from collision lock
 			collisionLock = true;
 			if (previousPosition.epsilonEquals(position, MathUtils.EPSILON)) {
@@ -259,8 +259,8 @@ public abstract class Entity implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 * @param full
-	 *            true if all the data should be writen, for clients that
-	 *            discovers this entity.
+	 *            true if all the data should be writen, for clients that discovers
+	 *            this entity.
 	 */
 	public abstract void writeUpdate(ByteBuffer buffer, boolean full);
 

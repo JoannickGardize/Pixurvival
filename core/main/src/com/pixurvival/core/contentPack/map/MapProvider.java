@@ -2,12 +2,33 @@ package com.pixurvival.core.contentPack.map;
 
 import java.util.Random;
 
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 public abstract class MapProvider extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Called one time at the begin of a game
+	 * 
+	 * @param world
+	 * @param seed
+	 */
+	public abstract void initialize(World world);
+
+	/**
+	 * Called before starting to build a chunk, by calling
+	 * {@link #getTileAt(int, int)} for each of its tiles, then calling
+	 * {@link MapProvider#getStructureAt(int, int, Tile, Random)} for each of its
+	 * tiles. The tiles are called in an unspecified order but is guaranteed to be
+	 * always the same.
+	 * 
+	 * @param chunkPosition
+	 */
+	public abstract void beginChunk(long seed, ChunkPosition chunkPosition);
 
 	public abstract Tile getTileAt(int x, int y);
 
@@ -15,9 +36,9 @@ public abstract class MapProvider extends IdentifiedElement {
 	 * @param x
 	 * @param y
 	 * @param tile
-	 *            the tile computed with {@link #getTileAt(int, int)}
-	 * @param random
+	 *            the tile computed at position x,y with
+	 *            {@link #getTileAt(int, int)}
 	 * @return
 	 */
-	public abstract Structure getStructureAt(int x, int y, Tile tile, Random random);
+	public abstract Structure getStructureAt(int x, int y, Tile tile);
 }

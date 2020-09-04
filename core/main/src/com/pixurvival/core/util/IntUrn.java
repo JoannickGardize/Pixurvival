@@ -4,10 +4,12 @@ import java.util.Random;
 
 public class IntUrn {
 
+	private int initialSize;
 	private int currentSize;
 	private int[] content;
 
 	public IntUrn(int size) {
+		initialSize = size;
 		currentSize = size;
 		content = new int[size];
 		for (int i = 0; i < size; i++) {
@@ -24,7 +26,12 @@ public class IntUrn {
 		currentSize--;
 		int result = content[index];
 		content[index] = content[currentSize];
+		content[currentSize] = result;
 		return result;
 
+	}
+
+	public void reset() {
+		currentSize = initialSize;
 	}
 }

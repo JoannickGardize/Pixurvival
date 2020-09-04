@@ -11,10 +11,10 @@ import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
+import com.pixurvival.core.util.ReflectionUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import com.pixurvival.core.util.ReflectionUtils;
 
 public class EventManager {
 
@@ -47,8 +47,7 @@ public class EventManager {
 		}
 		registeredObjects.add(object);
 		for (Method method : ReflectionUtils.getAllMethods(object.getClass())) {
-			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1
-					&& Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
+			if (method.isAnnotationPresent(EventListener.class) && method.getParameterTypes().length == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0])) {
 				List<MethodRegistration> list = registrations.get(method.getParameterTypes()[0]);
 				if (list == null) {
 					list = new ArrayList<>();

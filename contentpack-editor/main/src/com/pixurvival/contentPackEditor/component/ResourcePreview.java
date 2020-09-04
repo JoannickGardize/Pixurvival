@@ -20,10 +20,6 @@ public class ResourcePreview extends JPanel {
 	private @Getter @Setter Object object;
 	private @Getter @Setter Rectangle rectangle;
 
-	public ResourcePreview() {
-		// setPreferredSize(new Dimension(400, 300));
-	}
-
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(getBackground());

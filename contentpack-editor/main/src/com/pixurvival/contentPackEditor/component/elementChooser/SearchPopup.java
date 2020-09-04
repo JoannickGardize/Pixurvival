@@ -111,6 +111,7 @@ public class SearchPopup<T extends IdentifiedElement> extends RelativePopup {
 
 	public void setSearchText(String text) {
 		searchField.setText(text);
+		updateSearchList();
 	}
 
 	private void updateSearchList() {

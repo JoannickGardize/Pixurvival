@@ -20,6 +20,7 @@ public class Vector2Editor extends ElementEditor<Vector2> {
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.x", xInput, gbc);
+		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(this, "generic.y", yInput, gbc);
 	}
 }

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.map.chunk.ChunkPosition;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,11 +35,20 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
 	@Valid
 	private List<StructureGenerator> structureGenerators = new ArrayList<>();
 
-	public void initialize(long seed) {
-		Random random = new Random(seed);
+	private transient Random chunkRandom;
+
+	@Override
+	public void initialize(World world) {
+		Random random = new Random(world.getSeed());
 		for (Heightmap heightmap : heightmaps) {
 			heightmap.initialiaze(random.nextLong());
 		}
+	}
+
+	@Override
+	public void beginChunk(long seed, ChunkPosition chunkPosition) {
+		chunkRandom = new Random(seed << 32 ^ chunkPosition.getX() << 16 ^ chunkPosition.getY());
+
 	}
 
 	@Override
@@ -51,10 +62,10 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
 	}
 
 	@Override
-	public Structure getStructureAt(int x, int y, Tile tile, Random random) {
+	public Structure getStructureAt(int x, int y, Tile tile) {
 		for (StructureGenerator structureGenerator : structureGenerators) {
 			if (structureGenerator.test(x, y)) {
-				return structureGenerator.next(tile, random);
+				return structureGenerator.next(tile, chunkRandom);
 			}
 		}
 		return null;

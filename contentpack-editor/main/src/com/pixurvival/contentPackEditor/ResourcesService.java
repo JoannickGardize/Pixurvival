@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
-import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.util.FileUtils;
 
@@ -78,11 +77,16 @@ public class ResourcesService {
 		}
 		try {
 			byte[] data = FileUtils.readBytes(fileChooser.getSelectedFile());
-			putResource(name, data);
-			EventManager.getInstance().fire(new ResourceListChangedEvent());
+			addResource(name, data);
 		} catch (IOException e) {
 			Utils.showErrorDialog(e);
 		}
+	}
+
+	public void addResource(String name, byte[] data) {
+		putResource(name, data);
+		EventManager.getInstance().fire(new ResourceListChangedEvent());
+
 	}
 
 	public void importFolder() {
@@ -138,22 +142,23 @@ public class ResourcesService {
 		FileService.getInstance().getCurrentContentPack().addResource(name, data);
 	}
 
-	private void removeResource(String name) {
-		resources.remove(name);
+	private ResourceEntry removeResource(String name) {
+		ResourceEntry removed = resources.remove(name);
 		FileService.getInstance().getCurrentContentPack().removeResource(name);
+		return removed;
 	}
 
-	public void deleteResource(String name) {
+	public ResourceEntry deleteResource(String name) {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		if (contentPack == null) {
-			return;
+			return null;
 		}
-
+		ResourceEntry removed = null;
 		if (containsResource(name)) {
-			removeResource(name);
+			removed = removeResource(name);
 			EventManager.getInstance().fire(new ResourceListChangedEvent());
-			EventManager.getInstance().fire(new ResourceRemovedEvent());
 		}
+		return removed;
 	}
 
 	public void renameResource(String name) {

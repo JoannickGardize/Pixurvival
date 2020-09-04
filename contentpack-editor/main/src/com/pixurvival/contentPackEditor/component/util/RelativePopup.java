@@ -1,6 +1,8 @@
 package com.pixurvival.contentPackEditor.component.util;
 
 import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GraphicsDevice;
 import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
@@ -9,6 +11,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+
+import com.pixurvival.contentPackEditor.ContentPackEditor;
 
 public class RelativePopup extends JDialog {
 
@@ -34,7 +38,19 @@ public class RelativePopup extends JDialog {
 
 	public void show(Component relativeTo) {
 		Point p = relativeTo.getLocationOnScreen();
-		setLocation(p.x, p.y + relativeTo.getHeight());
+		Frame rootFrame = ContentPackEditor.getInstance();
+		int x = p.x;
+		int y = p.y + relativeTo.getHeight();
+		if (rootFrame.getGraphicsConfiguration() != null) {
+			GraphicsDevice screen = rootFrame.getGraphicsConfiguration().getDevice();
+			if (x + getWidth() > screen.getDisplayMode().getWidth()) {
+				x = p.x + relativeTo.getWidth() - getWidth();
+			}
+			if (y + getHeight() > screen.getDisplayMode().getHeight()) {
+				y = p.y - getHeight();
+			}
+		}
+		setLocation(x, y);
 		setVisible(true);
 	}
 

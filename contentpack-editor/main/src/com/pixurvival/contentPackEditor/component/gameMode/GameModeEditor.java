@@ -8,8 +8,6 @@ import javax.swing.JTabbedPane;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
@@ -32,7 +30,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		IntegerIntervalEditor teamNumberInterval = new IntegerIntervalEditor("gameMode.teamNumber");
 		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
 		DayCycleEditor dayCycleDefinitionEditor = new DayCycleEditor();
-		FloatInput spawnSquareSizeInput = new FloatInput(Bounds.positive());
+		PlayerSpawnEditor playerSpawnEditor = new PlayerSpawnEditor();
 		ListEditor<Event> eventsEditor = new VerticalListEditor<>(LayoutUtils.bordered(EventEditor::new), EffectEvent::new);
 		EndGameConditionEditor endGameConditionEditor = new EndGameConditionEditor();
 		MapLimitsEditor mapLimitsEditor = new MapLimitsEditor();
@@ -43,8 +41,8 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		bind(teamSizeInterval, GameMode::getTeamSizeInterval, GameMode::setTeamSizeInterval);
 		bind(dayCycleDefinitionEditor, GameMode::getDayCycle, GameMode::setDayCycle);
 		bind(ecosystemChooser, GameMode::getEcosystem, GameMode::setEcosystem);
-		bind(mapGeneratorChooser, GameMode::getMapGenerator, GameMode::setMapGenerator);
-		bind(spawnSquareSizeInput, GameMode::getSpawnSquareSize, GameMode::setSpawnSquareSize);
+		bind(mapGeneratorChooser, GameMode::getMapProvider, GameMode::setMapProvider);
+		bind(playerSpawnEditor, GameMode::getPlayerSpawn, GameMode::setPlayerSpawn);
 		bind(eventsEditor, GameMode::getEvents, GameMode::setEvents);
 		bind(endGameConditionEditor, GameMode::getEndGameCondition, GameMode::setEndGameCondition);
 		bind(mapLimitsEditor, GameMode::getMapLimits, GameMode::setMapLimits);
@@ -54,12 +52,12 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		dayCycleDefinitionEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.dayCycle"));
 		endGameConditionEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.endGameCondition"));
 		Container teamPanel = LayoutUtils.sideBySide(teamNumberInterval, teamSizeInterval);
-		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapGenerator", mapGeneratorChooser);
-		JPanel mapConfigPanel = LayoutUtils.createHorizontalLabelledBox("gameMode.spawnSquareSize", spawnSquareSizeInput);
+		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapProvider", mapGeneratorChooser);
+		playerSpawnEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.playerSpawn"));
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab(TranslationService.getInstance().getString("generic.general"),
-				LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 5, teamPanel, dayCycleDefinitionEditor, endGameConditionEditor, elementLinksPanel, mapConfigPanel, new JPanel()));
+				LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 4, teamPanel, dayCycleDefinitionEditor, endGameConditionEditor, elementLinksPanel, playerSpawnEditor));
 		tabbedPane.addTab(TranslationService.getInstance().getString("gameMode.events"), eventsEditor);
 		tabbedPane.addTab(TranslationService.getInstance().getString("gameMode.mapLimits"), mapLimitsEditor);
 

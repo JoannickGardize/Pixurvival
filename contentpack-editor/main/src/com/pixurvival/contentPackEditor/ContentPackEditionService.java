@@ -18,7 +18,8 @@ import com.pixurvival.contentPackEditor.component.gameMode.GameModeEditor;
 import com.pixurvival.contentPackEditor.component.item.ItemEditor;
 import com.pixurvival.contentPackEditor.component.itemCraft.ItemCraftEditor;
 import com.pixurvival.contentPackEditor.component.itemReward.ItemRewardEditor;
-import com.pixurvival.contentPackEditor.component.mapGenerator.MapGeneratorEditor;
+import com.pixurvival.contentPackEditor.component.mapProvider.MapProviderEditor;
+import com.pixurvival.contentPackEditor.component.mapProvider.StaticMapResourceManager;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetEditor;
 import com.pixurvival.contentPackEditor.component.structure.StructureEditor;
 import com.pixurvival.contentPackEditor.component.tile.TileEditor;
@@ -67,12 +68,13 @@ public class ContentPackEditionService {
 		elementTypeEditors.put(ElementType.CREATURE, new CreatureEditor());
 		elementTypeEditors.put(ElementType.TILE, new TileEditor());
 		elementTypeEditors.put(ElementType.STRUCTURE, new StructureEditor());
-		elementTypeEditors.put(ElementType.MAP_GENERATOR, new MapGeneratorEditor());
+		elementTypeEditors.put(ElementType.MAP_PROVIDER, new MapProviderEditor());
 		elementTypeEditors.put(ElementType.ECOSYSTEM, new EcosystemEditor());
 		elementTypeEditors.put(ElementType.GAME_MODE, new GameModeEditor());
 
-		// Register translation related events
+		// Register event related managers
 		new TranslationUpdateManager();
+		new StaticMapResourceManager();
 	}
 
 	public void updateNextStatFormulaId() {

@@ -2,6 +2,7 @@ package com.pixurvival.contentPackEditor.component;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 
 import javax.swing.DefaultListModel;
@@ -46,6 +47,7 @@ public class ResourcesDialog extends EditorDialog {
 		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, modifyButton, renameButton, deleteButton, importButton);
 		listPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+		resourcePreview.setPreferredSize(new Dimension(400, 300));
 		content.add(listPanel, BorderLayout.WEST);
 		content.add(resourcePreview, BorderLayout.CENTER);
 
