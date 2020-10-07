@@ -100,12 +100,12 @@ public class GameModeChooser extends Table {
 		contentPackIdentifierList.setSelectedIndex(data.getSelectedContentPackIndex());
 		selectedGameModeIndex = data.getSelectedGameModeIndex();
 		String[] gameModeStrings = getGameModes(selectedIdentifier);
-		if (gameModeStrings != null) {
+		if (gameModeStrings != null && gameModeStrings.length > 0) {
 			gameModeList.setItems(gameModeStrings);
 			gameModeList.setSelectedIndex(selectedGameModeIndex);
 		} else {
 			// put fake array to avoid sending multiple time the request
-			gameModeList.setItems(new String[0]);
+			gameModeList.setItems();
 			gameModesOfMissingPacks.put(selectedIdentifier, new String[0]);
 			java.util.List<Locale> locales = PixurvivalGame.getClient().getLocalePriorityList();
 			PixurvivalGame.getClient().send(new GameModeListRequest(data.getSelectedContentPackIndex(), locales.toArray(new Locale[locales.size()])));
@@ -116,6 +116,9 @@ public class GameModeChooser extends Table {
 	private String[] getGameModes(ContentPackIdentifier selectedIdentifier) {
 		if (availableContentPacks.contains(selectedIdentifier)) {
 			ContentPack pack = contentPackCache.get(selectedIdentifier);
+			if (pack == null) {
+				return new String[0];
+			}
 			Locale locale = PixurvivalGame.getClient().getLocaleFor(pack);
 			String[] gameModeStrings = new String[pack.getGameModes().size()];
 			for (int i = 0; i < pack.getGameModes().size(); i++) {

@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.util.FileUtils;
 
@@ -63,8 +64,8 @@ public class ResourcesService {
 			return;
 		}
 		name = name.trim();
-		if (!Utils.isValidFilePath(name)) {
-			Utils.showErrorDialog("resources.name.invalidMessage");
+		if (!com.pixurvival.contentPackEditor.util.FileUtils.isValidFilePath(name)) {
+			DialogUtils.showErrorDialog("resources.name.invalidMessage");
 			return;
 		}
 		addResource(name);
@@ -79,7 +80,7 @@ public class ResourcesService {
 			byte[] data = FileUtils.readBytes(fileChooser.getSelectedFile());
 			addResource(name, data);
 		} catch (IOException e) {
-			Utils.showErrorDialog(e);
+			DialogUtils.showErrorDialog(e);
 		}
 	}
 
@@ -118,7 +119,7 @@ public class ResourcesService {
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
-			Utils.showErrorDialog(e);
+			DialogUtils.showErrorDialog(e);
 		}
 		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}

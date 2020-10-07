@@ -17,11 +17,11 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.TranslationService;
-import com.pixurvival.contentPackEditor.Utils;
 import com.pixurvival.contentPackEditor.event.ElementRenamedEvent;
 import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.util.MenuBuilder;
+import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.util.CaseUtils;
 
@@ -171,7 +171,7 @@ public class LayoutTree extends JTree {
 		}
 		name = name.trim();
 		if (name.length() == 0) {
-			Utils.showErrorDialog("treeContextMenu.new.emptyNameError");
+			DialogUtils.showErrorDialog("treeContextMenu.new.emptyNameError");
 			return null;
 		}
 		return name;
@@ -184,11 +184,11 @@ public class LayoutTree extends JTree {
 		}
 		name = name.trim();
 		if (name.length() == 0) {
-			Utils.showErrorDialog("treeContextMenu.new.emptyNameError");
+			DialogUtils.showErrorDialog("treeContextMenu.new.emptyNameError");
 			return null;
 		}
 		if (containsName(type, name)) {
-			Utils.showErrorDialog("treeContextMenu.new.inUseNameError");
+			DialogUtils.showErrorDialog("treeContextMenu.new.inUseNameError");
 			return null;
 		}
 		return name;

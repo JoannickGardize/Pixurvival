@@ -37,7 +37,7 @@ public class PixurvivalServer {
 
 	@SneakyThrows
 	public PixurvivalServer(ServerMainArgs serverArgs) {
-		Log.info("Starting server version " + ReleaseVersion.getValue());
+		Log.info("Starting server version " + ReleaseVersion.getActual().displayName());
 		if (MathUtils.equals(serverArgs.getSimulatePacketLossRate(), 0)) {
 			server = new KryoServer();
 		} else {

@@ -78,6 +78,7 @@ project(":contentpack-editor") {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        testCompile 'junit:junit:4.12'
     }
     
     task editorFatJar(type: Jar) {

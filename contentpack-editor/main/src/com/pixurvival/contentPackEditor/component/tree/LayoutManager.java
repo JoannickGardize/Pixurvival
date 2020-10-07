@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.tree;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +67,7 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 		ZipEntry entry = zipFile.getEntry(LAYOUT_ENTRY);
 		if (entry != null) {
 			try {
-				root = yaml.loadAs(zipFile.getInputStream(entry), LayoutFolder.class);
+				read(zipFile.getInputStream(entry));
 			} catch (IOException e) {
 				e.printStackTrace();
 				root = new LayoutFolder("root");
@@ -74,15 +75,14 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 		} else {
 			root = new LayoutFolder("root");
 		}
+		refresh(contentPack);
+	}
 
-		// TODO remove this commented code, keeped for fixing index corruption
-		// after deletion
-		// root.forEachLeaf(n -> {
-		// LayoutElement leaf = (LayoutElement) n;
-		// if (leaf.getType() == ElementType.SPRITE_SHEET && leaf.getId() > 15) {
-		// leaf.setId(leaf.getId() - 1);
-		// }
-		// });
+	public void read(InputStream input) {
+		root = yaml.loadAs(input, LayoutFolder.class);
+	}
+
+	public void refresh(ContentPack contentPack) {
 		setElementReferences(contentPack);
 		insertMissingElements(contentPack);
 	}

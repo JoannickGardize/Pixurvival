@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -195,8 +196,7 @@ public class ContentPackSerialization {
 		}
 		try (ZipFile zipFile = new ZipFile(file)) {
 			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
-			ContentPack contentPack = null;
-			contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
+			ContentPack contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
 				entry = enumeration.nextElement();
@@ -217,9 +217,17 @@ public class ContentPackSerialization {
 			}
 			contentPack.setIdentifier(identifier);
 			return contentPack;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new ContentPackException(e);
 		}
+	}
+
+	public ContentPack reloadCore(ContentPack old, InputStream newDataInput) {
+		ContentPack contentPack = yaml.loadAs(newDataInput, ContentPack.class);
+		contentPack.setResources(old.getResources());
+		contentPack.setTranslations(old.getTranslations());
+		contentPack.setIdentifier(old.getIdentifier());
+		return contentPack;
 	}
 
 	public void save(File file, ContentPack contentPack) throws IOException {

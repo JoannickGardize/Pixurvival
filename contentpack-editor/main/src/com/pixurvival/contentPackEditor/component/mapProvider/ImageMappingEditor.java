@@ -28,7 +28,7 @@ public class ImageMappingEditor<T extends IdentifiedElement> extends ElementEdit
 
 	@SuppressWarnings("unchecked")
 	public ImageMappingEditor(Class<T> elementType) {
-		VerticalListEditor<ColorMapping<T>> listEditor = new VerticalListEditor<>(() -> new ColorMappingEditor<>(elementType), ColorMapping::new);
+		VerticalListEditor<ColorMapping<T>> listEditor = new VerticalListEditor<>(() -> new ColorMappingEditor<>(elementType), ColorMapping::new, VerticalListEditor.HORIZONTAL);
 		listEditor.setAddOnButton(() -> new CPEButton("mapGeneratorEditor.addAllMissing", () -> {
 			ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 			if (contentPack == null) {

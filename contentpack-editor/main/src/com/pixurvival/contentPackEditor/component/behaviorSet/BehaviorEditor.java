@@ -19,6 +19,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.creature.Behavior;
@@ -111,8 +112,8 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// WANDER
 		classEntries.add(new ClassEntry(WanderBehavior.class, () -> {
-			FloatInput moveRateInput = new FloatInput(Bounds.positive());
-			FloatInput forwardFactorInput = new FloatInput(Bounds.positive());
+			PercentInput moveRateInput = new PercentInput(new Bounds(0, 1));
+			PercentInput forwardFactorInput = new PercentInput(Bounds.positive());
 			EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
 			bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
 			bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);

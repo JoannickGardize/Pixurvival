@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.pixurvival.core.PixurvivalException;
+import com.pixurvival.core.LoadGameException;
 import com.pixurvival.core.WorldSerialization;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
@@ -56,11 +56,11 @@ public class NewSingleplayerLobbyScreen implements Screen {
 						errorWindow.getContentLabel().setText("Save name must be a valid file name (no special character)");
 						errorWindow.setVisible(true);
 					}
-				} catch (PixurvivalException e) {
-					errorWindow.getContentLabel().setText(e.getMessage());
-					errorWindow.setVisible(true);
+				} catch (LoadGameException e) {
+					LoadGameUtils.handleLoadGameError(e, errorWindow);
 				}
 			}
+
 		});
 
 		mainGroup.add(new BackButton()).fill();

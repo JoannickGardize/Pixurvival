@@ -10,7 +10,8 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
-import com.pixurvival.core.PixurvivalException;
+import com.pixurvival.core.LoadGameException;
+import com.pixurvival.core.LoadGameException.Reason;
 import com.pixurvival.core.World;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.WorldListener;
@@ -46,6 +47,7 @@ import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
+import com.pixurvival.core.util.ReleaseVersion;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -152,7 +154,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	}
 
 	public Locale getLocaleFor(ContentPack contentPack) {
-		return LocaleUtils.findBestMatch(localePriorityList, contentPack.getTranslations().keySet());
+		if (contentPack == null) {
+			return localePriorityList.get(0);
+		} else {
+			return LocaleUtils.findBestMatch(localePriorityList, contentPack.getTranslations().keySet());
+		}
 	}
 
 	public void checkContentPackValidity(ContentPackCheck check) {
@@ -197,7 +203,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
-	public void startNewLocalGame(String saveName) throws PixurvivalException {
+	public void startNewLocalGame(String saveName) throws LoadGameException {
 		if (singlePlayerLobby == null) {
 			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
 		}
@@ -206,15 +212,17 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		try {
 			localGamePack = contentPackSerialization.load(singlePlayerLobby.getSelectedContentPackIdentifier());
 		} catch (ContentPackException e) {
-			e.printStackTrace();
-			throw new PixurvivalException(e.getMessage());
+			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
+		}
+		if (ReleaseVersion.getActual() != localGamePack.getReleaseVersion()) {
+			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, localGamePack.getReleaseVersion(), ReleaseVersion.getActual());
 		}
 		currentLocale = getLocaleFor(localGamePack);
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
 		world.setSaveName(saveName);
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
-			throw new PixurvivalException("The GameMode " + gameMode.getName() + " cannot be played in solo.");
+			throw new LoadGameException(Reason.NOT_PLAYABLE_IN_SOLO);
 		}
 		world.initializeNewGame();
 		notify(ClientGameListener::initializeGame);
@@ -226,7 +234,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		notify(ClientGameListener::gameStarted);
 	}
 
-	public void loadAndStartLocalGame(String saveName) throws PixurvivalException {
+	public void loadAndStartLocalGame(String saveName) throws LoadGameException {
 		try {
 			setWorld(WorldSerialization.load(saveName, contentPackSerialization));
 			world.setSaveName(saveName);
@@ -236,9 +244,8 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			addPlugin(new WorldUpdater());
 			singlePlayerLobby = null;
 			notify(ClientGameListener::gameStarted);
-		} catch (IOException | ContentPackException e) {
-			e.printStackTrace();
-			throw new PixurvivalException(e.getMessage());
+		} catch (IOException e) {
+			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
 	}
 

@@ -59,7 +59,7 @@ public class ResourceFileChooser extends JPanel implements ValueComponent<String
 
 	@Override
 	public boolean isValueValid(String value) {
-		return ResourcesService.getInstance().containsResource(resourceName);
+		return ResourcesService.getInstance().containsResource(value);
 	}
 
 	@Override

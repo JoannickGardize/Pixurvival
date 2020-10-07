@@ -17,7 +17,7 @@ import java.util.PriorityQueue;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.LoadGameException.Reason;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
@@ -63,7 +63,7 @@ public class WorldSerialization {
 		ByteBuffer buffer = ByteBuffer.allocate(WorldUpdate.BUFFER_SIZE * 2 + ByteBufferUtils.BUFFER_SIZE);
 		try (OutputStream output = new BufferedOutputStream(new FileOutputStream(getSaveFile(world.getSaveName()))); Output kryoOutput = new Output(output)) {
 			// Global data
-			ByteBufferUtils.putString(buffer, ReleaseVersion.getValue());
+			ByteBufferUtils.putString(buffer, ReleaseVersion.getActual().toString());
 			ByteBufferUtils.putString(buffer, world.getContentPack().getIdentifier().fileName());
 			ByteBufferUtils.putBytes(buffer, contentPackSerialization.getChecksum(world.getContentPack().getIdentifier()));
 			buffer.putInt(world.getGameMode().getId());
@@ -96,18 +96,23 @@ public class WorldSerialization {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static World load(String saveName, ContentPackSerialization contentPackSerialization) throws IOException, ContentPackException {
+	public static World load(String saveName, ContentPackSerialization contentPackSerialization) throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
-		String version = ByteBufferUtils.getString(buffer);
-		if (!version.equals(ReleaseVersion.getValue())) {
-			Log.warn("The version of the save " + saveName + " is " + version + ", but the game version is " + ReleaseVersion.getValue());
+		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
+		if (ReleaseVersion.getActual() != version) {
+			throw new LoadGameException(Reason.WRONG_GAME_VERSION, version, ReleaseVersion.getActual());
 		}
 		ContentPackIdentifier identifier = new ContentPackIdentifier(ByteBufferUtils.getString(buffer));
-		ContentPack contentPack = contentPackSerialization.load(identifier);
+		ContentPack contentPack;
+		try {
+			contentPack = contentPackSerialization.load(identifier);
+		} catch (ContentPackException e) {
+			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
+		}
 		byte[] saveChecksum = ByteBufferUtils.getBytes(buffer);
 		ContentPackValidityCheckResult checkResult = contentPackSerialization.checkValidity(identifier, saveChecksum);
 		if (checkResult == ContentPackValidityCheckResult.NOT_SAME) {
-			throw new ContentPackException("The content pack of the save is not identical.");
+			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}
 		World world = World.createLocalWorld(contentPack, buffer.getInt(), buffer.getLong());
 		Kryo kryo = getKryo(world.getGameMode().getEcosystem());

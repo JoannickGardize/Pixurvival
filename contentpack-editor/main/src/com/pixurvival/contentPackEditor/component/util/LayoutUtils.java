@@ -28,19 +28,19 @@ public class LayoutUtils {
 
 	public static final int DEFAULT_GAP = 5;
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
+	public static JLabel addHorizontalLabelledItem(Container parent, String labelKey, Component component, GridBagConstraints gbc) {
 		String tooltipKey = labelKey + ".tooltip";
 		if (!TranslationService.getInstance().containsKey(tooltipKey)) {
 			tooltipKey = null;
 		}
-		addHorizontalLabelledItem(parent, labelKey, tooltipKey, component, gbc);
+		return addHorizontalLabelledItem(parent, labelKey, tooltipKey, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
-		addHorizontalLabelledItem(parent, labelKey, true, toolTipKey, component, gbc);
+	public static JLabel addHorizontalLabelledItem(Container parent, String labelKey, String toolTipKey, Component component, GridBagConstraints gbc) {
+		return addHorizontalLabelledItem(parent, labelKey, true, toolTipKey, component, gbc);
 	}
 
-	public static void addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
+	public static JLabel addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets.top = 2;
 		gbc.insets.bottom = 1;
@@ -73,6 +73,7 @@ public class LayoutUtils {
 				((JComponent) component).setToolTipText(tooltipText);
 			}
 		}
+		return label;
 	}
 
 	public static void nextColumn(GridBagConstraints gbc) {

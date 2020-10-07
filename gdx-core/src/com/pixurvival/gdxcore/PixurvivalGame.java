@@ -76,6 +76,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		return instance.assetManager.get(I18N_BUNDLE, I18NBundle.class).get(key);
 	}
 
+	public static String getString(String key, Object... args) {
+		return instance.assetManager.get(I18N_BUNDLE, I18NBundle.class).format(key, args);
+	}
+
 	public static BitmapFont getOverlayFont() {
 		return instance.assetManager.get(OVERLAY_FONT, BitmapFont.class);
 	}

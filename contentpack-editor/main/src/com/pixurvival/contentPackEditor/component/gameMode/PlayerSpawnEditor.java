@@ -10,10 +10,10 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.Vector2Editor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
@@ -39,8 +39,8 @@ public class PlayerSpawnEditor extends InstanceChangingElementEditor<PlayerSpawn
 		List<ClassEntry> result = new ArrayList<>();
 		result.add(new ClassEntry(AutoSquarePlayerSpawn.class, () -> {
 			IntegerInput sizeInput = new IntegerInput(Bounds.positive());
-			FloatInput minFreeSpaceInput = new FloatInput(new Bounds(0, 1));
-			FloatInput maxFreeSpaceInput = new FloatInput(new Bounds(0, 1));
+			PercentInput minFreeSpaceInput = new PercentInput(new Bounds(0, 1));
+			PercentInput maxFreeSpaceInput = new PercentInput(new Bounds(0, 1));
 
 			bind(sizeInput, AutoSquarePlayerSpawn::getSize, AutoSquarePlayerSpawn::setSize, AutoSquarePlayerSpawn.class);
 			bind(minFreeSpaceInput, AutoSquarePlayerSpawn::getMinFreeSpace, AutoSquarePlayerSpawn::setMinFreeSpace, AutoSquarePlayerSpawn.class);

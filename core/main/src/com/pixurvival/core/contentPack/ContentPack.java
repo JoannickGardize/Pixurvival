@@ -39,6 +39,7 @@ import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.ReflectionUtils;
+import com.pixurvival.core.util.ReleaseVersion;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -126,6 +127,12 @@ public class ContentPack implements Serializable {
 	@Valid
 	@Required
 	private Constants constants = new Constants();
+
+	/**
+	 * @return The release version this pack is made with. Null value means that the
+	 *         pack is prior to the {@link ReleaseVersion#ALPHA_5} version.
+	 */
+	private ReleaseVersion releaseVersion;
 
 	public byte[] getResource(String resource) {
 		if (resources == null) {

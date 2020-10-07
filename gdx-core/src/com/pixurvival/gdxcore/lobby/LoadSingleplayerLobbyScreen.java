@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.pixurvival.core.PixurvivalException;
+import com.pixurvival.core.LoadGameException;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.menu.BackButton;
 import com.pixurvival.gdxcore.menu.MessageWindow;
@@ -36,9 +36,8 @@ public class LoadSingleplayerLobbyScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				try {
 					PixurvivalGame.getClient().loadAndStartLocalGame(saveChooser.getSelectedSave());
-				} catch (PixurvivalException e) {
-					errorWindow.getContentLabel().setText(e.getMessage());
-					errorWindow.setVisible(true);
+				} catch (LoadGameException e) {
+					LoadGameUtils.handleLoadGameError(e, errorWindow);
 				}
 			}
 		});

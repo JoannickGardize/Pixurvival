@@ -8,9 +8,9 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.contentPack.map.Heightmap;
@@ -31,7 +31,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
 		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class);
-		FloatInput densityInput = new FloatInput(new Bounds(0, 1));
+		PercentInput densityInput = new PercentInput(new Bounds(0, 1));
 
 		// Binding
 
