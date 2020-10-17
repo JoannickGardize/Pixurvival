@@ -14,7 +14,8 @@ public class LoadGameException extends Exception {
 		WRONG_CONTENT_PACK_VERSION,
 		WRONG_GAME_VERSION,
 		NOT_PLAYABLE_IN_SOLO,
-		NOT_SAME_CONTENT_PACK
+		NOT_SAME_CONTENT_PACK,
+		CONTENT_PACK_FILE_NOT_FOUND
 	}
 
 	private Reason reason;

@@ -29,7 +29,7 @@ public class ConnectionMessageWindow extends MessageWindow {
 			PixurvivalGame.getClient().addListener(clientListener = new ClientGameAdapter() {
 				@Override
 				public void loginResponse(LoginResponse response) {
-					getContentLabel().setText(response.name());
+					getContentLabel().setText(response.getMessage());
 					getOkButton().setVisible(true);
 				}
 			});

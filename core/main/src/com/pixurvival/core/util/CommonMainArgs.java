@@ -18,7 +18,7 @@ public class CommonMainArgs {
 
 	private int maxSimulateLag = 27;
 
-	private String contentPackDirectory = "contentPacks";
+	private String contentPackDirectory = DefaultValues.CONTENT_PACK_DIRECTORY;
 
 	private String onGameBeginning = null;
 

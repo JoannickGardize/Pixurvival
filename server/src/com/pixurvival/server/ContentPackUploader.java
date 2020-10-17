@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.message.ContentPackPart;
 
@@ -48,11 +49,17 @@ public class ContentPackUploader extends Thread {
 			try {
 				sendingEntry = sendingQueue.take();
 			} catch (InterruptedException e) {
-				System.out.println(e);
+				Log.warn("ContentPackUploader interrupted.", e);
 				Thread.currentThread().interrupt();
 				return;
 			}
-			File file = game.getContentPackSerialization().fileOf(sendingEntry.getIdentifier());
+			File file;
+			try {
+				file = game.getContentPackContext().fileOf(sendingEntry.getIdentifier());
+			} catch (ContentPackException e1) {
+				Log.error("Error when trying to send content pack.", e1);
+				continue;
+			}
 			try (InputStream stream = new BufferedInputStream(new FileInputStream(file))) {
 
 				int byteRead;

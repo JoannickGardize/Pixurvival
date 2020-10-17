@@ -47,7 +47,7 @@ public class ResourcesDialog extends EditorDialog {
 		LayoutUtils.addVertically(buttonPanel, 1, GridBagConstraints.HORIZONTAL, addButton, modifyButton, renameButton, deleteButton, importButton);
 		listPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-		resourcePreview.setPreferredSize(new Dimension(400, 300));
+		resourcePreview.setPreferredSize(new Dimension(400, 500));
 		content.add(listPanel, BorderLayout.WEST);
 		content.add(resourcePreview, BorderLayout.CENTER);
 

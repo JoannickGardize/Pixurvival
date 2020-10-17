@@ -21,8 +21,8 @@ public class ContentPackIdentifierTest {
 
 	@Test
 	public void getIndentifierIfValidTest() {
-		Assert.assertNull(ContentPackIdentifier.getIndentifierIfValid("AlekhAZE-561.0.zip"));
-		Assert.assertNull(ContentPackIdentifier.getIndentifierIfValid("AlekhAZE-56_01.0.zip"));
-		Assert.assertNotNull(ContentPackIdentifier.getIndentifierIfValid("AlekhAZE-56_1.0.zip"));
+		Assert.assertNull(ContentPackIdentifier.getIndentifierBasedOnFileName("AlekhAZE-561.0.zip"));
+		Assert.assertNull(ContentPackIdentifier.getIndentifierBasedOnFileName("AlekhAZE-56_01.0.zip"));
+		Assert.assertNotNull(ContentPackIdentifier.getIndentifierBasedOnFileName("AlekhAZE-56_1.0.zip"));
 	}
 }

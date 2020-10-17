@@ -18,7 +18,6 @@ import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
-import com.pixurvival.core.message.lobby.GameModeListRequest;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.core.message.lobby.RefuseContentPack;
@@ -35,6 +34,7 @@ import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
+import com.pixurvival.core.util.ReleaseVersion;
 
 class NetworkMessageHandler extends Listener {
 
@@ -47,16 +47,21 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {
-				connection.sendTCP(LoginResponse.ALREADY_LOGGED);
+				connection.sendTCP(new LoginResponse("You are already logged to this server."));
 				return;
 			}
-			String name = ((LoginRequest) m.getObject()).getPlayerName().trim();
+			LoginRequest loginRequest = (LoginRequest) m.getObject();
+			String name = loginRequest.getPlayerName().trim();
 			if (game.getPlayerConnection(name) != null) {
-				connection.sendTCP(LoginResponse.NAME_IN_USE);
+				connection.sendTCP(new LoginResponse("This name is already in use."));
 				return;
 			}
 			if (name.length() > 30) {
-				connection.sendTCP(LoginResponse.INVALID_NAME);
+				connection.sendTCP(new LoginResponse("The name must not exceed 30 characters."));
+				return;
+			}
+			if (!ReleaseVersion.getActual().name().equals(loginRequest.getGameVersion())) {
+				connection.sendTCP(new LoginResponse("The server version is " + ReleaseVersion.getActual().name() + ", but your game version is " + loginRequest.getGameVersion()));
 				return;
 			}
 			connection.setLogged(true);
@@ -83,7 +88,6 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(RemoveTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RemoveTeamRequest) m.getObject())));
 		messageActions.put(ChangeTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ChangeTeamRequest) m.getObject())));
 		messageActions.put(ReadyRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ReadyRequest) m.getObject())));
-		messageActions.put(GameModeListRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((GameModeListRequest) m.getObject())));
 		messageActions.put(ChooseGameModeRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((LobbyMessage) m.getObject())));
 		messageActions.put(RefuseContentPack.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RefuseContentPack) m.getObject())));
 		messageActions.put(ContentPackReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ContentPackReady) m.getObject())));

@@ -2,6 +2,7 @@ package com.pixurvival.contentPackEditor;
 
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.JFrame;
@@ -53,6 +54,7 @@ public class ContentPackEditor extends JFrame {
 			Locale.setDefault(Locale.ENGLISH);
 		}
 		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
+		FileService.getInstance().initialize(new File(mainArgs.getContentPackDirectory()));
 		run(mainArgs);
 		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -90,7 +92,11 @@ public class ContentPackEditor extends JFrame {
 		if (currentFile == null) {
 			setTitle(TITLE_PREFFIX + ReleaseVersion.getActual().displayName() + " - " + TranslationService.getInstance().getString("menuBar.file.new"));
 		} else {
-			setTitle(TITLE_PREFFIX + ReleaseVersion.getActual().displayName() + " - " + currentFile);
+			try {
+				setTitle(TITLE_PREFFIX + ReleaseVersion.getActual().displayName() + " - " + currentFile.getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

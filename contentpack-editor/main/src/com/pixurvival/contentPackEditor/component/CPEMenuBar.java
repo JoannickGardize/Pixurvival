@@ -16,10 +16,12 @@ public class CPEMenuBar extends JMenuBar {
 		final IdentifierDialog identifierDialog = new IdentifierDialog();
 		final ConstantsDialog constantsDialog = new ConstantsDialog();
 		final TranslationDialog translationDialog = TranslationDialog.getInstance();
+		final ContentPackChooserDialog contentPackChooserDialog = new ContentPackChooserDialog();
 
 		MenuBuilder builder = new MenuBuilder(this, "menuBar");
 		builder.addItem("file.new", fs::newContentPack);
-		builder.addItem("file.open", fs::open);
+		builder.addItem("file.open", () -> contentPackChooserDialog.setVisible(true));
+		builder.addItem("file.openFile", fs::open);
 		builder.addItem("file.save", fs::save);
 		builder.addItem("file.saveAs", fs::saveAs);
 		builder.addItem("contentPack.identifier", () -> identifierDialog.setVisible(true));

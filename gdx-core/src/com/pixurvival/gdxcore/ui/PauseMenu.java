@@ -50,7 +50,7 @@ public class PauseMenu extends Window {
 				return;
 			}
 			try {
-				WorldSerialization.save(PixurvivalGame.getWorld(), PixurvivalGame.getClient().getContentPackSerialization());
+				WorldSerialization.save(PixurvivalGame.getWorld(), PixurvivalGame.getClient().getContentPackContext());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

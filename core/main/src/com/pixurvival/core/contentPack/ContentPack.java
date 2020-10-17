@@ -62,7 +62,8 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Integer, Alteration> alterations = new HashMap<>();
 
-	private transient ContentPackIdentifier identifier = new ContentPackIdentifier();
+	private ContentPackIdentifier identifier;
+
 	private transient float maxLivingEntityRadius;
 	@Getter
 	private transient boolean initialized = false;
@@ -129,10 +130,12 @@ public class ContentPack implements Serializable {
 	private Constants constants = new Constants();
 
 	/**
-	 * @return The release version this pack is made with. Null value means that the
+	 * @return The release version this pack was made with. represents the name of
+	 *         an enum value of {@link ReleaseVersion}, in this way opening a pack
+	 *         of an unknow newer version will not crash. Null value means that the
 	 *         pack is prior to the {@link ReleaseVersion#ALPHA_5} version.
 	 */
-	private ReleaseVersion releaseVersion;
+	private String releaseVersion;
 
 	public byte[] getResource(String resource) {
 		if (resources == null) {

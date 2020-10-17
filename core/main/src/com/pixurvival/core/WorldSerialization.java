@@ -2,7 +2,6 @@ package com.pixurvival.core;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +19,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.LoadGameException.Reason;
 import com.pixurvival.core.World.Type;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
@@ -28,7 +28,6 @@ import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 import com.pixurvival.core.contentPack.gameMode.MapLimitsAnchor;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.livingEntity.KillCreatureEntityAction;
 import com.pixurvival.core.map.RemoveDurationStructureAction;
@@ -55,7 +54,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class WorldSerialization {
 
-	public static void save(World world, ContentPackSerialization contentPackSerialization) throws FileNotFoundException, IOException {
+	public static void save(World world, ContentPackContext contentPackContext) throws IOException {
 		Kryo kryo = getKryo(world.getGameMode().getEcosystem());
 		if (world.getType() != Type.LOCAL) {
 			throw new UnsupportedOperationException("Only local games can be saved");
@@ -65,7 +64,11 @@ public class WorldSerialization {
 			// Global data
 			ByteBufferUtils.putString(buffer, ReleaseVersion.getActual().toString());
 			ByteBufferUtils.putString(buffer, world.getContentPack().getIdentifier().fileName());
-			ByteBufferUtils.putBytes(buffer, contentPackSerialization.getChecksum(world.getContentPack().getIdentifier()));
+			try {
+				ByteBufferUtils.putBytes(buffer, contentPackContext.getChecksum(world.getContentPack().getIdentifier()));
+			} catch (ContentPackException e) {
+				throw new IOException(e);
+			}
 			buffer.putInt(world.getGameMode().getId());
 			buffer.putLong(world.getSeed());
 			world.getTime().write(buffer);
@@ -96,7 +99,7 @@ public class WorldSerialization {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static World load(String saveName, ContentPackSerialization contentPackSerialization) throws IOException, LoadGameException {
+	public static World load(String saveName, ContentPackContext contentPackSerialization) throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
 		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
 		if (ReleaseVersion.getActual() != version) {
@@ -110,7 +113,12 @@ public class WorldSerialization {
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
 		byte[] saveChecksum = ByteBufferUtils.getBytes(buffer);
-		ContentPackValidityCheckResult checkResult = contentPackSerialization.checkValidity(identifier, saveChecksum);
+		ContentPackValidityCheckResult checkResult;
+		try {
+			checkResult = contentPackSerialization.checkValidity(identifier, saveChecksum);
+		} catch (ContentPackException e) {
+			throw new LoadGameException(Reason.CONTENT_PACK_FILE_NOT_FOUND, identifier);
+		}
 		if (checkResult == ContentPackValidityCheckResult.NOT_SAME) {
 			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}

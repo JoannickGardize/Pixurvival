@@ -19,6 +19,9 @@ import lombok.Getter;
  *
  */
 public enum ReleaseVersion {
+
+	ALPHA_4,
+	ALPHA_4B,
 	ALPHA_5;
 
 	/**
@@ -61,6 +64,9 @@ public enum ReleaseVersion {
 	 * @return
 	 */
 	public static ReleaseVersion valueFor(String s) {
+		if (s == null) {
+			return null;
+		}
 		for (ReleaseVersion value : values()) {
 			if (value.name().equals(s)) {
 				return value;

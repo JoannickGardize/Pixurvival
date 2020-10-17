@@ -3,6 +3,7 @@ package com.pixurvival.client;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.LobbyData;
 
@@ -12,21 +13,21 @@ public class SingleplayerLobby {
 
 	private PixurvivalClient client;
 
-	private ContentPackIdentifier[] availableContentPacks;
+	private ContentPackSummary[] availableContentPacks;
 	private int selectedContentPackIndex = 0;
 	private @Getter int selectedGameModeIndex = 0;
 
 	public SingleplayerLobby(PixurvivalClient client) {
 		this.client = client;
-		List<ContentPackIdentifier> list = client.getContentPackSerialization().list();
-		availableContentPacks = list.toArray(new ContentPackIdentifier[list.size()]);
+		List<ContentPackSummary> list = client.getContentPackContext().list();
+		availableContentPacks = list.toArray(new ContentPackSummary[list.size()]);
 		if (availableContentPacks.length == 0) {
-			throw new IllegalStateException("No ContentPack available at " + client.getContentPackSerialization().getWorkingDirectory());
+			throw new IllegalStateException("No Content Pack available in the folder ./" + client.getContentPackContext().getWorkingDirectory());
 		}
 	}
 
 	public ContentPackIdentifier getSelectedContentPackIdentifier() {
-		return availableContentPacks[selectedContentPackIndex];
+		return availableContentPacks[selectedContentPackIndex].getIdentifier();
 	}
 
 	public void handle(ChooseGameModeRequest request) {

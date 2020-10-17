@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack;
 
+import java.io.File;
 import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.validation.annotation.Length;
@@ -19,10 +20,14 @@ public class ContentPackIdentifier implements Serializable {
 
 	@Required
 	@Length(min = 3)
-	private String name = "MyContentPack";
+	private String name = "Unamed Content Pack";
 
 	@Valid
 	private Version version = new Version(1, 0);
+
+	private transient byte[] checksum;
+
+	private transient File file;
 
 	public ContentPackIdentifier(String name, int majorVersion, int minorVersion) {
 		this.name = name;
@@ -49,7 +54,7 @@ public class ContentPackIdentifier implements Serializable {
 		return fileName != null && fileName.matches("[a-zA-Z0-9\\-]+_\\d+\\.\\d+\\.zip");
 	}
 
-	public static ContentPackIdentifier getIndentifierIfValid(String fileName) {
+	public static ContentPackIdentifier getIndentifierBasedOnFileName(String fileName) {
 		if (matchesContentPackFileName(fileName)) {
 			ContentPackIdentifier identifier = new ContentPackIdentifier(fileName);
 			if (identifier.fileName().equals(fileName)) {

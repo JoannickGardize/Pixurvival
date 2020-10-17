@@ -12,7 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
+import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.util.MathUtils;
@@ -30,7 +30,7 @@ public class PixurvivalServer {
 	private List<ServerGameListener> listeners = new ArrayList<>();
 
 	private ServerEngineThread engineThread = new ServerEngineThread(this);
-	private @Getter ContentPackSerialization contentPackSerialization;
+	private @Getter ContentPackContext contentPackContext;
 	private @Getter ContentPackUploader contentPackUploader = new ContentPackUploader(this);
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 	private List<LobbySession> lobbySessions = new ArrayList<>();
@@ -48,7 +48,7 @@ public class PixurvivalServer {
 		contentPackUploader.start();
 		KryoInitializer.apply(server.getKryo());
 		File defaultContentPack = new File(serverArgs.getContentPackDirectory());
-		contentPackSerialization = new ContentPackSerialization(defaultContentPack);
+		contentPackContext = new ContentPackContext(defaultContentPack);
 		addLobbySession(new LobbySession(this));
 		startServer(serverArgs.getPort());
 	}

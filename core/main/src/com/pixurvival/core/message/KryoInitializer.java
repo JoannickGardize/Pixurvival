@@ -1,5 +1,7 @@
 package com.pixurvival.core.message;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -7,12 +9,16 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.MapSerializer;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.IntegerInterval;
 import com.pixurvival.core.contentPack.Version;
+import com.pixurvival.core.contentPack.summary.ContentPackSummary;
+import com.pixurvival.core.contentPack.summary.GameModeSummary;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -26,8 +32,6 @@ import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
-import com.pixurvival.core.message.lobby.GameModeList;
-import com.pixurvival.core.message.lobby.GameModeListRequest;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
 import com.pixurvival.core.message.lobby.LobbyTeam;
@@ -113,14 +117,19 @@ public class KryoInitializer {
 		register(kryo, RenameTeamRequest.class);
 		register(kryo, Locale.class);
 		register(kryo, Locale[].class);
-		register(kryo, GameModeListRequest.class);
-		register(kryo, GameModeList.class);
 		register(kryo, ChooseGameModeRequest.class);
 		register(kryo, ContentPackCheck.class);
 		register(kryo, ContentPackReady.class);
 		register(kryo, RefuseContentPack.class);
 		register(kryo, ContentPackRequest.class);
 		register(kryo, DamageableStructureUpdate.class);
+		register(kryo, IntegerInterval.class);
+		register(kryo, ContentPackSummary.class);
+		register(kryo, ContentPackSummary[].class);
+		kryo.register(HashMap.class, new MapSerializer());
+		kryo.register(LinkedHashMap.class, new MapSerializer());
+		register(kryo, GameModeSummary.class);
+		register(kryo, GameModeSummary[].class);
 	}
 
 	@SuppressWarnings("unchecked")

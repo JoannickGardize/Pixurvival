@@ -3,6 +3,7 @@ package com.pixurvival.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -19,10 +20,10 @@ import com.pixurvival.core.WorldSerialization;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
-import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -59,7 +60,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
-	private @Getter ContentPackSerialization contentPackSerialization;
+	private @Getter ContentPackContext contentPackContext;
 	private @Getter ContentPackDownloader contentPackDownloadManager = new ContentPackDownloader(this);
 	private List<IPlayerActionRequest> playerActionRequests = new ArrayList<>();
 
@@ -74,7 +75,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 
 	public PixurvivalClient(CommonMainArgs clientArgs) {
 		KryoInitializer.apply(client.getKryo());
-		contentPackSerialization = new ContentPackSerialization(new File(clientArgs.getContentPackDirectory()));
+		contentPackContext = new ContentPackContext(new File(clientArgs.getContentPackDirectory()));
 		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
 		if (clientArgs.getOnGameBeginning() != null) {
@@ -127,10 +128,10 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			disconnectFromServer();
 			client.start();
 			client.connect(5000, address, port, port);
-			client.sendTCP(new LoginRequest(playerName));
+			client.sendTCP(new LoginRequest(playerName, ReleaseVersion.getActual().name()));
 		} catch (Exception e) {
 			Log.error("Error when trying to connect to server.", e);
-			listeners.forEach(l -> l.loginResponse(LoginResponse.INTERNAL_ERROR));
+			listeners.forEach(l -> l.loginResponse(new LoginResponse("Unable to connect to server.")));
 		}
 	}
 
@@ -161,12 +162,25 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
+	public Locale getLocaleFor(Collection<String> localTags) {
+		List<Locale> locales = new ArrayList<>();
+		for (String localTag : localTags) {
+			locales.add(Locale.forLanguageTag(localTag));
+		}
+		return LocaleUtils.findBestMatch(localePriorityList, locales);
+	}
+
 	public void checkContentPackValidity(ContentPackCheck check) {
-		ContentPackValidityCheckResult result = contentPackSerialization.checkValidity(check.getIdentifier(), check.getChecksum());
-		if (result == ContentPackValidityCheckResult.OK) {
-			client.sendTCP(new ContentPackReady(check.getIdentifier()));
-		} else {
-			listeners.forEach(l -> l.questionDownloadContentPack(check.getIdentifier(), result));
+		ContentPackValidityCheckResult result;
+		try {
+			result = contentPackContext.checkValidity(check.getIdentifier(), check.getChecksum());
+			if (result == ContentPackValidityCheckResult.OK) {
+				client.sendTCP(new ContentPackReady(check.getIdentifier()));
+			} else {
+				listeners.forEach(l -> l.questionDownloadContentPack(check.getIdentifier(), result));
+			}
+		} catch (ContentPackException e) {
+			listeners.forEach(l -> l.questionDownloadContentPack(check.getIdentifier(), ContentPackValidityCheckResult.NOT_FOUND));
 		}
 	}
 
@@ -182,7 +196,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
-			setWorld(World.createClientWorld(createWorld, contentPackSerialization));
+			setWorld(World.createClientWorld(createWorld, contentPackContext));
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = getLocaleFor(world.getContentPack());
 			removeAllPlugins();
@@ -210,11 +224,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
-			localGamePack = contentPackSerialization.load(singlePlayerLobby.getSelectedContentPackIdentifier());
+			localGamePack = contentPackContext.load(singlePlayerLobby.getSelectedContentPackIdentifier());
 		} catch (ContentPackException e) {
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
-		if (ReleaseVersion.getActual() != localGamePack.getReleaseVersion()) {
+		if (ReleaseVersion.getActual() != ReleaseVersion.valueFor(localGamePack.getReleaseVersion())) {
 			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, localGamePack.getReleaseVersion(), ReleaseVersion.getActual());
 		}
 		currentLocale = getLocaleFor(localGamePack);
@@ -236,7 +250,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 
 	public void loadAndStartLocalGame(String saveName) throws LoadGameException {
 		try {
-			setWorld(WorldSerialization.load(saveName, contentPackSerialization));
+			setWorld(WorldSerialization.load(saveName, contentPackContext));
 			world.setSaveName(saveName);
 			currentLocale = getLocaleFor(world.getContentPack());
 			world.initializeLoadedGame();

@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -77,6 +77,7 @@ import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
@@ -96,13 +97,11 @@ import com.pixurvival.core.livingEntity.alteration.StunAlteration;
 import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
 import com.pixurvival.core.util.FileUtils;
 
-import lombok.Getter;
 import lombok.SneakyThrows;
 
 /**
- * IO for {@link ContentPack}s, create or read the zip containing all resources
- * and the yaml file for all elements definitions. It also has a context, with a
- * working directory, wich can be scanned to list available ContentPacks.
+ * I/O for {@link ContentPack}s, create or read the zip containing all resources
+ * and the yaml file for all elements definitions.
  * 
  * @author SharkHendrix
  *
@@ -111,21 +110,18 @@ public class ContentPackSerialization {
 
 	public static final String SERIALIZATION_ENTRY_NAME = "contentPack.yml";
 
+	public static final String SUMMARY_ENTRY_NAME = "summary.yml";
+
 	private static final String RESOURCES_ROOT = "resources/";
 
 	private static final String TRANSLATIONS_ROOT = "translations/";
 
-	private @Getter File workingDirectory;
 	private Yaml yaml;
 	private NameAnchorGenerator nameAnchorGenerator = new NameAnchorGenerator();
 	private Map<String, Class<?>> classFromSimpleName = new HashMap<>();
 	private List<ContentPackSerializationPlugin> plugins = new ArrayList<>();
 
-	public ContentPackSerialization(File workingDirectory) {
-		this.workingDirectory = workingDirectory;
-		if (workingDirectory != null && !workingDirectory.isDirectory()) {
-			throw new IllegalStateException("Not a directory : " + workingDirectory);
-		}
+	public ContentPackSerialization() {
 		Representer representer = new Representer();
 		representer.setPropertyUtils(new DeclarationPropertyOrderUtils());
 		representer.getPropertyUtils().setSkipMissingProperties(true);
@@ -148,90 +144,14 @@ public class ContentPackSerialization {
 		yaml.setBeanAccess(BeanAccess.FIELD);
 	}
 
-	public ContentPackSerialization() {
-		this(null);
-	}
-
 	public void addPlugin(ContentPackSerializationPlugin plugin) {
 		plugins.add(plugin);
 	}
 
-	public List<ContentPackIdentifier> list() {
-		if (workingDirectory == null) {
-			throw new IllegalStateException("No working directory defined");
-		}
-		List<ContentPackIdentifier> list = new ArrayList<>();
-		for (File file : workingDirectory.listFiles()) {
-			ContentPackIdentifier identifier = ContentPackIdentifier.getIndentifierIfValid(file.getName());
-			if (identifier != null) {
-				list.add(identifier);
-			}
-		}
-		return list;
-	}
-
-	public File fileOf(ContentPackIdentifier identifier) {
-		return new File(workingDirectory, identifier.fileName());
-	}
-
-	public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
-		return load(fileOf(identifier));
-	}
-
-	public ContentPack load(ContentPackIdentifier identifier, boolean loadResources) throws ContentPackException {
-		return load(fileOf(identifier), false);
-	}
-
-	public ContentPack load(File file) throws ContentPackException {
-		return load(file, true);
-	}
-
-	public ContentPack load(File file, boolean loadResources) throws ContentPackException {
-		if (!file.exists()) {
-			throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
-		}
-		ContentPackIdentifier identifier = ContentPackIdentifier.getIndentifierIfValid(file.getName());
-		if (identifier == null) {
-			throw new ContentPackException(file.getName() + " is not a valid Content Pack file name.");
-		}
-		try (ZipFile zipFile = new ZipFile(file)) {
-			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
-			ContentPack contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
-			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
-			while (enumeration.hasMoreElements()) {
-				entry = enumeration.nextElement();
-				if (entry.isDirectory()) {
-					continue;
-				}
-				if (entry.getName().startsWith(RESOURCES_ROOT) && loadResources) {
-					contentPack.addResource(entry.getName().substring(10), FileUtils.readBytes(zipFile.getInputStream(entry)));
-				} else if (entry.getName().startsWith(TRANSLATIONS_ROOT)) {
-					Properties properties = new Properties();
-					properties.load(zipFile.getInputStream(entry));
-					Locale locale = Locale.forLanguageTag(entry.getName().substring(25).split("\\.")[0]);
-					contentPack.addTranslation(locale, properties);
-				}
-			}
-			for (ContentPackSerializationPlugin plugin : plugins) {
-				plugin.read(contentPack, zipFile);
-			}
-			contentPack.setIdentifier(identifier);
-			return contentPack;
-		} catch (Exception e) {
-			throw new ContentPackException(e);
-		}
-	}
-
-	public ContentPack reloadCore(ContentPack old, InputStream newDataInput) {
-		ContentPack contentPack = yaml.loadAs(newDataInput, ContentPack.class);
-		contentPack.setResources(old.getResources());
-		contentPack.setTranslations(old.getTranslations());
-		contentPack.setIdentifier(old.getIdentifier());
-		return contentPack;
-	}
-
 	public void save(File file, ContentPack contentPack) throws IOException {
 		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file))) {
+			zipOutputStream.putNextEntry(new ZipEntry(SUMMARY_ENTRY_NAME));
+			yaml.dump(ContentPackSummary.build(contentPack), new OutputStreamWriter(zipOutputStream));
 			zipOutputStream.putNextEntry(new ZipEntry(SERIALIZATION_ENTRY_NAME));
 			nameAnchorGenerator.reset();
 			yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream));
@@ -250,22 +170,68 @@ public class ContentPackSerialization {
 		}
 	}
 
-	public ContentPackValidityCheckResult checkValidity(ContentPackIdentifier identifier, byte[] checksum) {
-		if (!list().contains(identifier)) {
-			return ContentPackValidityCheckResult.NOT_FOUND;
-		} else if (!Arrays.equals(getChecksum(identifier), checksum)) {
-			return ContentPackValidityCheckResult.NOT_SAME;
-		} else {
-			return ContentPackValidityCheckResult.OK;
+	public ContentPack load(File file) throws ContentPackException {
+		if (!file.exists()) {
+			throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
+		}
+		try (ZipFile zipFile = new ZipFile(file)) {
+			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
+			ContentPack contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
+			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+			while (enumeration.hasMoreElements()) {
+				entry = enumeration.nextElement();
+				if (entry.isDirectory()) {
+					continue;
+				}
+				if (entry.getName().startsWith(RESOURCES_ROOT)) {
+					contentPack.addResource(entry.getName().substring(10), FileUtils.readBytes(zipFile.getInputStream(entry)));
+				} else if (entry.getName().startsWith(TRANSLATIONS_ROOT)) {
+					Properties properties = new Properties();
+					properties.load(zipFile.getInputStream(entry));
+					Locale locale = Locale.forLanguageTag(entry.getName().substring(25).split("\\.")[0]);
+					contentPack.addTranslation(locale, properties);
+				}
+			}
+			for (ContentPackSerializationPlugin plugin : plugins) {
+				plugin.read(contentPack, zipFile);
+			}
+			if (contentPack.getIdentifier() == null) {
+				contentPack.setIdentifier(ContentPackIdentifier.getIndentifierBasedOnFileName(file.getName()));
+				if (contentPack.getIdentifier() == null) {
+					contentPack.setIdentifier(new ContentPackIdentifier());
+				}
+			}
+			return contentPack;
+		} catch (Exception e) {
+			throw new ContentPackException(e);
 		}
 	}
 
-	public byte[] getChecksum(ContentPackIdentifier identifier) {
-		return getChecksum(fileOf(identifier));
+	public ContentPackSummary readSummary(File file) {
+		try (ZipFile zipFile = new ZipFile(file)) {
+			ZipEntry entry = zipFile.getEntry(SUMMARY_ENTRY_NAME);
+			if (entry == null) {
+				return null;
+			}
+			ContentPackSummary summary = yaml.loadAs(zipFile.getInputStream(entry), ContentPackSummary.class);
+			summary.getIdentifier().setFile(file);
+			return summary;
+		} catch (Exception e) {
+			Log.warn("An error occured when trying to read the summary of the content pack " + file.getAbsolutePath(), e);
+			return null;
+		}
+	}
+
+	public ContentPack reloadCore(ContentPack old, InputStream newDataInput) {
+		ContentPack contentPack = yaml.loadAs(newDataInput, ContentPack.class);
+		contentPack.setResources(old.getResources());
+		contentPack.setTranslations(old.getTranslations());
+		contentPack.setIdentifier(old.getIdentifier());
+		return contentPack;
 	}
 
 	@SneakyThrows
-	private byte[] getChecksum(File file) {
+	public byte[] getChecksum(File file) {
 		MessageDigest digest = MessageDigest.getInstance("SHA-256");
 		try (FileInputStream is = new FileInputStream(file)) {
 			byte[] buffer = new byte[1024];

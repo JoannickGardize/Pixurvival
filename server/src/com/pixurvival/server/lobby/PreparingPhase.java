@@ -1,22 +1,16 @@
 package com.pixurvival.server.lobby;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.pixurvival.core.contentPack.ContentPack;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPackException;
-import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.TranslationKey;
-import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
-import com.pixurvival.core.message.lobby.GameModeList;
-import com.pixurvival.core.message.lobby.GameModeListRequest;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
@@ -24,35 +18,23 @@ import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
 import com.pixurvival.core.message.lobby.RenameTeamRequest;
-import com.pixurvival.core.util.Cache;
-import com.pixurvival.core.util.LocaleUtils;
 
 public class PreparingPhase implements LobbyPhase {
 
 	private int modCount;
-	private ContentPackIdentifier[] availableContentPacks;
+	private ContentPackSummary[] availableContentPacks;
 	private int selectedContentPackIndex;
 	private int selectedGameModeIndex;
 	private LobbySession session;
-	/**
-	 * ContentPacks must be pre-loaded to get the GameMode list.
-	 */
-	private Cache<ContentPackIdentifier, ContentPack> contentPackCache = new Cache<>(identifier -> {
-		try {
-			return session.getServer().getContentPackSerialization().load(identifier, false);
-		} catch (ContentPackException e) {
-			e.printStackTrace();
-			return null;
-		}
-	});
 
 	public PreparingPhase(LobbySession session) {
 		this.session = session;
-		List<ContentPackIdentifier> list = session.getServer().getContentPackSerialization().list();
-		availableContentPacks = list.toArray(new ContentPackIdentifier[list.size()]);
+		List<ContentPackSummary> list = session.getServer().getContentPackContext().list();
+		availableContentPacks = list.toArray(new ContentPackSummary[list.size()]);
 		if (availableContentPacks.length == 0) {
-			throw new IllegalStateException("No ContentPack available at " + session.getServer().getContentPackSerialization().getWorkingDirectory());
+			throw new IllegalStateException("No ContentPack available at " + session.getServer().getContentPackContext().getWorkingDirectory());
 		}
+		chooseGameMode(new ChooseGameModeRequest(0, 0));
 	}
 
 	@Override
@@ -88,8 +70,6 @@ public class PreparingPhase implements LobbyPhase {
 			renameTeam(renameTeamRequest.getOldName(), renameTeamRequest.getNewName().trim());
 		} else if (lobbyMessage instanceof RemoveTeamRequest) {
 			removeTeam(((RemoveTeamRequest) lobbyMessage).getTeamName());
-		} else if (lobbyMessage instanceof GameModeListRequest) {
-			sendGameModeList(playerSession, (GameModeListRequest) lobbyMessage);
 		} else if (lobbyMessage instanceof ChooseGameModeRequest) {
 			chooseGameMode((ChooseGameModeRequest) lobbyMessage);
 		}
@@ -105,10 +85,10 @@ public class PreparingPhase implements LobbyPhase {
 		if (contentPackIndex >= 0 && contentPackIndex < availableContentPacks.length) {
 			selectedContentPackIndex = contentPackIndex;
 			int gameModeIndex = request.getGameModeIndex();
-			if (gameModeIndex >= 0 && gameModeIndex < contentPackCache.get(availableContentPacks[selectedContentPackIndex]).getGameModes().size()) {
+			if (gameModeIndex >= 0 && gameModeIndex < availableContentPacks[contentPackIndex].getGameModeSummaries().length) {
 				selectedGameModeIndex = gameModeIndex;
 			} else {
-				selectedGameModeIndex = 0;
+				selectedGameModeIndex = -1;
 			}
 			setAllNotReady();
 			dataChanged();
@@ -184,13 +164,21 @@ public class PreparingPhase implements LobbyPhase {
 	}
 
 	private void startGameIfAllReady() {
+		if (selectedGameModeIndex == -1) {
+			return;
+		}
 		for (PlayerLobbySession playerSession : session.getPlayerSessions()) {
 			if (!playerSession.getLobbyPlayer().isReady()) {
 				return;
 			}
 		}
 		StartingGameData data = new StartingGameData();
-		data.setContentPack(contentPackCache.get(availableContentPacks[selectedContentPackIndex]));
+		try {
+			data.setContentPack(session.getServer().getContentPackContext().load(availableContentPacks[selectedContentPackIndex].getIdentifier()));
+		} catch (ContentPackException e) {
+			Log.error("Unable to load the content pack " + availableContentPacks[selectedContentPackIndex].getIdentifier(), e);
+			return;
+		}
 		data.setGameModeId(selectedGameModeIndex);
 		session.getPhase(ContentPackCheckPhase.class).setData(data);
 		session.setCurrentPhase(ContentPackCheckPhase.class);
@@ -223,27 +211,11 @@ public class PreparingPhase implements LobbyPhase {
 		message.setAvailableContentPacks(availableContentPacks);
 		message.setSelectedContentPackIndex(selectedContentPackIndex);
 		message.setSelectedGameModeIndex(selectedGameModeIndex);
-		GameMode gm = contentPackCache.get(availableContentPacks[selectedContentPackIndex]).getGameModes().get(selectedGameModeIndex);
-		message.setMaxPlayer(gm.getTeamNumberInterval().getMax() * gm.getTeamSizeInterval().getMax());
 		session.getPlayerSessions().forEach(s -> {
 			message.setMyPlayer(s.getLobbyPlayer());
 			message.setMyTeamName(s.getTeamName());
 			s.getConnection().sendTCP(message);
 		});
-	}
-
-	private void sendGameModeList(PlayerLobbySession session, GameModeListRequest request) {
-		int packIndex = request.getContentPackIndex();
-		if (packIndex < 0 || packIndex >= availableContentPacks.length) {
-			return;
-		}
-		ContentPack pack = contentPackCache.get(availableContentPacks[packIndex]);
-		Locale bestLocale = LocaleUtils.findBestMatch(Arrays.asList(request.getRequestedLocales()), pack.getTranslations().keySet());
-		String[] gameModeList = new String[pack.getGameModes().size()];
-		for (int i = 0; i < gameModeList.length; i++) {
-			gameModeList[i] = pack.getTranslation(bestLocale, pack.getGameModes().get(i), TranslationKey.NAME);
-		}
-		session.getConnection().sendTCP(new GameModeList(pack.getIdentifier(), gameModeList));
 	}
 
 	private LobbySessionTeam getTeamByName(String name) {

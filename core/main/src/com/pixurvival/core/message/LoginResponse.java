@@ -1,10 +1,14 @@
 package com.pixurvival.core.message;
 
-public enum LoginResponse {
-	INTERNAL_ERROR,
-	NAME_IN_USE,
-	GAME_ALREADY_STARTED,
-	BANNED,
-	ALREADY_LOGGED,
-	INVALID_NAME;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginResponse {
+	private String message;
 }

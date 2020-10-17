@@ -61,7 +61,7 @@ public class AutoUpgradeTool {
 			StringBuilder sb = asStringBuilder(zipFile, ContentPackSerialization.SERIALIZATION_ENTRY_NAME);
 			int startIndex = startIndexFor(findReleaseVersion(sb));
 			upgradeEntry(sb, SERIALIZATION_UPGRADERS, startIndex);
-			ContentPack contentPack = fileService.getContentPackSerializer().reloadCore(fileService.getCurrentContentPack(), new ByteArrayInputStream(sb.toString().getBytes()));
+			ContentPack contentPack = fileService.getContentPackContext().getSerialization().reloadCore(fileService.getCurrentContentPack(), new ByteArrayInputStream(sb.toString().getBytes()));
 			sb = asStringBuilder(zipFile, LayoutManager.LAYOUT_ENTRY);
 			upgradeEntry(sb, LAYOUT_UPGRADERS, startIndex);
 			LayoutManager.getInstance().read(new ByteArrayInputStream(sb.toString().getBytes()));

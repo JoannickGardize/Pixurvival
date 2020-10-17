@@ -3,6 +3,8 @@ package com.pixurvival.server.lobby;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.LobbyMessage;
@@ -24,7 +26,14 @@ public class ContentPackCheckPhase implements LobbyPhase {
 	@Override
 	public void started() {
 		readySessions.clear();
-		ContentPackCheck check = new ContentPackCheck(data.getContentPack().getIdentifier(), session.getServer().getContentPackSerialization().getChecksum(data.getContentPack().getIdentifier()));
+		ContentPackCheck check;
+		try {
+			check = new ContentPackCheck(data.getContentPack().getIdentifier(), session.getServer().getContentPackContext().getChecksum(data.getContentPack().getIdentifier()));
+		} catch (ContentPackException e) {
+			Log.error("Error while calculating checksum of content pack " + data.getContentPack().getIdentifier(), e);
+			session.setCurrentPhase(PreparingPhase.class);
+			return;
+		}
 		session.getPlayerSessions().forEach(p -> p.getConnection().sendTCP(check));
 	}
 
@@ -53,5 +62,4 @@ public class ContentPackCheckPhase implements LobbyPhase {
 			session.setCurrentPhase(PreparingPhase.class).abordStartingGame();
 		}
 	}
-
 }

@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
-import com.pixurvival.core.message.lobby.GameModeList;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
@@ -110,8 +109,6 @@ public class MultiplayerLobbyScreen implements Screen {
 	public void receivedLobbyMessage(LobbyMessage message) {
 		if (message instanceof LobbyData) {
 			setLobbyData((LobbyData) message);
-		} else if (message instanceof GameModeList) {
-			gameModeChooser.acceptGameModeList((GameModeList) message);
 		}
 	}
 
@@ -125,7 +122,7 @@ public class MultiplayerLobbyScreen implements Screen {
 		}
 		setTeamTable(lobbyData);
 		gameModeChooser.setData(lobbyData);
-		NotificationPushManager.getInstance().push(Notification.builder().status("In lobby").party(new Party(lobbyData.getPlayers().length, lobbyData.getMaxPlayer())).build());
+		NotificationPushManager.getInstance().push(Notification.builder().status("In lobby").party(new Party(lobbyData.getPlayers().length, gameModeChooser.countLobbyMaxPlayer())).build());
 	}
 
 	private void setTeamTable(LobbyData lobbyData) {

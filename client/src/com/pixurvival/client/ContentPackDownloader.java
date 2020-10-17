@@ -26,7 +26,7 @@ public class ContentPackDownloader {
 		try {
 			output = writingMap.get(contentPackPart.getIdentifier());
 			if (output == null) {
-				File file = new File(client.getContentPackSerialization().getWorkingDirectory(), contentPackPart.getIdentifier().fileName());
+				File file = new File(client.getContentPackContext().getWorkingDirectory(), contentPackPart.getIdentifier().fileName());
 				Log.debug("Creating file : " + file.getAbsolutePath());
 				output = new BufferedOutputStream(new FileOutputStream(file));
 				writingMap.put(contentPackPart.getIdentifier(), output);
