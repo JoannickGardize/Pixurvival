@@ -39,7 +39,6 @@ public class EffectEditor extends RootElementEditor<Effect> {
 				VerticalListEditor.HORIZONTAL);
 		EnumChooser<OrientationType> orientationTypeChooser = new EnumChooser<>(OrientationType.class);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
-		BooleanCheckBox loopAnimationCheckbox = new BooleanCheckBox();
 		EnumChooser<DrawDepth> drawDepthChooser = new EnumChooser<>(DrawDepth.class);
 		TimeInput durationInput = new TimeInput();
 		FloatInput entityCollisionRadiusInput = new FloatInput(Bounds.positive());
@@ -58,7 +57,6 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		bind(spriteSheetChooser, Effect::getSpriteSheet, Effect::setSpriteSheet);
 		bind(orientationTypeChooser, Effect::getOrientation, Effect::setOrientation);
 		bind(solidCheckbox, Effect::isSolid, Effect::setSolid);
-		bind(loopAnimationCheckbox, Effect::isLoopAnimation, Effect::setLoopAnimation);
 		bind(durationInput, Effect::getDuration, Effect::setDuration);
 		bind(entityCollisionRadiusInput, Effect::getEntityCollisionRadius, Effect::setEntityCollisionRadius);
 		bind(mapCollisionRadiusInput, Effect::getMapCollisionRadius, Effect::setMapCollisionRadius);
@@ -71,8 +69,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();
-		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.loopAnimation",
-				loopAnimationCheckbox, "effectEditor.drawDepth", drawDepthChooser);
+		JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.drawDepth",
+				drawDepthChooser);
 		displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
 		JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "effectEditor.entityCollisionRadius",
 				entityCollisionRadiusInput, "effectEditor.mapCollisionRadius", mapCollisionRadiusInput);

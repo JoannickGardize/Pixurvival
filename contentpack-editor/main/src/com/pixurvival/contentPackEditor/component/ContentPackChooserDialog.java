@@ -31,6 +31,7 @@ public class ContentPackChooserDialog extends EditorDialog {
 			if (cp != null) {
 				setVisible(false);
 				try {
+					FileService.getInstance().savePrevious();
 					FileService.getInstance().open(FileService.getInstance().getContentPackContext().fileOf(cp.getIdentifier()));
 				} catch (ContentPackException e) {
 					e.printStackTrace();

@@ -40,6 +40,5 @@ public class UserDirectory {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 }

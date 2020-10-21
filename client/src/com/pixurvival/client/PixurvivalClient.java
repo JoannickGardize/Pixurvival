@@ -27,6 +27,7 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.ContentPackRequest;
@@ -78,11 +79,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		contentPackContext = new ContentPackContext(new File(clientArgs.getContentPackDirectory()));
 		clientListener = new NetworkMessageHandler(this);
 		clientArgs.apply(client, clientListener);
-		if (clientArgs.getOnGameBeginning() != null) {
-			gameBeginningCommands = clientArgs.getOnGameBeginning().split(";");
-		} else {
-			gameBeginningCommands = new String[0];
-		}
+		gameBeginningCommands = clientArgs.getGameBeginingCommands();
 		localePriorityList.add(Locale.getDefault());
 		if (!Locale.getDefault().equals(new Locale("en", "US"))) {
 			localePriorityList.add(new Locale("en", "US"));
@@ -221,6 +218,10 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		if (singlePlayerLobby == null) {
 			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
 		}
+		if (singlePlayerLobby.getSelectedGameModeIndex() == -1) {
+			Log.warn("No GameMode selected");
+			return;
+		}
 		removeAllPlugins();
 		ContentPack localGamePack;
 		try {
@@ -238,7 +239,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
 			throw new LoadGameException(Reason.NOT_PLAYABLE_IN_SOLO);
 		}
-		world.initializeNewGame();
+		try {
+			world.initializeNewGame();
+		} catch (MapAnalyticsException e) {
+			throw new LoadGameException(Reason.OTHER, e.getMessage());
+		}
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
 		for (String command : gameBeginningCommands) {

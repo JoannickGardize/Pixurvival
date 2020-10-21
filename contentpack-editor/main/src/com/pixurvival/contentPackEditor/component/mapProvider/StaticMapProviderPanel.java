@@ -63,5 +63,4 @@ public class StaticMapProviderPanel extends JPanel {
 		panel.add(imageMappingEditor, BorderLayout.CENTER);
 		return panel;
 	}
-
 }

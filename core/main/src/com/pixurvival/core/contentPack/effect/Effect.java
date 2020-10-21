@@ -37,8 +37,6 @@ public class Effect extends IdentifiedElement {
 	@Required
 	private OrientationType orientation = OrientationType.STATIC;
 
-	private boolean loopAnimation = true;
-
 	private DrawDepth drawDepth = DrawDepth.NORMAL;
 
 	private boolean solid;

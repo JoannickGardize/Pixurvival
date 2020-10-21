@@ -6,12 +6,13 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.CardinalDirection;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.Vector2;
 
 public interface PlayerSpawn extends Serializable {
 
-	void apply(World world);
+	void apply(World world) throws MapAnalyticsException;
 
 	default void spawnTeam(Team team, Vector2 spawnPosition) {
 		CardinalDirection currentDirection = CardinalDirection.EAST;

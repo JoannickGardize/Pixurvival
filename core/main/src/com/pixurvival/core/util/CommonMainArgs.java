@@ -5,9 +5,11 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 @Getter
+@Setter
 public class CommonMainArgs {
 
 	private String logLevel = "INFO";
@@ -30,6 +32,14 @@ public class CommonMainArgs {
 			Log.warn("Lag simulation mode enabled : [" + getMinSimulateLag() + " ms, " + getMaxSimulateLag() + " ms]");
 		} else {
 			endPoint.addListener(listener);
+		}
+	}
+
+	public String[] getGameBeginingCommands() {
+		if (onGameBeginning != null) {
+			return onGameBeginning.split(";");
+		} else {
+			return new String[0];
 		}
 	}
 }

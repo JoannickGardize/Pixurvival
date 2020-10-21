@@ -4,6 +4,7 @@ import javax.swing.JMenuBar;
 
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.translation.TranslationDialog;
+import com.pixurvival.contentPackEditor.settings.SettingsDialog;
 import com.pixurvival.contentPackEditor.util.MenuBuilder;
 
 public class CPEMenuBar extends JMenuBar {
@@ -17,6 +18,7 @@ public class CPEMenuBar extends JMenuBar {
 		final ConstantsDialog constantsDialog = new ConstantsDialog();
 		final TranslationDialog translationDialog = TranslationDialog.getInstance();
 		final ContentPackChooserDialog contentPackChooserDialog = new ContentPackChooserDialog();
+		final SettingsDialog settingsDialog = new SettingsDialog();
 
 		MenuBuilder builder = new MenuBuilder(this, "menuBar");
 		builder.addItem("file.new", fs::newContentPack);
@@ -28,5 +30,6 @@ public class CPEMenuBar extends JMenuBar {
 		builder.addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
 		builder.addItem("contentPack.constants", () -> constantsDialog.setVisible(true));
 		builder.addItem("contentPack.translations", () -> translationDialog.setVisible(true));
+		builder.addItem("editor.settings", () -> settingsDialog.setVisible(true));
 	}
 }

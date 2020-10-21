@@ -29,8 +29,6 @@ public class MainMenuScreen implements Screen {
 		TextButton singleplayerNewButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer.new"), skin);
 		TextButton singleplayerLoadButton = new TextButton(PixurvivalGame.getString("menu.main.singleplayer.load"), skin);
 		TextButton multiplayerButton = new TextButton(PixurvivalGame.getString("menu.main.multiplayer"), skin);
-		// TextButton editorButton = new
-		// TextButton(PixurvivalGame.getString("menu.main.editor"), skin);
 		TextButton exitButton = new TextButton(PixurvivalGame.getString("menu.main.exit"), skin);
 
 		table.add(singleplayerNewButton);
@@ -65,15 +63,6 @@ public class MainMenuScreen implements Screen {
 				PixurvivalGame.setScreen(MultiplayerMenuScreen.class);
 			}
 		});
-
-		// editorButton.addListener(new ClickListener() {
-		// @Override
-		// public void clicked(InputEvent event, float x, float y) {
-		// MainArgs mainArgs = new MainArgs();
-		// mainArgs.setOpen("./contentPacks/Vanilla_1.0.zip");
-		// ContentPackEditor.run(mainArgs);
-		// }
-		// });
 
 		exitButton.addListener(new ClickListener() {
 			@Override

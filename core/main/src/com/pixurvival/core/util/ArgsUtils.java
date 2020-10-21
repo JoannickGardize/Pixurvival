@@ -57,7 +57,7 @@ public class ArgsUtils {
 	}
 
 	@SneakyThrows
-	private static void setValue(Object instance, Field field, String stringValue) {
+	public static void setValue(Object instance, Field field, String stringValue) {
 		if (!field.isAccessible()) {
 			field.setAccessible(true);
 		}
@@ -65,7 +65,7 @@ public class ArgsUtils {
 			field.set(instance, stringValue);
 		} else if (field.getType().isPrimitive()) {
 			primitiveSetters.get(field.getType()).accept(field, instance, stringValue);
-		} else { // At this point we assume that the field is a wrapper type
+		} else { // At this point we assume that the field is a wrapper type or an enum value
 			field.set(instance, field.getType().getMethod("valueOf", String.class).invoke(null, stringValue));
 		}
 	}

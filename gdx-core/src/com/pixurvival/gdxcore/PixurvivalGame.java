@@ -44,6 +44,8 @@ import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
+import com.pixurvival.server.PixurvivalServer;
+import com.pixurvival.server.util.ServerMainArgs;
 
 import lombok.Getter;
 
@@ -114,6 +116,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private @Getter boolean zoomEnabled;
 	private Sound[] sounds;
 	private @Getter float globalVolume = 1;
+	private PixurvivalServer server;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
@@ -248,6 +251,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.dispose();
 		client.dispose();
 		ChunkManager.getInstance().setRunning(false);
+		disposeServer();
 		NotificationPushManager.getInstance().stop();
 	}
 
@@ -281,6 +285,8 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void error(Throwable e) {
+		Log.error("LIBGDX Error", e);
+		System.exit(-1);
 	}
 
 	@Override
@@ -343,6 +349,18 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		Screen screen = getScreen();
 		if (screen instanceof WorldScreen) {
 			((WorldScreen) screen).getChatUI().focusTextInput();
+		}
+	}
+
+	public void startServer(ServerMainArgs args) {
+		disposeServer();
+		server = new PixurvivalServer(args);
+	}
+
+	public void disposeServer() {
+		if (server != null) {
+			server.stopServer();
+			server = null;
 		}
 	}
 }

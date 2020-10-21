@@ -24,6 +24,7 @@ import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkCreatureSpawnManager;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.mapLimits.MapLimitsManager;
@@ -220,8 +221,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	/**
 	 * Called after all players are added in the EntityPool and Teams are sets. This
 	 * will place players and set the map limit if present.
+	 * 
+	 * @throws MapAnalyticsException
 	 */
-	public void initializeNewGame() {
+	public void initializeNewGame() throws MapAnalyticsException {
 		entityPool.flushNewEntities();
 		gameMode.getPlayerSpawn().apply(this);
 		initializeEvents();

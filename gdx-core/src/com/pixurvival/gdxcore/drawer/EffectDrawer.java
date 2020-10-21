@@ -68,11 +68,9 @@ public class EffectDrawer extends EntityDrawer<EffectEntity> {
 			actionAnimation = ActionAnimation.DEFAULT;
 		}
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
-		if (effect.isLoopAnimation() || data.isFirstLoop()) {
-			Vector2 drawPosition = data.getDrawPosition();
-			float angle = effect.getOrientation() == OrientationType.MOVING_ANGLE ? (float) e.getMovingAngle() : 0;
-			DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, angle * MathUtils.radDeg + data.getAngle());
-		}
+		Vector2 drawPosition = data.getDrawPosition();
+		float angle = effect.getOrientation() == OrientationType.MOVING_ANGLE ? (float) e.getMovingAngle() : 0;
+		DrawUtils.drawRotatedStandUpStyleTexture(batch, textureAnimationSet, actionAnimation, index, drawPosition, angle * MathUtils.radDeg + data.getAngle());
 	}
 
 }

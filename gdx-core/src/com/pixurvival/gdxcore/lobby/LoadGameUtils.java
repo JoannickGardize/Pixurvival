@@ -31,6 +31,9 @@ public class LoadGameUtils {
 			message = PixurvivalGame.getString("loadGameError.wrongGameVersion", ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[0]),
 					ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[1]));
 			break;
+		case OTHER:
+			message = (String) e.getArgs()[0];
+			break;
 		default:
 			message = "Unknown error";
 			break;

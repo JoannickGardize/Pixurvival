@@ -54,6 +54,7 @@ public class ResourceFileChooser extends JPanel implements ValueComponent<String
 	@Override
 	public void setValue(String value) {
 		resourceName = value;
+		System.out.println(value);
 		update();
 	}
 

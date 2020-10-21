@@ -1,6 +1,8 @@
 package com.pixurvival.contentPackEditor;
 
 import java.awt.Dimension;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -16,6 +18,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackSavedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.settings.Settings;
 import com.pixurvival.core.util.ArgsUtils;
 import com.pixurvival.core.util.ReleaseVersion;
 
@@ -56,7 +59,15 @@ public class ContentPackEditor extends JFrame {
 		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
 		FileService.getInstance().initialize(new File(mainArgs.getContentPackDirectory()));
 		run(mainArgs);
-		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		instance.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent we) {
+				if (FileService.getInstance().savePrevious()) {
+					System.exit(0);
+				}
+			}
+		});
 	}
 
 	public static void run(MainArgs mainArgs) {
@@ -66,7 +77,7 @@ public class ContentPackEditor extends JFrame {
 		// IllegalAccessException | UnsupportedLookAndFeelException e) {
 		// e.printStackTrace();
 		// }
-
+		Settings.getInstance().apply(null);
 		ContentPackEditor editor = new ContentPackEditor();
 		instance = editor;
 		instance.setVisible(true);

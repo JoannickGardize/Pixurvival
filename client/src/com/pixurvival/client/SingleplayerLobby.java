@@ -24,6 +24,9 @@ public class SingleplayerLobby {
 		if (availableContentPacks.length == 0) {
 			throw new IllegalStateException("No Content Pack available in the folder ./" + client.getContentPackContext().getWorkingDirectory());
 		}
+		if (availableContentPacks[selectedContentPackIndex].getGameModeSummaries().length == 0) {
+			selectedGameModeIndex = -1;
+		}
 	}
 
 	public ContentPackIdentifier getSelectedContentPackIdentifier() {

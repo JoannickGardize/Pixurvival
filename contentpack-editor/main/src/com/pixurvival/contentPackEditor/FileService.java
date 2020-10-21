@@ -110,10 +110,10 @@ public class FileService {
 		}
 	}
 
-	private boolean savePrevious() {
-		if (currentContentPack != null) {
+	public boolean savePrevious() {
+		if (!ContentPackEditionService.getInstance().isEmpty()) {
 			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.unsavedContentPack"), "", JOptionPane.YES_NO_CANCEL_OPTION);
-			if (option == JOptionPane.CANCEL_OPTION) {
+			if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
 				return false;
 			} else if (option == JOptionPane.YES_OPTION) {
 				save();

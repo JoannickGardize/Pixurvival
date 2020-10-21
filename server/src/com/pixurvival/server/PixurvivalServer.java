@@ -34,6 +34,7 @@ public class PixurvivalServer {
 	private @Getter ContentPackUploader contentPackUploader = new ContentPackUploader(this);
 	private Map<String, PlayerConnection> connectionsByName = new HashMap<>();
 	private List<LobbySession> lobbySessions = new ArrayList<>();
+	private String[] gameBeginningCommands;
 
 	@SneakyThrows
 	public PixurvivalServer(ServerMainArgs serverArgs) {
@@ -50,6 +51,7 @@ public class PixurvivalServer {
 		File defaultContentPack = new File(serverArgs.getContentPackDirectory());
 		contentPackContext = new ContentPackContext(defaultContentPack);
 		addLobbySession(new LobbySession(this));
+		gameBeginningCommands = serverArgs.getGameBeginingCommands();
 		startServer(serverArgs.getPort());
 	}
 
@@ -59,6 +61,9 @@ public class PixurvivalServer {
 
 	public void runGame(GameSession session) {
 		engineThread.add(session);
+		for (String command : gameBeginningCommands) {
+			engineThread.requestCommand(command);
+		}
 	}
 
 	public void addLobbySession(LobbySession lobby) {

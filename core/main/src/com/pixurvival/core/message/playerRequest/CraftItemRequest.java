@@ -14,6 +14,8 @@ import lombok.Getter;
 public class CraftItemRequest implements IPlayerActionRequest {
 
 	private int craftId;
+
+	// TODO use quantity
 	private short quantity;
 
 	@Override

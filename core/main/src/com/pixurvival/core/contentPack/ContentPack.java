@@ -130,10 +130,11 @@ public class ContentPack implements Serializable {
 	private Constants constants = new Constants();
 
 	/**
-	 * @return The release version this pack was made with. represents the name of
-	 *         an enum value of {@link ReleaseVersion}, in this way opening a pack
-	 *         of an unknow newer version will not crash. Null value means that the
-	 *         pack is prior to the {@link ReleaseVersion#ALPHA_5} version.
+	 * @return The release version this pack was made with. represents the name
+	 *         of an enum value of {@link ReleaseVersion}, in this way opening a
+	 *         pack of an unknown newer version will not crash. Null value means
+	 *         that the pack is prior to the {@link ReleaseVersion#ALPHA_5}
+	 *         version.
 	 */
 	private String releaseVersion;
 

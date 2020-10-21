@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 			}
 		});
 		setForeground(Color.RED);
+		setMinimumSize(new Dimension(50, 10));
 	}
 
 	public Color getValidForeground() {

@@ -21,6 +21,7 @@ import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
+import com.pixurvival.gdxcore.menu.QuestionWindow;
 import com.pixurvival.gdxcore.notificationpush.Notification;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
@@ -81,6 +82,7 @@ public class MultiplayerLobbyScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				PixurvivalGame.getClient().disconnectFromServer();
+				PixurvivalGame.getInstance().disposeServer();
 				PixurvivalGame.setScreen(MainMenuScreen.class);
 			}
 		});

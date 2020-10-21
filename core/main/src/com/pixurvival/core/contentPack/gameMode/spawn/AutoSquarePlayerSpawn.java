@@ -1,6 +1,5 @@
 package com.pixurvival.core.contentPack.gameMode.spawn;
 
-import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.map.analytics.AreaSearchCriteria;
 import com.pixurvival.core.map.analytics.GameAreaConfiguration;
@@ -24,7 +23,7 @@ public class AutoSquarePlayerSpawn implements PlayerSpawn {
 	private float maxFreeSpace = 1;
 
 	@Override
-	public void apply(World world) {
+	public void apply(World world) throws MapAnalyticsException {
 		TeamSet teamSet = world.getTeamSet();
 		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
 		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.getPlayerTeamSize());
@@ -32,18 +31,14 @@ public class AutoSquarePlayerSpawn implements PlayerSpawn {
 		areaSearchCriteria.setMinFreeArea(minFreeSpace);
 		areaSearchCriteria.setMaxFreeArea(maxFreeSpace);
 		MapAnalytics mapAnalytics = new MapAnalytics(world.getRandom());
-		try {
-			GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), areaSearchCriteria);
-			world.setSpawnCenter(config.getArea().center());
-			int i = 0;
-			for (Team team : teamSet) {
-				if (team.isPlayerTeam()) {
-					Vector2 spawnPosition = config.getSpawnSpots()[i++];
-					spawnTeam(team, spawnPosition);
-				}
+		GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), areaSearchCriteria);
+		world.setSpawnCenter(config.getArea().center());
+		int i = 0;
+		for (Team team : teamSet) {
+			if (team.isPlayerTeam()) {
+				Vector2 spawnPosition = config.getSpawnSpots()[i++];
+				spawnTeam(team, spawnPosition);
 			}
-		} catch (MapAnalyticsException e) {
-			Log.error("MapAnalyticsException");
 		}
 	}
 }

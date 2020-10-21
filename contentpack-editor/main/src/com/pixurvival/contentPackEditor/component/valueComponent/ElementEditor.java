@@ -34,7 +34,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 
 	@Override
-	public void setValue(E value) {
+	public final void setValue(E value) {
 		setValue(value, false);
 	}
 

@@ -54,13 +54,13 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	protected abstract void removeLast();
 
 	@Override
-	public void setValue(List<E> value) {
+	public void setValue(List<E> value, boolean sneaky) {
 		List<E> nonNullValue = value;
 		if (nonNullValue == null) {
 			nonNullValue = new ArrayList<>();
 		}
 		List<E> oldValue = getValue();
-		super.setValue(nonNullValue);
+		super.setValue(nonNullValue, sneaky);
 
 		// Rebuild the components only if the structure of the list has changed
 		if (!Objects.equals(value, oldValue)) {

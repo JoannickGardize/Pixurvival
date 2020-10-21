@@ -164,6 +164,7 @@ project(":gdx-core") {
 
     dependencies {
     	compile project(":client")
+    	compile project(":server")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile name: "discord-rpc"

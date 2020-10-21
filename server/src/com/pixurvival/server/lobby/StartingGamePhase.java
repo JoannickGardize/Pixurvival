@@ -5,9 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.GameReady;
 import com.pixurvival.core.message.PlayerInformation;
@@ -65,7 +67,13 @@ public class StartingGamePhase implements LobbyPhase {
 		waitingGameSession.setTeamCompositions(teamCompositions);
 		createWorld.setTeamCompositions(teamCompositions);
 
-		world.initializeNewGame();
+		try {
+			world.initializeNewGame();
+		} catch (MapAnalyticsException e) {
+			Log.error("Unable to prepare game : ", e);
+			session.setCurrentPhase(PreparingPhase.class);
+			return;
+		}
 
 		waitingGameSession.foreachPlayers(playerSession -> {
 			PlayerEntity playerEntity = playerSession.getPlayerEntity();

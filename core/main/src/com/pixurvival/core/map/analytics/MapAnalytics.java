@@ -26,8 +26,8 @@ public class MapAnalytics {
 	private @NonNull Random random;
 
 	/**
-	 * Analyzes the given map, to find an initial game configuration according
-	 * to the given criteria.
+	 * Analyzes the given map, to find an initial game configuration according to
+	 * the given criteria.
 	 * 
 	 * @param map
 	 *            the map to analyze
@@ -39,9 +39,6 @@ public class MapAnalytics {
 	 */
 	public GameAreaConfiguration buildGameAreaConfiguration(TiledMap map, AreaSearchCriteria criteria) throws MapAnalyticsException {
 		AreaAnalysisResult areaAnalysisResult = findArea(new TiledMapCursor(map), criteria);
-		if (areaAnalysisResult == null) {
-			throw new MapAnalyticsException();
-		}
 		Vector2[] spawnSpots;
 		if (criteria.getNumberOfSpawnSpots() == 1) {
 			Position position = areaAnalysisResult.getFreePositions().getMostCenteredPoint();
@@ -56,22 +53,23 @@ public class MapAnalytics {
 				spawnSpots[i] = position.toVector2(areaAnalysisResult.getPointsInterval());
 			}
 		}
-		// LAST_ANALYSIS = areaAnalysisResult;
-		// LAST_GAME_AREA_CONFIGURATION = new
-		// GameAreaConfiguration(areaAnalysisResult.getArea(), spawnSpots);
 		return new GameAreaConfiguration(areaAnalysisResult.getArea(), spawnSpots);
 	}
 
-	AreaAnalysisResult findArea(TiledMapCursor cursor, AreaSearchCriteria criteria) {
+	AreaAnalysisResult findArea(TiledMapCursor cursor, AreaSearchCriteria criteria) throws MapAnalyticsException {
 		StartPositionProvider startPositionProvider = new StartPositionProvider(random);
+		float density = 0;
 		while (startPositionProvider.getStep() < MAX_START_POINT_TRY) {
 			AreaAnalysisResult result = analyzeArea(cursor, startPositionProvider.next(), criteria.getSquareSize());
 			if (criteria.test(result)) {
 				return result;
 			}
-			Log.debug("Area test failed.");
+			float actualDensity = criteria.computeFreeSpace(result);
+			density += actualDensity;
+			Log.warn("Spawn area test failed. average free space: " + actualDensity);
 		}
-		return null;
+		throw new MapAnalyticsException(
+				"unable to find an area with free space between " + criteria.getMinFreeArea() + " and " + criteria.getMaxFreeArea() + ". Average found: " + density / MAX_START_POINT_TRY);
 	}
 
 	static AreaAnalysisResult analyzeArea(TiledMapCursor cursor, Vector2 startPoint, int maxSquareSize) {
@@ -120,8 +118,8 @@ public class MapAnalytics {
 	 * @param position1
 	 * @param position2
 	 * @param maxFail
-	 *            Maximum number of "fail" of the algorithm, a "fail" happens
-	 *            each time an obstacle is encountered.
+	 *            Maximum number of "fail" of the algorithm, a "fail" happens each
+	 *            time an obstacle is encountered.
 	 * @return true if the two positions are connected, false if they are
 	 *         <b>maybe</b> not connected.
 	 */

@@ -147,6 +147,18 @@ public class ContentPackEditionService {
 		return result;
 	}
 
+	public boolean isEmpty() {
+		if (FileService.getInstance().getCurrentContentPack() == null) {
+			return true;
+		}
+		for (ElementType elementType : ElementType.values()) {
+			if (listOf(elementType).isEmpty()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean isValidForPreview(SpriteSheet spriteSheet) {
 		return spriteSheet != null && spriteSheet.getWidth() > 0 && spriteSheet.getHeight() > 0 && spriteSheet.getImage() != null
 				&& ResourcesService.getInstance().getResource(spriteSheet.getImage()) != null;

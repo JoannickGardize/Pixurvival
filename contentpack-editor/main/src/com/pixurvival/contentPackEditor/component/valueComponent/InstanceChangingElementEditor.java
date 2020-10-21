@@ -15,6 +15,7 @@ import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.util.CachedSupplier;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	private @Getter JPanel specificPartPanel;
 	private Class<?> currentClass;
 	private Map<Class<? extends E>, CachedSupplier<JPanel>> classEntries = new HashMap<>();
+	private Map<Class<?>, E> stash = new HashMap<>();
+	private int previousElementId;
 
 	public InstanceChangingElementEditor(String translationPreffix) {
 		this(translationPreffix, null);
@@ -49,13 +52,17 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		specificPartPanel = new JPanel(new BorderLayout());
 		typeChooser.addItemListener(e -> {
 			if (typeChooser.isPopupVisible() && e.getStateChange() == ItemEvent.SELECTED) {
-				changeInstance(BeanFactory.newInstance(((Class<? extends E>) e.getItem())));
+				Class<? extends E> type = (Class<? extends E>) e.getItem();
+				if (getValue() != null) {
+					stash.put(getValue().getClass(), getValue());
+				}
+				E instance = stash.get(type);
+				if (instance == null) {
+					instance = BeanFactory.newInstance(type);
+				}
+				changeInstance(instance);
 			}
 		});
-		// for (ClassEntry classEntry : classEntries) {
-		// specificPartPanel.add(classEntry.getSpecificPanel(),
-		// classEntry.getType().getSimpleName());
-		// }
 	}
 
 	public Component getTypeChooser() {
@@ -93,6 +100,10 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 				specificPartPanel.repaint();
 			}
 			typeChooser.setSelectedItem(type);
+			if (getValue() instanceof IdentifiedElement && ((IdentifiedElement) getValue()).getId() != previousElementId) {
+				stash.clear();
+				previousElementId = ((IdentifiedElement) getValue()).getId();
+			}
 		}
 	}
 
