@@ -107,6 +107,15 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 		}
 	}
 
+	@Override
+	public boolean isValueValid(E value) {
+		if (value != null) {
+			// Preload the panel to bind values
+			classEntries.get(value.getClass()).get();
+		}
+		return super.isValueValid(value);
+	}
+
 	protected abstract List<ClassEntry> getClassEntries(Object params);
 
 	protected abstract void initialize(E oldInstance, E newInstance);

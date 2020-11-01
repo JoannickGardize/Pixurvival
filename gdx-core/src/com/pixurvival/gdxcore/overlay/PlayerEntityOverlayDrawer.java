@@ -14,14 +14,21 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 
 	public PlayerEntityOverlayDrawer() {
 		spectatedPlayerDrawer.add(new LifeHungerBarDrawer());
+		spectatedPlayerDrawer.add(new RoleDrawer());
 		spectatedPlayerDrawer.add(new NameDrawer());
 		spectatedPlayerDrawer.add(new WorkingBarDrawer());
+
 		selfDrawer.add(new LifeHungerBarDrawer());
+		selfDrawer.add(new RoleDrawer());
 		selfDrawer.add(new WorkingBarDrawer());
+
 		alliesDrawer.add(new LifeBarDrawer());
+		alliesDrawer.add(new RoleDrawer());
 		alliesDrawer.add(new NameDrawer());
 		alliesDrawer.add(new WorkingBarDrawer());
+
 		ennemiesDrawer.add(new LifeBarDrawer());
+		ennemiesDrawer.add(new RoleDrawer());
 		ennemiesDrawer.add(new NameDrawer());
 	}
 

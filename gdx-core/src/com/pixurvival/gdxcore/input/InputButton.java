@@ -1,5 +1,6 @@
 package com.pixurvival.gdxcore.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 
@@ -44,6 +45,14 @@ public class InputButton {
 			return new InputButton(type, Integer.parseInt(intCode));
 		} else {
 			return null;
+		}
+	}
+
+	public boolean isPressed() {
+		if (type == Type.MOUSE) {
+			return Gdx.input.isButtonPressed(code);
+		} else {
+			return Gdx.input.isKeyPressed(code);
 		}
 	}
 

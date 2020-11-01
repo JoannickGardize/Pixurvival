@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class EndGameData {
 
 	private long time;
-	private long[] remainingPlayerIds;
+	private long[] playerWonIds;
+	private long[] playerLostIds;
 }

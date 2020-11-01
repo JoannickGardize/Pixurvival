@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.pixurvival.core.map.TiledMapCursorMock;
-import com.pixurvival.core.map.analytics.MapAnalytics;
-import com.pixurvival.core.map.analytics.Position;
 
 public class MapAnalyticsTest {
 

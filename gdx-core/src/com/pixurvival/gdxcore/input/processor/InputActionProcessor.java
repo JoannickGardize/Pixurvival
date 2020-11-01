@@ -2,7 +2,9 @@ package com.pixurvival.gdxcore.input.processor;
 
 public interface InputActionProcessor {
 
-	void buttonDown();
+	default void buttonDown() {
+	}
 
-	void buttonUp();
+	default void buttonUp() {
+	}
 }

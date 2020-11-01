@@ -1,0 +1,39 @@
+package com.pixurvival.core.contentPack.gameMode.role;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pixurvival.core.contentPack.IntOperator;
+import com.pixurvival.core.contentPack.gameMode.TeamSet;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.util.IntWrapper;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class RemainingRolesWinCondition implements WinCondition {
+
+	private static final long serialVersionUID = 1L;
+
+	private List<Role> roles = new ArrayList<>();
+
+	private TeamSet teamSet = TeamSet.ALL;
+
+	private IntOperator operator = IntOperator.EQUAL_TO;
+
+	private int value;
+
+	@Override
+	public boolean test(PlayerEntity playerEntity) {
+		IntWrapper counter = new IntWrapper(0);
+		teamSet.forEach(playerEntity, team -> team.getAliveMembers().forEach(p -> {
+			if (roles.contains(p.getRole())) {
+				counter.increment();
+			}
+		}));
+		return operator.test(counter.getValue(), value);
+	}
+
+}

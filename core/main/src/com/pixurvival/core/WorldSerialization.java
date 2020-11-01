@@ -89,7 +89,7 @@ public class WorldSerialization {
 			}
 			// kryo stuff
 			kryo.writeObject(kryoOutput, world.getActionTimerManager().getActionTimerQueue());
-			kryo.writeClassAndObject(kryoOutput, world.getEndGameConditionData());
+			kryo.writeObject(kryoOutput, world.getEndGameConditionData());
 			kryo.writeObjectOrNull(kryoOutput, world.getMapLimitsRun(), MapLimitsRun.class);
 			kryo.writeObject(kryoOutput, world.getChunkCreatureSpawnManager().getActionMemory());
 			kryo.writeObject(kryoOutput, world.getSpawnCenter());
@@ -136,7 +136,7 @@ public class WorldSerialization {
 		try (Input kryoInput = new Input(buffer.array())) {
 			kryoInput.setPosition(buffer.position());
 			world.getActionTimerManager().setActionTimerQueue(kryo.readObject(kryoInput, PriorityQueue.class));
-			world.setEndGameConditionData(kryo.readClassAndObject(kryoInput));
+			world.setEndGameConditionData(kryo.readObject(kryoInput, HashMap.class));
 			world.setMapLimitsRun(kryo.readObjectOrNull(kryoInput, MapLimitsRun.class));
 			world.getChunkCreatureSpawnManager().setActionMemory(kryo.readObject(kryoInput, HashMap.class));
 			world.setSpawnCenter(kryo.readObject(kryoInput, Vector2.class));

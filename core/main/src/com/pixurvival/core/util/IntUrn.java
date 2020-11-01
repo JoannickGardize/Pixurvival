@@ -2,10 +2,12 @@ package com.pixurvival.core.util;
 
 import java.util.Random;
 
+import lombok.Getter;
+
 public class IntUrn {
 
-	private int initialSize;
-	private int currentSize;
+	private @Getter int initialSize;
+	private @Getter int currentSize;
 	private int[] content;
 
 	public IntUrn(int size) {

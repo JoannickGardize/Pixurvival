@@ -62,10 +62,14 @@ import com.pixurvival.core.contentPack.elementSet.ExclusiveElementSet;
 import com.pixurvival.core.contentPack.elementSet.InclusiveElementSet;
 import com.pixurvival.core.contentPack.gameMode.DayNightCycle;
 import com.pixurvival.core.contentPack.gameMode.EternalDayCycle;
-import com.pixurvival.core.contentPack.gameMode.endGameCondition.NoEndCondition;
-import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamCondition;
+import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingRolesEndCondition;
+import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamEndCondition;
+import com.pixurvival.core.contentPack.gameMode.endGameCondition.TimeEndCondition;
 import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
 import com.pixurvival.core.contentPack.gameMode.event.PlayerProximityEventPosition;
+import com.pixurvival.core.contentPack.gameMode.role.RemainingRolesWinCondition;
+import com.pixurvival.core.contentPack.gameMode.role.SurviveWinCondition;
+import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
@@ -171,12 +175,17 @@ public class ContentPackSerialization {
 	}
 
 	public ContentPack load(File file) throws ContentPackException {
+		return load(file, null);
+	}
+
+	public ContentPack load(File file, InputStream externalContentPackSerialization) throws ContentPackException {
 		if (!file.exists()) {
 			throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
 		}
 		try (ZipFile zipFile = new ZipFile(file)) {
 			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
-			ContentPack contentPack = yaml.loadAs(zipFile.getInputStream(entry), ContentPack.class);
+			InputStream contentPackSerialization = externalContentPackSerialization == null ? zipFile.getInputStream(entry) : externalContentPackSerialization;
+			ContentPack contentPack = yaml.loadAs(contentPackSerialization, ContentPack.class);
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
 				entry = enumeration.nextElement();
@@ -222,14 +231,6 @@ public class ContentPackSerialization {
 		}
 	}
 
-	public ContentPack reloadCore(ContentPack old, InputStream newDataInput) {
-		ContentPack contentPack = yaml.loadAs(newDataInput, ContentPack.class);
-		contentPack.setResources(old.getResources());
-		contentPack.setTranslations(old.getTranslations());
-		contentPack.setIdentifier(old.getIdentifier());
-		return contentPack;
-	}
-
 	@SneakyThrows
 	public byte[] getChecksum(File file) {
 		MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -270,8 +271,9 @@ public class ContentPackSerialization {
 		addClassTag(representer, MoveTowardBehavior.class);
 		addClassTag(representer, ItemAlterationAbility.class);
 		addClassTag(representer, CreatureAlterationAbility.class);
-		addClassTag(representer, NoEndCondition.class);
-		addClassTag(representer, RemainingTeamCondition.class);
+		addClassTag(representer, RemainingTeamEndCondition.class);
+		addClassTag(representer, TimeEndCondition.class);
+		addClassTag(representer, RemainingRolesEndCondition.class);
 		addClassTag(representer, EternalDayCycle.class);
 		addClassTag(representer, DayNightCycle.class);
 		addClassTag(representer, GetAwayFromLightBehavior.class);
@@ -311,6 +313,9 @@ public class ContentPackSerialization {
 		addClassTag(representer, DamageableStructure.class);
 		addClassTag(representer, ProcedurallyGeneratedMapProvider.class);
 		addClassTag(representer, StaticMapProvider.class);
+		addClassTag(representer, SurviveWinCondition.class);
+		addClassTag(representer, TeamSurvivedWinCondition.class);
+		addClassTag(representer, RemainingRolesWinCondition.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

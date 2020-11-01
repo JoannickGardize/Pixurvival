@@ -24,7 +24,7 @@ public class PercentInput extends NumberInput<Float> {
 	@SneakyThrows
 	protected Float parse(String text) {
 		String trimmedText = text.trim();
-		if (trimmedText.matches("\\d+(\\.\\d+)?%")) {
+		if (trimmedText.matches("\\-?\\d+(\\.\\d+)?%")) {
 			return DECIMAL_FORMAT.parse(trimmedText.substring(0, trimmedText.length() - 1)).floatValue() / 100f;
 		} else {
 			return null;

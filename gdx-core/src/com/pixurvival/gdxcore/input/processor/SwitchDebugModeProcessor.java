@@ -13,10 +13,4 @@ public class SwitchDebugModeProcessor implements InputActionProcessor {
 			((WorldScreen) screen).switchShowCollisionBoxes();
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-		// Nothing
-	}
-
 }

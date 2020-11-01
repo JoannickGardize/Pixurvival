@@ -28,6 +28,7 @@ public class FileService {
 
 	private @Getter ContentPack currentContentPack;
 	private @Getter File currentFile;
+	private ContentPackIdentifier previousIdentifier;
 	private JFileChooser fileChooser = new JFileChooser();
 	private @Getter ContentPackContext contentPackContext;
 
@@ -38,6 +39,7 @@ public class FileService {
 	public void initialize(File contentPackDirectory) {
 		contentPackContext = new ContentPackContext(contentPackDirectory);
 		contentPackContext.getSerialization().addPlugin(LayoutManager.getInstance());
+		fileChooser.setCurrentDirectory(contentPackContext.getWorkingDirectory());
 	}
 
 	public void newContentPack() {
@@ -60,6 +62,7 @@ public class FileService {
 		}
 		if (currentFile != null) {
 			fileChooser.setSelectedFile(currentFile);
+			fileChooser.setCurrentDirectory(currentFile.getParentFile());
 		}
 		int option = fileChooser.showOpenDialog(null);
 		if (option != JFileChooser.APPROVE_OPTION) {
@@ -70,18 +73,27 @@ public class FileService {
 
 	public void open(File file) {
 		boolean forceUpgrade = false;
+		ContentPack previousContentPack = currentContentPack;
 		try {
 			currentContentPack = contentPackContext.getSerialization().load(file);
 		} catch (Exception e) {
 			Log.warn("Content pack cannot be read.", e);
 			forceUpgrade = true;
+			currentContentPack = null;
 		}
+		File previousFile = currentFile;
+		currentFile = file;
 		if (manageReleaseVersion(forceUpgrade)) {
-			currentFile = file;
+			fileChooser.setSelectedFile(currentFile);
+			fileChooser.setCurrentDirectory(currentFile.getParentFile());
+			previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
 			ResourcesService.getInstance().loadContentPack(currentContentPack);
 			ContentPackEditionService.getInstance().updateNextStatFormulaId();
 			EventManager.getInstance().fire(new ContentPackLoadedEvent(currentContentPack));
 			EventManager.getInstance().fire(new ContentPackConstantChangedEvent(currentContentPack.getConstants()));
+		} else {
+			currentFile = previousFile;
+			currentContentPack = previousContentPack;
 		}
 	}
 
@@ -90,22 +102,41 @@ public class FileService {
 			return;
 		}
 		if (currentFile == null) {
-			currentFile = new File(contentPackContext.getWorkingDirectory(), currentContentPack.getIdentifier().fileName());
-			if (currentFile.exists() && !chooseFile()) {
+			if (!getNewDefaultContentPack()) {
+				return;
+			}
+		} else if (previousIdentifier != null && !previousIdentifier.equals(currentContentPack.getIdentifier())) {
+			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveAsNewQuestion"), "", JOptionPane.YES_NO_CANCEL_OPTION);
+			if (option == JOptionPane.YES_OPTION) {
+				if (!getNewDefaultContentPack()) {
+					return;
+				}
+			} else if (option != JOptionPane.NO_OPTION) {
 				return;
 			}
 		}
 		currentContentPack.setReleaseVersion(ReleaseVersion.getActual().name());
 		try {
 			contentPackContext.getSerialization().save(currentFile, currentContentPack);
+			previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
 			EventManager.getInstance().fire(new ContentPackSavedEvent());
 		} catch (IOException e) {
 			DialogUtils.showErrorDialog(e);
 		}
 	}
 
+	private boolean getNewDefaultContentPack() {
+		if (currentFile == null) {
+			currentFile = new File(contentPackContext.getWorkingDirectory(), currentContentPack.getIdentifier().fileName());
+		} else {
+			currentFile = new File(currentFile.getParentFile(), currentContentPack.getIdentifier().fileName());
+		}
+		return !currentFile.exists() || chooseFile();
+	}
+
 	public void saveAs() {
 		if (chooseFile()) {
+			previousIdentifier = null;
 			save();
 		}
 	}
@@ -128,6 +159,8 @@ public class FileService {
 		}
 		if (currentFile == null) {
 			fileChooser.setSelectedFile(new File(contentPackContext.getWorkingDirectory(), currentContentPack.getIdentifier().fileName()));
+		} else {
+			fileChooser.setSelectedFile(currentFile);
 		}
 		int option = fileChooser.showSaveDialog(null);
 		if (option == JFileChooser.APPROVE_OPTION) {
@@ -150,11 +183,13 @@ public class FileService {
 		int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString(messageKey), "", JOptionPane.YES_NO_OPTION);
 		if (option == JOptionPane.YES_OPTION) {
 			ContentPack upgraded = AutoUpgradeTool.upgrade();
-			if (upgraded != null) {
+			if (upgraded == null) {
+				return false;
+			} else {
 				currentContentPack = upgraded;
 				currentContentPack.setReleaseVersion(ReleaseVersion.getActual().name());
+				return true;
 			}
-			return true;
 		}
 		return !forceUpgrade;
 	}

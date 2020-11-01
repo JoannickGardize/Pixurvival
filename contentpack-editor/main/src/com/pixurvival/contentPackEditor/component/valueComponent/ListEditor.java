@@ -43,7 +43,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 				removeLast();
 				getValue().remove(getValue().size() - 1);
 				notifyValueChanged();
-				listPanel.revalidate();
+				listPanel.validate();
 				listPanel.repaint();
 			}
 		});
@@ -70,7 +70,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 				addComponent(i, element);
 			}
 			endModifications();
-			listPanel.revalidate();
+			listPanel.validate();
 			listPanel.repaint();
 		}
 	}

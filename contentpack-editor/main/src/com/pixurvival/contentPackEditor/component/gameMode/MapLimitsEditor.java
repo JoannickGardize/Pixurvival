@@ -1,7 +1,6 @@
 package com.pixurvival.contentPackEditor.component.gameMode;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 
 import javax.swing.JPanel;
 
@@ -11,6 +10,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.NullableElementHelper;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.gameMode.MapLimits;
@@ -20,10 +20,7 @@ public class MapLimitsEditor extends ElementEditor<MapLimits> {
 
 	private static final long serialVersionUID = 1L;
 
-	private CardLayout cardLayout = new CardLayout();
-	private JPanel notNullPanel = new JPanel(cardLayout);
-
-	private BooleanCheckBox enableMapLimitsCheckBox = new BooleanCheckBox();
+	private NullableElementHelper<MapLimits> nullableElementHelper = new NullableElementHelper<>(this);
 
 	public MapLimitsEditor() {
 		BooleanCheckBox shrinkRandomlyCheckBox = new BooleanCheckBox();
@@ -36,49 +33,22 @@ public class MapLimitsEditor extends ElementEditor<MapLimits> {
 		bind(initialDamageInput, MapLimits::getInitialDamagePerSecond, MapLimits::setInitialDamagePerSecond);
 		bind(anchors, MapLimits::getAnchors, MapLimits::setAnchors);
 
-		JPanel contentPanel = new JPanel(new BorderLayout());
+		JPanel contentPanel = nullableElementHelper.getNotNullPanel();
+		contentPanel.setLayout(new BorderLayout());
 		contentPanel.add(LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("mapLimits.shrinkRandomly", shrinkRandomlyCheckBox),
 				LayoutUtils.createHorizontalLabelledBox("mapLimits.initialSize", initialSizeInput, "mapLimits.initialDamagePerSecond", initialDamageInput)), BorderLayout.NORTH);
 		contentPanel.add(anchors, BorderLayout.CENTER);
 
-		notNullPanel.add(contentPanel, "NOT_NULL");
-		notNullPanel.add(new JPanel(), "NULL");
-
-		setLayout(new BorderLayout());
-		add(LayoutUtils.labelled("mapLimits.enabled", enableMapLimitsCheckBox), BorderLayout.NORTH);
-		add(notNullPanel, BorderLayout.CENTER);
-
-		enableMapLimitsCheckBox.addActionListener(e -> {
-			boolean checked = enableMapLimitsCheckBox.isSelected();
-			if (checked && getValue() == null) {
-				setValue(new MapLimits());
-				notifyValueChanged();
-			} else if (!checked && getValue() != null) {
-				setValue(null);
-				notifyValueChanged();
-			}
-			if (checked) {
-				cardLayout.show(notNullPanel, "NOT_NULL");
-			} else {
-				cardLayout.show(notNullPanel, "NULL");
-			}
-		});
-		cardLayout.show(notNullPanel, "NULL");
+		nullableElementHelper.build(MapLimits::new);
 	}
 
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
-		if (getValue() == null) {
-			enableMapLimitsCheckBox.setSelected(false);
-			cardLayout.show(notNullPanel, "NULL");
-		} else {
-			enableMapLimitsCheckBox.setSelected(true);
-			cardLayout.show(notNullPanel, "NOT_NULL");
-		}
+		nullableElementHelper.onValueChanged();
 	}
 
 	@Override
-	protected boolean isNullable() {
+	public boolean isNullable() {
 		return true;
 	}
 }

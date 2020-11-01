@@ -13,9 +13,4 @@ public class PauseMenuProcessor implements InputActionProcessor {
 			((WorldScreen) screen).switchPauseMenu();
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-	}
-
 }

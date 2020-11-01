@@ -64,6 +64,7 @@ public class InputMappingDefaults {
 		mapping.bind(InputAction.INVENTORY8, InputButton.keyboard(Keys.NUM_8));
 		mapping.bind(InputAction.INVENTORY9, InputButton.keyboard(Keys.NUM_9));
 		mapping.bind(InputAction.INVENTORY10, InputButton.keyboard(Keys.NUM_0));
+		mapping.bind(InputAction.SPLIT_INVENTORY, InputButton.keyboard(Keys.SHIFT_LEFT));
 		mapping.bind(InputAction.SWITCH_DEBUG_MODE, InputButton.keyboard(Keys.F1));
 		mapping.bind(InputAction.SWITCH_DEBUG_INFOS, InputButton.keyboard(Keys.F2));
 		mapping.bind(InputAction.SWITCH_FULLSCREEN, InputButton.keyboard(Keys.F11));

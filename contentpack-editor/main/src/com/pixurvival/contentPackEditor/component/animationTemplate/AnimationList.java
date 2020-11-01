@@ -128,6 +128,8 @@ public class AnimationList extends JPanel {
 		if (selectedIndex != -1) {
 			EnumMapListModel<ActionAnimation, Animation> listModel = (EnumMapListModel<ActionAnimation, Animation>) list.getModel();
 			listModel.remove(selectedIndex);
+			Map<ActionAnimation, Animation> map = listModel.toMap();
+			listChangedListener.forEach(l -> l.accept(map));
 		}
 	}
 }

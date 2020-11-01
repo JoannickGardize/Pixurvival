@@ -39,6 +39,8 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 	@Setter
 	private LayoutFolder root;
 
+	private @Getter @Setter InputStream overridedSource = null;
+
 	public LayoutManager() {
 		Representer representer = new Representer();
 		representer.addClassTag(LayoutFolder.class, new Tag("!!folder"));
@@ -67,7 +69,11 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 		ZipEntry entry = zipFile.getEntry(LAYOUT_ENTRY);
 		if (entry != null) {
 			try {
-				read(zipFile.getInputStream(entry));
+				if (overridedSource == null) {
+					read(zipFile.getInputStream(entry));
+				} else {
+					read(overridedSource);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				root = new LayoutFolder("root");

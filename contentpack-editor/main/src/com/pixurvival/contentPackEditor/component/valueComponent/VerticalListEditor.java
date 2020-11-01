@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import com.pixurvival.contentPackEditor.ImageService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.core.contentPack.IdentifiedElement;
 
 import lombok.Setter;
 
@@ -77,6 +78,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 				E tmp = newValue.get(finalIndex - 1);
 				newValue.set(finalIndex - 1, newValue.get(finalIndex));
 				newValue.set(finalIndex, tmp);
+				reindex(newValue);
 				setValue(newValue);
 				notifyValueChanged();
 			}
@@ -93,6 +95,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 				E tmp = newValue.get(finalIndex + 1);
 				newValue.set(finalIndex + 1, newValue.get(finalIndex));
 				newValue.set(finalIndex, tmp);
+				reindex(newValue);
 				setValue(newValue);
 				notifyValueChanged();
 			}
@@ -111,13 +114,11 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		gbc.insets = new Insets(3, 2, 3, 2);
 		gbc.gridy = index;
 		listPanel.add(LayoutUtils.createHorizontalBox(0, (Component) editor, buttonsPanel), gbc);
-		listPanel.revalidate();
 	}
 
 	@Override
 	protected void removeLast() {
 		listPanel.remove(listPanel.getComponentCount() - 1);
-		listPanel.revalidate();
 	}
 
 	@Override
@@ -138,6 +139,14 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 			listPanel.add(addButton, gbc);
 		} else {
 			listPanel.add(LayoutUtils.createHorizontalBox(addButton, addOnComp), gbc);
+		}
+	}
+
+	private void reindex(List<E> list) {
+		if (!list.isEmpty() && list.get(0) instanceof IdentifiedElement) {
+			for (int i = 0; i < list.size(); i++) {
+				((IdentifiedElement) list.get(i)).setId(i);
+			}
 		}
 	}
 }

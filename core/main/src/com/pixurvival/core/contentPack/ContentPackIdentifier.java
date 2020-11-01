@@ -36,7 +36,7 @@ public class ContentPackIdentifier implements Serializable {
 
 	public ContentPackIdentifier(ContentPackIdentifier other) {
 		name = other.name;
-		version = other.version;
+		version = new Version(other.version);
 	}
 
 	public ContentPackIdentifier(String fileName) {

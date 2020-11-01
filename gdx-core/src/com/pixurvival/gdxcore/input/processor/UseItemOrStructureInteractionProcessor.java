@@ -44,10 +44,4 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 	private Vector2 getWorldCursorPosition() {
 		return WorldScreen.getWorldStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 	}
-
-	@Override
-	public void buttonUp() {
-		// Nothing
-	}
-
 }

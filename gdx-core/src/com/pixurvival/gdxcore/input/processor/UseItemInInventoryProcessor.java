@@ -21,9 +21,4 @@ public class UseItemInInventoryProcessor implements InputActionProcessor {
 
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-		// Nothing
-	}
 }

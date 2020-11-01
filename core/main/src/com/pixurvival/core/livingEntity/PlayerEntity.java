@@ -12,6 +12,9 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
+import com.pixurvival.core.contentPack.gameMode.role.Role;
+import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
+import com.pixurvival.core.contentPack.gameMode.role.WinCondition;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.EquipableItem;
@@ -100,6 +103,8 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	private @Setter int nextAccessorySwitch = Equipment.ACCESSORY1_INDEX;
 
 	private List<SoundEffect> soundEffectsToConsume = new ArrayList<>();
+
+	private @Setter Role role;
 
 	public void setInventory(PlayerInventory inventory) {
 		this.inventory = inventory;
@@ -329,5 +334,13 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	@Override
 	public byte getFullUpdateContentMask() {
 		return (byte) (super.getFullUpdateContentMask() | UPDATE_CONTENT_MASK_EQUIPMENT);
+	}
+
+	public WinCondition getWinCondition() {
+		if (role == null) {
+			return new TeamSurvivedWinCondition();
+		} else {
+			return role.getWinCondition();
+		}
 	}
 }

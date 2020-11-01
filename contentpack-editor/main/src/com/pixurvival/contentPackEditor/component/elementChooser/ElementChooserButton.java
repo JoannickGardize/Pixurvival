@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,6 +22,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.util.CollectionUtils;
+import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,23 +38,28 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 	private @Getter @Setter boolean required;
 
 	public ElementChooserButton(Class<T> elementType) {
-		this(createItemsSupplier(elementType), true);
+		this(createContentPackItemsSupplier(elementType), true);
 	}
 
 	public ElementChooserButton(Class<T> elementType, boolean required) {
-		this(createItemsSupplier(elementType), required);
+		this(createContentPackItemsSupplier(elementType), required);
+	}
+
+	public static <T extends IdentifiedElement> Supplier<Collection<T>> createContentPackItemsSupplier(Class<T> elementType) {
+		return () -> getContentPackItems(elementType);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T extends IdentifiedElement> Supplier<Collection<T>> createItemsSupplier(Class<T> elementType) {
-		return () -> {
-			ContentPack pack = FileService.getInstance().getCurrentContentPack();
-			if (pack == null) {
-				return Collections.emptyList();
-			} else {
-				return (Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(elementType));
-			}
-		};
+	public static <T extends IdentifiedElement> Collection<T> getContentPackItems(Class<T> elementType) {
+		ContentPack pack = FileService.getInstance().getCurrentContentPack();
+		if (pack == null) {
+			return Collections.emptyList();
+		} else if (elementType.getSuperclass() == IdentifiedElement.class) {
+			return (Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(elementType));
+		} else {
+			Class<? extends IdentifiedElement> superClass = ReflectionUtils.getSuperClassUnder(elementType, IdentifiedElement.class);
+			return ((Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(superClass))).stream().filter(elementType::isInstance).collect(Collectors.toList());
+		}
 	}
 
 	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier) {
@@ -111,7 +118,7 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public void paint(Graphics g) {
-		// updateDisplay();
+		updateDisplay();
 		super.paint(g);
 	}
 

@@ -21,6 +21,11 @@ public class Version implements Comparable<Version>, Serializable {
 	@Bounds(min = 0)
 	private int minor;
 
+	public Version(Version other) {
+		major = other.major;
+		minor = other.minor;
+	}
+
 	public Version(String s) {
 		String[] split = s.split("\\.");
 		if (split.length != 2) {

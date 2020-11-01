@@ -18,8 +18,7 @@ import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
-import com.pixurvival.core.entity.Entity;
-import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.contentPack.gameMode.role.Roles;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.ChunkCreatureSpawnManager;
@@ -73,7 +72,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private ContentPack contentPack;
 	private GameMode gameMode;
 	private ChunkSupplier chunkSupplier;
-	private @Setter Object endGameConditionData;
+	private @Setter Map<Integer, Object> endGameConditionData = new HashMap<>();
 	private TeamSet teamSet = new TeamSet();
 	private CommandManager commandManager = new CommandManager();
 	private ChatManager chatManager = new ChatManager();
@@ -120,6 +119,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 				PlayerEntity player = new PlayerEntity();
 				player.setId(playerInformation.getId());
 				player.setName(playerInformation.getName());
+				if (world.getGameMode().getRoles() != null && playerInformation.getRoleId() != -1) {
+					player.setRole(world.getGameMode().getRoles().getRoles().get(playerInformation.getRoleId()));
+				}
 				player.setTeam(team);
 				player.setWorld(world);
 				player.initialize();
@@ -202,10 +204,17 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		actionTimerManager.update();
 		entityPool.update();
 		map.update();
-		if (isServer() && gameMode.getEndGameCondition().update(this)) {
-			long[] remainingPlayerIdArray = getEntityPool().get(EntityGroup.PLAYER).stream().filter(Entity::isAlive)
-					.sorted((p1, p2) -> ((PlayerEntity) p1).getTeam().getName().compareTo(((PlayerEntity) p2).getTeam().getName())).mapToLong(Entity::getId).toArray();
-			EndGameData endGameData = new EndGameData(time.getTimeMillis(), remainingPlayerIdArray);
+		if (isServer() && gameMode.updateEndGameConditions(this)) {
+			List<Long> wonPlayerIds = new ArrayList<>();
+			List<Long> lostPlayerIds = new ArrayList<>();
+			for (PlayerEntity player : getPlayerEntities().values()) {
+				if (player.getWinCondition().test(player)) {
+					wonPlayerIds.add(player.getId());
+				} else {
+					lostPlayerIds.add(player.getId());
+				}
+			}
+			EndGameData endGameData = new EndGameData(time.getTimeMillis(), wonPlayerIds.stream().mapToLong(l -> l).toArray(), lostPlayerIds.stream().mapToLong(l -> l).toArray());
 			gameEnded = true;
 			unload();
 			listeners.forEach(l -> l.gameEnded(endGameData));
@@ -219,8 +228,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets. This
-	 * will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets.
+	 * This will place players and set the map limit if present.
 	 * 
 	 * @throws MapAnalyticsException
 	 */
@@ -228,15 +237,16 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		entityPool.flushNewEntities();
 		gameMode.getPlayerSpawn().apply(this);
 		initializeEvents();
-		gameMode.getEndGameCondition().initialize(this);
-		gameMode.getEndGameCondition().initializeNewGameData(this);
+		gameMode.getEndGameConditions().forEach(c -> {
+			c.initialize(this);
+			c.initializeNewGameData(this);
+		});
 		initializeMapLimits();
+		initializeRoles();
 	}
 
 	public void initializeLoadedGame() {
-		// getMyPlayer().setChunk(getMap().chunkAt(getMyPlayer().getPosition().getX(),
-		// getMyPlayer().getPosition().getY()));
-		gameMode.getEndGameCondition().initialize(this);
+		gameMode.getEndGameConditions().forEach(c -> c.initialize(this));
 		playerEntities.put(getMyPlayer().getId(), getMyPlayer());
 		entityPool.flushNewEntities();
 	}
@@ -263,6 +273,13 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			MapLimitsManager mapLimitsManager = new MapLimitsManager();
 			mapLimitsManager.initialize(this, spawnCenter);
 			addPlugin(mapLimitsManager);
+		}
+	}
+
+	public void initializeRoles() {
+		Roles roles = gameMode.getRoles();
+		if (roles != null) {
+			roles.apply(this);
 		}
 	}
 

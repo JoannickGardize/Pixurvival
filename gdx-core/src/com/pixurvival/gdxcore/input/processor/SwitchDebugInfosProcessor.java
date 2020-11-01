@@ -13,10 +13,4 @@ public class SwitchDebugInfosProcessor implements InputActionProcessor {
 			((WorldScreen) screen).switchShowDebugInfos();
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-		// Nothing
-	}
-
 }

@@ -11,9 +11,4 @@ public class RefreshProcessor implements InputActionProcessor {
 			PixurvivalGame.getClient().requestRefresh();
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-	}
-
 }

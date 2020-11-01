@@ -1,7 +1,9 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -32,6 +34,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	private @Getter E value;
 	private List<SubValueEntry> subValues = new ArrayList<>();
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
+	private Set<Function<?, ?>> bindedGetters = new HashSet<>();
 
 	@Override
 	public final void setValue(E value) {
@@ -83,6 +86,10 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	public <T> void bind(ValueComponent<? extends T> component, Function<E, T> getter, BiConsumer<E, T> setter, Predicate<E> condition) {
+		if (bindedGetters.contains(getter)) {
+			return;
+		}
+		bindedGetters.add(getter);
 		subValues.add(new SubValueEntry(component, getter, setter, condition));
 		component.addValueChangeListener(v -> {
 			if (value != null && condition.test(value)) {
@@ -111,8 +118,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	}
 
 	/**
-	 * Called after the value of this editor has been changed and all sub fields has
-	 * been updated.
+	 * Called after the value of this editor has been changed and all sub fields
+	 * has been updated.
 	 * 
 	 * @param value
 	 */
@@ -120,7 +127,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		// optional overwrite
 	}
 
-	protected boolean isNullable() {
+	public boolean isNullable() {
 		return false;
 	}
 

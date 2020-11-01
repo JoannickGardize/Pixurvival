@@ -14,9 +14,4 @@ public class SwitchFullScreenProcessor implements InputActionProcessor {
 			Gdx.graphics.setFullscreenMode(currentMode);
 		}
 	}
-
-	@Override
-	public void buttonUp() {
-	}
-
 }

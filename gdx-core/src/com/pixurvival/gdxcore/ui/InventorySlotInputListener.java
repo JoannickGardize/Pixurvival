@@ -1,8 +1,6 @@
 package com.pixurvival.gdxcore.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -11,6 +9,8 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.message.playerRequest.InventoryActionRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.input.InputAction;
+import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 
 import lombok.AllArgsConstructor;
@@ -54,7 +54,7 @@ public class InventorySlotInputListener extends InputListener {
 	}
 
 	private InventoryActionRequest.Type getInventoryActionType() {
-		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+		if (InputManager.getInstance().getMapping().isActionPressed(InputAction.SPLIT_INVENTORY)) {
 			return InventoryActionRequest.Type.SPLIT_CLICK_MY_INVENTORY;
 		} else {
 			return InventoryActionRequest.Type.SWAP_CLICK_MY_INVENTORY;

@@ -30,7 +30,7 @@ public class DayCycleEditor extends InstanceChangingElementEditor<DayCycle> {
 			TimeInput nightDurationInput = new TimeInput();
 			bind(dayDurationInput, DayNightCycle::getDayDuration, DayNightCycle::setDayDuration, DayNightCycle.class);
 			bind(nightDurationInput, DayNightCycle::getNightDuration, DayNightCycle::setNightDuration, DayNightCycle.class);
-			return LayoutUtils.createHorizontalLabelledBox("dayNightCycle.dayDuration", dayDurationInput, "dayNightCycle.nightDuration", nightDurationInput);
+			return LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("dayNightCycle.dayDuration", dayDurationInput, "dayNightCycle.nightDuration", nightDurationInput));
 		}));
 		return classEntries;
 	}

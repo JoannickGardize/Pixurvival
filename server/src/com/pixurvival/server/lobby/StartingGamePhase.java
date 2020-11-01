@@ -8,6 +8,7 @@ import java.util.Set;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.gameMode.role.Role.Visibility;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.CreateWorld;
@@ -47,19 +48,8 @@ public class StartingGamePhase implements LobbyPhase {
 			if (members.isEmpty()) {
 				continue;
 			}
-			PlayerInformation[] playerInformations = new PlayerInformation[members.size()];
 			Team team = world.getTeamSet().createTeam(lobbyTeam.getName());
-			for (int j = 0; j < members.size(); j++) {
-				PlayerLobbySession p = members.get(j);
-				PlayerEntity playerEntity = new PlayerEntity();
-				world.getEntityPool().create(playerEntity);
-				world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
-				world.getEntityPool().flushNewEntities();
-				playerEntity.setTeam(team);
-				playerEntity.setName(p.getConnection().toString());
-				waitingGameSession.createPlayerSession(p.getConnection(), playerEntity);
-				playerInformations[j] = new PlayerInformation(playerEntity.getId(), playerEntity.getName());
-			}
+			PlayerInformation[] playerInformations = buildTeamInformations(world, members, team);
 			teamCompositionList.add(new TeamComposition(team.getName(), playerInformations));
 		}
 		TeamComposition[] teamCompositions = teamCompositionList.toArray(new TeamComposition[teamCompositionList.size()]);
@@ -81,8 +71,46 @@ public class StartingGamePhase implements LobbyPhase {
 			createWorld.setMyTeamId(playerEntity.getTeam().getId());
 			createWorld.setMyPosition(playerEntity.getPosition());
 			createWorld.setInventory(playerEntity.getInventory());
+			setVisibleRoles(world, teamCompositions, playerEntity);
 			playerSession.getConnection().sendTCP(createWorld);
 		});
+	}
+
+	private void setVisibleRoles(World world, TeamComposition[] teamCompositions, PlayerEntity playerEntity) {
+		if (world.getGameMode().getRoles() != null) {
+			for (TeamComposition teamComposition : teamCompositions) {
+				boolean isMyTeam = teamComposition.getPlayerIds().contains(playerEntity.getId());
+				for (PlayerInformation member : teamComposition.getMembers()) {
+					PlayerEntity memberEntity = world.getPlayerEntities().get(member.getId());
+					Visibility visibility = isMyTeam ? memberEntity.getRole().getTeammatesVisiblity() : memberEntity.getRole().getEnemiesVisiblity();
+					if (member.getId() == playerEntity.getId() || visibility == Visibility.ALL || visibility == Visibility.SAME_ONLY && playerEntity.getRole() == memberEntity.getRole()) {
+						member.setRoleId(memberEntity.getRole().getId());
+					} else {
+						member.setRoleId(-1);
+					}
+				}
+			}
+		}
+	}
+
+	private PlayerInformation[] buildTeamInformations(World world, List<PlayerLobbySession> members, Team team) {
+		PlayerInformation[] playerInformations = new PlayerInformation[members.size()];
+		for (int j = 0; j < members.size(); j++) {
+			PlayerLobbySession p = members.get(j);
+			PlayerEntity playerEntity = new PlayerEntity();
+			world.getEntityPool().create(playerEntity);
+			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
+			world.getEntityPool().flushNewEntities();
+			playerEntity.setTeam(team);
+			playerEntity.setName(p.getConnection().toString());
+			waitingGameSession.createPlayerSession(p.getConnection(), playerEntity);
+			PlayerInformation playerInformation = new PlayerInformation();
+			playerInformation.setId(playerEntity.getId());
+			playerInformation.setName(playerEntity.getName());
+			playerInformations[j] = playerInformation;
+
+		}
+		return playerInformations;
 	}
 
 	@Override

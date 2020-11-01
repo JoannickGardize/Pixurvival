@@ -11,6 +11,7 @@ import java.util.zip.ZipFile;
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.component.tree.LayoutManager;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.ReleaseVersion;
@@ -46,28 +47,29 @@ public class AutoUpgradeTool {
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> {
 			replaceAll(sb, "mapGenerators:", "mapProviders:");
 			replaceAll(sb, "mapGenerator:", "mapProvider:");
+			replaceAll(sb, "!!RemainingTeamCondition", "!!RemainingTeamEndCondition");
+			replaceAll(sb, "!!NoEndCondition", "!!RemainingTeamEndCondition");
 		});
-		LAYOUT_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> {
-			replaceAll(sb, "MAP_GENERATOR", "MAP_PROVIDER");
-		});
+		LAYOUT_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> replaceAll(sb, "MAP_GENERATOR", "MAP_PROVIDER"));
 	}
 
 	/**
 	 * @return null if the upgrade failed
+	 * @throws ContentPackException
 	 */
 	public static ContentPack upgrade() {
 		FileService fileService = FileService.getInstance();
 		try (ZipFile zipFile = new ZipFile(fileService.getCurrentFile())) {
-			StringBuilder sb = asStringBuilder(zipFile, ContentPackSerialization.SERIALIZATION_ENTRY_NAME);
-			int startIndex = startIndexFor(findReleaseVersion(sb));
-			upgradeEntry(sb, SERIALIZATION_UPGRADERS, startIndex);
-			ContentPack contentPack = fileService.getContentPackContext().getSerialization().reloadCore(fileService.getCurrentContentPack(), new ByteArrayInputStream(sb.toString().getBytes()));
-			sb = asStringBuilder(zipFile, LayoutManager.LAYOUT_ENTRY);
-			upgradeEntry(sb, LAYOUT_UPGRADERS, startIndex);
-			LayoutManager.getInstance().read(new ByteArrayInputStream(sb.toString().getBytes()));
-			LayoutManager.getInstance().refresh(contentPack);
+			StringBuilder serializationSb = asStringBuilder(zipFile, ContentPackSerialization.SERIALIZATION_ENTRY_NAME);
+			int startIndex = startIndexFor(findReleaseVersion(serializationSb));
+			upgradeEntry(serializationSb, SERIALIZATION_UPGRADERS, startIndex);
+			StringBuilder layoutSb = asStringBuilder(zipFile, LayoutManager.LAYOUT_ENTRY);
+			upgradeEntry(layoutSb, LAYOUT_UPGRADERS, startIndex);
+			LayoutManager.getInstance().setOverridedSource(new ByteArrayInputStream(layoutSb.toString().getBytes()));
+			ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(fileService.getCurrentFile(), new ByteArrayInputStream(serializationSb.toString().getBytes()));
+			LayoutManager.getInstance().setOverridedSource(null);
 			return contentPack;
-		} catch (IOException e) {
+		} catch (IOException | ContentPackException e) {
 			DialogUtils.showErrorDialog("autoUpgradeTool.error", e);
 			return null;
 		}
@@ -80,7 +82,8 @@ public class AutoUpgradeTool {
 
 	private static void upgradeEntry(StringBuilder sb, Map<Integer, Consumer<StringBuilder>> upgrader, int startIndex) {
 		for (int i = startIndex; i < ReleaseVersion.values().length; i++) {
-			upgrader.get(i).accept(sb);
+			upgrader.getOrDefault(i, s -> {
+			}).accept(sb);
 		}
 	}
 
@@ -91,7 +94,7 @@ public class AutoUpgradeTool {
 	private static void replaceAll(StringBuilder sb, String find, String replace) {
 		int index = sb.indexOf(find);
 		while (index != -1) {
-			sb.replace(index, find.length(), replace);
+			sb.replace(index, index + find.length(), replace);
 			index = sb.indexOf(find, index + replace.length());
 		}
 	}

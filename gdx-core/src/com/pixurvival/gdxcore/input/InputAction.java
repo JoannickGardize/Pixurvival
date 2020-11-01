@@ -38,6 +38,9 @@ public enum InputAction {
 	INVENTORY8(new UseItemInInventoryProcessor(7)),
 	INVENTORY9(new UseItemInInventoryProcessor(8)),
 	INVENTORY10(new UseItemInInventoryProcessor(9)),
+	SPLIT_INVENTORY(new InputActionProcessor() {
+		// Does nothing on press / release
+	}),
 	CHAT(new ChatProcessor()),
 	SWITCH_DEBUG_MODE(new SwitchDebugModeProcessor()),
 	SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor()),

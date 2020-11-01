@@ -82,4 +82,8 @@ public class InputMapping {
 		super();
 		this.name = name;
 	}
+
+	public boolean isActionPressed(InputAction action) {
+		return buttonByAction.get(action).isPressed();
+	}
 }

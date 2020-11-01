@@ -4,12 +4,20 @@ import java.io.Serializable;
 
 import com.pixurvival.core.World;
 
-public interface EndGameCondition extends Serializable {
+import lombok.Getter;
+import lombok.Setter;
 
-	default void initialize(World world) {
+public abstract class EndGameCondition implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private transient @Getter @Setter int id;
+
+	public void initialize(World world) {
+
 	}
 
-	default void initializeNewGameData(World world) {
+	public void initializeNewGameData(World world) {
 
 	}
 
@@ -17,5 +25,13 @@ public interface EndGameCondition extends Serializable {
 	 * @param world
 	 * @return true if the game is over
 	 */
-	boolean update(World world);
+	public abstract boolean update(World world);
+
+	protected Object getGameData(World world) {
+		return world.getEndGameConditionData().get(id);
+	}
+
+	protected void setGameData(World world, Object value) {
+		world.getEndGameConditionData().put(id, value);
+	}
 }
