@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateTeamRequest extends LobbyRequest {
+public class CreateTeamRequest implements LobbyRequest {
 	private String teamName;
 }

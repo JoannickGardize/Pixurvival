@@ -12,6 +12,7 @@ import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.serializers.MapSerializer;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.PlayerEndGameData;
 import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -19,6 +20,7 @@ import com.pixurvival.core.contentPack.IntegerInterval;
 import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.contentPack.summary.GameModeSummary;
+import com.pixurvival.core.contentPack.summary.RoleSummary;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -29,11 +31,13 @@ import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
+import com.pixurvival.core.message.lobby.ChooseRoleRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
+import com.pixurvival.core.message.lobby.LobbyServerMessage;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.core.message.lobby.RefuseContentPack;
@@ -99,6 +103,8 @@ public class KryoInitializer {
 		register(kryo, Spectate.class);
 		register(kryo, PlayerDead.class);
 		register(kryo, PlayerDead[].class);
+		register(kryo, PlayerEndGameData.class);
+		register(kryo, PlayerEndGameData[].class);
 		register(kryo, EndGameData.class);
 		register(kryo, RefreshRequest.class);
 		register(kryo, ClientStream.class);
@@ -128,8 +134,12 @@ public class KryoInitializer {
 		register(kryo, ContentPackSummary[].class);
 		kryo.register(HashMap.class, new MapSerializer());
 		kryo.register(LinkedHashMap.class, new MapSerializer());
+		register(kryo, RoleSummary.class);
+		register(kryo, RoleSummary[].class);
 		register(kryo, GameModeSummary.class);
 		register(kryo, GameModeSummary[].class);
+		register(kryo, ChooseRoleRequest.class);
+		register(kryo, LobbyServerMessage.class);
 	}
 
 	@SuppressWarnings("unchecked")

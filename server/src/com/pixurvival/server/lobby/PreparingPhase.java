@@ -1,19 +1,25 @@
 package com.pixurvival.server.lobby;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
+import com.pixurvival.core.contentPack.summary.GameModeSummary;
+import com.pixurvival.core.contentPack.summary.RoleSummary;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
+import com.pixurvival.core.message.lobby.ChooseRoleRequest;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.EnterLobby;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
+import com.pixurvival.core.message.lobby.LobbyServerMessage;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
@@ -72,6 +78,8 @@ public class PreparingPhase implements LobbyPhase {
 			removeTeam(((RemoveTeamRequest) lobbyMessage).getTeamName());
 		} else if (lobbyMessage instanceof ChooseGameModeRequest) {
 			chooseGameMode((ChooseGameModeRequest) lobbyMessage);
+		} else if (lobbyMessage instanceof ChooseRoleRequest) {
+			changeRole(playerSession, (ChooseRoleRequest) lobbyMessage);
 		}
 	}
 
@@ -91,8 +99,21 @@ public class PreparingPhase implements LobbyPhase {
 				selectedGameModeIndex = -1;
 			}
 			setAllNotReady();
+			setAllLastRole();
 			dataChanged();
 		}
+	}
+
+	private void setAllLastRole() {
+		GameModeSummary gameMode = getSelectedGameMode();
+		if (gameMode.getRoleSummaries() != null) {
+			int lastRole = gameMode.getRoleSummaries().length - 1;
+			session.getPlayerSessions().forEach(s -> s.getLobbyPlayer().setSelectedRole(lastRole));
+		}
+	}
+
+	private GameModeSummary getSelectedGameMode() {
+		return getSelectedContentPack().getGameModeSummaries()[selectedGameModeIndex];
 	}
 
 	private void createTeam(String teamName) {
@@ -144,6 +165,14 @@ public class PreparingPhase implements LobbyPhase {
 		}
 	}
 
+	private void changeRole(PlayerLobbySession playerSession, ChooseRoleRequest roleRequest) {
+		if (roleRequest.getId() != playerSession.getLobbyPlayer().getSelectedRole()) {
+			playerSession.getLobbyPlayer().setSelectedRole(roleRequest.getId());
+			setAllNotReady();
+			dataChanged();
+		}
+	}
+
 	private void changeTeam(PlayerLobbySession playerSession, String newTeamName) {
 		changeTeam(playerSession, getTeamByName(newTeamName));
 	}
@@ -172,17 +201,63 @@ public class PreparingPhase implements LobbyPhase {
 				return;
 			}
 		}
+		if (!checkQuantitiesOkToStart()) {
+			return;
+		}
 		StartingGameData data = new StartingGameData();
 		try {
-			data.setContentPack(session.getServer().getContentPackContext().load(availableContentPacks[selectedContentPackIndex].getIdentifier()));
+			data.setContentPack(session.getServer().getContentPackContext().load(getSelectedContentPack().getIdentifier()));
 		} catch (ContentPackException e) {
-			Log.error("Unable to load the content pack " + availableContentPacks[selectedContentPackIndex].getIdentifier(), e);
+			Log.error("Unable to load the content pack " + getSelectedContentPack().getIdentifier(), e);
 			return;
 		}
 		data.setGameModeId(selectedGameModeIndex);
 		session.getPhase(ContentPackCheckPhase.class).setData(data);
 		session.setCurrentPhase(ContentPackCheckPhase.class);
 
+	}
+
+	private ContentPackSummary getSelectedContentPack() {
+		return availableContentPacks[selectedContentPackIndex];
+	}
+
+	private boolean checkQuantitiesOkToStart() {
+		GameModeSummary gameMode = getSelectedGameMode();
+		if (!gameMode.getTeamNumberInterval().test(session.getTeams().size())) {
+			session.getPlayerSessions().forEach(s -> s.getConnection().sendTCP(LobbyServerMessage.NUMBER_OF_TEAM));
+			return false;
+		}
+		for (LobbySessionTeam team : session.getTeams()) {
+			if (!gameMode.getTeamSizeInterval().test(team.getMembers().size())) {
+				session.getPlayerSessions().forEach(s -> s.getConnection().sendTCP(LobbyServerMessage.NUMBER_OF_PLAYER));
+				return false;
+			}
+		}
+		return checkRolesOkToStart();
+	}
+
+	private boolean checkRolesOkToStart() {
+		GameModeSummary gameMode = getSelectedGameMode();
+		if (gameMode.getRoleSummaries() == null) {
+			return true;
+		}
+		Map<Integer, Integer> roleCounts = new HashMap<>();
+		for (LobbySessionTeam team : session.getTeams()) {
+			roleCounts.clear();
+			for (PlayerLobbySession player : team.getMembers()) {
+				int roleId = player.getLobbyPlayer().getSelectedRole();
+				roleCounts.put(roleId, roleCounts.getOrDefault(roleId, 0));
+			}
+			for (int i = 0; i < gameMode.getRoleSummaries().length; i++) {
+				RoleSummary role = gameMode.getRoleSummaries()[i];
+				int currentCount = roleCounts.getOrDefault(i, 0);
+				if (currentCount < role.getMinimumPerTeam() || currentCount > role.getMaximumPerTeam()) {
+					session.getPlayerSessions().forEach(s -> s.getConnection().sendTCP(LobbyServerMessage.NUMBER_OF_ROLE));
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	private void dataChanged() {

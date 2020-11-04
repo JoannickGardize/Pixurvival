@@ -4,25 +4,25 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ContentPackSummary {
 
 	private ContentPackIdentifier identifier;
 	private GameModeSummary[] gameModeSummaries;
 	private String releaseVersion;
 
-	public static ContentPackSummary build(ContentPack contentPack) {
-		ContentPackSummary contentPackSummary = new ContentPackSummary();
-		contentPackSummary.setIdentifier(contentPack.getIdentifier());
-		contentPackSummary.gameModeSummaries = new GameModeSummary[contentPack.getGameModes().size()];
+	public ContentPackSummary(ContentPack contentPack) {
+		identifier = contentPack.getIdentifier();
+		gameModeSummaries = new GameModeSummary[contentPack.getGameModes().size()];
 		for (int i = 0; i < contentPack.getGameModes().size(); i++) {
-			contentPackSummary.gameModeSummaries[i] = GameModeSummary.build(contentPack, contentPack.getGameModes().get(i));
+			gameModeSummaries[i] = new GameModeSummary(contentPack, contentPack.getGameModes().get(i));
 		}
-		contentPackSummary.releaseVersion = contentPack.getReleaseVersion();
-		return contentPackSummary;
+		releaseVersion = contentPack.getReleaseVersion();
 	}
 
 	@Override

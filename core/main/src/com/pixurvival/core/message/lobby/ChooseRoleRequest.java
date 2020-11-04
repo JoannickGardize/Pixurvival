@@ -3,10 +3,13 @@ package com.pixurvival.core.message.lobby;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
-public class ChangeTeamRequest implements LobbyRequest {
-	private String teamName;
+@AllArgsConstructor
+public class ChooseRoleRequest implements LobbyRequest {
+
+	private int id;
 }

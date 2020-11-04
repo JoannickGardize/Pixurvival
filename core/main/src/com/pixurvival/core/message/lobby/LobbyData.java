@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LobbyData extends LobbyMessage {
+public class LobbyData implements LobbyMessage {
 	private String myTeamName;
 	private LobbyPlayer myPlayer;
 	private LobbyTeam[] players;

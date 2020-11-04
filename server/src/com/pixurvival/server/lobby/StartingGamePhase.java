@@ -9,6 +9,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.gameMode.role.Role.Visibility;
+import com.pixurvival.core.contentPack.gameMode.role.Roles.SelectionMode;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.message.CreateWorld;
@@ -98,6 +99,9 @@ public class StartingGamePhase implements LobbyPhase {
 		for (int j = 0; j < members.size(); j++) {
 			PlayerLobbySession p = members.get(j);
 			PlayerEntity playerEntity = new PlayerEntity();
+			if (world.getGameMode().getRoles() != null && world.getGameMode().getRoles().getSelectionMode() == SelectionMode.LOBBY) {
+				playerEntity.setRole(world.getGameMode().getRoles().getRoles().get(p.getLobbyPlayer().getSelectedRole()));
+			}
 			world.getEntityPool().create(playerEntity);
 			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
 			world.getEntityPool().flushNewEntities();

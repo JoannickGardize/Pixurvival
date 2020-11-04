@@ -205,16 +205,18 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		entityPool.update();
 		map.update();
 		if (isServer() && gameMode.updateEndGameConditions(this)) {
-			List<Long> wonPlayerIds = new ArrayList<>();
-			List<Long> lostPlayerIds = new ArrayList<>();
+			List<PlayerEndGameData> wonPlayerIds = new ArrayList<>();
+			List<PlayerEndGameData> lostPlayerIds = new ArrayList<>();
 			for (PlayerEntity player : getPlayerEntities().values()) {
+				PlayerEndGameData playerData = new PlayerEndGameData(player);
 				if (player.getWinCondition().test(player)) {
-					wonPlayerIds.add(player.getId());
+					wonPlayerIds.add(playerData);
 				} else {
-					lostPlayerIds.add(player.getId());
+					lostPlayerIds.add(playerData);
 				}
 			}
-			EndGameData endGameData = new EndGameData(time.getTimeMillis(), wonPlayerIds.stream().mapToLong(l -> l).toArray(), lostPlayerIds.stream().mapToLong(l -> l).toArray());
+			EndGameData endGameData = new EndGameData(time.getTimeMillis(), wonPlayerIds.toArray(new PlayerEndGameData[wonPlayerIds.size()]),
+					lostPlayerIds.toArray(new PlayerEndGameData[lostPlayerIds.size()]));
 			gameEnded = true;
 			unload();
 			listeners.forEach(l -> l.gameEnded(endGameData));
@@ -222,9 +224,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	public void unload() {
-		synchronized (map) {
-			ChunkManager.getInstance().stopManaging(map);
-		}
+		ChunkManager.getInstance().stopManaging(map);
 	}
 
 	/**

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RemoveTeamRequest extends LobbyRequest {
+public class RemoveTeamRequest implements LobbyRequest {
 	private String teamName;
 }

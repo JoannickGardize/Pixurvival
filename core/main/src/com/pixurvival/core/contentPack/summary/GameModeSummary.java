@@ -10,12 +10,15 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IntegerInterval;
 import com.pixurvival.core.contentPack.TranslationKey;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.gameMode.role.Roles.SelectionMode;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class GameModeSummary {
 
 	private Map<String, String> nameTranslations;
@@ -24,14 +27,20 @@ public class GameModeSummary {
 
 	private IntegerInterval teamSizeInterval = new IntegerInterval();
 
-	public static GameModeSummary build(ContentPack contentPack, GameMode gameMode) {
-		GameModeSummary gameModeSummary = new GameModeSummary();
-		gameModeSummary.nameTranslations = new HashMap<>();
+	private RoleSummary[] roleSummaries;
+
+	public GameModeSummary(ContentPack contentPack, GameMode gameMode) {
+		nameTranslations = new HashMap<>();
 		for (Entry<Locale, Properties> translationEntry : contentPack.getTranslations().entrySet()) {
-			gameModeSummary.nameTranslations.put(translationEntry.getKey().toLanguageTag(), contentPack.getTranslation(translationEntry.getKey(), gameMode, TranslationKey.NAME));
+			nameTranslations.put(translationEntry.getKey().toLanguageTag(), contentPack.getTranslation(translationEntry.getKey(), gameMode, TranslationKey.NAME));
 		}
-		gameModeSummary.teamNumberInterval = gameMode.getTeamNumberInterval();
-		gameModeSummary.teamSizeInterval = gameMode.getTeamSizeInterval();
-		return gameModeSummary;
+		teamNumberInterval = gameMode.getTeamNumberInterval();
+		teamSizeInterval = gameMode.getTeamSizeInterval();
+		if (gameMode.getRoles() != null && gameMode.getRoles().getSelectionMode() == SelectionMode.LOBBY) {
+			roleSummaries = new RoleSummary[gameMode.getRoles().getRoles().size()];
+			for (int i = 0; i < roleSummaries.length; i++) {
+				roleSummaries[i] = new RoleSummary(gameMode.getRoles().getRoles().get(i));
+			}
+		}
 	}
 }

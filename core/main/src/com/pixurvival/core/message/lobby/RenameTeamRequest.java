@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RenameTeamRequest extends LobbyRequest {
+public class RenameTeamRequest implements LobbyRequest {
 
 	private String oldName;
 	private String newName;

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReadyRequest extends LobbyRequest {
+public class ReadyRequest implements LobbyRequest {
 
 	private boolean ready;
 	private int modCount;

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.PlayerEndGameData;
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
@@ -49,18 +50,18 @@ public class EndGameUI extends UIWindow {
 		setVisible(true);
 	}
 
-	private void buildPlayerGroup(World world, long[] playerIds, Supplier<String> titleSupplier) {
-		if (playerIds.length > 0) {
+	private void buildPlayerGroup(World world, PlayerEndGameData[] playerData, Supplier<String> titleSupplier) {
+		if (playerData.length > 0) {
 			add(new Label(titleSupplier.get(), PixurvivalGame.getSkin(), "white")).colspan(2);
 			row();
 			StringBuilder sb = new StringBuilder();
 			String separator = "";
-			for (long playerId : playerIds) {
-				PlayerEntity player = world.getPlayerEntities().get(playerId);
+			for (PlayerEndGameData player : playerData) {
+				PlayerEntity playerEntity = world.getPlayerEntities().get(player.getPlayerId());
 				sb.append(separator);
-				sb.append(player.getName());
-				if (player.getRole() != null) {
-					sb.append(" (" + player.getRole().getName() + ")");
+				sb.append(playerEntity.getName());
+				if (player.getRoleId() != -1) {
+					sb.append(" (" + world.getGameMode().getRoles().getRoles().get(player.getRoleId()).getName() + ")");
 				}
 				separator = ", ";
 			}

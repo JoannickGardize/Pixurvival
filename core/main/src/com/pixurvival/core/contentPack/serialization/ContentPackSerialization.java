@@ -155,7 +155,7 @@ public class ContentPackSerialization {
 	public void save(File file, ContentPack contentPack) throws IOException {
 		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file))) {
 			zipOutputStream.putNextEntry(new ZipEntry(SUMMARY_ENTRY_NAME));
-			yaml.dump(ContentPackSummary.build(contentPack), new OutputStreamWriter(zipOutputStream));
+			yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(zipOutputStream));
 			zipOutputStream.putNextEntry(new ZipEntry(SERIALIZATION_ENTRY_NAME));
 			nameAnchorGenerator.reset();
 			yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream));

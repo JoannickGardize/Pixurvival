@@ -16,6 +16,7 @@ import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.lobby.ChangeTeamRequest;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
+import com.pixurvival.core.message.lobby.ChooseRoleRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
 import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.LobbyMessage;
@@ -89,6 +90,7 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(ChangeTeamRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ChangeTeamRequest) m.getObject())));
 		messageActions.put(ReadyRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ReadyRequest) m.getObject())));
 		messageActions.put(ChooseGameModeRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((LobbyMessage) m.getObject())));
+		messageActions.put(ChooseRoleRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((LobbyMessage) m.getObject())));
 		messageActions.put(RefuseContentPack.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RefuseContentPack) m.getObject())));
 		messageActions.put(ContentPackReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ContentPackReady) m.getObject())));
 		messageActions.put(ContentPackRequest.class, m -> game.getContentPackUploader().sendContentPack(m.getConnection(), ((ContentPackRequest) m.getObject()).getIdentifier()));

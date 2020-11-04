@@ -14,13 +14,16 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.contentPack.summary.GameModeSummary;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
+import com.pixurvival.core.message.lobby.LobbyServerMessage;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
+import com.pixurvival.gdxcore.menu.MessageWindow;
 import com.pixurvival.gdxcore.menu.QuestionWindow;
 import com.pixurvival.gdxcore.notificationpush.Notification;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
@@ -40,6 +43,7 @@ public class MultiplayerLobbyScreen implements Screen {
 	private int modCount;
 	private LobbyPlayer myPlayer;
 	private EndGameUI endGameUI;
+	private MessageWindow messageWindow = new MessageWindow("menu.multiplayer.message");
 
 	@Override
 	public void show() {
@@ -98,6 +102,8 @@ public class MultiplayerLobbyScreen implements Screen {
 		stage = new Stage(new ScreenViewport());
 		stage.addActor(mainGroup);
 		stage.addActor(teamNameWindow);
+		messageWindow.getOkButton().setVisible(true);
+		stage.addActor(messageWindow);
 		Gdx.input.setInputProcessor(stage);
 	}
 
@@ -111,6 +117,26 @@ public class MultiplayerLobbyScreen implements Screen {
 	public void receivedLobbyMessage(LobbyMessage message) {
 		if (message instanceof LobbyData) {
 			setLobbyData((LobbyData) message);
+		} else if (message instanceof LobbyServerMessage) {
+			LobbyServerMessage serverMessage = (LobbyServerMessage) message;
+			String messageContent = "Unknown message";
+			GameModeSummary gameMode = gameModeChooser.getSelectedGameMode();
+			if (gameMode == null) {
+				return;
+			}
+			switch (serverMessage) {
+			case NUMBER_OF_PLAYER:
+				messageContent = PixurvivalGame.getString("menu.multiplayer.message.numberOfPlayer", gameMode.getTeamSizeInterval().getMin(), gameMode.getTeamSizeInterval().getMax());
+				break;
+			case NUMBER_OF_ROLE:
+				messageContent = PixurvivalGame.getString("menu.multiplayer.message.numberOfRole");
+				break;
+			case NUMBER_OF_TEAM:
+				messageContent = PixurvivalGame.getString("menu.multiplayer.message.numberOfTeam", gameMode.getTeamNumberInterval().getMin(), gameMode.getTeamNumberInterval().getMax());
+				break;
+			}
+			messageWindow.getContentLabel().setText(messageContent);
+			messageWindow.setVisible(true);
 		}
 	}
 
@@ -138,7 +164,8 @@ public class MultiplayerLobbyScreen implements Screen {
 				teamPanel = new TeamPanel(false);
 			}
 			teamPanel.setTeamName(team.getName());
-			teamPanel.setPlayerList(team.getMembers());
+			teamPanel.setPlayerList(lobbyData.getAvailableContentPacks()[lobbyData.getSelectedContentPackIndex()].getGameModeSummaries()[lobbyData.getSelectedGameModeIndex()].getRoleSummaries(),
+					team.getMembers(), lobbyData.getMyPlayer().getPlayerName());
 			teamsTable.add(teamPanel);
 			count++;
 			if (count >= MAX_TEAM_PER_ROW) {
@@ -165,6 +192,7 @@ public class MultiplayerLobbyScreen implements Screen {
 		if (endGameUI != null) {
 			endGameUI.update(stage.getViewport());
 		}
+		messageWindow.update(stage.getViewport());
 	}
 
 	@Override

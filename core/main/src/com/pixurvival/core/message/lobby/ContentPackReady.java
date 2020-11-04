@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentPackReady extends LobbyRequest {
+public class ContentPackReady implements LobbyRequest {
 
 	private ContentPackIdentifier identifier;
 }

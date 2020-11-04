@@ -24,6 +24,7 @@ import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.EnterLobby;
 import com.pixurvival.core.message.lobby.LobbyData;
+import com.pixurvival.core.message.lobby.LobbyServerMessage;
 
 class NetworkMessageHandler extends Listener {
 
@@ -66,6 +67,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(EndGameData.class, game::notifyGameEnded);
 		putMessageAction(EnterLobby.class, e -> game.notify(ClientGameListener::enterLobby));
 		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyMessageReceived(ll)));
+		putMessageAction(LobbyServerMessage.class, lm -> game.notify(l -> l.lobbyMessageReceived(lm)));
 		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
 	}
 

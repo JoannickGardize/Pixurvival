@@ -78,11 +78,18 @@ public class GameModeChooser extends Table {
 	}
 
 	public int countLobbyMaxPlayer() {
-		if (selectedGameModeIndex == -1) {
+		GameModeSummary gms = getSelectedGameMode();
+		if (gms == null) {
 			return 0;
 		}
-		GameModeSummary gms = contentPackList.getSelected().getGameModeSummaries()[selectedGameModeIndex];
 		return gms.getTeamNumberInterval().getMax() * gms.getTeamSizeInterval().getMax();
+	}
+
+	public GameModeSummary getSelectedGameMode() {
+		if (selectedGameModeIndex == -1) {
+			return null;
+		}
+		return contentPackList.getSelected().getGameModeSummaries()[selectedGameModeIndex];
 	}
 
 	private String[] getGameModeStrings(ContentPackSummary selectedPack) {

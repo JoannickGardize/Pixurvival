@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefuseContentPack extends LobbyRequest {
+public class RefuseContentPack implements LobbyRequest {
 
 	private ContentPackIdentifier identifier;
 }
