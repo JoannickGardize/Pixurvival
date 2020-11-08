@@ -71,7 +71,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 			}
 			endModifications();
 		}
-		listPanel.validate();
+		listPanel.revalidate();
 		listPanel.repaint();
 	}
 

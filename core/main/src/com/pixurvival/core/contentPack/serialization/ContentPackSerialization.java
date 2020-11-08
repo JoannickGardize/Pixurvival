@@ -71,6 +71,8 @@ import com.pixurvival.core.contentPack.gameMode.event.RandomRectangeEventPositio
 import com.pixurvival.core.contentPack.gameMode.role.RemainingRolesWinCondition;
 import com.pixurvival.core.contentPack.gameMode.role.SurviveWinCondition;
 import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
+import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
+import com.pixurvival.core.contentPack.gameMode.spawn.StaticPlayerSpawn;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
 import com.pixurvival.core.contentPack.item.EdibleItem;
@@ -83,10 +85,12 @@ import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
+import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
@@ -318,6 +322,10 @@ public class ContentPackSerialization {
 		addClassTag(representer, TeamSurvivedWinCondition.class);
 		addClassTag(representer, RemainingRolesWinCondition.class);
 		addClassTag(representer, RandomRectangeEventPosition.class);
+		addClassTag(representer, ItemStack.class);
+		addClassTag(representer, AutoSquarePlayerSpawn.class);
+		addClassTag(representer, StaticPlayerSpawn.class);
+		addClassTag(representer, DelayedAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

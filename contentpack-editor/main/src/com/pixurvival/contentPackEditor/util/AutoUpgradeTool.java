@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.zip.ZipFile;
 
 import com.pixurvival.contentPackEditor.FileService;
@@ -49,6 +50,7 @@ public class AutoUpgradeTool {
 			replaceAll(sb, "mapGenerator:", "mapProvider:");
 			replaceAll(sb, "!!RemainingTeamCondition", "!!RemainingTeamEndCondition");
 			replaceAll(sb, "!!NoEndCondition", "!!RemainingTeamEndCondition");
+			forEachElementLine(sb, "mapProviders", line -> line + " !!ProcedurallyGeneratedMapProvider");
 		});
 		LAYOUT_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> replaceAll(sb, "MAP_GENERATOR", "MAP_PROVIDER"));
 	}
@@ -96,6 +98,22 @@ public class AutoUpgradeTool {
 		while (index != -1) {
 			sb.replace(index, index + find.length(), replace);
 			index = sb.indexOf(find, index + replace.length());
+		}
+	}
+
+	private static void forEachElementLine(StringBuilder sb, String attributeName, UnaryOperator<String> replacementOperator) {
+		String startLine = "\n" + attributeName + ":\n";
+		int currentIndex = sb.indexOf(startLine) + startLine.length();
+		while (currentIndex < sb.length() - 1) {
+			char firstChar = sb.charAt(currentIndex);
+			if (firstChar == '-') {
+				int nextLineIndex = sb.indexOf("\n", currentIndex);
+				String replacement = replacementOperator.apply(sb.substring(currentIndex, nextLineIndex));
+				sb.replace(currentIndex, nextLineIndex, replacement);
+			} else if (firstChar != ' ') {
+				break;
+			}
+			currentIndex += sb.indexOf("\n", currentIndex) + 1;
 		}
 	}
 
