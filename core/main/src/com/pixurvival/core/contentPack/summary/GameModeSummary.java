@@ -23,6 +23,8 @@ public class GameModeSummary {
 
 	private Map<String, String> nameTranslations;
 
+	private Map<String, String> descriptionTranslations;
+
 	private IntegerInterval teamNumberInterval = new IntegerInterval();
 
 	private IntegerInterval teamSizeInterval = new IntegerInterval();
@@ -31,8 +33,11 @@ public class GameModeSummary {
 
 	public GameModeSummary(ContentPack contentPack, GameMode gameMode) {
 		nameTranslations = new HashMap<>();
+		descriptionTranslations = new HashMap<>();
 		for (Entry<Locale, Properties> translationEntry : contentPack.getTranslations().entrySet()) {
-			nameTranslations.put(translationEntry.getKey().toLanguageTag(), contentPack.getTranslation(translationEntry.getKey(), gameMode, TranslationKey.NAME));
+			String languageTag = translationEntry.getKey().toLanguageTag();
+			nameTranslations.put(languageTag, contentPack.getTranslation(translationEntry.getKey(), gameMode, TranslationKey.NAME));
+			descriptionTranslations.put(languageTag, contentPack.getTranslation(translationEntry.getKey(), gameMode, TranslationKey.DESCRIPTION));
 		}
 		teamNumberInterval = gameMode.getTeamNumberInterval();
 		teamSizeInterval = gameMode.getTeamSizeInterval();

@@ -35,6 +35,9 @@ public class BehaviorSetEditor extends RootElementEditor<BehaviorSet> {
 		if (value == null) {
 			return false;
 		}
+		if (getValue() == value) {
+			return super.isValueValid(value);
+		}
 		BehaviorSet previousValue = getValue();
 		setValue(value);
 		boolean result = super.isValueValid(value);

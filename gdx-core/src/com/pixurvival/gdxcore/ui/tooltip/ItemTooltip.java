@@ -72,7 +72,7 @@ public class ItemTooltip extends Table implements StatListener {
 		row();
 		add(new Separator()).colspan(2).pad(0);
 		row();
-		Label descriptionLabel = new TooltipText(contentPack.getTranslation(locale, item, TranslationKey.ITEM_DESCRIPTION), true);
+		Label descriptionLabel = new TooltipText(contentPack.getTranslation(locale, item, TranslationKey.DESCRIPTION), true);
 		descriptionLabel.setWrap(true);
 		add(descriptionLabel).colspan(2);
 		invalidate();

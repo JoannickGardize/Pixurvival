@@ -141,11 +141,7 @@ public abstract class Entity implements Body, CustomDataHolder {
 		} else if (antiCollisionLockEnabled() && isSolid() && getChunk() != null && getWorld().getMap().collide(this)) {
 			// Get away from collision lock
 			collisionLock = true;
-			if (previousPosition.epsilonEquals(position, MathUtils.EPSILON)) {
-				setMovingAngle(getWorld().getRandom().nextAngle());
-			} else {
-				setMovingAngle(position.angleToward(previousPosition));
-			}
+			setMovingAngle(getCollisionLockAngle());
 			setSpeed(3);
 			setForward(true);
 			updateVelocity();
@@ -158,6 +154,14 @@ public abstract class Entity implements Body, CustomDataHolder {
 			normalPositionUpdate();
 		}
 		updateChunk();
+	}
+
+	protected float getCollisionLockAngle() {
+		if (previousPosition.epsilonEquals(position, MathUtils.EPSILON)) {
+			return getWorld().getRandom().nextAngle();
+		} else {
+			return position.angleToward(previousPosition);
+		}
 	}
 
 	protected void normalPositionUpdate() {

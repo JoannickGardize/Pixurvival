@@ -18,7 +18,10 @@ import com.pixurvival.core.map.chunk.ChunkPosition;
 
 public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener {
 
+	public static final long MIN_DELAY_SAME_SOUND = 200;
+
 	private World world;
+	private long[] lastPlayedTimes;
 
 	public DefaultSoundsPlayer(World world) {
 		this.world = world;
@@ -32,6 +35,8 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 			playSound(myPlayer, soundEffect);
 		}
 		myPlayer.getSoundEffectsToConsume().clear();
+		SoundPreset[] soundPresets = SoundPreset.values();
+		lastPlayedTimes = new long[soundPresets.length];
 	}
 
 	@Override
@@ -84,10 +89,14 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	private void playSound(PlayerEntity myPlayer, SoundEffect soundEffect) {
 		float distanceSquared = myPlayer.distanceSquared(soundEffect.getPosition());
 		if (distanceSquared <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
-			Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
-			float volume = 1f - 0.8f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
-			float pan = 0.1f + 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
-			sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1f, pan);
+			long time = System.currentTimeMillis();
+			if (time - lastPlayedTimes[soundEffect.getPreset().ordinal()] > MIN_DELAY_SAME_SOUND) {
+				lastPlayedTimes[soundEffect.getPreset().ordinal()] = time;
+				Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
+				float volume = 1f - 0.8f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
+				float pan = 0.1f + 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
+				sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1f, pan);
+			}
 		}
 	}
 }

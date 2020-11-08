@@ -16,11 +16,10 @@ public class StaticEventPosition implements EventPosition {
 	/**
 	 * Position of the event, relative to the initial spawn center of the party.
 	 */
-	private Vector2 position;
+	private Vector2 position = new Vector2();
 
 	@Override
 	public void apply(World world, Collection<PlayerEntity> players, Vector2 positionOut, Vector2 targetOut) {
 		positionOut.set(position).add(world.getSpawnCenter());
 	}
-
 }

@@ -289,7 +289,7 @@ public class ContentPack implements Serializable {
 	public static void getAllTranslationKeys(Collection<String> resultStore, IdentifiedElement element, boolean allPotential) {
 		if (element instanceof Item) {
 			resultStore.add(TranslationKey.NAME.getKey(element));
-			resultStore.add(TranslationKey.ITEM_DESCRIPTION.getKey(element));
+			resultStore.add(TranslationKey.DESCRIPTION.getKey(element));
 			if (element instanceof WeaponItem || allPotential) {
 				resultStore.add(TranslationKey.ITEM_BASE_ABILITY_NAME.getKey(element));
 				resultStore.add(TranslationKey.ITEM_BASE_ABILITY_DESCRIPTION.getKey(element));
@@ -298,8 +298,11 @@ public class ContentPack implements Serializable {
 				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_NAME.getKey(element));
 				resultStore.add(TranslationKey.ITEM_SPECIAL_ABILITY_DESCRIPTION.getKey(element));
 			}
-		} else if (element instanceof Structure || element instanceof GameMode) {
+		} else if (element instanceof Structure) {
 			resultStore.add(TranslationKey.NAME.getKey(element));
+		} else if (element instanceof GameMode) {
+			resultStore.add(TranslationKey.NAME.getKey(element));
+			resultStore.add(TranslationKey.DESCRIPTION.getKey(element));
 		}
 	}
 

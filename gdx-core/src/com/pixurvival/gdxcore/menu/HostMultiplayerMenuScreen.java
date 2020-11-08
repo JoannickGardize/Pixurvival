@@ -1,5 +1,9 @@
 package com.pixurvival.gdxcore.menu;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -37,16 +41,26 @@ public class HostMultiplayerMenuScreen implements Screen {
 		ipField = new TextField(PixurvivalGame.getString("menu.multiplayer.requesting"), skin);
 		ipField.setDisabled(true);
 		table.add(ipField);
+		TextButton copyButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.copy"), skin);
+		copyButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				StringSelection stringSelection = new StringSelection(ipField.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);
+			}
+		});
+		table.add(copyButton);
 		table.row();
 
 		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.serverPort"), skin)).right();
 		TextField portField = new TextField("7777", skin);
-		table.add(portField);
+		table.add(portField).colspan(2);
 		table.row();
 
 		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.playerName"), skin)).right();
 		nameField = new TextField("Bob", skin);
-		table.add(nameField);
+		table.add(nameField).colspan(2);
 		table.row();
 
 		Table buttonTable = new Table();
@@ -55,7 +69,7 @@ public class HostMultiplayerMenuScreen implements Screen {
 		TextButton connectButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.hostAndPlay"), skin);
 		buttonTable.add(connectButton).center();
 
-		table.add(buttonTable).colspan(2);
+		table.add(buttonTable).colspan(3);
 
 		connectionMessageWindow = new ConnectionMessageWindow();
 
@@ -132,11 +146,11 @@ public class HostMultiplayerMenuScreen implements Screen {
 		if (!UPnP.isMappedTCP(port) || !UPnP.isMappedUDP(port)) {
 			connectionMessageWindow.showWaitingMessage();
 			boolean success = true;
-			if (!UPnP.isMappedTCP(port)) {
-				success = UPnP.openPortTCP(port);
-			}
 			if (!UPnP.isMappedUDP(port)) {
 				success = UPnP.openPortUDP(port) && success;
+			}
+			if (!UPnP.isMappedTCP(port)) {
+				success = UPnP.openPortTCP(port);
 			}
 			if (!success) {
 				Log.warn("Unable to port forward automatically TCP and UDP port " + port);

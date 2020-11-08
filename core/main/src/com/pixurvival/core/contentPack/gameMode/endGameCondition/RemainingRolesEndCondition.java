@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.gameMode.role.Role;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.Team;
 
@@ -24,6 +25,7 @@ public class RemainingRolesEndCondition extends PlayerAliveCountEndGameCondition
 
 	private int value;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected boolean compute(World world) {
 		if (countPerTeam) {
@@ -34,7 +36,7 @@ public class RemainingRolesEndCondition extends PlayerAliveCountEndGameCondition
 			}
 			return false;
 		} else {
-			return countRoles(world.getPlayerEntities().values()) <= value;
+			return countRoles((Collection) world.getEntityPool().get(EntityGroup.PLAYER)) <= value;
 		}
 	}
 

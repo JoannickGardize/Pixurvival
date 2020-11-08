@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
@@ -27,7 +28,7 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 		bind(repeatTimeInput, Event::getRepeatTime, Event::setRepeatTime);
 
 		setLayout(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
-		add(LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "eventEditor.startTime", startTimeInput, "generic.repeat", repeatTimeInput), BorderLayout.NORTH);
+		add(LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "eventEditor.startTime", startTimeInput, "eventEditor.repeat", repeatTimeInput), BorderLayout.NORTH);
 		add(getSpecificPartPanel(), BorderLayout.CENTER);
 	}
 
@@ -45,7 +46,9 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 			bind(forEachTeamCheckBox, EffectEvent::isForEachTeam, EffectEvent::setForEachTeam, EffectEvent.class);
 			bind(eventPositionEditor, EffectEvent::getPosition, EffectEvent::setPosition, EffectEvent.class);
 			JPanel panel = new JPanel(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
-			panel.add(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox), BorderLayout.NORTH);
+			panel.add(LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox),
+					new JLabel("Strength = number of player"), new JLabel("Agility = current number of repeat (start from 1)"), new JLabel("Intelligence = Strength x Agility"),
+					new JLabel("This will change for parameterizable purpose in the future")), BorderLayout.NORTH);
 			eventPositionEditor.setBorder(LayoutUtils.createGroupBorder("generic.position"));
 			panel.add(eventPositionEditor, BorderLayout.CENTER);
 			return panel;

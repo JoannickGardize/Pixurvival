@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
 import com.pixurvival.core.contentPack.item.ClothingItem;
@@ -70,11 +71,13 @@ public class CraftUI extends UIWindow {
 				public Actor newSlot(Inventory inventory, int index) {
 					return new CraftSlot(categoryList.get(index));
 				}
-			}).fill().prefHeight(60 + ((categoryList.size() - 1) / 8) * 60);
+			}).fill().prefHeight(60f + ((categoryList.size() - 1f) / 8f) * 60f);
 			table.row();
 		}
 		table.add().expand();
-		add(table).expand().fill();
+		ScrollPane scrollPane = new ScrollPane(table, PixurvivalGame.getSkin());
+		scrollPane.setScrollingDisabled(true, false);
+		add(scrollPane).expand().fill();
 
 		pack();
 	}

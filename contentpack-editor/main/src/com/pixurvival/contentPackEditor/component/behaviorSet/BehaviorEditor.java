@@ -134,7 +134,11 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		classEntries.add(new ClassEntry(VanishBehavior.class, JPanel::new));
 
 		// Do nothing
-		classEntries.add(new ClassEntry(DoNothingBehavior.class, JPanel::new));
+		classEntries.add(new ClassEntry(DoNothingBehavior.class, () -> {
+			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
+			bind(targetChooser, DoNothingBehavior::getTargetType, DoNothingBehavior::setTargetType, DoNothingBehavior.class);
+			return LayoutUtils.single(LayoutUtils.labelled("generic.target", targetChooser));
+		}));
 
 		// HarvestBehavior
 		classEntries.add(new ClassEntry(HarvestBehavior.class, () -> {

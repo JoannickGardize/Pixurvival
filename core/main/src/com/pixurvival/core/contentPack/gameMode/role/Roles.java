@@ -58,7 +58,8 @@ public class Roles implements Serializable {
 			Role role = roles.get(i);
 			int roleCount = MathUtils.clamp(Math.round(role.getRecommandedRatioPerTeam() * teamSize), role.getMinimumPerTeam(), role.getMaximumPerTeam());
 			for (int j = 0; j < roleCount && !urn.isEmpty(); j++) {
-				players[urn.draw(world.getRandom())].setRole(role);
+				int id = urn.draw(world.getRandom());
+				players[id].setRole(role);
 			}
 		}
 		Role lastRole = roles.get(roles.size() - 1);

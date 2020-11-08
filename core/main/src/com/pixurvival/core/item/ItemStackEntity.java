@@ -130,6 +130,7 @@ public class ItemStackEntity extends Entity {
 							ItemStackEntity newEntity = new ItemStackEntity(rest);
 							newEntity.state = State.INHIBITED;
 							newEntity.magnetTarget = magnetTarget;
+							newEntity.getPosition().set(getPosition());
 							getWorld().getEntityPool().create(newEntity);
 						}
 					}

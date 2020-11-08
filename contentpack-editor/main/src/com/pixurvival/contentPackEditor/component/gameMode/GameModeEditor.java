@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -35,7 +36,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
 		DayCycleEditor dayCycleDefinitionEditor = new DayCycleEditor();
 		PlayerSpawnEditor playerSpawnEditor = new PlayerSpawnEditor();
-		ListEditor<Event> eventsEditor = new VerticalListEditor<>(LayoutUtils.bordered(EventEditor::new), EffectEvent::new);
+		ListEditor<Event> eventsEditor = new VerticalListEditor<>(LayoutUtils.bordered(EventEditor::new), () -> BeanFactory.newInstance(EffectEvent.class));
 		ListEditor<EndGameCondition> endGameConditionsEditor = new VerticalListEditor<>(() -> new EndGameConditionEditor(() -> {
 			if (getValue() == null || getValue().getRoles() == null) {
 				return Collections.emptyList();
@@ -89,7 +90,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		if (value == null) {
 			return false;
 		}
-		if (value.getRoles() == null) {
+		if (value.getRoles() == null || getValue() == value) {
 			return super.isValueValid(value);
 		}
 		// Solves heightmap reference problem

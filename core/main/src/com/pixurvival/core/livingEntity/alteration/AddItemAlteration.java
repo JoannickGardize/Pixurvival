@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
@@ -14,17 +15,22 @@ public class AddItemAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
-	private ItemStack itemStack = new ItemStack();
+	private StatFormula repeat = new StatFormula();
+	private WeightedValueProducer<ItemStack> itemStacks = new WeightedValueProducer<>();
 	private boolean dropRemainder;
 
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember entity) {
 		if (entity instanceof InventoryHolder) {
-			ItemStack remainder = ((InventoryHolder) entity).getInventory().add(itemStack);
-			if (dropRemainder && remainder != null) {
-				ItemStackEntity itemStackEntity = new ItemStackEntity(remainder);
-				itemStackEntity.getPosition().set(source.getPosition());
-				entity.getWorld().getEntityPool().create(itemStackEntity);
+			float repeatValue = repeat.getValue(source);
+			for (int i = 0; i < repeatValue; i++) {
+				ItemStack itemStack = itemStacks.next(source.getWorld().getRandom());
+				ItemStack remainder = ((InventoryHolder) entity).getInventory().add(itemStack);
+				if (dropRemainder && remainder != null) {
+					ItemStackEntity itemStackEntity = new ItemStackEntity(remainder);
+					itemStackEntity.getPosition().set(source.getPosition());
+					entity.getWorld().getEntityPool().create(itemStackEntity);
+				}
 			}
 		}
 	}

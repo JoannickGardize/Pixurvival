@@ -9,6 +9,7 @@ import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.EmptyInventoryProxy;
@@ -281,6 +282,22 @@ public class CreatureEntity extends LivingEntity {
 				input.setPosition(byteBuffer.position());
 				inventory.set(INVENTORY_KRYO.readObject(input, Inventory.class));
 				byteBuffer.position(input.position());
+			}
+		}
+	}
+
+	@Override
+	protected float getCollisionLockAngle() {
+		if (targetEntity != null) {
+			return angleToward(targetEntity);
+		} else if (master != this) {
+			return angleToward(master);
+		} else {
+			Entity e = BehaviorTarget.CLOSEST_ENNEMY.getEntityGetter().apply(this);
+			if (e != null) {
+				return angleToward(e);
+			} else {
+				return super.getCollisionLockAngle();
 			}
 		}
 	}

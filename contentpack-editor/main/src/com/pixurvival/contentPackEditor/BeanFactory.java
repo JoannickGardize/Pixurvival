@@ -16,6 +16,8 @@ import com.pixurvival.core.contentPack.effect.FollowingEffect;
 import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.effect.LinearEffectMovement;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
+import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
+import com.pixurvival.core.contentPack.gameMode.event.PlayerProximityEventPosition;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.map.MapProvider;
@@ -23,6 +25,7 @@ import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
@@ -63,8 +66,15 @@ public class BeanFactory {
 			effect.setMovement(new LinearEffectMovement());
 			return effect;
 		});
+		suppliers.put(EffectEvent.class, () -> {
+			EffectEvent effectEvent = new EffectEvent();
+			effectEvent.setPosition(new PlayerProximityEventPosition());
+			return effectEvent;
+		});
 
 		suppliers.put(MapProvider.class, ProcedurallyGeneratedMapProvider::new);
+
+		suppliers.put(Vector2.class, Vector2::new);
 	}
 
 	@SneakyThrows

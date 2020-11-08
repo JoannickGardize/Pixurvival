@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum TranslationKey {
-	NAME(element -> CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), IdentifiedElement.class).getSimpleName()) + "." + element.getName() + ".name"),
-	ITEM_DESCRIPTION(element -> "item." + element.getName() + ".description"),
+	NAME(element -> getElementTypeKeyPreffix(element) + element.getName() + ".name"),
+	DESCRIPTION(element -> getElementTypeKeyPreffix(element) + element.getName() + ".description"),
 	ITEM_BASE_ABILITY_NAME(element -> "item." + element.getName() + ".baseAbility.name"),
 	ITEM_BASE_ABILITY_DESCRIPTION(element -> "item." + element.getName() + ".baseAbility.description"),
 	ITEM_SPECIAL_ABILITY_NAME(element -> "item." + element.getName() + ".specialAbility.name"),
@@ -20,5 +20,9 @@ public enum TranslationKey {
 
 	public String getKey(IdentifiedElement element) {
 		return keyFunction.apply(element);
+	}
+
+	private static String getElementTypeKeyPreffix(IdentifiedElement element) {
+		return CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), IdentifiedElement.class).getSimpleName()) + ".";
 	}
 }

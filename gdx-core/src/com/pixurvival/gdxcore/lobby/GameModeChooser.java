@@ -25,6 +25,8 @@ public class GameModeChooser extends Table {
 
 	private boolean programmaticChangeList;
 
+	private Label descriptionLabel = new Label("", PixurvivalGame.getSkin(), "default", Color.WHITE);
+
 	public GameModeChooser() {
 
 		setBackground(PixurvivalGame.getSkin().get("panel", Drawable.class));
@@ -42,6 +44,13 @@ public class GameModeChooser extends Table {
 		add(new Separator()).pad(0);
 		row();
 		add(new ScrollPane(gameModeList, PixurvivalGame.getSkin())).expandY();
+		row();
+		add(new Separator()).pad(0);
+		row();
+		ScrollPane scrollPane = new ScrollPane(descriptionLabel, PixurvivalGame.getSkin());
+		scrollPane.setScrollingDisabled(true, false);
+		add(scrollPane).height(200);
+		descriptionLabel.setWrap(true);
 
 		contentPackList.addListener(new ChangeListener() {
 
@@ -74,6 +83,7 @@ public class GameModeChooser extends Table {
 		String[] gameModeStrings = getGameModeStrings(selectedPack);
 		gameModeList.setItems(gameModeStrings);
 		gameModeList.setSelectedIndex(selectedGameModeIndex);
+		descriptionLabel.setText(getDescriptionString(selectedPack));
 		programmaticChangeList = false;
 	}
 
@@ -102,5 +112,14 @@ public class GameModeChooser extends Table {
 			gameModeStrings[i] = selectedPack.getGameModeSummaries()[i].getNameTranslations().get(localeTag);
 		}
 		return gameModeStrings;
+	}
+
+	private String getDescriptionString(ContentPackSummary selectedPack) {
+		if (getSelectedGameMode() == null) {
+			return "";
+		}
+		String localeTag = PixurvivalGame.getClient().getLocaleFor(selectedPack.getGameModeSummaries()[0].getNameTranslations().keySet()).toLanguageTag();
+		return getSelectedGameMode().getDescriptionTranslations().get(localeTag);
+
 	}
 }

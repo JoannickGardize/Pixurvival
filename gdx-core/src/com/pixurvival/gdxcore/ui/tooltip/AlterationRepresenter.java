@@ -7,6 +7,8 @@ import java.util.function.Function;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.pixurvival.core.contentPack.WeightedValueProducer;
+import com.pixurvival.core.contentPack.WeightedValueProducer.Entry;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -55,10 +57,12 @@ public class AlterationRepresenter {
 
 	private static Actor addItem(Alteration alteration) {
 		AddItemAlteration addItemAlteration = (AddItemAlteration) alteration;
-		ItemStack itemStack = addItemAlteration.getItemStack();
+		WeightedValueProducer<ItemStack> itemStacks = addItemAlteration.getItemStacks();
 		Table table = new Table();
 		table.add(new Label(PixurvivalGame.getString("hud.alteration.addItem"), PixurvivalGame.getSkin(), "white")).expand();
-		RepresenterUtils.appendItemStack(table, itemStack);
+		for (Entry<ItemStack> itemStack : itemStacks.getBackingArray()) {
+			RepresenterUtils.appendItemStack(table, itemStack.getElement());
+		}
 		return table;
 	}
 

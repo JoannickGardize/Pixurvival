@@ -31,7 +31,7 @@ public class MapProviderEditor extends InstanceChangingRootElementEditor<MapProv
 		if (value == null) {
 			return false;
 		}
-		if (!(value instanceof ProcedurallyGeneratedMapProvider)) {
+		if (!(value instanceof ProcedurallyGeneratedMapProvider) || getValue() == value) {
 			return super.isValueValid(value);
 		}
 		// Solves heightmap reference problem

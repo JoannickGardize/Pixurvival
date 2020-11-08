@@ -17,8 +17,10 @@ import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangin
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
@@ -197,11 +199,17 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 		// AddItemAlteration
 		entries.add(new ClassEntry(AddItemAlteration.class, () -> {
-			ItemStackEditor itemStackEditor = new ItemStackEditor();
+			StatFormulaEditor repeatEditor = new StatFormulaEditor();
+			WeightedValueProducerEditor<ItemStack> itemStacksEditor = new WeightedValueProducerEditor<>(ItemStackEditor::new, ItemStack::new);
+			itemStacksEditor.setBorder(LayoutUtils.createGroupBorder("alterationEditor.chooseItemList"));
 			BooleanCheckBox dropRemainderCheckbox = new BooleanCheckBox();
-			bind(itemStackEditor, AddItemAlteration::getItemStack, AddItemAlteration::setItemStack, AddItemAlteration.class);
+
+			bind(repeatEditor, AddItemAlteration::getRepeat, AddItemAlteration::setRepeat, AddItemAlteration.class);
+			bind(itemStacksEditor, AddItemAlteration::getItemStacks, AddItemAlteration::setItemStacks, AddItemAlteration.class);
 			bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
-			return LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("elementType.item", itemStackEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox));
+
+			return LayoutUtils.createVerticalBox(LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("generic.repeat", repeatEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox)),
+					itemStacksEditor);
 		}));
 
 		// PlaySoundAlteration

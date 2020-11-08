@@ -86,6 +86,7 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		CPEButton removeButton = new CPEButton(ImageService.getInstance().get("remove"), () -> {
 			List<E> newValue = new ArrayList<>(getValue());
 			newValue.remove(finalIndex);
+			reindex(newValue);
 			setValue(newValue);
 			notifyValueChanged();
 		});

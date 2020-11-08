@@ -67,6 +67,7 @@ import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamEn
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.TimeEndCondition;
 import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
 import com.pixurvival.core.contentPack.gameMode.event.PlayerProximityEventPosition;
+import com.pixurvival.core.contentPack.gameMode.event.RandomRectangeEventPosition;
 import com.pixurvival.core.contentPack.gameMode.role.RemainingRolesWinCondition;
 import com.pixurvival.core.contentPack.gameMode.role.SurviveWinCondition;
 import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
@@ -316,6 +317,7 @@ public class ContentPackSerialization {
 		addClassTag(representer, SurviveWinCondition.class);
 		addClassTag(representer, TeamSurvivedWinCondition.class);
 		addClassTag(representer, RemainingRolesWinCondition.class);
+		addClassTag(representer, RandomRectangeEventPosition.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {
