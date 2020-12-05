@@ -19,6 +19,7 @@ import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.ColorTextures;
@@ -82,7 +83,7 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
+	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.chunk.Chunk;
-import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -91,9 +90,9 @@ public class MapStructure implements Body, CustomDataHolder {
 	 * 
 	 * @return
 	 */
-	public StructureUpdate getUpdate() {
-		return null;
-	}
+	// public StructureUpdate getUpdate() {
+	// return null;
+	// }
 
 	@Override
 	public World getWorld() {

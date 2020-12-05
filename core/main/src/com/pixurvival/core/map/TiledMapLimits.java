@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public class TiledMapLimits implements TiledMapListener {
 
@@ -80,7 +81,7 @@ public class TiledMapLimits implements TiledMapListener {
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
+	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override

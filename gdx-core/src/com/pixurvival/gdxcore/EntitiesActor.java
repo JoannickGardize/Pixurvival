@@ -70,7 +70,7 @@ public class EntitiesActor extends Actor {
 			});
 			chunk.forEachStructure(objectsToDraw::add);
 		});
-		objectsToDraw.sort((e1, e2) -> (int) ((e2.getDisplayDeath() - e1.getDisplayDeath()) * 1000));
+		objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
 
 		manageGhostStructure();
 		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));

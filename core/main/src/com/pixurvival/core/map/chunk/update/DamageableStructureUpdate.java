@@ -22,7 +22,7 @@ public class DamageableStructureUpdate extends StructureUpdate {
 		if (mapTile.getStructure() instanceof DamageableMapStructure) {
 			DamageableMapStructure structure = (DamageableMapStructure) mapTile.getStructure();
 			structure.setHealth(health);
-			chunk.getMap().notifyListeners(l -> l.structureChanged(structure));
+			chunk.getMap().notifyListeners(l -> l.structureChanged(structure, this));
 		}
 		chunk.invalidateCompressed();
 	}

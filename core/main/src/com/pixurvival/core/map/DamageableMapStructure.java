@@ -8,7 +8,6 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.DamageableStructureUpdate;
-import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamSet;
@@ -50,7 +49,7 @@ public class DamageableMapStructure extends MapStructure implements TeamMember, 
 			health = 0;
 			getChunk().removeStructure(getTileX(), getTileY());
 		} else {
-			getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
+			getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new DamageableStructureUpdate(getTileX(), getTileY(), health)));
 		}
 	}
 
@@ -73,11 +72,6 @@ public class DamageableMapStructure extends MapStructure implements TeamMember, 
 	@Override
 	public boolean isAlive() {
 		return false;
-	}
-
-	@Override
-	public StructureUpdate getUpdate() {
-		return new DamageableStructureUpdate(getTileX(), getTileY(), health);
 	}
 
 	@Override

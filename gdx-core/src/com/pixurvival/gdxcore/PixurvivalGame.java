@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Locale;
@@ -117,6 +118,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private Sound[] sounds;
 	private @Getter float globalVolume = 1;
 	private PixurvivalServer server;
+	private FileOutputStream errorOutput;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
@@ -135,10 +137,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		client.addListener(this);
 		if (clientArgs.isRedirectErrorToFile()) {
 			File file = new File("err.txt");
-			FileOutputStream fos;
+
 			try {
-				fos = new FileOutputStream(file);
-				PrintStream ps = new PrintStream(fos);
+				errorOutput = new FileOutputStream(file);
+				PrintStream ps = new PrintStream(errorOutput);
 				System.setErr(ps);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -253,6 +255,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		ChunkManager.getInstance().setRunning(false);
 		disposeServer();
 		NotificationPushManager.getInstance().stop();
+		if (errorOutput != null) {
+			try {
+				errorOutput.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

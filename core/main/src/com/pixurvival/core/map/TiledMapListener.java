@@ -3,6 +3,7 @@ package com.pixurvival.core.map;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public interface TiledMapListener {
 
@@ -10,7 +11,7 @@ public interface TiledMapListener {
 
 	void chunkUnloaded(Chunk chunk);
 
-	void structureChanged(MapStructure mapStructure);
+	void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate);
 
 	void structureAdded(MapStructure mapStructure);
 

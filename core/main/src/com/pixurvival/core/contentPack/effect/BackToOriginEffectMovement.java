@@ -25,7 +25,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void update(EffectEntity entity) {
-		TeamMember origin = entity.getAncestor().findIfNotFound().getOrigin().findIfNotFound();
+		TeamMember origin = entity.getOrigin();
 		if (origin != null) {
 			entity.setMovingAngle(entity.angleToward(origin));
 		}
@@ -38,12 +38,11 @@ public class BackToOriginEffectMovement implements EffectMovement {
 
 	@Override
 	public void writeUpdate(ByteBuffer buffer, EffectEntity entity) {
-		TeamMemberSerialization.write(buffer, entity.getAncestor(), false);
+		TeamMemberSerialization.write(buffer, entity.getOrigin(), false);
 	}
 
 	@Override
 	public void applyUpdate(ByteBuffer buffer, EffectEntity entity) {
 		entity.setAncestor(TeamMemberSerialization.read(buffer, entity.getWorld(), false));
 	}
-
 }

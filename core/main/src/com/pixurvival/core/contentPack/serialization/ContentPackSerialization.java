@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.serialization;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -158,12 +160,12 @@ public class ContentPackSerialization {
 	}
 
 	public void save(File file, ContentPack contentPack) throws IOException {
-		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file))) {
+		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
 			zipOutputStream.putNextEntry(new ZipEntry(SUMMARY_ENTRY_NAME));
-			yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(zipOutputStream));
+			yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8));
 			zipOutputStream.putNextEntry(new ZipEntry(SERIALIZATION_ENTRY_NAME));
 			nameAnchorGenerator.reset();
-			yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream));
+			yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8));
 			for (Entry<String, byte[]> resource : contentPack.getResources().entrySet()) {
 				zipOutputStream.putNextEntry(new ZipEntry(RESOURCES_ROOT + resource.getKey()));
 				zipOutputStream.write(resource.getValue());

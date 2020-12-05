@@ -90,8 +90,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
-		StructureUpdate structureUpdate = mapStructure.getUpdate();
+	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 

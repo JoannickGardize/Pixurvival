@@ -22,7 +22,8 @@ public enum ReleaseVersion {
 
 	ALPHA_4,
 	ALPHA_4B,
-	ALPHA_5;
+	ALPHA_5,
+	ALPHA_5B;
 
 	/**
 	 * @return the actual version of the game

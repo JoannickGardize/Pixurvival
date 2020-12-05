@@ -1,0 +1,9 @@
+Exception in thread "LWJGL Application" java.lang.ClassCastException: java.lang.String cannot be cast to com.pixurvival.core.util.ReleaseVersion
+	at com.pixurvival.gdxcore.lobby.LoadGameUtils.handleLoadGameError(LoadGameUtils.java:24)
+	at com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen$1.clicked(NewSingleplayerLobbyScreen.java:60)
+	at com.badlogic.gdx.scenes.scene2d.utils.ClickListener.touchUp(ClickListener.java:88)
+	at com.badlogic.gdx.scenes.scene2d.InputListener.handle(InputListener.java:59)
+	at com.badlogic.gdx.scenes.scene2d.Stage.touchUp(Stage.java:351)
+	at com.badlogic.gdx.backends.lwjgl.LwjglInput.processEvents(LwjglInput.java:360)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication.mainLoop(LwjglApplication.java:221)
+	at com.badlogic.gdx.backends.lwjgl.LwjglApplication$1.run(LwjglApplication.java:128)

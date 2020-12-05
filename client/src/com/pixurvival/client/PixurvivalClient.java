@@ -229,8 +229,9 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		} catch (ContentPackException e) {
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
-		if (ReleaseVersion.getActual() != ReleaseVersion.valueFor(localGamePack.getReleaseVersion())) {
-			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, localGamePack.getReleaseVersion(), ReleaseVersion.getActual());
+		ReleaseVersion packVersion = ReleaseVersion.valueFor(localGamePack.getReleaseVersion());
+		if (ReleaseVersion.getActual() != packVersion) {
+			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.getActual());
 		}
 		currentLocale = getLocaleFor(localGamePack);
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));

@@ -31,7 +31,7 @@ public class HarvestableStructureUpdate extends StructureUpdate implements Actio
 		if (mapTile.getStructure() instanceof HarvestableMapStructure) {
 			HarvestableMapStructure hms = (HarvestableMapStructure) mapTile.getStructure();
 			hms.setHarvested(harvested);
-			chunk.getMap().notifyListeners(l -> l.structureChanged(hms));
+			chunk.getMap().notifyListeners(l -> l.structureChanged(hms, this));
 		}
 		chunk.invalidateCompressed();
 	}

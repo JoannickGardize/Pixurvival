@@ -15,6 +15,7 @@ import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener {
 
@@ -48,7 +49,7 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
+	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
 		if (mapStructure instanceof HarvestableMapStructure) {
 			HarvestableMapStructure hms = (HarvestableMapStructure) mapStructure;
 			if (hms.isHarvested()) {

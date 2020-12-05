@@ -16,6 +16,7 @@ import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,9 +24,9 @@ import lombok.Setter;
 public class ChunkCreatureSpawnManager implements TiledMapListener {
 
 	/**
-	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the chunk
-	 * is unloaded then reloaded, we can know if we have to spawn immediately or
-	 * just wait for the next event.
+	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the
+	 * chunk is unloaded then reloaded, we can know if we have to spawn
+	 * immediately or just wait for the next event.
 	 */
 	private @Getter @Setter Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
@@ -94,7 +95,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure) {
+	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override

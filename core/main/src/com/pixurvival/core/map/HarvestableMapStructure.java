@@ -10,7 +10,6 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
-import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,7 @@ public class HarvestableMapStructure extends MapStructure {
 			return new ItemStack[0];
 		}
 		harvested = true;
-		getChunk().getMap().notifyListeners(l -> l.structureChanged(this));
+		getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new HarvestableStructureUpdate(getTileX(), getTileY(), harvested)));
 		getChunk().updateTimestamp();
 		World world = getChunk().getMap().getWorld();
 		world.getActionTimerManager().addActionTimer(new HarvestableStructureUpdate(getTileX(), getTileY(), false), ((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));
@@ -48,10 +47,4 @@ public class HarvestableMapStructure extends MapStructure {
 		super.applyData(buffer);
 		harvested = buffer.get() == 1;
 	}
-
-	@Override
-	public StructureUpdate getUpdate() {
-		return new HarvestableStructureUpdate(getTileX(), getTileY(), harvested);
-	}
-
 }
