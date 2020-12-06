@@ -10,6 +10,7 @@ import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
+import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
 import com.pixurvival.core.util.Vector2;
@@ -185,7 +186,7 @@ public class ItemStackEntity extends Entity {
 			break;
 		case MAGNTIZED:
 			TeamMemberSerialization.write(buffer, magnetTarget, false);
-			buffer.putLong(speedInterpolation.getStartTimeMillis());
+			ByteBufferUtils.writePastTime(buffer, getWorld(), speedInterpolation.getStartTimeMillis());
 			break;
 		case SPAWNING:
 			buffer.putFloat(spawnTarget.getX());
@@ -209,7 +210,8 @@ public class ItemStackEntity extends Entity {
 			break;
 		case MAGNTIZED:
 			magnetTarget = TeamMemberSerialization.read(buffer, getWorld(), false);
-			speedInterpolation.setStartTimeMillis(buffer.getLong());
+
+			speedInterpolation.setStartTimeMillis(ByteBufferUtils.readPastTime(buffer, getWorld()));
 			break;
 		case SPAWNING:
 			spawnTarget.set(buffer.getFloat(), buffer.getFloat());

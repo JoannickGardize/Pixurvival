@@ -50,22 +50,6 @@ public class EntityPool extends EntityCollection {
 		e.initializeAtCreation();
 	}
 
-	/**
-	 * For future entity persistence
-	 * 
-	 * @param collection
-	 */
-	@Deprecated
-	public void sneakyAddAll(EntityCollection collection) {
-		collection.foreach((group, map) -> {
-			Map<Long, Entity> groupMap = getMap(group);
-			for (Entry<Long, Entity> entry : map.entrySet()) {
-				groupMap.put(entry.getKey(), entry.getValue());
-				entry.getValue().initialize();
-			}
-		});
-	}
-
 	public void removeAll(EntityCollection collection) {
 		collection.foreach((group, map) -> {
 			Map<Long, Entity> groupMap = getMap(group);
@@ -114,16 +98,6 @@ public class EntityPool extends EntityCollection {
 		super.applyUpdate(byteBuffer, world);
 		flushNewEntities();
 	}
-
-	// public void writeEntityReference(ByteBuffer byteBuffer, Entity entity) {
-	// byteBuffer.put((byte) entity.getGroup().ordinal());
-	// byteBuffer.putLong(entity.getId());
-	// }
-	//
-	// public Entity readEntityReference(ByteBuffer byteBuffer) {
-	// EntityGroup group = EntityGroup.values()[byteBuffer.get()];
-	// return getEntities().get(group).get(byteBuffer.getLong());
-	// }
 
 	/**
 	 * Force adding the pending new entities without a call to update().

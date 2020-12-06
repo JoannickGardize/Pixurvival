@@ -77,7 +77,6 @@ public class WorldSerialization {
 			// Map and entities data
 			Collection<CompressedChunkAndEntityData> mapData;
 			synchronized (world.getMap().getRepository()) {
-				world.getMap().getRepository();
 				world.getMap().saveAll();
 				mapData = world.getMap().getRepository().getAll();
 			}

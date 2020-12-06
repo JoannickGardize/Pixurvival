@@ -69,10 +69,10 @@ public abstract class PersistentAlteration extends Alteration {
 	public void end(TeamMember source, LivingEntity target, Object data) {
 	}
 
-	public void writeData(ByteBuffer buffer, Object data) {
+	public void writeData(ByteBuffer buffer, LivingEntity target, Object data) {
 	}
 
-	public Object readData(ByteBuffer buffer) {
+	public Object readData(ByteBuffer buffer, LivingEntity target) {
 		return null;
 	}
 

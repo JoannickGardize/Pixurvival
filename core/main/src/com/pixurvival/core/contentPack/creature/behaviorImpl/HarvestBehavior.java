@@ -74,7 +74,7 @@ public class HarvestBehavior extends Behavior {
 	}
 
 	@Override
-	protected void end(CreatureEntity creature) {
+	public void end(CreatureEntity creature) {
 		updateTargetReference(creature, null);
 	}
 

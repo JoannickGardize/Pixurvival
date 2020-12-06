@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,12 +38,12 @@ public class RepeatAlteration extends PersistentAlteration {
 	}
 
 	@Override
-	public void writeData(ByteBuffer buffer, Object data) {
-		buffer.putLong((long) data);
+	public void writeData(ByteBuffer buffer, LivingEntity entity, Object data) {
+		ByteBufferUtils.writeFutureTime(buffer, entity.getWorld(), (long) data);
 	}
 
 	@Override
-	public Object readData(ByteBuffer buffer) {
-		return buffer.getLong();
+	public Object readData(ByteBuffer buffer, LivingEntity entity) {
+		return ByteBufferUtils.readFutureTime(buffer, entity.getWorld());
 	}
 }

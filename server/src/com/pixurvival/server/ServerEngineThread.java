@@ -22,6 +22,7 @@ import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.util.LongSequenceIOHelper;
 import com.pixurvival.server.lobby.LobbySession;
 
 import lombok.NonNull;
@@ -239,9 +240,10 @@ public class ServerEngineThread extends EngineThread {
 		int lengthPosition = byteBuffer.position();
 		byteBuffer.position(byteBuffer.position() + 2);
 		short length = 0;
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (Entity ally : player.getTeam().getAliveMembers()) {
 			if (ally != player && ally.getChunk() != null && !ally.getChunk().getPosition().insideSquare(player.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
-				byteBuffer.putLong(ally.getId());
+				idSequence.write(byteBuffer, ally.getId());
 				byteBuffer.putFloat(ally.getPosition().getX());
 				byteBuffer.putFloat(ally.getPosition().getY());
 				byteBuffer.putFloat(ally.getVelocity().getX());

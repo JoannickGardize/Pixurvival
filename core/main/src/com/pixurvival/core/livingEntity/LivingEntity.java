@@ -476,7 +476,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 			TeamMemberSerialization.write(buffer, entry.getSource(), true);
 			buffer.putInt(entry.getAlteration().getId());
 			buffer.putLong(entry.getTermTimeMillis());
-			entry.getAlteration().writeData(buffer, entry.getData());
+			entry.getAlteration().writeData(buffer, this, entry.getData());
 		}
 
 	}
@@ -490,7 +490,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 			PersistentAlteration alteration = (PersistentAlteration) getWorld().getContentPack().getAlterations().get(buffer.getInt());
 			PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
 			entry.setTermTimeMillis(buffer.getLong());
-			entry.setData(alteration.readData(buffer));
+			entry.setData(alteration.readData(buffer, this));
 			persistentAlterationEntries.add(entry);
 			alteration.restore(source, this, entry.getData());
 		}

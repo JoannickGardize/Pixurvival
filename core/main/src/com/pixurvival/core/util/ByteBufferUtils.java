@@ -1,9 +1,10 @@
 package com.pixurvival.core.util;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.item.ItemStack;
@@ -12,8 +13,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ByteBufferUtils {
-
-	private static final Charset CHARSET = Charset.forName("UTF-8");
 
 	public static final int BUFFER_SIZE = 8192;
 
@@ -70,7 +69,7 @@ public class ByteBufferUtils {
 	}
 
 	public static void putString(ByteBuffer buffer, String s) {
-		byte[] data = s.getBytes(CHARSET);
+		byte[] data = s.getBytes(StandardCharsets.UTF_8);
 		buffer.putInt(data.length);
 		buffer.put(data);
 	}
@@ -78,7 +77,7 @@ public class ByteBufferUtils {
 	public static String getString(ByteBuffer buffer) {
 		byte[] data = new byte[buffer.getInt()];
 		buffer.get(data);
-		return new String(data, CHARSET);
+		return new String(data, StandardCharsets.UTF_8);
 	}
 
 	public static void putBytes(ByteBuffer buffer, byte[] bytes) {
@@ -91,5 +90,21 @@ public class ByteBufferUtils {
 		byte[] result = new byte[length];
 		buffer.get(result);
 		return result;
+	}
+
+	public static void writeFutureTime(ByteBuffer buffer, World world, long time) {
+		VarLenNumberIO.writePositiveVarLong(buffer, time - world.getTime().getTimeMillis());
+	}
+
+	public static long readFutureTime(ByteBuffer buffer, World world) {
+		return VarLenNumberIO.readPositiveVarLong(buffer) + world.getTime().getTimeMillis();
+	}
+
+	public static void writePastTime(ByteBuffer buffer, World world, long time) {
+		VarLenNumberIO.writePositiveVarLong(buffer, world.getTime().getTimeMillis() - time);
+	}
+
+	public static long readPastTime(ByteBuffer buffer, World world) {
+		return world.getTime().getTimeMillis() - VarLenNumberIO.readPositiveVarLong(buffer);
 	}
 }

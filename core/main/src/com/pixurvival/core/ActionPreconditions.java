@@ -40,7 +40,6 @@ public class ActionPreconditions {
 		if (player.getPosition().distanceSquared(centerX, centerY) > GameConstants.MAX_PLACE_STRUCTURE_DISTANCE * GameConstants.MAX_PLACE_STRUCTURE_DISTANCE) {
 			return false;
 		}
-		// TODO Remove when structure at multiple chunks solved
 		if (!ChunkPosition.fromWorldPosition(x, y).equals(ChunkPosition.fromWorldPosition(x2 - 1, y2 - 1))) {
 			return false;
 		}

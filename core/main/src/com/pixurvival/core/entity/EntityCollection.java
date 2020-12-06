@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
+import com.pixurvival.core.util.LongSequenceIOHelper;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -104,11 +105,12 @@ public class EntityCollection {
 
 	private short writeDeltaUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap, ChunkGroupChangeHelper chunkVision) {
 		short size = 0;
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (Entity e : entityMap.values()) {
 			if (!chunkVision.contains(e.getPreviousUpdateChunkPosition())) {
-				size += writeEntity(byteBuffer, e, true);
+				size += writeEntity(byteBuffer, e, true, idSequence);
 			} else if (e.isStateChanged()) {
-				size += writeEntity(byteBuffer, e, false);
+				size += writeEntity(byteBuffer, e, false, idSequence);
 			}
 		}
 		return size;
@@ -116,26 +118,28 @@ public class EntityCollection {
 
 	private short writeFullUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap) {
 		short size = 0;
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (Entity e : entityMap.values()) {
-			size += writeEntity(byteBuffer, e, true);
+			size += writeEntity(byteBuffer, e, true, idSequence);
 		}
 		return size;
 	}
 
 	private short writeRepositoryUpdate(ByteBuffer byteBuffer, Map<Long, Entity> entityMap) {
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (Entity e : entityMap.values()) {
-			byteBuffer.putLong(e.getId());
+			idSequence.write(byteBuffer, e.getId());
 			e.writeInitialization(byteBuffer);
 			e.writeRepositoryUpdate(byteBuffer);
 		}
 		return (short) entityMap.size();
 	}
 
-	private int writeEntity(ByteBuffer byteBuffer, Entity e, boolean full) {
+	private int writeEntity(ByteBuffer byteBuffer, Entity e, boolean full, LongSequenceIOHelper idSequence) {
 		if (e.isInvisible()) {
 			return 0;
 		}
-		byteBuffer.putLong(e.getId());
+		idSequence.write(byteBuffer, e.getId());
 		e.writeInitialization(byteBuffer);
 		e.writeUpdate(byteBuffer, full);
 		return 1;
@@ -149,8 +153,9 @@ public class EntityCollection {
 			}
 			byteBuffer.put((byte) groupEntry.getKey().ordinal());
 			byteBuffer.putShort((short) entityMap.size());
+			LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 			for (Entity e : entityMap.values()) {
-				byteBuffer.putLong(e.getId());
+				idSequence.write(byteBuffer, e.getId());
 			}
 		}
 	}
@@ -162,33 +167,16 @@ public class EntityCollection {
 	public void applyUpdate(ByteBuffer byteBuffer, World world, boolean repositoryMode) {
 		byte groupId;
 		// Entity removes
-		Map<Long, Entity> stash = Collections.emptyMap();
-		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
-			if (groupId == EntityGroup.REMOVE_ALL_MARKER) {
-				byteBuffer.get();
-				stash = new HashMap<>();
-				entities.values().forEach(stash::putAll);
-				clear();
-				break;
-			}
-			EntityGroup group = EntityGroup.values()[groupId];
-			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
-			short size = byteBuffer.getShort();
-			for (int i = 0; i < size; i++) {
-				long entityId = byteBuffer.getLong();
-				Entity e = groupMap.get(entityId);
-				if (e != null) {
-					e.setAlive(false);
-				}
-			}
-		}
+		Map<Long, Entity> stash = applyRemove(byteBuffer);
 		// Entity updates
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
 			EntityGroup group = EntityGroup.values()[groupId];
 			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
 			short size = byteBuffer.getShort();
+			LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 			for (int i = 0; i < size; i++) {
-				long entityId = byteBuffer.getLong();
+
+				long entityId = idSequence.read(byteBuffer);
 				Entity e = groupMap.get(entityId);
 				if (e == null) {
 					if ((e = stash.get(entityId)) == null) {
@@ -211,10 +199,41 @@ public class EntityCollection {
 			}
 		}
 		// Far allies positions update
+		applyFarAllies(byteBuffer, world);
+	}
+
+	private Map<Long, Entity> applyRemove(ByteBuffer byteBuffer) {
+		byte groupId;
+		Map<Long, Entity> stash = Collections.emptyMap();
+		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {
+			if (groupId == EntityGroup.REMOVE_ALL_MARKER) {
+				byteBuffer.get();
+				stash = new HashMap<>();
+				entities.values().forEach(stash::putAll);
+				clear();
+				break;
+			}
+			EntityGroup group = EntityGroup.values()[groupId];
+			Map<Long, Entity> groupMap = entities.computeIfAbsent(group, key -> new HashMap<>());
+			short size = byteBuffer.getShort();
+			LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
+			for (int i = 0; i < size; i++) {
+				long entityId = idSequence.read(byteBuffer);
+				Entity e = groupMap.get(entityId);
+				if (e != null) {
+					e.setAlive(false);
+				}
+			}
+		}
+		return stash;
+	}
+
+	private void applyFarAllies(ByteBuffer byteBuffer, World world) {
 		short length = byteBuffer.getShort();
 		Map<Long, PlayerEntity> groupMap = world.getPlayerEntities();
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (int i = 0; i < length; i++) {
-			long id = byteBuffer.getLong();
+			long id = idSequence.read(byteBuffer);
 			PlayerEntity e = groupMap.get(id);
 			if (e != null) {
 				e.getPosition().set(byteBuffer.getFloat(), byteBuffer.getFloat());

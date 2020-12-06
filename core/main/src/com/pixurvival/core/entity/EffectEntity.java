@@ -15,6 +15,8 @@ import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
+import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -163,7 +165,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		buffer.putFloat(getMovingAngle());
 		buffer.put(isForward() ? (byte) 1 : (byte) 0);
 		definition.getEffect().getMovement().writeUpdate(buffer, this);
-		buffer.putLong(termTimeMillis);
+		ByteBufferUtils.writeFutureTime(buffer, getWorld(), termTimeMillis);
 	}
 
 	@Override
@@ -172,7 +174,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		setMovingAngle(buffer.getFloat());
 		setForward(buffer.get() == 1);
 		definition.getEffect().getMovement().applyUpdate(buffer, this);
-		termTimeMillis = buffer.getLong();
+		termTimeMillis = ByteBufferUtils.readFutureTime(buffer, getWorld());
 	}
 
 	@Override
@@ -181,7 +183,8 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		TeamMemberSerialization.write(byteBuffer, ancestor, true);
 		definition.getEffect().getMovement().writeRepositoryUpdate(byteBuffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
-			byteBuffer.putLong(creationTime);
+			mlkmlk repository time problem
+			VarLenNumberIO.writePositiveVarLong(byteBuffer, creationTime);
 			byteBuffer.putInt(numberOfDelayedFollowingElements);
 			byteBuffer.putInt(nextFollowingElementIndex);
 		}
@@ -193,7 +196,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 		ancestor = TeamMemberSerialization.read(byteBuffer, getWorld(), true);
 		definition.getEffect().getMovement().applyRepositoryUpdate(byteBuffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
-			creationTime = byteBuffer.getLong();
+			lmklmk creationTime = VarLenNumberIO.readPositiveVarLong(byteBuffer);
 			numberOfDelayedFollowingElements = byteBuffer.getInt();
 			nextFollowingElementIndex = byteBuffer.getInt();
 		}

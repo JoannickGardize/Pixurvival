@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,14 +29,14 @@ public class UseItemAbilityData extends WorkAbilityData {
 	public void write(ByteBuffer buffer, LivingEntity entity) {
 		buffer.putShort((short) edibleItem.getId());
 		buffer.putShort(slotIndex);
-		buffer.putLong(getStartTimeMillis());
+		ByteBufferUtils.writePastTime(buffer, entity.getWorld(), getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
 		setEdibleItem((EdibleItem) entity.getWorld().getContentPack().getItems().get(buffer.getShort()));
 		setIndex(buffer.getShort());
-		setStartTimeMillis(buffer.getLong());
+		setStartTimeMillis(ByteBufferUtils.readPastTime(buffer, entity.getWorld()));
 	}
 
 }

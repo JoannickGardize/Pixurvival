@@ -114,6 +114,7 @@ public class CreatureEntity extends LivingEntity {
 					itemStackEntity.spawnRandom();
 				}
 			}
+			currentBehavior.end(this);
 		}
 	}
 

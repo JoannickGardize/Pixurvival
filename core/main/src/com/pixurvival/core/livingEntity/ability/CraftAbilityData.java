@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,12 +23,12 @@ public class CraftAbilityData extends WorkAbilityData {
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
 		buffer.putShort((short) itemCraft.getId());
-		buffer.putLong(getStartTimeMillis());
+		ByteBufferUtils.writePastTime(buffer, entity.getWorld(), getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
 		setItemCraft(entity.getWorld().getContentPack().getItemCrafts().get(buffer.getShort()));
-		setStartTimeMillis(buffer.getLong());
+		setStartTimeMillis(ByteBufferUtils.readPastTime(buffer, entity.getWorld()));
 	}
 }

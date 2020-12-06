@@ -42,7 +42,13 @@ public abstract class Behavior extends IdentifiedElement {
 
 	protected abstract void step(CreatureEntity creature);
 
-	protected void end(CreatureEntity creature) {
+	/**
+	 * Called when the behavior ends, in any way, even for death of the
+	 * creature.
+	 * 
+	 * @param creature
+	 */
+	public void end(CreatureEntity creature) {
 		// Nothing by default
 	}
 

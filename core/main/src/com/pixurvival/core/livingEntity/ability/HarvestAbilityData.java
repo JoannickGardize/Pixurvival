@@ -6,6 +6,7 @@ import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.util.ByteBufferUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,7 +24,7 @@ public class HarvestAbilityData extends WorkAbilityData {
 
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
-		buffer.putLong(getStartTimeMillis());
+		ByteBufferUtils.writePastTime(buffer, entity.getWorld(), getStartTimeMillis());
 		if (structure == null) {
 			buffer.put((byte) -1);
 		} else {
@@ -35,7 +36,7 @@ public class HarvestAbilityData extends WorkAbilityData {
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		setStartTimeMillis(buffer.getLong());
+		setStartTimeMillis(ByteBufferUtils.readPastTime(buffer, entity.getWorld()));
 		if (buffer.get() == -1) {
 			structure = null;
 		} else {
