@@ -33,7 +33,7 @@ public class PlaceStructureRequest implements IPlayerActionRequest {
 				player.getInventory().setHeldItemStack(heldItemStack.sub(1));
 
 			}
-			player.getWorld().getMap().chunkAt(x, y).addStructure(structure, x, y);
+			player.getWorld().getMap().chunkAt(x, y).addNewStructure(structure, x, y);
 		}
 	}
 

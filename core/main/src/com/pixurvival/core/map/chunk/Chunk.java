@@ -128,11 +128,24 @@ public class Chunk {
 		structures.values().forEach(list -> list.forEach(action));
 	}
 
-	public MapStructure addStructure(Structure structure, int x, int y) {
-		return addStructure(structure, x, y, true);
+	public MapStructure addNewStructure(Structure structure, int x, int y) {
+		MapStructure mapStructure = createStructure(structure, x, y);
+		mapStructure.initiliazeNewlyCreated();
+		notifyStructureAdded(mapStructure);
+		return mapStructure;
 	}
 
-	public MapStructure addStructure(Structure structure, int x, int y, boolean notify) {
+	public MapStructure addStructure(Structure structure, int x, int y) {
+		MapStructure mapStructure = createStructure(structure, x, y);
+		notifyStructureAdded(mapStructure);
+		return mapStructure;
+	}
+
+	public MapStructure addStructureSilently(Structure structure, int x, int y) {
+		return createStructure(structure, x, y);
+	}
+
+	private MapStructure createStructure(Structure structure, int x, int y) {
 		// TODO ajouter les structure sur tous les chunks plutôt qu'un seul
 		MapStructure mapStructure = structure.newMapStructure(this, x, y);
 		if (structure.getLightEmissionRadius() > 0) {
@@ -149,12 +162,13 @@ public class Chunk {
 		}
 		structures.computeIfAbsent(structure.getId(), id -> new ArrayList<>()).add(mapStructure);
 		structureCount++;
-		if (notify) {
-			updateTimestamp();
-			getMap().notifyListeners(l -> l.structureAdded(mapStructure));
-			fileSync = false;
-		}
 		return mapStructure;
+	}
+
+	private void notifyStructureAdded(MapStructure mapStructure) {
+		updateTimestamp();
+		getMap().notifyListeners(l -> l.structureAdded(mapStructure));
+		fileSync = false;
 	}
 
 	public boolean isEmpty(int x, int y, int width, int height) {

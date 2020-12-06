@@ -25,9 +25,8 @@ public class MapStructure implements Body, CustomDataHolder {
 	private int tileX;
 	private int tileY;
 	private Vector2 position;
-	private @Setter Object customData;
-
 	private @Setter long creationTime;
+	private @Setter Object customData;
 
 	public MapStructure(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
@@ -35,13 +34,13 @@ public class MapStructure implements Body, CustomDataHolder {
 		tileX = x;
 		tileY = y;
 		position = new Vector2(x + definition.getDimensions().getWidth() / 2f, y + definition.getDimensions().getHeight() / 2f);
+	}
 
-		if (chunk != null) {
-			World world = chunk.getMap().getWorld();
-			if (world.isServer() && definition.getDuration() > 0) {
-				creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
-				world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(x, y), definition.getDuration());
-			}
+	public void initiliazeNewlyCreated() {
+		World world = chunk.getMap().getWorld();
+		if (world.isServer() && definition.getDuration() > 0) {
+			creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
+			world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(tileX, tileY), definition.getDuration());
 		}
 	}
 
@@ -84,15 +83,6 @@ public class MapStructure implements Body, CustomDataHolder {
 			creationTime = buffer.getLong();
 		}
 	}
-
-	/**
-	 * Override this to return a structure update
-	 * 
-	 * @return
-	 */
-	// public StructureUpdate getUpdate() {
-	// return null;
-	// }
 
 	@Override
 	public World getWorld() {

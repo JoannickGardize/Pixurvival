@@ -44,6 +44,18 @@ public class Structure extends IdentifiedElement implements Serializable {
 
 	private transient Item deconstructionItem;
 
+	/**
+	 * Called by the game engine to create a new {@link MapStructure} of this
+	 * Structure definition. Structures with special behaviors must override to
+	 * instantiate an appropriate specialization of {@code MapStructure}.
+	 * 
+	 * @param chunk
+	 * @param x
+	 *            the bottom-left tile X position in world coordinate.
+	 * @param y
+	 *            the bottom-left tile Y position in world coordinate.
+	 * @return a MapStructure instance for this structure definition
+	 */
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
 		return new MapStructure(chunk, this, x, y);
 	}

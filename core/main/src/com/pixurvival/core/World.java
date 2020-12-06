@@ -101,7 +101,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		this.seed = seed;
 		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
-		chunkSupplier = new ChunkSupplier(this, gameMode.getMapProvider());
+		chunkSupplier = new ChunkSupplier(this);
 	}
 
 	public static World getWorld(long id) {
