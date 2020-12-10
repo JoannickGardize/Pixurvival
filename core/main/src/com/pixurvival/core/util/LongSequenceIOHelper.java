@@ -20,6 +20,18 @@ public class LongSequenceIOHelper {
 		previousValue = value;
 	}
 
+	/**
+	 * Write the same value of the last call to
+	 * {@link LongSequenceIOHelper#write(ByteBuffer, long)} with less computational
+	 * cost. Writing two time the same value is the best way to mark the end of a
+	 * sequence of unique value, since it will always take one byte.
+	 * 
+	 * @param buffer
+	 */
+	public void reWriteLast(ByteBuffer buffer) {
+		buffer.put((byte) 0);
+	}
+
 	public long read(ByteBuffer buffer) {
 		long value = VarLenNumberIO.readVarLong(buffer) + previousValue;
 		previousValue = value;

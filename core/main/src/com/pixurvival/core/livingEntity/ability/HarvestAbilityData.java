@@ -7,6 +7,7 @@ import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,8 +30,8 @@ public class HarvestAbilityData extends WorkAbilityData {
 			buffer.put((byte) -1);
 		} else {
 			buffer.put((byte) 0);
-			buffer.putInt(structure.getTileX());
-			buffer.putInt(structure.getTileY());
+			VarLenNumberIO.writeVarInt(buffer, structure.getTileX());
+			VarLenNumberIO.writeVarInt(buffer, structure.getTileY());
 		}
 	}
 
@@ -40,7 +41,7 @@ public class HarvestAbilityData extends WorkAbilityData {
 		if (buffer.get() == -1) {
 			structure = null;
 		} else {
-			MapStructure mapStructure = entity.getWorld().getMap().tileAt(buffer.getInt(), buffer.getInt()).getStructure();
+			MapStructure mapStructure = entity.getWorld().getMap().tileAt(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer)).getStructure();
 			if (mapStructure instanceof HarvestableMapStructure) {
 				setStructure((HarvestableMapStructure) mapStructure);
 			}

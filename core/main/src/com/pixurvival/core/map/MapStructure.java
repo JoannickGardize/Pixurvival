@@ -7,6 +7,7 @@ import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -63,24 +64,24 @@ public class MapStructure implements Body, CustomDataHolder {
 	}
 
 	/**
-	 * Override this to write data that must be sent to the client
+	 * Write data for chunk serialization
 	 * 
 	 * @param buffer
 	 */
 	public void writeData(ByteBuffer buffer) {
 		if (definition.getDuration() > 0) {
-			buffer.putLong(creationTime);
+			VarLenNumberIO.writePositiveVarLong(buffer, (getChunk().getUpdateTimestamp() - creationTime));
 		}
 	}
 
 	/**
-	 * Override this to read data sent by the server
+	 * Read data from serialized chunk
 	 * 
 	 * @param buffer
 	 */
 	public void applyData(ByteBuffer buffer) {
 		if (definition.getDuration() > 0) {
-			creationTime = buffer.getLong();
+			creationTime = getChunk().getUpdateTimestamp() - VarLenNumberIO.readPositiveVarLong(buffer);
 		}
 	}
 

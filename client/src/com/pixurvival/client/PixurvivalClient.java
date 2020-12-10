@@ -70,7 +70,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	private @Getter @Setter List<Locale> localePriorityList = new ArrayList<>();
 	private @Getter Locale currentLocale;
 	private @Getter boolean spectator;
-	private @Getter int myTeamId;
+	private @Getter int myTeamId = 1;
 	private ContentPackIdentifier waitingContentPack;
 	private SingleplayerLobby singlePlayerLobby;
 

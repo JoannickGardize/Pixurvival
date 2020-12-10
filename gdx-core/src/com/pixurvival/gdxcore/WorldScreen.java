@@ -36,7 +36,7 @@ import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.PauseMenu;
-import com.pixurvival.gdxcore.ui.StatusUI;
+import com.pixurvival.gdxcore.ui.StatusBarUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
@@ -66,7 +66,7 @@ public class WorldScreen implements Screen {
 	private DebugInfosActor debugInfosActors;
 	private UILayoutManager uiLayoutManager = new UILayoutManager();
 	private LightDrawer lightDrawer = new LightDrawer();
-	private StatusUI statusUI = new StatusUI();
+	private StatusBarUI statusBarUI = new StatusBarUI();
 	private @Getter EndGameUI endGameUI = new EndGameUI();
 	private PauseMenu pauseUI = new PauseMenu();
 	private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
@@ -103,8 +103,8 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(timeUI);
 		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
-		hudStage.addActor(statusUI);
-		statusUI.updatePosition();
+		hudStage.addActor(statusBarUI);
+		statusBarUI.updatePosition();
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		hudStage.addActor(ItemTooltip.getInstance());
 		hudStage.addActor(endGameUI);
@@ -203,7 +203,7 @@ public class WorldScreen implements Screen {
 		}
 		uiLayoutManager.resize(width, height, ((FitViewport) worldStage.getViewport()).getLeftGutterWidth());
 		lightDrawer.resize(width, height);
-		statusUI.updatePosition();
+		statusBarUI.updatePosition();
 		endGameUI.update(hudStage.getViewport());
 		pauseUI.update();
 	}

@@ -103,9 +103,8 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is
-	 * not available nothing happen. The items are taken in priority from the
-	 * end.
+	 * Try to take the given item with the given quantity. If the quantity is not
+	 * available nothing happen. The items are taken in priority from the end.
 	 * 
 	 * @param itemStack
 	 *            The ItemStack to remove
@@ -121,9 +120,8 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to take the given item with the given quantity. If the quantity is
-	 * not available nothing happen. The items are taken in priority from the
-	 * end.
+	 * Try to take the given item with the given quantity. If the quantity is not
+	 * available nothing happen. The items are taken in priority from the end.
 	 * 
 	 * @param item
 	 * @param quantity
@@ -172,9 +170,9 @@ public class Inventory {
 	}
 
 	/**
-	 * Try to add the maximum quantity of the given ItemStack to this inventory,
-	 * it will be stacked in priority with similar items if possible. It can be
-	 * split into different slots if necessary.
+	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
+	 * will be stacked in priority with similar items if possible. It can be split
+	 * into different slots if necessary.
 	 * 
 	 * @param itemStack
 	 *            The ItemStack to add.
@@ -281,7 +279,7 @@ public class Inventory {
 
 		@Override
 		public void write(Kryo kryo, Output output, Inventory object) {
-			output.writeShort(object.slots.length);
+			output.writeVarInt(object.slots.length, true);
 			for (ItemStack itemStack : object.slots) {
 				kryo.writeObjectOrNull(output, itemStack, ItemStack.class);
 			}
@@ -289,7 +287,7 @@ public class Inventory {
 
 		@Override
 		public Inventory read(Kryo kryo, Input input, Class<Inventory> type) {
-			short length = input.readShort();
+			int length = input.readVarInt(true);
 			Inventory inventory = new Inventory(length);
 			for (int i = 0; i < length; i++) {
 				inventory.slots[i] = kryo.readObjectOrNull(input, ItemStack.class);

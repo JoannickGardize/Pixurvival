@@ -8,10 +8,16 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 public class BackButton extends TextButton {
 
 	public BackButton() {
+		this(() -> {
+		});
+	}
+
+	public BackButton(Runnable additionalAction) {
 		super(PixurvivalGame.getString("generic.back"), PixurvivalGame.getSkin());
 		addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				additionalAction.run();
 				PixurvivalGame.setScreen(MainMenuScreen.class);
 			}
 		});

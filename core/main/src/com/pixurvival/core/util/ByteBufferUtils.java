@@ -28,14 +28,14 @@ public class ByteBufferUtils {
 
 	public static void writeElementOrNull(ByteBuffer buffer, IdentifiedElement element) {
 		if (element == null) {
-			buffer.putShort((short) -1);
+			VarLenNumberIO.writeVarInt(buffer, -1);
 		} else {
-			buffer.putShort((short) element.getId());
+			VarLenNumberIO.writeVarInt(buffer, element.getId());
 		}
 	}
 
 	public static <T extends IdentifiedElement> T readElementOrNull(ByteBuffer buffer, List<T> elementList) {
-		short id = buffer.getShort();
+		int id = VarLenNumberIO.readVarInt(buffer);
 		if (id == -1) {
 			return null;
 		} else {
@@ -45,14 +45,14 @@ public class ByteBufferUtils {
 
 	public static void writeItemOrNull(ByteBuffer buffer, ItemStack itemStack) {
 		if (itemStack == null) {
-			buffer.putShort((short) -1);
+			VarLenNumberIO.writeVarInt(buffer, -1);
 		} else {
-			buffer.putShort((short) itemStack.getItem().getId());
+			VarLenNumberIO.writeVarInt(buffer, itemStack.getItem().getId());
 		}
 	}
 
 	public static ItemStack readItemOrNullAsItemStack(ByteBuffer buffer, List<Item> itemList) {
-		short id = buffer.getShort();
+		int id = VarLenNumberIO.readVarInt(buffer);
 		if (id == -1) {
 			return null;
 		} else {
@@ -70,41 +70,41 @@ public class ByteBufferUtils {
 
 	public static void putString(ByteBuffer buffer, String s) {
 		byte[] data = s.getBytes(StandardCharsets.UTF_8);
-		buffer.putInt(data.length);
+		VarLenNumberIO.writePositiveVarInt(buffer, data.length);
 		buffer.put(data);
 	}
 
 	public static String getString(ByteBuffer buffer) {
-		byte[] data = new byte[buffer.getInt()];
+		byte[] data = new byte[VarLenNumberIO.readPositiveVarInt(buffer)];
 		buffer.get(data);
 		return new String(data, StandardCharsets.UTF_8);
 	}
 
 	public static void putBytes(ByteBuffer buffer, byte[] bytes) {
-		buffer.putInt(bytes.length);
+		VarLenNumberIO.writePositiveVarInt(buffer, bytes.length);
 		buffer.put(bytes);
 	}
 
 	public static byte[] getBytes(ByteBuffer buffer) {
-		int length = buffer.getInt();
+		int length = VarLenNumberIO.readPositiveVarInt(buffer);
 		byte[] result = new byte[length];
 		buffer.get(result);
 		return result;
 	}
 
 	public static void writeFutureTime(ByteBuffer buffer, World world, long time) {
-		VarLenNumberIO.writePositiveVarLong(buffer, time - world.getTime().getTimeMillis());
+		VarLenNumberIO.writePositiveVarLong(buffer, time - world.getTime().getSerializationContextTime());
 	}
 
 	public static long readFutureTime(ByteBuffer buffer, World world) {
-		return VarLenNumberIO.readPositiveVarLong(buffer) + world.getTime().getTimeMillis();
+		return VarLenNumberIO.readPositiveVarLong(buffer) + world.getTime().getSerializationContextTime();
 	}
 
 	public static void writePastTime(ByteBuffer buffer, World world, long time) {
-		VarLenNumberIO.writePositiveVarLong(buffer, world.getTime().getTimeMillis() - time);
+		VarLenNumberIO.writePositiveVarLong(buffer, world.getTime().getSerializationContextTime() - time);
 	}
 
 	public static long readPastTime(ByteBuffer buffer, World world) {
-		return world.getTime().getTimeMillis() - VarLenNumberIO.readPositiveVarLong(buffer);
+		return world.getTime().getSerializationContextTime() - VarLenNumberIO.readPositiveVarLong(buffer);
 	}
 }

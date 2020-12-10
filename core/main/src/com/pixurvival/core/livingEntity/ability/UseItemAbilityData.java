@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,28 +15,24 @@ import lombok.EqualsAndHashCode;
 public class UseItemAbilityData extends WorkAbilityData {
 
 	private EdibleItem edibleItem;
-	private short slotIndex;
+	private int slotIndex;
 
 	public void setEdibleItem(EdibleItem edibleItem) {
 		this.edibleItem = edibleItem;
 		setDurationMillis(edibleItem.getDuration());
 	}
 
-	public void setIndex(int slotIndex) {
-		this.slotIndex = (short) slotIndex;
-	}
-
 	@Override
 	public void write(ByteBuffer buffer, LivingEntity entity) {
-		buffer.putShort((short) edibleItem.getId());
-		buffer.putShort(slotIndex);
+		VarLenNumberIO.writePositiveVarInt(buffer, edibleItem.getId());
+		VarLenNumberIO.writeVarInt(buffer, slotIndex);
 		ByteBufferUtils.writePastTime(buffer, entity.getWorld(), getStartTimeMillis());
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer, LivingEntity entity) {
-		setEdibleItem((EdibleItem) entity.getWorld().getContentPack().getItems().get(buffer.getShort()));
-		setIndex(buffer.getShort());
+		setEdibleItem((EdibleItem) entity.getWorld().getContentPack().getItems().get(VarLenNumberIO.readPositiveVarInt(buffer)));
+		slotIndex = VarLenNumberIO.readVarInt(buffer);
 		setStartTimeMillis(ByteBufferUtils.readPastTime(buffer, entity.getWorld()));
 	}
 

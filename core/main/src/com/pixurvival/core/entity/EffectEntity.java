@@ -150,12 +150,12 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 
 	@Override
 	public void writeInitialization(ByteBuffer buffer) {
-		buffer.putShort((short) definition.getEffect().getId());
+		VarLenNumberIO.writePositiveVarInt(buffer, definition.getEffect().getId());
 	}
 
 	@Override
 	public void applyInitialization(ByteBuffer buffer) {
-		definition.setEffect(getWorld().getContentPack().getEffects().get(buffer.getShort()));
+		definition.setEffect(getWorld().getContentPack().getEffects().get(VarLenNumberIO.readPositiveVarInt(buffer)));
 	}
 
 	@Override
@@ -178,27 +178,26 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 	}
 
 	@Override
-	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
-		super.writeRepositoryUpdate(byteBuffer);
-		TeamMemberSerialization.write(byteBuffer, ancestor, true);
-		definition.getEffect().getMovement().writeRepositoryUpdate(byteBuffer, this);
+	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		super.writeRepositoryUpdate(buffer);
+		TeamMemberSerialization.write(buffer, ancestor, true);
+		definition.getEffect().getMovement().writeRepositoryUpdate(buffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
-			mlkmlk repository time problem
-			VarLenNumberIO.writePositiveVarLong(byteBuffer, creationTime);
-			byteBuffer.putInt(numberOfDelayedFollowingElements);
-			byteBuffer.putInt(nextFollowingElementIndex);
+			ByteBufferUtils.writePastTime(buffer, getWorld(), creationTime);
+			VarLenNumberIO.writePositiveVarInt(buffer, numberOfDelayedFollowingElements);
+			VarLenNumberIO.writePositiveVarInt(buffer, nextFollowingElementIndex);
 		}
 	}
 
 	@Override
-	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
-		super.applyRepositoryUpdate(byteBuffer);
-		ancestor = TeamMemberSerialization.read(byteBuffer, getWorld(), true);
-		definition.getEffect().getMovement().applyRepositoryUpdate(byteBuffer, this);
+	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		super.applyRepositoryUpdate(buffer);
+		ancestor = TeamMemberSerialization.read(buffer, getWorld(), true);
+		definition.getEffect().getMovement().applyRepositoryUpdate(buffer, this);
 		if (!getDefinition().getEffect().getDelayedFollowingElements().isEmpty()) {
-			lmklmk creationTime = VarLenNumberIO.readPositiveVarLong(byteBuffer);
-			numberOfDelayedFollowingElements = byteBuffer.getInt();
-			nextFollowingElementIndex = byteBuffer.getInt();
+			creationTime = ByteBufferUtils.readPastTime(buffer, getWorld());
+			numberOfDelayedFollowingElements = VarLenNumberIO.readPositiveVarInt(buffer);
+			nextFollowingElementIndex = VarLenNumberIO.readPositiveVarInt(buffer);
 		}
 	}
 

@@ -233,7 +233,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	public void useItem(EdibleItem edibleItem, int slotIndex) {
 		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setEdibleItem(edibleItem);
-		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setIndex(slotIndex);
+		((UseItemAbilityData) getAbilityData(USE_ITEM_ABILITY_ID)).setSlotIndex(slotIndex);
 		startAbility(USE_ITEM_ABILITY_ID);
 	}
 

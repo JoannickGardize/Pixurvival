@@ -274,12 +274,12 @@ public abstract class Entity implements Body, CustomDataHolder {
 
 	public abstract boolean isSolid();
 
-	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
-		writeUpdate(byteBuffer, true);
+	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		writeUpdate(buffer, true);
 	}
 
-	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
-		applyUpdate(byteBuffer);
+	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		applyUpdate(buffer);
 	}
 
 	@Override

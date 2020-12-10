@@ -65,7 +65,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 
 		@Override
 		public void write(Kryo kryo, Output output, PlayerMovementRequest object) {
-			output.writeLong(object.id);
+			output.writeVarLong(object.id, true);
 			kryo.writeObject(output, object.direction);
 			output.writeBoolean(object.forward);
 
@@ -74,7 +74,7 @@ public class PlayerMovementRequest implements IPlayerActionRequest {
 		@Override
 		public PlayerMovementRequest read(Kryo kryo, Input input, Class<PlayerMovementRequest> type) {
 			PlayerMovementRequest playerActionRequest = new PlayerMovementRequest();
-			playerActionRequest.id = input.readLong();
+			playerActionRequest.id = input.readVarLong(true);
 			playerActionRequest.direction = kryo.readObject(input, Direction.class);
 			playerActionRequest.forward = input.readBoolean();
 			return playerActionRequest;

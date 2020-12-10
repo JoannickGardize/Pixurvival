@@ -18,6 +18,8 @@ import com.pixurvival.gdxcore.textures.ColorTextures;
 
 public class AbilityCooldownBox extends Actor {
 
+	private static final long COOLDOWN_TOLERANCE = 50;
+
 	DecimalFormat secondsFormat = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.US));
 	DecimalFormat millisecondsFormat = new DecimalFormat("0.0", DecimalFormatSymbols.getInstance(Locale.US));
 
@@ -59,10 +61,10 @@ public class AbilityCooldownBox extends Actor {
 		CooldownAbilityData data = (CooldownAbilityData) myPlayer.getAbilityData(type.getAbilityId());
 		long cooldown = data.getReadyTimeMillis() - myPlayer.getWorld().getTime().getTimeMillis();
 
-		if (cooldown > 0 || ability == null || ability.isEmpty()) {
+		if (cooldown > COOLDOWN_TOLERANCE || ability == null || ability.isEmpty()) {
 			batch.draw(ColorTextures.get(Color.BLACK), getX(), getY(), getWidth(), getHeight());
 		}
-		if (cooldown > 0 && ability != null && !ability.isEmpty()) {
+		if (cooldown > COOLDOWN_TOLERANCE && ability != null && !ability.isEmpty()) {
 			glyphLayout.setText(PixurvivalGame.getOverlayFont(), toCooldownDisplay(cooldown));
 			PixurvivalGame.getOverlayFont().draw(batch, glyphLayout, getX() + getWidth() / 2 - glyphLayout.width / 2, getY() + getHeight() / 2 + glyphLayout.height / 2);
 		}

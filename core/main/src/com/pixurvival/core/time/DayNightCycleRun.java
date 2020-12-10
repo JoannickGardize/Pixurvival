@@ -3,6 +3,7 @@ package com.pixurvival.core.time;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -57,17 +58,17 @@ public class DayNightCycleRun implements DayCycleRun {
 
 	@Override
 	public void write(ByteBuffer buffer) {
-		buffer.putLong(dayDuration);
-		buffer.putLong(nightDuration);
-		buffer.putLong(dayCount);
+		VarLenNumberIO.writePositiveVarLong(buffer, dayDuration);
+		VarLenNumberIO.writePositiveVarLong(buffer, nightDuration);
+		VarLenNumberIO.writePositiveVarLong(buffer, dayCount);
 		ByteBufferUtils.putBoolean(buffer, isDay);
 	}
 
 	@Override
 	public void apply(ByteBuffer buffer) {
-		dayDuration = buffer.getLong();
-		nightDuration = buffer.getLong();
-		dayCount = buffer.getLong();
+		dayDuration = VarLenNumberIO.readPositiveVarLong(buffer);
+		nightDuration = VarLenNumberIO.readPositiveVarLong(buffer);
+		dayCount = VarLenNumberIO.readPositiveVarLong(buffer);
 		isDay = ByteBufferUtils.getBoolean(buffer);
 		fullCycleDuration = dayDuration + nightDuration;
 	}

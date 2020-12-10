@@ -7,6 +7,7 @@ import com.pixurvival.core.contentPack.gameMode.event.EffectEventTeamMember;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.map.DamageableMapStructure;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.experimental.UtilityClass;
 
@@ -22,13 +23,14 @@ public class TeamMemberSerialization {
 			buffer.put(ENTITY_TYPE);
 			Entity entity = (Entity) teamMember;
 			buffer.put((byte) entity.getGroup().ordinal());
-			buffer.putLong(entity.getId());
+			VarLenNumberIO.writePositiveVarLong(buffer, entity.getId());
 			if (safeMode) {
 				writeFlatTeamMember(buffer, teamMember);
 			}
 		} else if (teamMember instanceof DamageableMapStructure) {
 			buffer.put(DAMAGEABLE_MAP_STRUCTURE_TYPE);
 			// TODO structure as origin
+			throw new UnsupportedOperationException("DAMAGEABLE_MAP_STRUCTURE_TYPE");
 		} else if (teamMember instanceof EffectEventTeamMember) {
 			buffer.put(EFFECT_EVENT_TYPE);
 			writeFlatTeamMember(buffer, teamMember);
@@ -36,12 +38,12 @@ public class TeamMemberSerialization {
 			EntityNotFoundProxy proxy = (EntityNotFoundProxy) teamMember;
 			buffer.put(ENTITY_TYPE);
 			buffer.put((byte) proxy.getGroup().ordinal());
-			buffer.putLong(proxy.getId());
+			VarLenNumberIO.writePositiveVarLong(buffer, proxy.getId());
 			if (safeMode) {
 				writeFlatTeamMember(buffer, teamMember);
 			}
 		} else {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Team member of type " + teamMember.getClass().getSimpleName() + " is not supported");
 		}
 
 	}
@@ -50,7 +52,7 @@ public class TeamMemberSerialization {
 		switch (buffer.get()) {
 		case ENTITY_TYPE:
 			EntityGroup group = EntityGroup.values()[buffer.get()];
-			long id = buffer.getLong();
+			long id = VarLenNumberIO.readPositiveVarLong(buffer);
 			Entity e = world.getEntityPool().get(group, id);
 			if (e == null) {
 				EntityNotFoundProxy proxy = new EntityNotFoundProxy(world, group, id);
@@ -60,7 +62,8 @@ public class TeamMemberSerialization {
 				return proxy;
 			} else {
 				if (safeMode) {
-					skipFlatTeamMember(buffer);
+					// Read for skipping
+					applyFlatTeamMember(buffer, new EntityNotFoundProxy(world, group, id));
 				}
 				return (TeamMember) e;
 			}
@@ -92,20 +95,16 @@ public class TeamMemberSerialization {
 	}
 
 	private static void writeFlatTeamMember(ByteBuffer buffer, TeamMember teamMember) {
-		buffer.putShort((short) teamMember.getTeam().getId());
+		VarLenNumberIO.writePositiveVarInt(buffer, teamMember.getTeam().getId());
 		teamMember.getStats().writeValues(buffer);
 		teamMember.getPosition().write(buffer);
 		teamMember.getTargetPosition().write(buffer);
 	}
 
 	private static void applyFlatTeamMember(ByteBuffer buffer, FlatTeamMember teamMember) {
-		teamMember.setTeam(teamMember.getWorld().getTeamSet().get(buffer.getShort()));
+		teamMember.setTeam(teamMember.getWorld().getTeamSet().get(VarLenNumberIO.readPositiveVarInt(buffer)));
 		teamMember.getStats().applyValues(buffer);
 		teamMember.getPosition().apply(buffer);
 		teamMember.getTargetPosition().apply(buffer);
-	}
-
-	private static void skipFlatTeamMember(ByteBuffer buffer) {
-		buffer.position(buffer.position() + 2 + 4 * 6 + 8 + 8);
 	}
 }

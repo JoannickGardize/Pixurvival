@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,6 +24,11 @@ public class Time {
 	private @Getter float averagePing = 0;
 	private @Getter long tickCount = 0;
 	private float timeDiffAccumulator = 0;
+
+	/**
+	 * Current time to consider for reading / writing relative time based data.
+	 */
+	private @Setter @Getter long serializationContextTime;
 
 	public void update(float deltaTimeMillis) {
 		tickCount++;
@@ -60,16 +66,20 @@ public class Time {
 	}
 
 	public void write(ByteBuffer buffer) {
-		buffer.putLong(tickCount);
+		VarLenNumberIO.writePositiveVarLong(buffer, tickCount);
 		buffer.putFloat(decimalAccumulator);
-		buffer.putLong(timeMillis);
+		VarLenNumberIO.writePositiveVarLong(buffer, timeMillis);
 		dayCycle.write(buffer);
 	}
 
 	public void apply(ByteBuffer buffer) {
-		tickCount = buffer.getLong();
+		tickCount = VarLenNumberIO.readPositiveVarLong(buffer);
 		decimalAccumulator = buffer.getFloat();
-		timeMillis = buffer.getLong();
+		timeMillis = VarLenNumberIO.readPositiveVarLong(buffer);
 		dayCycle.apply(buffer);
+	}
+
+	public void setSerializationContextTimeToNow() {
+		serializationContextTime = timeMillis;
 	}
 }

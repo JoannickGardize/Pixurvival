@@ -99,6 +99,7 @@ public class ServerEngineThread extends EngineThread {
 
 	private void sendWorldData(GameSession gs) {
 		PlayerDead[] playerDeads = gs.extractPlayerDeads();
+		gs.getWorld().getTime().setSerializationContextTimeToNow();
 		gs.foreachPlayers(session -> {
 			PlayerEntity playerEntity = session.getPlayerEntity();
 			if (session.isGameReady() && playerEntity != null) {
@@ -122,7 +123,8 @@ public class ServerEngineThread extends EngineThread {
 		if (ClientAckManager.getInstance().check(session) && !session.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
-				session.sendUDP(tmpDeltaWorldUpdate);
+				int length = session.sendUDP(tmpDeltaWorldUpdate);
+				Log.info("delta update sent to " + session.getConnection() + " entity size : " + tmpDeltaWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
 			}
 		} else {
 			if (session.isRequestedFullUpdate()) {
@@ -133,11 +135,8 @@ public class ServerEngineThread extends EngineThread {
 				// session
 				prepareFullUpdate(session.getPlayerEntity());
 			}
-			/* int length = */session.sendUDP(tmpFullWorldUpdate);
-			// Log.info("full update sent to " + session.getConnection() + "
-			// entity size : " +
-			// tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ",
-			// size : " + length);
+			int length = session.sendUDP(tmpFullWorldUpdate);
+			Log.info("full update sent to " + session.getConnection() + " entity size : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
 		}
 	}
 
@@ -236,22 +235,18 @@ public class ServerEngineThread extends EngineThread {
 		tmpRemoveEntityCollection.writeAllIds(byteBuffer);
 	}
 
-	private void writeDistantAllyPositions(PlayerEntity player, ByteBuffer byteBuffer) {
-		int lengthPosition = byteBuffer.position();
-		byteBuffer.position(byteBuffer.position() + 2);
-		short length = 0;
+	private void writeDistantAllyPositions(PlayerEntity player, ByteBuffer buffer) {
 		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (Entity ally : player.getTeam().getAliveMembers()) {
 			if (ally != player && ally.getChunk() != null && !ally.getChunk().getPosition().insideSquare(player.getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
-				idSequence.write(byteBuffer, ally.getId());
-				byteBuffer.putFloat(ally.getPosition().getX());
-				byteBuffer.putFloat(ally.getPosition().getY());
-				byteBuffer.putFloat(ally.getVelocity().getX());
-				byteBuffer.putFloat(ally.getVelocity().getY());
-				length++;
+				idSequence.write(buffer, ally.getId());
+				buffer.putFloat(ally.getPosition().getX());
+				buffer.putFloat(ally.getPosition().getY());
+				buffer.putFloat(ally.getVelocity().getX());
+				buffer.putFloat(ally.getVelocity().getY());
 			}
 		}
-		byteBuffer.putShort(lengthPosition, length);
+		idSequence.reWriteLast(buffer);
 	}
 
 	@Override

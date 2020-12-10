@@ -213,6 +213,7 @@ public class TiledMap {
 			toRemoveChunks.forEach(this::unloadChunk);
 			toRemoveChunks.clear();
 			newChunks.forEach(chunkEntry -> {
+				world.getTime().setSerializationContextTime(chunkEntry.getTime());
 				world.getEntityPool().applyUpdate(chunkEntry.getEntityData(), world, true);
 				insertChunk(chunkEntry.getChunk());
 			});

@@ -1,7 +1,7 @@
 package com.pixurvival.core.livingEntity.stats;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import com.pixurvival.core.util.MathUtils;
 
@@ -16,8 +16,8 @@ public class StatValue implements StatListener {
 
 	private float base;
 
-	private List<StatListener> listeners = new ArrayList<>();
-	private List<StatModifier> modifiers = new ArrayList<>();
+	private Collection<StatListener> listeners = new ArrayList<>();
+	private Collection<StatModifier> modifiers = new ArrayList<>();
 
 	public void addListener(StatListener listener) {
 		listeners.add(listener);

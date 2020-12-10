@@ -22,7 +22,8 @@ import lombok.Setter;
  */
 public class EntityPool extends EntityCollection {
 	private World world;
-	private @Getter @Setter long nextId = 0;
+	// Starts to 1 because 0 is interpreted as the end of the list for serialization
+	private @Getter @Setter long nextId = 1;
 	private List<EntityPoolListener> listeners = new ArrayList<>();
 	private List<Entity> newEntities = new ArrayList<>();
 

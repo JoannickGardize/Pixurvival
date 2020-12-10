@@ -13,6 +13,7 @@ public class ChunkRepositoryEntry {
 
 	private Chunk chunk;
 	private ByteBuffer entityData;
+	private long time;
 
 	public ChunkRepositoryEntry(Chunk chunk) {
 		this.chunk = chunk;
@@ -23,7 +24,7 @@ public class ChunkRepositoryEntry {
 		ByteBuffer bb = ByteBuffer.allocate(4);
 		bb.put(EntityGroup.END_MARKER);
 		bb.put(EntityGroup.END_MARKER);
-		bb.putShort((short) 0);
+		bb.put((byte) 0);
 		bb.position(0);
 		return bb;
 	}

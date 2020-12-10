@@ -48,7 +48,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	private @Setter TeamComposition[] teamCompositions;
 	private List<PlayerGameSession> tmpPlayerSessions = new ArrayList<>();
 	private @Getter @Setter long previousNetworkReportTime;
-	private @Getter NetworkStatisticsReporter networkReporter = new NetworkStatisticsReporter();
+	// private @Getter NetworkStatisticsReporter networkReporter = new
+	// NetworkStatisticsReporter();
 	private @Getter boolean ended = false;
 
 	public GameSession(World world) {

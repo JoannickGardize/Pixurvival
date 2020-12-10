@@ -65,6 +65,7 @@ public class WorldUpdateManager implements Plugin<World> {
 			world.getMap().addAllChunks(u.getCompressedChunks());
 			world.getMap().applyUpdate(u.getStructureUpdates());
 			if (u.getEntityUpdateLength() > 0) {
+				world.getTime().setSerializationContextTime(u.getTime());
 				u.getEntityUpdateByteBuffer().position(0);
 				world.getEntityPool().applyUpdate(u.getEntityUpdateByteBuffer());
 				float updateDelta = (world.getTime().getTimeMillis() - u.getTime()) / 1000f;

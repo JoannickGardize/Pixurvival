@@ -40,7 +40,7 @@ public class PlayerInventory extends Inventory {
 
 		@Override
 		public void write(Kryo kryo, Output output, PlayerInventory object) {
-			output.writeShort(object.slots.length);
+			output.writeVarInt(object.slots.length, true);
 			for (ItemStack itemStack : object.slots) {
 				kryo.writeObjectOrNull(output, itemStack, ItemStack.class);
 			}
@@ -49,7 +49,7 @@ public class PlayerInventory extends Inventory {
 
 		@Override
 		public PlayerInventory read(Kryo kryo, Input input, Class<PlayerInventory> type) {
-			short length = input.readShort();
+			int length = input.readVarInt(true);
 			PlayerInventory inventory = new PlayerInventory(length);
 			for (int i = 0; i < length; i++) {
 				inventory.slots[i] = kryo.readObjectOrNull(input, ItemStack.class);

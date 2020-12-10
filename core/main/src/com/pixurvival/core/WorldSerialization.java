@@ -35,7 +35,7 @@ import com.pixurvival.core.map.SpawnAction;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.map.chunk.ChunkRepository;
 import com.pixurvival.core.map.chunk.CompressedChunk;
-import com.pixurvival.core.map.chunk.CompressedChunkAndEntityData;
+import com.pixurvival.core.map.chunk.ServerChunkRepositoryEntry;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
 import com.pixurvival.core.mapLimits.MapLimitsAnchorRun;
 import com.pixurvival.core.mapLimits.MapLimitsManager;
@@ -46,6 +46,7 @@ import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.ReleaseVersion;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.core.util.WorkingDirectory;
 
@@ -69,19 +70,20 @@ public class WorldSerialization {
 			} catch (ContentPackException e) {
 				throw new IOException(e);
 			}
-			buffer.putInt(world.getGameMode().getId());
+			VarLenNumberIO.writePositiveVarInt(buffer, world.getGameMode().getId());
 			buffer.putLong(world.getSeed());
 			world.getTime().write(buffer);
-			buffer.putLong(world.getEntityPool().getNextId());
+			VarLenNumberIO.writePositiveVarLong(buffer, world.getEntityPool().getNextId());
 			flush(buffer, output);
 			// Map and entities data
-			Collection<CompressedChunkAndEntityData> mapData;
+			Collection<ServerChunkRepositoryEntry> mapData;
 			synchronized (world.getMap().getRepository()) {
 				world.getMap().saveAll();
 				mapData = world.getMap().getRepository().getAll();
 			}
-			buffer.putInt(mapData.size());
-			for (CompressedChunkAndEntityData data : mapData) {
+			VarLenNumberIO.writePositiveVarInt(buffer, mapData.size());
+			for (ServerChunkRepositoryEntry data : mapData) {
+				VarLenNumberIO.writePositiveVarLong(buffer, data.getTime());
 				ByteBufferUtils.putBytes(buffer, data.getCompressedChunk().getData());
 				ByteBufferUtils.putBytes(buffer, data.getEntityData());
 				flush(buffer, output);
@@ -121,16 +123,17 @@ public class WorldSerialization {
 		if (checkResult == ContentPackValidityCheckResult.NOT_SAME) {
 			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}
-		World world = World.createLocalWorld(contentPack, buffer.getInt(), buffer.getLong());
+		World world = World.createLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong());
 		Kryo kryo = getKryo(world.getGameMode().getEcosystem());
 		world.getTime().apply(buffer);
-		world.getEntityPool().setNextId(buffer.getLong());
-		int size = buffer.getInt();
+		world.getEntityPool().setNextId(VarLenNumberIO.readPositiveVarLong(buffer));
+		int size = VarLenNumberIO.readPositiveVarInt(buffer);
 		ChunkRepository chunkRepository = world.getMap().getRepository();
 		for (int i = 0; i < size; i++) {
+			long time = VarLenNumberIO.readPositiveVarLong(buffer);
 			byte[] chunkData = ByteBufferUtils.getBytes(buffer);
 			byte[] entityData = ByteBufferUtils.getBytes(buffer);
-			chunkRepository.add(new CompressedChunkAndEntityData(new CompressedChunk(world.getMap(), chunkData), entityData));
+			chunkRepository.add(new ServerChunkRepositoryEntry(time, new CompressedChunk(world.getMap(), chunkData), entityData));
 		}
 		try (Input kryoInput = new Input(buffer.array())) {
 			kryoInput.setPosition(buffer.position());

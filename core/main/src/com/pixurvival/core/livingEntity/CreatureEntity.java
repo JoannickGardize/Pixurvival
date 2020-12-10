@@ -23,7 +23,9 @@ import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
+import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.PseudoAIUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -200,12 +202,12 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void writeInitialization(ByteBuffer buffer) {
-		buffer.putShort((short) definition.getId());
+		VarLenNumberIO.writePositiveVarInt(buffer, definition.getId());
 	}
 
 	@Override
 	public void applyInitialization(ByteBuffer buffer) {
-		definition = getWorld().getContentPack().getCreatures().get(buffer.getShort());
+		definition = getWorld().getContentPack().getCreatures().get(VarLenNumberIO.readPositiveVarInt(buffer));
 	}
 
 	public void setMaster(TeamMember master) {
@@ -235,54 +237,54 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
-		byteBuffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
-		byteBuffer.putFloat(getStats().get(StatType.AGILITY).getBase());
-		byteBuffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
-		super.writeRepositoryUpdate(byteBuffer);
-		byteBuffer.putFloat(spawnPosition.getX());
-		byteBuffer.putFloat(spawnPosition.getY());
+	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		buffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
+		buffer.putFloat(getStats().get(StatType.AGILITY).getBase());
+		buffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
+		super.writeRepositoryUpdate(buffer);
+		buffer.putFloat(spawnPosition.getX());
+		buffer.putFloat(spawnPosition.getY());
 		if (getDefinition().getLifetime() > 0) {
-			byteBuffer.putLong(creationTime);
+			ByteBufferUtils.writePastTime(buffer, getWorld(), creationTime);
 		}
-		TeamMemberSerialization.writeNullSafe(byteBuffer, master == this ? null : master, true);
-		byteBuffer.putShort((short) currentBehavior.getId());
+		TeamMemberSerialization.writeNullSafe(buffer, master == this ? null : master, true);
+		VarLenNumberIO.writePositiveVarInt(buffer, currentBehavior.getId());
 		if (definition.getInventorySize() > 0) {
-			try (Output output = new Output(byteBuffer.array())) {
-				output.setPosition(byteBuffer.position());
+			try (Output output = new Output(buffer.array())) {
+				output.setPosition(buffer.position());
 				INVENTORY_KRYO.writeObject(output, inventory);
-				byteBuffer.position(output.position());
+				buffer.position(output.position());
 			}
 		}
 	}
 
 	@Override
-	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
-		getStats().get(StatType.STRENGTH).setBase(byteBuffer.getFloat());
-		getStats().get(StatType.AGILITY).setBase(byteBuffer.getFloat());
-		getStats().get(StatType.INTELLIGENCE).setBase(byteBuffer.getFloat());
-		super.applyRepositoryUpdate(byteBuffer);
-		spawnPosition = new Vector2(byteBuffer.getFloat(), byteBuffer.getFloat());
+	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		getStats().get(StatType.STRENGTH).setBase(buffer.getFloat());
+		getStats().get(StatType.AGILITY).setBase(buffer.getFloat());
+		getStats().get(StatType.INTELLIGENCE).setBase(buffer.getFloat());
+		super.applyRepositoryUpdate(buffer);
+		spawnPosition = new Vector2(buffer.getFloat(), buffer.getFloat());
 		if (getDefinition().getLifetime() > 0) {
-			creationTime = byteBuffer.getLong();
+			creationTime = ByteBufferUtils.readPastTime(buffer, getWorld());
 			if (getWorld().getTime().getTimeMillis() - creationTime >= getDefinition().getLifetime()) {
 				setAlive(false);
 			}
 			// If this is not time to die, that means that an ActionTimer to
 			// kill it on time is still present
 		}
-		TeamMember newMaster = TeamMemberSerialization.readNullSafe(byteBuffer, getWorld(), true);
+		TeamMember newMaster = TeamMemberSerialization.readNullSafe(buffer, getWorld(), true);
 		if (newMaster != null) {
 			master = newMaster;
 		}
-		currentBehavior = definition.getBehaviorSet().getBehaviors().get(byteBuffer.getShort());
+		currentBehavior = definition.getBehaviorSet().getBehaviors().get(VarLenNumberIO.readPositiveVarInt(buffer));
 		// TODO smart reset behavior
 		currentBehavior.begin(this);
 		if (definition.getInventorySize() > 0) {
-			try (Input input = new Input(byteBuffer.array())) {
-				input.setPosition(byteBuffer.position());
+			try (Input input = new Input(buffer.array())) {
+				input.setPosition(buffer.position());
 				inventory.set(INVENTORY_KRYO.readObject(input, Inventory.class));
-				byteBuffer.position(input.position());
+				buffer.position(input.position());
 			}
 		}
 	}

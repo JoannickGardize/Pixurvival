@@ -8,7 +8,7 @@ public interface ChunkRepository {
 
 	ChunkRepositoryEntry load(ChunkPosition position);
 
-	Collection<CompressedChunkAndEntityData> getAll();
+	Collection<ServerChunkRepositoryEntry> getAll();
 
-	void add(CompressedChunkAndEntityData data);
+	void add(ServerChunkRepositoryEntry data);
 }

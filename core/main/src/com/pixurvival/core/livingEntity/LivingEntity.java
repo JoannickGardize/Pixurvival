@@ -21,6 +21,7 @@ import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -402,11 +403,11 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		if ((updateFlagsToSend & UPDATE_CONTENT_MASK_OTHERS) != 0) {
 			if (stunTermTime > getWorld().getTime().getTimeMillis()) {
 				buffer.put((byte) 1);
-				buffer.putLong(stunTermTime);
+				ByteBufferUtils.writeFutureTime(buffer, getWorld(), stunTermTime);
 			} else {
 				buffer.put((byte) 0);
 			}
-			buffer.putShort((short) getTeam().getId());
+			VarLenNumberIO.writePositiveVarInt(buffer, getTeam().getId());
 			ByteBufferUtils.writeElementOrNull(buffer, overridingSpriteSheet);
 			buffer.putFloat(getForwardFactor());
 			writeAdditionnalOtherPart(buffer);
@@ -449,11 +450,11 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
 		if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
 			if (buffer.get() == 1) {
-				stunTermTime = buffer.getLong();
+				stunTermTime = ByteBufferUtils.readFutureTime(buffer, getWorld());
 			} else {
 				stunTermTime = 0;
 			}
-			setTeam(getWorld().getTeamSet().get(buffer.getShort()));
+			setTeam(getWorld().getTeamSet().get(VarLenNumberIO.readPositiveVarInt(buffer)));
 			overridingSpriteSheet = ByteBufferUtils.readElementOrNull(buffer, getWorld().getContentPack().getSpriteSheets());
 			setForwardFactor(buffer.getFloat());
 			applyAdditionnalOtherPart(buffer);
@@ -471,25 +472,24 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	@Override
 	public void writeRepositoryUpdate(ByteBuffer buffer) {
 		writeUpdate(buffer, (byte) (getFullUpdateContentMask() & ~UPDATE_CONTENT_MASK_STATS));
-		buffer.putShort((short) persistentAlterationEntries.size());
+		VarLenNumberIO.writePositiveVarInt(buffer, persistentAlterationEntries.size());
 		for (PersistentAlterationEntry entry : persistentAlterationEntries) {
 			TeamMemberSerialization.write(buffer, entry.getSource(), true);
-			buffer.putInt(entry.getAlteration().getId());
-			buffer.putLong(entry.getTermTimeMillis());
+			VarLenNumberIO.writePositiveVarInt(buffer, entry.getAlteration().getId());
+			ByteBufferUtils.writeFutureTime(buffer, getWorld(), entry.getTermTimeMillis());
 			entry.getAlteration().writeData(buffer, this, entry.getData());
 		}
-
 	}
 
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer buffer) {
 		super.applyRepositoryUpdate(buffer);
-		short size = buffer.getShort();
-		for (short i = 0; i < size; i++) {
+		int size = VarLenNumberIO.readPositiveVarInt(buffer);
+		for (int i = 0; i < size; i++) {
 			TeamMember source = TeamMemberSerialization.read(buffer, getWorld(), true);
-			PersistentAlteration alteration = (PersistentAlteration) getWorld().getContentPack().getAlterations().get(buffer.getInt());
+			PersistentAlteration alteration = (PersistentAlteration) getWorld().getContentPack().getAlterations().get(VarLenNumberIO.readPositiveVarInt(buffer));
 			PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
-			entry.setTermTimeMillis(buffer.getLong());
+			entry.setTermTimeMillis(ByteBufferUtils.readFutureTime(buffer, getWorld()));
 			entry.setData(alteration.readData(buffer, this));
 			persistentAlterationEntries.add(entry);
 			alteration.restore(source, this, entry.getData());

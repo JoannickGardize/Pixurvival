@@ -44,7 +44,7 @@ public class UseItemAbility extends WorkAbility {
 		if (entity.getWorld().isServer()) {
 			UseItemAbilityData data = (UseItemAbilityData) getAbilityData(entity);
 			EdibleItem edibleItem = data.getEdibleItem();
-			short slotIndex = data.getSlotIndex();
+			int slotIndex = data.getSlotIndex();
 			if (removeItem(entity, edibleItem, slotIndex)) {
 				for (Alteration alteration : edibleItem.getAlterations()) {
 					alteration.apply(entity, entity);
@@ -53,7 +53,7 @@ public class UseItemAbility extends WorkAbility {
 		}
 	}
 
-	private boolean removeItem(LivingEntity entity, EdibleItem edibleItem, short slotIndex) {
+	private boolean removeItem(LivingEntity entity, EdibleItem edibleItem, int slotIndex) {
 		PlayerInventory inventory = ((PlayerEntity) entity).getInventory();
 		if (slotIndex == PlayerInventory.HELD_ITEM_STACK_INDEX) {
 			ItemStack heldItemStack = inventory.getHeldItemStack();

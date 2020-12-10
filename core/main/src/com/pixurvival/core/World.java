@@ -151,7 +151,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
 		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
-		world.getEntityPool().create(initializeLocalWorld(world));
+		initializeLocalWorld(world);
 
 		return world;
 	}
@@ -159,24 +159,20 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	public static World createLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
 		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId, seed);
-		// Add the player with default id 0
-		world.getEntityPool().add(initializeLocalWorld(world));
+		initializeLocalWorld(world);
 		return world;
 	}
 
-	private static PlayerEntity initializeLocalWorld(World world) {
+	private static void initializeLocalWorld(World world) {
 		World.currentContentPack = world.getContentPack();
 		PlayerEntity playerEntity = new PlayerEntity();
 		playerEntity.setOperator(true);
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
-		// Player id will always be zero so the player entity will be merged
-		// when
-		// loading a saved game
 		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
+		world.getEntityPool().create(playerEntity);
 		world.playerEntities.put(playerEntity.getId(), playerEntity);
-		return playerEntity;
 	}
 
 	public static Collection<World> getWorlds() {
@@ -228,8 +224,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 * 
 	 * @throws MapAnalyticsException
 	 */

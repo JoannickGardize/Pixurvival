@@ -13,6 +13,7 @@ import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Timer;
+import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
@@ -162,14 +163,14 @@ public class ItemStackEntity extends Entity {
 
 	@Override
 	public void writeInitialization(ByteBuffer buffer) {
-		buffer.putShort((short) itemStack.getItem().getId());
-		buffer.putShort((short) itemStack.getQuantity());
+		VarLenNumberIO.writePositiveVarInt(buffer, itemStack.getItem().getId());
+		VarLenNumberIO.writePositiveVarInt(buffer, itemStack.getQuantity());
 	}
 
 	@Override
 	public void applyInitialization(ByteBuffer buffer) {
-		short itemId = buffer.getShort();
-		short quantity = buffer.getShort();
+		int itemId = VarLenNumberIO.readPositiveVarInt(buffer);
+		int quantity = VarLenNumberIO.readPositiveVarInt(buffer);
 		if (itemStack == null) {
 			itemStack = new ItemStack(getWorld().getContentPack().getItems().get(itemId), quantity);
 		}

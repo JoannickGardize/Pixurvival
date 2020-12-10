@@ -65,7 +65,7 @@ public class HostMultiplayerMenuScreen implements Screen {
 
 		Table buttonTable = new Table();
 		buttonTable.defaults().pad(0, 5, 0, 5).prefWidth(100);
-		buttonTable.add(new BackButton()).center();
+		buttonTable.add(new BackButton(() -> PixurvivalGame.getInstance().disposeServer())).center();
 		TextButton connectButton = new TextButton(PixurvivalGame.getString("menu.multiplayer.hostAndPlay"), skin);
 		buttonTable.add(connectButton).center();
 
@@ -79,7 +79,7 @@ public class HostMultiplayerMenuScreen implements Screen {
 		connectButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				int port = Integer.valueOf(portField.getText());
+				int port = Integer.parseInt(portField.getText());
 				if (UPnP.isUPnPAvailable()) {
 					checkPortForwarding(port);
 				} else {

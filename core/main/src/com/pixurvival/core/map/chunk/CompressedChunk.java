@@ -12,6 +12,7 @@ import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,15 +27,15 @@ public class CompressedChunk {
 		map = chunk.getMap();
 		ByteBuffer buffer = ByteBufferUtils.getThreadSafeInstance();
 		buffer.reset();
-		buffer.putInt(chunk.getPosition().getX());
-		buffer.putInt(chunk.getPosition().getY());
-		buffer.putLong(chunk.getUpdateTimestamp());
+		VarLenNumberIO.writeVarInt(buffer, chunk.getPosition().getX());
+		VarLenNumberIO.writeVarInt(buffer, chunk.getPosition().getY());
+		VarLenNumberIO.writePositiveVarLong(buffer, chunk.getUpdateTimestamp());
 		MapTile currentTile = null;
-		byte currentLength = 0;
+		int currentLength = 0;
 		for (MapTile tile : chunk.getTiles()) {
-			if (tile != currentTile || currentLength == Byte.MAX_VALUE) {
+			if (tile != currentTile) {
 				if (currentTile != null) {
-					buffer.put(currentLength);
+					VarLenNumberIO.writePositiveVarInt(buffer, currentLength);
 					buffer.put((byte) currentTile.getTileDefinition().getId());
 				}
 				currentLength = 1;
@@ -43,9 +44,9 @@ public class CompressedChunk {
 				currentLength++;
 			}
 		}
-		buffer.put(currentLength);
+		VarLenNumberIO.writePositiveVarInt(buffer, currentLength);
 		buffer.put((byte) currentTile.getTileDefinition().getId());
-		buffer.putShort(chunk.getStructureCount());
+		VarLenNumberIO.writePositiveVarInt(buffer, chunk.getStructureCount());
 		chunk.forEachStructure(structure -> {
 			buffer.put((byte) structure.getDefinition().getId());
 			buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
@@ -57,19 +58,19 @@ public class CompressedChunk {
 
 	public Chunk buildChunk() {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
-		int x = buffer.getInt();
-		int y = buffer.getInt();
+		int x = VarLenNumberIO.readVarInt(buffer);
+		int y = VarLenNumberIO.readVarInt(buffer);
 		Chunk chunk = new Chunk(map, x, y);
-		chunk.setUpdateTimestamp(buffer.getLong());
+		chunk.setUpdateTimestamp(VarLenNumberIO.readPositiveVarLong(buffer));
 		MapTile[] chunkData = chunk.getTiles();
 		int dataPosition = 0;
 		while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
-			byte length = buffer.get();
+			int length = VarLenNumberIO.readPositiveVarInt(buffer);
 			MapTile tile = map.getMapTilesById()[buffer.get()];
 			Arrays.fill(chunkData, dataPosition, dataPosition + length, tile);
 			dataPosition += length;
 		}
-		int structureCount = buffer.getShort();
+		int structureCount = VarLenNumberIO.readPositiveVarInt(buffer);
 		for (int i = 0; i < structureCount; i++) {
 			MapStructure structure = chunk.addStructureSilently(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(),
 					buffer.get() + chunk.getOffsetY());
@@ -81,7 +82,7 @@ public class CompressedChunk {
 
 	public ChunkPosition getPosition() {
 		ByteBuffer buffer = ByteBuffer.wrap(data);
-		return new ChunkPosition(buffer.getInt(), buffer.getInt());
+		return new ChunkPosition(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer));
 	}
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<CompressedChunk> {

@@ -49,16 +49,15 @@ public class WorldUpdate implements Poolable {
 
 		@Override
 		public void write(Kryo kryo, Output output, WorldUpdate object) {
-			output.writeLong(object.updateId);
-			long time = object.time;
-			output.writeLong(time);
-			output.writeInt((int) (object.readyCooldowns[0] - time));
-			output.writeInt((int) (object.readyCooldowns[1] - time));
-			output.writeInt((int) (object.readyCooldowns[2] - time));
-			output.writeInt((int) (object.readyCooldowns[3] - time));
+			output.writeVarLong(object.updateId, true);
+			output.writeVarLong(object.time, true);
+			object.writeFutureTime(output, object.readyCooldowns[0]);
+			object.writeFutureTime(output, object.readyCooldowns[1]);
+			object.writeFutureTime(output, object.readyCooldowns[2]);
+			object.writeFutureTime(output, object.readyCooldowns[3]);
 			kryo.writeObject(output, object.lastPlayerMovementRequest);
 			object.entityUpdateLength = object.entityUpdateByteBuffer.position();
-			output.writeInt(object.entityUpdateLength);
+			output.writeVarInt(object.entityUpdateLength, true);
 			output.writeBytes(object.entityUpdateByteBuffer.array(), 0, object.entityUpdateByteBuffer.position());
 			KryoUtils.writeUnspecifiedClassList(kryo, output, object.structureUpdates);
 			KryoUtils.writeUniqueClassList(kryo, output, object.compressedChunks);
@@ -68,15 +67,14 @@ public class WorldUpdate implements Poolable {
 		@Override
 		public WorldUpdate read(Kryo kryo, Input input, Class<WorldUpdate> type) {
 			WorldUpdate worldUpdate = ObjectPools.getWorldUpdatePool().get();
-			worldUpdate.updateId = input.readLong();
-			long time = input.readLong();
-			worldUpdate.time = time;
-			worldUpdate.readyCooldowns[0] = input.readInt() + time;
-			worldUpdate.readyCooldowns[1] = input.readInt() + time;
-			worldUpdate.readyCooldowns[2] = input.readInt() + time;
-			worldUpdate.readyCooldowns[3] = input.readInt() + time;
+			worldUpdate.updateId = input.readVarLong(true);
+			worldUpdate.time = input.readVarLong(true);
+			worldUpdate.readyCooldowns[0] = worldUpdate.readFutureTime(input);
+			worldUpdate.readyCooldowns[1] = worldUpdate.readFutureTime(input);
+			worldUpdate.readyCooldowns[2] = worldUpdate.readFutureTime(input);
+			worldUpdate.readyCooldowns[3] = worldUpdate.readFutureTime(input);
 			worldUpdate.lastPlayerMovementRequest = kryo.readObject(input, PlayerMovementRequest.class);
-			worldUpdate.entityUpdateLength = input.readInt();
+			worldUpdate.entityUpdateLength = input.readVarInt(true);
 			input.readBytes(worldUpdate.entityUpdateByteBuffer.array(), 0, worldUpdate.entityUpdateLength);
 			KryoUtils.readUnspecifiedClassList(kryo, input, worldUpdate.structureUpdates);
 			KryoUtils.readUniqueClassList(kryo, input, worldUpdate.compressedChunks, CompressedChunk.class);
@@ -85,4 +83,17 @@ public class WorldUpdate implements Poolable {
 			return worldUpdate;
 		}
 	}
+
+	private void writeFutureTime(Output output, long futureTime) {
+		if (futureTime > time) {
+			output.writeVarLong(futureTime - time, true);
+		} else {
+			output.writeVarLong(0, true);
+		}
+	}
+
+	private long readFutureTime(Input input) {
+		return input.readVarLong(true) + time;
+	}
+
 }
