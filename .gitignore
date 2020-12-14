@@ -36,6 +36,7 @@ com_crashlytics_export_strings.xml
 .classpath
 .project
 .metadata/
+/contentpack\-editor/bin/
 /android/bin/
 /core/bin/
 /desktop/bin/
@@ -60,11 +61,13 @@ com_crashlytics_export_strings.xml
 /html/nbproject/private/
 /ios/nbproject/private/
 /ios-moe/nbproject/private/
+/contentpack\-editor/nbproject/private/
 
 /build/
 /android/build/
 /core/build/
 /desktop/build/
+/contentpack\-editor/build/
 /html/build/
 /ios/build/
 /ios-moe/build/
@@ -73,6 +76,7 @@ com_crashlytics_export_strings.xml
 /android/nbbuild/
 /core/nbbuild/
 /desktop/nbbuild/
+/contentpack\-editor/nbbuild/
 /html/nbbuild/
 /ios/nbbuild/
 /ios-moe/nbbuild/
@@ -81,6 +85,7 @@ com_crashlytics_export_strings.xml
 /android/dist/
 /core/dist/
 /desktop/dist/
+/contentpack\-editor/dist/
 /html/dist/
 /ios/dist/
 /ios-moe/dist/
@@ -89,6 +94,7 @@ com_crashlytics_export_strings.xml
 /android/nbdist/
 /core/nbdist/
 /desktop/nbdist/
+/contentpack\-editor/nbdist/
 /html/nbdist/
 /ios/nbdist/
 /ios-moe/nbdist/
@@ -105,6 +111,7 @@ gradle-app.setting
 /android/build/
 /core/build/
 /desktop/build/
+/contentpack\-editor/build/
 /html/build/
 /ios/build/
 /ios-moe/build/
