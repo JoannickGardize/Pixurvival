@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
@@ -14,6 +15,7 @@ public class ItemAlterationAbility extends AlterationAbility {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private ItemStack ammunition = new ItemStack();
 
 	@Override

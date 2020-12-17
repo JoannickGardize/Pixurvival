@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.sprite;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,10 +19,10 @@ public class FrameOffset extends Frame implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Bounds(min = 0)
+	@Positive
 	private int offsetX;
 
-	@Bounds(min = 0)
+	@Positive
 	private int offsetY;
 
 	private boolean back;

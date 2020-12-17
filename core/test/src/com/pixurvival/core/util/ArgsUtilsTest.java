@@ -1,7 +1,7 @@
 package com.pixurvival.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 
@@ -22,9 +22,9 @@ public class ArgsUtilsTest {
 
 		WrapperClass argsClass = ArgsUtils.readArgs(args, WrapperClass.class);
 
-		Assert.assertEquals("theValue", argsClass.getString());
-		Assert.assertEquals(6, argsClass.getIntegerPrimitive());
-		Assert.assertTrue(argsClass.isBooleanPrimitive());
-		Assert.assertEquals(14.5, argsClass.getDoubleWrapper().doubleValue(), 0.001);
+		Assertions.assertEquals("theValue", argsClass.getString());
+		Assertions.assertEquals(6, argsClass.getIntegerPrimitive());
+		Assertions.assertTrue(argsClass.isBooleanPrimitive());
+		Assertions.assertEquals(14.5, argsClass.getDoubleWrapper().doubleValue(), 0.001);
 	}
 }

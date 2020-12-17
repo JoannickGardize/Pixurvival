@@ -13,10 +13,10 @@ public class IntegerInterval implements IntPredicate, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 1)
-	private int min;
+	private int min = 1;
 
 	@Bounds(min = 1)
-	private int max;
+	private int max = 1;
 
 	@Override
 	public boolean test(int i) {

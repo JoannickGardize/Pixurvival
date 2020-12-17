@@ -1,6 +1,8 @@
 package com.pixurvival.core.contentPack.gameMode.spawn;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.map.analytics.AreaSearchCriteria;
 import com.pixurvival.core.map.analytics.GameAreaConfiguration;
 import com.pixurvival.core.map.analytics.MapAnalytics;
@@ -18,8 +20,13 @@ public class AutoSquarePlayerSpawn implements PlayerSpawn {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private int size = 490;
+
+	@Bounds(min = 0, max = 1, maxInclusive = true)
 	private float minFreeSpace = 0.4f;
+
+	@Bounds(min = 0, max = 1, maxInclusive = true)
 	private float maxFreeSpace = 1;
 
 	@Override

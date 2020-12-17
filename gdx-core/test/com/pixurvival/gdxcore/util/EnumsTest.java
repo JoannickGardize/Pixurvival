@@ -1,9 +1,7 @@
 package com.pixurvival.gdxcore.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class EnumsTest {
 
@@ -14,8 +12,8 @@ public class EnumsTest {
 
 	@Test
 	public void valueOfOrNullTest() {
-		assertEquals(TestEnum.A, Enums.valueOfOrNull(TestEnum.class, "A"));
-		assertNull(Enums.valueOfOrNull(TestEnum.class, "C"));
+		Assertions.assertEquals(TestEnum.A, Enums.valueOfOrNull(TestEnum.class, "A"));
+		Assertions.assertNull(Enums.valueOfOrNull(TestEnum.class, "C"));
 
 	}
 }

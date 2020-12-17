@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 
 import lombok.Data;
 
@@ -13,8 +12,7 @@ public class HeightmapCondition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Required
-	@ElementReference(depth = 4)
+	@ElementReference("<<<.heightmaps")
 	private Heightmap heightmap;
 
 	@Bounds(min = 0, max = 1, maxInclusive = true)

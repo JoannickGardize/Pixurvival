@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.LivingEntity;
 
 import lombok.Getter;
@@ -11,6 +12,7 @@ public abstract class CooldownAbility extends Ability {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private long cooldown;
 
 	@Override

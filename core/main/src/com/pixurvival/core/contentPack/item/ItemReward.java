@@ -7,7 +7,6 @@ import java.util.Random;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
 
@@ -25,13 +24,13 @@ public class ItemReward extends IdentifiedElement implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		@Valid
-		@Required
 		private ItemStack itemStack = new ItemStack();
 
 		@Bounds(min = 0, max = 1, maxInclusive = true)
 		private float probability = 1;
 	}
 
+	// TODO Remove this
 	private static ThreadLocal<List<ItemStack>> tmpLists = ThreadLocal.withInitial(ArrayList::new);
 
 	@Valid

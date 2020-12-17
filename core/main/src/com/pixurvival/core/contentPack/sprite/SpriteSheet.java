@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.sprite;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 
 import lombok.Getter;
@@ -21,14 +21,13 @@ public class SpriteSheet extends IdentifiedElement {
 	@Bounds(min = 1)
 	private int height;
 
-	@Required
 	@ResourceReference
 	private String image;
 
-	@Required
 	@ElementReference
 	private AnimationTemplate animationTemplate;
 
+	@Nullable
 	@ElementReference
 	private EquipmentOffset equipmentOffset;
 

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
@@ -26,7 +25,6 @@ public abstract class Item extends IdentifiedElement implements Serializable {
 	@Valid
 	private Frame frame;
 
-	@Required
 	@ResourceReference
 	private String image;
 

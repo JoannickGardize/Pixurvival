@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.gameMode.role.Role;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.Team;
@@ -19,10 +21,12 @@ public class RemainingRolesEndCondition extends PlayerAliveCountEndGameCondition
 
 	private static final long serialVersionUID = 1L;
 
+	@ElementReference("<.roles.roles")
 	private List<Role> roles = new ArrayList<>();
 
 	private boolean countPerTeam = false;
 
+	@Positive
 	private int value;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,8 +18,10 @@ public class Ecosystem extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private List<StructureSpawner> structureSpawners = new ArrayList<>();
 
+	@Valid
 	private DarknessSpawner darknessSpawner = new DarknessSpawner();
 
 	private transient @Setter(AccessLevel.NONE) Map<Integer, List<StructureSpawner>> structureSpawnersPerStructure;

@@ -2,8 +2,7 @@ package com.pixurvival.core.contentPack.creature.changeConditionImpl;
 
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
@@ -18,10 +17,9 @@ public class DistanceCondition extends ChangeCondition {
 
 	private BehaviorTarget targetType;
 
-	@Required
 	private FloatComparison operator;
 
-	@Bounds(min = 0)
+	@Positive
 	private float targetDistance;
 
 	@Override

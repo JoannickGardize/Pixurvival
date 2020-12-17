@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -18,7 +19,7 @@ public class FixedMovementAlteration extends PersistentAlteration {
 	private SourceDirection sourceDirection;
 	private float relativeAngle;
 	private float randomAngle;
-
+	@Valid
 	private StatFormula speed = new StatFormula();
 
 	@Override

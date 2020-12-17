@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -31,30 +31,29 @@ public class Effect extends IdentifiedElement {
 
 	private transient BiConsumer<EffectEntity, MapTile> tileCollisionAction;
 
+	@Nullable
 	@ElementReference
 	private SpriteSheet spriteSheet;
 
-	@Required
 	private OrientationType orientation = OrientationType.STATIC;
 
 	private DrawDepth drawDepth = DrawDepth.NORMAL;
 
 	private boolean solid;
 
-	@Bounds(min = 0)
+	@Positive
 	private long duration;
 
-	@Bounds(min = 0)
+	@Positive
 	private float entityCollisionRadius;
 
+	@Positive
 	private float mapCollisionRadius;
 
-	@Required
 	@Valid
 	private EffectMovement movement;
 
 	@Valid
-	@Required
 	private List<EffectTarget> targets = new ArrayList<>();
 
 	/**

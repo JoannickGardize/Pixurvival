@@ -2,8 +2,8 @@ package com.pixurvival.core.util;
 
 import java.util.Random;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class IntUrnTest {
 
@@ -30,7 +30,7 @@ public class IntUrnTest {
 			sum += urn.draw(random);
 			count++;
 		}
-		Assert.assertEquals(10, count);
-		Assert.assertEquals(45, sum);
+		Assertions.assertEquals(10, count);
+		Assertions.assertEquals(45, sum);
 	}
 }

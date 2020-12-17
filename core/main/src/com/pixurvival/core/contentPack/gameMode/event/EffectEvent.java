@@ -5,6 +5,8 @@ import java.util.Collection;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -23,6 +25,7 @@ public class EffectEvent extends Event {
 
 	private boolean forEachTeam;
 
+	@Valid
 	private EventPosition position;
 
 	/**
@@ -33,7 +36,9 @@ public class EffectEvent extends Event {
 	 * <li>Agility : number of repeat (starting to zero)
 	 * <li>Intelligence : number of concerned players * number of repeat
 	 * </ul>
+	 * TODO remove this when obsolete
 	 */
+	@ElementReference
 	private Effect effect;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -58,7 +63,7 @@ public class EffectEvent extends Event {
 		teamMember.getStats().get(StatType.AGILITY).setBase(repeatCount);
 		teamMember.getStats().get(StatType.INTELLIGENCE).setBase(numberOfPlayers * repeatCount);
 		EffectEntity effectEntity = new EffectEntity(new OffsetAngleEffect(effect), teamMember);
-		world.getEntityPool().create(effectEntity);
+		world.getEntityPool().addNew(effectEntity);
 	}
 
 }

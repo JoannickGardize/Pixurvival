@@ -23,6 +23,16 @@ public class StatValue implements StatListener {
 		listeners.add(listener);
 	}
 
+	public void addListeners(Collection<StatListener> listeners) {
+		this.listeners.addAll(listeners);
+	}
+
+	public Collection<StatListener> removeListeners() {
+		Collection<StatListener> result = new ArrayList<>(listeners);
+		listeners.clear();
+		return result;
+	}
+
 	public StatValue(StatSet set, StatType type) {
 		this.statSet = set;
 		this.type = type;
@@ -94,5 +104,10 @@ public class StatValue implements StatListener {
 			value = newValue;
 			listeners.forEach(l -> l.statChanged(oldValue, this));
 		}
+	}
+
+	@Override
+	public String toString() {
+		return type + " = " + value;
 	}
 }

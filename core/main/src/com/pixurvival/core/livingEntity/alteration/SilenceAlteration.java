@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -12,6 +13,7 @@ public class SilenceAlteration extends Alteration {
 
 	@Getter
 	@Setter
+	@Positive
 	private long duration;
 
 	@Override

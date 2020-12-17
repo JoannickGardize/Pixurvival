@@ -3,6 +3,8 @@ package com.pixurvival.core.contentPack.ecosystem;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.map.MapStructure;
@@ -21,10 +23,13 @@ public class StructureSpawner extends ChunkSpawner {
 
 	private static final long serialVersionUID = 1L;
 
+	@ElementReference
 	private Structure structure;
 
+	@Positive
 	private float spawnRadius;
 
+	@Positive
 	private float managedRadius;
 
 	@Override

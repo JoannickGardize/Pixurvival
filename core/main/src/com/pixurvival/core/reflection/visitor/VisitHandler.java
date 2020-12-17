@@ -1,6 +1,7 @@
 package com.pixurvival.core.reflection.visitor;
 
+@FunctionalInterface
 public interface VisitHandler {
 
-	boolean visit(VisitNode node);
+	void visit(VisitNode node);
 }

@@ -1,5 +1,6 @@
 package com.pixurvival.core.reflection.visitor;
 
+@FunctionalInterface
 public interface Visitor {
 
 	default void visit(Object object, VisitHandler handler, VisitorContext context) {

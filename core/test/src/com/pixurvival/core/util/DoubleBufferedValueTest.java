@@ -1,7 +1,7 @@
 package com.pixurvival.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DoubleBufferedValueTest {
 
@@ -11,7 +11,7 @@ public class DoubleBufferedValueTest {
 		Object currentValue = buffer.getCurrentValue();
 		Object previousValue = buffer.getPreviousValue();
 		buffer.swap();
-		Assert.assertSame(currentValue, buffer.getPreviousValue());
-		Assert.assertSame(previousValue, buffer.getCurrentValue());
+		Assertions.assertSame(currentValue, buffer.getPreviousValue());
+		Assertions.assertSame(previousValue, buffer.getCurrentValue());
 	}
 }

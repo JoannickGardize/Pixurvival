@@ -3,6 +3,7 @@ package com.pixurvival.core.contentPack.creature.changeConditionImpl;
 import com.pixurvival.core.Damageable;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
@@ -13,6 +14,7 @@ public class HealthCondition extends ChangeCondition {
 
 	private BehaviorTarget targetType;
 	private FloatComparison operator;
+	@Bounds(min = 0, max = 1, maxInclusive = true)
 	private float percentValue;
 
 	@Override

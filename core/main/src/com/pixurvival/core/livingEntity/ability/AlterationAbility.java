@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
@@ -17,6 +18,7 @@ public abstract class AlterationAbility extends CooldownAbility {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private List<Alteration> alterations = new ArrayList<>();
 
 	@Override

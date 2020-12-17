@@ -30,8 +30,8 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.ElementList;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
@@ -53,6 +53,7 @@ public class ContentPack implements Serializable {
 	private transient Map<String, byte[]> resources;
 
 	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
+	private transient Map<Class<? extends IdentifiedElement>, List<IdentifiedElement>> elementsLists;
 
 	private transient float maxLightRadius;
 
@@ -62,6 +63,7 @@ public class ContentPack implements Serializable {
 
 	private transient Map<Integer, Alteration> alterations = new HashMap<>();
 
+	@Valid
 	private ContentPackIdentifier identifier;
 
 	private transient float maxLivingEntityRadius;
@@ -69,72 +71,73 @@ public class ContentPack implements Serializable {
 	private transient boolean initialized = false;
 
 	@Valid
-	@ElementCollection(AnimationTemplate.class)
+	@ElementList(AnimationTemplate.class)
 	private List<AnimationTemplate> animationTemplates = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(EquipmentOffset.class)
+	@ElementList(EquipmentOffset.class)
 	private List<EquipmentOffset> equipmentOffsets = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(SpriteSheet.class)
+	@ElementList(SpriteSheet.class)
 	private List<SpriteSheet> spriteSheets = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Effect.class)
+	@ElementList(Effect.class)
 	private List<Effect> effects = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Item.class)
+	@ElementList(Item.class)
 	private List<Item> items = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(ItemCraft.class)
+	@ElementList(ItemCraft.class)
 	private List<ItemCraft> itemCrafts = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(ItemReward.class)
+	@ElementList(ItemReward.class)
 	private List<ItemReward> itemRewards = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(BehaviorSet.class)
+	@ElementList(BehaviorSet.class)
 	private List<BehaviorSet> behaviorSets = new ArrayList<>();
 
-	@ElementCollection(AbilitySet.class)
+	@ElementList(AbilitySet.class)
 	private List<AbilitySet> abilitySets = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Creature.class)
+	@ElementList(Creature.class)
 	private List<Creature> creatures = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Tile.class)
+	@ElementList(Tile.class)
 	private List<Tile> tiles = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(Structure.class)
+	@ElementList(Structure.class)
 	private List<Structure> structures = new ArrayList<>();
 
 	@Valid
-	@ElementCollection(MapProvider.class)
+	@ElementList(MapProvider.class)
 	private List<MapProvider> mapProviders = new ArrayList<>();
 
-	@ElementCollection(Ecosystem.class)
+	@Valid
+	@ElementList(Ecosystem.class)
 	private List<Ecosystem> ecosystems = new ArrayList<>();
 
-	@ElementCollection(GameMode.class)
+	@Valid
+	@Length(min = 1)
+	@ElementList(GameMode.class)
 	private List<GameMode> gameModes = new ArrayList<>();
 
 	@Valid
-	@Required
 	private Constants constants = new Constants();
 
 	/**
-	 * @return The release version this pack was made with. represents the name
-	 *         of an enum value of {@link ReleaseVersion}, in this way opening a
-	 *         pack of an unknown newer version will not crash. Null value means
-	 *         that the pack is prior to the {@link ReleaseVersion#ALPHA_5}
-	 *         version.
+	 * @return The release version this pack was made with. represents the name of
+	 *         an enum value of {@link ReleaseVersion}, in this way opening a pack
+	 *         of an unknown newer version will not crash. Null value means that the
+	 *         pack is prior to the {@link ReleaseVersion#ALPHA_5} version.
 	 */
 	private String releaseVersion;
 
@@ -169,7 +172,7 @@ public class ContentPack implements Serializable {
 	}
 
 	public boolean containsResource(String resource) {
-		return resources.containsKey(resource);
+		return resources != null && resources.containsKey(resource);
 	}
 
 	public void initialize() {
@@ -180,9 +183,14 @@ public class ContentPack implements Serializable {
 		initializeStatFormulaMap();
 		initializeAlterationMap();
 		elementsByName = new HashMap<>();
+		elementsLists = new HashMap<>();
 		callElementsInitializeMethod();
 		initializeStructures();
 		computeMaxLivingEntityRadius();
+	}
+
+	public List<IdentifiedElement> listOf(Class<? extends IdentifiedElement> type) {
+		return elementsLists.get(ReflectionUtils.getSuperClassUnder(type, IdentifiedElement.class));
 	}
 
 	private void computeMaxLivingEntityRadius() {
@@ -196,10 +204,12 @@ public class ContentPack implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	private void callElementsInitializeMethod() {
-		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementCollection.class)) {
+		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementList.class)) {
 			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
 			Map<String, IdentifiedElement> typeMap = new HashMap<>();
-			elementsByName.put(field.getAnnotation(ElementCollection.class).value(), typeMap);
+			Class<? extends IdentifiedElement> type = field.getAnnotation(ElementList.class).value();
+			elementsLists.put(type, list);
+			elementsByName.put(type, typeMap);
 			for (IdentifiedElement element : list) {
 				typeMap.put(element.getName(), element);
 				element.initialize();

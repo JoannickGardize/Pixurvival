@@ -1,6 +1,8 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.contentPack.WeightedValueProducer;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
@@ -15,7 +17,10 @@ public class AddItemAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private StatFormula repeat = new StatFormula();
+	@Valid
+	@Length(min = 1)
 	private WeightedValueProducer<ItemStack> itemStacks = new WeightedValueProducer<>();
 	private boolean dropRemainder;
 
@@ -29,7 +34,7 @@ public class AddItemAlteration extends UniqueAlteration {
 				if (dropRemainder && remainder != null) {
 					ItemStackEntity itemStackEntity = new ItemStackEntity(remainder);
 					itemStackEntity.getPosition().set(source.getPosition());
-					entity.getWorld().getEntityPool().create(itemStackEntity);
+					entity.getWorld().getEntityPool().addNew(itemStackEntity);
 				}
 			}
 		}

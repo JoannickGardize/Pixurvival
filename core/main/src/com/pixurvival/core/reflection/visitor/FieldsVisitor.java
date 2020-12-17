@@ -1,29 +1,22 @@
 package com.pixurvival.core.reflection.visitor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 import com.pixurvival.core.util.ReflectionUtils;
 
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 public class FieldsVisitor implements Visitor {
 
-	@AllArgsConstructor
-	public static class FieldNode {
-		Field field;
-		boolean traverse;
-	}
+	private static final int MODIFIER_FILTER = Modifier.TRANSIENT | Modifier.STATIC;
 
-	private final FieldNode[] fieldNodes;
+	private final Field[] fields;
 
-	public FieldsVisitor(VisitorContext context, Class<?> clazz) {
-		Field[] fields = ReflectionUtils.getAllFields(clazz);
+	public FieldsVisitor(Class<?> clazz) {
+		fields = Arrays.stream(ReflectionUtils.getAllFields(clazz)).filter(f -> (f.getModifiers() & MODIFIER_FILTER) == 0).toArray(Field[]::new);
 		ReflectionUtils.setAccessible(fields);
-		fieldNodes = Arrays.stream(fields)
-				.map(field -> new FieldNode(field, context.getTraversalCondition().test(field)))
-				.toArray(FieldNode[]::new);
 	}
 
 	@Override
@@ -32,9 +25,10 @@ public class FieldsVisitor implements Visitor {
 		if (node.getObject() == null) {
 			return;
 		}
-		for (FieldNode fieldNode : fieldNodes) {
-			VisitNode childNode = node.addChild(fieldNode.field, fieldNode.field.get(node.getObject()));
-			if (handler.visit(childNode) && fieldNode.traverse && childNode.getObject() != null) {
+		for (Field field : fields) {
+			VisitNode childNode = node.addChild(field, field.get(node.getObject()));
+			handler.visit(childNode);
+			if (context.getTraversalCondition().test(childNode)) {
 				context.getVisitorFor(childNode.getObject()).visit(childNode, handler, context);
 			}
 		}

@@ -1,6 +1,7 @@
 package com.pixurvival.core.contentPack.gameMode.endGameCondition;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.team.Team;
 
 import lombok.Getter;
@@ -12,6 +13,7 @@ public class RemainingTeamEndCondition extends PlayerAliveCountEndGameCondition 
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private int remainingTeamCondition = 1;
 
 	@Override

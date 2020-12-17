@@ -10,7 +10,8 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -26,21 +27,24 @@ public class Structure extends IdentifiedElement implements Serializable {
 
 	private boolean solid;
 
-	@Required
+	@Nullable
 	@ElementReference
 	private SpriteSheet spriteSheet;
 
 	@Valid
-	@Required
 	private Dimensions dimensions = new Dimensions(1, 1);
 
+	@Positive
 	private long duration = 0;
 
+	@ElementReference
 	private List<Tile> bannedTiles = new ArrayList<>();
 
+	@Positive
 	private float lightEmissionRadius = 0;
 
-	private long deconstructionDuration;
+	@Positive
+	private long deconstructionDuration = 0;
 
 	private transient Item deconstructionItem;
 

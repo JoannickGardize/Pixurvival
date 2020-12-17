@@ -13,6 +13,8 @@ import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.map.HarvestableMapStructure;
@@ -28,10 +30,13 @@ public class HarvestBehavior extends Behavior {
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO create manager for this
 	private static final Map<World, Set<HarvestableMapStructure>> BOOKED_STRUCTURES = new WeakHashMap<>();
 
+	@Positive
 	private float searchDistance = 10;
 
+	@Valid
 	private ElementSet<Structure> structures = new AllElementSet<>();
 
 	@Override

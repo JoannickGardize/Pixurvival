@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack.effect;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.team.TeamMember;
@@ -17,6 +18,7 @@ public class BoundEffectMovement implements EffectMovement {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private float distance;
 
 	@Override

@@ -2,6 +2,9 @@ package com.pixurvival.core.livingEntity.alteration;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.ByteBufferUtils;
@@ -15,8 +18,11 @@ public class RepeatAlteration extends PersistentAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	@Bounds(min = 1)
 	private int numberOfRepeat;
+	@Positive
 	private long interval;
+	@Valid
 	private Alteration alteration;
 
 	@Override

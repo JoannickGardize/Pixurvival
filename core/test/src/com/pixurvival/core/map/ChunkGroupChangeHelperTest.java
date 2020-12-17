@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -21,13 +21,13 @@ public class ChunkGroupChangeHelperTest {
 
 		Consumer<ChunkPosition> insertNewAction = position -> {
 			if (!actualNew.add(position)) {
-				Assert.fail("The result already contains " + position);
+				Assertions.fail("The result already contains " + position);
 			}
 		};
 
 		Consumer<ChunkPosition> insertOldAction = position -> {
 			if (!actualOld.add(position)) {
-				Assert.fail("The result already contains " + position);
+				Assertions.fail("The result already contains " + position);
 			}
 		};
 
@@ -40,8 +40,8 @@ public class ChunkGroupChangeHelperTest {
 			}
 		}
 
-		Assert.assertEquals(expected, actualNew);
-		Assert.assertEquals(new HashSet<>(), actualOld);
+		Assertions.assertEquals(expected, actualNew);
+		Assertions.assertEquals(new HashSet<>(), actualOld);
 
 		actualNew.clear();
 		actualOld.clear();
@@ -54,7 +54,7 @@ public class ChunkGroupChangeHelperTest {
 		expected.add(new ChunkPosition(2, 1));
 		expected.add(new ChunkPosition(2, 0));
 
-		Assert.assertEquals(expected, actualNew);
+		Assertions.assertEquals(expected, actualNew);
 
 		expected.clear();
 		expected.add(new ChunkPosition(-1, -1));
@@ -63,6 +63,6 @@ public class ChunkGroupChangeHelperTest {
 		expected.add(new ChunkPosition(-1, 1));
 		expected.add(new ChunkPosition(-1, 0));
 
-		Assert.assertEquals(expected, actualOld);
+		Assertions.assertEquals(expected, actualOld);
 	}
 }

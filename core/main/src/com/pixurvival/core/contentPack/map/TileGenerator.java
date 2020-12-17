@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.validation.annotation.Length;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
@@ -16,10 +14,8 @@ public class TileGenerator implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	@Length(min = 1)
 	private List<HeightmapCondition> heightmapConditions = new ArrayList<>();
 
-	@Required
 	@Valid
 	private TileHashmap tileHashmap = new TileHashmap();
 

@@ -9,10 +9,7 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ElementCollection {
+public @interface ElementList {
 
 	Class<? extends IdentifiedElement> value();
-
-	boolean isRoot() default true;
-
 }

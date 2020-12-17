@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.alteration;
 
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.stats.StatModifier;
 import com.pixurvival.core.team.TeamMember;
@@ -13,6 +14,7 @@ public class StatAlteration extends PersistentAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private StatModifier statModifier = new StatModifier();
 
 	@Override

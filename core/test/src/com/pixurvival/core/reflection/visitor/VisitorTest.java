@@ -2,13 +2,14 @@ package com.pixurvival.core.reflection.visitor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import lombok.Data;
 
@@ -45,9 +46,8 @@ public class VisitorTest {
 		private List<String> logs = new ArrayList<>();
 
 		@Override
-		public boolean visit(VisitNode node) {
+		public void visit(VisitNode node) {
 			logs.add(node.pathString());
-			return true;
 		}
 
 		public Object[] getLogs() {
@@ -82,11 +82,12 @@ public class VisitorTest {
 
 		LogVisitHandler handler = new LogVisitHandler();
 
-		VisitorContext.getInstance().setTraversalAnnotation(Traverse.class);
-		VisitorContext.getInstance().visit(a, handler);
+		VisitorContext context = new VisitorContext();
+		context.setTraversalCondition(n -> !(n.getKey() instanceof Field) || ((Field) n.getKey()).isAnnotationPresent(Traverse.class));
+		context.visit(a, handler);
 
 		Object[] expectedLogs = { "string", "integer", "b", "b.integer", "b.c", "b.c.dooble", "b.list", "b.list.0.dooble", "b.list.1.dooble", "b.list.2.dooble", "c", "c.dooble", "map",
 				"map.key1.dooble", "map.key2.dooble" };
-		Assert.assertArrayEquals(expectedLogs, handler.getLogs());
+		Assertions.assertArrayEquals(expectedLogs, handler.getLogs());
 	}
 }

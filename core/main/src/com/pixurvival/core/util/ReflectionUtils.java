@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,7 @@ public class ReflectionUtils {
 		List<Method> list = new ArrayList<>();
 		Class<?> currentClass = clazz;
 		while (currentClass != Object.class) {
-			for (Method method : currentClass.getMethods()) {
-				list.add(method);
-			}
+			list.addAll(Arrays.asList(currentClass.getMethods()));
 			currentClass = currentClass.getSuperclass();
 		}
 		return list.toArray(new Method[list.size()]);
@@ -28,8 +27,8 @@ public class ReflectionUtils {
 
 	/**
 	 * @param clazz
-	 * @return All the field of the class and superclasses, with superclasses
-	 *         fields first.
+	 * @return All the field of the class and superclasses, with superclasses fields
+	 *         first.
 	 */
 	public static Field[] getAllFields(Class<?> clazz) {
 		List<Field> list = new ArrayList<>();
@@ -95,5 +94,27 @@ public class ReflectionUtils {
 			tmp = (Class<? extends T>) tmp.getSuperclass();
 		}
 		return tmp;
+	}
+
+	/**
+	 * Get the field from the given class with the given name, goes up to superclass
+	 * until it find a field with the given name.
+	 * 
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws NoSuchFieldException
+	 */
+	public static Field getField(Class<?> type, String name) throws NoSuchFieldException {
+		Class<?> currentType = type;
+		while (currentType != Object.class) {
+			try {
+				return currentType.getDeclaredField(name);
+			} catch (NoSuchFieldException | SecurityException e) {
+				// Silently ignore
+			}
+			currentType = currentType.getSuperclass();
+		}
+		throw new NoSuchFieldException("Field " + name + " does not exists in type " + type + " or its superclasses");
 	}
 }

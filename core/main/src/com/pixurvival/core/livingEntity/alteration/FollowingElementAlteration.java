@@ -1,6 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.contentPack.effect.FollowingElement;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -13,6 +14,7 @@ public class FollowingElementAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private FollowingElement followingElement;
 
 	@Override

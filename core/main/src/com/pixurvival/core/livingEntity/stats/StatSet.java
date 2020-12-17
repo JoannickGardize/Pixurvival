@@ -56,4 +56,9 @@ public class StatSet {
 		get(StatType.ARMOR).setValue(buffer.getFloat());
 		get(StatType.SPEED).setValue(buffer.getFloat());
 	}
+
+	@Override
+	public String toString() {
+		return stats.values().toString();
+	}
 }

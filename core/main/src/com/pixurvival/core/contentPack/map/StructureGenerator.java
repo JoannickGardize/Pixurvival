@@ -9,6 +9,7 @@ import java.util.Random;
 import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
@@ -18,6 +19,8 @@ public class StructureGenerator implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
+	@Length(min = 1)
 	private WeightedValueProducer<Structure> structureProducer = new WeightedValueProducer<>();
 
 	@Valid

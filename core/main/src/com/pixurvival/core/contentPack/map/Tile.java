@@ -7,7 +7,7 @@ import java.util.List;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
@@ -23,12 +23,14 @@ public class Tile extends IdentifiedElement implements Serializable {
 	public static final byte SPECIAL_TILE = -1;
 
 	private boolean solid = false;
+
 	@Bounds(min = 0)
 	private float velocityFactor = 1f;
+
 	@Valid
+	@Length(min = 1)
 	private List<Frame> frames = new ArrayList<>();
 
-	@Required
 	@ResourceReference
 	private String image;
 }

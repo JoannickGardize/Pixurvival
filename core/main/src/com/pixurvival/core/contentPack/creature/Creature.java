@@ -6,9 +6,9 @@ import java.util.function.Consumer;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
@@ -32,11 +32,10 @@ public class Creature extends IdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
-	@Required
 	@ElementReference
 	private SpriteSheet spriteSheet;
 
-	@Bounds(min = 0)
+	@Positive
 	private float collisionRadius;
 
 	private float strength;
@@ -45,18 +44,21 @@ public class Creature extends IdentifiedElement {
 
 	private boolean solid = true;
 
-	@Required
 	@ElementReference
 	private BehaviorSet behaviorSet;
 
+	@Nullable
 	@ElementReference
 	private ItemReward itemReward;
 
+	@Nullable
 	@ElementReference
 	private AbilitySet abilitySet;
 
+	@Positive
 	private long lifetime;
 
+	@Positive
 	private int inventorySize;
 
 	private transient @Setter(AccessLevel.NONE) int harvestAbilityId;

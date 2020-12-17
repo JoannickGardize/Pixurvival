@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.map;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
 import lombok.Getter;
@@ -15,14 +15,13 @@ public class StaticMapProvider extends MapProvider {
 
 	private static final long serialVersionUID = 1L;
 
-	@Required
 	@ElementReference
 	private Tile defaultTile;
 
-	@Required
+	@Valid
 	private ImageMapping<Tile> tileMap = new ImageMapping<>();
 
-	@Required
+	@Valid
 	private ImageMapping<Structure> structureMap = new ImageMapping<>();
 
 	@Override

@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.sprite;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +15,10 @@ public class Frame implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Bounds(min = 0)
+	@Positive
 	private int x;
 
-	@Bounds(min = 0)
+	@Positive
 	private int y;
 
 }

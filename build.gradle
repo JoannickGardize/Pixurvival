@@ -36,8 +36,6 @@ allprojects {
         	dirs 'libs'
         }
     }
-    
-    
 }
 
 project(":core") {
@@ -47,8 +45,10 @@ project(":core") {
     dependencies {
     	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-    	testCompile 'junit:junit:4.12'
+    	testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    	testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     	compile "org.yaml:snakeyaml:1.24"
     }
     
@@ -67,7 +67,9 @@ project(":client") {
     dependencies {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
     }
 }
 
@@ -77,8 +79,10 @@ project(":contentpack-editor") {
     dependencies {
     	compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-        testCompile 'junit:junit:4.12'
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     }
     
     task editorFatJar(type: Jar) {
@@ -98,8 +102,10 @@ project(":server") {
     dependencies {
     	compile project(":core")
     	compileOnly "org.projectlombok:lombok:$lombokVersion"
+    	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
     	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-    	testCompile 'junit:junit:4.12'
+    	testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    	testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     }
     
     task serverFatJar(type: Jar) {
@@ -169,8 +175,10 @@ project(":gdx-core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile name: "discord-rpc"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-        testCompile 'junit:junit:4.12'
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testCompile project(':core').sourceSets.test.output
     }
 }

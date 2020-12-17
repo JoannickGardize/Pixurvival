@@ -1,6 +1,7 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
 
@@ -17,6 +18,7 @@ public class OverridingSpriteSheetAlteration extends PersistentAlteration {
 		setStackPolicy(StackPolicy.REPLACE);
 	}
 
+	@ElementReference
 	private SpriteSheet spriteSheet;
 
 	@Override

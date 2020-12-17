@@ -1,41 +1,33 @@
 package com.pixurvival.core.reflection.visitor;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor(access = AccessLevel.NONE)
 public class VisitorContext {
 
-	private static @Getter VisitorContext instance = new VisitorContext();
+	private static final Visitor COLLECTION_VISITOR = new CollectionVisitor();
+	private static final Visitor MAP_VISITOR = new MapVisitor();
+	private static final Visitor NULL_VISITOR = (n, h, c) -> {
+	};
 
-	private final Visitor listVisitor = new ListVisitor();
-	private final Visitor mapVisitor = new MapVisitor();
-	private final Visitor nullVisitor = new NullVisitor();
+	private Map<Class<?>, FieldsVisitor> fieldsVisitors = new HashMap<>();
 
-	private Map<Class<?>, Visitor> visitors = new HashMap<>();
-
-	private @Getter @Setter Predicate<Field> traversalCondition = f -> true;
+	private @Getter @Setter Predicate<VisitNode> traversalCondition = f -> true;
 
 	public Visitor getVisitorFor(Object object) {
 		if (object == null) {
-			return nullVisitor;
-		}
-		Class<?> clazz = object.getClass();
-		if (List.class.isAssignableFrom(clazz)) {
-			return listVisitor;
-		} else if (Map.class.isAssignableFrom(clazz)) {
-			return mapVisitor;
+			return NULL_VISITOR;
+		} else if (object instanceof Collection) {
+			return COLLECTION_VISITOR;
+		} else if (object instanceof Map) {
+			return MAP_VISITOR;
 		} else {
-			return visitors.computeIfAbsent(clazz, c -> new FieldsVisitor(this, c));
+			return fieldsVisitors.computeIfAbsent(object.getClass(), FieldsVisitor::new);
 		}
 	}
 
@@ -44,9 +36,4 @@ public class VisitorContext {
 		getVisitorFor(object).visit(rootNode, handler, this);
 		return rootNode;
 	}
-
-	public void setTraversalAnnotation(Class<? extends Annotation> annotationClass) {
-		traversalCondition = f -> f.isAnnotationPresent(annotationClass);
-	}
-
 }

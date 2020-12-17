@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.util.IdSetHelper;
 
 import lombok.Getter;
@@ -15,6 +16,7 @@ public abstract class CollectionElementSet<T extends IdentifiedElement> implemen
 
 	private static final long serialVersionUID = 1L;
 
+	@ElementReference
 	private @Getter @Setter List<T> elements = new ArrayList<>();
 
 	private transient IdSetHelper idSetHelper = new IdSetHelper();

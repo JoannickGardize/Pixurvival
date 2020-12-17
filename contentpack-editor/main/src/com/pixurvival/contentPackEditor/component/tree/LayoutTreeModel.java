@@ -58,6 +58,8 @@ public class LayoutTreeModel implements TreeModel {
 	public void elementInstanceChanged(ElementInstanceChangedEvent event) {
 		LayoutElement layoutElement = elementsMap.remove(event.getOldElement());
 		layoutElement.setElement(event.getElement());
+
+		// TODO Element linking
 		root.forEachDeepFirst(LayoutNode::updateValidation);
 		elementsMap.put(event.getElement(), layoutElement);
 		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());

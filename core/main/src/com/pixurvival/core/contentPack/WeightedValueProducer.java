@@ -7,11 +7,16 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReferenceOrValid;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.util.Sized;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-public class WeightedValueProducer<E extends Serializable> implements Serializable {
+public class WeightedValueProducer<E extends Serializable> implements Serializable, Sized {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,11 +25,14 @@ public class WeightedValueProducer<E extends Serializable> implements Serializab
 
 		private static final long serialVersionUID = 1L;
 
+		@Bounds(min = 0, max = 1, maxInclusive = true)
 		private float probability;
 
+		@ElementReferenceOrValid
 		private E element;
 	}
 
+	@Valid
 	private @Getter @Setter List<Entry<E>> backingArray = new ArrayList<>();
 
 	private transient float probabilityWeight;
@@ -46,5 +54,10 @@ public class WeightedValueProducer<E extends Serializable> implements Serializab
 			probabilityWeight += entry.getProbability();
 			chooseMap.put(probabilityWeight, entry.getElement());
 		}
+	}
+
+	@Override
+	public int size() {
+		return backingArray.size();
 	}
 }

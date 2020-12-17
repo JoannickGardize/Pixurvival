@@ -14,7 +14,8 @@ import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
 import com.pixurvival.core.contentPack.gameMode.spawn.PlayerSpawn;
 import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -32,30 +33,37 @@ public class GameMode extends IdentifiedElement {
 	@Valid
 	private IntegerInterval teamSizeInterval = new IntegerInterval();
 
-	@Required
 	@ElementReference
 	private MapProvider mapProvider;
 
-	@Required
 	@ElementReference
 	private Ecosystem ecosystem;
 
+	@Valid
 	private DayCycle dayCycle = new EternalDayCycle();
 
 	/**
 	 * No roles if null
 	 */
+	@Valid
+	@Nullable
 	private Roles roles;
 
+	@Valid
+	@Length(min = 1)
 	private List<EndGameCondition> endGameConditions = new ArrayList<>();
 
+	@Valid
 	private List<Event> events = new ArrayList<>();
 
 	/**
 	 * No map limits if null
 	 */
+	@Nullable
+	@Valid
 	private MapLimits mapLimits;
 
+	@Valid
 	private PlayerSpawn playerSpawn = new AutoSquarePlayerSpawn();
 
 	public boolean updateEndGameConditions(World world) {

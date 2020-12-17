@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack.item;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
@@ -15,7 +16,10 @@ public class WeaponItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private ItemAlterationAbility baseAbility = new ItemAlterationAbility();
+
+	@Valid
 	private ItemAlterationAbility specialAbility = new ItemAlterationAbility();
 
 	@Override

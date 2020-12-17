@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.structure;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -13,6 +14,7 @@ public class DamageableStructure extends Structure {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private float maxHealth = 100;
 
 	@Override

@@ -26,7 +26,7 @@ public class SpawnCommandProcessor extends CommandProcessor {
 		if (owned && executor instanceof PlayerEntity) {
 			creatureEntity.setMaster((PlayerEntity) executor);
 		}
-		executor.getWorld().getEntityPool().create(creatureEntity);
+		executor.getWorld().getEntityPool().addNew(creatureEntity);
 		return "Spawned " + creature.getName();
 	}
 

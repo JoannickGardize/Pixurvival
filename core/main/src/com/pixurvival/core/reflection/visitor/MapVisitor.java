@@ -10,7 +10,9 @@ public class MapVisitor implements Visitor {
 		Map<?, ?> map = (Map<?, ?>) node.getObject();
 		for (Entry<?, ?> entry : map.entrySet()) {
 			VisitNode childNode = node.addChild(entry.getKey(), entry.getValue());
-			context.getVisitorFor(childNode.getObject()).visit(childNode, handler, context);
+			if (context.getTraversalCondition().test(childNode)) {
+				context.getVisitorFor(childNode.getObject()).visit(childNode, handler, context);
+			}
 		}
 	}
 

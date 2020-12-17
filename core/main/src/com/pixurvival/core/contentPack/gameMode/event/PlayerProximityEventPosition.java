@@ -3,6 +3,7 @@ package com.pixurvival.core.contentPack.gameMode.event;
 import java.util.Collection;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.Vector2;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @Setter
 public class PlayerProximityEventPosition implements EventPosition {
 
+	@Positive
 	private float distance;
 
 	@Override

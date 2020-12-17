@@ -8,9 +8,11 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.LongInterval;
+import com.pixurvival.core.contentPack.TimeInterval;
 import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
@@ -30,13 +32,17 @@ public abstract class ChunkSpawner implements Serializable {
 
 	public static final Object ENPTY_DATA = new Object();
 
+	@Valid
 	private WeightedValueProducer<Creature> creatureChooser = new WeightedValueProducer<>();
 
+	@Positive
 	private int initialSpawn;
 
+	@Positive
 	private int maximumCreatures;
 
-	private LongInterval respawnTime = new LongInterval();
+	@Valid
+	private TimeInterval respawnTime = new TimeInterval();
 
 	private transient Set<Creature> creatureSet;
 
@@ -47,7 +53,7 @@ public abstract class ChunkSpawner implements Serializable {
 
 	public void spawn(Chunk chunk) {
 		Object data = beginSpawn(chunk);
-		if (countCreatures(chunk, data) >= maximumCreatures) {
+		if (countCreatures(chunk, data) >= maximumCreatures || creatureChooser.isEmpty()) {
 			return;
 		}
 		Vector2 randomPosition = nextSpawnPosition(chunk, data);
@@ -56,7 +62,7 @@ public abstract class ChunkSpawner implements Serializable {
 		if (isSpawnValid(chunk, creature, randomPosition)) {
 			CreatureEntity entity = new CreatureEntity(creature);
 			entity.getPosition().set(randomPosition);
-			chunk.getMap().getWorld().getEntityPool().create(entity);
+			chunk.getMap().getWorld().getEntityPool().addNew(entity);
 		}
 	}
 

@@ -5,6 +5,8 @@ import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
@@ -22,11 +24,13 @@ public class DropItemsBehavior extends Behavior {
 
 	private BehaviorTarget targetDirection;
 
+	@Valid
 	private ElementSet<Item> items = new AllElementSet<>();
 
 	/**
 	 * 0 = unlimited
 	 */
+	@Positive
 	private int maxQuantity = 0;
 
 	@Override
@@ -62,7 +66,7 @@ public class DropItemsBehavior extends Behavior {
 	private void spawnItemStack(CreatureEntity creature, float angle, ItemStack itemStack) {
 		ItemStackEntity entity = new ItemStackEntity(itemStack);
 		entity.getPosition().set(creature.getPosition());
-		creature.getWorld().getEntityPool().create(entity);
+		creature.getWorld().getEntityPool().addNew(entity);
 		entity.spawn(angle);
 	}
 

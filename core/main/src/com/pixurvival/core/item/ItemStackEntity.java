@@ -68,7 +68,7 @@ public class ItemStackEntity extends Entity {
 		for (ItemStack itemStack : items) {
 			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
 			itemStackEntity.getPosition().set(position.getX(), position.getY());
-			world.getEntityPool().create(itemStackEntity);
+			world.getEntityPool().addNew(itemStackEntity);
 			itemStackEntity.spawnRandom();
 		}
 	}
@@ -133,7 +133,7 @@ public class ItemStackEntity extends Entity {
 							newEntity.state = State.INHIBITED;
 							newEntity.magnetTarget = magnetTarget;
 							newEntity.getPosition().set(getPosition());
-							getWorld().getEntityPool().create(newEntity);
+							getWorld().getEntityPool().addNew(newEntity);
 						}
 					}
 				}

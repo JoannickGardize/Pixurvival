@@ -89,6 +89,7 @@ public class TextureAnimation {
 	}
 
 	private FrameOffset findFrameOffset(List<FrameOffset> frameOffsets, Frame frame) {
+		// TODO put this in a transient map
 		for (int i = 0; i < frameOffsets.size(); i++) {
 			FrameOffset frameOffset = frameOffsets.get(i);
 			if (frame.getX() == frameOffset.getX() && frame.getY() == frameOffset.getY()) {

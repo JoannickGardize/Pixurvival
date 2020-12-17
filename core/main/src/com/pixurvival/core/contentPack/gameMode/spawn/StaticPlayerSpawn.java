@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.util.IntUrn;
 import com.pixurvival.core.util.Vector2;
@@ -17,6 +19,8 @@ public class StaticPlayerSpawn implements PlayerSpawn {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
+	@Length(min = 1)
 	private List<Vector2> positions = new ArrayList<>();
 
 	@Override

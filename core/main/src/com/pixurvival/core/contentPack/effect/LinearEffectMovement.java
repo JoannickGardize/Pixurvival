@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack.effect;
 
 import java.nio.ByteBuffer;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.team.TeamMember;
@@ -21,7 +22,9 @@ public class LinearEffectMovement implements EffectMovement {
 		float targetDistance;
 	}
 
+	@Positive
 	private float initialDistance;
+	@Positive
 	private float speed;
 	private boolean relative;
 	private boolean destroyAtTargetPosition;

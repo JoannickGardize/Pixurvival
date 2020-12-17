@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.creature.behaviorImpl;
 
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
@@ -17,10 +17,10 @@ public class TurnAroundBehavior extends Behavior {
 
 	private BehaviorTarget targetType;
 
-	@Bounds(min = 0)
+	@Positive
 	private float minDistance;
 
-	@Bounds(min = 0)
+	@Positive
 	private float maxDistance;
 
 	@Override

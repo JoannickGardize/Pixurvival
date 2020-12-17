@@ -2,7 +2,10 @@ package com.pixurvival.core.reflection.visitor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -18,8 +21,6 @@ public class VisitNode {
 	private final VisitNode parent;
 
 	private final @Getter(AccessLevel.NONE) Map<Object, VisitNode> children = new HashMap<>();
-
-	private Object userData;
 
 	private final Object key;
 
@@ -58,6 +59,10 @@ public class VisitNode {
 		return tmp;
 	}
 
+	public Collection<VisitNode> children() {
+		return children.values();
+	}
+
 	public VisitNode findChild(Predicate<VisitNode> condition) {
 		for (VisitNode child : children.values()) {
 			if (condition.test(child)) {
@@ -68,24 +73,35 @@ public class VisitNode {
 	}
 
 	public String pathString() {
-		List<String> pathElements = new ArrayList<>();
-		VisitNode currentNode = this;
-		while (currentNode.getKey() != null) {
-			pathElements.add(currentNode.getKeyString());
-			currentNode = currentNode.getParent();
-		}
 		StringBuilder sb = new StringBuilder();
-		int start = pathElements.size() - 1;
-		for (int i = start; i >= 0; i--) {
-			if (i != start) {
-				sb.append('.');
-			}
-			sb.append(pathElements.get(i));
+		Iterator<VisitNode> it = getAncestorHierarchy().iterator();
+		sb.append(it.next().getKeyString());
+		while (it.hasNext()) {
+			sb.append('.');
+			sb.append(it.next().getKeyString());
 		}
 		return sb.toString();
 	}
 
-	private String getKeyString() {
+	/**
+	 * Returns a list of all ancestors of this node, starting from the root node and
+	 * finishing to this node. The list has at least one element, this instance, if
+	 * this is the root node.
+	 * 
+	 * @return a list containing all ancestors starting from the root node
+	 */
+	public List<VisitNode> getAncestorHierarchy() {
+		List<VisitNode> nodes = new ArrayList<>();
+		VisitNode currentNode = this;
+		while (currentNode != null) {
+			nodes.add(currentNode);
+			currentNode = currentNode.getParent();
+		}
+		Collections.reverse(nodes);
+		return nodes;
+	}
+
+	public String getKeyString() {
 		if (key instanceof Field) {
 			return ((Field) key).getName();
 		} else {

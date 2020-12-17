@@ -102,7 +102,7 @@ public class StartingGamePhase implements LobbyPhase {
 			if (world.getGameMode().getRoles() != null && world.getGameMode().getRoles().getSelectionMode() == SelectionMode.LOBBY) {
 				playerEntity.setRole(world.getGameMode().getRoles().getRoles().get(p.getLobbyPlayer().getSelectedRole()));
 			}
-			world.getEntityPool().create(playerEntity);
+			world.getEntityPool().addNew(playerEntity);
 			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
 			world.getEntityPool().flushNewEntities();
 			playerEntity.setTeam(team);

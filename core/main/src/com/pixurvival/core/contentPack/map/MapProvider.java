@@ -22,9 +22,9 @@ public abstract class MapProvider extends IdentifiedElement {
 	/**
 	 * Called before starting to build a chunk, by calling
 	 * {@link #getTileAt(int, int)} for each of its tiles, then calling
-	 * {@link MapProvider#getStructureAt(int, int, Tile, Random)} for each of its
-	 * tiles. The tiles are called in an unspecified order but is guaranteed to be
-	 * always the same.
+	 * {@link #getStructureAt(int, int, Tile, Random)} for each of its tiles. The
+	 * tiles are called in an unspecified order but must be guaranteed to be always
+	 * the same for the same ChunkPosition and seed.
 	 * 
 	 * @param chunkPosition
 	 */

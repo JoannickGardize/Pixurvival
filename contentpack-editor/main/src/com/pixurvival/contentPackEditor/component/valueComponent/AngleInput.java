@@ -24,6 +24,7 @@ public class AngleInput extends NumberInput<Float> {
 	@SneakyThrows
 	protected Float parse(String text) {
 		if (text.matches("\\-?\\d+(\\.\\d+)?")) {
+			// TODO normalize or not ? angle per secondes could requires more
 			return MathUtils.normalizeAngle(DECIMAL_FORMAT.parse(text).floatValue() * DEG_TO_RAD);
 		} else {
 			return null;

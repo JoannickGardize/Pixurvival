@@ -112,7 +112,7 @@ public class CreatureEntity extends LivingEntity {
 				if (itemStack != null) {
 					ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
 					itemStackEntity.getPosition().set(getPosition());
-					getWorld().getEntityPool().create(itemStackEntity);
+					getWorld().getEntityPool().addNew(itemStackEntity);
 					itemStackEntity.spawnRandom();
 				}
 			}
@@ -287,6 +287,7 @@ public class CreatureEntity extends LivingEntity {
 				buffer.position(input.position());
 			}
 		}
+		addHealthAdapterListener();
 	}
 
 	@Override

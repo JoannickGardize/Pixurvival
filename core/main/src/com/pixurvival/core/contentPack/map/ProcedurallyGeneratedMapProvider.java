@@ -6,9 +6,8 @@ import java.util.Random;
 
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
+import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
@@ -22,10 +21,9 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	@ElementCollection(value = Heightmap.class, isRoot = false)
+	@ElementList(value = Heightmap.class)
 	private List<Heightmap> heightmaps = new ArrayList<>();
 
-	@Required
 	@ElementReference
 	private Tile defaultTile;
 

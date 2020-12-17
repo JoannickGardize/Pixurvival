@@ -22,6 +22,7 @@ public abstract class Behavior extends IdentifiedElement {
 	private List<ChangeCondition> changeConditions = new ArrayList<>();
 
 	@Bounds(min = Ability.NONE_ID)
+	// TODO -1 to 0
 	private int abilityToUseId = Ability.NONE_ID;
 
 	public void update(CreatureEntity creature) {
@@ -43,8 +44,7 @@ public abstract class Behavior extends IdentifiedElement {
 	protected abstract void step(CreatureEntity creature);
 
 	/**
-	 * Called when the behavior ends, in any way, even for death of the
-	 * creature.
+	 * Called when the behavior ends, in any way, even for death of the creature.
 	 * 
 	 * @param creature
 	 */

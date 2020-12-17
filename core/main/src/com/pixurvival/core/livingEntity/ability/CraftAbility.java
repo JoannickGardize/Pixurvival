@@ -57,7 +57,7 @@ public class CraftAbility extends WorkAbility {
 				ItemStack rest = inventory.add(craftedItem);
 				if (rest != null) {
 					ItemStackEntity itemStackEntity = new ItemStackEntity(rest);
-					entity.getWorld().getEntityPool().create(itemStackEntity);
+					entity.getWorld().getEntityPool().addNew(itemStackEntity);
 					itemStackEntity.getPosition().set(entity.getPosition());
 					itemStackEntity.spawnRandom();
 				}

@@ -3,6 +3,7 @@ package com.pixurvival.core.livingEntity.alteration;
 import java.util.function.Consumer;
 
 import com.pixurvival.core.Damageable;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class InstantDamageAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private StatFormula amount = new StatFormula();
 
 	@Override

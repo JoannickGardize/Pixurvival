@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.Vector2;
 
@@ -16,7 +17,9 @@ public class RandomRectangeEventPosition implements EventPosition {
 
 	private float x;
 	private float y;
+	@Positive
 	private float width;
+	@Positive
 	private float height;
 	private Direction targetDirection = Direction.NORTH;
 

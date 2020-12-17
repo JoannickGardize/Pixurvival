@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -24,10 +23,9 @@ public class ImageMapping<T extends IdentifiedElement> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Valid
-	@Required
 	@Getter
 	@Setter
+	@Valid
 	private List<ColorMapping<T>> colorMapping = new ArrayList<>();
 
 	private transient Map<Integer, T> colorMap;

@@ -146,7 +146,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		addHealthAdapterListener();
 	}
 
-	public void addHealthAdapterListener() {
+	protected void addHealthAdapterListener() {
 		stats.get(StatType.MAX_HEALTH).addListener((o, s) -> {
 			float percentHealth = getHealth() / o;
 			setHealth(s.getValue() * percentHealth);
@@ -494,7 +494,6 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 			persistentAlterationEntries.add(entry);
 			alteration.restore(source, this, entry.getData());
 		}
-		addHealthAdapterListener();
 	}
 
 	public abstract AbilitySet getAbilitySet();

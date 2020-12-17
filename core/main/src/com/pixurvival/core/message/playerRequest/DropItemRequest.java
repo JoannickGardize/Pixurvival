@@ -20,7 +20,7 @@ public class DropItemRequest implements IPlayerActionRequest {
 		if (player.getInventory().getHeldItemStack() != null) {
 			ItemStackEntity entity = new ItemStackEntity(player.getInventory().getHeldItemStack());
 			entity.getPosition().set(player.getPosition());
-			player.getWorld().getEntityPool().create(entity);
+			player.getWorld().getEntityPool().addNew(entity);
 			entity.spawn(direction);
 			player.getInventory().setHeldItemStack(null);
 		}

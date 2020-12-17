@@ -5,6 +5,8 @@ import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
@@ -22,8 +24,10 @@ public class PickUpItemsBehavior extends Behavior {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private float searchDistance = 10;
 
+	@Valid
 	private ElementSet<Item> items = new AllElementSet<>();
 
 	@Override

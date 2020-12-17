@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.util.IdSetHelper;
 
@@ -13,10 +15,12 @@ public class DistanceToStructureCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;
 
+	@ElementReference
 	private List<Structure> structures = new ArrayList<>();
 
 	private FloatComparison comparison;
 
+	@Positive
 	private float targetDistance;
 
 	private transient IdSetHelper idSetHelper = new IdSetHelper();

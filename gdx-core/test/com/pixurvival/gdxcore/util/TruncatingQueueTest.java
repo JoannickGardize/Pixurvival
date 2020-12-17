@@ -3,8 +3,8 @@ package com.pixurvival.gdxcore.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TruncatingQueueTest {
 
@@ -22,7 +22,7 @@ public class TruncatingQueueTest {
 		List<Integer> expected = new ArrayList<>();
 		expected.add(3);
 		expected.add(2);
-		Assert.assertEquals(expected, actual);
+		Assertions.assertEquals(expected, actual);
 
 		queue.push(4);
 		queue.push(5);
@@ -38,7 +38,7 @@ public class TruncatingQueueTest {
 		expected.add(4);
 		expected.add(3);
 		expected.add(2);
-		Assert.assertEquals(expected, actual);
+		Assertions.assertEquals(expected, actual);
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class TruncatingQueueTest {
 		List<Integer> expected = new ArrayList<>();
 		expected.add(2);
 		expected.add(3);
-		Assert.assertEquals(expected, actual);
+		Assertions.assertEquals(expected, actual);
 
 	}
 }

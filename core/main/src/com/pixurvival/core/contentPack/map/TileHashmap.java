@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
-import com.pixurvival.core.contentPack.validation.annotation.Required;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -18,8 +17,7 @@ public class TileHashmap implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Required
-	@ElementReference(depth = 3)
+	@ElementReference("<<<.heightmaps")
 	private Heightmap heightmap;
 
 	@Valid

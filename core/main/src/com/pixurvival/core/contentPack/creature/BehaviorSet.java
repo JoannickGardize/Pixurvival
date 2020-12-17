@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.validation.annotation.ElementCollection;
+import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class BehaviorSet extends IdentifiedElement implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	@ElementCollection(value = Behavior.class, isRoot = false)
+	@ElementList(value = Behavior.class)
 	private List<Behavior> behaviors = new ArrayList<>();
 
 	@Override

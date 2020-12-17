@@ -4,9 +4,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.core.contentPack.LongInterval;
+import com.pixurvival.core.contentPack.TimeInterval;
 
-public class TimeIntervalInput extends ElementEditor<LongInterval> {
+public class TimeIntervalInput extends ElementEditor<TimeInterval> {
 	private static final long serialVersionUID = 1L;
 
 	public TimeIntervalInput(String groupTitle) {
@@ -17,8 +17,8 @@ public class TimeIntervalInput extends ElementEditor<LongInterval> {
 
 		// Binding
 
-		bind(minInput, LongInterval::getMin, LongInterval::setMin);
-		bind(maxInput, LongInterval::getMax, LongInterval::setMax);
+		bind(minInput, TimeInterval::getMin, TimeInterval::setMin);
+		bind(maxInput, TimeInterval::getMax, TimeInterval::setMax);
 
 		// Layouting
 		setLayout(new GridBagLayout());

@@ -2,6 +2,8 @@ package com.pixurvival.core.contentPack.effect;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +22,8 @@ public class OffsetAngleEffect implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Angle relative to the source angle (target angle, or angle of the
-	 * ancestor effect). In radians.
+	 * Angle relative to the source angle (target angle, or angle of the ancestor
+	 * effect). In radians.
 	 */
 	private float offsetAngle = 0;
 
@@ -30,6 +32,7 @@ public class OffsetAngleEffect implements Serializable {
 	 */
 	private float randomAngle = 0;
 
+	@ElementReference
 	private Effect effect;
 
 	public OffsetAngleEffect(Effect effect) {

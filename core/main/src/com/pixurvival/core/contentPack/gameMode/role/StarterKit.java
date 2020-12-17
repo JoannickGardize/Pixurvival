@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
@@ -17,10 +20,23 @@ public class StarterKit implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Nullable
+	@ElementReference
 	private Item weaponItem;
+
+	@Nullable
+	@ElementReference
 	private Item clothingItem;
+
+	@Nullable
+	@ElementReference
 	private Item accessory1Item;
+
+	@Nullable
+	@ElementReference
 	private Item accessory2Item;
+
+	@Valid
 	private List<ItemStack> inventory = new ArrayList<>();
 
 	public void apply(PlayerEntity player) {

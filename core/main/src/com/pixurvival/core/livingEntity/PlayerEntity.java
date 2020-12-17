@@ -2,6 +2,7 @@ package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -37,6 +38,8 @@ import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
+import com.pixurvival.core.livingEntity.stats.StatListener;
+import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -141,7 +144,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	private void dropItemOnDeath(ItemStack itemStack) {
 		if (itemStack != null) {
 			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-			getWorld().getEntityPool().create(itemStackEntity);
+			getWorld().getEntityPool().addNew(itemStackEntity);
 			itemStackEntity.getPosition().set(getPosition());
 			itemStackEntity.spawnRandom();
 		}
@@ -323,12 +326,14 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
+		Collection<StatListener> healthListeners = getStats().get(StatType.MAX_HEALTH).removeListeners();
 		super.applyRepositoryUpdate(byteBuffer);
 		try (Input input = new Input(byteBuffer.array())) {
 			input.setPosition(byteBuffer.position());
 			inventory.set(INVENTORY_KRYO.readObject(input, PlayerInventory.class));
 			byteBuffer.position(input.position());
 		}
+		getStats().get(StatType.MAX_HEALTH).addListeners(healthListeners);
 	}
 
 	@Override

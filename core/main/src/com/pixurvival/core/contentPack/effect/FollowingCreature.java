@@ -1,6 +1,8 @@
 package com.pixurvival.core.contentPack.effect;
 
 import com.pixurvival.core.contentPack.creature.Creature;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -16,10 +18,14 @@ public class FollowingCreature extends FollowingElement {
 
 	private static final long serialVersionUID = 1L;
 
+	@ElementReference
 	private Creature creature;
 	private boolean owned = true;
+	@Valid
 	private StatFormula strengthBonus = new StatFormula();
+	@Valid
 	private StatFormula agilityBonus = new StatFormula();
+	@Valid
 	private StatFormula intelligenceBonus = new StatFormula();
 
 	@Override
@@ -35,7 +41,7 @@ public class FollowingCreature extends FollowingElement {
 		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(originStats));
 		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(originStats));
 		creatureEntity.getPosition().set(ancestor.getPosition());
-		ancestor.getWorld().getEntityPool().create(creatureEntity);
+		ancestor.getWorld().getEntityPool().addNew(creatureEntity);
 	}
 
 }
