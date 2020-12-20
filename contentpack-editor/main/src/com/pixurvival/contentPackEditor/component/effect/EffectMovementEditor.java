@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
@@ -19,7 +18,7 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 	private static final long serialVersionUID = 1L;
 
 	public EffectMovementEditor() {
-		super("effectMovementType", null);
+		super(EffectMovement.class, "effectMovementType", null);
 		LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
 	}
 
@@ -29,38 +28,38 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
 
 		// StaticEffectMovement
 		list.add(new ClassEntry(StaticEffectMovement.class, () -> {
-			FloatInput minDistanceInput = new FloatInput(Bounds.positive());
-			FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
-			bind(minDistanceInput, StaticEffectMovement::getMinDistance, StaticEffectMovement::setMinDistance, StaticEffectMovement.class);
-			bind(maxDistanceInput, StaticEffectMovement::getMaxDistance, StaticEffectMovement::setMaxDistance, StaticEffectMovement.class);
+			FloatInput minDistanceInput = new FloatInput();
+			FloatInput maxDistanceInput = new FloatInput();
+			bind(minDistanceInput, "minDistance", StaticEffectMovement.class);
+			bind(maxDistanceInput, "maxDistance", StaticEffectMovement.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput);
 		}));
 
 		// BoundEffectMovement
 		list.add(new ClassEntry(BoundEffectMovement.class, () -> {
-			FloatInput distanceInput = new FloatInput(Bounds.positive());
-			bind(distanceInput, BoundEffectMovement::getDistance, BoundEffectMovement::setDistance, BoundEffectMovement.class);
+			FloatInput distanceInput = new FloatInput();
+			bind(distanceInput, "distance", BoundEffectMovement.class);
 			return LayoutUtils.labelled("generic.distance", distanceInput);
 		}));
 
 		// LinearEffectMovement
 		list.add(new ClassEntry(LinearEffectMovement.class, () -> {
-			FloatInput speedInput = new FloatInput(Bounds.positive());
-			FloatInput initialDistanceInput = new FloatInput(Bounds.positive());
+			FloatInput speedInput = new FloatInput();
+			FloatInput initialDistanceInput = new FloatInput();
 			BooleanCheckBox destroyAtTargetPositionCheckBox = new BooleanCheckBox();
 			BooleanCheckBox relativeCheckBox = new BooleanCheckBox();
-			bind(speedInput, LinearEffectMovement::getSpeed, LinearEffectMovement::setSpeed, LinearEffectMovement.class);
-			bind(destroyAtTargetPositionCheckBox, LinearEffectMovement::isDestroyAtTargetPosition, LinearEffectMovement::setDestroyAtTargetPosition, LinearEffectMovement.class);
-			bind(relativeCheckBox, LinearEffectMovement::isRelative, LinearEffectMovement::setRelative, LinearEffectMovement.class);
-			bind(initialDistanceInput, LinearEffectMovement::getInitialDistance, LinearEffectMovement::setInitialDistance, LinearEffectMovement.class);
+			bind(speedInput, "speed", LinearEffectMovement.class);
+			bind(destroyAtTargetPositionCheckBox, "destroyAtTargetPosition", LinearEffectMovement.class);
+			bind(relativeCheckBox, "relative", LinearEffectMovement.class);
+			bind(initialDistanceInput, "initialDistance", LinearEffectMovement.class);
 			return LayoutUtils.createHorizontalLabelledBox("effectMovementEditor.destroyAtTargetPosition", destroyAtTargetPositionCheckBox, "effectMovementEditor.relative", relativeCheckBox,
 					"effectMovementEditor.initialDistance", initialDistanceInput, "statType.speed", speedInput);
 		}));
 
 		// BackToOriginEffectMovement
 		list.add(new ClassEntry(BackToOriginEffectMovement.class, () -> {
-			FloatInput speedInput = new FloatInput(Bounds.positive());
-			bind(speedInput, BackToOriginEffectMovement::getSpeed, BackToOriginEffectMovement::setSpeed, BackToOriginEffectMovement.class);
+			FloatInput speedInput = new FloatInput();
+			bind(speedInput, "speed", BackToOriginEffectMovement.class);
 			return LayoutUtils.labelled("statType.speed", speedInput);
 		}));
 

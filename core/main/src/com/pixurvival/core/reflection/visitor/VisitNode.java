@@ -75,6 +75,10 @@ public class VisitNode {
 	public String pathString() {
 		StringBuilder sb = new StringBuilder();
 		Iterator<VisitNode> it = getAncestorHierarchy().iterator();
+		it.next();
+		if (!it.hasNext()) {
+			return "";
+		}
 		sb.append(it.next().getKeyString());
 		while (it.hasNext()) {
 			sb.append('.');

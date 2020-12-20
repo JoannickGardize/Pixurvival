@@ -4,10 +4,9 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.NullableElementHelper;
@@ -23,15 +22,16 @@ public class MapLimitsEditor extends ElementEditor<MapLimits> {
 	private NullableElementHelper<MapLimits> nullableElementHelper = new NullableElementHelper<>(this);
 
 	public MapLimitsEditor() {
+		super(MapLimits.class);
 		BooleanCheckBox shrinkRandomlyCheckBox = new BooleanCheckBox();
-		FloatInput initialSizeInput = new FloatInput(Bounds.positive());
-		FloatInput initialDamageInput = new FloatInput(Bounds.positive());
+		FloatInput initialSizeInput = new FloatInput();
+		FloatInput initialDamageInput = new FloatInput();
 		ListEditor<MapLimitsAnchor> anchors = new VerticalListEditor<>(MapLimitsAnchorEditor::new, MapLimitsAnchor::new);
 
-		bind(shrinkRandomlyCheckBox, MapLimits::isShrinkRandomly, MapLimits::setShrinkRandomly);
-		bind(initialSizeInput, MapLimits::getInitialSize, MapLimits::setInitialSize);
-		bind(initialDamageInput, MapLimits::getInitialDamagePerSecond, MapLimits::setInitialDamagePerSecond);
-		bind(anchors, MapLimits::getAnchors, MapLimits::setAnchors);
+		bind(shrinkRandomlyCheckBox, "shrinkRandomly");
+		bind(initialSizeInput, "initialSize");
+		bind(initialDamageInput, "initialDamagePerSecond");
+		bind(anchors, "anchors");
 
 		JPanel contentPanel = nullableElementHelper.getNotNullPanel();
 		contentPanel.setLayout(new BorderLayout());
@@ -45,10 +45,5 @@ public class MapLimitsEditor extends ElementEditor<MapLimits> {
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
 		nullableElementHelper.onValueChanged();
-	}
-
-	@Override
-	public boolean isNullable() {
-		return true;
 	}
 }

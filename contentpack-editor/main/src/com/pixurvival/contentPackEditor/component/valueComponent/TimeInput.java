@@ -2,14 +2,6 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 
 public class TimeInput extends NumberInput<Long> {
 
-	public TimeInput(Bounds valueBounds) {
-		super(valueBounds);
-	}
-
-	public TimeInput() {
-		super(Bounds.positive());
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	@Override

@@ -5,10 +5,9 @@ import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.core.contentPack.sprite.FrameOffset;
 
@@ -17,17 +16,18 @@ public class FrameOffsetEditor extends ElementEditor<FrameOffset> {
 	private static final long serialVersionUID = 1L;
 
 	public FrameOffsetEditor() {
+		super(FrameOffset.class);
 
 		// Construction
 		setBorder(BorderFactory.createEtchedBorder());
-		IntegerInput offsetXInput = new IntegerInput(Bounds.positive());
-		IntegerInput offsetYInput = new IntegerInput(Bounds.positive());
+		IntegerInput offsetXInput = new IntegerInput();
+		IntegerInput offsetYInput = new IntegerInput();
 		BooleanCheckBox isBackCheckbox = new BooleanCheckBox();
 
 		// Binding
-		bind(offsetXInput, FrameOffset::getOffsetX, FrameOffset::setOffsetX);
-		bind(offsetYInput, FrameOffset::getOffsetY, FrameOffset::setOffsetY);
-		bind(isBackCheckbox, FrameOffset::isBack, FrameOffset::setBack);
+		bind(offsetXInput, "offsetX");
+		bind(offsetYInput, "offsetY");
+		bind(isBackCheckbox, "back");
 
 		// Layouting
 		setLayout(new GridBagLayout());

@@ -3,6 +3,7 @@ package com.pixurvival.core.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -116,5 +117,10 @@ public class ReflectionUtils {
 			currentType = currentType.getSuperclass();
 		}
 		throw new NoSuchFieldException("Field " + name + " does not exists in type " + type + " or its superclasses");
+	}
+
+	public static Class<?> getGenericTypeArgument(Field field) {
+		ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
 	}
 }

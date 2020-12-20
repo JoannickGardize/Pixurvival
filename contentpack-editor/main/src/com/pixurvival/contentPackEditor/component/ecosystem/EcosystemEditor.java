@@ -9,7 +9,6 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
-import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 
@@ -18,12 +17,13 @@ public class EcosystemEditor extends RootElementEditor<Ecosystem> {
 	private static final long serialVersionUID = 1L;
 
 	private ListEditor<StructureSpawner> structureSpawnersEditor = new VerticalListEditor<>(StructureSpawnerEditor::new, StructureSpawner::new, VerticalListEditor.VERTICAL);
-	private DarknessSpawnerEditor<DarknessSpawner> darknessSpawnerEditor = new DarknessSpawnerEditor<>();
+	private DarknessSpawnerEditor darknessSpawnerEditor = new DarknessSpawnerEditor();
 
 	public EcosystemEditor() {
+		super(Ecosystem.class);
 
-		bind(structureSpawnersEditor, Ecosystem::getStructureSpawners, Ecosystem::setStructureSpawners);
-		bind(darknessSpawnerEditor, Ecosystem::getDarknessSpawner, Ecosystem::setDarknessSpawner);
+		bind(structureSpawnersEditor, "structureSpawners");
+		bind(darknessSpawnerEditor, "darknessSpawner");
 
 		LayoutUtils.fill(this, structureSpawnersEditor);
 

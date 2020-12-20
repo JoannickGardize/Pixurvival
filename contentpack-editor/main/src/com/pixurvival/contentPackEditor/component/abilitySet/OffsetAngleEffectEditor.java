@@ -6,9 +6,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 
@@ -19,12 +19,13 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 	private ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class, true);
 
 	public OffsetAngleEffectEditor() {
+		super(OffsetAngleEffect.class);
 		AngleInput offsetAngleInput = new AngleInput();
 		AngleInput randomAngleInput = new AngleInput();
 
-		bind(offsetAngleInput, OffsetAngleEffect::getOffsetAngle, OffsetAngleEffect::setOffsetAngle);
-		bind(randomAngleInput, OffsetAngleEffect::getRandomAngle, OffsetAngleEffect::setRandomAngle);
-		bind(effectChooser, OffsetAngleEffect::getEffect, OffsetAngleEffect::setEffect);
+		bind(offsetAngleInput, "offsetAngle");
+		bind(randomAngleInput, "randomAngle");
+		bind(effectChooser, "effect");
 
 		setupPanel(this, effectChooser, offsetAngleInput, randomAngleInput);
 	}

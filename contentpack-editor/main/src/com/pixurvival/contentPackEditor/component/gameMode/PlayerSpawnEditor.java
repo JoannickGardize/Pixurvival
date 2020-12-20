@@ -9,7 +9,6 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -24,7 +23,7 @@ import com.pixurvival.core.util.Vector2;
 public class PlayerSpawnEditor extends InstanceChangingElementEditor<PlayerSpawn> {
 
 	public PlayerSpawnEditor() {
-		super("playerSpawnType");
+		super(PlayerSpawn.class, "playerSpawnType");
 
 		setLayout(new BorderLayout(5, 5));
 
@@ -38,13 +37,13 @@ public class PlayerSpawnEditor extends InstanceChangingElementEditor<PlayerSpawn
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> result = new ArrayList<>();
 		result.add(new ClassEntry(AutoSquarePlayerSpawn.class, () -> {
-			IntegerInput sizeInput = new IntegerInput(Bounds.positive());
-			PercentInput minFreeSpaceInput = new PercentInput(new Bounds(0, 1));
-			PercentInput maxFreeSpaceInput = new PercentInput(new Bounds(0, 1));
+			IntegerInput sizeInput = new IntegerInput();
+			PercentInput minFreeSpaceInput = new PercentInput();
+			PercentInput maxFreeSpaceInput = new PercentInput();
 
-			bind(sizeInput, AutoSquarePlayerSpawn::getSize, AutoSquarePlayerSpawn::setSize, AutoSquarePlayerSpawn.class);
-			bind(minFreeSpaceInput, AutoSquarePlayerSpawn::getMinFreeSpace, AutoSquarePlayerSpawn::setMinFreeSpace, AutoSquarePlayerSpawn.class);
-			bind(maxFreeSpaceInput, AutoSquarePlayerSpawn::getMaxFreeSpace, AutoSquarePlayerSpawn::setMaxFreeSpace, AutoSquarePlayerSpawn.class);
+			bind(sizeInput, "size", AutoSquarePlayerSpawn.class);
+			bind(minFreeSpaceInput, "minFreeSpace", AutoSquarePlayerSpawn.class);
+			bind(maxFreeSpaceInput, "maxFreeSpace", AutoSquarePlayerSpawn.class);
 
 			JPanel panel = new JPanel(new GridBagLayout());
 			GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
@@ -56,7 +55,7 @@ public class PlayerSpawnEditor extends InstanceChangingElementEditor<PlayerSpawn
 		}));
 		result.add(new ClassEntry(StaticPlayerSpawn.class, () -> {
 			ListEditor<Vector2> positionsEditor = new VerticalListEditor<>(Vector2Editor::new, Vector2::new, VerticalListEditor.HORIZONTAL);
-			bind(positionsEditor, StaticPlayerSpawn::getPositions, StaticPlayerSpawn::setPositions, StaticPlayerSpawn.class);
+			bind(positionsEditor, "positions", StaticPlayerSpawn.class);
 			return positionsEditor;
 		}));
 		return result;

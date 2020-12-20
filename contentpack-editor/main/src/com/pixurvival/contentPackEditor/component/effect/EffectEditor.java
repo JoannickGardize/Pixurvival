@@ -10,7 +10,6 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -31,6 +30,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
 	private static final long serialVersionUID = 1L;
 
 	public EffectEditor() {
+		super(Effect.class);
 
 		// Construction
 
@@ -41,8 +41,8 @@ public class EffectEditor extends RootElementEditor<Effect> {
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		EnumChooser<DrawDepth> drawDepthChooser = new EnumChooser<>(DrawDepth.class);
 		TimeInput durationInput = new TimeInput();
-		FloatInput entityCollisionRadiusInput = new FloatInput(Bounds.positive());
-		FloatInput mapCollisionRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput entityCollisionRadiusInput = new FloatInput();
+		FloatInput mapCollisionRadiusInput = new FloatInput();
 		EffectMovementEditor effectMovementEditor = new EffectMovementEditor();
 		ListEditor<EffectTarget> effectTargetsEditor = new VerticalListEditor<>(EffectTargetEditor::new, EffectTarget::new);
 		StatFormulaEditor repeatFollowingElementsEditor = new StatFormulaEditor();
@@ -54,18 +54,18 @@ public class EffectEditor extends RootElementEditor<Effect> {
 
 		// Binding
 
-		bind(spriteSheetChooser, Effect::getSpriteSheet, Effect::setSpriteSheet);
-		bind(orientationTypeChooser, Effect::getOrientation, Effect::setOrientation);
-		bind(solidCheckbox, Effect::isSolid, Effect::setSolid);
-		bind(durationInput, Effect::getDuration, Effect::setDuration);
-		bind(entityCollisionRadiusInput, Effect::getEntityCollisionRadius, Effect::setEntityCollisionRadius);
-		bind(mapCollisionRadiusInput, Effect::getMapCollisionRadius, Effect::setMapCollisionRadius);
-		bind(effectMovementEditor, Effect::getMovement, Effect::setMovement);
-		bind(effectTargetsEditor, Effect::getTargets, Effect::setTargets);
-		bind(followingElementsEditor, Effect::getDelayedFollowingElements, Effect::setDelayedFollowingElements);
-		bind(repeatFollowingElementsEditor, Effect::getRepeatFollowingElements, Effect::setRepeatFollowingElements);
-		bind(deathAlterations, Effect::getDeathAlterations, Effect::setDeathAlterations);
-		bind(drawDepthChooser, Effect::getDrawDepth, Effect::setDrawDepth);
+		bind(spriteSheetChooser, "spriteSheet");
+		bind(orientationTypeChooser, "orientation");
+		bind(solidCheckbox, "solid");
+		bind(durationInput, "duration");
+		bind(entityCollisionRadiusInput, "entityCollisionRadius");
+		bind(mapCollisionRadiusInput, "mapCollisionRadius");
+		bind(effectMovementEditor, "movement");
+		bind(effectTargetsEditor, "targets");
+		bind(followingElementsEditor, "delayedFollowingElements");
+		bind(repeatFollowingElementsEditor, "repeatFollowingElements");
+		bind(deathAlterations, "deathAlterations");
+		bind(drawDepthChooser, "drawDepth");
 
 		// Layouting
 		JTabbedPane tabbedPane = new JTabbedPane();

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.util.Array2D;
 import com.pixurvival.core.contentPack.sprite.Frame;
 
@@ -18,6 +19,7 @@ public class ElementEditorTablePanel<T extends Frame> extends ElementEditor<List
 	private BiFunction<Integer, Integer, ElementEditor<T>> cellProducer;
 
 	public ElementEditorTablePanel(BiFunction<Integer, Integer, ElementEditor<T>> cellProducer) {
+		super(List.class);
 		this.cellProducer = cellProducer;
 	}
 

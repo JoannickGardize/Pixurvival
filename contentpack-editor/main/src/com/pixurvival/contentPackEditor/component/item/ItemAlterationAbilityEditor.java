@@ -9,8 +9,9 @@ public class ItemAlterationAbilityEditor extends AlterationAbilityEditor<ItemAlt
 	private static final long serialVersionUID = 1L;
 
 	public ItemAlterationAbilityEditor(boolean useScrollPane) {
+		super(ItemAlterationAbility.class);
 		ItemStackEditor ammunitionEditor = new ItemStackEditor(false);
-		bind(ammunitionEditor, ItemAlterationAbility::getAmmunition, ItemAlterationAbility::setAmmunition);
+		bind(ammunitionEditor, "ammunition");
 		build(useScrollPane, "alterationAbilityEditor.ammunition", ammunitionEditor);
 	}
 }

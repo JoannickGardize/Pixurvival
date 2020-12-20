@@ -3,10 +3,9 @@ package com.pixurvival.contentPackEditor.component.mapProvider;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.StringInput;
 import com.pixurvival.core.contentPack.map.Heightmap;
@@ -16,20 +15,21 @@ public class HeightmapEditor extends ElementEditor<Heightmap> {
 	private static final long serialVersionUID = 1L;
 
 	public HeightmapEditor() {
+		super(Heightmap.class);
 
 		// Construction
 
 		StringInput nameInput = new StringInput(1);
-		IntegerInput numberOfOctaveInput = new IntegerInput(Bounds.min(1));
-		FloatInput persistenceInput = new FloatInput(Bounds.positive());
-		FloatInput scaleInput = new FloatInput(Bounds.positive());
+		IntegerInput numberOfOctaveInput = new IntegerInput();
+		FloatInput persistenceInput = new FloatInput();
+		FloatInput scaleInput = new FloatInput();
 
 		// Binding
 
-		bind(nameInput, Heightmap::getName, Heightmap::setName);
-		bind(numberOfOctaveInput, Heightmap::getNumberOfoctaves, Heightmap::setNumberOfoctaves);
-		bind(persistenceInput, Heightmap::getPersistence, Heightmap::setPersistence);
-		bind(scaleInput, Heightmap::getScale, Heightmap::setScale);
+		bind(nameInput, "name");
+		bind(numberOfOctaveInput, "numberOfoctaves");
+		bind(persistenceInput, "persistence");
+		bind(scaleInput, "scale");
 
 		// Layouting
 

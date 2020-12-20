@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 
 import lombok.Getter;
@@ -19,9 +20,6 @@ public class NullableElementHelper<T> {
 	private @Getter JPanel notNullPanel = new JPanel();
 
 	public NullableElementHelper(ElementEditor<T> elementEditor) {
-		if (!elementEditor.isNullable()) {
-			throw new IllegalArgumentException("The elementEditor' value must be nullable");
-		}
 		this.elementEditor = elementEditor;
 
 	}

@@ -5,8 +5,8 @@ import java.util.Collections;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.NullableElementHelper;
@@ -23,12 +23,12 @@ public class RolesEditor extends ElementEditor<Roles> {
 	private NullableElementHelper<Roles> nullableElementHelper = new NullableElementHelper<>(this);
 
 	public RolesEditor() {
+		super(Roles.class);
 		EnumChooser<SelectionMode> selectionModeChooser = new EnumChooser<>(SelectionMode.class, "rolesEditor.selectionMode");
 		ListEditor<Role> roleListEditor = new VerticalListEditor<>(() -> new RoleEditor(() -> getValue() == null ? Collections.emptyList() : getValue().getRoles()), Role::new);
-		roleListEditor.setOneRequired(true);
 
-		bind(selectionModeChooser, Roles::getSelectionMode, Roles::setSelectionMode);
-		bind(roleListEditor, Roles::getRoles, Roles::setRoles);
+		bind(selectionModeChooser, "selectionMode");
+		bind(roleListEditor, "roles");
 
 		JPanel contentPanel = nullableElementHelper.getNotNullPanel();
 		contentPanel.setLayout(new BorderLayout(5, 5));
@@ -41,10 +41,5 @@ public class RolesEditor extends ElementEditor<Roles> {
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
 		nullableElementHelper.onValueChanged();
-	}
-
-	@Override
-	public boolean isNullable() {
-		return true;
 	}
 }

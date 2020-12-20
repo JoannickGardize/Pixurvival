@@ -19,7 +19,7 @@ public class MapProviderEditor extends InstanceChangingRootElementEditor<MapProv
 	private static final long serialVersionUID = 1L;
 
 	public MapProviderEditor() {
-		super("mapProviderType");
+		super(MapProvider.class, "mapProviderType");
 		setLayout(new BorderLayout(0, LayoutUtils.DEFAULT_GAP));
 		add(LayoutUtils.labelled("generic.type", getTypeChooser()), BorderLayout.NORTH);
 		getSpecificPartPanel().setBorder(LayoutUtils.createBorder());

@@ -14,6 +14,7 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.Version;
 
+// TODO Use ElementEditor ?
 public class IdentifierDialog extends EditorDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -33,8 +34,7 @@ public class IdentifierDialog extends EditorDialog {
 
 		versionField.getDocument().addDocumentListener(new DocumentAdapter(e -> {
 			if (versionField.getText().matches("\\d+\\.\\d+")) {
-				FileService.getInstance().getCurrentContentPack().getIdentifier()
-						.setVersion(new Version(versionField.getText()));
+				FileService.getInstance().getCurrentContentPack().getIdentifier().setVersion(new Version(versionField.getText()));
 				versionField.setForeground(Color.BLACK);
 			} else {
 				versionField.setForeground(Color.RED);

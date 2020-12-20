@@ -31,6 +31,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 	private ElementChooserButton<MapProvider> mapGeneratorChooser = new ElementChooserButton<>(MapProvider.class);
 
 	public GameModeEditor() {
+		super(GameMode.class);
 
 		IntegerIntervalEditor teamNumberInterval = new IntegerIntervalEditor("gameMode.teamNumber");
 		IntegerIntervalEditor teamSizeInterval = new IntegerIntervalEditor("gameMode.teamSize");
@@ -49,16 +50,16 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 		// Binding
 
-		bind(teamNumberInterval, GameMode::getTeamNumberInterval, GameMode::setTeamNumberInterval);
-		bind(teamSizeInterval, GameMode::getTeamSizeInterval, GameMode::setTeamSizeInterval);
-		bind(dayCycleDefinitionEditor, GameMode::getDayCycle, GameMode::setDayCycle);
-		bind(ecosystemChooser, GameMode::getEcosystem, GameMode::setEcosystem);
-		bind(mapGeneratorChooser, GameMode::getMapProvider, GameMode::setMapProvider);
-		bind(playerSpawnEditor, GameMode::getPlayerSpawn, GameMode::setPlayerSpawn);
-		bind(eventsEditor, GameMode::getEvents, GameMode::setEvents);
-		bind(endGameConditionsEditor, GameMode::getEndGameConditions, GameMode::setEndGameConditions);
-		bind(mapLimitsEditor, GameMode::getMapLimits, GameMode::setMapLimits);
-		bind(rolesEditor, GameMode::getRoles, GameMode::setRoles);
+		bind(teamNumberInterval, "teamNumberInterval");
+		bind(teamSizeInterval, "teamSizeInterval");
+		bind(dayCycleDefinitionEditor, "dayCycle");
+		bind(ecosystemChooser, "ecosystem");
+		bind(mapGeneratorChooser, "mapProvider");
+		bind(playerSpawnEditor, "playerSpawn");
+		bind(eventsEditor, "events");
+		bind(endGameConditionsEditor, "endGameConditions");
+		bind(mapLimitsEditor, "mapLimits");
+		bind(rolesEditor, "roles");
 
 		// Layouting
 

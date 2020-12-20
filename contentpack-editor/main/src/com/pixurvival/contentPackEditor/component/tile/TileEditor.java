@@ -12,7 +12,6 @@ import com.pixurvival.contentPackEditor.component.AnimationPreview;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
@@ -34,13 +33,14 @@ public class TileEditor extends RootElementEditor<Tile> {
 	private AnimationPreview imagePreview = new AnimationPreview();
 
 	public TileEditor() {
+		super(Tile.class);
 
 		// Construction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 		EventManager.getInstance().register(this);
 		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new, VerticalListEditor.HORIZONTAL);
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
-		PercentInput velocityFactorInput = new PercentInput(Bounds.positive());
+		PercentInput velocityFactorInput = new PercentInput();
 		imagePreview.setAnimation(new Animation());
 		SpriteSheet tileSpriteSheet = new SpriteSheet();
 		tileSpriteSheet.setWidth(GameConstants.PIXEL_PER_UNIT);
@@ -49,10 +49,10 @@ public class TileEditor extends RootElementEditor<Tile> {
 		LayoutUtils.setMinimumSize(imagePreview, 32, 32);
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
-		bind(frameList, Tile::getFrames, Tile::setFrames);
-		bind(solidCheckBox, Tile::isSolid, Tile::setSolid);
-		bind(velocityFactorInput, Tile::getVelocityFactor, Tile::setVelocityFactor);
+		bind(imageField, "image").getter(v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage())).setter((v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(frameList, "frames");
+		bind(solidCheckBox, "solid");
+		bind(velocityFactorInput, "velocityFactor");
 
 		// Layouting
 		setLayout(new BorderLayout(10, 5));

@@ -1,5 +1,7 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
+import java.lang.annotation.Annotation;
+
 import javax.swing.JLabel;
 
 public interface ValueComponent<T> {
@@ -24,4 +26,15 @@ public interface ValueComponent<T> {
 	JLabel getAssociatedLabel();
 
 	void addValueChangeListener(ValueChangeListener<T> listener);
+
+	/**
+	 * Configure this ValueComponent to match the given validation annotation from
+	 * the field this object represents. Does nothing by default.
+	 * 
+	 * @param annotation
+	 *            the annotation to consider
+	 */
+	default void configure(Annotation annotation) {
+		// Nothing by default
+	}
 }

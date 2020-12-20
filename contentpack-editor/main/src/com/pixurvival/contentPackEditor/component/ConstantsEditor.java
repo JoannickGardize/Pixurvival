@@ -2,12 +2,11 @@ package com.pixurvival.contentPackEditor.component;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementAttribute;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.event.ContentPackConstantChangedEvent;
@@ -26,6 +25,7 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 	private ElementChooserButton<Tile> outsideTileChooser = new ElementChooserButton<>(Tile.class);
 
 	public ConstantsEditor() {
+		super(Constants.class);
 		EventManager.getInstance().register(this);
 		defaultCharacterChooser.getSearchPopup().setModal(true);
 		outsideTileChooser.getSearchPopup().setModal(true);
@@ -33,9 +33,9 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 		TimeInput tileAnimationSpeedInput = new TimeInput();
 
 		// Binding
-		bind(defaultCharacterChooser, Constants::getDefaultCharacter, Constants::setDefaultCharacter);
-		bind(outsideTileChooser, Constants::getOutsideTile, Constants::setOutsideTile);
-		bind(tileAnimationSpeedInput, Constants::getTileAnimationSpeed, Constants::setTileAnimationSpeed);
+		bind(defaultCharacterChooser, "defaultCharacter");
+		bind(outsideTileChooser, "outsideTile");
+		bind(tileAnimationSpeedInput, "tileAnimationSpeed");
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -51,8 +51,8 @@ public class ConstantsEditor extends ElementEditor<Constants> {
 	}
 
 	@Override
-	public <T> void bind(ValueComponent<? extends T> component, Function<Constants, T> getter, BiConsumer<Constants, T> setter) {
+	public <T> ElementAttribute<Constants, T> bind(ValueComponent<T> component, String attributeName) {
 		component.addValueChangeListener(v -> EventManager.getInstance().fire(new ContentPackConstantChangedEvent(getValue())));
-		super.bind(component, getter, setter);
+		return super.bind(component, attributeName);
 	}
 }

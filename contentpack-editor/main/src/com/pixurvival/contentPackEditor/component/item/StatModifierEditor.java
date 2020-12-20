@@ -5,8 +5,8 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
@@ -21,6 +21,7 @@ public class StatModifierEditor extends ElementEditor<StatModifier> {
 	private boolean programmaticChange = false;
 
 	public StatModifierEditor() {
+		super(StatModifier.class);
 
 		// Construction
 
@@ -31,10 +32,10 @@ public class StatModifierEditor extends ElementEditor<StatModifier> {
 
 		// Binding
 
-		bind(statTypeChooser, StatModifier::getStatType, StatModifier::setStatType);
-		bind(typeChooser, StatModifier::getOperationType, StatModifier::setOperationType);
-		bind(valueInput, StatModifier::getValue, StatModifier::setValue);
-		bind(valueAsPercent, StatModifier::getValue, StatModifier::setValue);
+		bind(statTypeChooser, "statType");
+		bind(typeChooser, "operationType");
+		bind(valueInput, "value");
+		bind(valueAsPercent, "value");
 
 		// Layouting
 

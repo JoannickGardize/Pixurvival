@@ -11,7 +11,6 @@ import com.pixurvival.contentPackEditor.component.item.StatModifierEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -51,10 +50,10 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 	}
 
 	public AlterationEditor(boolean showDelayedAlteration, AlterationTarget... targetElements) {
-		super("alterationType", showDelayedAlteration);
+		super(Alteration.class, "alterationType", showDelayedAlteration);
 		if (targetElements.length > 0) {
 			EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, targetElements);
-			bind(alterationTargetChooser, Alteration::getTargetType, Alteration::setTargetType);
+			bind(alterationTargetChooser, "targetType");
 			LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "alterationEditor.applyTo", alterationTargetChooser), getSpecificPartPanel());
 		} else {
 			LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
@@ -69,28 +68,28 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// InstantDamageAlteration
 		entries.add(new ClassEntry(InstantDamageAlteration.class, () -> {
 			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
-			bind(damageAmountEditor, InstantDamageAlteration::getAmount, InstantDamageAlteration::setAmount, InstantDamageAlteration.class);
+			bind(damageAmountEditor, "amount", InstantDamageAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor));
 		}));
 
 		// ContinuousDamageAlteration
 		entries.add(new ClassEntry(ContinuousDamageAlteration.class, () -> {
 			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
-			bind(damageAmountEditor, ContinuousDamageAlteration::getDamagePerSecond, ContinuousDamageAlteration::setDamagePerSecond, ContinuousDamageAlteration.class);
+			bind(damageAmountEditor, "damagePerSecond", ContinuousDamageAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor));
 		}));
 
 		// InstantHealAlteration
 		entries.add(new ClassEntry(InstantHealAlteration.class, () -> {
 			StatFormulaEditor healAmountEditor = new StatFormulaEditor();
-			bind(healAmountEditor, InstantHealAlteration::getAmount, InstantHealAlteration::setAmount, InstantHealAlteration.class);
+			bind(healAmountEditor, "amount", InstantHealAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", healAmountEditor));
 		}));
 
 		// InstantEatAlteration
 		entries.add(new ClassEntry(InstantEatAlteration.class, () -> {
 			StatFormulaEditor eatAmountEditor = new StatFormulaEditor();
-			bind(eatAmountEditor, InstantEatAlteration::getAmount, InstantEatAlteration::setAmount, InstantEatAlteration.class);
+			bind(eatAmountEditor, "amount", InstantEatAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", eatAmountEditor));
 		}));
 
@@ -99,9 +98,9 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			TimeInput durationInput = new TimeInput();
 			EnumChooser<PersistentAlteration.StackPolicy> stackPolicyChooser = new EnumChooser<>(PersistentAlteration.StackPolicy.class);
 			StatModifierEditor statModifierEditor = new StatModifierEditor();
-			bind(durationInput, StatAlteration::getDuration, StatAlteration::setDuration, StatAlteration.class);
-			bind(stackPolicyChooser, StatAlteration::getStackPolicy, StatAlteration::setStackPolicy, StatAlteration.class);
-			bind(statModifierEditor, StatAlteration::getStatModifier, StatAlteration::setStatModifier, StatAlteration.class);
+			bind(durationInput, "duration", StatAlteration.class);
+			bind(stackPolicyChooser, "stackPolicy", StatAlteration.class);
+			bind(statModifierEditor, "statModifier", StatAlteration.class);
 			JPanel statAlterationPanel = new JPanel(new BorderLayout());
 			statAlterationPanel.add(LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.stackPolicy", stackPolicyChooser), BorderLayout.WEST);
 			statAlterationPanel.add(statModifierEditor, BorderLayout.CENTER);
@@ -116,12 +115,12 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			AngleInput relativeAngleInput = new AngleInput();
 			AngleInput randomAngleInput = new AngleInput();
 			StatFormulaEditor speedEditor = new StatFormulaEditor();
-			bind(durationInput, FixedMovementAlteration::getDuration, FixedMovementAlteration::setDuration, FixedMovementAlteration.class);
-			bind(sourceTypeChooser, FixedMovementAlteration::getSourceType, FixedMovementAlteration::setSourceType, FixedMovementAlteration.class);
-			bind(sourceDirectionChooser, FixedMovementAlteration::getSourceDirection, FixedMovementAlteration::setSourceDirection, FixedMovementAlteration.class);
-			bind(relativeAngleInput, FixedMovementAlteration::getRelativeAngle, FixedMovementAlteration::setRelativeAngle, FixedMovementAlteration.class);
-			bind(randomAngleInput, FixedMovementAlteration::getRandomAngle, FixedMovementAlteration::setRandomAngle, FixedMovementAlteration.class);
-			bind(speedEditor, FixedMovementAlteration::getSpeed, FixedMovementAlteration::setSpeed, FixedMovementAlteration.class);
+			bind(durationInput, "duration", FixedMovementAlteration.class);
+			bind(sourceTypeChooser, "sourceType", FixedMovementAlteration.class);
+			bind(sourceDirectionChooser, "sourceDirection", FixedMovementAlteration.class);
+			bind(relativeAngleInput, "relativeAngle", FixedMovementAlteration.class);
+			bind(randomAngleInput, "randomAngle", FixedMovementAlteration.class);
+			bind(speedEditor, "speed", FixedMovementAlteration.class);
 			JPanel fmaPanel = new JPanel();
 			LayoutUtils.addHorizontally(fmaPanel, LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "generic.source", sourceTypeChooser),
 					LayoutUtils.createVerticalLabelledBox("offsetAngleEffect.offsetAngle", relativeAngleInput, "generic.randomAngle", randomAngleInput),
@@ -132,14 +131,14 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// StunAlteration
 		entries.add(new ClassEntry(StunAlteration.class, () -> {
 			TimeInput durationInput = new TimeInput();
-			bind(durationInput, StunAlteration::getDuration, StunAlteration::setDuration, StunAlteration.class);
+			bind(durationInput, "duration", StunAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
 		}));
 
 		// InvincibleAlteration
 		entries.add(new ClassEntry(InvincibleAlteration.class, () -> {
 			TimeInput durationInput = new TimeInput();
-			bind(durationInput, InvincibleAlteration::getDuration, InvincibleAlteration::setDuration, InvincibleAlteration.class);
+			bind(durationInput, "duration", InvincibleAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
 		}));
 
@@ -151,8 +150,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			entries.add(new ClassEntry(DelayedAlteration.class, () -> {
 				TimeInput delayInput = new TimeInput();
 				AlterationEditor alterationEditor = new AlterationEditor(false);
-				bind(delayInput, DelayedAlteration::getDuration, DelayedAlteration::setDuration, DelayedAlteration.class);
-				bind(alterationEditor, DelayedAlteration::getAlteration, DelayedAlteration::setAlteration, DelayedAlteration.class);
+				bind(delayInput, "duration", DelayedAlteration.class);
+				bind(alterationEditor, "alteration", DelayedAlteration.class);
 				JPanel panel = new JPanel(new BorderLayout());
 				panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
 				panel.add(alterationEditor, BorderLayout.CENTER);
@@ -161,12 +160,12 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 			// RepeatAlteration
 			entries.add(new ClassEntry(RepeatAlteration.class, () -> {
-				IntegerInput numberOfRepeatInput = new IntegerInput(Bounds.positive());
+				IntegerInput numberOfRepeatInput = new IntegerInput();
 				TimeInput intervalInput = new TimeInput();
 				AlterationEditor alterationEditor = new AlterationEditor(false);
-				bind(numberOfRepeatInput, RepeatAlteration::getNumberOfRepeat, RepeatAlteration::setNumberOfRepeat, RepeatAlteration.class);
-				bind(intervalInput, RepeatAlteration::getInterval, RepeatAlteration::setInterval, RepeatAlteration.class);
-				bind(alterationEditor, RepeatAlteration::getAlteration, RepeatAlteration::setAlteration, RepeatAlteration.class);
+				bind(numberOfRepeatInput, "numberOfRepeat", RepeatAlteration.class);
+				bind(intervalInput, "interval", RepeatAlteration.class);
+				bind(alterationEditor, "alteration", RepeatAlteration.class);
 				JPanel panel = new JPanel(new BorderLayout());
 				panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
 				panel.add(alterationEditor);
@@ -177,14 +176,14 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// FollowingElementAlteration
 		entries.add(new ClassEntry(FollowingElementAlteration.class, () -> {
 			FollowingElementEditor followingElementEditor = new FollowingElementEditor();
-			bind(followingElementEditor, FollowingElementAlteration::getFollowingElement, FollowingElementAlteration::setFollowingElement, FollowingElementAlteration.class);
+			bind(followingElementEditor, "followingElement", FollowingElementAlteration.class);
 			return LayoutUtils.single(followingElementEditor);
 		}));
 
 		// SilenceAlteration
 		entries.add(new ClassEntry(SilenceAlteration.class, () -> {
 			TimeInput durationInput = new TimeInput();
-			bind(durationInput, SilenceAlteration::getDuration, SilenceAlteration::setDuration, SilenceAlteration.class);
+			bind(durationInput, "duration", SilenceAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.duration", durationInput));
 		}));
 
@@ -192,8 +191,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		entries.add(new ClassEntry(OverridingSpriteSheetAlteration.class, () -> {
 			TimeInput durationInput = new TimeInput();
 			ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
-			bind(durationInput, OverridingSpriteSheetAlteration::getDuration, OverridingSpriteSheetAlteration::setDuration, OverridingSpriteSheetAlteration.class);
-			bind(spriteSheetChooser, OverridingSpriteSheetAlteration::getSpriteSheet, OverridingSpriteSheetAlteration::setSpriteSheet, OverridingSpriteSheetAlteration.class);
+			bind(durationInput, "duration", OverridingSpriteSheetAlteration.class);
+			bind(spriteSheetChooser, "spriteSheet", OverridingSpriteSheetAlteration.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.duration", durationInput, "elementType.spriteSheet", spriteSheetChooser);
 		}));
 
@@ -204,9 +203,9 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			itemStacksEditor.setBorder(LayoutUtils.createGroupBorder("alterationEditor.chooseItemList"));
 			BooleanCheckBox dropRemainderCheckbox = new BooleanCheckBox();
 
-			bind(repeatEditor, AddItemAlteration::getRepeat, AddItemAlteration::setRepeat, AddItemAlteration.class);
-			bind(itemStacksEditor, AddItemAlteration::getItemStacks, AddItemAlteration::setItemStacks, AddItemAlteration.class);
-			bind(dropRemainderCheckbox, AddItemAlteration::isDropRemainder, AddItemAlteration::setDropRemainder, AddItemAlteration.class);
+			bind(repeatEditor, "repeat", AddItemAlteration.class);
+			bind(itemStacksEditor, "itemStacks", AddItemAlteration.class);
+			bind(dropRemainderCheckbox, "dropRemainder", AddItemAlteration.class);
 
 			return LayoutUtils.createVerticalBox(LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("generic.repeat", repeatEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox)),
 					itemStacksEditor);
@@ -215,7 +214,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// PlaySoundAlteration
 		entries.add(new ClassEntry(PlaySoundAlteration.class, () -> {
 			EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
-			bind(soundPresetChooser, PlaySoundAlteration::getPreset, PlaySoundAlteration::setPreset, PlaySoundAlteration.class);
+			bind(soundPresetChooser, "preset", PlaySoundAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser));
 		}));
 

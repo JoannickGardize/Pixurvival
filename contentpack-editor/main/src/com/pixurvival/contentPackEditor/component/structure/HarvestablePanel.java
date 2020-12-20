@@ -35,8 +35,8 @@ public class HarvestablePanel extends StructureSpecificPartPanel {
 
 	@Override
 	public void bindTo(StructureEditor structureEditor) {
-		structureEditor.bind(harvestingTimeInput, HarvestableStructure::getHarvestingTime, HarvestableStructure::setHarvestingTime, HarvestableStructure.class);
-		structureEditor.bind(rewardChooser, HarvestableStructure::getItemReward, HarvestableStructure::setItemReward, HarvestableStructure.class);
-		structureEditor.bind(regrowthTimeEditor, HarvestableStructure::getRegrowthTime, HarvestableStructure::setRegrowthTime, HarvestableStructure.class);
+		structureEditor.bind(harvestingTimeInput, "harvestingTime", HarvestableStructure.class);
+		structureEditor.bind(rewardChooser, "itemReward", HarvestableStructure.class);
+		structureEditor.bind(regrowthTimeEditor, "regrowthTime", HarvestableStructure.class);
 	}
 }

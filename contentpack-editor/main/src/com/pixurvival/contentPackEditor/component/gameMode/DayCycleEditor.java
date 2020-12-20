@@ -17,7 +17,7 @@ public class DayCycleEditor extends InstanceChangingElementEditor<DayCycle> {
 	private static final long serialVersionUID = 1L;
 
 	public DayCycleEditor() {
-		super("dayCycleType", null);
+		super(DayCycle.class, "dayCycleType", null);
 		LayoutUtils.addHorizontally(this, getTypeChooser(), getSpecificPartPanel());
 	}
 
@@ -28,8 +28,8 @@ public class DayCycleEditor extends InstanceChangingElementEditor<DayCycle> {
 		classEntries.add(new ClassEntry(DayNightCycle.class, () -> {
 			TimeInput dayDurationInput = new TimeInput();
 			TimeInput nightDurationInput = new TimeInput();
-			bind(dayDurationInput, DayNightCycle::getDayDuration, DayNightCycle::setDayDuration, DayNightCycle.class);
-			bind(nightDurationInput, DayNightCycle::getNightDuration, DayNightCycle::setNightDuration, DayNightCycle.class);
+			bind(dayDurationInput, "dayDuration", DayNightCycle.class);
+			bind(nightDurationInput, "nightDuration", DayNightCycle.class);
 			return LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("dayNightCycle.dayDuration", dayDurationInput, "dayNightCycle.nightDuration", nightDurationInput));
 		}));
 		return classEntries;

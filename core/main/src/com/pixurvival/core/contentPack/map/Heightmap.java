@@ -16,7 +16,7 @@ public class Heightmap extends IdentifiedElement implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Bounds(min = 1)
-	private int numberOfoctaves;
+	private int numberOfoctaves = 1;
 
 	@Bounds(min = 0)
 	private float persistence;

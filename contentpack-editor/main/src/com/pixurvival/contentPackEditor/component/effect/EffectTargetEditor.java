@@ -2,9 +2,9 @@ package com.pixurvival.contentPackEditor.component.effect;
 
 import java.awt.BorderLayout;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
@@ -19,6 +19,7 @@ public class EffectTargetEditor extends ElementEditor<EffectTarget> {
 	private static final long serialVersionUID = 1L;
 
 	public EffectTargetEditor() {
+		super(EffectTarget.class);
 
 		// Construction
 		EnumChooser<TargetType> targetTypeChooser = new EnumChooser<>(TargetType.class);
@@ -26,9 +27,9 @@ public class EffectTargetEditor extends ElementEditor<EffectTarget> {
 		ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(AlterationTarget.values()), InstantDamageAlteration::new, ListEditor.HORIZONTAL, false);
 
 		// Binding
-		bind(targetTypeChooser, EffectTarget::getTargetType, EffectTarget::setTargetType);
-		bind(destroyCheckBox, EffectTarget::isDestroyWhenCollide, EffectTarget::setDestroyWhenCollide);
-		bind(alterationsEditor, EffectTarget::getAlterations, EffectTarget::setAlterations);
+		bind(targetTypeChooser, "targetType");
+		bind(destroyCheckBox, "destroyWhenCollide");
+		bind(alterationsEditor, "alterations");
 
 		// Layouting
 		alterationsEditor.setBorder(LayoutUtils.createGroupBorder("effectTargetEditor.alterations"));

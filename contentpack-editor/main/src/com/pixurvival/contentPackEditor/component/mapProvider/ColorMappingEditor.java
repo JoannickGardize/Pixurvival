@@ -4,10 +4,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ColorInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ColorPanel;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.map.ColorMapping;
 import com.pixurvival.core.util.CaseUtils;
@@ -22,10 +22,11 @@ public class ColorMappingEditor<T extends IdentifiedElement> extends ElementEdit
 	private ColorPanel colorPanel = new ColorPanel();
 
 	public ColorMappingEditor(Class<T> elementType) {
+		super(ColorMapping.class);
 		elementChooser = new ElementChooserButton<>(elementType);
 
-		bind(elementChooser, ColorMapping::getElement, ColorMapping::setElement);
-		bind(colorPanel.getColorInput(), ColorMapping::getColor, ColorMapping::setColor);
+		bind(elementChooser, "element");
+		bind(colorPanel.getColorInput(), "color");
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();

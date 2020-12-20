@@ -6,9 +6,8 @@ import java.util.function.Supplier;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
@@ -23,25 +22,26 @@ public class RoleEditor extends ElementEditor<Role> {
 	private static final long serialVersionUID = 1L;
 
 	public RoleEditor(Supplier<Collection<Role>> roleCollectionSupplier) {
+		super(Role.class);
 		StringInput nameInput = new StringInput(1);
 		EnumChooser<Visibility> teammatesVisibilityChoooser = new EnumChooser<>(Visibility.class, VISIBILITY_TRANSLATION_PREFFIX);
 		EnumChooser<Visibility> enemiesVisibilityChoooser = new EnumChooser<>(Visibility.class, VISIBILITY_TRANSLATION_PREFFIX);
-		IntegerInput minimumPerTeamInput = new IntegerInput(Bounds.positive());
-		IntegerInput maximumPerTeamInput = new IntegerInput(Bounds.positive());
-		PercentInput recommandedRatioPerTeamInput = new PercentInput(Bounds.positive());
+		IntegerInput minimumPerTeamInput = new IntegerInput();
+		IntegerInput maximumPerTeamInput = new IntegerInput();
+		PercentInput recommandedRatioPerTeamInput = new PercentInput();
 		StarterKitEditor starterKitEditor = new StarterKitEditor();
 		starterKitEditor.setBorder(LayoutUtils.createGroupBorder("roleEditor.starterKit"));
 		WinConditionEditor winConditionEditor = new WinConditionEditor(roleCollectionSupplier);
 		winConditionEditor.setBorder(LayoutUtils.createGroupBorder("roleEditor.winCondition"));
 
-		bind(nameInput, Role::getName, Role::setName);
-		bind(teammatesVisibilityChoooser, Role::getTeammatesVisiblity, Role::setTeammatesVisiblity);
-		bind(enemiesVisibilityChoooser, Role::getEnemiesVisiblity, Role::setEnemiesVisiblity);
-		bind(minimumPerTeamInput, Role::getMinimumPerTeam, Role::setMinimumPerTeam);
-		bind(maximumPerTeamInput, Role::getMaximumPerTeam, Role::setMaximumPerTeam);
-		bind(recommandedRatioPerTeamInput, Role::getRecommandedRatioPerTeam, Role::setRecommandedRatioPerTeam);
-		bind(starterKitEditor, Role::getStarterKit, Role::setStarterKit);
-		bind(winConditionEditor, Role::getWinCondition, Role::setWinCondition);
+		bind(nameInput, "name");
+		bind(teammatesVisibilityChoooser, "teammatesVisiblity");
+		bind(enemiesVisibilityChoooser, "enemiesVisiblity");
+		bind(minimumPerTeamInput, "minimumPerTeam");
+		bind(maximumPerTeamInput, "maximumPerTeam");
+		bind(recommandedRatioPerTeamInput, "recommandedRatioPerTeam");
+		bind(starterKitEditor, "starterKit");
+		bind(winConditionEditor, "winCondition");
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(LayoutUtils.single(LayoutUtils.labelled("generic.name", nameInput)));

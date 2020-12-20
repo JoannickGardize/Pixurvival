@@ -19,13 +19,13 @@ import com.pixurvival.core.contentPack.gameMode.event.Event;
 public class EventEditor extends InstanceChangingElementEditor<Event> {
 
 	public EventEditor() {
-		super("eventType", null);
+		super(Event.class, "eventType", null);
 
 		TimeInput startTimeInput = new TimeInput();
 		TimeInput repeatTimeInput = new TimeInput();
 
-		bind(startTimeInput, Event::getStartTime, Event::setStartTime);
-		bind(repeatTimeInput, Event::getRepeatTime, Event::setRepeatTime);
+		bind(startTimeInput, "startTime");
+		bind(repeatTimeInput, "repeatTime");
 
 		setLayout(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
 		add(LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "eventEditor.startTime", startTimeInput, "eventEditor.repeat", repeatTimeInput), BorderLayout.NORTH);
@@ -42,9 +42,9 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 			ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);
 			BooleanCheckBox forEachTeamCheckBox = new BooleanCheckBox();
 			EventPositionEditor eventPositionEditor = new EventPositionEditor();
-			bind(effectChooser, EffectEvent::getEffect, EffectEvent::setEffect, EffectEvent.class);
-			bind(forEachTeamCheckBox, EffectEvent::isForEachTeam, EffectEvent::setForEachTeam, EffectEvent.class);
-			bind(eventPositionEditor, EffectEvent::getPosition, EffectEvent::setPosition, EffectEvent.class);
+			bind(effectChooser, "effect", EffectEvent.class);
+			bind(forEachTeamCheckBox, "forEachTeam", EffectEvent.class);
+			bind(eventPositionEditor, "position", EffectEvent.class);
 			JPanel panel = new JPanel(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
 			panel.add(LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox),
 					new JLabel("Strength = number of player"), new JLabel("Agility = current number of repeat (start from 1)"), new JLabel("Intelligence = Strength x Agility"),

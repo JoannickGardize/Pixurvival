@@ -4,8 +4,8 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.component.effect.AlterationEditor;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
@@ -14,6 +14,10 @@ import com.pixurvival.core.livingEntity.ability.AlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 
 public abstract class AlterationAbilityEditor<T extends AlterationAbility> extends ElementEditor<T> {
+
+	public AlterationAbilityEditor(Class<T> type) {
+		super(type);
+	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -25,8 +29,8 @@ public abstract class AlterationAbilityEditor<T extends AlterationAbility> exten
 
 		// Binding
 
-		bind(cooldownInput, AlterationAbility::getCooldown, AlterationAbility::setCooldown);
-		bind(alterationsEditor, AlterationAbility::getAlterations, AlterationAbility::setAlterations);
+		bind(cooldownInput, "cooldown");
+		bind(alterationsEditor, "alterations");
 
 		// Layouting
 

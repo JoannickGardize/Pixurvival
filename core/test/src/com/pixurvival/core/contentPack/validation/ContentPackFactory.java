@@ -15,7 +15,6 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamEndCondition;
-import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -90,7 +89,7 @@ public class ContentPackFactory {
 		return tile;
 	}
 
-	public MapProvider addMinimalMapProvider(ContentPack contentPack) {
+	public StaticMapProvider addMinimalStaticMapProvider(ContentPack contentPack) {
 		StaticMapProvider staticMapProvider = new StaticMapProvider();
 		staticMapProvider.setDefaultTile(addMinimalTile(contentPack));
 		addElement(contentPack, staticMapProvider);
@@ -105,7 +104,7 @@ public class ContentPackFactory {
 
 	public GameMode addMinimalGameMode(ContentPack contentPack) {
 		GameMode gameMode = new GameMode();
-		gameMode.setMapProvider(addMinimalMapProvider(contentPack));
+		gameMode.setMapProvider(addMinimalStaticMapProvider(contentPack));
 		gameMode.setEcosystem(addMinimalEcosystem(contentPack));
 		gameMode.getEndGameConditions().add(new RemainingTeamEndCondition());
 		addElement(contentPack, gameMode);

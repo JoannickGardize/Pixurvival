@@ -8,11 +8,10 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.AnimationPreview;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooserPreviewTabs;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
@@ -30,10 +29,11 @@ public class AnimationEditor extends ElementEditor<Animation> {
 	private SpriteSheetChooserPreviewTabs previewPanel = new SpriteSheetChooserPreviewTabs();
 
 	public AnimationEditor() {
+		super(Animation.class);
 		FloatInput rotationEditor = new FloatInput();
 
 		previewPanel.addTab(TranslationService.getInstance().getString("generic.animation"), animationPreview);
-		TimeInput frameDurationInput = new TimeInput(Bounds.min(Animation.MIN_FRAME_DURATION));
+		TimeInput frameDurationInput = new TimeInput();
 		frameList.setBorder(LayoutUtils.createGroupBorder("animationTemplateEditor.frames"));
 
 		previewPanel.getSpriteSheetChooser().addValueChangeListener(s -> animationPreview.setSpriteSheet(s));
@@ -44,9 +44,9 @@ public class AnimationEditor extends ElementEditor<Animation> {
 				frameList.add(new Frame(clickEvent.getSpriteX(), clickEvent.getSpriteY()));
 			}
 		});
-		bind(frameList, Animation::getFrames, Animation::setFrames);
-		bind(frameDurationInput, Animation::getFrameDuration, Animation::setFrameDuration);
-		bind(rotationEditor, Animation::getRotationPerSecond, Animation::setRotationPerSecond);
+		bind(frameList, "frames");
+		bind(frameDurationInput, "frameDuration");
+		bind(rotationEditor, "rotationPerSecond");
 
 		setLayout(new BorderLayout());
 		JPanel editionPanel = new JPanel(new GridBagLayout());

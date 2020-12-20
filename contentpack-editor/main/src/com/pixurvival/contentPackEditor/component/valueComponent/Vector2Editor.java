@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -11,11 +12,12 @@ public class Vector2Editor extends ElementEditor<Vector2> {
 	private static final long serialVersionUID = 1L;
 
 	public Vector2Editor() {
-		FloatInput xInput = new FloatInput(Bounds.none());
-		FloatInput yInput = new FloatInput(Bounds.none());
+		super(Vector2.class);
+		FloatInput xInput = new FloatInput();
+		FloatInput yInput = new FloatInput();
 
-		bind(xInput, Vector2::getX, Vector2::setX);
-		bind(yInput, Vector2::getY, Vector2::setY);
+		bind(xInput, "x");
+		bind(yInput, "y");
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();

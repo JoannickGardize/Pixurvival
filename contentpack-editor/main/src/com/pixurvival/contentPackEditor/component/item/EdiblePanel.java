@@ -33,8 +33,8 @@ public class EdiblePanel extends ItemSpecificPartPanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		itemEditor.bind(durationField, EdibleItem::getDuration, EdibleItem::setDuration, EdibleItem.class);
-		itemEditor.bind(alterationsEditor, EdibleItem::getAlterations, EdibleItem::setAlterations, EdibleItem.class);
+		itemEditor.bind(durationField, "duration", EdibleItem.class);
+		itemEditor.bind(alterationsEditor, "alterations", EdibleItem.class);
 
 	}
 

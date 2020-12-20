@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
@@ -47,7 +46,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 	private ListEditor<ChangeCondition> changeConditionsEditor;
 
 	public BehaviorEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
-		super("behaviorType", null);
+		super(Behavior.class, "behaviorType", null);
 
 		changeConditionsEditor = new VerticalListEditor<>(() -> {
 			ChangeConditionEditor editor = new ChangeConditionEditor(behaviorCollectionSupplier);
@@ -57,14 +56,14 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 
 		// Construction
 
-		StringInput nameInput = new StringInput(1);
-		IntegerInput abilityIndexInput = new IntegerInput(Bounds.min(-1));
+		StringInput nameInput = new StringInput();
+		IntegerInput abilityIndexInput = new IntegerInput();
 
 		// Binding
 
-		bind(nameInput, Behavior::getName, Behavior::setName);
-		bind(abilityIndexInput, Behavior::getAbilityToUseId, Behavior::setAbilityToUseId);
-		bind(changeConditionsEditor, Behavior::getChangeConditions, Behavior::setChangeConditions);
+		bind(nameInput, "name");
+		bind(abilityIndexInput, "abilityToUseId");
+		bind(changeConditionsEditor, "changeConditions");
 
 		// Layouting
 
@@ -84,40 +83,40 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		// GET_AWAY
 		classEntries.add(new ClassEntry(GetAwayBehavior.class, () -> {
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-			bind(targetChooser, GetAwayBehavior::getTargetType, GetAwayBehavior::setTargetType, GetAwayBehavior.class);
+			bind(targetChooser, "targetType", GetAwayBehavior.class);
 			return LayoutUtils.createHorizontalBox(targetChooser);
 		}));
 
 		// MOVE_TOWARD
 		classEntries.add(new ClassEntry(MoveTowardBehavior.class, () -> {
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-			FloatInput minDistanceInput = new FloatInput(Bounds.positive());
+			FloatInput minDistanceInput = new FloatInput();
 			AngleInput randomAngleInput = new AngleInput();
-			bind(minDistanceInput, MoveTowardBehavior::getMinDistance, MoveTowardBehavior::setMinDistance, MoveTowardBehavior.class);
-			bind(targetChooser, MoveTowardBehavior::getTargetType, MoveTowardBehavior::setTargetType, MoveTowardBehavior.class);
-			bind(randomAngleInput, MoveTowardBehavior::getRandomAngle, MoveTowardBehavior::setRandomAngle, MoveTowardBehavior.class);
+			bind(minDistanceInput, "minDistance", MoveTowardBehavior.class);
+			bind(targetChooser, "targetType", MoveTowardBehavior.class);
+			bind(randomAngleInput, "randomAngle", MoveTowardBehavior.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput);
 		}));
 
 		// TURN_AROUND
 		classEntries.add(new ClassEntry(TurnAroundBehavior.class, () -> {
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-			FloatInput minDistanceInput = new FloatInput(Bounds.positive());
-			FloatInput maxDistanceInput = new FloatInput(Bounds.positive());
-			bind(minDistanceInput, TurnAroundBehavior::getMinDistance, TurnAroundBehavior::setMinDistance, TurnAroundBehavior.class);
-			bind(maxDistanceInput, TurnAroundBehavior::getMaxDistance, TurnAroundBehavior::setMaxDistance, TurnAroundBehavior.class);
-			bind(targetChooser, TurnAroundBehavior::getTargetType, TurnAroundBehavior::setTargetType, TurnAroundBehavior.class);
+			FloatInput minDistanceInput = new FloatInput();
+			FloatInput maxDistanceInput = new FloatInput();
+			bind(minDistanceInput, "minDistance", TurnAroundBehavior.class);
+			bind(maxDistanceInput, "maxDistance", TurnAroundBehavior.class);
+			bind(targetChooser, "targetType", TurnAroundBehavior.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.maxDistance", maxDistanceInput);
 		}));
 
 		// WANDER
 		classEntries.add(new ClassEntry(WanderBehavior.class, () -> {
-			PercentInput moveRateInput = new PercentInput(new Bounds(0, 1));
-			PercentInput forwardFactorInput = new PercentInput(Bounds.positive());
+			PercentInput moveRateInput = new PercentInput();
+			PercentInput forwardFactorInput = new PercentInput();
 			EnumChooser<WanderAnchor> wanderAnchorChooser = new EnumChooser<>(WanderAnchor.class);
-			bind(wanderAnchorChooser, WanderBehavior::getAnchorType, WanderBehavior::setAnchorType, WanderBehavior.class);
-			bind(moveRateInput, WanderBehavior::getMoveRate, WanderBehavior::setMoveRate, WanderBehavior.class);
-			bind(forwardFactorInput, WanderBehavior::getForwardFactor, WanderBehavior::setForwardFactor, WanderBehavior.class);
+			bind(wanderAnchorChooser, "anchorType", WanderBehavior.class);
+			bind(moveRateInput, "moveRate", WanderBehavior.class);
+			bind(forwardFactorInput, "forwardFactor", WanderBehavior.class);
 			JPanel panel = new JPanel(new GridBagLayout());
 			GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 			LayoutUtils.addHorizontalLabelledItem(panel, "wanderBehavior.anchor", wanderAnchorChooser, gbc);
@@ -136,38 +135,38 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 		// Do nothing
 		classEntries.add(new ClassEntry(DoNothingBehavior.class, () -> {
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-			bind(targetChooser, DoNothingBehavior::getTargetType, DoNothingBehavior::setTargetType, DoNothingBehavior.class);
+			bind(targetChooser, "targetType", DoNothingBehavior.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.target", targetChooser));
 		}));
 
 		// HarvestBehavior
 		classEntries.add(new ClassEntry(HarvestBehavior.class, () -> {
-			FloatInput searchDistanceInput = new FloatInput(Bounds.positive());
+			FloatInput searchDistanceInput = new FloatInput();
 			ElementSetEditor<Structure> structureSetEditor = new ElementSetEditor<>(Structure.class);
-			bind(searchDistanceInput, HarvestBehavior::getSearchDistance, HarvestBehavior::setSearchDistance, HarvestBehavior.class);
-			bind(structureSetEditor, HarvestBehavior::getStructures, HarvestBehavior::setStructures, HarvestBehavior.class);
+			bind(searchDistanceInput, "searchDistance", HarvestBehavior.class);
+			bind(structureSetEditor, "structures", HarvestBehavior.class);
 			structureSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.consideredStructures"));
 			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("generic.searchDistance", searchDistanceInput), structureSetEditor);
 		}));
 
 		// PickUpItemsBehavior
 		classEntries.add(new ClassEntry(PickUpItemsBehavior.class, () -> {
-			FloatInput searchDistanceInput = new FloatInput(Bounds.positive());
+			FloatInput searchDistanceInput = new FloatInput();
 			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
-			bind(searchDistanceInput, PickUpItemsBehavior::getSearchDistance, PickUpItemsBehavior::setSearchDistance, PickUpItemsBehavior.class);
-			bind(itemSetEditor, PickUpItemsBehavior::getItems, PickUpItemsBehavior::setItems, PickUpItemsBehavior.class);
+			bind(searchDistanceInput, "searchDistance", PickUpItemsBehavior.class);
+			bind(itemSetEditor, "items", PickUpItemsBehavior.class);
 			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemsToPickUp"));
 			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("generic.searchDistance", searchDistanceInput), itemSetEditor);
 		}));
 
 		// DropItemsBehavior
 		classEntries.add(new ClassEntry(DropItemsBehavior.class, () -> {
-			IntegerInput maxQuantityInput = new IntegerInput(Bounds.positive());
+			IntegerInput maxQuantityInput = new IntegerInput();
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
 			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
-			bind(maxQuantityInput, DropItemsBehavior::getMaxQuantity, DropItemsBehavior::setMaxQuantity, DropItemsBehavior.class);
-			bind(targetChooser, DropItemsBehavior::getTargetDirection, DropItemsBehavior::setTargetDirection, DropItemsBehavior.class);
-			bind(itemSetEditor, DropItemsBehavior::getItems, DropItemsBehavior::setItems, DropItemsBehavior.class);
+			bind(maxQuantityInput, "maxQuantity", DropItemsBehavior.class);
+			bind(targetChooser, "targetDirection", DropItemsBehavior.class);
+			bind(itemSetEditor, "items", DropItemsBehavior.class);
 			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemToDrop"));
 			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1,
 					LayoutUtils.createHorizontalLabelledBox("behaviorEditor.targetDirection", targetChooser, "behaviorEditor.maxQuantity", maxQuantityInput), itemSetEditor);

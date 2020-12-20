@@ -12,14 +12,6 @@ public class PercentInput extends NumberInput<Float> {
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.####", new DecimalFormatSymbols(Locale.US));
 
-	public PercentInput() {
-		super(Bounds.none());
-	}
-
-	public PercentInput(Bounds bounds) {
-		super(bounds);
-	}
-
 	@Override
 	@SneakyThrows
 	protected Float parse(String text) {

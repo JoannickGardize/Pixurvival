@@ -6,9 +6,8 @@ import java.util.function.Supplier;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
@@ -23,6 +22,7 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 	private static final long serialVersionUID = 1L;
 
 	public StructureGeneratorEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
+		super(StructureGenerator.class);
 
 		ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(() -> {
 			HeightmapConditionEditor result = new HeightmapConditionEditor(heightmapCollectionSupplier);
@@ -31,13 +31,13 @@ public class StructureGeneratorEditor extends ElementEditor<StructureGenerator> 
 		}, HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
 
 		WeightedValueProducerEditor<Structure> structureProducerEditor = new WeightedValueProducerEditor<>(Structure.class);
-		PercentInput densityInput = new PercentInput(new Bounds(0, 1));
+		PercentInput densityInput = new PercentInput();
 
 		// Binding
 
-		bind(densityInput, StructureGenerator::getDensity, StructureGenerator::setDensity);
-		bind(heightmapConditionsEditor, StructureGenerator::getHeightmapConditions, StructureGenerator::setHeightmapConditions);
-		bind(structureProducerEditor, StructureGenerator::getStructureProducer, StructureGenerator::setStructureProducer);
+		bind(densityInput, "density");
+		bind(heightmapConditionsEditor, "heightmapConditions");
+		bind(structureProducerEditor, "structureProducer");
 
 		// Layouting
 

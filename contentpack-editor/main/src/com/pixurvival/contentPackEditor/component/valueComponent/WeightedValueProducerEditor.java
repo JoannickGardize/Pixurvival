@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.function.Supplier;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.WeightedValueProducer;
 import com.pixurvival.core.contentPack.WeightedValueProducer.Entry;
@@ -20,6 +21,7 @@ public class WeightedValueProducerEditor<E extends Serializable> extends Element
 	}
 
 	public WeightedValueProducerEditor(Supplier<ValueComponent<E>> elementEditor, Supplier<E> defaultValueSupplier) {
+		super(WeightedValueProducer.class);
 		structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
 			WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(elementEditor.get());
 			editor.setBorder(LayoutUtils.createBorder());
@@ -32,7 +34,7 @@ public class WeightedValueProducerEditor<E extends Serializable> extends Element
 			return e;
 		});
 
-		bind(structureGeneratorEntriesEditor, WeightedValueProducer::getBackingArray, WeightedValueProducer::setBackingArray);
+		bind(structureGeneratorEntriesEditor, "backingArray");
 
 		LayoutUtils.fill(this, structureGeneratorEntriesEditor);
 	}

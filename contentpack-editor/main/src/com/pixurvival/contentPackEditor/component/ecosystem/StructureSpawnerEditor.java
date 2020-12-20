@@ -7,10 +7,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
@@ -27,25 +26,26 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 
 	public StructureSpawnerEditor() {
+		super(StructureSpawner.class);
 		setBorder(LayoutUtils.createBorder());
 
 		// Construction
 
-		FloatInput spawnRadiusInput = new FloatInput(Bounds.positive());
-		FloatInput managedRadiusInput = new FloatInput(Bounds.positive());
-		IntegerInput initialSpawnInput = new IntegerInput(Bounds.positive());
-		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
+		FloatInput spawnRadiusInput = new FloatInput();
+		FloatInput managedRadiusInput = new FloatInput();
+		IntegerInput initialSpawnInput = new IntegerInput();
+		IntegerInput maximumCreaturesInput = new IntegerInput();
 		TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");
 
 		// Binding
 
-		bind(structureChooser, StructureSpawner::getStructure, StructureSpawner::setStructure);
-		bind(creatureChooser, StructureSpawner::getCreatureChooser, StructureSpawner::setCreatureChooser);
-		bind(spawnRadiusInput, StructureSpawner::getSpawnRadius, StructureSpawner::setSpawnRadius);
-		bind(managedRadiusInput, StructureSpawner::getManagedRadius, StructureSpawner::setManagedRadius);
-		bind(initialSpawnInput, StructureSpawner::getInitialSpawn, StructureSpawner::setInitialSpawn);
-		bind(maximumCreaturesInput, StructureSpawner::getMaximumCreatures, StructureSpawner::setMaximumCreatures);
-		bind(respawnTimeInput, StructureSpawner::getRespawnTime, StructureSpawner::setRespawnTime);
+		bind(structureChooser, "structure");
+		bind(creatureChooser, "creatureChooser");
+		bind(spawnRadiusInput, "spawnRadius");
+		bind(managedRadiusInput, "managedRadius");
+		bind(initialSpawnInput, "initialSpawn");
+		bind(maximumCreaturesInput, "maximumCreatures");
+		bind(respawnTimeInput, "respawnTime");
 
 		// Layouting
 

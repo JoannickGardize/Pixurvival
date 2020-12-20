@@ -23,7 +23,7 @@ public class StaticMapProviderPanel extends JPanel {
 
 		ElementChooserButton<Tile> defaultTileChooser = new ElementChooserButton<>(Tile.class);
 
-		mapProviderEditor.bind(defaultTileChooser, StaticMapProvider::getDefaultTile, StaticMapProvider::setDefaultTile, StaticMapProvider.class);
+		mapProviderEditor.bind(defaultTileChooser, "defaultTile", StaticMapProvider.class);
 
 		setLayout(new BorderLayout());
 		JTabbedPane tabbedPane = new JTabbedPane();
@@ -48,13 +48,13 @@ public class StaticMapProviderPanel extends JPanel {
 		ImageMappingEditor<T> imageMappingEditor = new ImageMappingEditor<>(type);
 
 		if (type == Tile.class) {
-			mapProviderEditor.bind((ImageMappingEditor<Tile>) imageMappingEditor, StaticMapProvider::getTileMap, StaticMapProvider::setTileMap, StaticMapProvider.class);
-			mapProviderEditor.bind(resourceFileChooser, StaticMapProvider::getTilesImageResourceName, (m, s) -> {
-			}, StaticMapProvider.class);
+			mapProviderEditor.bind((ImageMappingEditor<Tile>) imageMappingEditor, "tileMap", StaticMapProvider.class);
+			mapProviderEditor.bind(resourceFileChooser, "tilesImageResourceName", StaticMapProvider.class, false).getter(StaticMapProvider::getTilesImageResourceName).setter((m, s) -> {
+			});
 		} else {
-			mapProviderEditor.bind((ImageMappingEditor<Structure>) imageMappingEditor, StaticMapProvider::getStructureMap, StaticMapProvider::setStructureMap, StaticMapProvider.class);
-			mapProviderEditor.bind(resourceFileChooser, StaticMapProvider::getStructuresImageResourceName, (m, s) -> {
-			}, StaticMapProvider.class);
+			mapProviderEditor.bind((ImageMappingEditor<Structure>) imageMappingEditor, "structureMap", StaticMapProvider.class);
+			mapProviderEditor.bind(resourceFileChooser, "structuresImageResourceName", StaticMapProvider.class, false).getter(StaticMapProvider::getStructuresImageResourceName).setter((m, s) -> {
+			});
 		}
 		resourceFileChooser.setBorder(LayoutUtils.createBorder());
 		imageMappingEditor.setBorder(LayoutUtils.createBorder());

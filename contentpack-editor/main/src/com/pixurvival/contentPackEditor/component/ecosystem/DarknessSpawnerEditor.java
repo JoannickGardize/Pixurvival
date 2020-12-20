@@ -6,36 +6,36 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeIntervalInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.contentPack.creature.Creature;
-import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
+import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
 
-public class DarknessSpawnerEditor<T extends ChunkSpawner> extends ElementEditor<T> {
+public class DarknessSpawnerEditor extends ElementEditor<DarknessSpawner> {
 
 	private static final long serialVersionUID = 1L;
 
 	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 
 	public DarknessSpawnerEditor() {
+		super(DarknessSpawner.class);
 		setBorder(LayoutUtils.createBorder());
 
 		// Construction
 
-		IntegerInput initialSpawnInput = new IntegerInput(Bounds.positive());
-		IntegerInput maximumCreaturesInput = new IntegerInput(Bounds.positive());
+		IntegerInput initialSpawnInput = new IntegerInput();
+		IntegerInput maximumCreaturesInput = new IntegerInput();
 		TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");
 
 		// Binding
 
-		bind(creatureChooser, ChunkSpawner::getCreatureChooser, ChunkSpawner::setCreatureChooser);
-		bind(initialSpawnInput, ChunkSpawner::getInitialSpawn, ChunkSpawner::setInitialSpawn);
-		bind(maximumCreaturesInput, ChunkSpawner::getMaximumCreatures, ChunkSpawner::setMaximumCreatures);
-		bind(respawnTimeInput, ChunkSpawner::getRespawnTime, ChunkSpawner::setRespawnTime);
+		bind(creatureChooser, "creatureChooser");
+		bind(initialSpawnInput, "initialSpawn");
+		bind(maximumCreaturesInput, "maximumCreatures");
+		bind(respawnTimeInput, "respawnTime");
 
 		// Layouting
 

@@ -35,9 +35,16 @@ public class ErrorNode {
 			sb.append(((Field) firstNode.getKey()).getName());
 		}
 		while (it.hasNext()) {
-			sb.append(".").append(it.next().getKeyString());
+			VisitNode currentNode = it.next();
+			if (currentNode.getKey() instanceof Field) {
+				sb.append(".").append(((Field) currentNode.getKey()).getName());
+			} else if (currentNode.getKey() instanceof Integer) {
+				sb.append("[").append((int) currentNode.getKey() + 1).append("]");
+			} else {
+				sb.append("[").append(currentNode.getKey()).append("]");
+			}
 		}
-		return pathString();
+		return sb.toString();
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.awt.Component;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,12 +11,14 @@ import java.util.function.Supplier;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
 
 import lombok.Getter;
-import lombok.Setter;
 
+// TODO implements ValueComponent instead?
 public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	public static final int HORIZONTAL = 0;
@@ -23,10 +26,10 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	private static final long serialVersionUID = 1L;
 
-	private @Getter @Setter boolean oneRequired = false;
 	private @Getter ValueComponent<E> editorForValidation;
 	@SuppressWarnings("rawtypes")
 	private Supplier elementEditorSupplier;
+	private LengthConstraint lengthConstraint = LengthConstraint.none();
 	protected JPanel listPanel = new JPanel();
 	protected JButton addButton;
 	protected JButton removeButton;
@@ -34,6 +37,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 
 	@SuppressWarnings("unchecked")
 	public <F extends E> ListEditor(Supplier<ValueComponent<F>> elementEditorSupplier, Supplier<F> valueSupplier) {
+		super(null);
 		this.valueSupplier = valueSupplier;
 		this.elementEditorSupplier = elementEditorSupplier;
 		editorForValidation = (ValueComponent<E>) elementEditorSupplier.get();
@@ -84,7 +88,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		if (value == null) {
 			return false;
 		}
-		if (oneRequired && value.isEmpty()) {
+		if (!lengthConstraint.test(value)) {
 			return false;
 		}
 		for (E item : value) {
@@ -131,4 +135,10 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		return elementEditor;
 	}
 
+	@Override
+	public void configure(Annotation annotation) {
+		if (annotation.annotationType() == Length.class) {
+			lengthConstraint = LengthConstraint.fromAnnotation((Length) annotation);
+		}
+	}
 }

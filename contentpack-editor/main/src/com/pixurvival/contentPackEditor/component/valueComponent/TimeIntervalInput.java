@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.TimeInterval;
 
@@ -10,6 +11,7 @@ public class TimeIntervalInput extends ElementEditor<TimeInterval> {
 	private static final long serialVersionUID = 1L;
 
 	public TimeIntervalInput(String groupTitle) {
+		super(TimeInterval.class);
 
 		// Construction
 		TimeInput minInput = new TimeInput();
@@ -17,8 +19,8 @@ public class TimeIntervalInput extends ElementEditor<TimeInterval> {
 
 		// Binding
 
-		bind(minInput, TimeInterval::getMin, TimeInterval::setMin);
-		bind(maxInput, TimeInterval::getMax, TimeInterval::setMax);
+		bind(minInput, "min");
+		bind(maxInput, "max");
 
 		// Layouting
 		setLayout(new GridBagLayout());

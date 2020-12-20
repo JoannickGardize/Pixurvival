@@ -3,9 +3,8 @@ package com.pixurvival.contentPackEditor.component.itemReward;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.PercentInput;
 import com.pixurvival.core.contentPack.item.ItemReward;
@@ -19,10 +18,11 @@ public class ItemRewardEntryEditor extends ElementEditor<ItemReward.Entry> {
 	private @Getter ItemStackEditor itemStackEditor = new ItemStackEditor();
 
 	public ItemRewardEntryEditor() {
-		PercentInput probabilityInput = new PercentInput(new Bounds(0, 1));
+		super(ItemReward.Entry.class);
+		PercentInput probabilityInput = new PercentInput();
 
-		bind(itemStackEditor, ItemReward.Entry::getItemStack, ItemReward.Entry::setItemStack);
-		bind(probabilityInput, ItemReward.Entry::getProbability, ItemReward.Entry::setProbability);
+		bind(itemStackEditor, "itemStack");
+		bind(probabilityInput, "probability");
 
 		setLayout(new GridBagLayout());
 

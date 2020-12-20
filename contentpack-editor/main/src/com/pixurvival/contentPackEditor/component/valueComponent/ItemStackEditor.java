@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.item.ItemStack;
@@ -22,11 +23,12 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 	}
 
 	public ItemStackEditor(boolean itemRequired) {
+		super(ItemStack.class);
 		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, itemRequired);
-		IntegerInput quantityInput = new IntegerInput(Bounds.min(1));
+		IntegerInput quantityInput = new IntegerInput();
 
-		bind(itemChooser, ItemStack::getItem, ItemStack::setItem);
-		bind(quantityInput, ItemStack::getQuantity, ItemStack::setQuantity);
+		bind(itemChooser, "item");
+		bind(quantityInput, "quantity");
 
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		setLayout(new GridBagLayout());

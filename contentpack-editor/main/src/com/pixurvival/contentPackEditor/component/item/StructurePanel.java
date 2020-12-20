@@ -17,6 +17,6 @@ public class StructurePanel extends ItemSpecificPartPanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		itemEditor.bind(structureChooser, StructureItem::getStructure, StructureItem::setStructure, StructureItem.class);
+		itemEditor.bind(structureChooser, "structure", StructureItem.class);
 	}
 }

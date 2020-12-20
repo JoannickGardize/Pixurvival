@@ -23,8 +23,9 @@ public class BehaviorSetEditor extends RootElementEditor<BehaviorSet> {
 	}), MoveTowardBehavior::new);
 
 	public BehaviorSetEditor() {
+		super(BehaviorSet.class);
 
-		bind(behaviorEditors, BehaviorSet::getBehaviors, BehaviorSet::setBehaviors);
+		bind(behaviorEditors, "behaviors");
 
 		setLayout(new BorderLayout());
 		add(behaviorEditors, BorderLayout.CENTER);

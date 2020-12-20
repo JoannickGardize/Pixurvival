@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.validation;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -13,10 +14,9 @@ import com.pixurvival.core.contentPack.validation.annotation.Pattern;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class ErrorToString {
 
 	private static final Map<Class<?>, Function<Object, String>> TO_STRING_FUNCTIONS = new HashMap<>();
@@ -36,8 +36,8 @@ public class ErrorToString {
 			return sb.toString();
 		});
 		addToStringFunction(ElementList.class, e -> "the element list is wrongly indexed, or is missing");
-		addToStringFunction(ElementReference.class, e -> "the element has not been found in its element list");
-		addToStringFunction(ElementReferenceOrValid.class, e -> "the element has not been found in its element list");
+		addToStringFunction(ElementReference.class, e -> "the element has not been found in its reference list");
+		addToStringFunction(ElementReferenceOrValid.class, e -> "the element has not been found in its reference list");
 		addToStringFunction(Length.class, l -> {
 			StringBuilder sb = new StringBuilder("the element must have a length ");
 			if (l.min() > 0) {
@@ -57,8 +57,8 @@ public class ErrorToString {
 		addToStringFunction(ResourceReference.class, p -> "the resource does not exists");
 	}
 
-	public static String toString(Object annotation) {
-		return TO_STRING_FUNCTIONS.get(annotation.getClass()).apply(annotation);
+	public static String toString(Object cause) {
+		return TO_STRING_FUNCTIONS.get(cause instanceof Annotation ? ((Annotation) cause).annotationType() : cause.getClass()).apply(cause);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.function.Supplier;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.map.Heightmap;
@@ -17,6 +17,7 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 	private static final long serialVersionUID = 1L;
 
 	public TileGeneratorEditor(Supplier<Collection<Heightmap>> heightmapCollectionSupplier) {
+		super(TileGenerator.class);
 
 		ListEditor<HeightmapCondition> heightmapConditionsEditor = new VerticalListEditor<>(LayoutUtils.bordered(() -> new HeightmapConditionEditor(heightmapCollectionSupplier)),
 				HeightmapCondition::new, VerticalListEditor.HORIZONTAL);
@@ -25,8 +26,8 @@ public class TileGeneratorEditor extends ElementEditor<TileGenerator> {
 
 		// Binding
 
-		bind(heightmapConditionsEditor, TileGenerator::getHeightmapConditions, TileGenerator::setHeightmapConditions);
-		bind(tileHashmapEditor, TileGenerator::getTileHashmap, TileGenerator::setTileHashmap);
+		bind(heightmapConditionsEditor, "heightmapConditions");
+		bind(tileHashmapEditor, "tileHashmap");
 
 		// Layouting
 

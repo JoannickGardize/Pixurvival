@@ -13,8 +13,8 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
-import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.util.ColorUtils;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -28,6 +28,7 @@ public class ImageMappingEditor<T extends IdentifiedElement> extends ElementEdit
 
 	@SuppressWarnings("unchecked")
 	public ImageMappingEditor(Class<T> elementType) {
+		super(ImageMapping.class);
 		VerticalListEditor<ColorMapping<T>> listEditor = new VerticalListEditor<>(() -> new ColorMappingEditor<>(elementType), ColorMapping::new, VerticalListEditor.HORIZONTAL);
 		listEditor.setAddOnButton(() -> new CPEButton("mapGeneratorEditor.addAllMissing", () -> {
 			ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
@@ -57,7 +58,7 @@ public class ImageMappingEditor<T extends IdentifiedElement> extends ElementEdit
 			listEditor.notifyValueChanged();
 		}));
 
-		bind(listEditor, ImageMapping::getColorMapping, ImageMapping::setColorMapping);
+		bind(listEditor, "colorMapping");
 
 		setLayout(new BorderLayout());
 		add(listEditor, BorderLayout.CENTER);

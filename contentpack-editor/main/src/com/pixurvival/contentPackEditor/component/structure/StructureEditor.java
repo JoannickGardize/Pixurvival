@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
@@ -29,12 +28,12 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
 
 	public StructureEditor() {
-		super("structureType");
+		super(Structure.class, "structureType");
 
 		// Contruction
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
-		FloatInput lightEmissionRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput lightEmissionRadiusInput = new FloatInput();
 		TimeInput durationInput = new TimeInput();
 		TimeInput deconstructionDuration = new TimeInput();
 		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
@@ -45,13 +44,13 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 
 		// Binding
 
-		bind(solidCheckBox, Structure::isSolid, Structure::setSolid);
-		bind(spriteSheetChooser, Structure::getSpriteSheet, Structure::setSpriteSheet);
-		bind(dimensionsEditor, Structure::getDimensions, Structure::setDimensions);
-		bind(durationInput, Structure::getDuration, Structure::setDuration);
-		bind(bannedTilesEditor, Structure::getBannedTiles, Structure::setBannedTiles);
-		bind(lightEmissionRadiusInput, Structure::getLightEmissionRadius, Structure::setLightEmissionRadius);
-		bind(deconstructionDuration, Structure::getDeconstructionDuration, Structure::setDeconstructionDuration);
+		bind(solidCheckBox, "solid");
+		bind(spriteSheetChooser, "spriteSheet");
+		bind(dimensionsEditor, "dimensions");
+		bind(durationInput, "duration");
+		bind(bannedTilesEditor, "bannedTiles");
+		bind(lightEmissionRadiusInput, "lightEmissionRadius");
+		bind(deconstructionDuration, "deconstructionDuration");
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -96,7 +95,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 
 		entries.add(new ClassEntry(DamageableStructure.class, () -> {
 			FloatInput healthInput = new FloatInput();
-			bind(healthInput, DamageableStructure::getMaxHealth, DamageableStructure::setMaxHealth, DamageableStructure.class);
+			bind(healthInput, "maxHealth", DamageableStructure.class);
 			return LayoutUtils.single(LayoutUtils.labelled("structureEditor.damageable.health", healthInput));
 		}));
 

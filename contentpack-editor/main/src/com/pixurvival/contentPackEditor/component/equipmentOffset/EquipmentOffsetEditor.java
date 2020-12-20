@@ -27,12 +27,16 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 
 	private static final long serialVersionUID = 1L;
 
-	private IntegerInput widthInput = new IntegerInput(Bounds.min(1));
-	private IntegerInput heightInput = new IntegerInput(Bounds.min(1));
+	private IntegerInput widthInput = new IntegerInput();
+	private IntegerInput heightInput = new IntegerInput();
 	private ElementEditorTablePanel<FrameOffset> tablePanel;
 	private SpriteSheetChooserPreviewTabs previewPanel = new SpriteSheetChooserPreviewTabs();
 
 	public EquipmentOffsetEditor() {
+		super(EquipmentOffset.class);
+
+		widthInput.setValueBounds(Bounds.min(1));
+		heightInput.setValueBounds(Bounds.min(1));
 
 		// Construction
 		tablePanel = new ElementEditorTablePanel<>((x, y) -> {
@@ -43,7 +47,7 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 		});
 
 		// Binding
-		bind(tablePanel, EquipmentOffset::getFrameOffsets, EquipmentOffset::setFrameOffsets);
+		bind(tablePanel, "frameOffsets");
 
 		widthInput.addValueChangeListener(x -> {
 
@@ -56,10 +60,8 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 		previewPanel.getSpriteSheetPreview().addInteractionListener(o -> {
 			if (o instanceof ClickEvent) {
 				ClickEvent clickEvent = (ClickEvent) o;
-				if (tablePanel.getTableWidth() > clickEvent.getSpriteX()
-						&& tablePanel.getTableHeight() > clickEvent.getSpriteY()) {
-					FrameOffsetEditor editor = (FrameOffsetEditor) tablePanel.getCell(clickEvent.getSpriteX(),
-							clickEvent.getSpriteY());
+				if (tablePanel.getTableWidth() > clickEvent.getSpriteX() && tablePanel.getTableHeight() > clickEvent.getSpriteY()) {
+					FrameOffsetEditor editor = (FrameOffsetEditor) tablePanel.getCell(clickEvent.getSpriteX(), clickEvent.getSpriteY());
 					editor.getValue().setOffsetX(clickEvent.getPixelX());
 					editor.getValue().setOffsetY(clickEvent.getPixelY());
 					editor.setValue(editor.getValue());
@@ -84,8 +86,7 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 			if (width == tablePanel.getTableWidth() && height == tablePanel.getTableHeight()) {
 				return;
 			}
-			int option = JOptionPane.showConfirmDialog(null,
-					TranslationService.getInstance().getString("equipmentOffsetEditor.setSizeToPreviewQuestion"));
+			int option = JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("equipmentOffsetEditor.setSizeToPreviewQuestion"));
 			if (option == JOptionPane.YES_OPTION) {
 				tablePanel.setTableSize(width, height, true);
 			}

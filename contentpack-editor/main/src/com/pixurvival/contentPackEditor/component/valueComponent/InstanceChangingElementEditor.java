@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.BeanFactory;
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.util.CachedSupplier;
@@ -38,12 +39,13 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	private Map<Class<?>, E> stash = new HashMap<>();
 	private int previousElementId;
 
-	public InstanceChangingElementEditor(String translationPreffix) {
-		this(translationPreffix, null);
+	public InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix) {
+		this(defaultType, translationPreffix, null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public InstanceChangingElementEditor(String translationPreffix, Object params) {
+	public InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix, Object params) {
+		super(defaultType);
 		for (ClassEntry classEntry : getClassEntries(params)) {
 			classEntries.put(classEntry.getType(), new CachedSupplier<>(classEntry.getSpecificPanel()));
 		}
@@ -109,11 +111,16 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 
 	@Override
 	public boolean isValueValid(E value) {
-		if (value != null) {
+		if (getValue() != null && value != null && getValue().getClass() != value.getClass()) {
 			// Preload the panel to bind values
 			classEntries.get(value.getClass()).get();
+			boolean valid = super.isValueValid(value);
+			classEntries.get(getValue().getClass()).get();
+			return valid;
+		} else {
+			return super.isValueValid(value);
 		}
-		return super.isValueValid(value);
+
 	}
 
 	protected abstract List<ClassEntry> getClassEntries(Object params);

@@ -22,7 +22,7 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 	private static final long serialVersionUID = 1L;
 
 	public FollowingElementEditor(Object... topLineLabelAndComponents) {
-		super("followingElementType", null);
+		super(FollowingElement.class, "followingElementType", null);
 
 		setLayout(new BorderLayout());
 		int length = topLineLabelAndComponents.length;
@@ -40,7 +40,7 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 		// FollowingEffect
 		entries.add(new ClassEntry(FollowingEffect.class, () -> {
 			OffsetAngleEffectEditor offsetAngleEffectEditor = new OffsetAngleEffectEditor();
-			bind(offsetAngleEffectEditor, FollowingEffect::getOffsetAngleEffect, FollowingEffect::setOffsetAngleEffect, FollowingEffect.class);
+			bind(offsetAngleEffectEditor, "offsetAngleEffect", FollowingEffect.class);
 			return offsetAngleEffectEditor;
 		}));
 
@@ -51,11 +51,11 @@ public class FollowingElementEditor extends InstanceChangingElementEditor<Follow
 			StatFormulaEditor strengthEditor = new StatFormulaEditor();
 			StatFormulaEditor agilityEditor = new StatFormulaEditor();
 			StatFormulaEditor intelligenceEditor = new StatFormulaEditor();
-			bind(creatureChooser, FollowingCreature::getCreature, FollowingCreature::setCreature, FollowingCreature.class);
-			bind(ownedCheckBox, FollowingCreature::isOwned, FollowingCreature::setOwned, FollowingCreature.class);
-			bind(strengthEditor, FollowingCreature::getStrengthBonus, FollowingCreature::setStrengthBonus, FollowingCreature.class);
-			bind(agilityEditor, FollowingCreature::getAgilityBonus, FollowingCreature::setAgilityBonus, FollowingCreature.class);
-			bind(intelligenceEditor, FollowingCreature::getIntelligenceBonus, FollowingCreature::setIntelligenceBonus, FollowingCreature.class);
+			bind(creatureChooser, "creature", FollowingCreature.class);
+			bind(ownedCheckBox, "owned", FollowingCreature.class);
+			bind(strengthEditor, "strengthBonus", FollowingCreature.class);
+			bind(agilityEditor, "agilityBonus", FollowingCreature.class);
+			bind(intelligenceEditor, "intelligenceBonus", FollowingCreature.class);
 			JPanel statPanel = LayoutUtils.createVerticalLabelledBox("statType.strength", strengthEditor, "statType.agility", agilityEditor, "statType.intelligence", intelligenceEditor);
 			statPanel.setBorder(LayoutUtils.createGroupBorder("followingCreatureEditor.bonusStats"));
 			return LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("elementType.creature", creatureChooser, "followingCreatureEditor.owned", ownedCheckBox), statPanel);

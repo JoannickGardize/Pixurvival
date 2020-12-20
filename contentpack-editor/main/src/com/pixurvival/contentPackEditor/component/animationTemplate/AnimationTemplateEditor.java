@@ -11,10 +11,12 @@ public class AnimationTemplateEditor extends RootElementEditor<AnimationTemplate
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO Bind values
 	private AnimationList list = new AnimationList();
 	private AnimationEditor animationEditor = new AnimationEditor();
 
 	public AnimationTemplateEditor() {
+		super(AnimationTemplate.class);
 
 		animationEditor.setVisible(false);
 

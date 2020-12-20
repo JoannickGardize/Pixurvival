@@ -16,10 +16,6 @@ public class AngleInput extends NumberInput<Float> {
 	private static final float RAD_TO_DEG = 180 / (float) Math.PI;
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(Locale.US));
 
-	public AngleInput() {
-		super(Bounds.none());
-	}
-
 	@Override
 	@SneakyThrows
 	protected Float parse(String text) {
@@ -35,5 +31,4 @@ public class AngleInput extends NumberInput<Float> {
 	protected String format(Float value) {
 		return DECIMAL_FORMAT.format(value * RAD_TO_DEG);
 	}
-
 }

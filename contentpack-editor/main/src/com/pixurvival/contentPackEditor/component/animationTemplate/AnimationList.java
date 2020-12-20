@@ -29,6 +29,7 @@ import com.pixurvival.core.contentPack.sprite.Frame;
 
 import lombok.val;
 
+// TODO make this an elementEditor
 public class AnimationList extends JPanel {
 
 	private static final long serialVersionUID = 1L;

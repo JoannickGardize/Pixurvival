@@ -12,14 +12,6 @@ public class FloatInput extends NumberInput<Float> {
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.####", new DecimalFormatSymbols(Locale.US));
 
-	public FloatInput(Bounds valueBounds) {
-		super(valueBounds);
-	}
-
-	public FloatInput() {
-		super(Bounds.none());
-	}
-
 	@SneakyThrows
 	@Override
 	protected Float parse(String text) {

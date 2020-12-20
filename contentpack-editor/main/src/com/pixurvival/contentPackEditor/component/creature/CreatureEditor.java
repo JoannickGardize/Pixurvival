@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
@@ -47,16 +46,17 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 	private JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%"));
 
 	public CreatureEditor() {
+		super(Creature.class);
 
 		// Creation
 
-		FloatInput collisionRadiusInput = new FloatInput(Bounds.positive());
+		FloatInput collisionRadiusInput = new FloatInput();
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
 		armorField.setEditable(false);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
 		TimeInput lifetimeInput = new TimeInput();
-		IntegerInput inventorySizeInput = new IntegerInput(Bounds.positive());
+		IntegerInput inventorySizeInput = new IntegerInput();
 
 		// Actions
 		strengthInput.addValueChangeListener(v -> statSet.get(StatType.STRENGTH).setBase(v));
@@ -69,17 +69,17 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 		// Binding
 
-		bind(spriteSheetChooser, Creature::getSpriteSheet, Creature::setSpriteSheet);
-		bind(behaviorSetChooser, Creature::getBehaviorSet, Creature::setBehaviorSet);
-		bind(itemRewardChooser, Creature::getItemReward, Creature::setItemReward);
-		bind(abilitySetChooser, Creature::getAbilitySet, Creature::setAbilitySet);
-		bind(collisionRadiusInput, Creature::getCollisionRadius, Creature::setCollisionRadius);
-		bind(strengthInput, Creature::getStrength, Creature::setStrength);
-		bind(agilityInput, Creature::getAgility, Creature::setAgility);
-		bind(intelligenceInput, Creature::getIntelligence, Creature::setIntelligence);
-		bind(solidCheckbox, Creature::isSolid, Creature::setSolid);
-		bind(lifetimeInput, Creature::getLifetime, Creature::setLifetime);
-		bind(inventorySizeInput, Creature::getInventorySize, Creature::setInventorySize);
+		bind(spriteSheetChooser, "spriteSheet");
+		bind(behaviorSetChooser, "behaviorSet");
+		bind(itemRewardChooser, "itemReward");
+		bind(abilitySetChooser, "abilitySet");
+		bind(collisionRadiusInput, "collisionRadius");
+		bind(strengthInput, "strength");
+		bind(agilityInput, "agility");
+		bind(intelligenceInput, "intelligence");
+		bind(solidCheckbox, "solid");
+		bind(lifetimeInput, "lifetime");
+		bind(inventorySizeInput, "inventorySize");
 
 		// Layouting
 

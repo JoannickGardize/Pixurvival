@@ -8,8 +8,8 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Positive;
 
 import lombok.Data;
 
@@ -21,7 +21,7 @@ public class ItemStack implements Serializable {
 	@ElementReference
 	private Item item;
 
-	@Positive
+	@Bounds(min = 1)
 	private int quantity;
 
 	public ItemStack() {

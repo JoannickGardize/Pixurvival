@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -26,7 +25,7 @@ import com.pixurvival.core.contentPack.gameMode.role.Role;
 public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGameCondition> {
 
 	public EndGameConditionEditor(Supplier<Collection<Role>> roleCollectionSupplier) {
-		super("endGameConditionType", roleCollectionSupplier);
+		super(EndGameCondition.class, "endGameConditionType", roleCollectionSupplier);
 		LayoutUtils.addHorizontally(this, 1, getTypeChooser(), getSpecificPartPanel());
 	}
 
@@ -37,8 +36,8 @@ public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGam
 		List<ClassEntry> entries = new ArrayList<>();
 
 		entries.add(new ClassEntry(RemainingTeamEndCondition.class, () -> {
-			IntegerInput remainingTeamCondition = new IntegerInput(Bounds.positive());
-			bind(remainingTeamCondition, RemainingTeamEndCondition::getRemainingTeamCondition, RemainingTeamEndCondition::setRemainingTeamCondition, RemainingTeamEndCondition.class);
+			IntegerInput remainingTeamCondition = new IntegerInput();
+			bind(remainingTeamCondition, "remainingTeamCondition", RemainingTeamEndCondition.class);
 			return LayoutUtils.single(LayoutUtils.labelled("endGameConditionEditor.remainingTeamCondition", remainingTeamCondition));
 		}));
 		@SuppressWarnings("unchecked")
@@ -47,11 +46,11 @@ public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGam
 			ListEditor<Role> rolesEditor = new HorizontalListEditor<>(() -> new ElementChooserButton<>(roleCollectionSupplier), () -> null);
 			rolesEditor.setBorder(LayoutUtils.createGroupBorder("winConditionEditor.roleSum"));
 			BooleanCheckBox countPerTeamCheckbox = new BooleanCheckBox();
-			IntegerInput valueInput = new IntegerInput(Bounds.positive());
+			IntegerInput valueInput = new IntegerInput();
 
-			bind(rolesEditor, RemainingRolesEndCondition::getRoles, RemainingRolesEndCondition::setRoles, RemainingRolesEndCondition.class);
-			bind(countPerTeamCheckbox, RemainingRolesEndCondition::isCountPerTeam, RemainingRolesEndCondition::setCountPerTeam, RemainingRolesEndCondition.class);
-			bind(valueInput, RemainingRolesEndCondition::getValue, RemainingRolesEndCondition::setValue, RemainingRolesEndCondition.class);
+			bind(rolesEditor, "roles", RemainingRolesEndCondition.class);
+			bind(countPerTeamCheckbox, "countPerTeam", RemainingRolesEndCondition.class);
+			bind(valueInput, "value", RemainingRolesEndCondition.class);
 
 			JPanel panel = new JPanel();
 			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -61,7 +60,7 @@ public class EndGameConditionEditor extends InstanceChangingElementEditor<EndGam
 		}));
 		entries.add(new ClassEntry(TimeEndCondition.class, () -> {
 			TimeInput timeInput = new TimeInput();
-			bind(timeInput, TimeEndCondition::getTime, TimeEndCondition::setTime, TimeEndCondition.class);
+			bind(timeInput, "time", TimeEndCondition.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.time", timeInput));
 		}));
 

@@ -17,15 +17,16 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 	private static final long serialVersionUID = 1L;
 
 	public ItemCraftEditor() {
+		super(ItemCraft.class);
 		ItemStackEditor resultEditor = new ItemStackEditor();
 		VerticalListEditor<ItemStack> recipesList = new VerticalListEditor<>(ItemStackEditor::new, ItemStack::new, VerticalListEditor.HORIZONTAL);
 		TimeInput durationField = new TimeInput();
 		ElementChooserButton<Structure> requiredStructureChooser = new ElementChooserButton<>(Structure.class, false);
 
-		bind(recipesList, ItemCraft::getRecipes, ItemCraft::setRecipes);
-		bind(resultEditor, ItemCraft::getResult, ItemCraft::setResult);
-		bind(durationField, ItemCraft::getDuration, ItemCraft::setDuration);
-		bind(requiredStructureChooser, ItemCraft::getRequiredStructure, ItemCraft::setRequiredStructure);
+		bind(recipesList, "recipes");
+		bind(resultEditor, "result");
+		bind(durationField, "duration");
+		bind(requiredStructureChooser, "requiredStructure");
 
 		recipesList.setBorder(LayoutUtils.createGroupBorder("itemCraftEditor.recipe"));
 		JPanel rightPanel = LayoutUtils.createVerticalLabelledBox("itemCraftEditor.result", resultEditor, "itemCraftEditor.duration", durationField, "itemCraftEditor.requiredStructure",

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
@@ -21,7 +20,7 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	private static final long serialVersionUID = 1L;
 
 	public EventPositionEditor() {
-		super("eventPositionType", null);
+		super(EventPosition.class, "eventPositionType", null);
 
 		setLayout(new BorderLayout());
 		add(LayoutUtils.single(LayoutUtils.labelled("generic.type", getTypeChooser())), BorderLayout.WEST);
@@ -32,14 +31,14 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 	protected List<ClassEntry> getClassEntries(Object params) {
 		List<ClassEntry> entries = new ArrayList<>();
 		entries.add(new ClassEntry(PlayerProximityEventPosition.class, () -> {
-			FloatInput distanceInput = new FloatInput(Bounds.positive());
-			bind(distanceInput, PlayerProximityEventPosition::getDistance, PlayerProximityEventPosition::setDistance, PlayerProximityEventPosition.class);
+			FloatInput distanceInput = new FloatInput();
+			bind(distanceInput, "distance", PlayerProximityEventPosition.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.distance", distanceInput));
 		}));
 
 		entries.add(new ClassEntry(StaticEventPosition.class, () -> {
 			Vector2Editor positionEditor = new Vector2Editor();
-			bind(positionEditor, StaticEventPosition::getPosition, StaticEventPosition::setPosition, StaticEventPosition.class);
+			bind(positionEditor, "position", StaticEventPosition.class);
 			return LayoutUtils.single(LayoutUtils.labelled("generic.position", positionEditor));
 		}));
 
@@ -50,11 +49,11 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 			FloatInput heightInput = new FloatInput();
 			EnumChooser<Direction> targetDirectionChooser = new EnumChooser<>(Direction.class);
 
-			bind(xInput, RandomRectangeEventPosition::getX, RandomRectangeEventPosition::setX, RandomRectangeEventPosition.class);
-			bind(yInput, RandomRectangeEventPosition::getY, RandomRectangeEventPosition::setY, RandomRectangeEventPosition.class);
-			bind(widthInput, RandomRectangeEventPosition::getWidth, RandomRectangeEventPosition::setWidth, RandomRectangeEventPosition.class);
-			bind(heightInput, RandomRectangeEventPosition::getHeight, RandomRectangeEventPosition::setHeight, RandomRectangeEventPosition.class);
-			bind(targetDirectionChooser, RandomRectangeEventPosition::getTargetDirection, RandomRectangeEventPosition::setTargetDirection, RandomRectangeEventPosition.class);
+			bind(xInput, "x", RandomRectangeEventPosition.class);
+			bind(yInput, "y", RandomRectangeEventPosition.class);
+			bind(widthInput, "width", RandomRectangeEventPosition.class);
+			bind(heightInput, "height", RandomRectangeEventPosition.class);
+			bind(targetDirectionChooser, "targetDirection", RandomRectangeEventPosition.class);
 
 			return LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("generic.x", xInput, "generic.y", yInput, "generic.width", widthInput, "generic.height", heightInput),
 					LayoutUtils.single(LayoutUtils.labelled("behaviorEditor.targetDirection", targetDirectionChooser)));

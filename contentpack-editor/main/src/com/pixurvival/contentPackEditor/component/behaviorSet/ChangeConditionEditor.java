@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
@@ -40,13 +39,13 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 	private ElementChooserButton<Behavior> nextBehaviorChooser;
 
 	public ChangeConditionEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
-		super("changeConditionType", null);
+		super(ChangeCondition.class, "changeConditionType", null);
 		// Construction
 
 		nextBehaviorChooser = new ElementChooserButton<>(behaviorCollectionSupplier);
 
 		// Binding
-		bind(nextBehaviorChooser, ChangeCondition::getNextBehavior, ChangeCondition::setNextBehavior);
+		bind(nextBehaviorChooser, "nextBehavior");
 
 		// Layouting
 		Component typeChooserComp = LayoutUtils.labelled("generic.type", getTypeChooser());
@@ -64,10 +63,10 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		classEntries.add(new ClassEntry(DistanceCondition.class, () -> {
 			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
 			EnumChooser<FloatComparison> operatorChooser = new EnumChooser<>(FloatComparison.class);
-			FloatInput targetDistanceInput = new FloatInput(Bounds.positive());
-			bind(targetChooser, DistanceCondition::getTargetType, DistanceCondition::setTargetType, DistanceCondition.class);
-			bind(operatorChooser, DistanceCondition::getOperator, DistanceCondition::setOperator, DistanceCondition.class);
-			bind(targetDistanceInput, DistanceCondition::getTargetDistance, DistanceCondition::setTargetDistance, DistanceCondition.class);
+			FloatInput targetDistanceInput = new FloatInput();
+			bind(targetChooser, "targetType", DistanceCondition.class);
+			bind(operatorChooser, "operator", DistanceCondition.class);
+			bind(targetDistanceInput, "targetDistance", DistanceCondition.class);
 			Component testComponent = LayoutUtils.labelled("generic.distance", operatorChooser);
 			return LayoutUtils.createHorizontalBox(targetChooser, testComponent, targetDistanceInput);
 		}));
@@ -75,7 +74,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		// TimeCondition
 		classEntries.add(new ClassEntry(TimeCondition.class, () -> {
 			TimeInput timeInput = new TimeInput();
-			bind(timeInput, TimeCondition::getTargetTime, TimeCondition::setTargetTime, TimeCondition.class);
+			bind(timeInput, "targetTime", TimeCondition.class);
 			return LayoutUtils.createHorizontalBox(LayoutUtils.labelled("changeConditionType.timeCondition", timeInput));
 		}));
 
@@ -96,11 +95,11 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 
 		classEntries.add(new ClassEntry(InventoryContainsCondition.class, () -> {
 			EnumChooser<FloatComparison> operatorChooser = new EnumChooser<>(FloatComparison.class);
-			IntegerInput valueInput = new IntegerInput(Bounds.positive());
+			IntegerInput valueInput = new IntegerInput();
 			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
-			bind(operatorChooser, InventoryContainsCondition::getOperator, InventoryContainsCondition::setOperator, InventoryContainsCondition.class);
-			bind(valueInput, InventoryContainsCondition::getValue, InventoryContainsCondition::setValue, InventoryContainsCondition.class);
-			bind(itemSetEditor, InventoryContainsCondition::getItems, InventoryContainsCondition::setItems, InventoryContainsCondition.class);
+			bind(operatorChooser, "operator", InventoryContainsCondition.class);
+			bind(valueInput, "value", InventoryContainsCondition.class);
+			bind(itemSetEditor, "items", InventoryContainsCondition.class);
 
 			return LayoutUtils.createVerticalBox(itemSetEditor,
 					LayoutUtils.createHorizontalBox(new JLabel(TranslationService.getInstance().getString("behaviorEditor.sum")), operatorChooser, valueInput));

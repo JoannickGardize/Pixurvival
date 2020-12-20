@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
-import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Data;
@@ -22,7 +22,7 @@ public class Animation implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Positive
+	@Bounds(min = Animation.MIN_FRAME_DURATION)
 	private long frameDuration = 1000;
 
 	@NonNull

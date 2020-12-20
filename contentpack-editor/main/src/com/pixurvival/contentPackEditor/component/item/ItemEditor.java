@@ -15,7 +15,6 @@ import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.InteractionListener;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.FrameEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -37,7 +36,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 	private FrameEditor frameEditor = new FrameEditor();
 
 	public ItemEditor() {
-		super("itemType");
+		super(Item.class, "itemType");
 
 		// Contruction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
@@ -48,15 +47,15 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 				itemFrameChooserPopup.show(frameChooser, getValue().getImage());
 			}
 		});
-		IntegerInput maxStackSizeInput = new IntegerInput(Bounds.min(1));
+		IntegerInput maxStackSizeInput = new IntegerInput();
 
 		imageField.addValueChangeListener(v -> itemPreview.setImage(v.getName()));
 		frameEditor.addValueChangeListener(v -> itemPreview.setFrame(v));
 
 		// Binding
-		bind(imageField, v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage()), (v, f) -> v.setImage(f == null ? null : f.getName()));
-		bind(frameEditor, Item::getFrame, Item::setFrame);
-		bind(maxStackSizeInput, Item::getMaxStackSize, Item::setMaxStackSize);
+		bind(imageField, "image").getter(v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage())).setter((v, f) -> v.setImage(f == null ? null : f.getName()));
+		bind(frameEditor, "frame");
+		bind(maxStackSizeInput, "maxStackSize");
 
 		// Layouting
 		setLayout(new GridBagLayout());

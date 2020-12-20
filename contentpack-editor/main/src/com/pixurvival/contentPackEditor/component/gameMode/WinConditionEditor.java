@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
@@ -30,7 +29,7 @@ public class WinConditionEditor extends InstanceChangingElementEditor<WinConditi
 	private static final long serialVersionUID = 1L;
 
 	public WinConditionEditor(Supplier<Collection<Role>> roleCollectionSupplier) {
-		super("roleEditor.winConditionType", roleCollectionSupplier);
+		super(WinCondition.class, "roleEditor.winConditionType", roleCollectionSupplier);
 		setLayout(new BorderLayout(5, 5));
 		add(getTypeChooser(), BorderLayout.NORTH);
 		add(getSpecificPartPanel(), BorderLayout.CENTER);
@@ -47,12 +46,12 @@ public class WinConditionEditor extends InstanceChangingElementEditor<WinConditi
 			ListEditor<Role> rolesList = new HorizontalListEditor<>(() -> new ElementChooserButton<>(roleCollectionSupplier), () -> null);
 			EnumChooser<TeamSet> teamTakenIntoAccountChooser = new EnumChooser<>(TeamSet.class);
 			EnumChooser<IntOperator> operatorChooser = new EnumChooser<>(IntOperator.class);
-			IntegerInput valueInput = new IntegerInput(Bounds.positive());
+			IntegerInput valueInput = new IntegerInput();
 
-			bind(rolesList, RemainingRolesWinCondition::getRoles, RemainingRolesWinCondition::setRoles, RemainingRolesWinCondition.class);
-			bind(teamTakenIntoAccountChooser, RemainingRolesWinCondition::getTeamSet, RemainingRolesWinCondition::setTeamSet, RemainingRolesWinCondition.class);
-			bind(operatorChooser, RemainingRolesWinCondition::getOperator, RemainingRolesWinCondition::setOperator, RemainingRolesWinCondition.class);
-			bind(valueInput, RemainingRolesWinCondition::getValue, RemainingRolesWinCondition::setValue, RemainingRolesWinCondition.class);
+			bind(rolesList, "roles", RemainingRolesWinCondition.class);
+			bind(teamTakenIntoAccountChooser, "teamSet", RemainingRolesWinCondition.class);
+			bind(operatorChooser, "operator", RemainingRolesWinCondition.class);
+			bind(valueInput, "value", RemainingRolesWinCondition.class);
 
 			JPanel remainingRolesPanel = new JPanel();
 			rolesList.setBorder(LayoutUtils.createGroupBorder("winConditionEditor.roleSum"));
@@ -68,11 +67,5 @@ public class WinConditionEditor extends InstanceChangingElementEditor<WinConditi
 	@Override
 	protected void initialize(WinCondition oldInstance, WinCondition newInstance) {
 		// Nothing
-	}
-
-	@Override
-	public boolean isValueValid(WinCondition value) {
-		// TODO Auto-generated method stub
-		return super.isValueValid(value);
 	}
 }

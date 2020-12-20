@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.Component;
 import java.io.Serializable;
 
+import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.core.contentPack.WeightedValueProducer.Entry;
 
 public class WeightedValueEntryEditor<E extends Serializable> extends ElementEditor<Entry<E>> {
@@ -10,11 +11,12 @@ public class WeightedValueEntryEditor<E extends Serializable> extends ElementEdi
 	private static final long serialVersionUID = 1L;
 
 	public WeightedValueEntryEditor(ValueComponent<E> elementEditor) {
+		super(Entry.class);
 
-		FloatInput probability = new FloatInput(Bounds.positive());
+		FloatInput probability = new FloatInput();
 
-		bind(elementEditor, Entry::getElement, Entry::setElement);
-		bind(probability, Entry::getProbability, Entry::setProbability);
+		bind(elementEditor, "element");
+		bind(probability, "probability");
 
 		add((Component) elementEditor);
 		add(probability);

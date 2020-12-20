@@ -45,10 +45,10 @@ public class ProcedurallyGeneratedMapProviderPanel extends JPanel {
 
 		// Binding
 
-		mapProviderEditor.bind(heightmapsEditor, ProcedurallyGeneratedMapProvider::getHeightmaps, ProcedurallyGeneratedMapProvider::setHeightmaps, ProcedurallyGeneratedMapProvider.class);
-		mapProviderEditor.bind(tileGeneratorsEditor, ProcedurallyGeneratedMapProvider::getTileGenerators, ProcedurallyGeneratedMapProvider::setTileGenerators, ProcedurallyGeneratedMapProvider.class);
-		mapProviderEditor.bind(defaultTileChooser, ProcedurallyGeneratedMapProvider::getDefaultTile, ProcedurallyGeneratedMapProvider::setDefaultTile, ProcedurallyGeneratedMapProvider.class);
-		mapProviderEditor.bind(structureGeneratorsEditor, ProcedurallyGeneratedMapProvider::getStructureGenerators, ProcedurallyGeneratedMapProvider::setStructureGenerators,
+		mapProviderEditor.bind(heightmapsEditor, "heightmaps", ProcedurallyGeneratedMapProvider.class);
+		mapProviderEditor.bind(tileGeneratorsEditor, "tileGenerators", ProcedurallyGeneratedMapProvider.class);
+		mapProviderEditor.bind(defaultTileChooser, "defaultTile", ProcedurallyGeneratedMapProvider.class);
+		mapProviderEditor.bind(structureGeneratorsEditor, "structureGenerators",
 				ProcedurallyGeneratedMapProvider.class);
 
 		// Layouting
