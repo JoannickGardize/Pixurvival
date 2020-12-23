@@ -44,7 +44,6 @@ public class ElementChooserButton<T extends NamedIdentifiedElement> extends JBut
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
 	private @Getter @Setter boolean nullable;
-	private Object eventHandler;
 
 	private Predicate<T> additionalCondition = e -> true;
 

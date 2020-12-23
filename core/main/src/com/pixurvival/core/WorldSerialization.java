@@ -76,11 +76,7 @@ public class WorldSerialization {
 			VarLenNumberIO.writePositiveVarLong(buffer, world.getEntityPool().getNextId());
 			flush(buffer, output);
 			// Map and entities data
-			Collection<ServerChunkRepositoryEntry> mapData;
-			synchronized (world.getMap().getRepository()) {
-				world.getMap().saveAll();
-				mapData = world.getMap().getRepository().getAll();
-			}
+			Collection<ServerChunkRepositoryEntry> mapData = world.getMap().saveAll();
 			VarLenNumberIO.writePositiveVarInt(buffer, mapData.size());
 			for (ServerChunkRepositoryEntry data : mapData) {
 				VarLenNumberIO.writePositiveVarLong(buffer, data.getTime());

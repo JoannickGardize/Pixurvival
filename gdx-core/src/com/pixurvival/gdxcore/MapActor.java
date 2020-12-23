@@ -23,7 +23,7 @@ public class MapActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		animationCounter += Gdx.graphics.getDeltaTime();
+		animationCounter += Gdx.graphics.getRawDeltaTime();
 		float tileAnimationSpeed = PixurvivalGame.getClient().getWorld().getContentPack().getConstants().getTileAnimationSpeed() / 1000f;
 		if (animationCounter >= tileAnimationSpeed) {
 			animationCounter -= tileAnimationSpeed;
@@ -40,8 +40,8 @@ public class MapActor extends Actor {
 		int endY = (int) Math.ceil(startY + height);
 		for (int x = endX; x >= startX; x--) {
 			for (int y = endY; y >= startY; y--) {
-				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(), animationNumber), x - (float) GameConstants.PIXEL_SIZE,
-						y - (float) GameConstants.PIXEL_SIZE, 1 + (float) GameConstants.PIXEL_SIZE, 1 + (float) GameConstants.PIXEL_SIZE);
+				batch.draw(PixurvivalGame.getContentPackTextures().getTile(map.tileAt(x, y).getTileDefinition().getId(), animationNumber), x - GameConstants.PIXEL_SIZE, y - GameConstants.PIXEL_SIZE,
+						1 + GameConstants.PIXEL_SIZE, 1 + GameConstants.PIXEL_SIZE);
 			}
 		}
 	}

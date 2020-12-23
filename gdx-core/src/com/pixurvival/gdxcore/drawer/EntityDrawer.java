@@ -21,13 +21,13 @@ public abstract class EntityDrawer<E extends Entity> implements ElementDrawer<E>
 		Vector2 position = new Vector2(e.getVelocity()).mul(PixurvivalGame.getInterpolationTime()).add(e.getPosition());
 		float distance = drawPos.distanceSquared(position);
 		float speed = Math.max(e.getSpeed(), Math.max(2, distance));
-		float deltaSpeed = speed * Gdx.graphics.getDeltaTime();
+		float deltaSpeed = speed * Gdx.graphics.getRawDeltaTime();
 		if (distance > 5 * 5 || distance <= deltaSpeed * deltaSpeed) {
 			drawPos.set(position);
 		} else {
 			float step = speed + (distance / (5 * 5)) * (speed * 3);
 			float angle = drawPos.angleToward(position);
-			drawPos.add(position.setFromEuclidean(step * Gdx.graphics.getDeltaTime(), angle));
+			drawPos.add(position.setFromEuclidean(step * Gdx.graphics.getRawDeltaTime(), angle));
 		}
 	}
 

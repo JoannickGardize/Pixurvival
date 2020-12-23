@@ -37,16 +37,16 @@ public class DistantAllyMarkerDrawer implements OverlayDrawer<PlayerEntity> {
 		} else {
 			myPosition = myPlayer.getPosition();
 		}
-		float px = (float) myPosition.getX();
-		float py = (float) myPosition.getY();
+		float px = myPosition.getX();
+		float py = myPosition.getY();
 		com.pixurvival.core.util.Vector2 otherPosition = e.getPosition();
-		Vector2 intersection = findEdgePoint(worldViewport, px, py, (float) otherPosition.getX(), (float) otherPosition.getY());
+		Vector2 intersection = findEdgePoint(worldViewport, px, py, otherPosition.getX(), otherPosition.getY());
 		if (intersection == null) {
 			return;
 		}
 		if (myPlayer.getWorld().getEntityPool().get(EntityGroup.PLAYER, e.getId()) == null) {
-			e.getPosition().addX(e.getVelocity().getX() * Gdx.graphics.getDeltaTime());
-			e.getPosition().addY(e.getVelocity().getY() * Gdx.graphics.getDeltaTime());
+			e.getPosition().addX(e.getVelocity().getX() * Gdx.graphics.getRawDeltaTime());
+			e.getPosition().addY(e.getVelocity().getY() * Gdx.graphics.getRawDeltaTime());
 		}
 		Vector2 drawPosition = worldViewport.project(intersection);
 		tmp.set(px, py);

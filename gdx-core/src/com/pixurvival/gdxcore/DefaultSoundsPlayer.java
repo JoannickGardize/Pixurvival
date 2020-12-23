@@ -22,7 +22,7 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	public static final long MIN_DELAY_SAME_SOUND = 200;
 
 	private World world;
-	private long[] lastPlayedTimes;
+	private long[] lastPlayedTimes = new long[SoundPreset.values().length];
 
 	public DefaultSoundsPlayer(World world) {
 		this.world = world;
@@ -36,8 +36,6 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 			playSound(myPlayer, soundEffect);
 		}
 		myPlayer.getSoundEffectsToConsume().clear();
-		SoundPreset[] soundPresets = SoundPreset.values();
-		lastPlayedTimes = new long[soundPresets.length];
 	}
 
 	@Override

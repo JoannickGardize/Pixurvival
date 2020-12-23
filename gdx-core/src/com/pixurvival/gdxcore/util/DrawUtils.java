@@ -46,13 +46,13 @@ public class DrawUtils {
 		}
 		DrawData data = o;
 		float timer = data.getTimer();
-		timer += Gdx.graphics.getDeltaTime();
+		timer += Gdx.graphics.getRawDeltaTime();
 		while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
 			timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
 			data.setFirstLoop(false);
 		}
 		data.setTimer(timer);
-		data.setAngle(data.getAngle() + Gdx.graphics.getDeltaTime() * textureAnimation.getRotationPerSecond());
+		data.setAngle(data.getAngle() + Gdx.graphics.getRawDeltaTime() * textureAnimation.getRotationPerSecond());
 		return (int) (timer / textureAnimation.getFrameDuration());
 	}
 

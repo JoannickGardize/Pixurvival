@@ -119,6 +119,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private @Getter float globalVolume = 1;
 	private PixurvivalServer server;
 	private FileOutputStream errorOutput;
+	private boolean skipFrame = false;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
@@ -210,9 +211,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void render() {
+		if (skipFrame) {
+			skipFrame = false;
+			return;
+		}
 		try {
-			frameCounter += Gdx.graphics.getDeltaTime() * 1000;
-			interpolationTime += Gdx.graphics.getDeltaTime();
+			float deltaTime = Gdx.graphics.getRawDeltaTime();
+			frameCounter += deltaTime * 1000;
+			interpolationTime += deltaTime;
 			while (frameCounter >= frameDurationMillis) {
 				client.update(frameDurationMillis);
 				frameCounter -= frameDurationMillis;
@@ -352,6 +358,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		if (screen instanceof WorldScreen) {
 			((WorldScreen) screen).gameStarted();
 		}
+		skipFrame = true;
 	}
 
 	public void focusChat() {
