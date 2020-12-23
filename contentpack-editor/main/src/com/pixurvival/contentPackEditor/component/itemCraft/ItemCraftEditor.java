@@ -21,7 +21,7 @@ public class ItemCraftEditor extends RootElementEditor<ItemCraft> {
 		ItemStackEditor resultEditor = new ItemStackEditor();
 		VerticalListEditor<ItemStack> recipesList = new VerticalListEditor<>(ItemStackEditor::new, ItemStack::new, VerticalListEditor.HORIZONTAL);
 		TimeInput durationField = new TimeInput();
-		ElementChooserButton<Structure> requiredStructureChooser = new ElementChooserButton<>(Structure.class, false);
+		ElementChooserButton<Structure> requiredStructureChooser = new ElementChooserButton<>(Structure.class);
 
 		bind(recipesList, "recipes");
 		bind(resultEditor, "result");

@@ -20,7 +20,7 @@ public class WeaponPanel extends EquipablePanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		bindTo(itemEditor, WeaponItem.class);
+		super.bindTo(itemEditor, WeaponItem.class);
 		itemEditor.bind(baseAbilityEditor, "baseAbility", WeaponItem.class);
 		itemEditor.bind(specialAbilityEditor, "specialAbility", WeaponItem.class);
 	}

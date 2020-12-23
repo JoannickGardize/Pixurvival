@@ -15,7 +15,7 @@ import com.pixurvival.contentPackEditor.event.ElementRenamedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.SneakyThrows;
 
@@ -27,8 +27,8 @@ public class TranslationUpdateManager {
 
 	public void refreshAllTranslations() {
 		for (ElementType elementType : ElementType.values()) {
-			List<IdentifiedElement> list = ContentPackEditionService.getInstance().listOf(elementType);
-			for (IdentifiedElement element : list) {
+			List<NamedIdentifiedElement> list = ContentPackEditionService.getInstance().listOf(elementType);
+			for (NamedIdentifiedElement element : list) {
 				updateTranslations(element);
 			}
 		}
@@ -69,7 +69,7 @@ public class TranslationUpdateManager {
 	@SneakyThrows
 	public void elementRenamed(ElementRenamedEvent event) {
 		List<String> newKeys = ContentPack.getAllTranslationKeys(event.getElement());
-		IdentifiedElement fakeItem = event.getElement().getClass().newInstance();
+		NamedIdentifiedElement fakeItem = event.getElement().getClass().newInstance();
 		fakeItem.setName(event.getOldName());
 		List<String> oldKeys = ContentPack.getAllTranslationKeys(fakeItem);
 		for (Properties properties : FileService.getInstance().getCurrentContentPack().getTranslations().values()) {
@@ -88,7 +88,7 @@ public class TranslationUpdateManager {
 		refreshAllTranslations();
 	}
 
-	private void updateTranslations(IdentifiedElement element) {
+	private void updateTranslations(NamedIdentifiedElement element) {
 		Collection<String> keys = ContentPack.getAllTranslationKeys(element);
 		Collection<String> allKeys = ContentPack.getAllTranslationKeys(element, true);
 		for (Properties properties : FileService.getInstance().getCurrentContentPack().getTranslations().values()) {

@@ -2,6 +2,10 @@ package com.pixurvival.core.contentPack.item;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
+import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -15,6 +19,10 @@ import lombok.Setter;
 public class WeaponItem extends EquipableItem {
 
 	private static final long serialVersionUID = 1L;
+
+	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
+	private SpriteSheet spriteSheet;
 
 	@Valid
 	private ItemAlterationAbility baseAbility = new ItemAlterationAbility();

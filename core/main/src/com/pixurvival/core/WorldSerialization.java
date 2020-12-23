@@ -63,7 +63,7 @@ public class WorldSerialization {
 		ByteBuffer buffer = ByteBuffer.allocate(WorldUpdate.BUFFER_SIZE * 2 + ByteBufferUtils.BUFFER_SIZE);
 		try (OutputStream output = new BufferedOutputStream(new FileOutputStream(getSaveFile(world.getSaveName()))); Output kryoOutput = new Output(output)) {
 			// Global data
-			ByteBufferUtils.putString(buffer, ReleaseVersion.getActual().toString());
+			ByteBufferUtils.putString(buffer, ReleaseVersion.actual().toString());
 			ByteBufferUtils.putString(buffer, world.getContentPack().getIdentifier().fileName());
 			try {
 				ByteBufferUtils.putBytes(buffer, contentPackContext.getChecksum(world.getContentPack().getIdentifier()));
@@ -103,8 +103,8 @@ public class WorldSerialization {
 	public static World load(String saveName, ContentPackContext contentPackSerialization) throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
 		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
-		if (ReleaseVersion.getActual() != version) {
-			throw new LoadGameException(Reason.WRONG_GAME_VERSION, version, ReleaseVersion.getActual());
+		if (ReleaseVersion.actual() != version) {
+			throw new LoadGameException(Reason.WRONG_GAME_VERSION, version, ReleaseVersion.actual());
 		}
 		ContentPackIdentifier identifier = new ContentPackIdentifier(ByteBufferUtils.getString(buffer));
 		ContentPack contentPack;

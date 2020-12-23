@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.item;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class Item extends IdentifiedElement implements Serializable {
+public abstract class Item extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

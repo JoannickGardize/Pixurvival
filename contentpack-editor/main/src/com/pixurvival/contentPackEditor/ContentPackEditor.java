@@ -102,10 +102,10 @@ public class ContentPackEditor extends JFrame {
 	private void updateWindowTitle() {
 		File currentFile = FileService.getInstance().getCurrentFile();
 		if (currentFile == null) {
-			setTitle(TITLE_PREFFIX + ReleaseVersion.getActual().displayName() + " - " + TranslationService.getInstance().getString("menuBar.file.new"));
+			setTitle(TITLE_PREFFIX + ReleaseVersion.actual().displayName() + " - " + TranslationService.getInstance().getString("menuBar.file.new"));
 		} else {
 			try {
-				setTitle(TITLE_PREFFIX + ReleaseVersion.getActual().displayName() + " - " + currentFile.getCanonicalPath());
+				setTitle(TITLE_PREFFIX + ReleaseVersion.actual().displayName() + " - " + currentFile.getCanonicalPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

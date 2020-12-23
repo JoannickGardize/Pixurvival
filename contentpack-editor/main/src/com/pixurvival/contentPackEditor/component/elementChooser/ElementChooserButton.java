@@ -2,10 +2,13 @@ package com.pixurvival.contentPackEditor.component.elementChooser;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -16,18 +19,23 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.contentPackEditor.FileService;
 import com.pixurvival.contentPackEditor.IconService;
+import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class ElementChooserButton<T extends IdentifiedElement> extends JButton implements ValueComponent<T> {
+public class ElementChooserButton<T extends NamedIdentifiedElement> extends JButton implements ValueComponent<T> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,40 +43,34 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
 	private @Getter JLabel associatedLabel;
 	private @Getter T value;
-	private @Getter @Setter boolean required;
+	private @Getter @Setter boolean nullable;
+	private Object eventHandler;
+
+	private Predicate<T> additionalCondition = e -> true;
 
 	public ElementChooserButton(Class<T> elementType) {
-		this(createContentPackItemsSupplier(elementType), true);
+		this(createContentPackItemsSupplier(elementType));
 	}
 
-	public ElementChooserButton(Class<T> elementType, boolean required) {
-		this(createContentPackItemsSupplier(elementType), required);
-	}
-
-	public static <T extends IdentifiedElement> Supplier<Collection<T>> createContentPackItemsSupplier(Class<T> elementType) {
+	public static <T extends NamedIdentifiedElement> Supplier<Collection<T>> createContentPackItemsSupplier(Class<T> elementType) {
 		return () -> getContentPackItems(elementType);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends IdentifiedElement> Collection<T> getContentPackItems(Class<T> elementType) {
+	public static <T extends NamedIdentifiedElement> Collection<T> getContentPackItems(Class<T> elementType) {
 		ContentPack pack = FileService.getInstance().getCurrentContentPack();
 		if (pack == null) {
 			return Collections.emptyList();
-		} else if (elementType.getSuperclass() == IdentifiedElement.class) {
+		} else if (elementType.getSuperclass() == NamedIdentifiedElement.class) {
 			return (Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(elementType));
 		} else {
-			Class<? extends IdentifiedElement> superClass = ReflectionUtils.getSuperClassUnder(elementType, IdentifiedElement.class);
+			Class<? extends NamedIdentifiedElement> superClass = ReflectionUtils.getSuperClassUnder(elementType, NamedIdentifiedElement.class);
 			return ((Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(superClass))).stream().filter(elementType::isInstance).collect(Collectors.toList());
 		}
 	}
 
 	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier) {
-		this(itemsSupplier, true);
-	}
-
-	public ElementChooserButton(Supplier<Collection<T>> itemsSupplier, boolean required) {
 		super(TranslationService.getInstance().getString("elementChooserButton.none"));
-		this.required = required;
 
 		searchPopup = new SearchPopup<>(itemsSupplier);
 		addActionListener(e -> {
@@ -109,17 +111,41 @@ public class ElementChooserButton<T extends IdentifiedElement> extends JButton i
 
 	@Override
 	public boolean isValueValid(T value) {
-		if (!required && value == null) {
+		if (nullable && value == null) {
 			return true;
 		}
 		Collection<T> items = searchPopup.getItems();
-		return items != null && CollectionUtils.containsIdentity(items, value);
+		return items != null && CollectionUtils.containsIdentity(items, value) && additionalCondition.test(value);
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		updateDisplay();
 		super.paint(g);
+	}
+
+	@Override
+	public void configure(Annotation annotation) {
+		if (annotation instanceof Nullable) {
+			nullable = true;
+		} else if (annotation instanceof ResourceReference) {
+			additionalCondition = r -> {
+				if (r == null) {
+					return true;
+				} else {
+					return ((ResourceEntry) r).getPreview() instanceof BufferedImage;
+				}
+			};
+		} else if (annotation instanceof AnimationTemplateRequirement) {
+			AnimationTemplateRequirement requirement = (AnimationTemplateRequirement) annotation;
+			additionalCondition = s -> {
+				if (s == null) {
+					return true;
+				}
+				SpriteSheet spriteSheet = (SpriteSheet) s;
+				return spriteSheet.getAnimationTemplate() == null || requirement.value().test(spriteSheet.getAnimationTemplate().getAnimations().keySet());
+			};
+		}
 	}
 
 	private void updateDisplay() {

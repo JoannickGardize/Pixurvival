@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.spriteSheet;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -32,9 +33,11 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		// Contruction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 		IntegerInput widthField = new IntegerInput();
+		widthField.setConstraint(new SpriteDimensionConstraint(this::getValue, BufferedImage::getWidth));
 		IntegerInput heightField = new IntegerInput();
+		heightField.setConstraint(new SpriteDimensionConstraint(this::getValue, BufferedImage::getHeight));
 		ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(AnimationTemplate.class);
-		ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(EquipmentOffset.class, false);
+		ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(EquipmentOffset.class);
 		JTabbedPane previewTabs = new JTabbedPane();
 		FloatInput heightOffsetInput = new FloatInput();
 		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
@@ -68,6 +71,11 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		setLayout(new BorderLayout(10, 0));
 		add(propertiesPanel, BorderLayout.WEST);
 		add(previewTabs, BorderLayout.CENTER);
+
+		imageField.addValueChangeListener(e -> {
+			widthField.updateValue();
+			heightField.updateValue();
+		});
 	}
 
 	@Override

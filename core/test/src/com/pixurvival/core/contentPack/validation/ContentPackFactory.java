@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamEndCondition;
@@ -131,8 +131,8 @@ public class ContentPackFactory {
 		return name;
 	}
 
-	public void addElement(ContentPack contentPack, IdentifiedElement element) {
-		List<IdentifiedElement> list = contentPack.listOf(element.getClass());
+	public void addElement(ContentPack contentPack, NamedIdentifiedElement element) {
+		List<NamedIdentifiedElement> list = contentPack.listOf(element.getClass());
 		element.setName(nextUniqueName());
 		element.setId(list.size());
 		list.add(element);

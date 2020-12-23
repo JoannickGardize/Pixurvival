@@ -1,6 +1,8 @@
 package com.pixurvival.core.livingEntity.alteration;
 
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
@@ -19,6 +21,7 @@ public class OverridingSpriteSheetAlteration extends PersistentAlteration {
 	}
 
 	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
 	private SpriteSheet spriteSheet;
 
 	@Override

@@ -13,13 +13,13 @@ import javax.imageio.ImageIO;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class ImageMapping<T extends IdentifiedElement> implements Serializable {
+public class ImageMapping<T extends NamedIdentifiedElement> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

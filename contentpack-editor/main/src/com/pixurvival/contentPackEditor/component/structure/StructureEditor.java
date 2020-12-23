@@ -25,7 +25,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
+	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 
 	public StructureEditor() {
 		super(Structure.class, "structureType");
@@ -37,7 +37,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		TimeInput durationInput = new TimeInput();
 		TimeInput deconstructionDuration = new TimeInput();
 		ListEditor<Tile> bannedTilesEditor = new HorizontalListEditor<>(() -> {
-			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class, true);
+			ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class);
 			tileChooser.setBorder(LayoutUtils.createBorder());
 			return tileChooser;
 		}, () -> null);

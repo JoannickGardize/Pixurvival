@@ -134,7 +134,7 @@ public class ItemCharacteristicsRepresenter {
 		table.add(new Label(abilityName, PixurvivalGame.getSkin(), "white")).colspan(2);
 		table.row();
 		RepresenterUtils.appendLabelledRow(table, "hud.item.cooldown", RepresenterUtils.time(ability.getCooldown()));
-		if (ability.getAmmunition().getItem() != null) {
+		if (ability.getAmmunition() != null) {
 			table.add(new Label(PixurvivalGame.getString("hud.item.ammunition"), PixurvivalGame.getSkin(), "white")).expand();
 			table.add(RepresenterUtils.itemStack(ability.getAmmunition()));
 			table.row();

@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 import com.pixurvival.contentPackEditor.ImageService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.Setter;
 
@@ -144,9 +144,9 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 	}
 
 	private void reindex(List<E> list) {
-		if (!list.isEmpty() && list.get(0) instanceof IdentifiedElement) {
+		if (!list.isEmpty() && list.get(0) instanceof NamedIdentifiedElement) {
 			for (int i = 0; i < list.size(); i++) {
-				((IdentifiedElement) list.get(i)).setId(i);
+				((NamedIdentifiedElement) list.get(i)).setId(i);
 			}
 		}
 	}

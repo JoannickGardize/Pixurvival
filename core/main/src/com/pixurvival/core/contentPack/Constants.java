@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 
@@ -17,6 +19,7 @@ public class Constants implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
 	private SpriteSheet defaultCharacter;
 
 	@ElementReference

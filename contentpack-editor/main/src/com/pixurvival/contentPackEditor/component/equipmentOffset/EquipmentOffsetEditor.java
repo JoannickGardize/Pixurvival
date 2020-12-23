@@ -15,11 +15,11 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooserPreviewTabs;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.component.valueComponent.Bounds;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditorTablePanel;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
+import com.pixurvival.contentPackEditor.component.valueComponent.constraint.BoundsConstraint;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.FrameOffset;
 
@@ -35,8 +35,8 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 	public EquipmentOffsetEditor() {
 		super(EquipmentOffset.class);
 
-		widthInput.setValueBounds(Bounds.min(1));
-		heightInput.setValueBounds(Bounds.min(1));
+		widthInput.setConstraint(BoundsConstraint.min(1));
+		heightInput.setConstraint(BoundsConstraint.min(1));
 
 		// Construction
 		tablePanel = new ElementEditorTablePanel<>((x, y) -> {

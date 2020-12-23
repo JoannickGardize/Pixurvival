@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
@@ -13,6 +14,8 @@ import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Pattern;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
+import com.pixurvival.core.contentPack.validation.annotation.SpriteHeight;
+import com.pixurvival.core.contentPack.validation.annotation.SpriteWidth;
 
 import lombok.experimental.UtilityClass;
 
@@ -54,7 +57,11 @@ public class ErrorToString {
 		addToStringFunction(NullErrorCause.class, n -> "the element is missing");
 		addToStringFunction(Pattern.class, p -> "the character sequence must match the pattern " + p.value());
 		addToStringFunction(Positive.class, p -> "the value cannot be negative");
-		addToStringFunction(ResourceReference.class, p -> "the resource does not exists");
+		addToStringFunction(ResourceReference.class, p -> "the resource does not exists or is not an image");
+		addToStringFunction(SpriteWidth.class, p -> "The sprite width does not divide correctly the image width");
+		addToStringFunction(SpriteHeight.class, p -> "The sprite height does not divide correctly the image height");
+		addToStringFunction(SpriteHeight.class, p -> "The sprite height does not divide correctly the image height");
+		addToStringFunction(AnimationTemplateRequirement.class, a -> "The Animtation Template of the Sprite Sheet must contains at least the following actions: " + a.value());
 	}
 
 	public static String toString(Object cause) {

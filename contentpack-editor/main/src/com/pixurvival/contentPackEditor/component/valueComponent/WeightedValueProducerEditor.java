@@ -13,7 +13,7 @@ public class WeightedValueProducerEditor<E extends Serializable> extends Element
 
 	private static final long serialVersionUID = 1L;
 
-	private ListEditor<Entry<E>> structureGeneratorEntriesEditor;
+	private ListEditor<Entry<E>> entriesEditor;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public WeightedValueProducerEditor(Class<E> elementType) {
@@ -22,7 +22,7 @@ public class WeightedValueProducerEditor<E extends Serializable> extends Element
 
 	public WeightedValueProducerEditor(Supplier<ValueComponent<E>> elementEditor, Supplier<E> defaultValueSupplier) {
 		super(WeightedValueProducer.class);
-		structureGeneratorEntriesEditor = new HorizontalListEditor<>(() -> {
+		entriesEditor = new HorizontalListEditor<>(() -> {
 			WeightedValueEntryEditor<E> editor = new WeightedValueEntryEditor<>(elementEditor.get());
 			editor.setBorder(LayoutUtils.createBorder());
 			return editor;
@@ -34,13 +34,8 @@ public class WeightedValueProducerEditor<E extends Serializable> extends Element
 			return e;
 		});
 
-		bind(structureGeneratorEntriesEditor, "backingArray");
+		bind(entriesEditor, "backingArray");
 
-		LayoutUtils.fill(this, structureGeneratorEntriesEditor);
-	}
-
-	@Override
-	public boolean isValueValid(WeightedValueProducer<E> value) {
-		return !value.getBackingArray().isEmpty() || super.isValueValid(value);
+		LayoutUtils.fill(this, entriesEditor);
 	}
 }

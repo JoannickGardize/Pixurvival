@@ -8,13 +8,13 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.elementSet.ExclusiveElementSet;
 import com.pixurvival.core.contentPack.elementSet.InclusiveElementSet;
 
-public class ElementSetEditor<T extends IdentifiedElement> extends InstanceChangingElementEditor<ElementSet<T>> {
+public class ElementSetEditor<T extends NamedIdentifiedElement> extends InstanceChangingElementEditor<ElementSet<T>> {
 
 	public ElementSetEditor(Class<T> type) {
 		super(ElementSet.class, "elementSetType", type);

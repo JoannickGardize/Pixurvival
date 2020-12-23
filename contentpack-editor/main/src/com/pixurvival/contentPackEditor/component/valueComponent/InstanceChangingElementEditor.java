@@ -16,7 +16,7 @@ import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.ClassNameCellRenderer;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.util.CachedSupplier;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,17 +34,16 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 
 	private JComboBox<Class<? extends E>> typeChooser;
 	private @Getter JPanel specificPartPanel;
-	private Class<?> currentClass;
 	private Map<Class<? extends E>, CachedSupplier<JPanel>> classEntries = new HashMap<>();
 	private Map<Class<?>, E> stash = new HashMap<>();
 	private int previousElementId;
 
-	public InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix) {
+	protected InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix) {
 		this(defaultType, translationPreffix, null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix, Object params) {
+	protected InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix, Object params) {
 		super(defaultType);
 		for (ClassEntry classEntry : getClassEntries(params)) {
 			classEntries.put(classEntry.getType(), new CachedSupplier<>(classEntry.getSpecificPanel()));
@@ -87,40 +86,40 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
 	protected void valueChanging() {
 		Class<?> type = getValue().getClass();
 		// Preload the panel to bind values
-		classEntries.get(type).get();
+		classEntries.get(type).getNew();
 	}
 
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
 		if (source == this && getValue() != null) {
 			Class<?> type = getValue().getClass();
-			if (type != currentClass) {
-				currentClass = type;
-				specificPartPanel.removeAll();
-				specificPartPanel.add(classEntries.get(type).get(), BorderLayout.CENTER);
-				specificPartPanel.revalidate();
-				specificPartPanel.repaint();
-			}
+			specificPartPanel.removeAll();
+			specificPartPanel.add(classEntries.get(type).get(), BorderLayout.CENTER);
+			specificPartPanel.revalidate();
+			specificPartPanel.repaint();
 			typeChooser.setSelectedItem(type);
-			if (getValue() instanceof IdentifiedElement && ((IdentifiedElement) getValue()).getId() != previousElementId) {
+			if (getValue() instanceof NamedIdentifiedElement && ((NamedIdentifiedElement) getValue()).getId() != previousElementId) {
 				stash.clear();
-				previousElementId = ((IdentifiedElement) getValue()).getId();
+				previousElementId = ((NamedIdentifiedElement) getValue()).getId();
 			}
 		}
 	}
 
 	@Override
 	public boolean isValueValid(E value) {
-		if (getValue() != null && value != null && getValue().getClass() != value.getClass()) {
+		if (getValue() == null || value != null && getValue().getClass() != value.getClass()) {
 			// Preload the panel to bind values
-			classEntries.get(value.getClass()).get();
+			if (value != null) {
+				classEntries.get(value.getClass()).get();
+			}
 			boolean valid = super.isValueValid(value);
-			classEntries.get(getValue().getClass()).get();
+			if (getValue() != null) {
+				classEntries.get(getValue().getClass()).get();
+			}
 			return valid;
 		} else {
 			return super.isValueValid(value);
 		}
-
 	}
 
 	protected abstract List<ClassEntry> getClassEntries(Object params);

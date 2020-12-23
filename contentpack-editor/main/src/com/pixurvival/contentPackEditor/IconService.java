@@ -16,7 +16,7 @@ import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.item.Item;
@@ -32,8 +32,8 @@ public class IconService {
 
 	private static @Getter IconService instance = new IconService();
 
-	private Map<IdentifiedElement, Icon> elementIcons = new HashMap<>();
-	private Map<Class<? extends IdentifiedElement>, Function<IdentifiedElement, Icon>> iconSuppliers = new HashMap<>();
+	private Map<NamedIdentifiedElement, Icon> elementIcons = new HashMap<>();
+	private Map<Class<? extends NamedIdentifiedElement>, Function<NamedIdentifiedElement, Icon>> iconSuppliers = new HashMap<>();
 	private Map<ElementType, Icon> typeIcons = new EnumMap<>(ElementType.class);
 
 	private IconService() {
@@ -55,12 +55,12 @@ public class IconService {
 		return typeIcons.get(type);
 	}
 
-	public Icon get(IdentifiedElement element) {
+	public Icon get(NamedIdentifiedElement element) {
 		if (element == null) {
 			return null;
 		} else {
 			return elementIcons.computeIfAbsent(element, e -> {
-				Function<IdentifiedElement, Icon> iconSupplier = iconSuppliers.get(ReflectionUtils.getSuperClassUnder(e.getClass(), IdentifiedElement.class));
+				Function<NamedIdentifiedElement, Icon> iconSupplier = iconSuppliers.get(ReflectionUtils.getSuperClassUnder(e.getClass(), NamedIdentifiedElement.class));
 				if (iconSupplier == null) {
 					return null;
 				} else {
@@ -70,7 +70,7 @@ public class IconService {
 		}
 	}
 
-	public Icon item(IdentifiedElement element) {
+	public Icon item(NamedIdentifiedElement element) {
 		Item item = (Item) element;
 		if (item == null || item.getImage() == null || item.getFrame() == null) {
 			return null;
@@ -79,7 +79,7 @@ public class IconService {
 		}
 	}
 
-	public Icon tile(IdentifiedElement element) {
+	public Icon tile(NamedIdentifiedElement element) {
 		Tile tile = (Tile) element;
 		if (tile == null || tile.getImage() == null || tile.getFrames() == null || tile.getFrames().isEmpty()) {
 			return null;
@@ -88,7 +88,7 @@ public class IconService {
 		}
 	}
 
-	public Icon structure(IdentifiedElement element) {
+	public Icon structure(NamedIdentifiedElement element) {
 		Structure structure = (Structure) element;
 		if (structure.getSpriteSheet() == null) {
 			return null;
@@ -97,7 +97,7 @@ public class IconService {
 		}
 	}
 
-	public Icon creature(IdentifiedElement element) {
+	public Icon creature(NamedIdentifiedElement element) {
 		Creature creature = (Creature) element;
 		if (creature.getSpriteSheet() == null) {
 			return null;
@@ -106,7 +106,7 @@ public class IconService {
 		}
 	}
 
-	public Icon effect(IdentifiedElement element) {
+	public Icon effect(NamedIdentifiedElement element) {
 		Effect effect = (Effect) element;
 		if (effect.getSpriteSheet() == null) {
 			return null;

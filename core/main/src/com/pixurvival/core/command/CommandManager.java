@@ -11,7 +11,7 @@ import com.pixurvival.core.command.impl.ListCommandProcessor;
 import com.pixurvival.core.command.impl.OpCommandProcessor;
 import com.pixurvival.core.command.impl.SpawnCommandProcessor;
 import com.pixurvival.core.command.impl.TeleportCommandProcessor;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
@@ -59,8 +59,8 @@ public class CommandManager {
 			return input;
 		}
 		Iterator<String> stringIterator;
-		if (IdentifiedElement.class.isAssignableFrom(argType)) {
-			stringIterator = executor.getWorld().getContentPack().allNamesOf((Class<? extends IdentifiedElement>) argType).iterator();
+		if (NamedIdentifiedElement.class.isAssignableFrom(argType)) {
+			stringIterator = executor.getWorld().getContentPack().allNamesOf((Class<? extends NamedIdentifiedElement>) argType).iterator();
 		} else if (argType == PlayerEntity.class) {
 			stringIterator = playerNameIterator((Collection) executor.getWorld().getEntityPool().get(EntityGroup.PLAYER));
 		} else {

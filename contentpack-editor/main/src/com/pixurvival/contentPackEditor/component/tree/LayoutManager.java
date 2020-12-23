@@ -20,7 +20,7 @@ import org.yaml.snakeyaml.representer.Representer;
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializationPlugin;
 import com.pixurvival.core.contentPack.serialization.DeclarationPropertyOrderUtils;
 
@@ -118,7 +118,7 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 	private void setElementReferences(ContentPack contentPack) {
 		root.forEachLeaf(node -> {
 			LayoutElement layoutElement = (LayoutElement) node;
-			List<IdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, layoutElement.getType());
+			List<NamedIdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, layoutElement.getType());
 			layoutElement.setElement(list.get(layoutElement.getId()));
 		});
 	}
@@ -131,7 +131,7 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 		});
 		for (ElementType type : ElementType.values()) {
 			Set<Integer> set = missingKeys[type.ordinal()];
-			List<IdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, type);
+			List<NamedIdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, type);
 			for (Integer id : set) {
 				root.getChildren().add(new LayoutElement(list.get(id)));
 			}
@@ -144,8 +144,8 @@ public class LayoutManager implements ContentPackSerializationPlugin {
 		for (ElementType type : ElementType.values()) {
 			Set<Integer> keys = new HashSet<>();
 			missingKeys[type.ordinal()] = keys;
-			List<IdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, type);
-			for (IdentifiedElement e : list) {
+			List<NamedIdentifiedElement> list = ContentPackEditionService.getInstance().listOf(contentPack, type);
+			for (NamedIdentifiedElement e : list) {
 				keys.add(e.getId());
 			}
 		}

@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.map;
 
 import java.io.Serializable;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.map.generator.SimplexNoise;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Heightmap extends IdentifiedElement implements Serializable {
+public class Heightmap extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

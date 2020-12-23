@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.validation.ContentPackValidator;
 import com.pixurvival.core.contentPack.validation.ErrorCollection;
+import com.pixurvival.core.contentPack.validation.ImageAccessor;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 
 /**
@@ -42,8 +43,11 @@ public interface AnnotationHandler {
 	/**
 	 * Called at the beginning of a ContentPack validation, for optional
 	 * initialization.
+	 * 
+	 * @param imageAccessor
+	 *            the ImageAccessor to use for this validation
 	 */
-	default void begin() {
+	default void begin(ImageAccessor imageAccessor) {
 		// Nothing by default
 	}
 

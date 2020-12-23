@@ -16,13 +16,13 @@ public enum TranslationKey {
 	ITEM_SPECIAL_ABILITY_NAME(element -> "item." + element.getName() + ".specialAbility.name"),
 	ITEM_SPECIAL_ABILITY_DESCRIPTION(element -> "item." + element.getName() + ".specialAbility.description");
 
-	private Function<IdentifiedElement, String> keyFunction;
+	private Function<NamedIdentifiedElement, String> keyFunction;
 
-	public String getKey(IdentifiedElement element) {
+	public String getKey(NamedIdentifiedElement element) {
 		return keyFunction.apply(element);
 	}
 
-	private static String getElementTypeKeyPreffix(IdentifiedElement element) {
-		return CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), IdentifiedElement.class).getSimpleName()) + ".";
+	private static String getElementTypeKeyPreffix(NamedIdentifiedElement element) {
+		return CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), NamedIdentifiedElement.class).getSimpleName()) + ".";
 	}
 }

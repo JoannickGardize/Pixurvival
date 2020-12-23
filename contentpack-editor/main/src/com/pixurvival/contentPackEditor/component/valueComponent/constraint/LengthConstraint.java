@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.valueComponent;
+package com.pixurvival.contentPackEditor.component.valueComponent.constraint;
 
 import java.util.List;
 

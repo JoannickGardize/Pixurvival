@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
@@ -13,7 +13,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EquipmentOffset extends IdentifiedElement implements Serializable {
+public class EquipmentOffset extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

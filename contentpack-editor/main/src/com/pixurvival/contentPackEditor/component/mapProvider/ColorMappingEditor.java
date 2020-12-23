@@ -8,13 +8,13 @@ import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ColorInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ColorPanel;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.map.ColorMapping;
 import com.pixurvival.core.util.CaseUtils;
 
 import lombok.Getter;
 
-public class ColorMappingEditor<T extends IdentifiedElement> extends ElementEditor<ColorMapping<T>> {
+public class ColorMappingEditor<T extends NamedIdentifiedElement> extends ElementEditor<ColorMapping<T>> {
 
 	private static final long serialVersionUID = 1L;
 

@@ -87,6 +87,11 @@ public class VisitNode {
 		return sb.toString();
 	}
 
+	@Override
+	public String toString() {
+		return pathString();
+	}
+
 	/**
 	 * Returns a list of all ancestors of this node, starting from the root node and
 	 * finishing to this node. The list has at least one element, this instance, if

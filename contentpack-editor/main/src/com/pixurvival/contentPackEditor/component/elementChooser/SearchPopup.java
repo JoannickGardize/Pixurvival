@@ -23,12 +23,12 @@ import com.pixurvival.contentPackEditor.IconService;
 import com.pixurvival.contentPackEditor.component.util.DocumentAdapter;
 import com.pixurvival.contentPackEditor.component.util.RelativePopup;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class SearchPopup<T extends IdentifiedElement> extends RelativePopup {
+public class SearchPopup<T extends NamedIdentifiedElement> extends RelativePopup {
 
 	public static final String ELEMENT_SELECTED_ACTION = "ELEMENT_SELECTED_ACTION";
 

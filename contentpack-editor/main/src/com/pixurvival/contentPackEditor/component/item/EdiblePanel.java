@@ -35,7 +35,6 @@ public class EdiblePanel extends ItemSpecificPartPanel {
 	public void bindTo(ItemEditor itemEditor) {
 		itemEditor.bind(durationField, "duration", EdibleItem.class);
 		itemEditor.bind(alterationsEditor, "alterations", EdibleItem.class);
-
 	}
 
 }

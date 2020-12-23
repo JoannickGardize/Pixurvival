@@ -30,7 +30,7 @@ import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementRemovedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.util.CaseUtils;
 import com.pixurvival.core.util.Wrapper;
@@ -98,13 +98,13 @@ public class ContentPackEditionService {
 
 	@SneakyThrows
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public IdentifiedElement addElement(ElementType type, String name) {
+	public NamedIdentifiedElement addElement(ElementType type, String name) {
 		if (FileService.getInstance().getCurrentContentPack() == null) {
 			return null;
 		}
 		List list = listOf(type);
 
-		IdentifiedElement newElement = BeanFactory.newInstance(type.getElementClass());
+		NamedIdentifiedElement newElement = BeanFactory.newInstance(type.getElementClass());
 		newElement.setName(name);
 		newElement.setId(list.size());
 		list.add(newElement);
@@ -112,34 +112,34 @@ public class ContentPackEditionService {
 		return newElement;
 	}
 
-	public void removeElement(IdentifiedElement element) {
+	public void removeElement(NamedIdentifiedElement element) {
 		ElementType type = ElementType.of(element);
-		List<? extends IdentifiedElement> list = listOf(type);
+		List<? extends NamedIdentifiedElement> list = listOf(type);
 		list.remove(element);
 		reindex(list);
 		EventManager.getInstance().fire(new ElementRemovedEvent(element));
 	}
 
-	public void changeInstance(IdentifiedElement element) {
+	public void changeInstance(NamedIdentifiedElement element) {
 		ElementType type = ElementType.of(element);
-		List<IdentifiedElement> list = listOf(type);
-		IdentifiedElement oldInstance = list.get(element.getId());
+		List<NamedIdentifiedElement> list = listOf(type);
+		NamedIdentifiedElement oldInstance = list.get(element.getId());
 		list.set(element.getId(), element);
 		EventManager.getInstance().fire(new ElementInstanceChangedEvent(oldInstance, element));
 	}
 
 	@SneakyThrows
-	public List<IdentifiedElement> listOf(ElementType type) {
+	public List<NamedIdentifiedElement> listOf(ElementType type) {
 		return listOf(FileService.getInstance().getCurrentContentPack(), type);
 	}
 
 	@SuppressWarnings("unchecked")
 	@SneakyThrows
-	public List<IdentifiedElement> listOf(ContentPack contentPack, ElementType type) {
+	public List<NamedIdentifiedElement> listOf(ContentPack contentPack, ElementType type) {
 		if (contentPack == null) {
 			return Collections.emptyList();
 		}
-		List<IdentifiedElement> result = (List<IdentifiedElement>) listGetters.get(type).invoke(contentPack);
+		List<NamedIdentifiedElement> result = (List<NamedIdentifiedElement>) listGetters.get(type).invoke(contentPack);
 		if (result == null) {
 			result = new ArrayList<>();
 			listSetters.get(type).invoke(contentPack, result);
@@ -164,7 +164,7 @@ public class ContentPackEditionService {
 				&& ResourcesService.getInstance().getResource(spriteSheet.getImage()) != null;
 	}
 
-	private void reindex(List<? extends IdentifiedElement> list) {
+	private void reindex(List<? extends NamedIdentifiedElement> list) {
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setId(i);
 		}

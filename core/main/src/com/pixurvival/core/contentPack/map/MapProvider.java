@@ -3,11 +3,11 @@ package com.pixurvival.core.contentPack.map;
 import java.util.Random;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
-public abstract class MapProvider extends IdentifiedElement {
+public abstract class MapProvider extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

@@ -115,7 +115,7 @@ public class FileService {
 				return;
 			}
 		}
-		currentContentPack.setReleaseVersion(ReleaseVersion.getActual().name());
+		currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
 		try {
 			contentPackContext.getSerialization().save(currentFile, currentContentPack);
 			previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
@@ -175,7 +175,7 @@ public class FileService {
 		String messageKey;
 		if (forceUpgrade) {
 			messageKey = "autoUpgradeTool.loadErrorTry";
-		} else if (ReleaseVersion.valueFor(currentContentPack.getReleaseVersion()) != ReleaseVersion.getActual()) {
+		} else if (ReleaseVersion.valueFor(currentContentPack.getReleaseVersion()) != ReleaseVersion.actual()) {
 			messageKey = "autoUpgradeTool.oldVersion";
 		} else {
 			return true;
@@ -187,7 +187,7 @@ public class FileService {
 				return false;
 			} else {
 				currentContentPack = upgraded;
-				currentContentPack.setReleaseVersion(ReleaseVersion.getActual().name());
+				currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
 				return true;
 			}
 		}

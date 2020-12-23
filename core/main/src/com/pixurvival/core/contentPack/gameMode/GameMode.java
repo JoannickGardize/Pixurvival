@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.IntegerInterval;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
@@ -23,7 +23,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GameMode extends IdentifiedElement {
+public class GameMode extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

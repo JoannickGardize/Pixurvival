@@ -40,7 +40,7 @@ public abstract class EquipablePanel extends ItemSpecificPartPanel {
 		if (showSpriteSheet) {
 			itemEditor.bind(spriteSheetChooser, "spriteSheet", type);
 		}
-		itemEditor.bind(statModifiersEditor, "statModifiers", type);
+		itemEditor.bind(statModifiersEditor, "statModifiers", EquipableItem.class);
 	}
 
 	protected void finalizeLayout(JPanel childPanel) {

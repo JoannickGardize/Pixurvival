@@ -190,7 +190,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// OverridingSpriteSheetEditor
 		entries.add(new ClassEntry(OverridingSpriteSheetAlteration.class, () -> {
 			TimeInput durationInput = new TimeInput();
-			ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class, false);
+			ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 			bind(durationInput, "duration", OverridingSpriteSheetAlteration.class);
 			bind(spriteSheetChooser, "spriteSheet", OverridingSpriteSheetAlteration.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.duration", durationInput, "elementType.spriteSheet", spriteSheetChooser);

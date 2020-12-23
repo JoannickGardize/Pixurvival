@@ -94,7 +94,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		if (value.getRoles() == null || getValue() == value) {
 			return super.isValueValid(value);
 		}
-		// Solves heightmap reference problem
+		// Solves roles reference problem
 		GameMode previousValue = getValue();
 		setValue(value, true);
 		boolean result = super.isValueValid(value);

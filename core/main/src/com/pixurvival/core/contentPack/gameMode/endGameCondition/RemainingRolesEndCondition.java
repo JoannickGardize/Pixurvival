@@ -21,7 +21,7 @@ public class RemainingRolesEndCondition extends PlayerAliveCountEndGameCondition
 
 	private static final long serialVersionUID = 1L;
 
-	@ElementReference("<.roles.roles")
+	@ElementReference("<<.roles.roles")
 	private List<Role> roles = new ArrayList<>();
 
 	private boolean countPerTeam = false;

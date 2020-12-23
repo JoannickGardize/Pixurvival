@@ -13,12 +13,13 @@ public class CPEMenuBar extends JMenuBar {
 
 	public CPEMenuBar() {
 		FileService fs = FileService.getInstance();
-		final ResourcesDialog resourcesDialog = new ResourcesDialog();
-		final IdentifierDialog identifierDialog = new IdentifierDialog();
-		final ConstantsDialog constantsDialog = new ConstantsDialog();
-		final TranslationDialog translationDialog = TranslationDialog.getInstance();
-		final ContentPackChooserDialog contentPackChooserDialog = new ContentPackChooserDialog();
-		final SettingsDialog settingsDialog = new SettingsDialog();
+		ResourcesDialog resourcesDialog = new ResourcesDialog();
+		IdentifierDialog identifierDialog = new IdentifierDialog();
+		ConstantsDialog constantsDialog = new ConstantsDialog();
+		TranslationDialog translationDialog = TranslationDialog.getInstance();
+		ContentPackChooserDialog contentPackChooserDialog = new ContentPackChooserDialog();
+		SettingsDialog settingsDialog = new SettingsDialog();
+		ErrorListDialog errorListDialog = new ErrorListDialog();
 
 		MenuBuilder builder = new MenuBuilder(this, "menuBar");
 		builder.addItem("file.new", fs::newContentPack);
@@ -30,6 +31,7 @@ public class CPEMenuBar extends JMenuBar {
 		builder.addItem("contentPack.resources", () -> resourcesDialog.setVisible(true));
 		builder.addItem("contentPack.constants", () -> constantsDialog.setVisible(true));
 		builder.addItem("contentPack.translations", () -> translationDialog.setVisible(true));
+		builder.addItem("contentPack.errorList", () -> errorListDialog.setVisible(true));
 		builder.addItem("editor.settings", () -> settingsDialog.setVisible(true));
 	}
 }

@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.item.ItemStack;
 
@@ -26,7 +26,7 @@ public class ByteBufferUtils {
 		return bufferLocal.get();
 	}
 
-	public static void writeElementOrNull(ByteBuffer buffer, IdentifiedElement element) {
+	public static void writeElementOrNull(ByteBuffer buffer, NamedIdentifiedElement element) {
 		if (element == null) {
 			VarLenNumberIO.writeVarInt(buffer, -1);
 		} else {
@@ -34,7 +34,7 @@ public class ByteBufferUtils {
 		}
 	}
 
-	public static <T extends IdentifiedElement> T readElementOrNull(ByteBuffer buffer, List<T> elementList) {
+	public static <T extends NamedIdentifiedElement> T readElementOrNull(ByteBuffer buffer, List<T> elementList) {
 		int id = VarLenNumberIO.readVarInt(buffer);
 		if (id == -1) {
 			return null;

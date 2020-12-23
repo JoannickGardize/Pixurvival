@@ -279,6 +279,7 @@ public class TiledMap {
 			waitingPositions.put(positionLock, positionLock);
 			while ((chunk = chunkAt(position)) == null) {
 				try {
+					System.out.println("wait " + position);
 					// TODO ???
 					Log.info("Waiting for chunk at " + position);
 					positionLock.wait(100);
@@ -289,6 +290,7 @@ public class TiledMap {
 				}
 				flushChunks();
 			}
+			System.out.println("got " + position);
 			return chunk;
 		}
 	}

@@ -18,11 +18,11 @@ import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.util.ColorUtils;
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.map.ColorMapping;
 import com.pixurvival.core.contentPack.map.ImageMapping;
 
-public class ImageMappingEditor<T extends IdentifiedElement> extends ElementEditor<ImageMapping<T>> {
+public class ImageMappingEditor<T extends NamedIdentifiedElement> extends ElementEditor<ImageMapping<T>> {
 
 	private static final long serialVersionUID = 1L;
 

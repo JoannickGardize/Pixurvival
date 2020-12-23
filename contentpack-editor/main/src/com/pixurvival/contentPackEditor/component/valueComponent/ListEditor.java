@@ -13,7 +13,8 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.contentPackEditor.component.valueComponent.constraint.LengthConstraint;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 
 import lombok.Getter;
@@ -100,8 +101,8 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 	}
 
 	public void add(E value) {
-		if (value instanceof IdentifiedElement) {
-			((IdentifiedElement) value).setId(getValue().size());
+		if (value instanceof NamedIdentifiedElement) {
+			((NamedIdentifiedElement) value).setId(getValue().size());
 		}
 		if (getValue() == null) {
 			setValue(new ArrayList<>());

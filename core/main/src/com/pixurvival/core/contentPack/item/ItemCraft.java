@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
@@ -17,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ItemCraft extends IdentifiedElement implements Serializable {
+public class ItemCraft extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

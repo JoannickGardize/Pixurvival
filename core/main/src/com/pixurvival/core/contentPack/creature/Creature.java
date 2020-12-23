@@ -3,9 +3,11 @@ package com.pixurvival.core.contentPack.creature;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
@@ -22,17 +24,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Creature extends IdentifiedElement {
+public class Creature extends NamedIdentifiedElement {
 
 	private static final AbilitySet EMPTY_ABILITY_SET = new AbilitySet();
 
 	static {
-		initializeAbilitySet(EMPTY_ABILITY_SET);
+		initializeAbilitySet(null, EMPTY_ABILITY_SET);
 	}
 
 	private static final long serialVersionUID = 1L;
 
 	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
 	private SpriteSheet spriteSheet;
 
 	@Positive
@@ -63,13 +66,16 @@ public class Creature extends IdentifiedElement {
 
 	private transient @Setter(AccessLevel.NONE) int harvestAbilityId;
 
+	private transient AbilitySet effectiveAbilitySet;
+
 	@Override
 	public void initialize() {
 		if (abilitySet == null) {
-			abilitySet = EMPTY_ABILITY_SET;
+			effectiveAbilitySet = EMPTY_ABILITY_SET;
 			harvestAbilityId = 1;
 		} else {
-			int newHarvestAbilityId = initializeAbilitySet(abilitySet);
+			effectiveAbilitySet = new AbilitySet();
+			int newHarvestAbilityId = initializeAbilitySet(abilitySet, effectiveAbilitySet);
 			if (newHarvestAbilityId != -1) {
 				harvestAbilityId = newHarvestAbilityId;
 			}
@@ -90,16 +96,14 @@ public class Creature extends IdentifiedElement {
 		}
 	}
 
-	private static int initializeAbilitySet(AbilitySet abilitySet) {
-		List<Ability> abilities = abilitySet.getAbilities();
-		if (!abilities.isEmpty() && abilities.get(0) instanceof SilenceAbility) {
-			return -1;
+	private static int initializeAbilitySet(AbilitySet baseSet, AbilitySet targetSet) {
+		targetSet.add(new SilenceAbility());
+		if (baseSet != null) {
+			List<Ability> abilities = baseSet.getAbilities();
+			for (int i = 0; i < abilities.size(); i++) {
+				targetSet.add(abilities.get(i).copy());
+			}
 		}
-		abilities.add(0, new SilenceAbility());
-		for (int i = 0; i < abilities.size(); i++) {
-			abilities.get(i).setId((byte) i);
-		}
-
-		return abilitySet.add(new HarvestAbility());
+		return targetSet.add(new HarvestAbility());
 	}
 }

@@ -21,7 +21,7 @@ public class StructureSpawnerEditor extends ElementEditor<StructureSpawner> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class, true);
+	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class);
 
 	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 

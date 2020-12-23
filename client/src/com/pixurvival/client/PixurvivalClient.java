@@ -125,7 +125,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			disconnectFromServer();
 			client.start();
 			client.connect(5000, address, port, port);
-			client.sendTCP(new LoginRequest(playerName, ReleaseVersion.getActual().name()));
+			client.sendTCP(new LoginRequest(playerName, ReleaseVersion.actual().name()));
 		} catch (Exception e) {
 			Log.error("Error when trying to connect to server.", e);
 			listeners.forEach(l -> l.loginResponse(new LoginResponse("Unable to connect to server.")));
@@ -230,8 +230,8 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
 		ReleaseVersion packVersion = ReleaseVersion.valueFor(localGamePack.getReleaseVersion());
-		if (ReleaseVersion.getActual() != packVersion) {
-			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.getActual());
+		if (ReleaseVersion.actual() != packVersion) {
+			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.actual());
 		}
 		currentLocale = getLocaleFor(localGamePack);
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));

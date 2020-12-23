@@ -16,4 +16,9 @@ public class CachedSupplier<T> {
 		}
 		return value;
 	}
+
+	public T getNew() {
+		value = supplier.get();
+		return value;
+	}
 }

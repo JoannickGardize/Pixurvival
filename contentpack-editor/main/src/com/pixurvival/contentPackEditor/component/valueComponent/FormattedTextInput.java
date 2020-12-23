@@ -112,7 +112,7 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 		listeners.forEach(l -> l.valueChanged(value));
 	}
 
-	private void updateValue() {
+	public void updateValue() {
 		if (settingValue) {
 			// Do not update and notify when the value change is programmatic
 			return;

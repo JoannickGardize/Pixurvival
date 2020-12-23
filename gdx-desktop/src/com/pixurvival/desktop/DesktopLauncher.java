@@ -15,7 +15,7 @@ public class DesktopLauncher {
 		config.foregroundFPS = 60;
 		config.width = 1600;
 		config.height = 900;
-		config.title = "Pixurvival - " + ReleaseVersion.getActual().displayName();
+		config.title = "Pixurvival - " + ReleaseVersion.actual().displayName();
 		config.addIcon("icon.png", FileType.Internal);
 		config.forceExit = true;
 		new LwjglApplication(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);

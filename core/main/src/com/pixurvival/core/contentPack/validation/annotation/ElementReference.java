@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 /**
  * <p>
- * Must annotate a field of a sub-type of {@link IdentifiedElement}. <br>
+ * Must annotate a field of a sub-type of {@link NamedIdentifiedElement}. <br>
  * Indicates that the given field is a reference of an element contained in a
- * list of {@link IdentifiedElement} elsewhere, in the index
- * {@link IdentifiedElement#getId()}. This element list should be annotated with
+ * list of {@link NamedIdentifiedElement} elsewhere, in the index
+ * {@link NamedIdentifiedElement#getId()}. This element list should be annotated with
  * {@link ElementList}.
  * <p>
  * The value indicates the relative path of the list through object graph,

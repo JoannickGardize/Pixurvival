@@ -5,17 +5,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class AbilitySet extends IdentifiedElement implements Iterable<Ability> {
+public class AbilitySet extends NamedIdentifiedElement implements Iterable<Ability> {
 
 	private static final long serialVersionUID = 1L;
 
+	@Valid
 	private @Getter @Setter List<Ability> abilities = new ArrayList<>();
 
 	public int add(Ability ability) {

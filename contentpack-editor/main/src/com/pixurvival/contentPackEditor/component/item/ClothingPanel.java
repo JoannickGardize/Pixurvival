@@ -15,7 +15,7 @@ public class ClothingPanel extends EquipablePanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		bindTo(itemEditor, ClothingItem.class);
+		super.bindTo(itemEditor, ClothingItem.class);
 	}
 
 }

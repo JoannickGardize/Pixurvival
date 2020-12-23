@@ -8,10 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReferenceOrValid;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateRequirementHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnnotationHandler;
 import com.pixurvival.core.contentPack.validation.handler.BoundsHandler;
 import com.pixurvival.core.contentPack.validation.handler.ElementListHandler;
@@ -20,8 +21,13 @@ import com.pixurvival.core.contentPack.validation.handler.LengthHandler;
 import com.pixurvival.core.contentPack.validation.handler.PatternHandler;
 import com.pixurvival.core.contentPack.validation.handler.PositiveHandler;
 import com.pixurvival.core.contentPack.validation.handler.ResourceReferenceHandler;
+import com.pixurvival.core.contentPack.validation.handler.SpriteHeightHandler;
+import com.pixurvival.core.contentPack.validation.handler.SpriteWidthHandler;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 import com.pixurvival.core.reflection.visitor.VisitorContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class ContentPackValidator {
 
@@ -29,6 +35,10 @@ public class ContentPackValidator {
 	private Map<Class<? extends Annotation>, AnnotationHandler> annotationHandlersPerAnnotations = new HashMap<>();
 
 	private VisitorContext context = new VisitorContext();
+
+	@Getter
+	@Setter
+	private ImageAccessor imageAccessor = new DefaultImageAccessor();
 
 	public ContentPackValidator() {
 		context.setTraversalCondition(node -> {
@@ -38,7 +48,7 @@ public class ContentPackValidator {
 			} else {
 				field = (Field) node.getParent().getKey();
 			}
-			return field.isAnnotationPresent(Valid.class) || field.isAnnotationPresent(ElementReferenceOrValid.class) && !(node.getObject() instanceof IdentifiedElement);
+			return field.isAnnotationPresent(Valid.class) || field.isAnnotationPresent(ElementReferenceOrValid.class) && !(node.getObject() instanceof NamedIdentifiedElement);
 		});
 		addAnnotationHandler(new BoundsHandler());
 		addAnnotationHandler(new ElementListHandler());
@@ -47,14 +57,19 @@ public class ContentPackValidator {
 		addAnnotationHandler(new PatternHandler());
 		addAnnotationHandler(new PositiveHandler());
 		addAnnotationHandler(new ResourceReferenceHandler());
+		addAnnotationHandler(new SpriteWidthHandler());
+		addAnnotationHandler(new SpriteHeightHandler());
+		addAnnotationHandler(new AnimationTemplateRequirementHandler());
 	}
 
 	public ErrorCollection validate(ContentPack contentPack) {
 		ErrorCollection errors = new ErrorCollection();
 		contentPack.initialize();
-		annotationHandlers.forEach(AnnotationHandler::begin);
+		imageAccessor.begin(contentPack);
+		annotationHandlers.forEach(h -> h.begin(imageAccessor));
 		context.visit(contentPack, n -> validate(n, errors));
 		annotationHandlers.forEach(h -> h.end(errors));
+		imageAccessor.end();
 		return errors;
 	}
 

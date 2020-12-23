@@ -3,7 +3,7 @@ package com.pixurvival.contentPackEditor;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
@@ -43,7 +43,7 @@ public enum ElementType {
 	ECOSYSTEM(Ecosystem.class),
 	GAME_MODE(GameMode.class);
 
-	private static Map<Class<? extends IdentifiedElement>, ElementType> classToType = new IdentityHashMap<>(15);
+	private static Map<Class<? extends NamedIdentifiedElement>, ElementType> classToType = new IdentityHashMap<>(15);
 
 	static {
 		for (ElementType type : ElementType.values()) {
@@ -52,23 +52,23 @@ public enum ElementType {
 		}
 	}
 
-	private @NonNull @Getter Class<? extends IdentifiedElement> elementClass;
+	private @NonNull @Getter Class<? extends NamedIdentifiedElement> elementClass;
 
 	@Override
 	public String toString() {
 		return TranslationService.getInstance().getString("elementType." + CaseUtils.upperToCamelCase(name()));
 	}
 
-	public static ElementType of(IdentifiedElement element) {
+	public static ElementType of(NamedIdentifiedElement element) {
 		return of(element.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
-	public static ElementType of(Class<? extends IdentifiedElement> type) {
+	public static ElementType of(Class<? extends NamedIdentifiedElement> type) {
 		// Find the class under "IdentifiedElement", because of hierarchy under
 		// item and structures
-		while (type.getSuperclass() != IdentifiedElement.class) {
-			type = (Class<? extends IdentifiedElement>) type.getSuperclass();
+		while (type.getSuperclass() != NamedIdentifiedElement.class) {
+			type = (Class<? extends NamedIdentifiedElement>) type.getSuperclass();
 		}
 		return classToType.get(type);
 	}

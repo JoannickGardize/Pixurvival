@@ -24,11 +24,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		if (animationSet == null || animationSet.getShadow() == null) {
 			return;
 		}
-		ActionAnimation action = ActionAnimation.DEFAULT;
-		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
-			action = ActionAnimation.HARVESTED;
-		}
-		TextureAnimation animation = animationSet.get(action);
+		TextureAnimation animation = getTextureAnimation(e, animationSet);
 		float y = e.getPosition().getY();
 		batch.draw(animation.getShadow(), e.getPosition().getX() - animation.getWorldShadowWidth() / 2, y - animation.getWorldShadowWidth() / 6, animation.getWorldShadowWidth(),
 				animation.getWorldShadowWidth() / 2);
@@ -42,13 +38,17 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		}
 		float x = e.getPosition().getX() - animationSet.getWidth() / 2;
 		float y = e.getPosition().getY();
-		ActionAnimation action = ActionAnimation.DEFAULT;
-		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
-			action = ActionAnimation.HARVESTED;
-		}
-		TextureAnimation animation = animationSet.get(action);
+		TextureAnimation animation = getTextureAnimation(e, animationSet);
 		int index = DrawUtils.getIndexAndUpdateTimer(e, animation);
 		batch.draw(animation.getTexture(index), x, y + animationSet.getYOffset(), animationSet.getWidth(), animationSet.getHeight());
+	}
+
+	private TextureAnimation getTextureAnimation(MapStructure e, TextureAnimationSet animationSet) {
+		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
+			TextureAnimation harvestedAnimation = animationSet.get(ActionAnimation.HARVESTED);
+			return harvestedAnimation == null ? animationSet.get(ActionAnimation.DEFAULT) : harvestedAnimation;
+		}
+		return animationSet.get(ActionAnimation.DEFAULT);
 	}
 
 	@Override

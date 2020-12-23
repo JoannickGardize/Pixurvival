@@ -7,8 +7,8 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReferenceOrValid;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.util.Sized;
 
@@ -25,7 +25,7 @@ public class WeightedValueProducer<E extends Serializable> implements Serializab
 
 		private static final long serialVersionUID = 1L;
 
-		@Bounds(min = 0, max = 1, maxInclusive = true)
+		@Positive
 		private float probability;
 
 		@ElementReferenceOrValid

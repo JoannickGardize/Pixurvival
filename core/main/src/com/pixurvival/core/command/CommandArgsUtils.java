@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -150,7 +150,7 @@ public class CommandArgsUtils {
 		}
 	}
 
-	public static <T extends IdentifiedElement> T contentPackElement(CommandExecutor executor, Class<T> type, String arg) throws CommandExecutionException {
+	public static <T extends NamedIdentifiedElement> T contentPackElement(CommandExecutor executor, Class<T> type, String arg) throws CommandExecutionException {
 		T element = executor.getWorld().getContentPack().get(type, arg);
 		if (element == null) {
 			throw new CommandExecutionException("No " + type.getSimpleName() + " with name " + arg);

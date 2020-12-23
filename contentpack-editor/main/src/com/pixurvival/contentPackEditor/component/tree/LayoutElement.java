@@ -2,7 +2,7 @@ package com.pixurvival.contentPackEditor.component.tree;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.ElementType;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,12 +15,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LayoutElement extends LayoutNode {
 
-	private transient IdentifiedElement element;
+	private transient NamedIdentifiedElement element;
 
 	private ElementType type;
 	private int id;
 
-	public LayoutElement(IdentifiedElement element) {
+	public LayoutElement(NamedIdentifiedElement element) {
 		this.element = element;
 		type = ElementType.of(element);
 		id = element.getId();

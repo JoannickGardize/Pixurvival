@@ -6,9 +6,9 @@ import javax.swing.border.EtchedBorder;
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
-public class RootElementEditor<E extends IdentifiedElement> extends ElementEditor<E> {
+public class RootElementEditor<E extends NamedIdentifiedElement> extends ElementEditor<E> {
 
 	private static final long serialVersionUID = 1L;
 

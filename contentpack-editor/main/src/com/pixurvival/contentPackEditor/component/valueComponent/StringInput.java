@@ -2,6 +2,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.lang.annotation.Annotation;
 
+import com.pixurvival.contentPackEditor.component.valueComponent.constraint.LengthConstraint;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 
 import lombok.AllArgsConstructor;

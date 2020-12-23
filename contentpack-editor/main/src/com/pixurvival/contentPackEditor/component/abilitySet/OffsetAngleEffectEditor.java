@@ -16,7 +16,7 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class, true);
+	private ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);
 
 	public OffsetAngleEffectEditor() {
 		super(OffsetAngleEffect.class);

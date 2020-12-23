@@ -61,8 +61,8 @@ class NetworkMessageHandler extends Listener {
 				connection.sendTCP(new LoginResponse("The name must not exceed 30 characters."));
 				return;
 			}
-			if (!ReleaseVersion.getActual().name().equals(loginRequest.getGameVersion())) {
-				connection.sendTCP(new LoginResponse("The server version is " + ReleaseVersion.getActual().name() + ", but your game version is " + loginRequest.getGameVersion()));
+			if (!ReleaseVersion.actual().name().equals(loginRequest.getGameVersion())) {
+				connection.sendTCP(new LoginResponse("The server version is " + ReleaseVersion.actual().name() + ", but your game version is " + loginRequest.getGameVersion()));
 				return;
 			}
 			connection.setLogged(true);

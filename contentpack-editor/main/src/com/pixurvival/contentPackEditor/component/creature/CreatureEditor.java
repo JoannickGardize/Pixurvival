@@ -33,9 +33,9 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
-	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class, false);
+	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class);
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton(AbilitySet.class, false);
+	private ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton(AbilitySet.class);
 
 	private StatSet statSet = new StatSet();
 	private FloatInput strengthInput = new FloatInput();

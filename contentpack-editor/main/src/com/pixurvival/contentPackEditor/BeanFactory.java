@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;
@@ -122,7 +122,7 @@ public class BeanFactory {
 
 	private static void forEachPropertyMethods(Class<?> clazz, BiConsumer<Method, Method> action) {
 		for (Method getter : clazz.getMethods()) {
-			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !IdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
+			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !NamedIdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
 				try {
 					Method setter = clazz.getMethod("set" + getter.getName().substring(3), getter.getReturnType());
 					if (setter.getParameterCount() == 1 && setter.getParameters()[0].getType() == getter.getReturnType()) {

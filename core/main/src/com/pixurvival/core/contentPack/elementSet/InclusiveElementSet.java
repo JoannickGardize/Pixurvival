@@ -1,8 +1,8 @@
 package com.pixurvival.core.contentPack.elementSet;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
-public class InclusiveElementSet<T extends IdentifiedElement> extends CollectionElementSet<T> {
+public class InclusiveElementSet<T extends NamedIdentifiedElement> extends CollectionElementSet<T> {
 
 	private static final long serialVersionUID = 1L;
 

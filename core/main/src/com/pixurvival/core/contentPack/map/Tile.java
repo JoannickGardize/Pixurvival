@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
@@ -16,7 +16,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Tile extends IdentifiedElement implements Serializable {
+public class Tile extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

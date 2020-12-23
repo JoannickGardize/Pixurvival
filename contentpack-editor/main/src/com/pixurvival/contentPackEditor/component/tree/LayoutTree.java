@@ -22,7 +22,7 @@ import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.util.MenuBuilder;
 import com.pixurvival.contentPackEditor.util.DialogUtils;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.util.CaseUtils;
 
 public class LayoutTree extends JTree {
@@ -110,7 +110,7 @@ public class LayoutTree extends JTree {
 		if (name == null) {
 			return;
 		}
-		IdentifiedElement newElement = ContentPackEditionService.getInstance().addElement(type, name);
+		NamedIdentifiedElement newElement = ContentPackEditionService.getInstance().addElement(type, name);
 		if (newElement == null) {
 			return;
 		}
@@ -195,7 +195,7 @@ public class LayoutTree extends JTree {
 	}
 
 	private boolean containsName(ElementType type, String name) {
-		for (IdentifiedElement element : ContentPackEditionService.getInstance().listOf(type)) {
+		for (NamedIdentifiedElement element : ContentPackEditionService.getInstance().listOf(type)) {
 			if (element.getName().equals(name)) {
 				return true;
 			}

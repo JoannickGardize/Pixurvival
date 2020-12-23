@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.util.IdSetHelper;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class CollectionElementSet<T extends IdentifiedElement> implements ElementSet<T> {
+public abstract class CollectionElementSet<T extends NamedIdentifiedElement> implements ElementSet<T> {
 
 	private static final long serialVersionUID = 1L;
 

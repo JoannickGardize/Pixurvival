@@ -1,6 +1,6 @@
 package com.pixurvival.core.contentPack.gameMode.role;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Role extends IdentifiedElement {
+public class Role extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

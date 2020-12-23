@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.validation;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 
@@ -30,7 +30,7 @@ public class ErrorNode {
 		VisitNode firstNode = it.next();
 		ElementList elementList = ((Field) firstNode.getKey()).getAnnotation(ElementList.class);
 		if (elementList != null) {
-			sb.append("(").append(elementList.value().getSimpleName()).append(") ").append(((IdentifiedElement) it.next().getObject()).getName());
+			sb.append("(").append(elementList.value().getSimpleName()).append(") ").append(((NamedIdentifiedElement) it.next().getObject()).getName());
 		} else {
 			sb.append(((Field) firstNode.getKey()).getName());
 		}

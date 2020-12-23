@@ -12,7 +12,7 @@ public class HeightmapCondition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@ElementReference("<<<.heightmaps")
+	@ElementReference("<<<<.heightmaps")
 	private Heightmap heightmap;
 
 	@Bounds(min = 0, max = 1, maxInclusive = true)

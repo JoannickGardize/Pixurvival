@@ -19,7 +19,7 @@ public class AccessoryPanel extends EquipablePanel {
 
 	@Override
 	public void bindTo(ItemEditor itemEditor) {
-		bindTo(itemEditor, AccessoryItem.class);
+		super.bindTo(itemEditor, AccessoryItem.class);
 		itemEditor.bind(abilityEditor, "ability", AccessoryItem.class);
 	}
 

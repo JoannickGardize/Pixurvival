@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
@@ -23,7 +25,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Effect extends IdentifiedElement {
+public class Effect extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,6 +35,7 @@ public class Effect extends IdentifiedElement {
 
 	@Nullable
 	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.DEFAULT_OR_BEFORE_DEFAULT)
 	private SpriteSheet spriteSheet;
 
 	private OrientationType orientation = OrientationType.STATIC;

@@ -26,8 +26,8 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		if (textureAnimationSet.getShadow() != null) {
 			DrawData data = (DrawData) e.getCustomData();
 			Vector2 drawPosition = data.getDrawPosition();
-			float x = (float) (drawPosition.getX() - textureAnimationSet.getShadowWidth() / 2);
-			float y = (float) drawPosition.getY();
+			float x = drawPosition.getX() - textureAnimationSet.getShadowWidth() / 2;
+			float y = drawPosition.getY();
 			batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
 		}
 	}
@@ -40,8 +40,8 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
 		DrawData data = (DrawData) e.getCustomData();
 		Vector2 drawPosition = data.getDrawPosition();
-		float x = (float) (drawPosition.getX() - textureAnimationSet.getWidth() / 2);
-		float y = (float) drawPosition.getY();
+		float x = drawPosition.getX() - textureAnimationSet.getWidth() / 2;
+		float y = drawPosition.getY();
 		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 && textureAnimation.getRotationPerSecond() == 0 ? textureAnimationSet.getHeight() * 0.3f
 				: 0;
 		float equipmentY = y - yOffset;

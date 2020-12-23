@@ -19,12 +19,8 @@ public class ItemStackEditor extends ElementEditor<ItemStack> {
 	private static final long serialVersionUID = 1L;
 
 	public ItemStackEditor() {
-		this(true);
-	}
-
-	public ItemStackEditor(boolean itemRequired) {
 		super(ItemStack.class);
-		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class, itemRequired);
+		ElementChooserButton<Item> itemChooser = new ElementChooserButton<>(Item.class);
 		IntegerInput quantityInput = new IntegerInput();
 
 		bind(itemChooser, "item");

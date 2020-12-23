@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryHolder;
@@ -16,16 +17,17 @@ public class ItemAlterationAbility extends AlterationAbility {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
-	private ItemStack ammunition = new ItemStack();
+	@Nullable
+	private ItemStack ammunition;
 
 	@Override
 	public boolean canFire(LivingEntity entity) {
-		return ammunition.getItem() == null || removeAmmunition(entity);
+		return ammunition == null || removeAmmunition(entity);
 	}
 
 	private boolean removeAmmunition(LivingEntity entity) {
 		if (entity instanceof InventoryHolder) {
-			Inventory inventory = ((InventoryHolder) entity).getInventory();
+			Inventory inventory = entity.getInventory();
 			return inventory != null && inventory.remove(ammunition);
 		}
 		return true;

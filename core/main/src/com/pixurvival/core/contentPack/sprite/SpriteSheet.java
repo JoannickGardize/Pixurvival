@@ -1,24 +1,25 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
+import com.pixurvival.core.contentPack.validation.annotation.SpriteHeight;
+import com.pixurvival.core.contentPack.validation.annotation.SpriteWidth;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SpriteSheet extends IdentifiedElement {
+public class SpriteSheet extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
-	@Bounds(min = 1)
+	@SpriteWidth
 	private int width;
 
-	@Bounds(min = 1)
+	@SpriteHeight
 	private int height;
 
 	@ResourceReference

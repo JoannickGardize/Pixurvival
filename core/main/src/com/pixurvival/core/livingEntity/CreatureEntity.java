@@ -192,7 +192,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public AbilitySet getAbilitySet() {
-		return definition.getAbilitySet();
+		return definition.getEffectiveAbilitySet();
 	}
 
 	@Override

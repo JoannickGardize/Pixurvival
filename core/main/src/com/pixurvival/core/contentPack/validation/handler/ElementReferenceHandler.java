@@ -11,10 +11,12 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.ErrorCollection;
+import com.pixurvival.core.contentPack.validation.ImageAccessor;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReferenceOrValid;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 import com.pixurvival.core.util.Cache;
+import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class ElementReferenceHandler implements AnnotationHandler {
 	}
 
 	@Override
-	public void begin() {
+	public void begin(ImageAccessor imageAccessor) {
 		entries = new ArrayList<>();
 	}
 
@@ -69,21 +71,24 @@ public class ElementReferenceHandler implements AnnotationHandler {
 				return;
 			}
 		} else {
-			elementList = ((ContentPack) node.getRoot().getObject()).listOf((Class) node.getObject().getClass());
+			if (node.getObject() instanceof Collection) {
+				elementList = ((ContentPack) node.getRoot().getObject()).listOf((Class) ReflectionUtils.getGenericTypeArgument((Field) node.getKey()));
+			} else {
+				elementList = ((ContentPack) node.getRoot().getObject()).listOf((Class) node.getObject().getClass());
+			}
 		}
-		if (node.getKey() instanceof Field) {
-			validateElement(node, annotation, errors, elementList);
-		} else {
-			// It's a Collection or a Map
+		if (node.getObject() instanceof Collection) {
 			for (VisitNode childNode : node.children()) {
 				validateElement(childNode, annotation, errors, elementList);
 			}
+		} else {
+			validateElement(node, annotation, errors, elementList);
 		}
 	}
 
 	private void validateElement(VisitNode node, Annotation annotation, ErrorCollection errors, List<IdentifiedElement> elementList) {
 		IdentifiedElement element = (IdentifiedElement) node.getObject();
-		if (elementList == null || elementList.size() <= element.getId() || elementList.get(element.getId()) != element) {
+		if ((elementList == null || elementList.size() <= element.getId() || elementList.get(element.getId()) != element)) {
 			errors.add(node, annotation);
 		}
 	}

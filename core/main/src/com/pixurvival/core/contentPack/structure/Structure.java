@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.Dimensions;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
@@ -21,7 +23,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Structure extends IdentifiedElement implements Serializable {
+public class Structure extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,6 +31,7 @@ public class Structure extends IdentifiedElement implements Serializable {
 
 	@Nullable
 	@ElementReference
+	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.DEFAULT)
 	private SpriteSheet spriteSheet;
 
 	@Valid

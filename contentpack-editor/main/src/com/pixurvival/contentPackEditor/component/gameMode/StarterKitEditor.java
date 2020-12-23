@@ -21,10 +21,10 @@ public class StarterKitEditor extends ElementEditor<StarterKit> {
 
 	public StarterKitEditor() {
 		super(StarterKit.class);
-		ElementChooserButton<WeaponItem> weaponChooser = new ElementChooserButton<>(WeaponItem.class, false);
-		ElementChooserButton<ClothingItem> clothingChooser = new ElementChooserButton<>(ClothingItem.class, false);
-		ElementChooserButton<AccessoryItem> accessory1Chooser = new ElementChooserButton<>(AccessoryItem.class, false);
-		ElementChooserButton<AccessoryItem> accessory2Chooser = new ElementChooserButton<>(AccessoryItem.class, false);
+		ElementChooserButton<WeaponItem> weaponChooser = new ElementChooserButton<>(WeaponItem.class);
+		ElementChooserButton<ClothingItem> clothingChooser = new ElementChooserButton<>(ClothingItem.class);
+		ElementChooserButton<AccessoryItem> accessory1Chooser = new ElementChooserButton<>(AccessoryItem.class);
+		ElementChooserButton<AccessoryItem> accessory2Chooser = new ElementChooserButton<>(AccessoryItem.class);
 		ListEditor<ItemStack> inventoryEditor = new HorizontalListEditor<>(ItemStackEditor::new, ItemStack::new);
 		inventoryEditor.setBorder(LayoutUtils.createGroupBorder("starterKitEditor.inventory"));
 

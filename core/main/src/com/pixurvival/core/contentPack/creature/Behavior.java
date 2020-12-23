@@ -3,7 +3,7 @@ package com.pixurvival.core.contentPack.creature;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
@@ -14,7 +14,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public abstract class Behavior extends IdentifiedElement {
+public abstract class Behavior extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

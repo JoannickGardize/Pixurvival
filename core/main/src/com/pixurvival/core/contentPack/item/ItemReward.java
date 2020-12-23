@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ItemReward extends IdentifiedElement implements Serializable {
+public class ItemReward extends NamedIdentifiedElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

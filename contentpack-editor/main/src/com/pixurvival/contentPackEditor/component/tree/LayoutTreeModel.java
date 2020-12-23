@@ -16,14 +16,15 @@ import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 
 public class LayoutTreeModel implements TreeModel {
 
 	private List<TreeModelListener> listeners = new ArrayList<>();
 
 	private LayoutFolder root = new LayoutFolder("loading...");
-	private Map<IdentifiedElement, LayoutElement> elementsMap = new HashMap<>();
+	private Map<NamedIdentifiedElement, LayoutElement> elementsMap = new HashMap<>();
 
 	public LayoutTreeModel() {
 		EventManager.getInstance().register(this);
@@ -58,7 +59,6 @@ public class LayoutTreeModel implements TreeModel {
 	public void elementInstanceChanged(ElementInstanceChangedEvent event) {
 		LayoutElement layoutElement = elementsMap.remove(event.getOldElement());
 		layoutElement.setElement(event.getElement());
-
 		// TODO Element linking
 		root.forEachDeepFirst(LayoutNode::updateValidation);
 		elementsMap.put(event.getElement(), layoutElement);
@@ -69,6 +69,10 @@ public class LayoutTreeModel implements TreeModel {
 	@EventListener
 	public void elementChanged(ElementChangedEvent event) {
 		elementsMap.get(event.getElement()).forEachAncestor(LayoutNode::updateValidation);
+		if (event.getElement() instanceof AnimationTemplate) {
+			// TODO Element linking
+			root.forEachDeepFirst(LayoutNode::updateValidation);
+		}
 		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
 		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
 	}

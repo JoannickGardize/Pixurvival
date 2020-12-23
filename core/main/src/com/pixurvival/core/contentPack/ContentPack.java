@@ -52,8 +52,8 @@ public class ContentPack implements Serializable {
 
 	private transient Map<String, byte[]> resources;
 
-	private transient Map<Class<? extends IdentifiedElement>, Map<String, IdentifiedElement>> elementsByName;
-	private transient Map<Class<? extends IdentifiedElement>, List<IdentifiedElement>> elementsLists;
+	private transient Map<Class<? extends NamedIdentifiedElement>, Map<String, NamedIdentifiedElement>> elementsByName;
+	private transient Map<Class<? extends NamedIdentifiedElement>, List<NamedIdentifiedElement>> elementsLists;
 
 	private transient float maxLightRadius;
 
@@ -102,6 +102,7 @@ public class ContentPack implements Serializable {
 	@ElementList(BehaviorSet.class)
 	private List<BehaviorSet> behaviorSets = new ArrayList<>();
 
+	@Valid
 	@ElementList(AbilitySet.class)
 	private List<AbilitySet> abilitySets = new ArrayList<>();
 
@@ -189,8 +190,8 @@ public class ContentPack implements Serializable {
 		computeMaxLivingEntityRadius();
 	}
 
-	public List<IdentifiedElement> listOf(Class<? extends IdentifiedElement> type) {
-		return elementsLists.get(ReflectionUtils.getSuperClassUnder(type, IdentifiedElement.class));
+	public List<NamedIdentifiedElement> listOf(Class<? extends NamedIdentifiedElement> type) {
+		return elementsLists.get(ReflectionUtils.getSuperClassUnder(type, NamedIdentifiedElement.class));
 	}
 
 	private void computeMaxLivingEntityRadius() {
@@ -205,12 +206,12 @@ public class ContentPack implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void callElementsInitializeMethod() {
 		for (Field field : ReflectionUtils.getAnnotedFields(getClass(), ElementList.class)) {
-			List<IdentifiedElement> list = (List<IdentifiedElement>) ReflectionUtils.getByGetter(this, field);
-			Map<String, IdentifiedElement> typeMap = new HashMap<>();
-			Class<? extends IdentifiedElement> type = field.getAnnotation(ElementList.class).value();
+			List<NamedIdentifiedElement> list = (List<NamedIdentifiedElement>) ReflectionUtils.getByGetter(this, field);
+			Map<String, NamedIdentifiedElement> typeMap = new HashMap<>();
+			Class<? extends NamedIdentifiedElement> type = field.getAnnotation(ElementList.class).value();
 			elementsLists.put(type, list);
 			elementsByName.put(type, typeMap);
-			for (IdentifiedElement element : list) {
+			for (NamedIdentifiedElement element : list) {
 				typeMap.put(element.getName(), element);
 				element.initialize();
 			}
@@ -259,8 +260,8 @@ public class ContentPack implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends IdentifiedElement> T get(Class<T> type, String name) {
-		Map<String, IdentifiedElement> typeMap = elementsByName.get(type);
+	public <T extends NamedIdentifiedElement> T get(Class<T> type, String name) {
+		Map<String, NamedIdentifiedElement> typeMap = elementsByName.get(type);
 		if (typeMap == null) {
 			return null;
 		} else {
@@ -268,8 +269,8 @@ public class ContentPack implements Serializable {
 		}
 	}
 
-	public Set<String> allNamesOf(Class<? extends IdentifiedElement> type) {
-		Map<String, IdentifiedElement> typeMap = elementsByName.get(type);
+	public Set<String> allNamesOf(Class<? extends NamedIdentifiedElement> type) {
+		Map<String, NamedIdentifiedElement> typeMap = elementsByName.get(type);
 		if (typeMap == null) {
 			return Collections.emptySet();
 		} else {
@@ -291,12 +292,12 @@ public class ContentPack implements Serializable {
 		return result;
 	}
 
-	public static void getAllTranslationKeys(Collection<String> resultStore, IdentifiedElement element) {
+	public static void getAllTranslationKeys(Collection<String> resultStore, NamedIdentifiedElement element) {
 		getAllTranslationKeys(resultStore, element, false);
 
 	}
 
-	public static void getAllTranslationKeys(Collection<String> resultStore, IdentifiedElement element, boolean allPotential) {
+	public static void getAllTranslationKeys(Collection<String> resultStore, NamedIdentifiedElement element, boolean allPotential) {
 		if (element instanceof Item) {
 			resultStore.add(TranslationKey.NAME.getKey(element));
 			resultStore.add(TranslationKey.DESCRIPTION.getKey(element));
@@ -316,19 +317,19 @@ public class ContentPack implements Serializable {
 		}
 	}
 
-	public static List<String> getAllTranslationKeys(IdentifiedElement item) {
+	public static List<String> getAllTranslationKeys(NamedIdentifiedElement item) {
 		List<String> result = new ArrayList<>();
 		getAllTranslationKeys(result, item);
 		return result;
 	}
 
-	public static List<String> getAllTranslationKeys(IdentifiedElement item, boolean allPotential) {
+	public static List<String> getAllTranslationKeys(NamedIdentifiedElement item, boolean allPotential) {
 		List<String> result = new ArrayList<>();
 		getAllTranslationKeys(result, item, allPotential);
 		return result;
 	}
 
-	public String getTranslation(Locale locale, IdentifiedElement item, TranslationKey key) {
+	public String getTranslation(Locale locale, NamedIdentifiedElement item, TranslationKey key) {
 		String result = translations.get(locale).getProperty(key.getKey(item));
 		return result == null ? "" : result;
 	}

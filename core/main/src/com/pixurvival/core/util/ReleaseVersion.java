@@ -1,19 +1,9 @@
 package com.pixurvival.core.util;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-
-import lombok.Getter;
-
 /**
  * Enum representing All the history of the release versions since the alpha 5.
- * The version.txt file contains the current version name, in lower case and
- * with '-' instead of '_'.
- * 
- * The ordinal of the constants is the order of the release dates.
+ * The latest enum constant is current version. The ordinal of the constants is
+ * the order of the release dates.
  * 
  * @author SharkHendrix
  *
@@ -23,30 +13,8 @@ public enum ReleaseVersion {
 	ALPHA_4,
 	ALPHA_4B,
 	ALPHA_5,
-	ALPHA_5B;
-
-	/**
-	 * @return the actual version of the game
-	 */
-	private static @Getter ReleaseVersion actual;
-
-	static {
-		InputStream input = ReleaseVersion.class.getClassLoader().getResourceAsStream("version.txt");
-
-		final int bufferSize = 1024;
-		final char[] buffer = new char[bufferSize];
-		final StringBuilder out = new StringBuilder();
-		Reader in = new InputStreamReader(input, StandardCharsets.UTF_8);
-		int charsRead;
-		try {
-			while ((charsRead = in.read(buffer, 0, buffer.length)) > 0) {
-				out.append(buffer, 0, charsRead);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		actual = ReleaseVersion.valueOf(out.toString().replace('-', '_').toUpperCase());
-	}
+	ALPHA_5B,
+	ALPHA_6;
 
 	public String displayName() {
 		if (name().indexOf('_') != -1) {
@@ -84,5 +52,9 @@ public enum ReleaseVersion {
 	 */
 	public static String displayNameOf(ReleaseVersion version) {
 		return version == null ? "Unknown" : version.displayName();
+	}
+
+	public static ReleaseVersion actual() {
+		return ReleaseVersion.values()[ReleaseVersion.values().length - 1];
 	}
 }

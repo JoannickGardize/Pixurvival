@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.AccessLevel;
@@ -14,7 +14,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Ecosystem extends IdentifiedElement {
+public class Ecosystem extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 

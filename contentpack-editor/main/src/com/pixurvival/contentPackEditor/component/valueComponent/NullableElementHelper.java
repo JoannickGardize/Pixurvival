@@ -25,6 +25,10 @@ public class NullableElementHelper<T> {
 	}
 
 	public void build(Supplier<T> newInstanceSupplier) {
+		build(newInstanceSupplier, elementEditor);
+	}
+
+	public void build(Supplier<T> newInstanceSupplier, JPanel parentPanel) {
 		enableCheckBox.addActionListener(e -> {
 			boolean checked = enableCheckBox.isSelected();
 			if (checked && elementEditor.getValue() == null) {
@@ -45,9 +49,9 @@ public class NullableElementHelper<T> {
 		cardPanel.add(notNullPanel, "NOT_NULL");
 		cardPanel.add(new JPanel(), "NULL");
 
-		elementEditor.setLayout(new BorderLayout());
-		elementEditor.add(LayoutUtils.labelled("generic.enabled", enableCheckBox), BorderLayout.NORTH);
-		elementEditor.add(cardPanel, BorderLayout.CENTER);
+		parentPanel.setLayout(new BorderLayout());
+		parentPanel.add(LayoutUtils.labelled("generic.enabled", enableCheckBox), BorderLayout.NORTH);
+		parentPanel.add(cardPanel, BorderLayout.CENTER);
 
 		cardLayout.show(cardPanel, "NULL");
 	}

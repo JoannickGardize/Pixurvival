@@ -9,7 +9,7 @@ import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutionException;
 import com.pixurvival.core.command.CommandExecutor;
 import com.pixurvival.core.command.CommandProcessor;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -40,7 +40,7 @@ public class ListCommandProcessor extends CommandProcessor {
 		return null;
 	}
 
-	Function<CommandExecutor, String> identifiedElementLister(Class<? extends IdentifiedElement> type) {
+	Function<CommandExecutor, String> identifiedElementLister(Class<? extends NamedIdentifiedElement> type) {
 		return executor -> Arrays.toString(executor.getWorld().getContentPack().allNamesOf(type).toArray());
 	}
 }

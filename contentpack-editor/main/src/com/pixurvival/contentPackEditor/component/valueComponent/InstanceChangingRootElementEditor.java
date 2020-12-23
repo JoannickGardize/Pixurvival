@@ -6,9 +6,9 @@ import javax.swing.border.EtchedBorder;
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
-public abstract class InstanceChangingRootElementEditor<E extends IdentifiedElement> extends InstanceChangingElementEditor<E> {
+public abstract class InstanceChangingRootElementEditor<E extends NamedIdentifiedElement> extends InstanceChangingElementEditor<E> {
 
 	public InstanceChangingRootElementEditor(Class<? super E> type, String translationPreffix) {
 		super(type, translationPreffix, null);

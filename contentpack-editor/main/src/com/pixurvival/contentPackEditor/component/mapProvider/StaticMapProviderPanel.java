@@ -10,7 +10,7 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ResourceFileChooser;
-import com.pixurvival.core.contentPack.IdentifiedElement;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -40,7 +40,7 @@ public class StaticMapProviderPanel extends JPanel {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends IdentifiedElement> JPanel createMappingTab(MapProviderEditor mapProviderEditor, Class<T> type, Supplier<String> imageResourceNameSupplier) {
+	public <T extends NamedIdentifiedElement> JPanel createMappingTab(MapProviderEditor mapProviderEditor, Class<T> type, Supplier<String> imageResourceNameSupplier) {
 
 		ResourceFileChooser resourceFileChooser = new ResourceFileChooser();
 
