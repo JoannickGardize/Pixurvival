@@ -10,12 +10,12 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 public abstract class InstanceChangingRootElementEditor<E extends NamedIdentifiedElement> extends InstanceChangingElementEditor<E> {
 
+	private static final long serialVersionUID = 1L;
+
 	public InstanceChangingRootElementEditor(Class<? super E> type, String translationPreffix) {
 		super(type, translationPreffix, null);
 		setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10), BorderFactory.createEtchedBorder(EtchedBorder.LOWERED)));
 	}
-
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void notifyValueChanged() {

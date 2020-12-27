@@ -3,7 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
-import com.pixurvival.contentPackEditor.component.valueComponent.constraint.BoundsConstraint;
+import com.pixurvival.contentPackEditor.component.constraint.BoundsConstraint;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 
 import lombok.Getter;

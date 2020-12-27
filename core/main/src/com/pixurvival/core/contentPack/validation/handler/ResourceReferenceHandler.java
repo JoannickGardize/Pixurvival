@@ -26,6 +26,7 @@ public class ResourceReferenceHandler implements AnnotationHandler {
 	@Override
 	public void handle(VisitNode node, Annotation annotation, ErrorCollection errors) {
 
+		// TODO other types than images
 		if (imageAccessor.get((String) node.getObject()) == null) {
 			errors.add(node, annotation);
 		}

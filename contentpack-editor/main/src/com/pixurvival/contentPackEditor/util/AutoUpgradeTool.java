@@ -22,6 +22,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
+// TODO use replace regex
 @UtilityClass
 public class AutoUpgradeTool {
 

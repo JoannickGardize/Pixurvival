@@ -4,6 +4,7 @@ import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class ClothingItem extends EquipableItem {
 
 	@ElementReference
 	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
+	@RequiredEquipmentOffset
 	private SpriteSheet spriteSheet;
 
 }

@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.AbilityIndexes;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
@@ -47,6 +48,7 @@ public class Creature extends NamedIdentifiedElement {
 
 	private boolean solid = true;
 
+	@AbilityIndexes
 	@ElementReference
 	private BehaviorSet behaviorSet;
 

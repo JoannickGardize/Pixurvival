@@ -8,6 +8,7 @@ import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRe
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Constants implements Serializable {
 
 	@ElementReference
 	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
+	@RequiredEquipmentOffset
 	private SpriteSheet defaultCharacter;
 
 	@ElementReference

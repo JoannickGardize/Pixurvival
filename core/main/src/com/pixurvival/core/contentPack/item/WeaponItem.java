@@ -6,6 +6,7 @@ import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.Alteration;
@@ -22,6 +23,7 @@ public class WeaponItem extends EquipableItem {
 
 	@ElementReference
 	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
+	@RequiredEquipmentOffset
 	private SpriteSheet spriteSheet;
 
 	@Valid

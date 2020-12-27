@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
-import com.pixurvival.core.contentPack.validation.annotation.Bounds;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.livingEntity.ability.Ability;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,9 +20,19 @@ public abstract class Behavior extends NamedIdentifiedElement {
 	@Valid
 	private List<ChangeCondition> changeConditions = new ArrayList<>();
 
-	@Bounds(min = Ability.NONE_ID)
-	// TODO -1 to 0
-	private int abilityToUseId = Ability.NONE_ID;
+	@Positive
+	private int abilityToUseId = 0;
+
+	private transient int effectiveAbilityToUse;
+
+	@Override
+	public void initialize() {
+		if (abilityToUseId == 0) {
+			effectiveAbilityToUse = -1;
+		} else {
+			effectiveAbilityToUse = abilityToUseId;
+		}
+	}
 
 	public void update(CreatureEntity creature) {
 		BehaviorData behaviorData = creature.getBehaviorData();
@@ -37,7 +46,7 @@ public abstract class Behavior extends NamedIdentifiedElement {
 
 	public void begin(CreatureEntity creature) {
 		creature.getBehaviorData().reset();
-		creature.startAbility(abilityToUseId);
+		creature.startAbility(effectiveAbilityToUse);
 		creature.setTargetEntity(null);
 	}
 

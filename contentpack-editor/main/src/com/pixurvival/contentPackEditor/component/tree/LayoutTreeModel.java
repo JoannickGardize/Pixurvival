@@ -16,8 +16,13 @@ import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
 import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.relationGraph.ElementRelationService;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
+import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
+import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.livingEntity.ability.AbilitySet;
 
 public class LayoutTreeModel implements TreeModel {
 
@@ -45,9 +50,9 @@ public class LayoutTreeModel implements TreeModel {
 
 	@EventListener
 	public void resourceListChanged(ResourceListChangedEvent event) {
+		// TODO Element reference
 		root.forEachDeepFirst(LayoutNode::updateValidation);
-		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
-		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
+		notifyNodeChanged(root);
 	}
 
 	@EventListener
@@ -59,22 +64,24 @@ public class LayoutTreeModel implements TreeModel {
 	public void elementInstanceChanged(ElementInstanceChangedEvent event) {
 		LayoutElement layoutElement = elementsMap.remove(event.getOldElement());
 		layoutElement.setElement(event.getElement());
-		// TODO Element linking
-		root.forEachDeepFirst(LayoutNode::updateValidation);
+		updateReferentElementsValidation(event.getOldElement());
+		updateReferentElementsValidation(event.getElement());
 		elementsMap.put(event.getElement(), layoutElement);
-		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
-		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
+		notifyNodeChanged(root);
 	}
 
 	@EventListener
 	public void elementChanged(ElementChangedEvent event) {
 		elementsMap.get(event.getElement()).forEachAncestor(LayoutNode::updateValidation);
+		// TODO manage specific updates in a more generic way
 		if (event.getElement() instanceof AnimationTemplate) {
-			// TODO Element linking
-			root.forEachDeepFirst(LayoutNode::updateValidation);
+			ElementRelationService.getInstance().forEachReferent(event.getElement(), this::updateReferentElementsValidation);
+			updateReferentElementsValidation(event.getElement());
+		} else if (event.getElement() instanceof SpriteSheet || event.getElement() instanceof EquipmentOffset || event.getElement() instanceof BehaviorSet
+				|| event.getElement() instanceof AbilitySet) {
+			updateReferentElementsValidation(event.getElement());
 		}
-		TreeModelEvent modelEvent = new TreeModelEvent(this, root.getPath());
-		listeners.forEach(l -> l.treeNodesChanged(modelEvent));
+		notifyNodeChanged(root);
 	}
 
 	private void setParentReferences(LayoutNode node) {
@@ -90,16 +97,25 @@ public class LayoutTreeModel implements TreeModel {
 			int index = parent.getChildren().indexOf(node);
 			parent.getChildren().remove(index);
 			if (node instanceof LayoutElement) {
-				LayoutElement layoutElement = (LayoutElement) node;
-				if (node.equals(elementsMap.get(layoutElement.getElement()))) {
-					elementsMap.remove(layoutElement.getElement());
-				}
+				removeElement((LayoutElement) node);
+			} else {
+				node.forEachDeepFirst(n -> {
+					if (n instanceof LayoutElement) {
+						removeElement((LayoutElement) n);
+					}
+				});
 			}
-			root.forEachDeepFirst(LayoutNode::updateValidation);
 			TreeModelEvent event = new TreeModelEvent(this, parent.getPath(), new int[] { index }, new Object[] { node });
 			listeners.forEach(l -> l.treeNodesRemoved(event));
 			notifyNodeChanged(root);
 		}
+	}
+
+	private void removeElement(LayoutElement layoutElement) {
+		if (layoutElement.equals(elementsMap.get(layoutElement.getElement()))) {
+			elementsMap.remove(layoutElement.getElement());
+		}
+		updateReferentElementsValidation(layoutElement.getElement());
 	}
 
 	public void insert(LayoutNode node, LayoutNode parent, int index) {
@@ -157,5 +173,14 @@ public class LayoutTreeModel implements TreeModel {
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		listeners.remove(l);
+	}
+
+	private void updateReferentElementsValidation(NamedIdentifiedElement referenced) {
+		ElementRelationService.getInstance().forEachReferent(referenced, e -> {
+			LayoutElement layoutElement = elementsMap.get(e);
+			if (layoutElement != null) {
+				layoutElement.forEachAncestor(LayoutNode::updateValidation);
+			}
+		});
 	}
 }

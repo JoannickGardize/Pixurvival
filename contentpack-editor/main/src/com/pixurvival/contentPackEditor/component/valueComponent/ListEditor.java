@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.component.constraint.LengthConstraint;
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
-import com.pixurvival.contentPackEditor.component.valueComponent.constraint.LengthConstraint;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 

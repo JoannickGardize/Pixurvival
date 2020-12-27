@@ -166,13 +166,13 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private static void initializeLocalWorld(World world) {
 		World.currentContentPack = world.getContentPack();
 		PlayerEntity playerEntity = new PlayerEntity();
+		world.getEntityPool().addNew(playerEntity);
 
 		playerEntity.setOperator(true);
 		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
 		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
-		world.getEntityPool().addNew(playerEntity);
 		world.playerEntities.put(playerEntity.getId(), playerEntity);
 	}
 
@@ -225,8 +225,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	/**
-	 * Called after all players are added in the EntityPool and Teams are sets.
-	 * This will place players and set the map limit if present.
+	 * Called after all players are added in the EntityPool and Teams are sets. This
+	 * will place players and set the map limit if present.
 	 * 
 	 * @throws MapAnalyticsException
 	 */

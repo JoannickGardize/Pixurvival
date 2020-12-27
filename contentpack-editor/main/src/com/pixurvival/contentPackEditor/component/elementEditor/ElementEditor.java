@@ -1,5 +1,6 @@
 package com.pixurvival.contentPackEditor.component.elementEditor;
 
+import java.awt.Color;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +20,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.util.ReflectionUtils;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 /**
@@ -38,6 +41,8 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	private List<ValueChangeListener<E>> listeners = new ArrayList<>();
 	private boolean nullable = false;
 	private Class<? super E> type;
+	private @Setter Predicate<E> additionalConstraint = f -> true;
+	private @Getter @Setter JLabel associatedLabel;
 
 	public ElementEditor(Class<? super E> type) {
 		this.type = type;
@@ -61,6 +66,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 		if (!sneaky) {
 			valueChanged(this);
 		}
+		updateLabel();
 	}
 
 	@Override
@@ -73,17 +79,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 				return false;
 			}
 		}
-		return true;
-	}
-
-	@Override
-	public void setAssociatedLabel(JLabel label) {
-		// For override
-	}
-
-	@Override
-	public JLabel getAssociatedLabel() {
-		return null;
+		return additionalConstraint.test(value);
 	}
 
 	@Override
@@ -133,6 +129,7 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 				notifyValueChanged();
 			}
 			valueChanged(component);
+			updateLabel();
 		});
 		attributes.put(attributeName, (ElementAttribute<E, Object>) elementAttribute);
 		return elementAttribute;
@@ -160,6 +157,16 @@ public class ElementEditor<E> extends JPanel implements ValueComponent<E> {
 	public void configure(Annotation annotation) {
 		if (annotation instanceof Nullable) {
 			nullable = true;
+		}
+	}
+
+	private void updateLabel() {
+		if (associatedLabel != null) {
+			if (isValueValid()) {
+				associatedLabel.setForeground((Color.BLACK));
+			} else {
+				associatedLabel.setForeground((Color.RED));
+			}
 		}
 	}
 }

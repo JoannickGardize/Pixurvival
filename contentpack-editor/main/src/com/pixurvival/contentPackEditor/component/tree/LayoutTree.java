@@ -8,8 +8,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -20,8 +18,8 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.event.ElementRenamedEvent;
 import com.pixurvival.contentPackEditor.event.ElementSelectedEvent;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.contentPackEditor.util.MenuBuilder;
 import com.pixurvival.contentPackEditor.util.DialogUtils;
+import com.pixurvival.contentPackEditor.util.MenuBuilder;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.util.CaseUtils;
 
@@ -70,15 +68,12 @@ public class LayoutTree extends JTree {
 			}
 		});
 
-		addTreeSelectionListener(new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				if (e.isAddedPath()) {
-					TreePath path = e.getPath();
-					if (path.getLastPathComponent() instanceof LayoutElement) {
-						LayoutElement layoutElement = (LayoutElement) path.getLastPathComponent();
-						EventManager.getInstance().fire(new ElementSelectedEvent(layoutElement.getElement()));
-					}
+		addTreeSelectionListener(e -> {
+			if (e.isAddedPath()) {
+				TreePath path = e.getPath();
+				if (path.getLastPathComponent() instanceof LayoutElement) {
+					LayoutElement layoutElement = (LayoutElement) path.getLastPathComponent();
+					EventManager.getInstance().fire(new ElementSelectedEvent(layoutElement.getElement()));
 				}
 			}
 		});

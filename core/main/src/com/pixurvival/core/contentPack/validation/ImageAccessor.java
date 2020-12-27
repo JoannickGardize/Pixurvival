@@ -10,6 +10,11 @@ public interface ImageAccessor {
 
 	}
 
+	/**
+	 * @param resourceName
+	 *            null is accepted and returns null
+	 * @return
+	 */
 	BufferedImage get(String resourceName);
 
 	default void end() {

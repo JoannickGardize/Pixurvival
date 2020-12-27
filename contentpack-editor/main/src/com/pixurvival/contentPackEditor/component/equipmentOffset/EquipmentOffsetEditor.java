@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
+import com.pixurvival.contentPackEditor.component.constraint.BoundsConstraint;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetChooserPreviewTabs;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -19,7 +20,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ElementEditorTa
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.contentPackEditor.component.valueComponent.constraint.BoundsConstraint;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.FrameOffset;
 

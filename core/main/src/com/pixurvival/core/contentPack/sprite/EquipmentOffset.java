@@ -17,6 +17,7 @@ public class EquipmentOffset extends NamedIdentifiedElement implements Serializa
 
 	private static final long serialVersionUID = 1L;
 
+	// TODO 2D array instead of frames
 	@Valid
 	@Length(min = 1)
 	private List<FrameOffset> frameOffsets = new ArrayList<>();

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.ImageFramePreview;
+import com.pixurvival.contentPackEditor.component.constraint.UnitSpriteFrameConstraint;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.spriteSheet.SpriteSheetPreview.ClickEvent;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
@@ -34,6 +35,7 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 	private ImageFramePreview itemPreview = new ImageFramePreview();
 	private ItemFrameChooserPopup itemFrameChooserPopup = new ItemFrameChooserPopup();
 	private FrameEditor frameEditor = new FrameEditor();
+	private UnitSpriteFrameConstraint frameConstraint = new UnitSpriteFrameConstraint();
 
 	public ItemEditor() {
 		super(Item.class, "itemType");
@@ -49,8 +51,9 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 		});
 		IntegerInput maxStackSizeInput = new IntegerInput();
 
-		imageField.addValueChangeListener(v -> itemPreview.setImage(v.getName()));
+		imageField.addValueChangeListener(v -> itemPreview.setImage(v == null ? null : v.getName()));
 		frameEditor.addValueChangeListener(v -> itemPreview.setFrame(v));
+		frameEditor.setAdditionalConstraint(frameConstraint);
 
 		// Binding
 		bind(imageField, "image").getter(v -> v.getImage() == null ? null : ResourcesService.getInstance().getResource(v.getImage())).setter((v, f) -> v.setImage(f == null ? null : f.getName()));
@@ -150,4 +153,19 @@ public class ItemEditor extends InstanceChangingRootElementEditor<Item> implemen
 		frameEditor.notifyValueChanged();
 		itemFrameChooserPopup.setVisible(false);
 	}
+
+	@Override
+	public void setValue(Item value, boolean sneaky) {
+		frameConstraint.setElement(value);
+		super.setValue(value, sneaky);
+	}
+
+	@Override
+	public boolean isValueValid(Item value) {
+		frameConstraint.setElement(value);
+		boolean valid = super.isValueValid(value);
+		frameConstraint.setElement(getValue());
+		return valid;
+	}
+
 }

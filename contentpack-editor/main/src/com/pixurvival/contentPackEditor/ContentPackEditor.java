@@ -20,6 +20,7 @@ import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.ContentPackSavedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.relationGraph.ElementRelationService;
 import com.pixurvival.contentPackEditor.settings.Settings;
 import com.pixurvival.core.util.ArgsUtils;
 import com.pixurvival.core.util.ReleaseVersion;
@@ -59,6 +60,7 @@ public class ContentPackEditor extends JFrame {
 			Locale.setDefault(Locale.ENGLISH);
 		}
 		MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
+		ElementRelationService.getInstance();
 		FileService.getInstance().initialize(new File(mainArgs.getContentPackDirectory()));
 		run(mainArgs);
 		instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -2,24 +2,27 @@ package com.pixurvival.contentPackEditor.component.spriteSheet;
 
 import java.awt.image.BufferedImage;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SpriteDimensionConstraint implements Predicate<Number> {
 
-	private Supplier<SpriteSheet> spriteSheetSupplier;
+	@NonNull
 	private ToIntFunction<BufferedImage> dimensionGetter;
+
+	@Setter
+	private SpriteSheet spriteSheet;
 
 	@Override
 	public boolean test(Number value) {
-		SpriteSheet spriteSheet = spriteSheetSupplier.get();
 		if (spriteSheet == null) {
 			return true;
 		}

@@ -28,7 +28,10 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
+import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteSheet;
+import com.pixurvival.core.contentPack.validation.handler.UnitSpriteSheetHandler;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.ReflectionUtils;
 
@@ -128,23 +131,43 @@ public class ElementChooserButton<T extends NamedIdentifiedElement> extends JBut
 		if (annotation instanceof Nullable) {
 			nullable = true;
 		} else if (annotation instanceof ResourceReference) {
-			additionalCondition = r -> {
+			additionalCondition = additionalCondition.and(r -> {
 				if (r == null) {
 					return true;
 				} else {
 					return ((ResourceEntry) r).getPreview() instanceof BufferedImage;
 				}
-			};
+			});
 		} else if (annotation instanceof AnimationTemplateRequirement) {
 			AnimationTemplateRequirement requirement = (AnimationTemplateRequirement) annotation;
-			additionalCondition = s -> {
+			additionalCondition = additionalCondition.and(s -> {
 				if (s == null) {
 					return true;
 				}
 				SpriteSheet spriteSheet = (SpriteSheet) s;
 				return spriteSheet.getAnimationTemplate() == null || requirement.value().test(spriteSheet.getAnimationTemplate().getAnimations().keySet());
-			};
+			});
+		} else if (annotation instanceof RequiredEquipmentOffset) {
+			additionalCondition = additionalCondition.and(s -> {
+				if (s == null) {
+					return true;
+				}
+				return ((SpriteSheet) s).getEquipmentOffset() != null;
+			});
+		} else if (annotation instanceof UnitSpriteSheet) {
+			additionalCondition = additionalCondition.and(e -> {
+				ResourceEntry entry = (ResourceEntry) e;
+				if (entry == null || !(entry.getPreview() instanceof BufferedImage)) {
+					return true;
+				}
+
+				return UnitSpriteSheetHandler.test((BufferedImage) entry.getPreview());
+			});
 		}
+	}
+
+	public void addAdditionalCondition(Predicate<T> condition) {
+		additionalCondition = additionalCondition.and(condition);
 	}
 
 	private void updateDisplay() {

@@ -24,7 +24,10 @@ public class BehaviorSet extends NamedIdentifiedElement implements Serializable 
 	@Override
 	public void initialize() {
 		for (int i = 0; i < behaviors.size(); i++) {
-			behaviors.get(i).setId(i);
+			Behavior behavior = behaviors.get(i);
+			behavior.setId(i);
+			behavior.initialize();
+
 		}
 	}
 }

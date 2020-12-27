@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -160,7 +161,7 @@ public class ContentPackSerialization {
 	}
 
 	public void save(File file, ContentPack contentPack) throws IOException {
-		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+		try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)), StandardCharsets.UTF_8)) {
 			zipOutputStream.putNextEntry(new ZipEntry(SUMMARY_ENTRY_NAME));
 			yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8));
 			zipOutputStream.putNextEntry(new ZipEntry(SERIALIZATION_ENTRY_NAME));
@@ -189,10 +190,10 @@ public class ContentPackSerialization {
 		if (!file.exists()) {
 			throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
 		}
-		try (ZipFile zipFile = new ZipFile(file)) {
+		try (ZipFile zipFile = new ZipFile(file, StandardCharsets.UTF_8)) {
 			ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
 			InputStream contentPackSerialization = externalContentPackSerialization == null ? zipFile.getInputStream(entry) : externalContentPackSerialization;
-			ContentPack contentPack = yaml.loadAs(contentPackSerialization, ContentPack.class);
+			ContentPack contentPack = yaml.loadAs(new InputStreamReader(contentPackSerialization, StandardCharsets.UTF_8), ContentPack.class);
 			Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
 			while (enumeration.hasMoreElements()) {
 				entry = enumeration.nextElement();
@@ -229,7 +230,7 @@ public class ContentPackSerialization {
 			if (entry == null) {
 				return null;
 			}
-			ContentPackSummary summary = yaml.loadAs(zipFile.getInputStream(entry), ContentPackSummary.class);
+			ContentPackSummary summary = yaml.loadAs(new InputStreamReader(zipFile.getInputStream(entry), StandardCharsets.UTF_8), ContentPackSummary.class);
 			summary.getIdentifier().setFile(file);
 			return summary;
 		} catch (Exception e) {

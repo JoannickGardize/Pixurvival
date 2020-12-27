@@ -12,17 +12,23 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReferenceOrValid;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.contentPack.validation.handler.AbilityIndexesHandler;
+import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateFramesHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateRequirementHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnnotationHandler;
 import com.pixurvival.core.contentPack.validation.handler.BoundsHandler;
 import com.pixurvival.core.contentPack.validation.handler.ElementListHandler;
 import com.pixurvival.core.contentPack.validation.handler.ElementReferenceHandler;
+import com.pixurvival.core.contentPack.validation.handler.EquipmentOffsetFramesHandler;
 import com.pixurvival.core.contentPack.validation.handler.LengthHandler;
 import com.pixurvival.core.contentPack.validation.handler.PatternHandler;
 import com.pixurvival.core.contentPack.validation.handler.PositiveHandler;
+import com.pixurvival.core.contentPack.validation.handler.RequiredEquipmentOffsetHandler;
 import com.pixurvival.core.contentPack.validation.handler.ResourceReferenceHandler;
 import com.pixurvival.core.contentPack.validation.handler.SpriteHeightHandler;
 import com.pixurvival.core.contentPack.validation.handler.SpriteWidthHandler;
+import com.pixurvival.core.contentPack.validation.handler.UnitSpriteFrameHandler;
+import com.pixurvival.core.contentPack.validation.handler.UnitSpriteSheetHandler;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 import com.pixurvival.core.reflection.visitor.VisitorContext;
 
@@ -60,6 +66,12 @@ public class ContentPackValidator {
 		addAnnotationHandler(new SpriteWidthHandler());
 		addAnnotationHandler(new SpriteHeightHandler());
 		addAnnotationHandler(new AnimationTemplateRequirementHandler());
+		addAnnotationHandler(new RequiredEquipmentOffsetHandler());
+		addAnnotationHandler(new AnimationTemplateFramesHandler());
+		addAnnotationHandler(new EquipmentOffsetFramesHandler());
+		addAnnotationHandler(new AbilityIndexesHandler());
+		addAnnotationHandler(new UnitSpriteSheetHandler());
+		addAnnotationHandler(new UnitSpriteFrameHandler());
 	}
 
 	public ErrorCollection validate(ContentPack contentPack) {

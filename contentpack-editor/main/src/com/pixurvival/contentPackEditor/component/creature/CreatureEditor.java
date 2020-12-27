@@ -31,25 +31,26 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", new DecimalFormatSymbols(Locale.US));
 
-	private ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
-	private ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
-	private ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class);
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton(AbilitySet.class);
-
 	private StatSet statSet = new StatSet();
 	private FloatInput strengthInput = new FloatInput();
 	private FloatInput agilityInput = new FloatInput();
 	private FloatInput intelligenceInput = new FloatInput();
-	private JTextField maxHealthField = new JTextField(DECIMAL_FORMAT.format(StatType.MAX_HEALTH.getFormula().compute(statSet)));
-	private JTextField speedField = new JTextField(DECIMAL_FORMAT.format(StatType.SPEED.getFormula().compute(statSet)));
-	private JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%"));
+
+	private AbilityIndexesConstraint abilityIndexesConstraint = new AbilityIndexesConstraint();
 
 	public CreatureEditor() {
 		super(Creature.class);
 
 		// Creation
 
+		ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
+		ElementChooserButton<BehaviorSet> behaviorSetChooser = new ElementChooserButton<>(BehaviorSet.class);
+		behaviorSetChooser.addAdditionalCondition(abilityIndexesConstraint);
+		ElementChooserButton<ItemReward> itemRewardChooser = new ElementChooserButton<>(ItemReward.class);
+		ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton<>(AbilitySet.class);
+		JTextField maxHealthField = new JTextField(DECIMAL_FORMAT.format(StatType.MAX_HEALTH.getFormula().compute(statSet)));
+		JTextField speedField = new JTextField(DECIMAL_FORMAT.format(StatType.SPEED.getFormula().compute(statSet)));
+		JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%"));
 		FloatInput collisionRadiusInput = new FloatInput();
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
@@ -59,6 +60,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		IntegerInput inventorySizeInput = new IntegerInput();
 
 		// Actions
+
 		strengthInput.addValueChangeListener(v -> statSet.get(StatType.STRENGTH).setBase(v));
 		agilityInput.addValueChangeListener(v -> statSet.get(StatType.AGILITY).setBase(v));
 		intelligenceInput.addValueChangeListener(v -> statSet.get(StatType.INTELLIGENCE).setBase(v));
@@ -111,6 +113,20 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 
 		setLayout(new GridBagLayout());
 		LayoutUtils.addVertically(this, topPanel, statsPanel);
+	}
+
+	@Override
+	public void setValue(Creature value, boolean sneaky) {
+		abilityIndexesConstraint.setCreature(value);
+		super.setValue(value, sneaky);
+	}
+
+	@Override
+	public boolean isValueValid(Creature value) {
+		abilityIndexesConstraint.setCreature(value);
+		boolean valid = super.isValueValid(value);
+		abilityIndexesConstraint.setCreature(getValue());
+		return valid;
 	}
 
 	@Override

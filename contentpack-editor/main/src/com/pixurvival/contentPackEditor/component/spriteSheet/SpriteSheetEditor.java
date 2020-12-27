@@ -21,23 +21,33 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateFramesHandler;
+import com.pixurvival.core.contentPack.validation.handler.EquipmentOffsetFramesHandler;
 
 public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 
 	private static final long serialVersionUID = 1L;
 
 	private SpriteSheetPreview preview = new SpriteSheetPreview();
+	private SpriteDimensionConstraint widthConstraint = new SpriteDimensionConstraint(BufferedImage::getWidth);
+	private SpriteDimensionConstraint heightConstraint = new SpriteDimensionConstraint(BufferedImage::getHeight);
+	private FrameNumberConstraint<AnimationTemplate> animationTemplateConstraint = new FrameNumberConstraint<>(
+			(spriteSheet, t, frameX, frameY) -> AnimationTemplateFramesHandler.test(t, frameX, frameY));
+	private FrameNumberConstraint<EquipmentOffset> equipmentOffsetConstraint = new FrameNumberConstraint<>(
+			(spriteSheet, t, frameX, frameY) -> EquipmentOffsetFramesHandler.test(spriteSheet, frameX, frameY));
 
 	public SpriteSheetEditor() {
 		super(SpriteSheet.class);
 		// Contruction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 		IntegerInput widthField = new IntegerInput();
-		widthField.setConstraint(new SpriteDimensionConstraint(this::getValue, BufferedImage::getWidth));
+		widthField.setConstraint(widthConstraint);
 		IntegerInput heightField = new IntegerInput();
-		heightField.setConstraint(new SpriteDimensionConstraint(this::getValue, BufferedImage::getHeight));
+		heightField.setConstraint(heightConstraint);
 		ElementChooserButton<AnimationTemplate> animationTemplateField = new ElementChooserButton<>(AnimationTemplate.class);
+		animationTemplateField.addAdditionalCondition(animationTemplateConstraint);
 		ElementChooserButton<EquipmentOffset> equipmentOffsetField = new ElementChooserButton<>(EquipmentOffset.class);
+		equipmentOffsetField.addAdditionalCondition(equipmentOffsetConstraint);
 		JTabbedPane previewTabs = new JTabbedPane();
 		FloatInput heightOffsetInput = new FloatInput();
 		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
@@ -76,6 +86,29 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 			widthField.updateValue();
 			heightField.updateValue();
 		});
+	}
+
+	@Override
+	public void setValue(SpriteSheet value, boolean sneaky) {
+		widthConstraint.setSpriteSheet(value);
+		heightConstraint.setSpriteSheet(value);
+		animationTemplateConstraint.setSpriteSheet(value);
+		equipmentOffsetConstraint.setSpriteSheet(value);
+		super.setValue(value, sneaky);
+	}
+
+	@Override
+	public boolean isValueValid(SpriteSheet value) {
+		widthConstraint.setSpriteSheet(value);
+		heightConstraint.setSpriteSheet(value);
+		animationTemplateConstraint.setSpriteSheet(value);
+		equipmentOffsetConstraint.setSpriteSheet(value);
+		boolean valid = super.isValueValid(value);
+		widthConstraint.setSpriteSheet(getValue());
+		heightConstraint.setSpriteSheet(getValue());
+		animationTemplateConstraint.setSpriteSheet(getValue());
+		equipmentOffsetConstraint.setSpriteSheet(getValue());
+		return valid;
 	}
 
 	@Override

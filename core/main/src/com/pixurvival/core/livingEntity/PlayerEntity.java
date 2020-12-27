@@ -114,6 +114,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	}
 
 	@Override
+	public void setId(long id) {
+		super.setId(id);
+	}
+
+	@Override
 	public void update() {
 		addHungerSneaky(-(HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
 		if (hunger <= 0) {

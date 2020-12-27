@@ -62,6 +62,13 @@ public class LayoutUtils {
 		gbc.insets.left = previousLeft;
 		if (component instanceof ValueComponent) {
 			((ValueComponent<?>) component).setAssociatedLabel(label);
+		} else if (component instanceof JPanel) {
+			for (Component childComponent : ((JPanel) component).getComponents()) {
+				if (childComponent instanceof ValueComponent) {
+					((ValueComponent<?>) childComponent).setAssociatedLabel(label);
+
+				}
+			}
 		}
 		gbc.gridx--;
 		gbc.gridy++;

@@ -43,13 +43,13 @@ public class TextureAnimation {
 			offsetY = new float[frames.size()];
 			back = new boolean[frames.size()];
 
+			// TODO reverse this search
 			for (int i = 0; i < frames.size(); i++) {
 				FrameOffset frameOffset = findFrameOffset(equipmentOffset.getFrameOffsets(), frames.get(i));
 				offsetX[i] = (float) frameOffset.getOffsetX() / GameConstants.PIXEL_PER_UNIT;
 				offsetY[i] = (float) frameOffset.getOffsetY() / GameConstants.PIXEL_PER_UNIT;
 				back[i] = frameOffset.isBack();
 			}
-
 		}
 		TextureMetrics metrics = textureSheet.getMetrics(frames.get(0).getX(), frames.get(0).getY());
 		shadowWidth = metrics.getWidth();
@@ -70,6 +70,10 @@ public class TextureAnimation {
 
 	public float getOffsetY(int index) {
 		return offsetY[index];
+	}
+
+	public boolean hasOffset() {
+		return offsetX != null;
 	}
 
 	public boolean isBack(int index) {

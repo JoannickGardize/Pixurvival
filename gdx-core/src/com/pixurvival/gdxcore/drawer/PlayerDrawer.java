@@ -31,12 +31,16 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 
 	@Override
 	protected void drawBeforeBody(Batch batch, PlayerEntity e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {
-		drawWeapon(true, batch, e, textureAnimation, actionAnimation, index, x, y);
+		if (textureAnimation.hasOffset()) {
+			drawWeapon(true, batch, e, textureAnimation, actionAnimation, index, x, y);
+		}
 	}
 
 	@Override
 	protected void drawAfterBody(Batch batch, PlayerEntity e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {
-		drawWeapon(false, batch, e, textureAnimation, actionAnimation, index, x, y);
+		if (textureAnimation.hasOffset()) {
+			drawWeapon(false, batch, e, textureAnimation, actionAnimation, index, x, y);
+		}
 	}
 
 	protected void drawWeapon(boolean back, Batch batch, PlayerEntity e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {

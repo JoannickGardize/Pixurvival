@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.AnimationPreview;
+import com.pixurvival.contentPackEditor.component.constraint.UnitSpriteFrameConstraint;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
@@ -31,6 +32,7 @@ public class TileEditor extends RootElementEditor<Tile> {
 	private static final long serialVersionUID = 1L;
 
 	private AnimationPreview imagePreview = new AnimationPreview();
+	private UnitSpriteFrameConstraint frameConstraint = new UnitSpriteFrameConstraint();
 
 	public TileEditor() {
 		super(Tile.class);
@@ -38,7 +40,11 @@ public class TileEditor extends RootElementEditor<Tile> {
 		// Construction
 		ElementChooserButton<ResourceEntry> imageField = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
 		EventManager.getInstance().register(this);
-		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(FrameEditor::new, Frame::new, VerticalListEditor.HORIZONTAL);
+		VerticalListEditor<Frame> frameList = new VerticalListEditor<>(() -> {
+			FrameEditor frame = new FrameEditor();
+			frame.setAdditionalConstraint(frameConstraint);
+			return frame;
+		}, Frame::new, VerticalListEditor.HORIZONTAL);
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
 		PercentInput velocityFactorInput = new PercentInput();
 		imagePreview.setAnimation(new Animation());
@@ -77,5 +83,19 @@ public class TileEditor extends RootElementEditor<Tile> {
 	@EventListener
 	public void contentPackConstantChangedEvent(ContentPackConstantChangedEvent event) {
 		imagePreview.getAnimation().setFrameDuration(event.getConstants().getTileAnimationSpeed());
+	}
+
+	@Override
+	public void setValue(Tile value, boolean sneaky) {
+		frameConstraint.setElement(value);
+		super.setValue(value, sneaky);
+	}
+
+	@Override
+	public boolean isValueValid(Tile value) {
+		frameConstraint.setElement(value);
+		boolean valid = super.isValueValid(value);
+		frameConstraint.setElement(getValue());
+		return valid;
 	}
 }
