@@ -112,7 +112,7 @@ public class WorldSerialization {
 		byte[] saveChecksum = ByteBufferUtils.getBytes(buffer);
 		ContentPackValidityCheckResult checkResult;
 		try {
-			checkResult = contentPackSerialization.checkValidity(identifier, saveChecksum);
+			checkResult = contentPackSerialization.checkSameness(identifier, saveChecksum);
 		} catch (ContentPackException e) {
 			throw new LoadGameException(Reason.CONTENT_PACK_FILE_NOT_FOUND, identifier);
 		}

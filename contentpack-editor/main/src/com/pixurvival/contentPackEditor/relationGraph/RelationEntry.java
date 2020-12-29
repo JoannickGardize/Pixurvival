@@ -17,6 +17,7 @@ class RelationEntry {
 
 	@NonNull
 	private NamedIdentifiedElement element;
-	private Set<NamedIdentifiedElement> relations = new HashSet<>();
+	private Set<NamedIdentifiedElement> elementRelations = new HashSet<>();
+	private Set<String> resourceRelations = new HashSet<>();
 	private boolean upToDate = false;
 }

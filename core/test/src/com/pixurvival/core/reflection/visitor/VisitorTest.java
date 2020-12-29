@@ -86,8 +86,8 @@ public class VisitorTest {
 		context.setTraversalCondition(n -> !(n.getKey() instanceof Field) || ((Field) n.getKey()).isAnnotationPresent(Traverse.class));
 		context.visit(a, handler);
 
-		Object[] expectedLogs = { "string", "integer", "b", "b.integer", "b.c", "b.c.dooble", "b.list", "b.list.0.dooble", "b.list.1.dooble", "b.list.2.dooble", "c", "c.dooble", "map",
-				"map.key1.dooble", "map.key2.dooble" };
+		Object[] expectedLogs = { "string", "integer", "b", "b.integer", "b.c", "b.c.dooble", "b.list", "b.list.0", "b.list.0.dooble", "b.list.1", "b.list.1.dooble", "b.list.2", "b.list.2.dooble",
+				"c", "c.dooble", "map", "map.key1", "map.key1.dooble", "map.key2", "map.key2.dooble" };
 		Assertions.assertArrayEquals(expectedLogs, handler.getLogs());
 	}
 }

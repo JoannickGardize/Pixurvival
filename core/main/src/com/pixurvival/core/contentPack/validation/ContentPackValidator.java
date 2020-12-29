@@ -16,6 +16,7 @@ import com.pixurvival.core.contentPack.validation.handler.AbilityIndexesHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateFramesHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnimationTemplateRequirementHandler;
 import com.pixurvival.core.contentPack.validation.handler.AnnotationHandler;
+import com.pixurvival.core.contentPack.validation.handler.AscendingHandler;
 import com.pixurvival.core.contentPack.validation.handler.BoundsHandler;
 import com.pixurvival.core.contentPack.validation.handler.ElementListHandler;
 import com.pixurvival.core.contentPack.validation.handler.ElementReferenceHandler;
@@ -27,6 +28,7 @@ import com.pixurvival.core.contentPack.validation.handler.RequiredEquipmentOffse
 import com.pixurvival.core.contentPack.validation.handler.ResourceReferenceHandler;
 import com.pixurvival.core.contentPack.validation.handler.SpriteHeightHandler;
 import com.pixurvival.core.contentPack.validation.handler.SpriteWidthHandler;
+import com.pixurvival.core.contentPack.validation.handler.StaticMapResourcesHandler;
 import com.pixurvival.core.contentPack.validation.handler.UnitSpriteFrameHandler;
 import com.pixurvival.core.contentPack.validation.handler.UnitSpriteSheetHandler;
 import com.pixurvival.core.reflection.visitor.VisitNode;
@@ -72,6 +74,8 @@ public class ContentPackValidator {
 		addAnnotationHandler(new AbilityIndexesHandler());
 		addAnnotationHandler(new UnitSpriteSheetHandler());
 		addAnnotationHandler(new UnitSpriteFrameHandler());
+		addAnnotationHandler(new AscendingHandler());
+		addAnnotationHandler(new StaticMapResourcesHandler());
 	}
 
 	public ErrorCollection validate(ContentPack contentPack) {
@@ -90,14 +94,22 @@ public class ContentPackValidator {
 			Field field = (Field) node.getKey();
 			if (node.getObject() != null) {
 				for (Annotation annotation : field.getAnnotations()) {
-					AnnotationHandler handler = annotationHandlersPerAnnotations.get(annotation.annotationType());
-					if (handler != null) {
-						handler.handle(node, annotation, errors);
-					}
+					handleAnnotation(node, errors, annotation);
 				}
 			} else {
 				handleNullable(node, errors);
 			}
+		} else if (node.getObject() != null) {
+			for (Annotation annotation : node.getObject().getClass().getAnnotations()) {
+				handleAnnotation(node, errors, annotation);
+			}
+		}
+	}
+
+	private void handleAnnotation(VisitNode node, ErrorCollection errors, Annotation annotation) {
+		AnnotationHandler handler = annotationHandlersPerAnnotations.get(annotation.annotationType());
+		if (handler != null) {
+			handler.handle(node, annotation, errors);
 		}
 	}
 

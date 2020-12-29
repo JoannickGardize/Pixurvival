@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.validation;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ class ContentPackValidatorTest {
 	private ContentPackValidator validator;
 
 	@BeforeEach
-	public void initialize(TestInfo testInfo) {
+	public void initialize(TestInfo testInfo) throws IOException {
 		factory = new ContentPackFactory();
 		validator = new ContentPackValidator();
 		System.out.println(testInfo.getDisplayName());

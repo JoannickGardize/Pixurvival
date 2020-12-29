@@ -15,9 +15,13 @@ import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceAddedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRenamedEvent;
 
 public class ResourcesDialog extends EditorDialog {
 
@@ -65,12 +69,53 @@ public class ResourcesDialog extends EditorDialog {
 	}
 
 	@EventListener
-	public void resourceListChanged(ResourceListChangedEvent event) {
+	public void contentPackLoaded(ContentPackLoadedEvent event) {
 		DefaultListModel<ResourceEntry> model = (DefaultListModel<ResourceEntry>) resourceList.getModel();
 		model.clear();
 		for (ResourceEntry entry : ResourcesService.getInstance().getResources()) {
 			model.addElement(entry);
 		}
+	}
+
+	@EventListener
+	public void resourceAdded(ResourceAddedEvent event) {
+		int index = 0;
+		for (ResourceEntry entry : ResourcesService.getInstance().getResources()) {
+			if (entry.getName().equals(event.getResourceName())) {
+				((DefaultListModel<ResourceEntry>) resourceList.getModel()).add(index, entry);
+				resourceList.setSelectedIndex(index);
+				return;
+			} else {
+				index++;
+			}
+		}
+	}
+
+	@EventListener
+	public void resourceChanged(ResourceChangedEvent event) {
+		DefaultListModel<ResourceEntry> model = (DefaultListModel<ResourceEntry>) resourceList.getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+			if (model.getElementAt(i).getName().equals(event.getResourceName())) {
+				model.set(i, ResourcesService.getInstance().getResource(event.getResourceName()));
+				resourceList.setSelectedIndex(i);
+			}
+		}
+	}
+
+	@EventListener
+	public void resourceRemoved(ResourceRemovedEvent event) {
+		DefaultListModel<ResourceEntry> model = (DefaultListModel<ResourceEntry>) resourceList.getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+			if (model.getElementAt(i).getName().equals(event.getResourceName())) {
+				model.remove(i);
+			}
+		}
+	}
+
+	@EventListener
+	public void resourceRenamed(ResourceRenamedEvent event) {
+		resourceRemoved(new ResourceRemovedEvent(event.getOldResourceName()));
+		resourceAdded(new ResourceAddedEvent(event.getNewResourceName()));
 	}
 
 	@Override

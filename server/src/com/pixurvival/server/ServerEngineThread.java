@@ -123,8 +123,10 @@ public class ServerEngineThread extends EngineThread {
 		if (ClientAckManager.getInstance().check(session) && !session.isRequestedFullUpdate()) {
 			prepareDeltaUpdate(gs, session);
 			if (!tmpDeltaWorldUpdate.isEmpty()) {
-				int length = session.sendUDP(tmpDeltaWorldUpdate);
-				Log.info("delta update sent to " + session.getConnection() + " entity size : " + tmpDeltaWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
+				/* int length = */ session.sendUDP(tmpDeltaWorldUpdate);
+				// Log.info("delta update sent to " + session.getConnection() + " entity size :
+				// " + tmpDeltaWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : "
+				// + length);
 			}
 		} else {
 			if (session.isRequestedFullUpdate()) {
@@ -135,8 +137,10 @@ public class ServerEngineThread extends EngineThread {
 				// session
 				prepareFullUpdate(session.getPlayerEntity());
 			}
-			int length = session.sendUDP(tmpFullWorldUpdate);
-			Log.info("full update sent to " + session.getConnection() + " entity size : " + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " + length);
+			/* int length = */session.sendUDP(tmpFullWorldUpdate);
+			// Log.info("full update sent to " + session.getConnection() + " entity size : "
+			// + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " +
+			// length);
 		}
 	}
 

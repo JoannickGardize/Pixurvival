@@ -170,7 +170,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void checkContentPackValidity(ContentPackCheck check) {
 		ContentPackValidityCheckResult result;
 		try {
-			result = contentPackContext.checkValidity(check.getIdentifier(), check.getChecksum());
+			result = contentPackContext.checkSameness(check.getIdentifier(), check.getChecksum());
 			if (result == ContentPackValidityCheckResult.OK) {
 				client.sendTCP(new ContentPackReady(check.getIdentifier()));
 			} else {
@@ -210,7 +210,8 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 				notify(ClientGameListener::spectatorStarted);
 			}
 		} catch (ContentPackException e) {
-			e.printStackTrace();
+			// TODO
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -232,6 +233,9 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		ReleaseVersion packVersion = ReleaseVersion.valueFor(localGamePack.getReleaseVersion());
 		if (ReleaseVersion.actual() != packVersion) {
 			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.actual());
+		}
+		if (!contentPackContext.getErrors(localGamePack).isEmpty()) {
+			throw new LoadGameException(Reason.CONTAINS_ERRORS);
 		}
 		currentLocale = getLocaleFor(localGamePack);
 		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));

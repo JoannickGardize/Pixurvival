@@ -9,6 +9,7 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.validation.annotation.AbilityIndexes;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateFrames;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
+import com.pixurvival.core.contentPack.validation.annotation.Ascending;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
@@ -23,6 +24,7 @@ import com.pixurvival.core.contentPack.validation.annotation.SpriteHeight;
 import com.pixurvival.core.contentPack.validation.annotation.SpriteWidth;
 import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteFrame;
 import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteSheet;
+import com.pixurvival.core.contentPack.validation.handler.StaticMapResourceMissing;
 
 import lombok.experimental.UtilityClass;
 
@@ -76,6 +78,8 @@ public class ErrorToString {
 		addToStringFunction(UnitSpriteSheet.class, p -> "the image must have a width and height divisible by " + GameConstants.PIXEL_PER_UNIT);
 		addToStringFunction(UnitSpriteFrame.class,
 				p -> "the frame does not correspond to a " + GameConstants.PIXEL_PER_UNIT + "x" + GameConstants.PIXEL_PER_UNIT + " sprite of the image (FYI top-left is 0; 0)");
+		addToStringFunction(Ascending.class, p -> "the values of the list must be in ascending order");
+		addToStringFunction(StaticMapResourceMissing.class, r -> "the image resource " + r.getResourceName() + " is missing");
 	}
 
 	public static String toString(Object cause) {

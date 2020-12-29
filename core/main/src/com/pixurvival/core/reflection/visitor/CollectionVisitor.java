@@ -10,6 +10,7 @@ public class CollectionVisitor implements Visitor {
 		int i = 0;
 		for (Object o : list) {
 			VisitNode childNode = node.addChild(i++, o);
+			handler.visit(childNode);
 			if (context.getTraversalCondition().test(childNode)) {
 				context.getVisitorFor(childNode.getObject()).visit(childNode, handler, context);
 			}

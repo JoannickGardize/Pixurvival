@@ -30,7 +30,11 @@ public class ErrorNode {
 		VisitNode firstNode = it.next();
 		ElementList elementList = ((Field) firstNode.getKey()).getAnnotation(ElementList.class);
 		if (elementList != null) {
-			sb.append("(").append(elementList.value().getSimpleName()).append(") ").append(((NamedIdentifiedElement) it.next().getObject()).getName());
+			if (it.hasNext()) {
+				sb.append("(").append(elementList.value().getSimpleName()).append(") ").append(((NamedIdentifiedElement) it.next().getObject()).getName());
+			} else {
+				return "List of " + elementList.value().getSimpleName();
+			}
 		} else {
 			sb.append(((Field) firstNode.getKey()).getName());
 		}

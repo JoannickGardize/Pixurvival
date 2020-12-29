@@ -209,6 +209,14 @@ public class PreparingPhase implements LobbyPhase {
 			data.setContentPack(session.getServer().getContentPackContext().load(getSelectedContentPack().getIdentifier()));
 		} catch (ContentPackException e) {
 			Log.error("Unable to load the content pack " + getSelectedContentPack().getIdentifier(), e);
+			setAllNotReady();
+			dataChanged();
+			return;
+		}
+		if (!session.getServer().getContentPackContext().getErrors(data.getContentPack()).isEmpty()) {
+			Log.warn("the content pack " + getSelectedContentPack().getIdentifier() + " contains errors. Open it with the editor to solve them.");
+			setAllNotReady();
+			dataChanged();
 			return;
 		}
 		data.setGameModeId(selectedGameModeIndex);

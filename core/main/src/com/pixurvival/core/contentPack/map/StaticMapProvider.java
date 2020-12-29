@@ -3,6 +3,7 @@ package com.pixurvival.core.contentPack.map;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.StaticMapResources;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@StaticMapResources
 public class StaticMapProvider extends MapProvider {
 
 	private static final long serialVersionUID = 1L;

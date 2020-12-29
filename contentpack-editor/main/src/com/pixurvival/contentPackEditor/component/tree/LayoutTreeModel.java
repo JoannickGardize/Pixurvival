@@ -15,7 +15,10 @@ import com.pixurvival.contentPackEditor.event.ElementChangedEvent;
 import com.pixurvival.contentPackEditor.event.ElementInstanceChangedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceAddedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRenamedEvent;
 import com.pixurvival.contentPackEditor.relationGraph.ElementRelationService;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
@@ -49,9 +52,27 @@ public class LayoutTreeModel implements TreeModel {
 	}
 
 	@EventListener
-	public void resourceListChanged(ResourceListChangedEvent event) {
-		// TODO Element reference
-		root.forEachDeepFirst(LayoutNode::updateValidation);
+	public void resourceAdded(ResourceAddedEvent event) {
+		updateResourceReferentElementsValidation(event.getResourceName());
+		notifyNodeChanged(root);
+	}
+
+	@EventListener
+	public void resourceChanged(ResourceChangedEvent event) {
+		updateResourceReferentElementsValidation(event.getResourceName());
+		notifyNodeChanged(root);
+	}
+
+	@EventListener
+	public void resourceRemoved(ResourceRemovedEvent event) {
+		updateResourceReferentElementsValidation(event.getResourceName());
+		notifyNodeChanged(root);
+	}
+
+	@EventListener
+	public void resourceRenamed(ResourceRenamedEvent event) {
+		updateResourceReferentElementsValidation(event.getOldResourceName());
+		updateResourceReferentElementsValidation(event.getNewResourceName());
 		notifyNodeChanged(root);
 	}
 
@@ -176,11 +197,17 @@ public class LayoutTreeModel implements TreeModel {
 	}
 
 	private void updateReferentElementsValidation(NamedIdentifiedElement referenced) {
-		ElementRelationService.getInstance().forEachReferent(referenced, e -> {
-			LayoutElement layoutElement = elementsMap.get(e);
-			if (layoutElement != null) {
-				layoutElement.forEachAncestor(LayoutNode::updateValidation);
-			}
-		});
+		ElementRelationService.getInstance().forEachReferent(referenced, this::refreshElement);
+	}
+
+	private void updateResourceReferentElementsValidation(String referenced) {
+		ElementRelationService.getInstance().forEachResourceReferent(referenced, this::refreshElement);
+	}
+
+	private void refreshElement(NamedIdentifiedElement e) {
+		LayoutElement layoutElement = elementsMap.get(e);
+		if (layoutElement != null) {
+			layoutElement.forEachAncestor(LayoutNode::updateValidation);
+		}
 	}
 }

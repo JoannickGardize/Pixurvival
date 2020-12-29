@@ -8,6 +8,8 @@ import java.util.List;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
+import com.pixurvival.core.contentPack.validation.ContentPackValidator;
+import com.pixurvival.core.contentPack.validation.ErrorNode;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,6 +26,7 @@ public class ContentPackContext {
 	private @NonNull @Getter File workingDirectory;
 	private List<ContentPackSummary> summaries;
 	private @Getter ContentPackSerialization serialization;
+	private ContentPackValidator validator;
 
 	public ContentPackContext(File workingDirectory) {
 		this.workingDirectory = workingDirectory;
@@ -31,6 +34,7 @@ public class ContentPackContext {
 			throw new IllegalStateException("Not a directory : " + workingDirectory);
 		}
 		serialization = new ContentPackSerialization();
+		validator = new ContentPackValidator();
 	}
 
 	public List<ContentPackSummary> list() {
@@ -91,7 +95,7 @@ public class ContentPackContext {
 		return serialization.load(fileOf(identifier));
 	}
 
-	public ContentPackValidityCheckResult checkValidity(ContentPackIdentifier identifier, byte[] checksum) throws ContentPackException {
+	public ContentPackValidityCheckResult checkSameness(ContentPackIdentifier identifier, byte[] checksum) throws ContentPackException {
 		if (list().stream().noneMatch(s -> identifier.equals(s.getIdentifier()))) {
 			return ContentPackValidityCheckResult.NOT_FOUND;
 		} else if (!Arrays.equals(getChecksum(identifier), checksum)) {
@@ -99,6 +103,10 @@ public class ContentPackContext {
 		} else {
 			return ContentPackValidityCheckResult.OK;
 		}
+	}
+
+	public List<ErrorNode> getErrors(ContentPack contentPack) {
+		return validator.validate(contentPack).asList();
 	}
 
 	public byte[] getChecksum(ContentPackIdentifier identifier) throws ContentPackException {

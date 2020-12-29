@@ -115,6 +115,10 @@ public class FileService {
 				return;
 			}
 		}
+		if (!ValidationService.getInstance().getErrorList().isEmpty()
+				&& JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveErroredContentPackQuestion"), "", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+			return;
+		}
 		currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
 		try {
 			contentPackContext.getSerialization().save(currentFile, currentContentPack);

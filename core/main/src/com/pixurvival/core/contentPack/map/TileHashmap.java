@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pixurvival.core.contentPack.validation.annotation.Ascending;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
@@ -22,6 +23,7 @@ public class TileHashmap implements Serializable {
 
 	@Valid
 	@Length(min = 1)
+	@Ascending
 	private List<TileHashmapEntry> entries = new ArrayList<>();
 
 	public Tile get(int x, int y) {

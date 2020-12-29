@@ -1,17 +1,16 @@
 package com.pixurvival.core.contentPack.validation.handler;
 
-import java.awt.image.BufferedImage;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.validation.ErrorCollection;
 import com.pixurvival.core.contentPack.validation.ImageAccessor;
-import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteSheet;
+import com.pixurvival.core.contentPack.validation.annotation.StaticMapResources;
 import com.pixurvival.core.reflection.visitor.VisitNode;
 
-public class UnitSpriteSheetHandler implements AnnotationHandler {
+public class StaticMapResourcesHandler implements AnnotationHandler {
 
 	private ImageAccessor imageAccessor;
 
@@ -22,17 +21,19 @@ public class UnitSpriteSheetHandler implements AnnotationHandler {
 
 	@Override
 	public Collection<Class<? extends Annotation>> getHandledAnnotations() {
-		return Collections.singleton(UnitSpriteSheet.class);
+		return Collections.singleton(StaticMapResources.class);
 	}
 
 	@Override
 	public void handle(VisitNode node, Annotation annotation, ErrorCollection errors) {
-		if (!test(imageAccessor.get((String) node.getObject()))) {
-			errors.add(node, annotation);
-		}
+		StaticMapProvider map = (StaticMapProvider) node.getObject();
+		testResource(node, errors, map.getStructuresImageResourceName());
+		testResource(node, errors, map.getTilesImageResourceName());
 	}
 
-	public static boolean test(BufferedImage image) {
-		return image == null || image.getWidth() % GameConstants.PIXEL_PER_UNIT == 0 && image.getHeight() % GameConstants.PIXEL_PER_UNIT == 0;
+	private void testResource(VisitNode node, ErrorCollection errors, String resourceName) {
+		if (imageAccessor.get(resourceName) == null) {
+			errors.add(node, new StaticMapResourceMissing(resourceName));
+		}
 	}
 }

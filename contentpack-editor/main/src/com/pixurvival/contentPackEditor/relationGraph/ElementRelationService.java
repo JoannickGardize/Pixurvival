@@ -38,6 +38,15 @@ public class ElementRelationService {
 		}
 	}
 
+	public void forEachResourceReferent(String referenced, Consumer<NamedIdentifiedElement> referentAction) {
+		for (RelationEntry entry : relations.values()) {
+			updatedRelations(entry);
+			if (entry.getResourceRelations().contains(referenced)) {
+				referentAction.accept(entry.getElement());
+			}
+		}
+	}
+
 	@EventListener
 	public void elementChanged(ElementChangedEvent event) {
 		RelationEntry entry = relations.get(event.getElement());
@@ -72,9 +81,9 @@ public class ElementRelationService {
 
 	private Set<NamedIdentifiedElement> updatedRelations(RelationEntry entry) {
 		if (!entry.isUpToDate()) {
-			explorer.update(entry.getElement(), entry.getRelations());
+			explorer.update(entry.getElement(), entry.getElementRelations(), entry.getResourceRelations());
 			entry.setUpToDate(true);
 		}
-		return entry.getRelations();
+		return entry.getElementRelations();
 	}
 }

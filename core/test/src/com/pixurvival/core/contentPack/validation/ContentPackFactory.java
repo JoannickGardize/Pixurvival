@@ -29,6 +29,16 @@ public class ContentPackFactory {
 
 	private int nextNameSalt = 0;
 
+	private byte[] emptyImage;
+
+	public ContentPackFactory() throws IOException {
+		BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream(1024)) {
+			ImageIO.write(image, "png", output);
+			emptyImage = output.toByteArray();
+		}
+	}
+
 	public ContentPack minimalContentPack() {
 		ContentPack contentPack = new ContentPack();
 		contentPack.initialize();
@@ -93,6 +103,8 @@ public class ContentPackFactory {
 		StaticMapProvider staticMapProvider = new StaticMapProvider();
 		staticMapProvider.setDefaultTile(addMinimalTile(contentPack));
 		addElement(contentPack, staticMapProvider);
+		contentPack.addResource(staticMapProvider.getStructuresImageResourceName(), emptyImage);
+		contentPack.addResource(staticMapProvider.getTilesImageResourceName(), emptyImage);
 		return staticMapProvider;
 	}
 

@@ -16,6 +16,7 @@ public class LoadGameException extends Exception {
 		NOT_PLAYABLE_IN_SOLO,
 		NOT_SAME_CONTENT_PACK,
 		CONTENT_PACK_FILE_NOT_FOUND,
+		CONTAINS_ERRORS,
 		OTHER
 	}
 

@@ -13,7 +13,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import com.pixurvival.contentPackEditor.event.EventManager;
-import com.pixurvival.contentPackEditor.event.ResourceListChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceAddedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceChangedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRemovedEvent;
+import com.pixurvival.contentPackEditor.event.ResourceRenamedEvent;
 import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.util.FileUtils;
@@ -86,7 +89,7 @@ public class ResourcesService {
 
 	public void addResource(String name, byte[] data) {
 		putResource(name, data);
-		EventManager.getInstance().fire(new ResourceListChangedEvent());
+		EventManager.getInstance().fire(new ResourceAddedEvent(name));
 
 	}
 
@@ -115,13 +118,18 @@ public class ResourcesService {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				boolean contains = containsResource(name);
 				putResource(name, data);
+				if (contains) {
+					EventManager.getInstance().fire(new ResourceChangedEvent(name));
+				} else {
+					EventManager.getInstance().fire(new ResourceAddedEvent(name));
+				}
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 			DialogUtils.showErrorDialog(e);
 		}
-		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}
 
 	public void loadContentPack(ContentPack contentPack) {
@@ -131,7 +139,6 @@ public class ResourcesService {
 			byte[] data = entry.getValue();
 			resources.put(name, new ResourceEntry(name, data));
 		}
-		EventManager.getInstance().fire(new ResourceListChangedEvent());
 	}
 
 	public void clear() {
@@ -157,7 +164,7 @@ public class ResourcesService {
 		ResourceEntry removed = null;
 		if (containsResource(name)) {
 			removed = removeResource(name);
-			EventManager.getInstance().fire(new ResourceListChangedEvent());
+			EventManager.getInstance().fire(new ResourceRemovedEvent(name));
 		}
 		return removed;
 	}
@@ -177,6 +184,6 @@ public class ResourcesService {
 		newName = newName.trim();
 		putResource(newName, getResource(name).getData());
 		removeResource(name);
-		EventManager.getInstance().fire(new ResourceListChangedEvent());
+		EventManager.getInstance().fire(new ResourceRenamedEvent(name, newName));
 	}
 }

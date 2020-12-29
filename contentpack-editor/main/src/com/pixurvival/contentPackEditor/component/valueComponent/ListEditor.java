@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.Component;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -14,8 +15,11 @@ import javax.swing.JPanel;
 import com.pixurvival.contentPackEditor.component.constraint.LengthConstraint;
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
+import com.pixurvival.core.contentPack.FloatHolder;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.validation.annotation.Ascending;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.handler.AscendingHandler;
 
 import lombok.Getter;
 
@@ -97,7 +101,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 				return false;
 			}
 		}
-		return true;
+		return super.isValueValid(value);
 	}
 
 	public void add(E value) {
@@ -136,10 +140,13 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		return elementEditor;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Annotation annotation) {
-		if (annotation.annotationType() == Length.class) {
+		if (annotation instanceof Length) {
 			lengthConstraint = LengthConstraint.fromAnnotation((Length) annotation);
+		} else if (annotation instanceof Ascending) {
+			setAdditionalConstraint(list -> AscendingHandler.test((Collection<FloatHolder>) list));
 		}
 	}
 }
