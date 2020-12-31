@@ -167,11 +167,19 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	public void moveTowardPrecisely(Positionnable target, float obstacleVisionDistance) {
-		moveIfNotNull(target, this.angleToward(target), obstacleVisionDistance);
+		moveTowardPrecisely(target, obstacleVisionDistance, 0);
+	}
+
+	public void moveTowardPrecisely(Positionnable target, float obstacleVisionDistance, float randomAngle) {
+		moveIfNotNull(target, randomizedTargetAngle(target, randomAngle), obstacleVisionDistance);
 	}
 
 	public void moveToward(Positionnable target, float randomAngle) {
-		moveIfNotNull(target, this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle)));
+		moveIfNotNull(target, randomizedTargetAngle(target, randomAngle));
+	}
+
+	private float randomizedTargetAngle(Positionnable target, float randomAngle) {
+		return this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle));
 	}
 
 	public void harvest(HarvestableMapStructure harvestableStructure) {

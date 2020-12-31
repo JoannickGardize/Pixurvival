@@ -43,6 +43,5 @@ public class SimplexNoise {
 		}
 
 		return MathUtils.clamp(0.5f + result / 2, 0, 0.99999f);
-
 	}
 }

@@ -36,7 +36,7 @@ public class MoveTowardBehavior extends Behavior {
 			float distanceSquared = creature.distanceSquared(target);
 			if (distanceSquared > minDistance * minDistance) {
 				float distance = (float) Math.sqrt(distanceSquared);
-				creature.moveTowardPrecisely(target, distance);
+				creature.moveTowardPrecisely(target, distance, randomAngle);
 				creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(distance - minDistance);
 				creature.getTargetPosition().set(target.getPosition());
 			} else {

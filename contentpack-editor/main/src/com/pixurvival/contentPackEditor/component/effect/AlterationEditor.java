@@ -68,8 +68,10 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// InstantDamageAlteration
 		entries.add(new ClassEntry(InstantDamageAlteration.class, () -> {
 			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
+			BooleanCheckBox applyToStructuresCheckBox = new BooleanCheckBox();
 			bind(damageAmountEditor, "amount", InstantDamageAlteration.class);
-			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amount", damageAmountEditor));
+			bind(applyToStructuresCheckBox, "applyToStructures", InstantDamageAlteration.class);
+			return LayoutUtils.single(LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox));
 		}));
 
 		// ContinuousDamageAlteration

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
@@ -297,7 +296,7 @@ public class TiledMap {
 		});
 	}
 
-	public boolean forEachChunk(Vector2 center, float halfSquareLength, Predicate<Chunk> action) {
+	public boolean forEachChunkBreak(Vector2 center, float halfSquareLength, Predicate<Chunk> action) {
 		return ChunkPosition.forEachChunkPosition(center, halfSquareLength, position -> {
 			Chunk chunk = chunks.get(position);
 			return chunk != null && action.test(chunk);
@@ -394,7 +393,7 @@ public class TiledMap {
 
 	public MapStructure findClosestStructure(Vector2 position, float searchRadius, IntPredicate groupFilter, Predicate<MapStructure> structureFilter) {
 		FindClosestStructureRun run = new FindClosestStructureRun();
-		forEachChunk(position, searchRadius, (Consumer<Chunk>) chunk -> chunk.getStructures().forEach(entry -> {
+		forEachChunk(position, searchRadius, chunk -> chunk.getStructures().forEach(entry -> {
 			if (groupFilter.test(entry.getKey())) {
 				for (MapStructure structure : entry.getValue()) {
 					if (structureFilter.test(structure)) {
@@ -432,7 +431,7 @@ public class TiledMap {
 
 	public Light getAnyCollidingLight(Vector2 position) {
 		tmpResult = null;
-		forEachChunk(position, getWorld().getContentPack().getMaxLightRadius(), chunk -> {
+		forEachChunkBreak(position, getWorld().getContentPack().getMaxLightRadius(), chunk -> {
 			for (Light light : chunk.getLights()) {
 				if (position.distanceSquared(light.getPosition()) <= light.getRadius() * light.getRadius()) {
 					tmpResult = light;
@@ -445,11 +444,9 @@ public class TiledMap {
 	}
 
 	public Collection<ServerChunkRepositoryEntry> saveAll() {
-		for (Entry<ChunkPosition, List<StructureUpdate>> updateEntry : waitingStructureUpdates.entrySet()) {
-			Chunk chunk = chunkAtWait(updateEntry.getKey());
-			updateEntry.getValue().forEach(update -> update.apply(chunk));
-		}
-		waitingStructureUpdates.clear();
+		// Load all chunks with waiting structure updates to apply them. New ArrayList
+		// to avoid ConcurrentModificationException
+		new ArrayList<>(waitingPositions.keySet()).forEach(this::chunkAtWait);
 		synchronized (repository) {
 			chunks.values().forEach(c -> repository.save(c));
 			return repository.getAll();

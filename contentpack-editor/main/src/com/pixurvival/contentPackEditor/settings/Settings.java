@@ -39,6 +39,8 @@ public class Settings {
 
 	private FontSize fontSize = FontSize.NORMAL;
 
+	private Skin skin = Skin.SYSTEM_DEFAULT;
+
 	public Settings() {
 		File file = new File(WorkingDirectory.get(), FILE_NAME);
 		if (file.exists()) {
@@ -75,10 +77,10 @@ public class Settings {
 	 *            the frame of the current swing application, if any.
 	 */
 	public void apply(JFrame appFrame) {
+		skin.getLookAndFeelApplier().run();
 		applyFontSize(fontSize.getMultiplier());
 		if (appFrame != null) {
 			SwingUtilities.updateComponentTreeUI(appFrame);
-
 		}
 	}
 

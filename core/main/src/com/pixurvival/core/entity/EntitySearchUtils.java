@@ -6,7 +6,6 @@ import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.contentPack.effect.TargetType;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.team.TeamMember;
 
 import lombok.experimental.UtilityClass;
@@ -17,13 +16,13 @@ public class EntitySearchUtils {
 	/**
 	 * @param group
 	 * @param maxSquareDistance
-	 *            The maximum distance between this entity and any point of
-	 *            checked chunks.
+	 *            The maximum distance between this entity and any point of checked
+	 *            chunks.
 	 * @param action
 	 */
 	public static void foreachEntities(Positionnable origin, EntityGroup group, float maxSquareDistance, Consumer<Entity> action) {
 		TiledMap map = origin.getWorld().getMap();
-		map.forEachChunk(origin.getPosition(), maxSquareDistance, (Consumer<Chunk>) c -> c.getEntities().get(group).forEach(action::accept));
+		map.forEachChunk(origin.getPosition(), maxSquareDistance, c -> c.getEntities().get(group).forEach(action::accept));
 	}
 
 	public static void forEach(TeamMember searcher, TargetType targetType, float maxSquareDistance, Consumer<LivingEntity> action) {

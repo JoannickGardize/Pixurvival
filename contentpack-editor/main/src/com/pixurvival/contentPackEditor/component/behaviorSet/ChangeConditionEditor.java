@@ -36,22 +36,22 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 
 	private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Behavior> nextBehaviorChooser;
-
 	public ChangeConditionEditor(Supplier<Collection<Behavior>> behaviorCollectionSupplier) {
 		super(ChangeCondition.class, "changeConditionType", null);
 		// Construction
 
-		nextBehaviorChooser = new ElementChooserButton<>(behaviorCollectionSupplier);
+		ElementChooserButton<Behavior> nextBehaviorChooser = new ElementChooserButton<>(behaviorCollectionSupplier);
+		FloatInput affectedNeighborsDistanceInput = new FloatInput();
 
 		// Binding
 		bind(nextBehaviorChooser, "nextBehavior");
+		bind(affectedNeighborsDistanceInput, "affectedNeighborsDistance");
 
 		// Layouting
 		Component typeChooserComp = LayoutUtils.labelled("generic.type", getTypeChooser());
 		Component nextBehaviorComp = LayoutUtils.labelled("changeConditionEditor.nextBehavior", nextBehaviorChooser);
 		Component topBox = LayoutUtils.createHorizontalBox(typeChooserComp, nextBehaviorComp);
-		LayoutUtils.addVertically(this, topBox, getSpecificPartPanel());
+		LayoutUtils.addVertically(this, topBox, LayoutUtils.labelled("changeConditionEditor.affectedNeighborsDistance", affectedNeighborsDistanceInput), getSpecificPartPanel());
 
 	}
 
@@ -110,6 +110,8 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 	@Override
 	protected void initialize(ChangeCondition oldInstance, ChangeCondition newInstance) {
 		newInstance.setNextBehavior(oldInstance.getNextBehavior());
+		newInstance.setId(oldInstance.getId());
+		newInstance.setAffectedNeighborsDistance(oldInstance.getAffectedNeighborsDistance());
 	}
 
 }

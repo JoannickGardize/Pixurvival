@@ -88,8 +88,11 @@ public class ResourcesService {
 	}
 
 	public void addResource(String name, byte[] data) {
-		putResource(name, data);
-		EventManager.getInstance().fire(new ResourceAddedEvent(name));
+		if (putResource(name, data)) {
+			EventManager.getInstance().fire(new ResourceChangedEvent(name));
+		} else {
+			EventManager.getInstance().fire(new ResourceAddedEvent(name));
+		}
 
 	}
 
@@ -145,9 +148,10 @@ public class ResourcesService {
 		resources.clear();
 	}
 
-	private void putResource(String name, byte[] data) {
-		resources.put(name, new ResourceEntry(name, data));
+	private boolean putResource(String name, byte[] data) {
+		ResourceEntry prevEntry = resources.put(name, new ResourceEntry(name, data));
 		FileService.getInstance().getCurrentContentPack().addResource(name, data);
+		return prevEntry != null;
 	}
 
 	private ResourceEntry removeResource(String name) {

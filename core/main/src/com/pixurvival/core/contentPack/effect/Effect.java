@@ -121,7 +121,7 @@ public class Effect extends NamedIdentifiedElement {
 		for (EffectTarget effectTarget : targets) {
 			if (effectTarget.getTargetType() == TargetType.ALL_ENEMIES) {
 				for (Alteration alteration : effectTarget.getAlterations()) {
-					if (alteration instanceof InstantDamageAlteration) {
+					if (alteration instanceof InstantDamageAlteration && ((InstantDamageAlteration) alteration).isApplyToStructures()) {
 						structureDamageAlteration = (InstantDamageAlteration) alteration;
 						return;
 					}

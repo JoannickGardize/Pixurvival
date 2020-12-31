@@ -6,6 +6,8 @@ import java.util.List;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntitySearchUtils;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 import lombok.Getter;
@@ -64,17 +66,30 @@ public abstract class Behavior extends NamedIdentifiedElement {
 	private void nextBehavior(CreatureEntity creature) {
 		for (ChangeCondition condition : changeConditions) {
 			if (condition.test(creature)) {
-				pass(creature, condition.getNextBehavior());
+				pass(creature, condition);
 				break;
 			}
 		}
 		creature.getBehaviorData().updateForNextChangeConditionCheck();
 	}
 
-	private void pass(CreatureEntity creature, Behavior nextBehavior) {
+	private void pass(CreatureEntity creature, ChangeCondition condition) {
 		end(creature);
-		creature.setCurrentBehavior(nextBehavior);
-		nextBehavior.begin(creature);
+		Behavior behavior = condition.getNextBehavior();
+		creature.setCurrentBehavior(behavior);
+		behavior.begin(creature);
+		affectNeighbors(condition, creature);
 	}
 
+	private void affectNeighbors(ChangeCondition condition, CreatureEntity creature) {
+		if (condition.getAffectedNeighborsDistance() > 0) {
+			float squaredDistance = condition.getAffectedNeighborsDistance() * condition.getAffectedNeighborsDistance();
+			EntitySearchUtils.foreachEntities(creature, EntityGroup.CREATURE, condition.getAffectedNeighborsDistance(), e -> {
+				CreatureEntity c = (CreatureEntity) e;
+				if (c.getDefinition() == creature.getDefinition() && c.getCurrentBehavior() == this && e.distanceSquared(creature) <= squaredDistance) {
+					pass(c, condition);
+				}
+			});
+		}
+	}
 }

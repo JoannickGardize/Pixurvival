@@ -137,7 +137,7 @@ public class ServerEngineThread extends EngineThread {
 				// session
 				prepareFullUpdate(session.getPlayerEntity());
 			}
-			/* int length = */session.sendUDP(tmpFullWorldUpdate);
+			/* int length = */ session.sendUDP(tmpFullWorldUpdate);
 			// Log.info("full update sent to " + session.getConnection() + " entity size : "
 			// + tmpFullWorldUpdate.getEntityUpdateByteBuffer().position() + ", size : " +
 			// length);

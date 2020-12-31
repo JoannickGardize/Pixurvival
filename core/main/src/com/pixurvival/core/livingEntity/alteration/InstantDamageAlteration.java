@@ -18,6 +18,8 @@ public class InstantDamageAlteration extends UniqueAlteration {
 	@Valid
 	private StatFormula amount = new StatFormula();
 
+	private boolean applyToStructures = true;
+
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember target) {
 		if (target instanceof Damageable) {

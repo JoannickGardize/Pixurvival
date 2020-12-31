@@ -10,8 +10,6 @@ import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import com.pixurvival.contentPackEditor.component.CPEMenuBar;
 import com.pixurvival.contentPackEditor.component.ElementTypePanelCard;
@@ -75,11 +73,6 @@ public class ContentPackEditor extends JFrame {
 	}
 
 	public static void run(MainArgs mainArgs) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
 		Settings.getInstance().apply(null);
 		ContentPackEditor editor = new ContentPackEditor();
 		instance = editor;

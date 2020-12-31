@@ -178,6 +178,7 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 	@Override
 	protected void initialize(Behavior oldInstance, Behavior newInstance) {
 		newInstance.setName(oldInstance.getName());
+		newInstance.setId(oldInstance.getId());
 		newInstance.setAbilityToUseId(oldInstance.getAbilityToUseId());
 		newInstance.setChangeConditions(oldInstance.getChangeConditions());
 	}

@@ -14,11 +14,14 @@ public class SettingsEditor extends ElementEditor<Settings> {
 	public SettingsEditor() {
 		super(Settings.class);
 		EnumChooser<FontSize> fontSizeChooser = new EnumChooser<>(FontSize.class);
+		EnumChooser<Skin> skinChooser = new EnumChooser<>(Skin.class);
 
 		bind(fontSizeChooser, "fontSize");
+		bind(skinChooser, "skin");
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		LayoutUtils.addHorizontalLabelledItem(this, "settings.fontSize", fontSizeChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(this, "settings.skin", skinChooser, gbc);
 	}
 }

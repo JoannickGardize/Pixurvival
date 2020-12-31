@@ -98,6 +98,8 @@ public class ResourcesDialog extends EditorDialog {
 			if (model.getElementAt(i).getName().equals(event.getResourceName())) {
 				model.set(i, ResourcesService.getInstance().getResource(event.getResourceName()));
 				resourceList.setSelectedIndex(i);
+				resourcePreview.setObject(resourceList.getSelectedValue().getPreview());
+				resourcePreview.repaint();
 			}
 		}
 	}
