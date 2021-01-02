@@ -3,10 +3,12 @@ package com.pixurvival.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.minlog.Log;
@@ -24,7 +26,9 @@ import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.livingEntity.ItemCraftDiscoveryListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
@@ -55,7 +59,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
-public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements CommandExecutor, WorldListener {
+public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements CommandExecutor, WorldListener, ItemCraftDiscoveryListener {
 
 	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2);
 	private NetworkMessageHandler clientListener;
@@ -249,6 +253,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		} catch (MapAnalyticsException e) {
 			throw new LoadGameException(Reason.OTHER, e.getMessage());
 		}
+		world.getMyPlayer().addItemCraftDiscoveryListener(this);
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
 		for (String command : gameBeginningCommands) {
@@ -265,6 +270,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			currentLocale = getLocaleFor(world.getContentPack());
 			world.initializeLoadedGame();
 			notify(ClientGameListener::initializeGame);
+			world.getMyPlayer().addItemCraftDiscoveryListener(this);
 			addPlugin(new WorldUpdater());
 			singlePlayerLobby = null;
 			notify(ClientGameListener::gameStarted);
@@ -378,6 +384,17 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			} else {
 				addPlugin(new WorldUpdater());
 			}
+		}
+	}
+
+	@Override
+	public void discovered(Collection<ItemCraft> itemCrafts) {
+		notify(l -> l.discovered(itemCrafts));
+	}
+
+	public void discovered(int[] itemCraftIds) {
+		if (world != null) {
+			discovered(Arrays.stream(itemCraftIds).mapToObj(world.getContentPack().getItemCrafts()::get).collect(Collectors.toList()));
 		}
 	}
 }

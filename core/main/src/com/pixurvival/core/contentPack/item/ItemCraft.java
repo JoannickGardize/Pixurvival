@@ -3,6 +3,7 @@ package com.pixurvival.core.contentPack.item;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -30,7 +31,19 @@ public class ItemCraft extends NamedIdentifiedElement implements Serializable {
 	@Valid
 	private List<ItemStack> recipes = new ArrayList<>();
 
+	@ElementReference
+	private List<Item> discoveryItems = new ArrayList<>();
+
 	@Nullable
 	@ElementReference
 	private Structure requiredStructure;
+
+	public boolean discover(Set<Item> discoveredItems) {
+		for (Item item : discoveryItems) {
+			if (!discoveredItems.contains(item)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

@@ -17,5 +17,5 @@ import com.pixurvival.core.contentPack.FloatHolder;
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface Ascending {
-
+	float lastValue() default Float.NEGATIVE_INFINITY;
 }

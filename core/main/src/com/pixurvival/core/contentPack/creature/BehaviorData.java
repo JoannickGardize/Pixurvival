@@ -110,7 +110,7 @@ public class BehaviorData {
 
 	private void internalSetNextUpdateDelayRelativeToSpeed(float targetDistance) {
 		float speed = creature.getSpeed();
-		setNextUpdateDelayMillis(speed > 0 ? Time.secToMillis(targetDistance / speed) : DEFAULT_STANDBY_DELAY);
+		setNextUpdateDelayMillis(Math.min(DEFAULT_STANDBY_DELAY, speed > 0 ? Time.secToMillis(targetDistance / speed) : DEFAULT_STANDBY_DELAY));
 
 	}
 

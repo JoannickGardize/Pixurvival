@@ -16,6 +16,7 @@ import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
+import com.pixurvival.core.message.ItemCraftAvailable;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerDead;
 import com.pixurvival.core.message.Spectate;
@@ -46,7 +47,9 @@ class NetworkMessageHandler extends Listener {
 			game.synchronizeTime(t);
 		});
 		putMessageAction(PlayerInventory.class, i -> {
-			game.getMyInventory().set(i);
+			if (game.getMyInventory() != null) {
+				game.getMyInventory().set(i);
+			}
 		});
 		putMessageAction(WorldUpdate.class, game::offer);
 		putMessageAction(StartGame.class, g -> {
@@ -55,6 +58,7 @@ class NetworkMessageHandler extends Listener {
 			game.getWorld().setSpawnCenter(g.getSpawnCenter());
 			game.getWorld().initializeMapLimits();
 			game.notify(ClientGameListener::gameStarted);
+			game.discovered(g.getDiscoveredItemCrafts());
 		});
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 		putMessageAction(Spectate.class, game::spectate);
@@ -69,6 +73,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(LobbyData.class, ll -> game.notify(l -> l.lobbyMessageReceived(ll)));
 		putMessageAction(LobbyServerMessage.class, lm -> game.notify(l -> l.lobbyMessageReceived(lm)));
 		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
+		putMessageAction(ItemCraftAvailable.class, i -> game.discovered(i.getItemCraftIds()));
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class TileHashmap implements Serializable {
 
 	@Valid
 	@Length(min = 1)
-	@Ascending
+	@Ascending(lastValue = 1)
 	private List<TileHashmapEntry> entries = new ArrayList<>();
 
 	public Tile get(int x, int y) {

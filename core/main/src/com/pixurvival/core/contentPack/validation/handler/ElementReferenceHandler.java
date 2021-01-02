@@ -78,17 +78,22 @@ public class ElementReferenceHandler implements AnnotationHandler {
 			}
 		}
 		if (node.getObject() instanceof Collection) {
-			for (VisitNode childNode : node.children()) {
-				validateElement(childNode, annotation, errors, elementList);
+			for (IdentifiedElement element : (Collection<IdentifiedElement>) node.getObject()) {
+				if (element == null) {
+					// TODO virtually add node
+					errors.add(node, annotation);
+				} else {
+					// TODO virtually add node
+					validateElement(node, element, annotation, errors, elementList);
+				}
 			}
 		} else {
-			validateElement(node, annotation, errors, elementList);
+			validateElement(node, (IdentifiedElement) node.getObject(), annotation, errors, elementList);
 		}
 	}
 
-	private void validateElement(VisitNode node, Annotation annotation, ErrorCollection errors, List<IdentifiedElement> elementList) {
-		IdentifiedElement element = (IdentifiedElement) node.getObject();
-		if ((elementList == null || elementList.size() <= element.getId() || elementList.get(element.getId()) != element)) {
+	private void validateElement(VisitNode node, IdentifiedElement element, Annotation annotation, ErrorCollection errors, List<IdentifiedElement> elementList) {
+		if (elementList == null || elementList.size() <= element.getId() || elementList.get(element.getId()) != element) {
 			errors.add(node, annotation);
 		}
 	}

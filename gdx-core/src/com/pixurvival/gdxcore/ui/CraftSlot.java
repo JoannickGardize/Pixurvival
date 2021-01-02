@@ -9,6 +9,7 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class CraftSlot extends Button {
 
@@ -16,13 +17,15 @@ public class CraftSlot extends Button {
 
 	private ItemStackDrawer itemStackDrawer;
 	private @Getter ItemCraft itemCraft;
+	private @Setter @Getter boolean newlyDiscovered = true;
 
-	public CraftSlot(ItemCraft itemCraft) {
+	public CraftSlot(ItemCraft itemCraft, boolean newlyDiscovered) {
 		super(PixurvivalGame.getSkin());
 		this.itemCraft = itemCraft;
+		this.newlyDiscovered = newlyDiscovered;
 		itemStackDrawer = new ItemStackDrawer(this, 2);
 		itemStackDrawer.setItemStack(new ItemStack(itemCraft.getResult().getItem()));
-		addListener(new CraftSlotInputListener(itemCraft));
+		addListener(new CraftSlotInputListener(this));
 	}
 
 	@Override
@@ -30,6 +33,9 @@ public class CraftSlot extends Button {
 		super.draw(batch, parentAlpha);
 		setColor(ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft) ? Color.WHITE : UNCRAFTABLE_COLOR);
 		itemStackDrawer.draw(batch);
+		if (newlyDiscovered) {
+			PixurvivalGame.getOverlayFont().draw(batch, "New!", getX() + 5, getY() + getHeight() - 5);
+		}
 	}
 
 }

@@ -50,7 +50,7 @@ public class StartingGamePhase implements LobbyPhase {
 				continue;
 			}
 			Team team = world.getTeamSet().createTeam(lobbyTeam.getName());
-			PlayerInformation[] playerInformations = buildTeamInformations(world, members, team);
+			PlayerInformation[] playerInformations = buildTeamPlayers(world, members, team);
 			teamCompositionList.add(new TeamComposition(team.getName(), playerInformations));
 		}
 		TeamComposition[] teamCompositions = teamCompositionList.toArray(new TeamComposition[teamCompositionList.size()]);
@@ -94,7 +94,7 @@ public class StartingGamePhase implements LobbyPhase {
 		}
 	}
 
-	private PlayerInformation[] buildTeamInformations(World world, List<PlayerLobbySession> members, Team team) {
+	private PlayerInformation[] buildTeamPlayers(World world, List<PlayerLobbySession> members, Team team) {
 		PlayerInformation[] playerInformations = new PlayerInformation[members.size()];
 		for (int j = 0; j < members.size(); j++) {
 			PlayerLobbySession p = members.get(j);
@@ -135,7 +135,8 @@ public class StartingGamePhase implements LobbyPhase {
 			if (readySessions.size() == session.getPlayerSessions().size()) {
 				session.terminate();
 
-				waitingGameSession.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0, waitingGameSession.getWorld().getSpawnCenter())));
+				waitingGameSession.foreachPlayers(
+						s -> s.getConnection().sendTCP(new StartGame(0, waitingGameSession.getWorld().getSpawnCenter(), s.getPlayerEntity().getItemCraftDiscovery().getDiscovereditemCraftIds())));
 				session.getServer().runGame(waitingGameSession);
 				session.getServer().addListener(waitingGameSession);
 			}

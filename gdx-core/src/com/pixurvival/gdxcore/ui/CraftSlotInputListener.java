@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.pixurvival.core.ActionPreconditions;
-import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
@@ -14,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CraftSlotInputListener extends InputListener {
 
-	private ItemCraft itemCraft;
+	private CraftSlot craftSlot;
 
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -24,8 +23,8 @@ public class CraftSlotInputListener extends InputListener {
 		} else if (button != Input.Buttons.LEFT) {
 			return false;
 		}
-		if (ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft)) {
-			PixurvivalGame.getClient().sendAction(new CraftItemRequest(itemCraft.getId(), quantity));
+		if (ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), craftSlot.getItemCraft())) {
+			PixurvivalGame.getClient().sendAction(new CraftItemRequest(craftSlot.getItemCraft().getId(), quantity));
 		}
 		return true;
 	}
@@ -33,7 +32,11 @@ public class CraftSlotInputListener extends InputListener {
 	@Override
 	public boolean mouseMoved(InputEvent event, float x, float y) {
 		ItemCraftTooltip.getInstance().setVisible(true);
-		ItemCraftTooltip.getInstance().setItemCraft(itemCraft);
+		ItemCraftTooltip.getInstance().setItemCraft(craftSlot.getItemCraft());
+		if (craftSlot.isNewlyDiscovered()) {
+			craftSlot.setNewlyDiscovered(false);
+			craftSlot.invalidate();
+		}
 		return true;
 	}
 }

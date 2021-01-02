@@ -16,7 +16,7 @@ public class CraftItemRequest implements IPlayerActionRequest {
 	private int craftId;
 
 	// TODO use quantity
-	private short quantity;
+	private int quantity;
 
 	@Override
 	public void apply(PlayerEntity player) {
@@ -33,13 +33,13 @@ public class CraftItemRequest implements IPlayerActionRequest {
 
 		@Override
 		public void write(Kryo kryo, Output output, CraftItemRequest object) {
-			output.writeInt(object.craftId);
-			output.writeShort(object.quantity);
+			output.writeVarInt(object.craftId, true);
+			output.writeVarInt(object.quantity, true);
 		}
 
 		@Override
 		public CraftItemRequest read(Kryo kryo, Input input, Class<CraftItemRequest> type) {
-			return new CraftItemRequest(input.readInt(), input.readShort());
+			return new CraftItemRequest(input.readVarInt(true), input.readVarInt(true));
 		}
 	}
 }

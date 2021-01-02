@@ -73,6 +73,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		getSessionsForPlayerEntity(playerEntity).add(playerSession);
 		// playerSession.setNetworkListener(networkReporter);
 		playerEntity.getInventory().addListener(playerSession);
+		playerEntity.addItemCraftDiscoveryListener(playerSession);
 		player.addPlayerConnectionMessageListeners(playerSession);
 		return playerSession;
 	}

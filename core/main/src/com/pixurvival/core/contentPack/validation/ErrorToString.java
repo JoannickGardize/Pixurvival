@@ -78,7 +78,8 @@ public class ErrorToString {
 		addToStringFunction(UnitSpriteSheet.class, p -> "the image must have a width and height divisible by " + GameConstants.PIXEL_PER_UNIT);
 		addToStringFunction(UnitSpriteFrame.class,
 				p -> "the frame does not correspond to a " + GameConstants.PIXEL_PER_UNIT + "x" + GameConstants.PIXEL_PER_UNIT + " sprite of the image (FYI top-left is 0; 0)");
-		addToStringFunction(Ascending.class, p -> "the values of the list must be in ascending order");
+		addToStringFunction(Ascending.class,
+				p -> "the values of the list must be in ascending order" + (p.lastValue() > Float.NEGATIVE_INFINITY ? " and the last value must be " + p.lastValue() : ""));
 		addToStringFunction(StaticMapResourceMissing.class, r -> "the image resource " + r.getResourceName() + " is missing");
 	}
 

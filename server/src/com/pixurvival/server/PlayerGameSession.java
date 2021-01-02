@@ -1,6 +1,7 @@
 package com.pixurvival.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.ItemCraftDiscoveryListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -18,6 +21,7 @@ import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.GameReady;
+import com.pixurvival.core.message.ItemCraftAvailable;
 import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
@@ -32,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public class PlayerGameSession implements InventoryListener, PlayerConnectionListener {
+public class PlayerGameSession implements InventoryListener, PlayerConnectionListener, ItemCraftDiscoveryListener {
 
 	private @NonNull @Getter @Setter PlayerConnection connection;
 	private @NonNull @Getter @Setter PlayerEntity playerEntity;
@@ -150,7 +154,8 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	public void handleGameReady(GameReady gameReady) {
 		setGameReady(true);
 		if (isReconnected()) {
-			getConnection().sendTCP(new StartGame(playerEntity.getWorld().getTime().getTimeMillis(), playerEntity.getWorld().getSpawnCenter()));
+			getConnection().sendTCP(
+					new StartGame(playerEntity.getWorld().getTime().getTimeMillis(), playerEntity.getWorld().getSpawnCenter(), playerEntity.getItemCraftDiscovery().getDiscovereditemCraftIds()));
 		}
 	}
 
@@ -179,5 +184,10 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 		if (Math.abs(smoothedTimeDiff) > 10) {
 			connection.sendUDP(new TimeSync(clientStream.getTime(), playerEntity.getWorld().getTime().getTimeMillis()));
 		}
+	}
+
+	@Override
+	public void discovered(Collection<ItemCraft> itemCrafts) {
+		connection.sendTCP(new ItemCraftAvailable(itemCrafts));
 	}
 }

@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore;
 
 import java.time.Instant;
+import java.util.Collection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.time.EternalDayCycleRun;
@@ -72,6 +74,7 @@ public class WorldScreen implements Screen {
 	private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
 	private DefaultSoundsPlayer defaultSoundsPlayer;
 	private @Getter ChatUI chatUI = new ChatUI();
+	private CraftUI craftUI = new CraftUI();
 
 	public void setWorld(World world) {
 		worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
@@ -96,7 +99,6 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(equipmentUI);
 		InventoryUI inventoryUI = new InventoryUI();
 		hudStage.addActor(inventoryUI);
-		CraftUI craftUI = new CraftUI();
 		hudStage.addActor(craftUI);
 		world.getChatManager().addListener(chatUI);
 		TimeUI timeUI = new TimeUI();
@@ -242,5 +244,9 @@ public class WorldScreen implements Screen {
 		pauseUI.setVisible(pausing);
 		blackPauseBackground.setVisible(pausing);
 		PixurvivalGame.getClient().requestPause(pausing);
+	}
+
+	public void addItemCrafts(Collection<ItemCraft> crafts) {
+		craftUI.addItemCrafts(crafts);
 	}
 }

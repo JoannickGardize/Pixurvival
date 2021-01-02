@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
+import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class BehaviorSet extends NamedIdentifiedElement implements Serializable 
 
 	@Valid
 	@ElementList(value = Behavior.class)
+	@Length(min = 1)
 	private List<Behavior> behaviors = new ArrayList<>();
 
 	@Override

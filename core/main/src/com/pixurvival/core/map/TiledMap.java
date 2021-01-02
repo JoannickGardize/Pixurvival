@@ -284,6 +284,7 @@ public class TiledMap {
 			}
 			flushChunks();
 		}
+		waitingPositions.remove(position);
 		return chunk;
 	}
 
@@ -446,7 +447,7 @@ public class TiledMap {
 	public Collection<ServerChunkRepositoryEntry> saveAll() {
 		// Load all chunks with waiting structure updates to apply them. New ArrayList
 		// to avoid ConcurrentModificationException
-		new ArrayList<>(waitingPositions.keySet()).forEach(this::chunkAtWait);
+		new ArrayList<>(waitingStructureUpdates.keySet()).forEach(this::chunkAtWait);
 		synchronized (repository) {
 			chunks.values().forEach(c -> repository.save(c));
 			return repository.getAll();

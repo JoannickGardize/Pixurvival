@@ -93,7 +93,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	private @Setter String name = "Unknown";
 
-	private PlayerInventory inventory;
+	private @Setter PlayerInventory inventory;
 
 	private Equipment equipment = new Equipment();
 
@@ -109,14 +109,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	private @Setter Role role;
 
-	public void setInventory(PlayerInventory inventory) {
-		this.inventory = inventory;
-	}
-
-	@Override
-	public void setId(long id) {
-		super.setId(id);
-	}
+	private @Getter ItemCraftDiscovery itemCraftDiscovery;
 
 	@Override
 	public void update() {
@@ -185,6 +178,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 					}
 				}
 			});
+			itemCraftDiscovery = new ItemCraftDiscovery(inventory, getWorld().getContentPack().getItemCrafts());
 		}
 	}
 
@@ -225,8 +219,10 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	}
 
 	public void craft(ItemCraft itemCraft) {
-		((CraftAbilityData) getAbilityData(CRAFT_ABILITY_ID)).setItemCraft(itemCraft);
-		startAbility(CRAFT_ABILITY_ID);
+		if (itemCraftDiscovery == null || itemCraftDiscovery.isDiscovered(itemCraft)) {
+			((CraftAbilityData) getAbilityData(CRAFT_ABILITY_ID)).setItemCraft(itemCraft);
+			startAbility(CRAFT_ABILITY_ID);
+		}
 	}
 
 	public void harvest(HarvestableMapStructure harvestableStructure) {
@@ -327,6 +323,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 			INVENTORY_KRYO.writeObject(output, inventory);
 			byteBuffer.position(output.position());
 		}
+		itemCraftDiscovery.write(byteBuffer);
 	}
 
 	@Override
@@ -338,7 +335,9 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 			inventory.set(INVENTORY_KRYO.readObject(input, PlayerInventory.class));
 			byteBuffer.position(input.position());
 		}
+		itemCraftDiscovery.apply(byteBuffer, getWorld().getContentPack().getItems());
 		getStats().get(StatType.MAX_HEALTH).addListeners(healthListeners);
+
 	}
 
 	@Override
@@ -352,5 +351,9 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		} else {
 			return role.getWinCondition();
 		}
+	}
+
+	public void addItemCraftDiscoveryListener(ItemCraftDiscoveryListener listener) {
+		itemCraftDiscovery.addListener(listener);
 	}
 }

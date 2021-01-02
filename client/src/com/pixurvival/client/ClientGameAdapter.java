@@ -1,7 +1,10 @@
 package com.pixurvival.client;
 
+import java.util.Collection;
+
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.lobby.LobbyMessage;
@@ -52,6 +55,10 @@ public class ClientGameAdapter implements ClientGameListener {
 
 	@Override
 	public void gameStarted() {
+	}
+
+	@Override
+	public void discovered(Collection<ItemCraft> itemCrafts) {
 	}
 
 }

@@ -35,7 +35,7 @@ public class ShortcutDrawer {
 		this.actor = actor;
 		this.position = position;
 		updateText();
-		instances.add(new WeakReference<ShortcutDrawer>(this));
+		instances.add(new WeakReference<>(this));
 	}
 
 	public static void updateTexts() {

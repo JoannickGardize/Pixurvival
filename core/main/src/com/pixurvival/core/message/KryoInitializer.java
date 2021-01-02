@@ -140,6 +140,8 @@ public class KryoInitializer {
 		register(kryo, GameModeSummary[].class);
 		register(kryo, ChooseRoleRequest.class);
 		register(kryo, LobbyServerMessage.class);
+		register(kryo, int[].class);
+		register(kryo, ItemCraftAvailable.class);
 	}
 
 	@SuppressWarnings("unchecked")

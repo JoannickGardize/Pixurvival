@@ -7,6 +7,7 @@ import com.pixurvival.core.item.Inventory;
 
 import lombok.Getter;
 
+// TODO abstraction of inventory for craft
 public class InventoryTable extends Table {
 
 	private @Getter int rowCount;
@@ -23,9 +24,7 @@ public class InventoryTable extends Table {
 		for (int i = 0; i < rowCount; i++) {
 			for (int j = 0; j < rowLength; j++) {
 				int index = i * rowLength + j;
-				if (index < size) {
-					add(newSlot(inventory, index));
-				}
+				add(newSlot(inventory, index));
 			}
 			row();
 		}

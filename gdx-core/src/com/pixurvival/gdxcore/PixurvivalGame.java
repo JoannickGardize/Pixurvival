@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +34,7 @@ import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.LoginResponse;
@@ -377,6 +379,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		if (server != null) {
 			server.stopServer();
 			server = null;
+		}
+	}
+
+	@Override
+	public void discovered(Collection<ItemCraft> itemCrafts) {
+		if (screen instanceof WorldScreen) {
+			((WorldScreen) screen).addItemCrafts(itemCrafts);
 		}
 	}
 }

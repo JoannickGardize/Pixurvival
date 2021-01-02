@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class StartGame {
 
-	public long worldTime = 0;
-	public Vector2 spawnCenter;
+	private long worldTime = 0;
+	private Vector2 spawnCenter;
+	private int[] discoveredItemCrafts;
 }

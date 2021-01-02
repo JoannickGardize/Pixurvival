@@ -146,7 +146,7 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 		if (annotation instanceof Length) {
 			lengthConstraint = LengthConstraint.fromAnnotation((Length) annotation);
 		} else if (annotation instanceof Ascending) {
-			setAdditionalConstraint(list -> AscendingHandler.test((Collection<FloatHolder>) list));
+			setAdditionalConstraint(list -> AscendingHandler.test((Collection<FloatHolder>) list, ((Ascending) annotation).lastValue()));
 		}
 	}
 }
