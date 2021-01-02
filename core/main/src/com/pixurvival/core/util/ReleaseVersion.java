@@ -14,7 +14,8 @@ public enum ReleaseVersion {
 	ALPHA_4B,
 	ALPHA_5,
 	ALPHA_5B,
-	ALPHA_6;
+	ALPHA_6,
+	ALPHA_6B;
 
 	public String displayName() {
 		if (name().indexOf('_') != -1) {

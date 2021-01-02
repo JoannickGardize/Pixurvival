@@ -3,7 +3,6 @@ package com.pixurvival.core.team;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.gameMode.event.EffectEventTeamMember;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.map.DamageableMapStructure;
@@ -16,7 +15,7 @@ public class TeamMemberSerialization {
 
 	private static final byte ENTITY_TYPE = 0;
 	private static final byte DAMAGEABLE_MAP_STRUCTURE_TYPE = 1;
-	private static final byte EFFECT_EVENT_TYPE = 2;
+	private static final byte FLAT_TYPE = 2;
 
 	public static void write(ByteBuffer buffer, TeamMember teamMember, boolean safeMode) {
 		if (teamMember instanceof Entity) {
@@ -31,9 +30,6 @@ public class TeamMemberSerialization {
 			buffer.put(DAMAGEABLE_MAP_STRUCTURE_TYPE);
 			// TODO structure as origin
 			throw new UnsupportedOperationException("DAMAGEABLE_MAP_STRUCTURE_TYPE");
-		} else if (teamMember instanceof EffectEventTeamMember) {
-			buffer.put(EFFECT_EVENT_TYPE);
-			writeFlatTeamMember(buffer, teamMember);
 		} else if (teamMember instanceof EntityNotFoundProxy) {
 			EntityNotFoundProxy proxy = (EntityNotFoundProxy) teamMember;
 			buffer.put(ENTITY_TYPE);
@@ -43,7 +39,8 @@ public class TeamMemberSerialization {
 				writeFlatTeamMember(buffer, teamMember);
 			}
 		} else {
-			throw new IllegalArgumentException("Team member of type " + teamMember.getClass().getSimpleName() + " is not supported");
+			buffer.put(FLAT_TYPE);
+			writeFlatTeamMember(buffer, teamMember);
 		}
 
 	}
@@ -67,7 +64,7 @@ public class TeamMemberSerialization {
 				}
 				return (TeamMember) e;
 			}
-		case EFFECT_EVENT_TYPE:
+		case FLAT_TYPE:
 			FlatTeamMember result = new FlatTeamMember(world);
 			applyFlatTeamMember(buffer, result);
 			return result;

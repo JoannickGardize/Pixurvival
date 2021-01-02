@@ -1,11 +1,11 @@
 package com.pixurvival.core;
 
-import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class WorldSerialization {
 			throw new UnsupportedOperationException("Only local games can be saved");
 		}
 		ByteBuffer buffer = ByteBuffer.allocate(WorldUpdate.BUFFER_SIZE * 2 + ByteBufferUtils.BUFFER_SIZE);
-		try (OutputStream output = new BufferedOutputStream(new FileOutputStream(getSaveFile(world.getSaveName()))); Output kryoOutput = new Output(output)) {
+		try (ByteArrayOutputStream output = new ByteArrayOutputStream(); Output kryoOutput = new Output(output)) {
 			// Global data
 			ByteBufferUtils.putString(buffer, ReleaseVersion.actual().toString());
 			ByteBufferUtils.putString(buffer, world.getContentPack().getIdentifier().fileName());
@@ -92,6 +92,7 @@ public class WorldSerialization {
 			kryo.writeObject(kryoOutput, world.getSpawnCenter());
 			kryo.writeObject(kryoOutput, world.getMyPlayer().getPosition());
 			kryoOutput.flush();
+			Files.write(getSaveFile(world.getSaveName()).toPath(), output.toByteArray());
 		}
 	}
 
