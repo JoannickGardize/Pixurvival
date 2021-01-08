@@ -27,6 +27,10 @@ public class ChunkPosition {
 		y = other.y;
 	}
 
+	public ChunkPosition add(int x, int y) {
+		return new ChunkPosition(this.x + x, this.y + y);
+	}
+
 	public static ChunkPosition fromWorldPosition(Vector2 position) {
 		return new ChunkPosition(MathUtils.floor(position.getX() / GameConstants.CHUNK_SIZE), MathUtils.floor(position.getY() / GameConstants.CHUNK_SIZE));
 	}

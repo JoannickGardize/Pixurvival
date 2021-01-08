@@ -27,11 +27,13 @@ public class ContentPackTextures {
 	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
 	private Map<Float, Texture> lightTextures;
-	private Texture[][] tileMapTextures;
+	private Texture[][] tileTextures;
 	private ItemTexture[] itemTextures;
 	private int[] tileAvgColors;
 	private @Getter float truePixelWidth;
 	private @Getter float largestLightRadius;
+
+	private SpriteSheetPixmap[] tilePixmaps;
 
 	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
 		truePixelWidth = 1.0f / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
@@ -46,9 +48,18 @@ public class ContentPackTextures {
 		return animationSet.get(spriteSheet);
 	}
 
+	@Deprecated
 	public Texture getTile(int id, long frame) {
-		Texture[] frames = tileMapTextures[id];
+		Texture[] frames = tileTextures[id];
 		return frames[(int) (frame % frames.length)];
+	}
+
+	public Texture[] getTileTextures(Tile tile) {
+		return tileTextures[tile.getId()];
+	}
+
+	public SpriteSheetPixmap getTilePixmap(Tile tile) {
+		return tilePixmaps[tile.getId()];
 	}
 
 	public int getTileColor(int id) {
@@ -74,6 +85,7 @@ public class ContentPackTextures {
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
 			animationSet.put(spriteSheet, set);
 		}
+		transform.dispose();
 	}
 
 	public Texture getShadow(int shadowWidth) {
@@ -102,6 +114,7 @@ public class ContentPackTextures {
 			}
 		}
 		texture = new Texture(pixmap);
+		pixmap.dispose();
 		textureShadows.put(shadowWidth, texture);
 		return texture;
 	}
@@ -110,7 +123,7 @@ public class ContentPackTextures {
 		animationSet.values().forEach(TextureAnimationSet::dispose);
 		textureShadows.values().forEach(Texture::dispose);
 		lightTextures.values().forEach(Texture::dispose);
-		for (Texture[] textures : tileMapTextures) {
+		for (Texture[] textures : tileTextures) {
 			for (Texture texture : textures) {
 				texture.dispose();
 			}
@@ -118,19 +131,28 @@ public class ContentPackTextures {
 		for (ItemTexture texture : itemTextures) {
 			texture.dispose();
 		}
+		if (tilePixmaps != null) {
+			for (Pixmap pixmap : tilePixmaps) {
+				if (!pixmap.isDisposed()) {
+					pixmap.dispose();
+				}
+			}
+			tilePixmaps = null;
+		}
 	}
 
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
 		List<Tile> tilesbyId = pack.getTiles();
-		tileMapTextures = new Texture[tilesbyId.size()][];
+		tileTextures = new Texture[tilesbyId.size()][];
+		tilePixmaps = new SpriteSheetPixmap[tilesbyId.size()];
 		tileAvgColors = new int[tilesbyId.size()];
-		Map<String, SpriteSheetPixmap> images = new HashMap<>();
+		Map<String, SpriteSheetPixmap> tilePixmapMap = new HashMap<>();
 		for (int i = 0; i < tilesbyId.size(); i++) {
 			Tile tile = tilesbyId.get(i);
-			SpriteSheetPixmap pixmap = images.get(tile.getImage());
+			SpriteSheetPixmap pixmap = tilePixmapMap.get(tile.getImage());
 			if (pixmap == null) {
 				pixmap = new SpriteSheetPixmap(pack.getResource(tile.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-				images.put(tile.getImage(), pixmap);
+				tilePixmapMap.put(tile.getImage(), pixmap);
 			}
 			List<Frame> frames = tile.getFrames();
 			Texture[] textures = new Texture[frames.size()];
@@ -138,7 +160,8 @@ public class ContentPackTextures {
 				Frame frame = frames.get(j);
 				textures[j] = AddPaddingUtil.apply(pixmap.getRegion(frame.getX(), frame.getY()));
 			}
-			tileMapTextures[i] = textures;
+			tileTextures[i] = textures;
+			tilePixmaps[i] = pixmap;
 			tileAvgColors[i] = getAverageColor(pixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
 		}
 	}
@@ -169,7 +192,9 @@ public class ContentPackTextures {
 			TextureSheet textureSheet = images.get(item.getImage());
 			if (textureSheet == null) {
 				SpriteSheetPixmap spriteSheetPixmap = new SpriteSheetPixmap(pack.getResource(item.getImage()), GameConstants.PIXEL_PER_UNIT, GameConstants.PIXEL_PER_UNIT);
-				textureSheet = new TextureSheet(spriteSheetPixmap, new PixelTextureBuilder(pixelWidth));
+				PixelTextureBuilder builder = new PixelTextureBuilder(pixelWidth);
+				textureSheet = new TextureSheet(spriteSheetPixmap, builder);
+				builder.dispose();
 				images.put(item.getImage(), textureSheet);
 			}
 			ItemTexture itemTexture = new ItemTexture();
@@ -207,6 +232,7 @@ public class ContentPackTextures {
 		}
 
 		Texture texture = new Texture(pixmap);
+		pixmap.dispose();
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		return texture;
 	}

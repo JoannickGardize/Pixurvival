@@ -48,7 +48,7 @@ public class Chunk {
 
 	private @Setter long updateTimestamp;
 
-	private @Setter long lastCheckTimestamp;
+	private long lastCheckTimestamp;
 
 	private @Setter boolean fileSync = false;
 

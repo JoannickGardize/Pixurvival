@@ -12,9 +12,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
@@ -30,6 +32,8 @@ import com.pixurvival.gdxcore.notificationpush.Notification;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
+import com.pixurvival.gdxcore.textures.ChunkTileTexturesManager;
+import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.EndGameUI;
@@ -46,9 +50,7 @@ import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 import com.pixurvival.gdxcore.util.FillActor;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class WorldScreen implements Screen {
 
 	public static final float CAMERA_BOUNDS = GameConstants.PLAYER_VIEW_DISTANCE - 5;
@@ -61,6 +63,7 @@ public class WorldScreen implements Screen {
 	// ExtendViewport(VIEWPORT_WORLD_WIDTH
 	// * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH,
 	// VIEWPORT_WORLD_WIDTH));
+	private @Getter ContentPackTextures contentPackTextures = new ContentPackTextures();
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private WorldKeyboardProcessor keyboardInputProcessor = new WorldKeyboardProcessor();
 	private CameraControlProcessor cameraControlProcessor;
@@ -76,12 +79,32 @@ public class WorldScreen implements Screen {
 	private @Getter ChatUI chatUI = new ChatUI();
 	private CraftUI craftUI = new CraftUI();
 
+	private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
+
 	public void setWorld(World world) {
+		if (this.world != null) {
+			throw new IllegalStateException("Cannot change world of the world screen");
+		}
+		contentPackTextures = new ContentPackTextures();
+		try {
+			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
+			// Gdx.graphics.getHeight());
+			// int pixelWidth = Math.round(screenWidth /
+			// (WorldScreen.VIEWPORT_WORLD_WIDTH *
+			// GameConstants.PIXEL_PER_UNIT));
+			// Seems better :
+			int pixelWidth = 3;
+			Log.info("Loading texture with pixel width : " + pixelWidth);
+			contentPackTextures.load(world.getContentPack(), pixelWidth);
+		} catch (ContentPackException e) {
+			Log.error("Error when loading contentPack.", e);
+		}
+		chunkTileTexturesManager = new ChunkTileTexturesManager();
 		worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
 		cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
 		this.world = world;
 		worldStage.clear();
-		worldStage.addActor(new MapActor(world.getMap()));
+		worldStage.addActor(new TilesActor(world.getMap()));
 		entitiesActor = new EntitiesActor();
 		worldStage.addActor(entitiesActor);
 		// worldStage.addActor(new MapAnalyticsDebugActor());
@@ -220,7 +243,6 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void hide() {
-		dispose();
 	}
 
 	@Override
@@ -228,8 +250,10 @@ public class WorldScreen implements Screen {
 		worldStage.dispose();
 		hudStage.dispose();
 		lightDrawer.dispose();
-		PixurvivalGame.getContentPackTextures().dispose();
+		contentPackTextures.dispose();
 		PixurvivalGame.getClient().getWorld().unload();
+		chunkTileTexturesManager.setRunning(false);
+		chunkTileTexturesManager.dispose();
 	}
 
 	private void updateMouseTarget() {

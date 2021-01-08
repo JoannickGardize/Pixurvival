@@ -108,6 +108,7 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	public void exitVision(PlayerEntity entity, ChunkPosition position) {
 	}
 
+	// TODO Thread this
 	private void addChunk(Chunk chunk) {
 		if (chunkTextures.containsKey(chunk.getPosition())) {
 			return;
@@ -121,10 +122,10 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 		Texture texture = new Texture(pixmap, true);
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		chunkTextures.put(chunk.getPosition(), texture);
+		pixmap.dispose();
 	}
 
 	@Override
 	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
 	}
-
 }

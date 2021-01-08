@@ -26,21 +26,20 @@ public class ColorTextures {
 			pixmap.drawPixel(0, 0, Color.rgba8888(c));
 			Texture texture = new Texture(pixmap);
 			texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			pixmap.dispose();
 			return texture;
 		});
 	}
 
 	public static Drawable getAsDrawable(Color color) {
-		return drawables.computeIfAbsent(color, c -> {
-			return new BaseDrawable() {
+		return drawables.computeIfAbsent(color, c -> new BaseDrawable() {
 
-				private Texture texture = get(c);
+			private Texture texture = get(c);
 
-				@Override
-				public void draw(Batch batch, float x, float y, float width, float height) {
-					batch.draw(texture, x, y, width, height);
-				}
-			};
+			@Override
+			public void draw(Batch batch, float x, float y, float width, float height) {
+				batch.draw(texture, x, y, width, height);
+			}
 		});
 	}
 }

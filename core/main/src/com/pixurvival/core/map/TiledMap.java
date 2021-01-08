@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
@@ -94,6 +95,10 @@ public class TiledMap {
 
 	public void addListener(TiledMapListener listener) {
 		listeners.add(listener);
+	}
+
+	public void removeListener(TiledMapListener listener) {
+		listeners.remove(listener);
 	}
 
 	public void addPlayerMapEventListener(PlayerMapEventListener listener) {
@@ -452,5 +457,9 @@ public class TiledMap {
 			chunks.values().forEach(c -> repository.save(c));
 			return repository.getAll();
 		}
+	}
+
+	public void forAllChunk(Consumer<Chunk> action) {
+		chunks.values().stream().filter(Objects::nonNull).forEach(action);
 	}
 }

@@ -235,8 +235,8 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
 		ReleaseVersion packVersion = ReleaseVersion.valueFor(localGamePack.getReleaseVersion());
-		if (ReleaseVersion.actual() != packVersion) {
-			throw new LoadGameException(Reason.WRONG_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.actual());
+		if (!ReleaseVersion.actual().isCompatibleWith(packVersion)) {
+			throw new LoadGameException(Reason.INCOMPATIBLE_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.actual());
 		}
 		if (!contentPackContext.getErrors(localGamePack).isEmpty()) {
 			throw new LoadGameException(Reason.CONTAINS_ERRORS);

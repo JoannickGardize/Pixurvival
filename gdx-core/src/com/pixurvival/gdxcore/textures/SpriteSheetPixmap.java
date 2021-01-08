@@ -33,21 +33,32 @@ public class SpriteSheetPixmap extends Pixmap {
 			return spriteHeight;
 		}
 
-		public void drawTo(Pixmap pixmap, int x, int y) {
+		public void drawAllTo(Pixmap pixmap, int x, int y) {
 			pixmap.drawPixmap(SpriteSheetPixmap.this, x, y, xIndex * spriteWidth, yIndex * spriteHeight, spriteWidth, spriteHeight);
+		}
+
+		public void drawTo(Pixmap pixmap, int x, int y, int width, int height) {
+			pixmap.drawPixmap(SpriteSheetPixmap.this, x, y, xIndex * spriteWidth + x, yIndex * spriteHeight + y, width, height);
+		}
+
+		public void drawPixelTo(Pixmap pixmap, int x, int y) {
+			pixmap.drawPixel(x, y, getPixel(x, y));
 		}
 	}
 
 	private int spriteWidth;
 	private int spriteHeight;
 
+	private SpriteSheetPixmap(int width, int height, int spriteWidth, int spriteHeight, Format format) {
+		super(width, height, format);
+		this.spriteWidth = spriteWidth;
+		this.spriteHeight = spriteHeight;
+	}
+
 	public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) throws ContentPackException {
 		super(data, 0, data.length);
 		this.spriteWidth = spriteWidth;
 		this.spriteHeight = spriteHeight;
-		if (getWidth() % spriteWidth != 0 || getHeight() % spriteHeight != 0) {
-			throw new ContentPackException("Illegal width/height for sprite sheet.");
-		}
 	}
 
 	public int getTileCountX() {
@@ -60,6 +71,10 @@ public class SpriteSheetPixmap extends Pixmap {
 
 	public Region getRegion(int xIndex, int yIndex) {
 		return new Region(xIndex, yIndex);
+	}
+
+	public static SpriteSheetPixmap singleSprite(int width, int height, Format format) {
+		return new SpriteSheetPixmap(width, height, width, height, format);
 	}
 
 }

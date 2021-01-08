@@ -32,7 +32,6 @@ import com.pixurvival.client.PixurvivalClient;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
@@ -45,6 +44,7 @@ import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
 import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
+import com.pixurvival.gdxcore.textures.ChunkTileTexturesManager;
 import com.pixurvival.gdxcore.textures.ContentPackTextures;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
 import com.pixurvival.server.PixurvivalServer;
@@ -54,6 +54,7 @@ import lombok.Getter;
 
 public class PixurvivalGame extends Game implements ClientGameListener {
 
+	private static final String POLISH_CHARS = "\u0104\u0106\u0118\u0141\u0143\u015A\u0179\u017B\u0105\u0107\u0119\u0142\u0144\u015B\u017A\u017C";
 	public static final String I18N_BUNDLE = "i18n/Bundle";
 	public static final String SKIN = "kenney-pixel/skin/skin.json";
 	public static final String DEFAULT_FONT = "default_font.ttf";
@@ -98,7 +99,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	public static ContentPackTextures getContentPackTextures() {
-		return instance.contentPackTextures;
+		return instance.worldScreen.getContentPackTextures();
+	}
+
+	public static ChunkTileTexturesManager getChunkTileTexturesManager() {
+		if (instance.worldScreen == null) {
+			return null;
+		}
+		return instance.worldScreen.getChunkTileTexturesManager();
 	}
 
 	public static World getWorld() {
@@ -114,7 +122,6 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private float frameDurationMillis = 1000f / 30;
 	private float frameCounter;
 	private float interpolationTime = 0;
-	private ContentPackTextures contentPackTextures;
 	private Skin skin;
 	private @Getter boolean zoomEnabled;
 	private Sound[] sounds;
@@ -122,6 +129,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private PixurvivalServer server;
 	private FileOutputStream errorOutput;
 	private boolean skipFrame = false;
+	private WorldScreen worldScreen;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
 		if (instance != null) {
@@ -185,12 +193,14 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		FreeTypeFontLoaderParameter defaultFontParams = new FreeTypeFontLoaderParameter();
 		defaultFontParams.fontFileName = "OpenSans-Bold.ttf";
 		defaultFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 25);
+		defaultFontParams.fontParameters.characters += POLISH_CHARS;
 
 		assetManager.load(DEFAULT_FONT, BitmapFont.class, defaultFontParams);
 
 		FreeTypeFontLoaderParameter defaultItalicFontParams = new FreeTypeFontLoaderParameter();
 		defaultItalicFontParams.fontFileName = "OpenSans-Italic.ttf";
 		defaultItalicFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 25);
+		defaultItalicFontParams.fontParameters.characters += POLISH_CHARS;
 		assetManager.load(DEFAULT_ITALIC_FONT, BitmapFont.class, defaultItalicFontParams);
 
 		FreeTypeFontLoaderParameter overlayFontParams = new FreeTypeFontLoaderParameter();
@@ -198,6 +208,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		overlayFontParams.fontParameters.size = (int) (Gdx.graphics.getDensity() * 20);
 		overlayFontParams.fontParameters.borderColor = Color.BLACK;
 		overlayFontParams.fontParameters.borderWidth = 1;
+		overlayFontParams.fontParameters.characters += POLISH_CHARS;
 		assetManager.load(OVERLAY_FONT, BitmapFont.class, overlayFontParams);
 	}
 
@@ -213,6 +224,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void render() {
+		ChunkTileTexturesManager chunkTileTexturesManager = PixurvivalGame.getChunkTileTexturesManager();
+		if (chunkTileTexturesManager != null) {
+			chunkTileTexturesManager.update(WorldScreen.getWorldStage());
+		}
 		if (skipFrame) {
 			skipFrame = false;
 			return;
@@ -245,6 +260,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 				return null;
 			}
 		});
+		if (worldScreen != null) {
+			worldScreen.dispose();
+			worldScreen = null;
+		}
 		setScreen(screen);
 		// TODO test if followign code is required
 		// if (screenClass != WorldScreen.class) {
@@ -278,21 +297,10 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 	@Override
 	public void initializeGame() {
-		WorldScreen worldScreen = new WorldScreen();
-		contentPackTextures = new ContentPackTextures();
-		try {
-			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
-			// Gdx.graphics.getHeight());
-			// int pixelWidth = Math.round(screenWidth /
-			// (WorldScreen.VIEWPORT_WORLD_WIDTH *
-			// GameConstants.PIXEL_PER_UNIT));
-			// Seems better :
-			int pixelWidth = 3;
-			Log.info("Loading texture with pixel width : " + pixelWidth);
-			contentPackTextures.load(client.getWorld().getContentPack(), pixelWidth);
-		} catch (ContentPackException e) {
-			Log.error("Error when loading contentPack.", e);
+		if (worldScreen != null) {
+			worldScreen.dispose();
 		}
+		worldScreen = new WorldScreen();
 		worldScreen.setWorld(client.getWorld());
 		setScreen(worldScreen);
 		if (client.getWorld().getType() == World.Type.CLIENT) {

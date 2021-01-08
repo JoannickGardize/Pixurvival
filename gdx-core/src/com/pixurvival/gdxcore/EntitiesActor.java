@@ -60,6 +60,7 @@ public class EntitiesActor extends Actor {
 	public void draw(Batch batch, float parentAlpha) {
 		objectsToDraw.clear();
 		ensureMyPlayerInScreen();
+		// TODO Change this 3 by a smart value
 		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> {
 			chunk.getEntities().foreach((group, map) -> {
 				ElementDrawer<Entity> drawer = (ElementDrawer<Entity>) drawers.get(group.getType());

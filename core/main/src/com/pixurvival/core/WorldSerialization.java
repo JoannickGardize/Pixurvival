@@ -100,8 +100,8 @@ public class WorldSerialization {
 	public static World load(String saveName, ContentPackContext contentPackSerialization) throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
 		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
-		if (ReleaseVersion.actual() != version) {
-			throw new LoadGameException(Reason.WRONG_GAME_VERSION, version, ReleaseVersion.actual());
+		if (!ReleaseVersion.actual().isCompatibleWith(version)) {
+			throw new LoadGameException(Reason.INCOMPATIBLE_VERSION, version, ReleaseVersion.actual());
 		}
 		ContentPackIdentifier identifier = new ContentPackIdentifier(ByteBufferUtils.getString(buffer));
 		ContentPack contentPack;

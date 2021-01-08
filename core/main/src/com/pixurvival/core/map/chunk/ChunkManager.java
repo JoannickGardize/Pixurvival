@@ -13,9 +13,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Manage chunk generating and unloading of multiples {@link TiledMap}s. It run
- * in a separated thread, to prevent FPS drop of the main game thread. Unload
- * chunks that are too far for a fixed amount of time, they are compressed.
+ * Manage chunk loading and unloading of multiples {@link TiledMap}s. It run in
+ * a separated thread, to prevent FPS drop of the main game thread. It unload
+ * chunks that are too far for a fixed amount of time, they are compressed and
+ * kept in memory.
  * 
  * @author SharkHendrix
  *
@@ -45,11 +46,11 @@ public class ChunkManager extends EngineThread {
 		}
 	}
 
-	private static @Getter ChunkManager instance = new ChunkManager();
+	private static final @Getter ChunkManager instance = new ChunkManager();
 
 	private final Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
 	private final List<ChunkPosition> tmpPositions = new ArrayList<>();
-	private final List<ChunkRepositoryEntry> tmpChunks = new ArrayList<>();
+	private final List<ChunkRepositoryEntry> tmpRepositoryEntries = new ArrayList<>();
 
 	private ChunkManager() {
 		super("Chunk Manager");
@@ -86,7 +87,7 @@ public class ChunkManager extends EngineThread {
 				tmpPositions.addAll(entry.requestedPositions);
 				entry.requestedPositions.clear();
 			}
-			tmpChunks.clear();
+			tmpRepositoryEntries.clear();
 			tmpPositions.forEach(p -> {
 				ChunkRepositoryEntry chunkEntry = entry.map.getRepository().load(p);
 				if (chunkEntry == null && entry.map.getWorld().isServer()) {
@@ -95,12 +96,12 @@ public class ChunkManager extends EngineThread {
 					chunkEntry = new ChunkRepositoryEntry(chunk);
 				}
 				if (chunkEntry != null) {
-					tmpChunks.add(chunkEntry);
+					tmpRepositoryEntries.add(chunkEntry);
 				}
 			});
 
 			synchronized (entry.map) {
-				tmpChunks.forEach(c -> {
+				tmpRepositoryEntries.forEach(c -> {
 					entry.map.addChunk(c);
 					entry.map.notifyChunkAvailable(c.getChunk().getPosition());
 				});
@@ -114,6 +115,7 @@ public class ChunkManager extends EngineThread {
 		}
 		tiledMaps.values().forEach(entry -> {
 			int unloadTry = Math.max(5, (int) (entry.map.chunkCount() * UNLOAD_CHECK_RATE));
+
 			synchronized (entry.map) {
 				for (int i = 0; i < unloadTry; i++) {
 					entry.nextCheckPosition();
@@ -125,5 +127,4 @@ public class ChunkManager extends EngineThread {
 			}
 		});
 	}
-
 }

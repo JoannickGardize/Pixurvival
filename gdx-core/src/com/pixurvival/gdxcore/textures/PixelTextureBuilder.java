@@ -1,5 +1,7 @@
 package com.pixurvival.gdxcore.textures;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.Pixmap;
@@ -14,6 +16,7 @@ public class PixelTextureBuilder implements Function<Region, Pixmap> {
 
 	private int pixelWidth;
 	private int borderColor = 0x000000ff;
+	private List<Pixmap> pixmaps = new ArrayList<>();
 
 	public PixelTextureBuilder(int pixelWidth) {
 		super();
@@ -23,6 +26,7 @@ public class PixelTextureBuilder implements Function<Region, Pixmap> {
 	@Override
 	public Pixmap apply(Region region) {
 		Pixmap result = new Pixmap(region.getWidth() * pixelWidth + 2, region.getHeight() * pixelWidth + 2, region.getFormat());
+		pixmaps.add(result);
 		for (int px = 0; px < region.getWidth(); px++) {
 			for (int py = 0; py < region.getHeight(); py++) {
 				result.setColor(region.getPixel(px, py));
@@ -61,6 +65,11 @@ public class PixelTextureBuilder implements Function<Region, Pixmap> {
 			}
 		}
 		return result;
+	}
+
+	public void dispose() {
+		pixmaps.forEach(Pixmap::dispose);
+		pixmaps.clear();
 	}
 
 	private boolean isTransparent(int rgba) {

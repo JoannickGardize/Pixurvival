@@ -20,15 +20,15 @@ public class LoadGameUtils {
 		case PARSE_EXCEPTION:
 			message = PixurvivalGame.getString("loadGameError.parseException", e.getArgs());
 			break;
-		case WRONG_CONTENT_PACK_VERSION:
-			message = PixurvivalGame.getString("loadGameError.wrongVersion", ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[0]),
+		case INCOMPATIBLE_CONTENT_PACK_VERSION:
+			message = PixurvivalGame.getString("loadGameError.incompatibleContentPackVersion", ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[0]),
 					ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[1]));
 			break;
 		case NOT_SAME_CONTENT_PACK:
 			message = PixurvivalGame.getString("loadGameError.notSameContentPack", ((ContentPackIdentifier) e.getArgs()[0]).fileName());
 			break;
-		case WRONG_GAME_VERSION:
-			message = PixurvivalGame.getString("loadGameError.wrongGameVersion", ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[0]),
+		case INCOMPATIBLE_VERSION:
+			message = PixurvivalGame.getString("loadGameError.incompatibleVersion", ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[0]),
 					ReleaseVersion.displayNameOf((ReleaseVersion) e.getArgs()[1]));
 			break;
 		case CONTAINS_ERRORS:
