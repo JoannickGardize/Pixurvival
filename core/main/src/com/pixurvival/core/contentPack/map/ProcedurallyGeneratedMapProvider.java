@@ -45,7 +45,7 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
 
 	@Override
 	public void beginChunk(long seed, ChunkPosition chunkPosition) {
-		chunkRandom = new Random(seed << 32 ^ chunkPosition.getX() << 16 ^ chunkPosition.getY());
+		chunkRandom = new Random(seed << 32 ^ (long) chunkPosition.getX() << 16 ^ chunkPosition.getY());
 
 	}
 

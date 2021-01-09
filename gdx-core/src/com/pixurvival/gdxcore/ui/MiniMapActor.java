@@ -128,4 +128,9 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	@Override
 	public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
 	}
+
+	public void dispose() {
+		mapElement.dispose();
+		chunkTextures.values().forEach(Texture::dispose);
+	}
 }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -222,6 +223,10 @@ public class Chunk {
 
 	public void setCompressed(CompressedChunk compressed) {
 		compressedChunkRef = new SoftReference<>(compressed);
+	}
+
+	public Random createFixedRandom() {
+		return new Random((long) position.getX() << 32L ^ position.getY());
 	}
 
 	@Override

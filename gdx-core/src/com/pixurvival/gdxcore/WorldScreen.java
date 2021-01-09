@@ -78,6 +78,7 @@ public class WorldScreen implements Screen {
 	private DefaultSoundsPlayer defaultSoundsPlayer;
 	private @Getter ChatUI chatUI = new ChatUI();
 	private CraftUI craftUI = new CraftUI();
+	private MiniMapUI miniMapUI = new MiniMapUI();
 
 	private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
 
@@ -112,7 +113,6 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(pauseUI);
 		hudStage.addActor(pauseUI.getControlsPanel().getPopupWindow());
 		HeldItemStackActor heldItemStackActor = new HeldItemStackActor();
-		MiniMapUI miniMapUI = new MiniMapUI();
 		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
 		hudStage.addListener(overlayActor);
 		hudStage.addActor(overlayActor);
@@ -254,6 +254,7 @@ public class WorldScreen implements Screen {
 		PixurvivalGame.getClient().getWorld().unload();
 		chunkTileTexturesManager.setRunning(false);
 		chunkTileTexturesManager.dispose();
+		miniMapUI.dispose();
 	}
 
 	private void updateMouseTarget() {

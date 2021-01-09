@@ -1,5 +1,6 @@
 package com.pixurvival.gdxcore.textures;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,11 +124,7 @@ public class ContentPackTextures {
 		animationSet.values().forEach(TextureAnimationSet::dispose);
 		textureShadows.values().forEach(Texture::dispose);
 		lightTextures.values().forEach(Texture::dispose);
-		for (Texture[] textures : tileTextures) {
-			for (Texture texture : textures) {
-				texture.dispose();
-			}
-		}
+		Arrays.stream(tileTextures).flatMap(Arrays::stream).forEach(Texture::dispose);
 		for (ItemTexture texture : itemTextures) {
 			texture.dispose();
 		}

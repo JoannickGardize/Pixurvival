@@ -34,6 +34,8 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.DEFAULT)
 	private SpriteSheet spriteSheet;
 
+	private boolean randomHorizontalFlip = false;
+
 	@Valid
 	private Dimensions dimensions = new Dimensions(1, 1);
 

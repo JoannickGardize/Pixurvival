@@ -13,6 +13,7 @@ public class DrawData {
 	private boolean firstLoop = true;
 	private float angle;
 	private TextureAnimation previousAnimation;
+	private boolean flip;
 
 	public float getAngleOrReset(TextureAnimation animation) {
 		if (animation == previousAnimation) {

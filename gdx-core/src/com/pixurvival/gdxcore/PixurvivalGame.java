@@ -39,6 +39,7 @@ import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.drawer.MapStructureFliper;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
 import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
@@ -132,6 +133,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private WorldScreen worldScreen;
 
 	public PixurvivalGame(ClientMainArgs clientArgs) {
+		ChunkManager.getInstance().addPlugin(new MapStructureFliper());
 		if (instance != null) {
 			throw new IllegalStateException("Cannot instantiate multiple instances of the game !");
 		}

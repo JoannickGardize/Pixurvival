@@ -32,6 +32,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 
 		// Contruction
 		BooleanCheckBox solidCheckBox = new BooleanCheckBox();
+		BooleanCheckBox randomHorizontalFlipCheckBox = new BooleanCheckBox();
 		DimensionsEditor dimensionsEditor = new DimensionsEditor();
 		FloatInput lightEmissionRadiusInput = new FloatInput();
 		TimeInput durationInput = new TimeInput();
@@ -43,7 +44,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		}, () -> null);
 
 		// Binding
-
+		bind(randomHorizontalFlipCheckBox, "randomHorizontalFlip");
 		bind(solidCheckBox, "solid");
 		bind(spriteSheetChooser, "spriteSheet");
 		bind(dimensionsEditor, "dimensions");
@@ -73,6 +74,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.randomHorizontalFlip", randomHorizontalFlipCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.duration", "structureEditor.duration.tooltip", durationInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.lightEmissionRadius", "structureEditor.lightEmissionRadius.tooltip", lightEmissionRadiusInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.type", getTypeChooser(), gbc);

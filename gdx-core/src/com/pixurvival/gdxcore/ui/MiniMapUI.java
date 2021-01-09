@@ -18,4 +18,8 @@ public class MiniMapUI extends UIWindow {
 		mapActor.setSize(getWidth(), getHeight());
 		super.draw(batch, parentAlpha);
 	}
+
+	public void dispose() {
+		mapActor.dispose();
+	}
 }

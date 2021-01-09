@@ -35,6 +35,7 @@ public class StructureGenerator implements Serializable {
 
 	public boolean test(int x, int y) {
 		for (HeightmapCondition h : heightmapConditions) {
+			// TODO keep computed values
 			if (!h.test(x, y)) {
 				return false;
 			}

@@ -1,6 +1,7 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -40,7 +41,9 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 		float y = e.getPosition().getY();
 		TextureAnimation animation = getTextureAnimation(e, animationSet);
 		int index = DrawUtils.getIndexAndUpdateTimer(e, animation);
-		batch.draw(animation.getTexture(index), x, y + animationSet.getYOffset(), animationSet.getWidth(), animationSet.getHeight());
+		Texture texture = animation.getTexture(index);
+		batch.draw(texture, x, y + animationSet.getYOffset(), animationSet.getWidth(), animationSet.getHeight(), 0, 0, texture.getWidth(), texture.getHeight(), ((DrawData) e.getCustomData()).isFlip(),
+				false);
 	}
 
 	private TextureAnimation getTextureAnimation(MapStructure e, TextureAnimationSet animationSet) {

@@ -2,12 +2,10 @@ package com.pixurvival.gdxcore.textures;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -24,14 +22,15 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
+import lombok.Getter;
 import lombok.Setter;
 
 public class ChunkTileTexturesManager {
 
 	private TileTextureKey tileTextureKey = new TileTextureKey();
 	private Map<TileTextureKey, Texture[]> tileTextures = new HashMap<>();
-	private List<ChunkTileTextures> newChunkTileTextures = Collections.synchronizedList(new ArrayList<>());
-	private Map<ChunkPosition, ChunkTileTextures> chunkTileTextureMap = new ConcurrentHashMap<>();
+
+	private final @Getter Map<ChunkPosition, ChunkTileTextures> chunkTileTextureMap = new HashMap<>();
 	private List<Supplier<Texture>> waitingTextures = new ArrayList<>();
 	private List<Texture> producedTextures = new ArrayList<>();
 	private @Setter boolean running = true;
@@ -54,10 +53,6 @@ public class ChunkTileTexturesManager {
 				Thread.currentThread().interrupt();
 			}
 		});
-		synchronized (newChunkTileTextures) {
-			newChunkTileTextures.forEach(ct -> chunkTileTextureMap.put(ct.getChunk().getPosition(), ct));
-			newChunkTileTextures.clear();
-		}
 		synchronized (waitingTextures) {
 			if (!waitingTextures.isEmpty()) {
 				waitingTextures.forEach(s -> producedTextures.add(s.get()));
@@ -65,10 +60,6 @@ public class ChunkTileTexturesManager {
 				waitingTextures.notifyAll();
 			}
 		}
-	}
-
-	public ChunkTileTextures get(ChunkPosition position) {
-		return chunkTileTextureMap.get(position);
 	}
 
 	public void dispose() {
@@ -80,15 +71,13 @@ public class ChunkTileTexturesManager {
 			while (running) {
 				Chunk c = chunkQueue.poll(1, TimeUnit.SECONDS);
 				if (c != null) {
-					ChunkTileTextures chunkTileTextures = chunkTileTextureMap.get(c.getPosition());
-					if (chunkTileTextures == null) {
-						chunkTileTextures = loadChunkTileTextures(c);
+					ChunkTileTextures chunkTileTextures;
+					synchronized (chunkTileTextureMap) {
+						chunkTileTextures = chunkTileTextureMap.get(c.getPosition());
 					}
-					chunkTileTextures.setCheckTimeStamp(System.currentTimeMillis());
-				}
-				if (chunkQueue.isEmpty()) {
-					long time = System.currentTimeMillis();
-					chunkTileTextureMap.values().removeIf(ct -> time - ct.getCheckTimeStamp() > 10_000);
+					if (chunkTileTextures == null) {
+						loadChunkTileTextures(c);
+					}
 				}
 			}
 		} catch (InterruptedException e) {
@@ -97,7 +86,7 @@ public class ChunkTileTexturesManager {
 		}
 	}
 
-	private ChunkTileTextures loadChunkTileTextures(Chunk chunk) {
+	private void loadChunkTileTextures(Chunk chunk) {
 		TiledMap map = chunk.getMap();
 		Chunk topChunk;
 		Chunk rightChunk;
@@ -108,6 +97,10 @@ public class ChunkTileTexturesManager {
 		Chunk bottomRightChunk;
 		Chunk bottomLeftChunk;
 		ChunkPosition chunkPosition = chunk.getPosition();
+		ChunkTileTextures topTextures = null;
+		ChunkTileTextures rightTextures = null;
+		ChunkTileTextures bottomTextures = null;
+		ChunkTileTextures leftTextures = null;
 		synchronized (map) {
 			topChunk = map.chunkAt(chunkPosition.add(0, 1));
 			rightChunk = map.chunkAt(chunkPosition.add(1, 0));
@@ -118,6 +111,21 @@ public class ChunkTileTexturesManager {
 			bottomRightChunk = map.chunkAt(chunkPosition.add(1, -1));
 			bottomLeftChunk = map.chunkAt(chunkPosition.add(-1, -1));
 		}
+		synchronized (chunkTileTextureMap) {
+			if (topChunk != null) {
+				topTextures = chunkTileTextureMap.get(topChunk.getPosition());
+			}
+			if (rightChunk != null) {
+				rightTextures = chunkTileTextureMap.get(rightChunk.getPosition());
+			}
+			if (bottomChunk != null) {
+				bottomTextures = chunkTileTextureMap.get(bottomChunk.getPosition());
+			}
+			if (leftChunk != null) {
+				leftTextures = chunkTileTextureMap.get(leftChunk.getPosition());
+			}
+		}
+
 		ChunkTileTextures chunkTileTextures = new ChunkTileTextures(chunk);
 
 		setTopLine(chunk, topChunk, chunkTileTextures);
@@ -138,68 +146,61 @@ public class ChunkTileTexturesManager {
 				chunkTileTextures.setTexturesAtLocal(x, y, getOrCreateTextures(middle, top, right, bottom, left));
 			}
 		}
-		newChunkTileTextures.add(chunkTileTextures);
+		put(chunkTileTextures);
 
-		if (topChunk != null) {
-			ChunkTileTextures textures = chunkTileTextureMap.get(topChunk.getPosition());
-			if (textures != null) {
-				ChunkTileTextures updatedTileTextures = new ChunkTileTextures(textures);
-				setBottomLine(topChunk, chunk, updatedTileTextures);
-				if (topLeftChunk != null) {
-					setBottomLeftTile(topChunk, chunk, topLeftChunk, updatedTileTextures);
-				}
-				if (topRightChunk != null) {
-					setBottomRightTile(topChunk, chunk, topRightChunk, updatedTileTextures);
-				}
-				newChunkTileTextures.add(updatedTileTextures);
+		if (topTextures != null) {
+			ChunkTileTextures updatedTileTextures = new ChunkTileTextures(topTextures);
+			setBottomLine(topChunk, chunk, updatedTileTextures);
+			if (topLeftChunk != null) {
+				setBottomLeftTile(topChunk, chunk, topLeftChunk, updatedTileTextures);
 			}
+			if (topRightChunk != null) {
+				setBottomRightTile(topChunk, chunk, topRightChunk, updatedTileTextures);
+			}
+			put(updatedTileTextures);
 		}
 
-		if (rightChunk != null) {
-			ChunkTileTextures textures = chunkTileTextureMap.get(rightChunk.getPosition());
-			if (textures != null) {
-				ChunkTileTextures updatedTileTextures = new ChunkTileTextures(textures);
-				setLeftLine(rightChunk, chunk, updatedTileTextures);
-				if (topRightChunk != null) {
-					setTopLeftTile(rightChunk, topRightChunk, chunk, updatedTileTextures);
-				}
-				if (bottomRightChunk != null) {
-					setBottomLeftTile(rightChunk, bottomRightChunk, chunk, updatedTileTextures);
-				}
-				newChunkTileTextures.add(updatedTileTextures);
+		if (rightTextures != null) {
+			ChunkTileTextures updatedTileTextures = new ChunkTileTextures(rightTextures);
+			setLeftLine(rightChunk, chunk, updatedTileTextures);
+			if (topRightChunk != null) {
+				setTopLeftTile(rightChunk, topRightChunk, chunk, updatedTileTextures);
 			}
+			if (bottomRightChunk != null) {
+				setBottomLeftTile(rightChunk, bottomRightChunk, chunk, updatedTileTextures);
+			}
+			put(updatedTileTextures);
 		}
 
-		if (bottomChunk != null) {
-			ChunkTileTextures textures = chunkTileTextureMap.get(bottomChunk.getPosition());
-			if (textures != null) {
-				ChunkTileTextures updatedTileTextures = new ChunkTileTextures(textures);
-				setTopLine(bottomChunk, chunk, updatedTileTextures);
-				if (bottomRightChunk != null) {
-					setTopRightTile(bottomChunk, chunk, bottomRightChunk, updatedTileTextures);
-				}
-				if (bottomLeftChunk != null) {
-					setTopLeftTile(bottomChunk, chunk, bottomLeftChunk, updatedTileTextures);
-				}
-				newChunkTileTextures.add(updatedTileTextures);
+		if (bottomTextures != null) {
+			ChunkTileTextures updatedTileTextures = new ChunkTileTextures(bottomTextures);
+			setTopLine(bottomChunk, chunk, updatedTileTextures);
+			if (bottomRightChunk != null) {
+				setTopRightTile(bottomChunk, chunk, bottomRightChunk, updatedTileTextures);
 			}
+			if (bottomLeftChunk != null) {
+				setTopLeftTile(bottomChunk, chunk, bottomLeftChunk, updatedTileTextures);
+			}
+			put(updatedTileTextures);
 		}
 
-		if (leftChunk != null) {
-			ChunkTileTextures textures = chunkTileTextureMap.get(leftChunk.getPosition());
-			if (textures != null) {
-				ChunkTileTextures updatedTileTextures = new ChunkTileTextures(textures);
-				setRightLine(leftChunk, chunk, updatedTileTextures);
-				if (bottomLeftChunk != null) {
-					setBottomRightTile(leftChunk, bottomLeftChunk, chunk, updatedTileTextures);
-				}
-				if (topLeftChunk != null) {
-					setTopRightTile(leftChunk, topLeftChunk, chunk, updatedTileTextures);
-				}
-				newChunkTileTextures.add(updatedTileTextures);
+		if (leftTextures != null) {
+			ChunkTileTextures updatedTileTextures = new ChunkTileTextures(leftTextures);
+			setRightLine(leftChunk, chunk, updatedTileTextures);
+			if (bottomLeftChunk != null) {
+				setBottomRightTile(leftChunk, bottomLeftChunk, chunk, updatedTileTextures);
 			}
+			if (topLeftChunk != null) {
+				setTopRightTile(leftChunk, topLeftChunk, chunk, updatedTileTextures);
+			}
+			put(updatedTileTextures);
 		}
-		return chunkTileTextures;
+	}
+
+	private void put(ChunkTileTextures chunkTileTextures) {
+		synchronized (chunkTileTextureMap) {
+			chunkTileTextureMap.put(chunkTileTextures.getChunk().getPosition(), chunkTileTextures);
+		}
 	}
 
 	private void setBottomLeftTile(Chunk chunk, Chunk bottomChunk, Chunk leftChunk, ChunkTileTextures chunkTileTextures) {

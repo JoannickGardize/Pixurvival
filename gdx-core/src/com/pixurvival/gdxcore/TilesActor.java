@@ -48,27 +48,33 @@ public class TilesActor extends Actor {
 		ChunkTileTexturesManager chunkTileTexturesManager = PixurvivalGame.getChunkTileTexturesManager();
 		int actualEndX;
 		int actualEndY = startY;
-		while (startY <= endY) {
-			int actualStartX = startX;
-			while (actualStartX <= endX) {
-				ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(actualStartX, startY);
-				ChunkTileTextures chunkTileTextures = chunkTileTexturesManager.get(chunkPosition);
-				int chunkXLimit = chunkPosition.getX() * GameConstants.CHUNK_SIZE + GameConstants.CHUNK_SIZE - 1;
-				int chunkYLimit = chunkPosition.getY() * GameConstants.CHUNK_SIZE + GameConstants.CHUNK_SIZE - 1;
-				actualEndX = endX > chunkXLimit ? chunkXLimit : endX;
-				actualEndY = endY > chunkYLimit ? chunkYLimit : endY;
-				if (chunkTileTextures != null) {
-					for (int x = actualStartX; x <= actualEndX; x++) {
-						for (int y = startY; y <= actualEndY; y++) {
-							Texture[] textures = chunkTileTextures.getTexturesAt(x, y);
-							batch.draw(textures[(int) (animationNumber % textures.length)], x - GameConstants.PIXEL_SIZE, y - GameConstants.PIXEL_SIZE, 1 + GameConstants.PIXEL_SIZE,
-									1 + GameConstants.PIXEL_SIZE);
+		synchronized (chunkTileTexturesManager.getChunkTileTextureMap()) {
+			while (startY <= endY) {
+				int actualStartX = startX;
+				while (actualStartX <= endX) {
+					ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(actualStartX, startY);
+					ChunkTileTextures chunkTileTextures = chunkTileTexturesManager.getChunkTileTextureMap().get(chunkPosition);
+					int chunkXLimit = chunkPosition.getX() * GameConstants.CHUNK_SIZE + GameConstants.CHUNK_SIZE - 1;
+					int chunkYLimit = chunkPosition.getY() * GameConstants.CHUNK_SIZE + GameConstants.CHUNK_SIZE - 1;
+					actualEndX = endX > chunkXLimit ? chunkXLimit : endX;
+					actualEndY = endY > chunkYLimit ? chunkYLimit : endY;
+					if (chunkTileTextures != null) {
+						chunkTileTextures.setCheckTimeStamp(System.currentTimeMillis());
+						for (int x = actualStartX; x <= actualEndX; x++) {
+							for (int y = startY; y <= actualEndY; y++) {
+								Texture[] textures = chunkTileTextures.getTexturesAt(x, y);
+								batch.draw(textures[(int) (animationNumber % textures.length)], x, y, 1 + GameConstants.PIXEL_SIZE, 1 + GameConstants.PIXEL_SIZE);
+							}
 						}
 					}
+					actualStartX = actualEndX + 1;
 				}
-				actualStartX = actualEndX + 1;
+				startY = actualEndY + 1;
 			}
-			startY = actualEndY + 1;
+
+			// TODO use world time here
+			long time = System.currentTimeMillis();
+			chunkTileTexturesManager.getChunkTileTextureMap().values().removeIf(ct -> time - ct.getCheckTimeStamp() > 10_000);
 		}
 	}
 }

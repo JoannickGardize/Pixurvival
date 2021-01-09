@@ -1,6 +1,7 @@
 package com.pixurvival.core.map.chunk;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  * @author SharkHendrix
  *
  */
+// TODO No more thread engine
 public class ChunkManager extends EngineThread {
 
 	private static final float UNLOAD_CHECK_RATE = 0.05f;
@@ -51,12 +53,21 @@ public class ChunkManager extends EngineThread {
 	private final Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();
 	private final List<ChunkPosition> tmpPositions = new ArrayList<>();
 	private final List<ChunkRepositoryEntry> tmpRepositoryEntries = new ArrayList<>();
+	private final List<ChunkManagerPlugin> plugins = Collections.synchronizedList(new ArrayList<>());
 
 	private ChunkManager() {
 		super("Chunk Manager");
 		setUpdatePerSecond(20);
 		setMaxUpdatePerFrame(1);
 		start();
+	}
+
+	public void addPlugin(ChunkManagerPlugin plugin) {
+		plugins.add(plugin);
+	}
+
+	public void removePlugin(ChunkManagerPlugin plugin) {
+		plugins.remove(plugin);
 	}
 
 	public void requestChunk(TiledMap map, ChunkPosition position) {
@@ -99,7 +110,7 @@ public class ChunkManager extends EngineThread {
 					tmpRepositoryEntries.add(chunkEntry);
 				}
 			});
-
+			tmpRepositoryEntries.forEach(e -> plugins.forEach(p -> p.chunkLoaded(e.getChunk())));
 			synchronized (entry.map) {
 				tmpRepositoryEntries.forEach(c -> {
 					entry.map.addChunk(c);
