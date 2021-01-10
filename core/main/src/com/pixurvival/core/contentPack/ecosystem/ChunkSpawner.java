@@ -53,7 +53,7 @@ public abstract class ChunkSpawner implements Serializable {
 
 	public void spawn(Chunk chunk) {
 		Object data = beginSpawn(chunk);
-		if (countCreatures(chunk, data) >= maximumCreatures || creatureChooser.isEmpty()) {
+		if (data == null || countCreatures(chunk, data) >= maximumCreatures || creatureChooser.isEmpty()) {
 			return;
 		}
 		Vector2 randomPosition = nextSpawnPosition(chunk, data);

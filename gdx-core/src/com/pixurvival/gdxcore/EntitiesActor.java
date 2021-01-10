@@ -71,6 +71,7 @@ public class EntitiesActor extends Actor {
 			});
 			chunk.forEachStructure(objectsToDraw::add);
 		});
+		// TODO cache objectsToDraw?
 		objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
 
 		manageGhostStructure();

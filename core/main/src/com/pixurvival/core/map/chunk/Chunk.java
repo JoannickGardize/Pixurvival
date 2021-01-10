@@ -191,6 +191,18 @@ public class Chunk {
 	}
 
 	public void removeStructure(int x, int y) {
+		removeStructure(x, y, true);
+	}
+
+	/**
+	 * Remove the structure at the given tile, in world coordinates. If there is no
+	 * structure at this tile, nothing happens.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param notify
+	 */
+	public void removeStructure(int x, int y, boolean notify) {
 		MapTile tile = tileAt(x, y);
 		if (tile.getStructure() != null) {
 			MapStructure structure = tile.getStructure();
@@ -207,7 +219,9 @@ public class Chunk {
 			structures.get(structure.getDefinition().getId()).remove(structure);
 			structureCount--;
 			updateTimestamp();
-			getMap().notifyListeners(l -> l.structureRemoved(structure));
+			if (notify) {
+				getMap().notifyListeners(l -> l.structureRemoved(structure));
+			}
 			fileSync = false;
 		}
 	}

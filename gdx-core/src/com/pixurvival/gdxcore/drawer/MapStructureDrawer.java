@@ -61,7 +61,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 	@Override
 	public void drawDebug(ShapeRenderer renderer, MapStructure e) {
 		renderer.setColor(Color.WHITE);
-		renderer.rect(e.getPosition().getX() - e.getHalfWidth(), e.getPosition().getY() - e.getHalfHeight(), e.getHalfWidth() * 2, e.getHalfHeight() * 2);
+		renderer.rect(e.getTileX(), e.getTileY(), e.getWidth(), e.getHeight());
 	}
 
 	@Override

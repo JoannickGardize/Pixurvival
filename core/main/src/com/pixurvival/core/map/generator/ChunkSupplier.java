@@ -21,7 +21,6 @@ public class ChunkSupplier {
 
 	public ChunkSupplier(World world) {
 		this.world = world;
-
 		mapProvider = world.getGameMode().getMapProvider();
 		mapProvider.initialize(world);
 	}
@@ -31,6 +30,7 @@ public class ChunkSupplier {
 		mapProvider.beginChunk(world.getSeed(), chunk.getPosition());
 		buildTiles(chunk);
 		buildStructures(chunk);
+		mapProvider.getPostProcessors().forEach(p -> p.apply(chunk));
 		return chunk;
 	}
 

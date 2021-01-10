@@ -1,6 +1,7 @@
 package com.pixurvival.core.contentPack.map;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +11,8 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.generator.ChunkPostProcessor;
+import com.pixurvival.core.map.generator.RemoveStuckStructuresPostProcessor;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,12 +38,15 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
 
 	private transient Random chunkRandom;
 
+	private transient @Getter List<ChunkPostProcessor> postProcessors;
+
 	@Override
 	public void initialize(World world) {
 		Random random = new Random(world.getSeed());
 		for (Heightmap heightmap : heightmaps) {
 			heightmap.initialiaze(random.nextLong());
 		}
+		postProcessors = Collections.singletonList(new RemoveStuckStructuresPostProcessor());
 	}
 
 	@Override

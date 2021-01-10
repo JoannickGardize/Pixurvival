@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
  * @author SharkHendrix
  *
  */
-// TODO No more thread engine
+// TODO No more thread engine, one thread per world
 public class ChunkManager extends EngineThread {
 
 	private static final float UNLOAD_CHECK_RATE = 0.05f;
@@ -48,6 +48,7 @@ public class ChunkManager extends EngineThread {
 		}
 	}
 
+	// TODO no more singleton
 	private static final @Getter ChunkManager instance = new ChunkManager();
 
 	private final Map<TiledMap, TiledMapEntry> tiledMaps = new HashMap<>();

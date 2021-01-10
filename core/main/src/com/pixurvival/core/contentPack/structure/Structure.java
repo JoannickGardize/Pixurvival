@@ -36,6 +36,8 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 
 	private boolean randomHorizontalFlip = false;
 
+	private boolean avoidStuck = false;
+
 	@Valid
 	private Dimensions dimensions = new Dimensions(1, 1);
 

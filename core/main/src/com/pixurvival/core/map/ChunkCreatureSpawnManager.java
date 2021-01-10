@@ -24,9 +24,9 @@ import lombok.Setter;
 public class ChunkCreatureSpawnManager implements TiledMapListener {
 
 	/**
-	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the
-	 * chunk is unloaded then reloaded, we can know if we have to spawn
-	 * immediately or just wait for the next event.
+	 * Keep tracking of chunkSpawners actually waiting for spawning, so if the chunk
+	 * is unloaded then reloaded, we can know if we have to spawn immediately or
+	 * just wait for the next event.
 	 */
 	private @Getter @Setter Map<ChunkPosition, Set<ChunkSpawner>> actionMemory = new HashMap<>();
 
@@ -59,6 +59,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 		addSpawnerActionTimer(chunk, spawner);
 	}
 
+	// TODO respawn X times
 	private void respawn(Chunk chunk, ChunkSpawner spawner) {
 		Set<ChunkSpawner> spawnerSet = actionMemory.get(chunk.getPosition());
 		if (spawnerSet == null || !spawnerSet.contains(spawner)) {
@@ -101,7 +102,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 	@Override
 	public void structureAdded(MapStructure mapStructure) {
 		// TODO reactiver le spawner quand un nouveau type de structure apparait
-		// dans le chunk
+		// dans le chunk, pay attention to actual spawner events.
 	}
 
 	@Override
