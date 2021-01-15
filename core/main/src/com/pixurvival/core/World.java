@@ -148,32 +148,33 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		return world;
 	}
 
-	public static World createLocalWorld(ContentPack contentPack, int gameModeId) {
+	// createNewLocalWorld
+	public static World createNewLocalWorld(ContentPack contentPack, int gameModeId) {
 		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
 		initializeLocalWorld(world);
-
+		PlayerEntity playerEntity = new PlayerEntity();
+		world.getEntityPool().addNew(playerEntity);
+		playerEntity.setOperator(true);
+		playerEntity.setTeam(world.getTeamSet().createTeam("Default"));
+		world.myPlayer = playerEntity;
+		world.playerEntities.put(playerEntity.getId(), playerEntity);
 		return world;
 	}
 
-	public static World createLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
+	// createExistingLocalWorld
+	public static World createExistingLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
 		contentPack.initialize();
 		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId, seed);
 		initializeLocalWorld(world);
 		return world;
 	}
 
+	// TODO only for new local world
 	private static void initializeLocalWorld(World world) {
 		World.currentContentPack = world.getContentPack();
-		PlayerEntity playerEntity = new PlayerEntity();
-		world.getEntityPool().addNew(playerEntity);
-
-		playerEntity.setOperator(true);
-		playerEntity.setTeam(world.getTeamSet().createTeam("Solo"));
-		world.myPlayer = playerEntity;
 		worlds.clear();
 		worlds.put(world.getId(), world);
-		world.playerEntities.put(playerEntity.getId(), playerEntity);
 	}
 
 	public static Collection<World> getWorlds() {
@@ -233,6 +234,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	public void initializeNewGame() throws MapAnalyticsException {
 		entityPool.flushNewEntities();
 		gameMode.getPlayerSpawn().apply(this);
+		for (PlayerEntity player : getPlayerEntities().values()) {
+			player.getSpawnPosition().set(player.getPosition());
+		}
 		initializeEvents();
 		gameMode.getEndGameConditions().forEach(c -> {
 			c.initialize(this);
@@ -244,6 +248,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 
 	public void initializeLoadedGame() {
 		gameMode.getEndGameConditions().forEach(c -> c.initialize(this));
+		// TODO Change this when multiplayer save implemented
+		setMyPlayer(getPlayerEntities().values().iterator().next());
 		playerEntities.put(getMyPlayer().getId(), getMyPlayer());
 		entityPool.flushNewEntities();
 	}

@@ -26,20 +26,21 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.message.playerRequest.ChatRequest;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.server.ClientAckManager.WaitingAckEntry;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
 public class PlayerGameSession implements InventoryListener, PlayerConnectionListener, ItemCraftDiscoveryListener {
 
-	private @NonNull @Getter @Setter PlayerConnection connection;
-	private @NonNull @Getter @Setter PlayerEntity playerEntity;
+	private @Getter @Setter PlayerConnection connection;
+	private @Getter PlayerEntity originalPlayer;
+	private @Getter @Setter PlayerEntity playerEntity;
 	private @Getter Set<ChunkPosition> knownPositions = new HashSet<>();
 	private List<CompressedChunk> chunksToSend = new ArrayList<>();
 	private List<StructureUpdate> structureUpdatesToSend = new ArrayList<>();
@@ -50,7 +51,7 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	private @Getter @Setter boolean inventoryChanged = true;
 	private @Getter @Setter boolean requestedFullUpdate = false;
 	private @Getter @Setter long previousClientWorldTime = 0;
-	private @Getter @Setter boolean reconnected = false;
+	private @Getter @Setter boolean reconnecting = false;
 	private @Getter @Setter Map<Long, WaitingAckEntry> waitingAcks = new HashMap<>();
 	private @Getter @Setter boolean spectator = false;
 	private @Getter @Setter float smoothedTimeDiff;
@@ -58,6 +59,12 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	private @Getter @Setter long nextUpdateId = 0;
 	private @Getter @Setter float ackThresholdMultiplier = 1;
 	private @Setter NetworkActivityListener networkListener;
+
+	public PlayerGameSession(PlayerConnection connection, PlayerEntity playerEntity) {
+		this.connection = connection;
+		this.playerEntity = playerEntity;
+		this.originalPlayer = playerEntity;
+	}
 
 	public void resetNetworkData() {
 		previousClientWorldTime = 0;
@@ -153,9 +160,10 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	@Override
 	public void handleGameReady(GameReady gameReady) {
 		setGameReady(true);
-		if (isReconnected()) {
+		if (isReconnecting()) {
 			getConnection().sendTCP(
 					new StartGame(playerEntity.getWorld().getTime().getTimeMillis(), playerEntity.getWorld().getSpawnCenter(), playerEntity.getItemCraftDiscovery().getDiscovereditemCraftIds()));
+			setReconnecting(false);
 		}
 	}
 
@@ -168,6 +176,8 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	public void handlePlayerActionRequest(IPlayerActionRequest playerActionRequest) {
 		if (!spectator && playerEntity != null && playerEntity.isAlive()) {
 			playerActionRequest.apply(playerEntity);
+		} else if (spectator && playerActionRequest instanceof ChatRequest) {
+			playerActionRequest.apply(originalPlayer);
 		}
 	}
 

@@ -1,10 +1,14 @@
 package com.pixurvival.core.team;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.Getter;
 
@@ -68,5 +72,19 @@ public class TeamSet implements Iterable<Team> {
 	@Override
 	public Iterator<Team> iterator() {
 		return teamsByName.values().iterator();
+	}
+
+	public void write(ByteBuffer buffer) {
+		VarLenNumberIO.writePositiveVarInt(buffer, playerTeamSize);
+		for (int i = 1; i < teams.size(); i++) {
+			ByteBufferUtils.putString(buffer, teams.get(i).getName());
+		}
+	}
+
+	public void apply(ByteBuffer buffer) {
+		int size = VarLenNumberIO.readPositiveVarInt(buffer);
+		for (int i = 0; i < size; i++) {
+			createTeam(ByteBufferUtils.getString(buffer));
+		}
 	}
 }

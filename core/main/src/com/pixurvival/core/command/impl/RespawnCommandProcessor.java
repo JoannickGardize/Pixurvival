@@ -1,6 +1,7 @@
 package com.pixurvival.core.command.impl;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.command.CommandExecutionException;
@@ -10,31 +11,26 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.Vector2;
 
-public class TeleportCommandProcessor extends CommandProcessor {
+public class RespawnCommandProcessor extends CommandProcessor {
 
-	public TeleportCommandProcessor() {
+	public RespawnCommandProcessor() {
 		super(true);
 	}
 
 	@Override
 	protected String execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
-		CommandArgsUtils.checkArgsLength(args, 3, 3);
-		Collection<PlayerEntity> players = CommandArgsUtils.playerCollection(executor, args[1]);
-		Vector2 destination = CommandArgsUtils.position(executor, args[2]);
-		for (PlayerEntity player : players) {
-			player.teleport(destination);
-		}
-		return "Teleported " + CollectionUtils.toString(players);
+		CommandArgsUtils.checkArgsLength(args, 2, 3);
+		Collection<PlayerEntity> players = CommandArgsUtils.playerCollection(executor, args[1]).stream().filter(p -> !p.isAlive()).collect(Collectors.toList());
+		Vector2 position = args.length > 2 ? CommandArgsUtils.position(executor, args[2]) : CommandArgsUtils.position(executor);
+		players.forEach(p -> p.respawn(position));
+		return players.isEmpty() ? "Nobody to respawn." : "Respawned " + CollectionUtils.toString(players);
 	}
 
 	@Override
 	public Class<?> getAutocompleteArgType(int argIndex) {
-		switch (argIndex) {
-		case 1:
+		if (argIndex == 1) {
 			return PlayerEntity.class;
-		case 2:
-			return PlayerEntity.class;
-		default:
+		} else {
 			return null;
 		}
 	}

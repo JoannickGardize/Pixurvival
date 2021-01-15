@@ -120,7 +120,7 @@ public class DrawUtils {
 		int endX = MathUtils.ceil((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
 		int endY = MathUtils.ceil((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
 		for (int x = startX; x <= endX; x++) {
-			for (int y = startY; y <= endY; y++) {
+			for (int y = endY; y >= startY; y--) {
 				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
 				if (chunk == null) {
 					continue;

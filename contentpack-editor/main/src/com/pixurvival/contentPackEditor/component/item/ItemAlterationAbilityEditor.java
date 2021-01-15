@@ -25,11 +25,11 @@ public class ItemAlterationAbilityEditor extends AlterationAbilityEditor<ItemAlt
 		nullableElementHelper.getNotNullPanel().setLayout(new BorderLayout());
 		nullableElementHelper.getNotNullPanel().add(ammunitionEditor, BorderLayout.CENTER);
 		JPanel ammunitionPanel = new JPanel();
-		ammunitionPanel.setBorder(LayoutUtils.createBorder());
+		ammunitionPanel.setBorder(LayoutUtils.createGroupBorder("alterationAbilityEditor.ammunition"));
 
 		bind(ammunitionEditor, "ammunition");
 
-		build(useScrollPane, "alterationAbilityEditor.ammunition", ammunitionPanel);
+		build(useScrollPane, ammunitionPanel);
 		nullableElementHelper.build(ItemStack::new, ammunitionPanel);
 	}
 

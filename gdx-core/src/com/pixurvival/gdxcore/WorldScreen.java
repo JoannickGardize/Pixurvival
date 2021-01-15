@@ -42,6 +42,7 @@ import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.PauseMenu;
+import com.pixurvival.gdxcore.ui.RespawnTimerActor;
 import com.pixurvival.gdxcore.ui.StatusBarUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
@@ -79,6 +80,7 @@ public class WorldScreen implements Screen {
 	private @Getter ChatUI chatUI = new ChatUI();
 	private CraftUI craftUI = new CraftUI();
 	private MiniMapUI miniMapUI = new MiniMapUI();
+	private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
 
 	private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
 
@@ -116,6 +118,8 @@ public class WorldScreen implements Screen {
 		OverlaysActor overlayActor = new OverlaysActor(worldStage.getViewport());
 		hudStage.addListener(overlayActor);
 		hudStage.addActor(overlayActor);
+		world.getEntityPool().addListener(respawnTimerActor);
+		hudStage.addActor(respawnTimerActor);
 		hudStage.addActor(miniMapUI);
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		EquipmentUI equipmentUI = new EquipmentUI();
@@ -154,6 +158,9 @@ public class WorldScreen implements Screen {
 	public void gameStarted() {
 		if (world.getMapLimitsRun() != null) {
 			worldStage.addActor(new MapLimitActor(world.getMapLimitsRun().getRectangle()));
+		}
+		if (world.getMyPlayer() != null && !world.getMyPlayer().isAlive()) {
+			respawnTimerActor.playerDied(world.getMyPlayer());
 		}
 		NotificationPushManager.getInstance()
 				.push(Notification.builder().status("In game").party(new Party(world.getPlayerEntities().size(), world.getPlayerEntities().size())).startTime(Instant.now().getEpochSecond()).build());
@@ -202,6 +209,7 @@ public class WorldScreen implements Screen {
 		updateMouseTarget();
 		worldStage.act();
 		DrawData data = (DrawData) myPlayer.getCustomData();
+		// TODO It's the void bug?
 		cameraControlProcessor.updateCameraPosition(data == null ? myPlayer.getPosition() : data.getDrawPosition());
 		worldStage.draw();
 		if (!(world.getTime().getDayCycle() instanceof EternalDayCycleRun)) {
@@ -231,6 +239,7 @@ public class WorldScreen implements Screen {
 		statusBarUI.updatePosition();
 		endGameUI.update(hudStage.getViewport());
 		pauseUI.update();
+		respawnTimerActor.setPosition(width / 2f, height - height / 3f);
 	}
 
 	@Override

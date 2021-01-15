@@ -9,10 +9,10 @@ import com.pixurvival.core.command.impl.GiveItemCommandProcessor;
 import com.pixurvival.core.command.impl.HealCommandProcessor;
 import com.pixurvival.core.command.impl.ListCommandProcessor;
 import com.pixurvival.core.command.impl.OpCommandProcessor;
+import com.pixurvival.core.command.impl.RespawnCommandProcessor;
 import com.pixurvival.core.command.impl.SpawnCommandProcessor;
 import com.pixurvival.core.command.impl.TeleportCommandProcessor;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 
 public class CommandManager {
@@ -30,6 +30,8 @@ public class CommandManager {
 		ListCommandProcessor listCommandProcessor = new ListCommandProcessor();
 		commands.put("list", listCommandProcessor);
 		commands.put("ls", listCommandProcessor);
+		commands.put("respawn", new RespawnCommandProcessor());
+		commands.put("revive", new RespawnCommandProcessor());
 	}
 
 	public String process(CommandExecutor executor, String[] args) {
@@ -44,7 +46,7 @@ public class CommandManager {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public String autocomplete(CommandExecutor executor, String input) {
 		String[] args = CommandArgsUtils.splitArgs(input);
 		if (args.length < 2 || args[0].length() < 2 || args[0].charAt(0) != '/') {
@@ -62,7 +64,7 @@ public class CommandManager {
 		if (NamedIdentifiedElement.class.isAssignableFrom(argType)) {
 			stringIterator = executor.getWorld().getContentPack().allNamesOf((Class<? extends NamedIdentifiedElement>) argType).iterator();
 		} else if (argType == PlayerEntity.class) {
-			stringIterator = playerNameIterator((Collection) executor.getWorld().getEntityPool().get(EntityGroup.PLAYER));
+			stringIterator = playerNameIterator(executor.getWorld().getPlayerEntities().values());
 		} else {
 			return input;
 		}

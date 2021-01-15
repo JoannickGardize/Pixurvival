@@ -2,7 +2,6 @@ package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -11,8 +10,10 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.SoundEffect;
+import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatSender;
 import com.pixurvival.core.command.CommandExecutor;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.role.Role;
 import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
 import com.pixurvival.core.contentPack.gameMode.role.WinCondition;
@@ -24,7 +25,6 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -38,8 +38,6 @@ import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
-import com.pixurvival.core.livingEntity.stats.StatListener;
-import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -49,6 +47,8 @@ import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.MathUtils;
+import com.pixurvival.core.util.VarLenNumberIO;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +85,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
 
+		INVENTORY_KRYO.setReferences(false);
 		INVENTORY_KRYO.register(ItemStack.class, new ItemStack.Serializer());
 		INVENTORY_KRYO.register(PlayerInventory.class, new PlayerInventory.Serializer());
 	}
@@ -111,6 +112,8 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	private @Getter ItemCraftDiscovery itemCraftDiscovery;
 
+	private @Getter @Setter long respawnTime;
+
 	@Override
 	public void update() {
 		addHungerSneaky(-(HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
@@ -129,22 +132,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	protected void onDeath() {
 		if (getWorld().isServer()) {
 			getTeam().addDead(this);
-			for (int i = 0; i < Equipment.EQUIPMENT_SIZE; i++) {
-				dropItemOnDeath(equipment.get(i));
-			}
-			for (int i = 0; i < inventory.size(); i++) {
-				dropItemOnDeath(inventory.getSlot(i));
-			}
-			dropItemOnDeath(inventory.getHeldItemStack());
-		}
-	}
-
-	private void dropItemOnDeath(ItemStack itemStack) {
-		if (itemStack != null) {
-			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-			getWorld().getEntityPool().addNew(itemStackEntity);
-			itemStackEntity.getPosition().set(getPosition());
-			itemStackEntity.spawnRandom();
+			GameMode gameMode = getWorld().getGameMode();
+			gameMode.getPlayerDeathItemHandling().getHandler().accept(this);
+			respawnTime = gameMode.getPlayerRespawnType().getHandler().applyAsLong(this);
+			getWorld().getEntityPool().notifyPlayerDied(this);
+			getWorld().getChatManager().received(new ChatEntry(getWorld(), name + " died."));
 		}
 	}
 
@@ -187,9 +179,14 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		if (getTeam() == team) {
 			return;
 		}
+		if (getTeam() != null) {
+			getTeam().remove(this);
+		}
 		super.setTeam(team);
 		if (isAlive()) {
 			team.addAlive(this);
+		} else {
+			team.addDead(this);
 		}
 	}
 
@@ -318,6 +315,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	@Override
 	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
 		super.writeRepositoryUpdate(byteBuffer);
+		ByteBufferUtils.putBooleans(byteBuffer, isAlive(), isOperator());
+		if (!isAlive()) {
+			VarLenNumberIO.writePositiveVarLong(byteBuffer, respawnTime);
+		}
+		ByteBufferUtils.putString(byteBuffer, name);
 		try (Output output = new Output(byteBuffer.array())) {
 			output.setPosition(byteBuffer.position());
 			INVENTORY_KRYO.writeObject(output, inventory);
@@ -328,16 +330,21 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
-		Collection<StatListener> healthListeners = getStats().get(StatType.MAX_HEALTH).removeListeners();
 		super.applyRepositoryUpdate(byteBuffer);
+		byte boolMask = ByteBufferUtils.getBooleansMask(byteBuffer);
+		setAlive(ByteBufferUtils.getBoolean1(boolMask));
+		setOperator(ByteBufferUtils.getBoolean2(boolMask));
+		if (!isAlive()) {
+			respawnTime = VarLenNumberIO.readPositiveVarLong(byteBuffer);
+		}
+		setName(ByteBufferUtils.getString(byteBuffer));
 		try (Input input = new Input(byteBuffer.array())) {
 			input.setPosition(byteBuffer.position());
 			inventory.set(INVENTORY_KRYO.readObject(input, PlayerInventory.class));
 			byteBuffer.position(input.position());
 		}
 		itemCraftDiscovery.apply(byteBuffer, getWorld().getContentPack().getItems());
-		getStats().get(StatType.MAX_HEALTH).addListeners(healthListeners);
-
+		addHealthAdapterListener();
 	}
 
 	@Override
@@ -355,5 +362,18 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	public void addItemCraftDiscoveryListener(ItemCraftDiscoveryListener listener) {
 		itemCraftDiscovery.addListener(listener);
+	}
+
+	public void respawn(Vector2 respawnPosition) {
+		setAlive(true);
+		getTeam().addAlive(this);
+		setHealth(getMaxHealth());
+		addHunger(PlayerEntity.MAX_HUNGER);
+		teleport(respawnPosition);
+		setChunk(null);
+		setForward(false);
+		startAbility(-1);
+		getWorld().getEntityPool().addOld(this);
+		getWorld().getEntityPool().notifyPlayerRespawned(this);
 	}
 }

@@ -1,9 +1,9 @@
 package com.pixurvival.core.util;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * Enum representing All the history of the release versions since the alpha 5.
@@ -16,16 +16,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReleaseVersion {
 
-	OLDER(false),
-	ALPHA_4(false),
-	ALPHA_4B(false),
-	ALPHA_5(false),
-	ALPHA_5B(false),
-	ALPHA_6(false),
-	ALPHA_6B(true),
-	ALPHA_7(true);
+	OLDER(BackwardCompatibility.NONE),
+	ALPHA_4(BackwardCompatibility.NONE),
+	ALPHA_4B(BackwardCompatibility.NONE),
+	ALPHA_5(BackwardCompatibility.NONE),
+	ALPHA_5B(BackwardCompatibility.NONE),
+	ALPHA_6(BackwardCompatibility.NONE),
+	ALPHA_6B(BackwardCompatibility.FULL),
+	ALPHA_7(BackwardCompatibility.FULL),
+	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY);
 
-	private @Getter boolean backwardCompatible;
+	private BackwardCompatibility backwardCompatibility;
 
 	public String displayName() {
 		if (name().indexOf('_') != -1) {
@@ -73,21 +74,29 @@ public enum ReleaseVersion {
 		return ReleaseVersion.values()[ReleaseVersion.values().length - 1];
 	}
 
+	public boolean isContentPackCompatibleWith(ReleaseVersion other) {
+		return isCompatibleWith(other, r -> r.backwardCompatibility.isContentPacks());
+	}
+
+	public boolean isSavesCompatibleWith(ReleaseVersion other) {
+		return isCompatibleWith(other, r -> r.backwardCompatibility.isSaves());
+	}
+
 	/**
 	 * <p>
-	 * Check if this release version is compatible with the one in parameter for
-	 * game saves and content packs, according to {@link #isBackwardCompatible()} of
-	 * each intermediate versions.
+	 * Check if this release version is compatible with the one in parameter,
+	 * according to the result of {@code flagGetter} of each intermediate versions.
 	 * <p>
 	 * For two release versions, {@code v1.isCompatibleWith(v2)} will always returns
 	 * the same result as {@code v2.isCompatibleWith(v1)}.
 	 * 
 	 * @param other
 	 *            the version to check if this version is compatible with.
+	 * @param flagGetter
 	 * 
 	 * @return true if the versions are compatible, false otherwise.
 	 */
-	public boolean isCompatibleWith(ReleaseVersion other) {
+	private boolean isCompatibleWith(ReleaseVersion other, Predicate<ReleaseVersion> flagGetter) {
 		Objects.requireNonNull(other);
 		if (this == other) {
 			return true;
@@ -102,7 +111,7 @@ public enum ReleaseVersion {
 			newest = other;
 		}
 		for (int i = oldest.ordinal() + 1; i <= newest.ordinal(); i++) {
-			if (!values()[i].isBackwardCompatible()) {
+			if (!flagGetter.test(values()[i])) {
 				return false;
 			}
 		}

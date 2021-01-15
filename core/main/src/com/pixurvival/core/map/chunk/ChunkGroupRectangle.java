@@ -13,13 +13,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChunkGroupRectangle {
 
-	private int xStart;
-	private int xEnd;
-	private int yStart;
-	private int yEnd;
+	private int xStart = Integer.MAX_VALUE;
+	private int xEnd = Integer.MAX_VALUE;
+	private int yStart = Integer.MAX_VALUE;
+	private int yEnd = Integer.MAX_VALUE;
 
 	public ChunkGroupRectangle(Vector2 center, float halfSquareLength) {
 		set(center, halfSquareLength);
+	}
+
+	public void reset() {
+		xStart = Integer.MAX_VALUE;
+		xEnd = Integer.MAX_VALUE;
+		yStart = Integer.MAX_VALUE;
+		yEnd = Integer.MAX_VALUE;
 	}
 
 	/**

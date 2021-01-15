@@ -51,6 +51,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		JTabbedPane previewTabs = new JTabbedPane();
 		FloatInput heightOffsetInput = new FloatInput();
 		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
+		IntegerInput shadowResizingInput = new IntegerInput();
 		previewTabs.setBorder(LayoutUtils.createGroupBorder("generic.preview"));
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
@@ -62,6 +63,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		bind(equipmentOffsetField, "equipmentOffset");
 		bind(heightOffsetInput, "heightOffset");
 		bind(shadowCheckBox, "shadow");
+		bind(shadowResizingInput, "shadowResizing");
 
 		// Layouting
 		JPanel propertiesPanel = new JPanel(new GridBagLayout());
@@ -73,6 +75,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.height", heightField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.heightOffset", heightOffsetInput, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.shadow", shadowCheckBox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "spriteSheetEditor.shadowResizing", shadowResizingInput, gbc);
 		LayoutUtils.addHorizontalSeparator(propertiesPanel, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.animationTemplate", animationTemplateField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(propertiesPanel, "elementType.equipmentOffset", equipmentOffsetField, gbc);

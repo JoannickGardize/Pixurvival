@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.World;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.IntegerInterval;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
 import com.pixurvival.core.contentPack.gameMode.event.Event;
@@ -14,8 +14,8 @@ import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
 import com.pixurvival.core.contentPack.gameMode.spawn.PlayerSpawn;
 import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.Getter;
@@ -50,7 +50,6 @@ public class GameMode extends NamedIdentifiedElement {
 	private Roles roles;
 
 	@Valid
-	@Length(min = 1)
 	private List<EndGameCondition> endGameConditions = new ArrayList<>();
 
 	@Valid
@@ -65,6 +64,13 @@ public class GameMode extends NamedIdentifiedElement {
 
 	@Valid
 	private PlayerSpawn playerSpawn = new AutoSquarePlayerSpawn();
+
+	private PlayerDeathItemHandling playerDeathItemHandling = PlayerDeathItemHandling.DROP;
+
+	private PlayerRespawnType playerRespawnType = PlayerRespawnType.NONE;
+
+	@Positive
+	private long playerRespawnDelay = 5_000;
 
 	public boolean updateEndGameConditions(World world) {
 		for (EndGameCondition condition : endGameConditions) {

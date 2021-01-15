@@ -21,6 +21,7 @@ import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.PlayerDead;
+import com.pixurvival.core.message.PlayerRespawn;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.LongSequenceIOHelper;
 import com.pixurvival.server.lobby.LobbySession;
@@ -99,6 +100,7 @@ public class ServerEngineThread extends EngineThread {
 
 	private void sendWorldData(GameSession gs) {
 		PlayerDead[] playerDeads = gs.extractPlayerDeads();
+		PlayerRespawn[] playerRespawns = gs.extractPlayerRespawns();
 		gs.getWorld().getTime().setSerializationContextTimeToNow();
 		gs.foreachPlayers(session -> {
 			PlayerEntity playerEntity = session.getPlayerEntity();
@@ -110,6 +112,9 @@ public class ServerEngineThread extends EngineThread {
 				}
 				if (playerDeads != null) {
 					session.getConnection().sendTCP(playerDeads);
+				}
+				if (playerRespawns != null) {
+					session.getConnection().sendTCP(playerRespawns);
 				}
 			}
 			session.clearPositionChanges();
@@ -133,6 +138,7 @@ public class ServerEngineThread extends EngineThread {
 				prepareFullUpdateForRefresh(session.getPlayerEntity());
 				session.setRequestedFullUpdate(false);
 			} else {
+				Log.warn("UDP packet loss detected for " + session.getConnection() + ", sending full update.");
 				// TODO also add chunks and structure updates of the player
 				// session
 				prepareFullUpdate(session.getPlayerEntity());

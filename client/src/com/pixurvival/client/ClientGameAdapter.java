@@ -24,7 +24,7 @@ public class ClientGameAdapter implements ClientGameListener {
 	}
 
 	@Override
-	public void spectatorStarted() {
+	public void playerFocusChanged() {
 	}
 
 	@Override

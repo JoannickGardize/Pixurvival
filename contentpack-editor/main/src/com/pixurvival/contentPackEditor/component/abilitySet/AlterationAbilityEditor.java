@@ -21,7 +21,7 @@ public abstract class AlterationAbilityEditor<T extends AlterationAbility> exten
 
 	private static final long serialVersionUID = 1L;
 
-	protected void build(boolean useScrollPane, String specificLabel, JComponent specificComponent) {
+	protected void build(boolean useScrollPane, JComponent specificComponent) {
 		// Construction
 
 		TimeInput cooldownInput = new TimeInput();
@@ -35,7 +35,8 @@ public abstract class AlterationAbilityEditor<T extends AlterationAbility> exten
 		// Layouting
 
 		alterationsEditor.setBorder(LayoutUtils.createGroupBorder("alterationAbilityEditor.selfAlterations"));
-		JPanel headerPanel = LayoutUtils.createHorizontalLabelledBox("alterationAbilityEditor.cooldown", LayoutUtils.single(cooldownInput), specificLabel, LayoutUtils.single(specificComponent));
+		JPanel headerPanel = new JPanel();
+		LayoutUtils.addHorizontally(headerPanel, LayoutUtils.labelled("alterationAbilityEditor.cooldown", LayoutUtils.single(cooldownInput)), specificComponent);
 		LayoutUtils.addVertically(this, LayoutUtils.DEFAULT_GAP, 1, headerPanel, alterationsEditor);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.pixurvival.core.World;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,16 @@ public class EntityPool extends EntityCollection {
 			e.updateChunk();
 		}
 		e.initialize();
+	}
+
+	/**
+	 * Add a recycled instance of entity, this is assumed that the entity is already
+	 * binded to the right world.
+	 * 
+	 * @param e
+	 */
+	public void addOld(Entity e) {
+		newEntities.add(e);
 	}
 
 	/**
@@ -130,13 +141,20 @@ public class EntityPool extends EntityCollection {
 		super.clear();
 	}
 
+	public void notifyPlayerDied(PlayerEntity playerEntity) {
+		listeners.forEach(l -> l.playerDied(playerEntity));
+	}
+
+	public void notifyPlayerRespawned(PlayerEntity playerEntity) {
+		listeners.forEach(l -> l.playerRespawned(playerEntity));
+	}
+
 	@Override
 	protected Entity createEntity(EntityGroup group, World world, long id) {
 		Entity e = super.createEntity(group, world, id);
 		if (e.getChunk() != null) {
 			e.getChunk().getEntities().remove(e);
 			e.setChunk(null);
-
 		}
 		e.setAlive(true);
 		return e;

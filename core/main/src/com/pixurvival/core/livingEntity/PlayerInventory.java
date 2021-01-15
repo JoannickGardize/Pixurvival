@@ -36,6 +36,12 @@ public class PlayerInventory extends Inventory {
 		}
 	}
 
+	@Override
+	public void removeAll() {
+		setHeldItemStack(null);
+		super.removeAll();
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<PlayerInventory> {
 
 		@Override

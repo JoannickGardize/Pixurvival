@@ -44,7 +44,6 @@ public class CreatureEntity extends LivingEntity {
 	private @Getter @Setter BehaviorData behaviorData;
 	private @Getter @NonNull Creature definition;
 	private @Getter @Setter Entity targetEntity;
-	private @Getter Vector2 spawnPosition;
 	private @Getter TeamMember master = this;
 	private @Getter Inventory inventory = EmptyInventoryProxy.getInstance();
 
@@ -79,7 +78,6 @@ public class CreatureEntity extends LivingEntity {
 			creationTime = getWorld().getTime().getTimeMillis();
 			currentBehavior = definition.getBehaviorSet().getBehaviors().get(0);
 			currentBehavior.begin(this);
-			spawnPosition = getPosition().copy();
 			if (definition.getLifetime() > 0) {
 				getWorld().getActionTimerManager().addActionTimer(new KillCreatureEntityAction(getId()), definition.getLifetime());
 			}
@@ -250,8 +248,6 @@ public class CreatureEntity extends LivingEntity {
 		buffer.putFloat(getStats().get(StatType.AGILITY).getBase());
 		buffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
 		super.writeRepositoryUpdate(buffer);
-		buffer.putFloat(spawnPosition.getX());
-		buffer.putFloat(spawnPosition.getY());
 		if (getDefinition().getLifetime() > 0) {
 			ByteBufferUtils.writePastTime(buffer, getWorld(), creationTime);
 		}
@@ -272,7 +268,6 @@ public class CreatureEntity extends LivingEntity {
 		getStats().get(StatType.AGILITY).setBase(buffer.getFloat());
 		getStats().get(StatType.INTELLIGENCE).setBase(buffer.getFloat());
 		super.applyRepositoryUpdate(buffer);
-		spawnPosition = new Vector2(buffer.getFloat(), buffer.getFloat());
 		if (getDefinition().getLifetime() > 0) {
 			creationTime = ByteBufferUtils.readPastTime(buffer, getWorld());
 			if (getWorld().getTime().getTimeMillis() - creationTime >= getDefinition().getLifetime()) {

@@ -70,7 +70,6 @@ public class CommandArgsUtils {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Collection<PlayerEntity> playerCollection(CommandExecutor executor, String arg) throws CommandExecutionException {
 		if (arg.startsWith("@")) {
 			switch (arg) {
@@ -84,13 +83,12 @@ public class CommandArgsUtils {
 				return Collections.singleton(player);
 			case "@everyone":
 			case "@all":
-				return Collections.unmodifiableCollection((Collection) executor.getWorld().getEntityPool().get(EntityGroup.PLAYER));
+				return Collections.unmodifiableCollection(executor.getWorld().getPlayerEntities().values());
 			default:
 				throw new CommandExecutionException("Unknown special reference : " + arg);
 			}
 		}
-		for (Entity e : executor.getWorld().getEntityPool().get(EntityGroup.PLAYER)) {
-			PlayerEntity player = (PlayerEntity) e;
+		for (PlayerEntity player : executor.getWorld().getPlayerEntities().values()) {
 			if (player.getName().equals(arg)) {
 				return Collections.singleton(player);
 			}
@@ -99,8 +97,8 @@ public class CommandArgsUtils {
 	}
 
 	/**
-	 * Position in format x;y OR position of player reference OR special
-	 * reference to cursor
+	 * Position in format x;y OR position of player reference OR special reference
+	 * to cursor
 	 * 
 	 * @param executor
 	 * @param arg

@@ -12,7 +12,6 @@ import com.pixurvival.core.command.CommandProcessor;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.item.Item;
-import com.pixurvival.core.livingEntity.PlayerEntity;
 
 public class ListCommandProcessor extends CommandProcessor {
 
@@ -22,7 +21,7 @@ public class ListCommandProcessor extends CommandProcessor {
 		super(false);
 		listers.put("creature", identifiedElementLister(Creature.class));
 		listers.put("item", identifiedElementLister(Item.class));
-		listers.put("player", executor -> Arrays.toString(executor.getWorld().getPlayerEntities().values().stream().map(PlayerEntity::getName).toArray()));
+		listers.put("player", executor -> Arrays.toString(executor.getWorld().getPlayerEntities().values().stream().map(p -> p.getName() + (p.isAlive() ? "" : " (dead)")).toArray()));
 	}
 
 	@Override

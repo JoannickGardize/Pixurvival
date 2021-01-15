@@ -98,4 +98,12 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 			}
 		}
 	}
+
+	@Override
+	public void playerDied(PlayerEntity player) {
+	}
+
+	@Override
+	public void playerRespawned(PlayerEntity player) {
+	}
 }

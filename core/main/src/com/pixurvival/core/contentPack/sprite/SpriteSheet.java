@@ -40,4 +40,6 @@ public class SpriteSheet extends NamedIdentifiedElement {
 
 	private boolean shadow = true;
 
+	private int shadowResizing;
+
 }

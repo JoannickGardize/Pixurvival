@@ -21,6 +21,14 @@ public class CollectionUtils {
 		return false;
 	}
 
+	/**
+	 * Stringify the given collection in the form [element1.toString(),
+	 * element2.toString(), ...]. If the collection has only one element, it simply
+	 * returns the toString() of that element.
+	 * 
+	 * @param collection
+	 * @return
+	 */
 	public static String toString(Collection<?> collection) {
 		if (collection.size() == 1) {
 			return collection.iterator().next().toString();

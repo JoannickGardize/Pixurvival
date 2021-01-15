@@ -44,6 +44,11 @@ public class Team implements Iterable<PlayerEntity> {
 		deadMembers.add(playerEntity);
 	}
 
+	public void remove(PlayerEntity playerEntity) {
+		aliveMembers.remove(playerEntity);
+		deadMembers.remove(playerEntity);
+	}
+
 	public int aliveMemberCount() {
 		return aliveMembers.size();
 	}

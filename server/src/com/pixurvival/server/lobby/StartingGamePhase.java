@@ -69,6 +69,7 @@ public class StartingGamePhase implements LobbyPhase {
 		waitingGameSession.foreachPlayers(playerSession -> {
 			PlayerEntity playerEntity = playerSession.getPlayerEntity();
 			createWorld.setMyPlayerId(playerEntity.getId());
+			createWorld.setMyOriginalPlayerId(playerEntity.getId());
 			createWorld.setMyTeamId(playerEntity.getTeam().getId());
 			createWorld.setMyPosition(playerEntity.getPosition());
 			createWorld.setInventory(playerEntity.getInventory());

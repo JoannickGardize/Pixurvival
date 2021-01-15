@@ -13,6 +13,7 @@ public class CreateWorld {
 	private ContentPackIdentifier contentPackIdentifier;
 	private int gameModeId;
 	private long myPlayerId;
+	private long myOriginalPlayerId;
 	private Vector2 myPosition;
 	private PlayerInventory inventory;
 	private TeamComposition[] teamCompositions;

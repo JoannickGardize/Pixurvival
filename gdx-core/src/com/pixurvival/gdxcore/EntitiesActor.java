@@ -42,6 +42,7 @@ public class EntitiesActor extends Actor {
 
 	private Map<Class<? extends Body>, ElementDrawer<? extends Body>> drawers = new HashMap<>();
 	private List<Body> objectsToDraw = new ArrayList<>();
+	private List<Body> allObjectsToDraw = new ArrayList<>();
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
@@ -58,10 +59,11 @@ public class EntitiesActor extends Actor {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		objectsToDraw.clear();
 		ensureMyPlayerInScreen();
+		allObjectsToDraw.clear();
 		// TODO Change this 3 by a smart value
 		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> {
+			objectsToDraw.clear();
 			chunk.getEntities().foreach((group, map) -> {
 				ElementDrawer<Entity> drawer = (ElementDrawer<Entity>) drawers.get(group.getType());
 				map.values().forEach(e -> {
@@ -70,22 +72,23 @@ public class EntitiesActor extends Actor {
 				});
 			});
 			chunk.forEachStructure(objectsToDraw::add);
+			// TODO cache objectsToDraw?
+			objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
+			allObjectsToDraw.addAll(objectsToDraw);
 		});
-		// TODO cache objectsToDraw?
-		objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
+		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));
+		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
+		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
+		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).frontDraw(batch, e));
 
-		manageGhostStructure();
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).frontDraw(batch, e));
+		drawGhostStructure(batch);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void drawDebug(ShapeRenderer shapes) {
 		drawChunksBorders(shapes);
-		objectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawDebug(shapes, e));
+		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawDebug(shapes, e));
 	}
 
 	private void drawChunksBorders(ShapeRenderer shapes) {
@@ -113,7 +116,8 @@ public class EntitiesActor extends Actor {
 		}
 	}
 
-	private void manageGhostStructure() {
+	@SuppressWarnings("unchecked")
+	private void drawGhostStructure(Batch batch) {
 		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
 		ItemStack heldItemStack = PixurvivalGame.getClient().getMyInventory().getHeldItemStack();
 		if (heldItemStack != null && heldItemStack.getItem() instanceof StructureItem) {
@@ -123,7 +127,11 @@ public class EntitiesActor extends Actor {
 			Structure structure = ((StructureItem) heldItemStack.getItem()).getStructure();
 			boolean valid = ActionPreconditions.canPlace(myPlayer, structure, x, y);
 			GhostStructure ghostStructure = new GhostStructure(structure, x, y, valid);
-			objectsToDraw.add(ghostStructure);
+			ElementDrawer<Body> drawer = ((ElementDrawer<Body>) drawers.get(ghostStructure.getClass()));
+			drawer.backgroundDraw(batch, ghostStructure);
+			drawer.drawShadow(batch, ghostStructure);
+			drawer.draw(batch, ghostStructure);
+			drawer.frontDraw(batch, ghostStructure);
 		}
 	}
 

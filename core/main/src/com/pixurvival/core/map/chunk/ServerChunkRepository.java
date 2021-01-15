@@ -7,12 +7,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.message.WorldUpdate;
 
 /**
- * Chunk repository for server and local games, stores the chunk map and
- * entities.
+ * Chunk repository for server and local games, stores the chunk map and its
+ * entities. Players are never stored, since they have their own special
+ * management.
  * 
  * @author SharkHendrix
  *
@@ -28,7 +30,11 @@ public class ServerChunkRepository implements ChunkRepository {
 		entityByteBuffer.position(0);
 		entityByteBuffer.put(EntityGroup.END_MARKER);
 		chunk.getMap().getWorld().getTime().setSerializationContextTimeToNow();
+		Map<Long, Entity> players = chunk.getEntities().removeGroup(EntityGroup.PLAYER);
 		chunk.getEntities().writeRepositoryUpdate(entityByteBuffer);
+		if (players != null) {
+			chunk.getEntities().setGroup(EntityGroup.PLAYER, players);
+		}
 		entityByteBuffer.put(EntityGroup.END_MARKER);
 		entityByteBuffer.put((byte) 0);
 		byte[] bufferArray = entityByteBuffer.array();

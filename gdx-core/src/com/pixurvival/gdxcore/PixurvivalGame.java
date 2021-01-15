@@ -317,7 +317,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	@Override
-	public void spectatorStarted() {
+	public void playerFocusChanged() {
 		DrawData drawData = (DrawData) getClient().getMyPlayer().getCustomData();
 		if (drawData != null) {
 			drawData.getDrawPosition().set(getClient().getMyPlayer().getPosition());

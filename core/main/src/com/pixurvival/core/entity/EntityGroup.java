@@ -12,7 +12,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum EntityGroup {
-	PLAYER((w, id) -> w.getPlayerEntities().get(id), PlayerEntity.class),
+	PLAYER((w, id) -> {
+		PlayerEntity entity = w.getPlayerEntities().get(id);
+		return entity;
+	}, PlayerEntity.class),
 	ITEM_STACK((w, id) -> new ItemStackEntity(), ItemStackEntity.class),
 	CREATURE((w, id) -> new CreatureEntity(), CreatureEntity.class),
 	EFFECT((w, id) -> new EffectEntity(), EffectEntity.class);

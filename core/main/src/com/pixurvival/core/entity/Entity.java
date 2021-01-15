@@ -22,8 +22,6 @@ import lombok.Setter;
 /**
  * Root class of all elements of the game: Players, Creatures, Items, Effects...
  * 
- * 
- * 
  * @author SharkHendrix
  *
  */

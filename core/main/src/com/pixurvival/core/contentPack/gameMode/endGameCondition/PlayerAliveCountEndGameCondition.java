@@ -31,15 +31,22 @@ public abstract class PlayerAliveCountEndGameCondition extends EndGameCondition 
 
 	@Override
 	public void entityRemoved(Entity e) {
-		// TODO Use a kind of listener that only informs of players deaths
-		if (e instanceof PlayerEntity) {
-			setGameData(e.getWorld(), compute(e.getWorld()));
-		}
+		// Nothing
 	}
 
 	@Override
 	public void sneakyEntityRemoved(Entity e) {
 		// Nothing
+	}
+
+	@Override
+	public void playerDied(PlayerEntity player) {
+		setGameData(player.getWorld(), compute(player.getWorld()));
+	}
+
+	@Override
+	public void playerRespawned(PlayerEntity player) {
+		setGameData(player.getWorld(), compute(player.getWorld()));
 	}
 
 	protected abstract boolean compute(World world);

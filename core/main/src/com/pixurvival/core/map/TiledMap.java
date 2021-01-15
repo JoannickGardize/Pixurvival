@@ -171,10 +171,19 @@ public class TiledMap {
 	}
 
 	private void unloadChunk(Chunk chunk) {
-		getWorld().getEntityPool().removeAll(chunk.getEntities());
+		if (getWorld().isServer()) {
+			removePlayersFromChunk(chunk);
+			getWorld().getEntityPool().removeAll(chunk.getEntities());
+		}
 		repository.save(chunk);
 		chunks.remove(chunk.getPosition());
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
+	}
+
+	private void removePlayersFromChunk(Chunk chunk) {
+		Collection<Entity> players = chunk.getEntities().get(EntityGroup.PLAYER);
+		players.forEach(e -> e.setChunk(null));
+		players.clear();
 	}
 
 	public Chunk chunkAt(float x, float y) {

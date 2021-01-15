@@ -11,4 +11,5 @@ import lombok.Setter;
 @Setter
 public class PlayerDead {
 	private long id;
+	private long respawnTime;
 }

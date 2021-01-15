@@ -17,5 +17,6 @@ public abstract class CommandProcessor {
 
 	protected abstract String execute(CommandExecutor executor, String[] args) throws CommandExecutionException;
 
+	// TODO String list instead of class type
 	public abstract Class<?> getAutocompleteArgType(int argIndex);
 }

@@ -68,6 +68,22 @@ public class ByteBufferUtils {
 		return buffer.get() == 1;
 	}
 
+	public static void putBooleans(ByteBuffer buffer, boolean b1, boolean b2) {
+		buffer.put((byte) ((b1 ? 1 : 0) | (b2 ? 2 : 0)));
+	}
+
+	public static byte getBooleansMask(ByteBuffer buffer) {
+		return buffer.get();
+	}
+
+	public static boolean getBoolean1(byte mask) {
+		return (mask & 1) == 1;
+	}
+
+	public static boolean getBoolean2(byte mask) {
+		return (mask & 2) == 2;
+	}
+
 	public static void putString(ByteBuffer buffer, String s) {
 		byte[] data = s.getBytes(StandardCharsets.UTF_8);
 		VarLenNumberIO.writePositiveVarInt(buffer, data.length);

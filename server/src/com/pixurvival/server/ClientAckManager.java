@@ -81,10 +81,13 @@ public class ClientAckManager {
 
 	/**
 	 * @param session
-	 * @return true if acks are considered ok, false if ack is considered
-	 *         missing and a full update is required.
+	 * @return true if acks are considered ok, false if at least one ack is
+	 *         considered missing and a full update is required.
 	 */
 	public boolean check(PlayerGameSession session) {
+		if (session.getPing() == -1) {
+			return true;
+		}
 		long time = session.getPlayerEntity().getWorld().getTime().getTimeMillis();
 		long threshold = (long) (((session.getPing() * PING_TOLERANCE_MULTIPLIER) + GameConstants.CLIENT_STREAM_INTERVAL + 66) * session.getAckThresholdMultiplier());
 		boolean ok = true;

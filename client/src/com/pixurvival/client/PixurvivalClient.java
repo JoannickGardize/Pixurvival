@@ -41,6 +41,7 @@ import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.LoginRequest;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.RefreshRequest;
+import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.message.WorldUpdate;
@@ -54,6 +55,7 @@ import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
 import com.pixurvival.core.util.ReleaseVersion;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -75,6 +77,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	private @Getter Locale currentLocale;
 	private @Getter boolean spectator;
 	private @Getter int myTeamId = 1;
+	private @Getter long myOriginalPlayerId;
 	private ContentPackIdentifier waitingContentPack;
 	private SingleplayerLobby singlePlayerLobby;
 
@@ -116,12 +119,20 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	}
 
 	public void spectate(Spectate spectate) {
-		PlayerEntity player = world.getPlayerEntities().get(spectate.getPlayerId());
-		player.getPosition().set(spectate.getPlayerPosition());
+		focusPlayer(spectate.getPlayerId(), spectate.getPlayerPosition(), true);
+	}
+
+	public void respawn(Respawn respawn) {
+		focusPlayer(respawn.getPlayerId(), respawn.getPlayerPosition(), false);
+	}
+
+	private void focusPlayer(long playerId, Vector2 newPosition, boolean spectator) {
+		PlayerEntity player = world.getPlayerEntities().get(playerId);
+		player.getPosition().set(newPosition);
 		player.setInventory(world.getMyPlayer().getInventory());
-		spectator = true;
+		this.spectator = spectator;
 		world.setMyPlayer(player);
-		listeners.forEach(ClientGameListener::spectatorStarted);
+		listeners.forEach(ClientGameListener::playerFocusChanged);
 	}
 
 	public void connectToServer(String address, int port, String playerName) {
@@ -197,6 +208,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void initializeNetworkWorld(CreateWorld createWorld) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
+			myOriginalPlayerId = createWorld.getMyOriginalPlayerId();
 			setWorld(World.createClientWorld(createWorld, contentPackContext));
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = getLocaleFor(world.getContentPack());
@@ -211,7 +223,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			spectator = createWorld.isSpectator();
 			notify(ClientGameListener::initializeGame);
 			if (spectator) {
-				notify(ClientGameListener::spectatorStarted);
+				notify(ClientGameListener::playerFocusChanged);
 			}
 		} catch (ContentPackException e) {
 			// TODO
@@ -235,14 +247,14 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			throw new LoadGameException(Reason.PARSE_EXCEPTION, e.getMessage());
 		}
 		ReleaseVersion packVersion = ReleaseVersion.valueFor(localGamePack.getReleaseVersion());
-		if (!ReleaseVersion.actual().isCompatibleWith(packVersion)) {
+		if (!ReleaseVersion.actual().isContentPackCompatibleWith(packVersion)) {
 			throw new LoadGameException(Reason.INCOMPATIBLE_CONTENT_PACK_VERSION, packVersion, ReleaseVersion.actual());
 		}
 		if (!contentPackContext.getErrors(localGamePack).isEmpty()) {
 			throw new LoadGameException(Reason.CONTAINS_ERRORS);
 		}
 		currentLocale = getLocaleFor(localGamePack);
-		setWorld(World.createLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
+		setWorld(World.createNewLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
 		world.setSaveName(saveName);
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
@@ -254,6 +266,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			throw new LoadGameException(Reason.OTHER, e.getMessage());
 		}
 		world.getMyPlayer().addItemCraftDiscoveryListener(this);
+		myOriginalPlayerId = world.getMyPlayer().getId();
 		notify(ClientGameListener::initializeGame);
 		addPlugin(new WorldUpdater());
 		for (String command : gameBeginningCommands) {
@@ -266,11 +279,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void loadAndStartLocalGame(String saveName) throws LoadGameException {
 		try {
 			setWorld(WorldSerialization.load(saveName, contentPackContext));
-			world.setSaveName(saveName);
 			currentLocale = getLocaleFor(world.getContentPack());
 			world.initializeLoadedGame();
 			notify(ClientGameListener::initializeGame);
 			world.getMyPlayer().addItemCraftDiscoveryListener(this);
+			myOriginalPlayerId = world.getMyPlayer().getId();
 			addPlugin(new WorldUpdater());
 			singlePlayerLobby = null;
 			notify(ClientGameListener::gameStarted);
@@ -291,10 +304,10 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	}
 
 	public void sendAction(IPlayerActionRequest request) {
-		if (world != null && getMyPlayer() != null && getMyPlayer().isAlive() && !spectator) {
+		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
 				client.sendUDP(request);
-				if (request.isClientPreapply()) {
+				if (request.isClientPreapply() && world.getMyPlayer().getId() == myOriginalPlayerId) {
 					synchronized (playerActionRequests) {
 						playerActionRequests.add(request);
 					}
@@ -396,5 +409,9 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		if (world != null) {
 			discovered(Arrays.stream(itemCraftIds).mapToObj(world.getContentPack().getItemCrafts()::get).collect(Collectors.toList()));
 		}
+	}
+
+	public PlayerEntity getMyOriginalPlayerEntity() {
+		return world.getPlayerEntities().get(myOriginalPlayerId);
 	}
 }

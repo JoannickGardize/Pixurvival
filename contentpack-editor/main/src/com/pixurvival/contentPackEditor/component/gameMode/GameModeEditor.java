@@ -1,6 +1,8 @@
 package com.pixurvival.contentPackEditor.component.gameMode;
 
 import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.Collections;
 
 import javax.swing.BoxLayout;
@@ -11,12 +13,17 @@ import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerIntervalEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.contentPack.gameMode.PlayerDeathItemHandling;
+import com.pixurvival.core.contentPack.gameMode.PlayerRespawnType;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.EndGameCondition;
 import com.pixurvival.core.contentPack.gameMode.endGameCondition.RemainingTeamEndCondition;
 import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
@@ -29,6 +36,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 	private ElementChooserButton<Ecosystem> ecosystemChooser = new ElementChooserButton<>(Ecosystem.class);
 	private ElementChooserButton<MapProvider> mapGeneratorChooser = new ElementChooserButton<>(MapProvider.class);
+	private TimeInput playerRespawnDelayInput = new TimeInput();
 
 	public GameModeEditor() {
 		super(GameMode.class);
@@ -47,6 +55,11 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		}), RemainingTeamEndCondition::new);
 		MapLimitsEditor mapLimitsEditor = new MapLimitsEditor();
 		RolesEditor rolesEditor = new RolesEditor();
+		EnumChooser<PlayerDeathItemHandling> playerDeathItemHandlingChooser = new EnumChooser<>(PlayerDeathItemHandling.class);
+		EnumChooser<PlayerRespawnType> playerRespawnTypeChooser = new EnumChooser<>(PlayerRespawnType.class);
+		// addValueChangeListener(g ->
+		// playerRespawnDelayInput.setEnabled(g.getPlayerRespawnType() !=
+		// PlayerRespawnType.NONE));
 
 		// Binding
 
@@ -60,6 +73,9 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		bind(endGameConditionsEditor, "endGameConditions");
 		bind(mapLimitsEditor, "mapLimits");
 		bind(rolesEditor, "roles");
+		bind(playerDeathItemHandlingChooser, "playerDeathItemHandling");
+		bind(playerRespawnTypeChooser, "playerRespawnType");
+		bind(playerRespawnDelayInput, "playerRespawnDelay");
 
 		// Layouting
 
@@ -69,6 +85,15 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapProvider", mapGeneratorChooser);
 		playerSpawnEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.playerSpawn"));
 
+		JPanel deathPanel = new JPanel(new GridBagLayout());
+		deathPanel.setBorder(LayoutUtils.createGroupBorder("gameMode.deathHandling"));
+		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+		LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.playerDeathItemHandling", playerDeathItemHandlingChooser, gbc);
+		LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.playerRespawnType", playerRespawnTypeChooser, gbc);
+		LayoutUtils.nextColumn(gbc);
+		gbc.gridy++;
+		LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.playerRespawnDelay", playerRespawnDelayInput, gbc);
+
 		JPanel generalPanel = new JPanel();
 		generalPanel.setLayout(new BoxLayout(generalPanel, BoxLayout.Y_AXIS));
 		generalPanel.add(teamPanel);
@@ -76,6 +101,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		generalPanel.add(endGameConditionsEditor);
 		generalPanel.add(LayoutUtils.single(elementLinksPanel));
 		generalPanel.add(playerSpawnEditor);
+		generalPanel.add(deathPanel);
 
 		JTabbedPane tabbedPane = new JTabbedPane();
 		tabbedPane.addTab(TranslationService.getInstance().getString("generic.general"), generalPanel);
@@ -100,5 +126,13 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 		boolean result = super.isValueValid(value);
 		setValue(previousValue, true);
 		return result;
+	}
+
+	@Override
+	protected void valueChanged(ValueComponent<?> source) {
+		if (getValue() != null) {
+			playerRespawnDelayInput.setEnabled(getValue().getPlayerRespawnType() != PlayerRespawnType.NONE);
+		}
+		super.valueChanged(source);
 	}
 }

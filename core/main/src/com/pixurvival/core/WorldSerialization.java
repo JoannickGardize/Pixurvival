@@ -30,6 +30,8 @@ import com.pixurvival.core.contentPack.gameMode.MapLimitsAnchor;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.livingEntity.KillCreatureEntityAction;
+import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerRespawnAction;
 import com.pixurvival.core.map.RemoveDurationStructureAction;
 import com.pixurvival.core.map.SpawnAction;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -44,6 +46,7 @@ import com.pixurvival.core.mapLimits.NextMapLimitAnchorAction;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.FileUtils;
+import com.pixurvival.core.util.LongSequenceIOHelper;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.ReleaseVersion;
 import com.pixurvival.core.util.VarLenNumberIO;
@@ -75,6 +78,15 @@ public class WorldSerialization {
 			world.getTime().write(buffer);
 			VarLenNumberIO.writePositiveVarLong(buffer, world.getEntityPool().getNextId());
 			flush(buffer, output);
+			// Teams
+			world.getTeamSet().write(buffer);
+			// Players data
+			VarLenNumberIO.writePositiveVarInt(buffer, world.getPlayerEntities().size());
+			LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
+			world.getPlayerEntities().values().forEach(p -> {
+				idSequence.write(buffer, p.getId());
+				p.writeRepositoryUpdate(buffer);
+			});
 			// Map and entities data
 			Collection<ServerChunkRepositoryEntry> mapData = world.getMap().saveAll();
 			VarLenNumberIO.writePositiveVarInt(buffer, mapData.size());
@@ -90,7 +102,6 @@ public class WorldSerialization {
 			kryo.writeObjectOrNull(kryoOutput, world.getMapLimitsRun(), MapLimitsRun.class);
 			kryo.writeObject(kryoOutput, world.getChunkCreatureSpawnManager().getActionMemory());
 			kryo.writeObject(kryoOutput, world.getSpawnCenter());
-			kryo.writeObject(kryoOutput, world.getMyPlayer().getPosition());
 			kryoOutput.flush();
 			Files.write(getSaveFile(world.getSaveName()).toPath(), output.toByteArray());
 		}
@@ -99,8 +110,9 @@ public class WorldSerialization {
 	@SuppressWarnings("unchecked")
 	public static World load(String saveName, ContentPackContext contentPackSerialization) throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
+		// Global data
 		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
-		if (!ReleaseVersion.actual().isCompatibleWith(version)) {
+		if (!ReleaseVersion.actual().isSavesCompatibleWith(version)) {
 			throw new LoadGameException(Reason.INCOMPATIBLE_VERSION, version, ReleaseVersion.actual());
 		}
 		ContentPackIdentifier identifier = new ContentPackIdentifier(ByteBufferUtils.getString(buffer));
@@ -120,10 +132,27 @@ public class WorldSerialization {
 		if (checkResult == ContentPackValidityCheckResult.NOT_SAME) {
 			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}
-		World world = World.createLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong());
+		World world = World.createExistingLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong());
 		Kryo kryo = getKryo(world.getGameMode().getEcosystem());
 		world.getTime().apply(buffer);
 		world.getEntityPool().setNextId(VarLenNumberIO.readPositiveVarLong(buffer));
+		// Teams
+		world.getTeamSet().apply(buffer);
+		// Players data
+		int playerCount = VarLenNumberIO.readPositiveVarInt(buffer);
+		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
+		for (int i = 0; i < playerCount; i++) {
+			PlayerEntity playerEntity = new PlayerEntity();
+			playerEntity.setId(idSequence.read(buffer));
+			playerEntity.setWorld(world);
+			playerEntity.initialize();
+			playerEntity.applyRepositoryUpdate(buffer);
+			world.getPlayerEntities().put(playerEntity.getId(), playerEntity);
+			if (playerEntity.isAlive()) {
+				world.getEntityPool().addOld(playerEntity);
+			}
+		}
+		// Map and entities data
 		int size = VarLenNumberIO.readPositiveVarInt(buffer);
 		ChunkRepository chunkRepository = world.getMap().getRepository();
 		for (int i = 0; i < size; i++) {
@@ -132,6 +161,7 @@ public class WorldSerialization {
 			byte[] entityData = ByteBufferUtils.getBytes(buffer);
 			chunkRepository.add(new ServerChunkRepositoryEntry(time, new CompressedChunk(world.getMap(), chunkData), entityData));
 		}
+		// kryo stuff
 		try (Input kryoInput = new Input(buffer.array())) {
 			kryoInput.setPosition(buffer.position());
 			world.getActionTimerManager().setActionTimerQueue(kryo.readObject(kryoInput, PriorityQueue.class));
@@ -139,13 +169,13 @@ public class WorldSerialization {
 			world.setMapLimitsRun(kryo.readObjectOrNull(kryoInput, MapLimitsRun.class));
 			world.getChunkCreatureSpawnManager().setActionMemory(kryo.readObject(kryoInput, HashMap.class));
 			world.setSpawnCenter(kryo.readObject(kryoInput, Vector2.class));
-			world.getMyPlayer().getPosition().set(kryo.readObject(kryoInput, Vector2.class));
 			buffer.position(kryoInput.position());
 		}
 		if (world.getMapLimitsRun() != null) {
 			MapLimitsManager mapLimitsManager = new MapLimitsManager();
 			world.addPlugin(mapLimitsManager);
 		}
+		world.setSaveName(saveName);
 		return world;
 	}
 
@@ -164,6 +194,7 @@ public class WorldSerialization {
 
 	private static Kryo getKryo(Ecosystem ecosystem) {
 		Kryo kryo = new Kryo();
+		kryo.setReferences(false);
 		kryo.setRegistrationRequired(true);
 		kryo.register(EventAction.class);
 		kryo.register(HarvestableStructureUpdate.class);
@@ -184,6 +215,7 @@ public class WorldSerialization {
 		kryo.register(MapLimitsRun.class);
 		kryo.register(Vector2.class);
 		kryo.register(ActionTimer.class);
+		kryo.register(PlayerRespawnAction.class);
 		return kryo;
 	}
 

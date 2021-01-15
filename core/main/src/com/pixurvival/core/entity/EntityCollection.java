@@ -36,13 +36,11 @@ public class EntityCollection {
 	private @Getter(AccessLevel.PROTECTED) Map<EntityGroup, Map<Long, Entity>> entities = new EnumMap<>(EntityGroup.class);
 
 	public Collection<Entity> get(EntityGroup group) {
-		Map<Long, Entity> groupMap = entities.get(group);
-		return groupMap == null ? Collections.emptyList() : groupMap.values();
+		return entities.computeIfAbsent(group, key -> new HashMap<>()).values();
 	}
 
 	protected Map<Long, Entity> getMap(EntityGroup group) {
-		Map<Long, Entity> groupMap = entities.get(group);
-		return groupMap == null ? Collections.emptyMap() : groupMap;
+		return entities.computeIfAbsent(group, key -> new HashMap<>());
 	}
 
 	public void add(Entity entity) {
@@ -79,6 +77,14 @@ public class EntityCollection {
 
 	public void addAll(List<Entity> entityList) {
 		entityList.forEach(this::add);
+	}
+
+	public Map<Long, Entity> removeGroup(EntityGroup group) {
+		return entities.remove(group);
+	}
+
+	public void setGroup(EntityGroup group, Map<Long, Entity> groupEntities) {
+		entities.put(group, groupEntities);
 	}
 
 	public void writeFullUpdate(ByteBuffer byteBuffer) {
@@ -181,6 +187,7 @@ public class EntityCollection {
 	public void applyUpdate(ByteBuffer byteBuffer, World world, boolean repositoryMode) {
 		byte groupId;
 		// Entity removes
+		// TODO stash useless ?
 		Map<Long, Entity> stash = applyRemove(byteBuffer);
 		// Entity updates
 		while ((groupId = byteBuffer.get()) != EntityGroup.END_MARKER) {

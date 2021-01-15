@@ -19,6 +19,8 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.ItemCraftAvailable;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.PlayerDead;
+import com.pixurvival.core.message.PlayerRespawn;
+import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
@@ -62,10 +64,21 @@ class NetworkMessageHandler extends Listener {
 		});
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 		putMessageAction(Spectate.class, game::spectate);
+		putMessageAction(Respawn.class, game::respawn);
 		putMessageAction(PlayerDead[].class, pd -> {
 			for (PlayerDead playerDead : pd) {
 				PlayerEntity player = game.getWorld().getPlayerEntities().get(playerDead.getId());
 				player.getTeam().addDead(player);
+				player.setRespawnTime(playerDead.getRespawnTime());
+				game.getWorld().getEntityPool().notifyPlayerDied(player);
+
+			}
+		});
+		putMessageAction(PlayerRespawn[].class, pr -> {
+			for (PlayerRespawn playerRespawn : pr) {
+				PlayerEntity player = game.getWorld().getPlayerEntities().get(playerRespawn.getId());
+				player.getTeam().addAlive(player);
+				game.getWorld().getEntityPool().notifyPlayerRespawned(player);
 			}
 		});
 		putMessageAction(EndGameData.class, game::notifyGameEnded);

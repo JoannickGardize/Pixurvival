@@ -29,6 +29,14 @@ public class ChunkGroupChangeHelper {
 		previousSet.forEach(oldPositionAction::accept);
 	}
 
+	@Deprecated
+	public void removeAll(Consumer<ChunkPosition> oldPositionAction) {
+		chunkPositions.getCurrentValue().forEach(oldPositionAction::accept);
+		chunkPositions.getCurrentValue().clear();
+		chunkPositions.getPreviousValue().clear();
+		rectangle.reset();
+	}
+
 	public boolean contains(ChunkPosition position) {
 		return chunkPositions.getCurrentValue().contains(position);
 	}

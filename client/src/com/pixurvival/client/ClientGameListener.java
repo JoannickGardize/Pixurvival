@@ -17,7 +17,7 @@ public interface ClientGameListener {
 
 	void error(Throwable e);
 
-	void spectatorStarted();
+	void playerFocusChanged();
 
 	void gameStarted();
 

@@ -60,6 +60,8 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	private long stunTermTime = 0;
 	private long invincibleTermTime = 0;
 
+	private @Getter Vector2 spawnPosition;
+
 	@Override
 	protected boolean canForward() {
 		return getWorld().getTime().getTimeMillis() >= stunTermTime;
@@ -144,6 +146,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	@Override
 	public void initializeAtCreation() {
 		addHealthAdapterListener();
+		if (getWorld().isServer()) {
+			spawnPosition = getPosition().copy();
+		}
 	}
 
 	protected void addHealthAdapterListener() {
@@ -161,6 +166,12 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		}
 	}
 
+	/**
+	 * Change the position of the entity. Must be called instead of directly
+	 * changing the position to mark the state of this entity to changed.
+	 * 
+	 * @param position
+	 */
 	public void teleport(Vector2 position) {
 		getPosition().set(position);
 		setStateChanged(true);
@@ -472,6 +483,8 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	@Override
 	public void writeRepositoryUpdate(ByteBuffer buffer) {
 		writeUpdate(buffer, (byte) (getFullUpdateContentMask() & ~UPDATE_CONTENT_MASK_STATS));
+		buffer.putFloat(spawnPosition.getX());
+		buffer.putFloat(spawnPosition.getY());
 		VarLenNumberIO.writePositiveVarInt(buffer, persistentAlterationEntries.size());
 		for (PersistentAlterationEntry entry : persistentAlterationEntries) {
 			TeamMemberSerialization.write(buffer, entry.getSource(), true);
@@ -484,6 +497,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer buffer) {
 		super.applyRepositoryUpdate(buffer);
+		spawnPosition = new Vector2(buffer.getFloat(), buffer.getFloat());
 		int size = VarLenNumberIO.readPositiveVarInt(buffer);
 		for (int i = 0; i < size; i++) {
 			TeamMember source = TeamMemberSerialization.read(buffer, getWorld(), true);

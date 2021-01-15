@@ -137,6 +137,8 @@ public class LayoutUtils {
 		panel.add(component, BorderLayout.CENTER);
 		if (component instanceof ValueComponent) {
 			((ValueComponent<?>) component).setAssociatedLabel(label);
+		} else if (((JComponent) component).getComponentCount() > 0 && ((JComponent) component).getComponent(0) instanceof ValueComponent) {
+			((ValueComponent<?>) ((JComponent) component).getComponent(0)).setAssociatedLabel(label);
 		}
 		if (TranslationService.getInstance().containsKey(tooltipKey)) {
 			String toolTipText = TranslationService.getInstance().getString(tooltipKey);

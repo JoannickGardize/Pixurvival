@@ -169,6 +169,12 @@ public class Inventory {
 		return false;
 	}
 
+	public void removeAll() {
+		for (int i = slots.length - 1; i >= 0; i--) {
+			setSlot(i, null);
+		}
+	}
+
 	/**
 	 * Try to add the maximum quantity of the given ItemStack to this inventory, it
 	 * will be stacked in priority with similar items if possible. It can be split
