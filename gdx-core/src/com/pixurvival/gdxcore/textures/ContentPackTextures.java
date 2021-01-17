@@ -81,7 +81,7 @@ public class ContentPackTextures {
 		for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
 			TextureAnimationSet set = new TextureAnimationSet(pack, spriteSheet, transform);
 			if (spriteSheet.isShadow()) {
-				set.setShadow(getShadow(spriteSheet.getWidth()));
+				set.setShadow(getShadow(spriteSheet.getShadowWidth()));
 			}
 			set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
 			animationSet.put(spriteSheet, set);

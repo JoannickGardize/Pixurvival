@@ -13,12 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
@@ -41,6 +43,7 @@ import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
+import com.pixurvival.gdxcore.ui.MouseIconActor;
 import com.pixurvival.gdxcore.ui.PauseMenu;
 import com.pixurvival.gdxcore.ui.RespawnTimerActor;
 import com.pixurvival.gdxcore.ui.StatusBarUI;
@@ -48,6 +51,7 @@ import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
+import com.pixurvival.gdxcore.ui.tooltip.SubStatsTooltip;
 import com.pixurvival.gdxcore.util.FillActor;
 
 import lombok.Getter;
@@ -81,6 +85,7 @@ public class WorldScreen implements Screen {
 	private CraftUI craftUI = new CraftUI();
 	private MiniMapUI miniMapUI = new MiniMapUI();
 	private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
+	private MouseIconActor mouseIconActor = new MouseIconActor();
 
 	private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
 
@@ -133,9 +138,12 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(chatUI);
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(statusBarUI);
+		hudStage.addActor(mouseIconActor);
 		statusBarUI.updatePosition();
 		hudStage.addActor(ItemCraftTooltip.getInstance());
 		hudStage.addActor(ItemTooltip.getInstance());
+		hudStage.addActor(SubStatsTooltip.getInstance());
+		SubStatsTooltip.getInstance().setVisible(false);
 		hudStage.addActor(endGameUI);
 		debugInfosActors = new DebugInfosActor();
 		debugInfosActors.setVisible(false);
@@ -217,6 +225,9 @@ public class WorldScreen implements Screen {
 		}
 
 		hudStage.getViewport().apply();
+		Vector2 position = getWorldCursorPosition();
+		MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
+		setMouseInteractionIconVisible(ActionPreconditions.canInteract(myPlayer, structure));
 		hudStage.act();
 		hudStage.draw();
 		defaultSoundsPlayer.playSounds();
@@ -282,5 +293,13 @@ public class WorldScreen implements Screen {
 
 	public void addItemCrafts(Collection<ItemCraft> crafts) {
 		craftUI.addItemCrafts(crafts);
+	}
+
+	public void setMouseInteractionIconVisible(boolean visible) {
+		mouseIconActor.setVisible(visible);
+	}
+
+	public static Vector2 getWorldCursorPosition() {
+		return WorldScreen.getWorldStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 	}
 }

@@ -10,8 +10,8 @@ public class UIWindow extends Window {
 		setName(name);
 		// Remove default capture listeners, it contains a listener to click
 		// that push the window to the front of the overs, this default behavior
-		// totally break the use wee need of it, for example the "item in hand"
-		// actor mudst always be in front.
+		// totally break the use wee need of it here, for example the "item in hand"
+		// actor must always be in front.
 		getCaptureListeners().clear();
 		setResizable(false);
 		setMovable(false);

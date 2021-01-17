@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -56,7 +57,8 @@ public class CraftUI extends UIWindow {
 		@NonNull
 		CraftCategory category;
 		List<ItemCraft> itemCrafts = new ArrayList<>();
-		Cell<CraftTable> tableCell;
+		Actor title;
+		Cell<CraftGroup> tableCell;
 	}
 
 	private Map<CraftCategory, CategoryEntry> sortedItemCrafts = new EnumMap<>(CraftCategory.class);
@@ -77,32 +79,26 @@ public class CraftUI extends UIWindow {
 			}
 		}
 		for (Entry<CraftCategory, CategoryEntry> entry : sortedItemCrafts.entrySet()) {
-			table.add(new Label(entry.getKey().getTitle(), PixurvivalGame.getSkin(), "white"));
+			entry.getValue().title = new Label(entry.getKey().getTitle(), PixurvivalGame.getSkin(), "white");
+			table.add(entry.getValue().title).expandX();
 			table.row();
 			List<ItemCraft> categoryList = entry.getValue().itemCrafts;
-			entry.getValue().tableCell = table.add(new CraftTable(categoryList, 8)).fill().prefHeight(60f + ((categoryList.size() - 1f) / 8f) * 60f);
+			entry.getValue().tableCell = table.add(new CraftGroup(categoryList)).expandX().fill();
 			table.row();
 		}
 		table.add().expand();
 		ScrollPane scrollPane = new ScrollPane(table, PixurvivalGame.getSkin());
 		scrollPane.setScrollingDisabled(true, false);
 		add(scrollPane).expand().fill();
-		pack();
 	}
 
 	public void addItemCrafts(Collection<ItemCraft> itemCrafts) {
-		Map<CraftCategory, CategoryEntry> changedCategories = new EnumMap<>(CraftCategory.class);
 		for (ItemCraft itemCraft : itemCrafts) {
 			CraftCategory category = CraftCategory.of(itemCraft.getResult().getItem());
 			CategoryEntry entry = sortedItemCrafts.get(category);
 			entry.itemCrafts.add(itemCraft);
-			changedCategories.put(category, entry);
+			entry.tableCell.getActor().addSlot(itemCraft, true);
 		}
-		for (CategoryEntry entry : changedCategories.values()) {
-			entry.tableCell.getActor().append(entry.itemCrafts);
-			entry.tableCell.prefHeight(60f + ((entry.itemCrafts.size() - 1f) / 8f) * 60f);
-		}
-		invalidate();
 	}
 
 }

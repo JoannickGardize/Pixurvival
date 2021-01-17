@@ -1,7 +1,5 @@
 package com.pixurvival.gdxcore.ui.tooltip;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +22,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class RepresenterUtils {
 
-	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.#", DecimalFormatSymbols.getInstance(Locale.US));
 	public static final float ITEM_WIDTH = 20;
 
 	private static StringBuilder sb = new StringBuilder();
@@ -63,7 +60,7 @@ public class RepresenterUtils {
 			if (m != 0) {
 				sb.append(" ");
 			}
-			sb.append(DECIMAL_FORMAT.format(s)).append("s");
+			sb.append(PixurvivalGame.DECIMAL_FORMAT.format(s)).append("s");
 		}
 	}
 
@@ -94,14 +91,14 @@ public class RepresenterUtils {
 	}
 
 	public static void appendStatAmount(StringBuilder sb, StatFormula statAmount) {
-		sb.append(DECIMAL_FORMAT.format(statAmount.getBase()));
+		sb.append(PixurvivalGame.DECIMAL_FORMAT.format(statAmount.getBase()));
 		if (!statAmount.getStatMultipliers().isEmpty()) {
 			sb.append(" ");
 		}
 		StatSet stats = PixurvivalGame.getClient().getMyPlayer().getStats();
 		for (StatMultiplier statMultiplier : statAmount.getStatMultipliers()) {
 			StatType type = statMultiplier.getStatType();
-			sb.append(getColorTag(type)).append("(+").append(DECIMAL_FORMAT.format(stats.getValue(type) * statMultiplier.getMultiplier())).append(")");
+			sb.append(getColorTag(type)).append("(+").append(PixurvivalGame.DECIMAL_FORMAT.format(stats.getValue(type) * statMultiplier.getMultiplier())).append(")");
 		}
 	}
 
@@ -154,7 +151,7 @@ public class RepresenterUtils {
 
 	public static Table labelledValue(String labelKey, float value) {
 		Table table = createTable();
-		appendLabelledRow(table, labelKey, DECIMAL_FORMAT.format(value));
+		appendLabelledRow(table, labelKey, PixurvivalGame.DECIMAL_FORMAT.format(value));
 		return table;
 	}
 
@@ -162,5 +159,13 @@ public class RepresenterUtils {
 		Table table = createTable();
 		appendLabelledRow(table, labelKey, value.toString());
 		return table;
+	}
+
+	public static String statValue(StatType type, float value) {
+		if (type == StatType.ARMOR) {
+			return PixurvivalGame.DECIMAL_FORMAT.format(value * 100) + "%";
+		} else {
+			return PixurvivalGame.DECIMAL_FORMAT.format(value);
+		}
 	}
 }

@@ -52,6 +52,11 @@ public class QuestionWindow extends Window {
 		pack();
 	}
 
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+	}
+
 	public void update(Viewport viewport) {
 		setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
 	}

@@ -2,7 +2,6 @@ package com.pixurvival.gdxcore.ui;
 
 import java.io.IOException;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,6 +12,7 @@ import com.pixurvival.core.WorldSerialization;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
 import com.pixurvival.gdxcore.menu.ControlsPanel;
+import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.menu.MenuButton;
 import com.pixurvival.gdxcore.util.Scene2dUtils;
 
@@ -58,7 +58,11 @@ public class PauseMenu extends Window {
 		saveButton.setDisabled(PixurvivalGame.getClient().getWorld().getType() != World.Type.LOCAL);
 		mainMenuTable.add(saveButton);
 		mainMenuTable.row();
-		mainMenuTable.add(new MenuButton("hud.pause.quit", Gdx.app::exit));
+		mainMenuTable.add(new MenuButton("hud.pause.quit", () -> {
+			PixurvivalGame.setScreen(MainMenuScreen.class);
+			PixurvivalGame.getClient().disconnectFromServer();
+			PixurvivalGame.getInstance().disposeServer();
+		}));
 
 		Stack stack = new Stack(mainMenuTable, controlsPanel);
 		controlsPanel.setVisible(false);

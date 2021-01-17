@@ -218,6 +218,7 @@ public class MultiplayerLobbyScreen implements Screen {
 
 	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
 		String messageKey = checkResult == ContentPackValidityCheckResult.NOT_FOUND ? "lobby.downloadContentPack.notFound" : "lobby.downloadContentPack.checksum";
+		// TODO keep this instance
 		questionWindow = new QuestionWindow("lobby.downloadContentPack.title", messageKey, () -> PixurvivalGame.getClient().acceptContentPack(identifier),
 				() -> PixurvivalGame.getClient().refuseContentPack(identifier));
 		stage.addActor(questionWindow);

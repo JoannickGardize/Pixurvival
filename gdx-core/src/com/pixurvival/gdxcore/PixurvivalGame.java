@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -62,6 +64,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	public static final String DEFAULT_ITALIC_FONT = "default_italic_font.ttf";
 	public static final String OVERLAY_FONT = "overlay_font.ttf";
 	public static final String ARROW = "arrow.png";
+	public static final String RIGHT_CLICK_ICON = "right_click_icon.png";
+
+	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
 
 	public static Skin getSkin() {
 		return instance.skin;
@@ -172,6 +177,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		loadSounds();
 		assetManager.load(I18N_BUNDLE, I18NBundle.class);
 		assetManager.load(ARROW, Texture.class);
+		assetManager.load(RIGHT_CLICK_ICON, Texture.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
 		sounds = new Sound[SoundPreset.values().length];

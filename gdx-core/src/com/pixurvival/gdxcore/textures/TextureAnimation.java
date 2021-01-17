@@ -25,6 +25,9 @@ public class TextureAnimation {
 	private @Getter float rotationPerSecond;
 	private @Getter int shadowWidth;
 	private @Getter float worldShadowWidth;
+
+	// TODO remove this when HARVESTED action removed
+	@Deprecated
 	private @Getter @Setter Texture shadow;
 
 	public TextureAnimation(TextureSheet textureSheet, Animation animation, EquipmentOffset equipmentOffset) {

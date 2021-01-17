@@ -64,6 +64,7 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 
 	@Override
 	public void structureRemoved(MapStructure mapStructure) {
+		playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH, mapStructure.getPosition()));
 	}
 
 	@Override

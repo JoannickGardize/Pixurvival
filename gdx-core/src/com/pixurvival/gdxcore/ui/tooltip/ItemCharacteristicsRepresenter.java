@@ -121,7 +121,7 @@ public class ItemCharacteristicsRepresenter {
 			RepresenterUtils.appendLabelledRow(table, "hud.item.duration", RepresenterUtils.formatHoursMinutesSecondes(structure.getDuration(), true));
 		}
 		if (structure.getLightEmissionRadius() > 0) {
-			RepresenterUtils.appendLabelledRow(table, "hud.item.lighEmission", RepresenterUtils.DECIMAL_FORMAT.format(structure.getLightEmissionRadius()));
+			RepresenterUtils.appendLabelledRow(table, "hud.item.lighEmission", PixurvivalGame.DECIMAL_FORMAT.format(structure.getLightEmissionRadius()));
 		}
 		return table;
 	}
@@ -159,7 +159,7 @@ public class ItemCharacteristicsRepresenter {
 				if (value > 0) {
 					sb.append("+");
 				}
-				sb.append(RepresenterUtils.DECIMAL_FORMAT.format(value));
+				sb.append(RepresenterUtils.statValue(statModifier.getStatType(), value));
 			} else {
 				sb.append(statModifier.getValue() / 100);
 				sb.append("%");

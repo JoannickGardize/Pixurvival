@@ -27,4 +27,9 @@ public class UILabel extends Label {
 		setAlignment(Align.right);
 	}
 
+	public static UILabel rawText(String text, Color color) {
+		UILabel label = new UILabel(color);
+		label.setText(text);
+		return label;
+	}
 }

@@ -35,6 +35,7 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 			(spriteSheet, t, frameX, frameY) -> AnimationTemplateFramesHandler.test(t, frameX, frameY));
 	private FrameNumberConstraint<EquipmentOffset> equipmentOffsetConstraint = new FrameNumberConstraint<>(
 			(spriteSheet, t, frameX, frameY) -> EquipmentOffsetFramesHandler.test(spriteSheet, frameX, frameY));
+	private IntegerInput shadowResizingInput = new IntegerInput();
 
 	public SpriteSheetEditor() {
 		super(SpriteSheet.class);
@@ -51,7 +52,6 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 		JTabbedPane previewTabs = new JTabbedPane();
 		FloatInput heightOffsetInput = new FloatInput();
 		BooleanCheckBox shadowCheckBox = new BooleanCheckBox();
-		IntegerInput shadowResizingInput = new IntegerInput();
 		previewTabs.setBorder(LayoutUtils.createGroupBorder("generic.preview"));
 		previewTabs.add(TranslationService.getInstance().getString("generic.image"), preview);
 
@@ -117,5 +117,9 @@ public class SpriteSheetEditor extends RootElementEditor<SpriteSheet> {
 	@Override
 	protected void valueChanged(ValueComponent<?> source) {
 		preview.setSpriteSheet(getValue());
+		if (getValue() != null) {
+			shadowResizingInput.setEnabled(getValue().isShadow());
+		}
+		super.valueChanged(source);
 	}
 }

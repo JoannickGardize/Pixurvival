@@ -42,4 +42,8 @@ public class SpriteSheet extends NamedIdentifiedElement {
 
 	private int shadowResizing;
 
+	public int getShadowWidth() {
+		return Math.max(0, width + shadowResizing);
+	}
+
 }

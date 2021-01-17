@@ -1,5 +1,8 @@
 package com.pixurvival.core.livingEntity.stats;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +23,7 @@ public enum StatType {
 
 	private Formula formula = s -> 0f;
 	private StatType[] dependencies = new StatType[0];
+	private StatType[] subStats;
 	private float minimum = Float.NEGATIVE_INFINITY;
 	private float maximum = Float.POSITIVE_INFINITY;
 
@@ -28,5 +32,27 @@ public enum StatType {
 		this.maximum = maximum;
 		this.formula = formula;
 		this.dependencies = dependencies;
+	}
+
+	static {
+		for (StatType statType : values()) {
+			setSubStats(statType);
+		}
+	}
+
+	private static void setSubStats(StatType statType) {
+		List<StatType> subStat = new ArrayList<>();
+		for (StatType other : values()) {
+			if (other == statType) {
+				continue;
+			}
+			for (StatType dependency : other.dependencies) {
+				if (dependency == statType) {
+					subStat.add(other);
+					break;
+				}
+			}
+		}
+		statType.subStats = subStat.toArray(new StatType[subStat.size()]);
 	}
 }

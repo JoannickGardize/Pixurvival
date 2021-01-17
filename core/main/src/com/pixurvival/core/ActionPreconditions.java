@@ -24,10 +24,9 @@ public class ActionPreconditions {
 
 	public static boolean canCraft(PlayerEntity playerEntity, ItemCraft itemCraft) {
 		Structure requiredStructure = itemCraft.getRequiredStructure();
-		if (requiredStructure != null) {
-			if (playerEntity.getWorld().getMap().findClosestStructure(playerEntity.getPosition(), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE, requiredStructure.getId()) == null) {
-				return false;
-			}
+		if (requiredStructure != null
+				&& playerEntity.getWorld().getMap().findClosestStructure(playerEntity.getPosition(), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE, requiredStructure.getId()) == null) {
+			return false;
 		}
 		return playerEntity.getInventory().contains(itemCraft.getRecipes());
 	}

@@ -1,11 +1,15 @@
 package com.pixurvival.gdxcore.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.Getter;
@@ -18,6 +22,7 @@ public class CraftSlot extends Button {
 	private ItemStackDrawer itemStackDrawer;
 	private @Getter ItemCraft itemCraft;
 	private @Setter @Getter boolean newlyDiscovered = true;
+	private boolean canCraft = false;
 
 	public CraftSlot(ItemCraft itemCraft, boolean newlyDiscovered) {
 		super(PixurvivalGame.getSkin());
@@ -31,11 +36,40 @@ public class CraftSlot extends Button {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		setColor(ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft) ? Color.WHITE : UNCRAFTABLE_COLOR);
+		// TODO do not compute this each frame
+		boolean canCraftNow = ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft);
+		setColor(canCraftNow ? Color.WHITE : UNCRAFTABLE_COLOR);
+		if (!canCraft && canCraftNow) {
+			addAction(Actions.repeat(2, Actions.sequence(Actions.color(Color.YELLOW, 0.25f, Interpolation.smoother), Actions.color(Color.WHITE, 0.25f, Interpolation.smoother))));
+		}
+		canCraft = canCraftNow;
 		itemStackDrawer.draw(batch);
 		if (newlyDiscovered) {
 			PixurvivalGame.getOverlayFont().draw(batch, "New!", getX() + 5, getY() + getHeight() - 5);
 		}
 	}
 
+	@Override
+	public float getPrefHeight() {
+		return getPrefSize();
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return getPrefSize();
+	}
+
+	@Override
+	public float getMinHeight() {
+		return 20;
+	}
+
+	@Override
+	public float getMinWidth() {
+		return 20;
+	}
+
+	private float getPrefSize() {
+		return MathUtils.clamp((Gdx.graphics.getWidth() / 1920f) * 60f, 20f, 60f);
+	}
 }
