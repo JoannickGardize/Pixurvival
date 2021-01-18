@@ -130,6 +130,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		if (getWorld().isServer()) {
 			getTeam().addDead(this);
 			GameMode gameMode = getWorld().getGameMode();

@@ -524,4 +524,10 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	public byte getFullUpdateContentMask() {
 		return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
 	}
+
+	@Override
+	protected void onDeath() {
+		super.onDeath();
+		stopCurrentAbility();
+	}
 }

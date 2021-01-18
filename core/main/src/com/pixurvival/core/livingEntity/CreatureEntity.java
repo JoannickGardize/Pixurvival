@@ -100,6 +100,7 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	protected void onDeath() {
+		super.onDeath();
 		if (getWorld().isServer()) {
 			if (definition.getItemReward() != null) {
 				ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());

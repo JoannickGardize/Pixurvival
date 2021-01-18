@@ -21,12 +21,14 @@ public class EquipmentAbilityProxy extends Ability {
 
 	@Override
 	public boolean update(LivingEntity entity) {
-		return getCurrentAbility(entity).update(entity, getAbilityData(entity));
+		Ability currentAbility = getCurrentAbility(entity);
+		return currentAbility == null || currentAbility.update(entity, getAbilityData(entity));
 	}
 
 	@Override
 	public boolean stop(LivingEntity entity) {
-		return getCurrentAbility(entity).stop(entity);
+		Ability currentAbility = getCurrentAbility(entity);
+		return currentAbility == null || currentAbility.stop(entity);
 	}
 
 	@Override
