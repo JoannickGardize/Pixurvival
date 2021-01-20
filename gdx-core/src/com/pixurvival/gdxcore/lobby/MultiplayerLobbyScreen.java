@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
 import com.pixurvival.core.contentPack.summary.GameModeSummary;
+import com.pixurvival.core.message.lobby.CreateTeamRequest;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.message.lobby.LobbyPlayer;
@@ -22,6 +23,7 @@ import com.pixurvival.core.message.lobby.LobbyServerMessage;
 import com.pixurvival.core.message.lobby.LobbyTeam;
 import com.pixurvival.core.message.lobby.ReadyRequest;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.menu.InputWindow;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.menu.MessageWindow;
 import com.pixurvival.gdxcore.menu.QuestionWindow;
@@ -37,7 +39,7 @@ public class MultiplayerLobbyScreen implements Screen {
 	private Stage stage;
 	private GameModeChooser gameModeChooser;
 	private Table teamsTable;
-	private TeamNameWindow teamNameWindow = new TeamNameWindow();
+	private InputWindow teamNameWindow = new InputWindow("lobby.addTeam", "generic.add", name -> PixurvivalGame.getClient().send(new CreateTeamRequest(name)));
 	private QuestionWindow questionWindow;
 	private TextButton readyButton;
 	private int modCount;
@@ -64,7 +66,7 @@ public class MultiplayerLobbyScreen implements Screen {
 		addTeamButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				teamNameWindow.setVisible(true);
+				teamNameWindow.setVisible("");
 			}
 		});
 
@@ -219,8 +221,13 @@ public class MultiplayerLobbyScreen implements Screen {
 	public void questionDownloadContentPack(ContentPackIdentifier identifier, ContentPackValidityCheckResult checkResult) {
 		String messageKey = checkResult == ContentPackValidityCheckResult.NOT_FOUND ? "lobby.downloadContentPack.notFound" : "lobby.downloadContentPack.checksum";
 		// TODO keep this instance
-		questionWindow = new QuestionWindow("lobby.downloadContentPack.title", messageKey, () -> PixurvivalGame.getClient().acceptContentPack(identifier),
-				() -> PixurvivalGame.getClient().refuseContentPack(identifier));
+		questionWindow = new QuestionWindow("lobby.downloadContentPack.title", messageKey, () -> {
+			PixurvivalGame.getClient().acceptContentPack(identifier);
+			questionWindow.remove();
+		}, () -> {
+			PixurvivalGame.getClient().refuseContentPack(identifier);
+			questionWindow.remove();
+		});
 		stage.addActor(questionWindow);
 		questionWindow.update(stage.getViewport());
 		questionWindow.setVisible(true);

@@ -14,7 +14,14 @@ import com.pixurvival.gdxcore.ui.UILabel;
 
 public class QuestionWindow extends Window {
 
+	private Label contentLabel;
+
 	public QuestionWindow(String titleKey, String messageKey, Runnable yesAction, Runnable noAction) {
+		this(titleKey, yesAction, noAction);
+		contentLabel.setText(PixurvivalGame.getString(messageKey));
+	}
+
+	public QuestionWindow(String titleKey, Runnable yesAction, Runnable noAction) {
 		super(PixurvivalGame.getString(titleKey), PixurvivalGame.getSkin());
 		setResizable(false);
 		setModal(true);
@@ -26,7 +33,7 @@ public class QuestionWindow extends Window {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				yesAction.run();
-				remove();
+				setVisible(false);
 			}
 
 		});
@@ -35,29 +42,31 @@ public class QuestionWindow extends Window {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				noAction.run();
-				remove();
+				setVisible(false);
 			}
 		});
 
 		defaults().pad(2);
-		Label label = new UILabel(messageKey, Color.WHITE);
-		label.setAlignment(Align.left);
-		label.setWrap(true);
-		add(label).expand().fill();
+		contentLabel = UILabel.rawText("", Color.WHITE);
+		contentLabel.setAlignment(Align.left);
+		contentLabel.setWrap(true);
+		add(contentLabel).expand().fill();
 		row();
 		HorizontalGroup buttonGroup = new HorizontalGroup();
+		buttonGroup.space(2);
 		buttonGroup.addActor(yesButton);
 		buttonGroup.addActor(noButton);
 		add(buttonGroup);
-		pack();
 	}
 
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
+	public void setVisible(String message) {
+		contentLabel.setText(message);
+		super.setVisible(true);
 	}
 
 	public void update(Viewport viewport) {
+		setWidth(viewport.getWorldWidth() / 3);
+		setHeight(viewport.getWorldHeight() / 3);
 		setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
 	}
 }

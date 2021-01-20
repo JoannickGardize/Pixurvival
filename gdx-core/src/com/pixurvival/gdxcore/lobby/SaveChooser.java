@@ -1,5 +1,9 @@
 package com.pixurvival.gdxcore.lobby;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -10,7 +14,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class SaveChooser extends Table {
 
-	private List<String> savesList = new List<>(PixurvivalGame.getSkin());
+	private List<Save> savesList = new List<>(PixurvivalGame.getSkin());
 
 	public SaveChooser() {
 		setBackground(PixurvivalGame.getSkin().get("panel", Drawable.class));
@@ -21,11 +25,11 @@ public class SaveChooser extends Table {
 	}
 
 	public void update() {
-		savesList.setItems(WorldSerialization.listSaves());
+		savesList.setItems(Arrays.stream(WorldSerialization.listSavesFiles()).map(Save::new).sorted(Comparator.comparing(Save::getCreationTime).reversed()).toArray(Save[]::new));
 	}
 
-	public String getSelectedSave() {
-		return savesList.getSelected();
+	public File getSelectedSave() {
+		return savesList.getSelected().getFile();
 	}
 
 }

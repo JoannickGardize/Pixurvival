@@ -117,10 +117,10 @@ public class DrawUtils {
 		float height = worldStage.getViewport().getWorldHeight() * camera.zoom;
 		int startX = MathUtils.floor((camPos.x - width / 2 - margin) / GameConstants.CHUNK_SIZE);
 		int startY = MathUtils.floor((camPos.y - height / 2 - margin) / GameConstants.CHUNK_SIZE);
-		int endX = MathUtils.ceil((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
-		int endY = MathUtils.ceil((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
-		for (int x = startX; x <= endX; x++) {
-			for (int y = endY; y >= startY; y--) {
+		int endX = MathUtils.floor((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
+		int endY = MathUtils.floor((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
+		for (int y = endY; y >= startY; y--) {
+			for (int x = startX; x <= endX; x++) {
 				Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
 				if (chunk == null) {
 					continue;

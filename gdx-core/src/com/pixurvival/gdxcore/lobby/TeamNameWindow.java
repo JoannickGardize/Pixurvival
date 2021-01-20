@@ -42,7 +42,6 @@ public class TeamNameWindow extends Window {
 			public void clicked(InputEvent event, float x, float y) {
 				sendNewTeam();
 			}
-
 		});
 
 		cancelButton.addListener(new ClickListener() {

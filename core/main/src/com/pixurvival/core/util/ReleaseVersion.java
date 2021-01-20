@@ -25,7 +25,8 @@ public enum ReleaseVersion {
 	ALPHA_6B(BackwardCompatibility.FULL),
 	ALPHA_7(BackwardCompatibility.FULL),
 	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY),
-	ALPHA_8B(BackwardCompatibility.FULL);
+	ALPHA_8B(BackwardCompatibility.FULL),
+	ALPHA_9(BackwardCompatibility.FULL);
 
 	private BackwardCompatibility backwardCompatibility;
 

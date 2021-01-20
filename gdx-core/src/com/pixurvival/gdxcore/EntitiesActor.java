@@ -43,6 +43,8 @@ public class EntitiesActor extends Actor {
 	private Map<Class<? extends Body>, ElementDrawer<? extends Body>> drawers = new HashMap<>();
 	private List<Body> objectsToDraw = new ArrayList<>();
 	private List<Body> allObjectsToDraw = new ArrayList<>();
+	private int actualY;
+	private int count;
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
@@ -61,9 +63,13 @@ public class EntitiesActor extends Actor {
 	public void draw(Batch batch, float parentAlpha) {
 		ensureMyPlayerInScreen();
 		allObjectsToDraw.clear();
+		actualY = Integer.MAX_VALUE;
 		// TODO Change this 3 by a smart value
 		DrawUtils.foreachChunksInScreen(getStage(), 3, chunk -> {
-			objectsToDraw.clear();
+			if (actualY != chunk.getPosition().getY() && !objectsToDraw.isEmpty()) {
+				flushEntityRow();
+			}
+			actualY = chunk.getPosition().getY();
 			chunk.getEntities().foreach((group, map) -> {
 				ElementDrawer<Entity> drawer = (ElementDrawer<Entity>) drawers.get(group.getType());
 				map.values().forEach(e -> {
@@ -73,15 +79,20 @@ public class EntitiesActor extends Actor {
 			});
 			chunk.forEachStructure(objectsToDraw::add);
 			// TODO cache objectsToDraw?
-			objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
-			allObjectsToDraw.addAll(objectsToDraw);
 		});
+		flushEntityRow();
 		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).backgroundDraw(batch, e));
 		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).drawShadow(batch, e));
 		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).draw(batch, e));
 		allObjectsToDraw.forEach(e -> ((ElementDrawer<Body>) drawers.get(e.getClass())).frontDraw(batch, e));
 
 		drawGhostStructure(batch);
+	}
+
+	private void flushEntityRow() {
+		objectsToDraw.sort((e1, e2) -> Float.compare(e2.getDisplayDeath(), e1.getDisplayDeath()));
+		allObjectsToDraw.addAll(objectsToDraw);
+		objectsToDraw.clear();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,8 +109,8 @@ public class EntitiesActor extends Actor {
 		float height = getStage().getViewport().getWorldHeight() * camera.zoom;
 		int startX = MathUtils.floor((camPos.x - width / 2 - 3) / GameConstants.CHUNK_SIZE);
 		int startY = MathUtils.floor((camPos.y - height / 2 - 3) / GameConstants.CHUNK_SIZE);
-		int endX = MathUtils.ceil((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
-		int endY = MathUtils.ceil((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
+		int endX = MathUtils.floor((camPos.x + width / 2 + 3) / GameConstants.CHUNK_SIZE);
+		int endY = MathUtils.floor((camPos.y + height / 2 + 3) / GameConstants.CHUNK_SIZE);
 		shapes.setColor(Color.GRAY);
 		for (int x = startX; x <= endX; x++) {
 			for (int y = startY; y <= endY; y++) {

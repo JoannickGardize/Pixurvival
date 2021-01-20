@@ -192,6 +192,10 @@ public class WorldSerialization {
 		return getSaveDirectory().list();
 	}
 
+	public static File[] listSavesFiles() {
+		return getSaveDirectory().listFiles();
+	}
+
 	private static Kryo getKryo(Ecosystem ecosystem) {
 		Kryo kryo = new Kryo();
 		kryo.setReferences(false);
@@ -219,7 +223,7 @@ public class WorldSerialization {
 		return kryo;
 	}
 
-	private File getSaveDirectory() {
+	public static File getSaveDirectory() {
 		File saveDir = new File(WorkingDirectory.get(), "saves");
 		if (!saveDir.exists()) {
 			saveDir.mkdir();

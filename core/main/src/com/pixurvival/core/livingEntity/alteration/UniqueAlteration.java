@@ -5,7 +5,7 @@ import com.pixurvival.core.team.TeamMember;
 
 /**
  * An alteration that can be applied only one time per entity from the same
- * source (e.g. {@link EffectEntity}).
+ * {@link CheckListHolder} source (e.g. {@link EffectEntity}).
  * 
  * @author SharkHendrix
  *
