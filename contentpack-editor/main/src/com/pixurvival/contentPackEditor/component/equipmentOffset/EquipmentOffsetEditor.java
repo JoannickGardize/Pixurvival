@@ -49,14 +49,8 @@ public class EquipmentOffsetEditor extends RootElementEditor<EquipmentOffset> {
 		// Binding
 		bind(tablePanel, "frameOffsets");
 
-		widthInput.addValueChangeListener(x -> {
-
-			tablePanel.setTableSize(x, heightInput.getValue() == null ? 0 : heightInput.getValue(), true);
-		});
-		heightInput.addValueChangeListener(y -> {
-			tablePanel.setTableSize(widthInput.getValue() == null ? 0 : widthInput.getValue(), y, true);
-
-		});
+		widthInput.addValueChangeListener(x -> tablePanel.setTableSize(x, heightInput.getValue() == null ? 0 : heightInput.getValue(), true));
+		heightInput.addValueChangeListener(y -> tablePanel.setTableSize(widthInput.getValue() == null ? 0 : widthInput.getValue(), y, true));
 		previewPanel.getSpriteSheetPreview().addInteractionListener(o -> {
 			if (o instanceof ClickEvent) {
 				ClickEvent clickEvent = (ClickEvent) o;

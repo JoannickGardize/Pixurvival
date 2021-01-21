@@ -90,7 +90,7 @@ public class SpriteSheetPreview extends ResourcePreview {
 
 	@Override
 	protected void paintOnTop(Graphics g, Rectangle rec) {
-		if (spriteSheet == null) {
+		if (spriteSheet == null || rec.width == 0 || rec.height == 0) {
 			return;
 		}
 		imageRectange = rec;

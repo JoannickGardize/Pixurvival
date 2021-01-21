@@ -36,6 +36,9 @@ public class FrameNumberConstraint<T extends NamedIdentifiedElement> implements 
 		if (!(resourceEntry.getPreview() instanceof BufferedImage)) {
 			return true;
 		}
+		if (spriteSheet.getWidth() == 0 || spriteSheet.getHeight() == 0) {
+			return true;
+		}
 		BufferedImage image = (BufferedImage) resourceEntry.getPreview();
 		if (image.getWidth() % spriteSheet.getWidth() != 0 || image.getHeight() % spriteSheet.getHeight() != 0) {
 			return true;

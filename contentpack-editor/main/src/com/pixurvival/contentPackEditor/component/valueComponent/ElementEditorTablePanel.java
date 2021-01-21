@@ -53,7 +53,6 @@ public class ElementEditorTablePanel<T extends Frame> extends ElementEditor<List
 			notifyValueChanged();
 		} else {
 			cells.forEach(new Consumer<ElementEditor<T>>() {
-
 				private int i = 0;
 
 				@Override

@@ -48,6 +48,7 @@ public class FileService {
 		}
 		currentContentPack = new ContentPack();
 		currentContentPack.setIdentifier(new ContentPackIdentifier());
+		currentContentPack.setReleaseVersion(ReleaseVersion.actual().toString());
 		ResourcesService.getInstance().clear();
 		currentFile = null;
 		LayoutManager.getInstance().setRoot(new LayoutFolder("root"));
