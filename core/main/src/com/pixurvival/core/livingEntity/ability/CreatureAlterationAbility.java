@@ -1,5 +1,7 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +11,7 @@ public class CreatureAlterationAbility extends AlterationAbility {
 
 	private static final long serialVersionUID = 1L;
 
+	@Positive
 	private float predictionBulletSpeed;
 
 	@Override

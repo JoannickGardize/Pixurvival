@@ -43,7 +43,6 @@ public class ClientAckManager {
 			this.structureUpdates = new ArrayList<>(structureUpdates);
 			this.soundEffects = new ArrayList<>(soundEffects);
 		}
-
 	}
 
 	public static final float PING_TOLERANCE_MULTIPLIER = 3;

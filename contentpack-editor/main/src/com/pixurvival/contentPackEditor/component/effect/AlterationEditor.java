@@ -11,6 +11,7 @@ import com.pixurvival.contentPackEditor.component.item.StatModifierEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.AngleInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
+import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -18,6 +19,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.SoundPreset;
+import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
@@ -25,6 +27,7 @@ import com.pixurvival.core.livingEntity.alteration.Alteration;
 import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
+import com.pixurvival.core.livingEntity.alteration.DropItemsAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
@@ -218,6 +221,16 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
 			bind(soundPresetChooser, "preset", PlaySoundAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser));
+		}));
+
+		// DropItemsAlteration
+		entries.add(new ClassEntry(DropItemsAlteration.class, () -> {
+			ElementSetEditor<Item> itemsSet = new ElementSetEditor<>(Item.class);
+			itemsSet.setBorder(LayoutUtils.createGroupBorder("alterationEditor.itemToDrop"));
+			IntegerInput maxQuantityInput = new IntegerInput();
+			bind(itemsSet, "items", DropItemsAlteration.class);
+			bind(maxQuantityInput, "maxQuantity", DropItemsAlteration.class);
+			return LayoutUtils.createVerticalBox(itemsSet, LayoutUtils.labelled("alterationEditor.maxQuantity", maxQuantityInput));
 		}));
 
 		return entries;

@@ -25,7 +25,6 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoNothingBehavior;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.DropItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.HarvestBehavior;
@@ -157,19 +156,6 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 			bind(itemSetEditor, "items", PickUpItemsBehavior.class);
 			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemsToPickUp"));
 			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1, LayoutUtils.labelled("generic.searchDistance", searchDistanceInput), itemSetEditor);
-		}));
-
-		// DropItemsBehavior
-		classEntries.add(new ClassEntry(DropItemsBehavior.class, () -> {
-			IntegerInput maxQuantityInput = new IntegerInput();
-			EnumChooser<BehaviorTarget> targetChooser = new EnumChooser<>(BehaviorTarget.class);
-			ElementSetEditor<Item> itemSetEditor = new ElementSetEditor<>(Item.class);
-			bind(maxQuantityInput, "maxQuantity", DropItemsBehavior.class);
-			bind(targetChooser, "targetDirection", DropItemsBehavior.class);
-			bind(itemSetEditor, "items", DropItemsBehavior.class);
-			itemSetEditor.setBorder(LayoutUtils.createGroupBorder("behaviorEditor.itemToDrop"));
-			return LayoutUtils.createVerticalBox(LayoutUtils.DEFAULT_GAP, 1,
-					LayoutUtils.createHorizontalLabelledBox("behaviorEditor.targetDirection", targetChooser, "behaviorEditor.maxQuantity", maxQuantityInput), itemSetEditor);
 		}));
 
 		return classEntries;

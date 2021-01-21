@@ -17,9 +17,6 @@ import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.ReleaseVersion;
 
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 // TODO use replace regex
@@ -27,19 +24,6 @@ import lombok.experimental.UtilityClass;
 public class AutoUpgradeTool {
 
 	private static final String RELEASE_VERSION_YML_ATTRIBUTE = "releaseVersion: ";
-
-	@Getter
-	@Builder
-	private static class Upgrader {
-		@Default
-		private Consumer<StringBuilder> coreUpgrader = sb -> {
-			// Empty by default
-		};
-		@Default
-		private Consumer<StringBuilder> layoutUpgrader = sb -> {
-			// Empty by default
-		};
-	}
 
 	private static final Map<Integer, Consumer<StringBuilder>> SERIALIZATION_UPGRADERS = new HashMap<>();
 
@@ -54,6 +38,8 @@ public class AutoUpgradeTool {
 			forEachElementLine(sb, "mapProviders", line -> line + " !!ProcedurallyGeneratedMapProvider");
 		});
 		LAYOUT_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> replaceAll(sb, "MAP_GENERATOR", "MAP_PROVIDER"));
+
+		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_9.ordinal(), sb -> replaceAll(sb, "!!DropItemsBehavior", "!!DoNothingBehavior"));
 	}
 
 	/**

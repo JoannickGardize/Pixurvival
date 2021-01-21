@@ -35,7 +35,6 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.DoNothingBehavior;
-import com.pixurvival.core.contentPack.creature.behaviorImpl.DropItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.HarvestBehavior;
@@ -94,6 +93,7 @@ import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
 import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
 import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
 import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
+import com.pixurvival.core.livingEntity.alteration.DropItemsAlteration;
 import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
 import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
@@ -313,7 +313,6 @@ public class ContentPackSerialization {
 		addClassTag(representer, PickUpItemsBehavior.class);
 		addClassTag(representer, NothingToDoCondition.class);
 		addClassTag(representer, TaskFinishedCondition.class);
-		addClassTag(representer, DropItemsBehavior.class);
 		addClassTag(representer, InventoryContainsCondition.class);
 		addClassTag(representer, AllElementSet.class);
 		addClassTag(representer, InclusiveElementSet.class);
@@ -329,6 +328,7 @@ public class ContentPackSerialization {
 		addClassTag(representer, AutoSquarePlayerSpawn.class);
 		addClassTag(representer, StaticPlayerSpawn.class);
 		addClassTag(representer, DelayedAlteration.class);
+		addClassTag(representer, DropItemsAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

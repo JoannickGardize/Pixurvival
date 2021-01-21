@@ -46,6 +46,7 @@ public class CreatureEntity extends LivingEntity {
 	private @Getter @Setter Entity targetEntity;
 	private @Getter TeamMember master = this;
 	private @Getter Inventory inventory = EmptyInventoryProxy.getInstance();
+	private boolean targetedAlterationPrepared = false;
 
 	private long creationTime;
 
@@ -87,6 +88,7 @@ public class CreatureEntity extends LivingEntity {
 	@Override
 	public void update() {
 		if (getWorld().isServer()) {
+			targetedAlterationPrepared = false;
 			currentBehavior.update(this);
 		}
 		super.update();
@@ -229,12 +231,13 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void prepareTargetedAlteration() {
-		if (targetEntity != null && targetEntity.isAlive()) {
+		if (!targetedAlterationPrepared && targetEntity != null && targetEntity.isAlive()) {
 			getTargetPosition().set(targetEntity.getPosition());
 			float predictionBulletSpeed;
 			if (getCurrentAbility() instanceof CreatureAlterationAbility && (predictionBulletSpeed = ((CreatureAlterationAbility) getCurrentAbility()).getPredictionBulletSpeed()) > 0) {
 				PseudoAIUtils.findTargetPositionPrediction(getPosition(), predictionBulletSpeed, getTargetPosition(), targetEntity.getVelocity());
 			}
+			targetedAlterationPrepared = true;
 		}
 	}
 

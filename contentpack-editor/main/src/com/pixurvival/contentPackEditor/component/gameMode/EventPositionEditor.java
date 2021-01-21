@@ -56,7 +56,7 @@ public class EventPositionEditor extends InstanceChangingElementEditor<EventPosi
 			bind(targetDirectionChooser, "targetDirection", RandomRectangeEventPosition.class);
 
 			return LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("generic.x", xInput, "generic.y", yInput, "generic.width", widthInput, "generic.height", heightInput),
-					LayoutUtils.single(LayoutUtils.labelled("behaviorEditor.targetDirection", targetDirectionChooser)));
+					LayoutUtils.single(LayoutUtils.labelled("gameMode.targetDirection", targetDirectionChooser)));
 		}));
 
 		return entries;
