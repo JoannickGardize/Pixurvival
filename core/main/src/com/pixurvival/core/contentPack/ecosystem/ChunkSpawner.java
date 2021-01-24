@@ -127,6 +127,7 @@ public abstract class ChunkSpawner implements Serializable {
 	@AllArgsConstructor
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<ChunkSpawner> {
 
+		// TODO use WorldKryo#getWorld
 		private Ecosystem ecosystem;
 
 		@Override

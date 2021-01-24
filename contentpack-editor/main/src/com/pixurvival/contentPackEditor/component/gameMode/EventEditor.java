@@ -11,6 +11,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.gameMode.event.EffectEvent;
@@ -41,12 +42,16 @@ public class EventEditor extends InstanceChangingElementEditor<Event> {
 		entries.add(new ClassEntry(EffectEvent.class, () -> {
 			ElementChooserButton<Effect> effectChooser = new ElementChooserButton<>(Effect.class);
 			BooleanCheckBox forEachTeamCheckBox = new BooleanCheckBox();
+			IntegerInput maximumRepeatValueInput = new IntegerInput();
 			EventPositionEditor eventPositionEditor = new EventPositionEditor();
 			bind(effectChooser, "effect", EffectEvent.class);
 			bind(forEachTeamCheckBox, "forEachTeam", EffectEvent.class);
 			bind(eventPositionEditor, "position", EffectEvent.class);
+			bind(maximumRepeatValueInput, "maximumRepeatValue", EffectEvent.class);
 			JPanel panel = new JPanel(new BorderLayout(LayoutUtils.DEFAULT_GAP, LayoutUtils.DEFAULT_GAP));
-			panel.add(LayoutUtils.createVerticalBox(LayoutUtils.createHorizontalLabelledBox("elementType.effect", effectChooser, "eventEditor.forEachTeam", forEachTeamCheckBox),
+			panel.add(LayoutUtils.createVerticalBox(
+					LayoutUtils.createHorizontalLabelledBox("elementType.effect", LayoutUtils.single(effectChooser), "eventEditor.forEachTeam", forEachTeamCheckBox, "eventEditor.maximumRepeatValue",
+							LayoutUtils.single(maximumRepeatValueInput)),
 					new JLabel("Strength = number of player"), new JLabel("Agility = current number of repeat (start from 1)"), new JLabel("Intelligence = Strength x Agility"),
 					new JLabel("This will change for parameterizable purpose in the future")), BorderLayout.NORTH);
 			eventPositionEditor.setBorder(LayoutUtils.createGroupBorder("generic.position"));

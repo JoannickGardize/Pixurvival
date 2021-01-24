@@ -135,9 +135,8 @@ public class StartingGamePhase implements LobbyPhase {
 			readySessions.add(playerSession);
 			if (readySessions.size() == session.getPlayerSessions().size()) {
 				session.terminate();
-
-				waitingGameSession.foreachPlayers(
-						s -> s.getConnection().sendTCP(new StartGame(0, waitingGameSession.getWorld().getSpawnCenter(), s.getPlayerEntity().getItemCraftDiscovery().getDiscovereditemCraftIds())));
+				waitingGameSession
+						.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0, s.getPlayerEntity().getPosition(), s.getPlayerEntity().getItemCraftDiscovery().getDiscovereditemCraftIds())));
 				session.getServer().runGame(waitingGameSession);
 				session.getServer().addListener(waitingGameSession);
 			}

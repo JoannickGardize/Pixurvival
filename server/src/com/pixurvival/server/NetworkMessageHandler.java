@@ -37,14 +37,18 @@ import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
 import com.pixurvival.core.util.ReleaseVersion;
 
+import lombok.Getter;
+
 class NetworkMessageHandler extends Listener {
+
+	private static class DisconnectedMessage {
+		private static final @Getter DisconnectedMessage instance = new DisconnectedMessage();
+	}
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
 	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(15);
-	private PixurvivalServer game;
 
 	public NetworkMessageHandler(PixurvivalServer game) {
-		this.game = game;
 		messageActions.put(LoginRequest.class, m -> {
 			PlayerConnection connection = m.getConnection();
 			if (connection.isLogged()) {
@@ -94,6 +98,10 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(RefuseContentPack.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((RefuseContentPack) m.getObject())));
 		messageActions.put(ContentPackReady.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleLobbyMessage((ContentPackReady) m.getObject())));
 		messageActions.put(ContentPackRequest.class, m -> game.getContentPackUploader().sendContentPack(m.getConnection(), ((ContentPackRequest) m.getObject()).getIdentifier()));
+		messageActions.put(DisconnectedMessage.class, m -> {
+			game.removePlayerConnection(m.getConnection().toString());
+			m.getConnection().disconnected();
+		});
 	}
 
 	public void consumeReceivedObjects() {
@@ -110,8 +118,9 @@ class NetworkMessageHandler extends Listener {
 
 	@Override
 	public void disconnected(Connection connection) {
-		game.removePlayerConnection(connection.toString());
-		((PlayerConnection) connection).disconnected();
+		synchronized (clientMessages) {
+			clientMessages.add(new ClientMessage((PlayerConnection) connection, DisconnectedMessage.getInstance()));
+		}
 	}
 
 	@Override

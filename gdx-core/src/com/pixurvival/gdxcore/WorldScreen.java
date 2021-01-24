@@ -26,6 +26,7 @@ import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.drawer.LightDrawer;
+import com.pixurvival.gdxcore.drawer.MapStructureFliper;
 import com.pixurvival.gdxcore.input.CameraControlProcessor;
 import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
@@ -94,6 +95,7 @@ public class WorldScreen implements Screen {
 			throw new IllegalStateException("Cannot change world of the world screen");
 		}
 		contentPackTextures = new ContentPackTextures();
+		world.getChunkManager().addPlugin(new MapStructureFliper());
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
 			// Gdx.graphics.getHeight());
@@ -275,6 +277,7 @@ public class WorldScreen implements Screen {
 		chunkTileTexturesManager.setRunning(false);
 		chunkTileTexturesManager.dispose();
 		miniMapUI.dispose();
+		world.unload();
 	}
 
 	private void updateMouseTarget() {

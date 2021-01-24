@@ -24,7 +24,6 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
 import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
-import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
 import com.pixurvival.core.contentPack.ecosystem.StructureSpawner;
 import com.pixurvival.core.contentPack.gameMode.MapLimitsAnchor;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
@@ -43,6 +42,7 @@ import com.pixurvival.core.mapLimits.MapLimitsAnchorRun;
 import com.pixurvival.core.mapLimits.MapLimitsManager;
 import com.pixurvival.core.mapLimits.MapLimitsRun;
 import com.pixurvival.core.mapLimits.NextMapLimitAnchorAction;
+import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.FileUtils;
@@ -59,7 +59,7 @@ import lombok.experimental.UtilityClass;
 public class WorldSerialization {
 
 	public static void save(World world, ContentPackContext contentPackContext) throws IOException {
-		Kryo kryo = getKryo(world.getGameMode().getEcosystem());
+		Kryo kryo = getKryo(world);
 		if (world.getType() != Type.LOCAL) {
 			throw new UnsupportedOperationException("Only local games can be saved");
 		}
@@ -133,7 +133,7 @@ public class WorldSerialization {
 			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}
 		World world = World.createExistingLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong());
-		Kryo kryo = getKryo(world.getGameMode().getEcosystem());
+		Kryo kryo = getKryo(world);
 		world.getTime().apply(buffer);
 		world.getEntityPool().setNextId(VarLenNumberIO.readPositiveVarLong(buffer));
 		// Teams
@@ -196,8 +196,9 @@ public class WorldSerialization {
 		return getSaveDirectory().listFiles();
 	}
 
-	private static Kryo getKryo(Ecosystem ecosystem) {
-		Kryo kryo = new Kryo();
+	private static Kryo getKryo(World world) {
+		WorldKryo kryo = new WorldKryo();
+		kryo.setWorld(world);
 		kryo.setReferences(false);
 		kryo.setRegistrationRequired(true);
 		kryo.register(EventAction.class);
@@ -207,8 +208,8 @@ public class WorldSerialization {
 		kryo.register(NextMapLimitAnchorAction.class);
 		kryo.register(RemoveDurationStructureAction.class);
 		kryo.register(ChunkPosition.class);
-		kryo.register(StructureSpawner.class, new ChunkSpawner.Serializer(ecosystem));
-		kryo.register(DarknessSpawner.class, new ChunkSpawner.Serializer(ecosystem));
+		kryo.register(StructureSpawner.class, new ChunkSpawner.Serializer(world.getGameMode().getEcosystem()));
+		kryo.register(DarknessSpawner.class, new ChunkSpawner.Serializer(world.getGameMode().getEcosystem()));
 		kryo.register(SpawnAction.class);
 		kryo.register(PriorityQueue.class);
 		kryo.register(Boolean.class);

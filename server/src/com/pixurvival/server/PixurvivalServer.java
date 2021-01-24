@@ -11,10 +11,9 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackContext;
-import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.message.KryoInitializer;
+import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.ReleaseVersion;
 import com.pixurvival.server.lobby.LobbySession;
@@ -60,6 +59,7 @@ public class PixurvivalServer {
 	}
 
 	public void runGame(GameSession session) {
+		((WorldKryo) server.getKryo()).setWorld(session.getWorld());
 		engineThread.add(session);
 		for (String command : gameBeginningCommands) {
 			engineThread.requestCommand(command);
@@ -101,8 +101,6 @@ public class PixurvivalServer {
 		server.close();
 		engineThread.setRunning(false);
 		contentPackUploader.setRunning(false);
-		ChunkManager.getInstance().setRunning(false);
-		World.getWorlds().forEach(World::unload);
 	}
 
 	void playerLoggedIn(PlayerConnection playerConnection) {

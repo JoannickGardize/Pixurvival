@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -121,6 +122,11 @@ public class ReflectionUtils {
 
 	public static Class<?> getGenericTypeArgument(Field field) {
 		ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+		Type type = parameterizedType.getActualTypeArguments()[0];
+		if (type instanceof Class) {
+			return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+		} else {
+			return null;
+		}
 	}
 }

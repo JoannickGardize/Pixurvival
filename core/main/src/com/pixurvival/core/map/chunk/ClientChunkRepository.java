@@ -15,12 +15,17 @@ public class ClientChunkRepository implements ChunkRepository {
 	private Map<ChunkPosition, CompressedChunk> store = new HashMap<>();
 
 	@Override
-	public void save(Chunk chunk) {
+	public synchronized void save(CompressedChunk compressedChunk) {
+		store.put(compressedChunk.getPosition(), compressedChunk);
+	}
+
+	@Override
+	public synchronized void save(Chunk chunk) {
 		store.put(chunk.getPosition(), chunk.getCompressed());
 	}
 
 	@Override
-	public ChunkRepositoryEntry load(ChunkPosition position) {
+	public synchronized ChunkRepositoryEntry load(ChunkPosition position) {
 		CompressedChunk compressed = store.get(position);
 		return compressed == null ? null : new ChunkRepositoryEntry(compressed.buildChunk());
 	}

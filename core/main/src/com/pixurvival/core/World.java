@@ -1,7 +1,6 @@
 package com.pixurvival.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,9 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.gameMode.role.Roles;
 import com.pixurvival.core.entity.EntityPool;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.ChunkCreatureSpawnManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
@@ -31,6 +32,7 @@ import com.pixurvival.core.mapLimits.MapLimitsRun;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
+import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
@@ -58,13 +60,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		private boolean server;
 	}
 
-	private static long nextId = 0;
-	private static Map<Long, World> worlds = new HashMap<>();
-	// TODO deprecate this for multiworld
-	private static @Getter ContentPack currentContentPack;
 	private final Type type;
 	private Time time;
 	private TiledMap map;
+	private ChunkManager chunkManager;
 	private EntityPool entityPool = new EntityPool(this);
 	private WorldRandom random = new WorldRandom();
 	private ActionTimerManager actionTimerManager = new ActionTimerManager(this);
@@ -85,6 +84,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
 	private @Setter String saveName;
 	private long seed;
+	private WorldKryo playerInventoryKryo;
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		this(id, type, contentPack, gameModeId, new Random().nextLong());
@@ -102,16 +102,17 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		time = new Time(gameMode.getDayCycle().create());
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this);
-	}
-
-	public static World getWorld(long id) {
-		return worlds.get(id);
+		chunkManager = new ChunkManager(map);
+		playerInventoryKryo = new WorldKryo();
+		playerInventoryKryo.setWorld(this);
+		playerInventoryKryo.setReferences(false);
+		playerInventoryKryo.register(ItemStack.class, new ItemStack.Serializer());
+		playerInventoryKryo.register(PlayerInventory.class, new PlayerInventory.Serializer());
 	}
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {
 		ContentPack pack = contentPackContext.load(createWorld.getContentPackIdentifier());
 		pack.initialize();
-		World.currentContentPack = pack;
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
 		for (TeamComposition teamComposition : createWorld.getTeamCompositions()) {
 			Team team = world.teamSet.createTeam(teamComposition.getTeamName());
@@ -134,25 +135,20 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);
-		worlds.clear();
-		worlds.put(world.getId(), world);
 		return world;
 	}
 
 	public static World createServerWorld(ContentPack contentPack, int gameModeId) {
 		contentPack.initialize();
-		World world = new World(nextId++, Type.SERVER, contentPack, gameModeId);
+		World world = new World(0, Type.SERVER, contentPack, gameModeId);
 		// TODO manage multiples worlds
-		worlds.clear();
-		worlds.put(world.getId(), world);
 		return world;
 	}
 
 	// createNewLocalWorld
 	public static World createNewLocalWorld(ContentPack contentPack, int gameModeId) {
 		contentPack.initialize();
-		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId);
-		initializeLocalWorld(world);
+		World world = new World(0, Type.LOCAL, contentPack, gameModeId);
 		PlayerEntity playerEntity = new PlayerEntity();
 		world.getEntityPool().addNew(playerEntity);
 		playerEntity.setOperator(true);
@@ -165,20 +161,8 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	// createExistingLocalWorld
 	public static World createExistingLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
 		contentPack.initialize();
-		World world = new World(nextId++, Type.LOCAL, contentPack, gameModeId, seed);
-		initializeLocalWorld(world);
+		World world = new World(0, Type.LOCAL, contentPack, gameModeId, seed);
 		return world;
-	}
-
-	// TODO only for new local world
-	private static void initializeLocalWorld(World world) {
-		World.currentContentPack = world.getContentPack();
-		worlds.clear();
-		worlds.put(world.getId(), world);
-	}
-
-	public static Collection<World> getWorlds() {
-		return worlds.values();
 	}
 
 	public boolean isClient() {
@@ -222,7 +206,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	public void unload() {
-		ChunkManager.getInstance().stopManaging(map);
+		chunkManager.setRunning(false);
 	}
 
 	/**

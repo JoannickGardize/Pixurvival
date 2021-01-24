@@ -1,7 +1,6 @@
 package com.pixurvival.contentPackEditor;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -116,16 +115,16 @@ public class FileService {
 				return;
 			}
 		}
-		if (!ValidationService.getInstance().getErrorList().isEmpty()
-				&& JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveErroredContentPackQuestion"), "", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
-			return;
-		}
-		currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
 		try {
+			if (!ValidationService.getInstance().getErrorList().isEmpty() && JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveErroredContentPackQuestion"),
+					"", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+				return;
+			}
+			currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
 			contentPackContext.getSerialization().save(currentFile, currentContentPack);
 			previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
 			EventManager.getInstance().fire(new ContentPackSavedEvent());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			DialogUtils.showErrorDialog(e);
 		}
 	}

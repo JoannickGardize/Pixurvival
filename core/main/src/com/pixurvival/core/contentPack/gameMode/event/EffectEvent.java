@@ -6,6 +6,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.EffectEntity;
 import com.pixurvival.core.entity.EntityGroup;
@@ -29,6 +30,12 @@ public class EffectEvent extends Event {
 	private EventPosition position;
 
 	/**
+	 * Maximum repeat value for the effect's stat formulas. 0 for no limit.
+	 */
+	@Positive
+	private int maximumRepeatValue;
+
+	/**
 	 * The Effect will have as ancestor a virtual TeamMember of the WILD team. The
 	 * ancestor's stats are filled with special values :
 	 * <ul>
@@ -44,15 +51,17 @@ public class EffectEvent extends Event {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void perform(World world, int repeatCount) {
+		int consideredRepeatCount = maximumRepeatValue > 0 ? Math.min(repeatCount, maximumRepeatValue) : repeatCount;
+
 		if (forEachTeam) {
 			for (Team team : world.getTeamSet()) {
 				if (team != TeamSet.WILD_TEAM) {
-					perform(world, team.getAliveMembers(), team.totalSize(), repeatCount);
+					perform(world, team.getAliveMembers(), team.totalSize(), consideredRepeatCount);
 				}
 			}
 		} else {
 			Collection players = world.getEntityPool().get(EntityGroup.PLAYER);
-			perform(world, players, players.size(), repeatCount);
+			perform(world, players, players.size(), consideredRepeatCount);
 		}
 	}
 

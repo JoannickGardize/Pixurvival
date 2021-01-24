@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
@@ -24,7 +23,6 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -72,8 +70,6 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	private static final AbilitySet PLAYER_ABILITY_SET = new AbilitySet();
 
-	private static final Kryo INVENTORY_KRYO = new Kryo();
-
 	static {
 		PLAYER_ABILITY_SET.add(new SilenceAbility());
 		PLAYER_ABILITY_SET.add(new CraftAbility());
@@ -84,10 +80,6 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.WEAPON_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY1_SPECIAL));
 		PLAYER_ABILITY_SET.add(new EquipmentAbilityProxy(EquipmentAbilityType.ACCESSORY2_SPECIAL));
-
-		INVENTORY_KRYO.setReferences(false);
-		INVENTORY_KRYO.register(ItemStack.class, new ItemStack.Serializer());
-		INVENTORY_KRYO.register(PlayerInventory.class, new PlayerInventory.Serializer());
 	}
 
 	private @Setter boolean operator = false;
@@ -323,7 +315,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		ByteBufferUtils.putString(byteBuffer, name);
 		try (Output output = new Output(byteBuffer.array())) {
 			output.setPosition(byteBuffer.position());
-			INVENTORY_KRYO.writeObject(output, inventory);
+			getWorld().getPlayerInventoryKryo().writeObject(output, inventory);
 			byteBuffer.position(output.position());
 		}
 		itemCraftDiscovery.write(byteBuffer);
@@ -341,7 +333,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		setName(ByteBufferUtils.getString(byteBuffer));
 		try (Input input = new Input(byteBuffer.array())) {
 			input.setPosition(byteBuffer.position());
-			inventory.set(INVENTORY_KRYO.readObject(input, PlayerInventory.class));
+			inventory.set(getWorld().getPlayerInventoryKryo().readObject(input, PlayerInventory.class));
 			byteBuffer.position(input.position());
 		}
 		itemCraftDiscovery.apply(byteBuffer, getWorld().getContentPack().getItems());

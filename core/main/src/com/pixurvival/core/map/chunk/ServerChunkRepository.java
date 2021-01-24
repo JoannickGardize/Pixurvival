@@ -60,7 +60,12 @@ public class ServerChunkRepository implements ChunkRepository {
 	}
 
 	@Override
-	public void add(ServerChunkRepositoryEntry data) {
+	public synchronized void add(ServerChunkRepositoryEntry data) {
 		store.put(data.getCompressedChunk().getPosition(), data);
+	}
+
+	@Override
+	public void save(CompressedChunk compressedChunk) {
+		throw new UnsupportedOperationException();
 	}
 }

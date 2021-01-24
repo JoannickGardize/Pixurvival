@@ -17,7 +17,6 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
 import com.pixurvival.core.map.TiledMap;
-import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.core.message.PlayerDead;
@@ -70,7 +69,7 @@ public class ServerEngineThread extends EngineThread {
 				gs.foreachPlayers(p -> lobbySession.addPlayer(p.getConnection()));
 				game.addLobbySession(lobbySession);
 				tmpRemovedSessions.add(gs);
-				ChunkManager.getInstance().stopManaging(gs.getWorld().getMap());
+				gs.getWorld().unload();
 				return;
 			}
 			gs.getWorld().update(deltaTimeMillis);

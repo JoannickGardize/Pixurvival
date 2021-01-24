@@ -14,7 +14,7 @@ import lombok.Setter;
 public class BehaviorData {
 
 	// TODO avoid this ?
-	public static final float TARGET_SEARCH_RADIUS = 64;
+	public static final float TARGET_SEARCH_RADIUS = 128;
 
 	public static final long MAX_UPDATE_DELAY_RELATIVE_TO_SPEED = 1000;
 

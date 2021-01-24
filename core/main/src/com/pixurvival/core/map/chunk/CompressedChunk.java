@@ -11,6 +11,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 
@@ -89,14 +90,13 @@ public class CompressedChunk {
 
 		@Override
 		public void write(Kryo kryo, Output output, CompressedChunk object) {
-			output.writeLong(object.map.getWorld().getId());
 			output.writeInt(object.data.length);
 			output.write(object.data);
 		}
 
 		@Override
 		public CompressedChunk read(Kryo kryo, Input input, Class<CompressedChunk> type) {
-			World world = World.getWorld(input.readLong());
+			World world = ((WorldKryo) kryo).getWorld();
 			int length = input.readInt();
 			return new CompressedChunk(world.getMap(), input.readBytes(length));
 		}

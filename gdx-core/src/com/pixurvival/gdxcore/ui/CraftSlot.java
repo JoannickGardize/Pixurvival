@@ -3,14 +3,13 @@ package com.pixurvival.gdxcore.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.util.Scene2dUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +39,7 @@ public class CraftSlot extends Button {
 		boolean canCraftNow = ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft);
 		setColor(canCraftNow ? Color.WHITE : UNCRAFTABLE_COLOR);
 		if (!canCraft && canCraftNow) {
-			addAction(Actions.repeat(2, Actions.sequence(Actions.color(Color.YELLOW, 0.25f, Interpolation.smoother), Actions.color(Color.WHITE, 0.25f, Interpolation.smoother))));
+			addAction(Scene2dUtils.yellowLightning());
 		}
 		canCraft = canCraftNow;
 		itemStackDrawer.draw(batch);

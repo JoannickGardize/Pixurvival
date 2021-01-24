@@ -5,11 +5,11 @@ import java.io.Serializable;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
+import com.pixurvival.core.message.WorldKryo;
 
 import lombok.Data;
 
@@ -106,7 +106,7 @@ public class ItemStack implements Serializable {
 		public ItemStack read(Kryo kryo, Input input, Class<ItemStack> type) {
 			short itemId = input.readShort();
 			short quantity = input.readShort();
-			ContentPack pack = World.getCurrentContentPack();
+			ContentPack pack = ((WorldKryo) kryo).getWorld().getContentPack();
 			if (pack == null) {
 				return null;
 			}

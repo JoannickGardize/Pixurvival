@@ -10,6 +10,7 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityType;
+import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.util.ObjectPools;
@@ -62,7 +63,13 @@ public class WorldUpdateManager implements Plugin<World> {
 		}
 		waitingList.clear();
 		history.tailMap(smallestId).values().forEach(u -> {
-			world.getMap().addAllChunks(u.getCompressedChunks());
+			for (CompressedChunk compressed : u.getCompressedChunks()) {
+				world.getMap().getRepository().save(compressed);
+			}
+			for (CompressedChunk compressed : u.getCompressedChunks()) {
+				world.getChunkManager().requestChunk(compressed.getPosition());
+
+			}
 			world.getMap().applyUpdate(u.getStructureUpdates());
 			if (u.getEntityUpdateLength() > 0) {
 				world.getTime().setSerializationContextTime(u.getTime());

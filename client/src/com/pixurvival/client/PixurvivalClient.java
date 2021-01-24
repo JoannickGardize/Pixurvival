@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.LoadGameException;
@@ -44,6 +45,7 @@ import com.pixurvival.core.message.RefreshRequest;
 import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TimeSync;
+import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.ChooseGameModeRequest;
 import com.pixurvival.core.message.lobby.ContentPackReady;
@@ -63,7 +65,7 @@ import lombok.Setter;
 // TODO Couper cette classe en deux implémentations distinctes : NetworkClientGame et LocalClientGame
 public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements CommandExecutor, WorldListener, ItemCraftDiscoveryListener {
 
-	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2);
+	private Client client = new Client(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2, new KryoSerialization(new WorldKryo()));
 	private NetworkMessageHandler clientListener;
 	private List<ClientGameListener> listeners = new ArrayList<>();
 	private @Getter World world = null;
@@ -96,6 +98,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void setWorld(World world) {
 		this.world = world;
 		world.addListener(this);
+		((WorldKryo) client.getKryo()).setWorld(world);
 	}
 
 	public void addListener(ClientGameListener listener) {

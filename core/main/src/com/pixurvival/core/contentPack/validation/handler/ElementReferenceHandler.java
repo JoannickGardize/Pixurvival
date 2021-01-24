@@ -72,7 +72,11 @@ public class ElementReferenceHandler implements AnnotationHandler {
 			}
 		} else {
 			if (node.getObject() instanceof Collection) {
-				elementList = ((ContentPack) node.getRoot().getObject()).listOf((Class) ReflectionUtils.getGenericTypeArgument((Field) node.getKey()));
+				Class type = ReflectionUtils.getGenericTypeArgument((Field) node.getKey());
+				if (type == null) {
+					type = ReflectionUtils.getGenericTypeArgument((Field) node.getParent().getKey());
+				}
+				elementList = ((ContentPack) node.getRoot().getObject()).listOf(type);
 			} else {
 				elementList = ((ContentPack) node.getRoot().getObject()).listOf((Class) node.getObject().getClass());
 			}

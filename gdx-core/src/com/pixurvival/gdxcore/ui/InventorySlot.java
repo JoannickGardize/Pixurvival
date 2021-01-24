@@ -1,12 +1,16 @@
 package com.pixurvival.gdxcore.ui;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Objects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.gdxcore.PixurvivalGame;
+import com.pixurvival.gdxcore.util.Scene2dUtils;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class InventorySlot extends Button {
 
@@ -28,7 +32,12 @@ public class InventorySlot extends Button {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		itemStackDrawer.setItemStack(inventory.getSlot(slotIndex));
+		ItemStack newItem = inventory.getSlot(slotIndex);
+		// TODO inventory listener for this instead
+		if (newItem != null && !Objects.equals(itemStackDrawer.getItemStack(), newItem)) {
+			addAction(Scene2dUtils.yellowLightning());
+		}
+		itemStackDrawer.setItemStack(newItem);
 		itemStackDrawer.draw(batch);
 		if (shortcutDrawer != null) {
 			shortcutDrawer.draw(batch);

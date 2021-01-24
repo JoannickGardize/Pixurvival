@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.message.WorldKryo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,11 +31,9 @@ public class ChatEntry {
 		public void write(Kryo kryo, Output output, ChatEntry object) {
 			output.writeLong(object.dateMillis);
 			if (object.sender instanceof PlayerEntity) {
-				output.writeLong(((PlayerEntity) object.sender).getWorld().getId());
 				output.writeByte(PLAYER_TYPE);
 				output.writeLong(((PlayerEntity) object.sender).getId());
 			} else {
-				output.writeLong(((World) object.sender).getId());
 				output.writeByte(WORLD_TYPE);
 			}
 			output.writeString(object.text);
@@ -44,7 +43,7 @@ public class ChatEntry {
 		public ChatEntry read(Kryo kryo, Input input, Class<ChatEntry> type) {
 			long dateMillis = input.readLong();
 			ChatSender sender;
-			World world = World.getWorld(input.readLong());
+			World world = ((WorldKryo) kryo).getWorld();
 			byte senderType = input.readByte();
 			if (senderType == PLAYER_TYPE) {
 				sender = world.getPlayerEntities().get(input.readLong());
