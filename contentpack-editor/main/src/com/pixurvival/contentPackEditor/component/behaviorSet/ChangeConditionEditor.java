@@ -48,10 +48,9 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 		bind(affectedNeighborsDistanceInput, "affectedNeighborsDistance");
 
 		// Layouting
-		Component typeChooserComp = LayoutUtils.labelled("generic.type", getTypeChooser());
-		Component nextBehaviorComp = LayoutUtils.labelled("changeConditionEditor.nextBehavior", nextBehaviorChooser);
-		Component topBox = LayoutUtils.createHorizontalBox(typeChooserComp, nextBehaviorComp);
-		LayoutUtils.addVertically(this, topBox, LayoutUtils.labelled("changeConditionEditor.affectedNeighborsDistance", affectedNeighborsDistanceInput), getSpecificPartPanel());
+		Component topBox = LayoutUtils.createHorizontalLabelledBox("generic.type", getTypeChooser(), "changeConditionEditor.nextBehavior", nextBehaviorChooser,
+				"changeConditionEditor.affectedNeighborsDistance", affectedNeighborsDistanceInput);
+		LayoutUtils.addVertically(this, topBox, getSpecificPartPanel());
 
 	}
 

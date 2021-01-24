@@ -10,6 +10,7 @@ import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.item.EmptyInventoryProxy;
@@ -104,17 +105,19 @@ public class CreatureEntity extends LivingEntity {
 	protected void onDeath() {
 		super.onDeath();
 		if (getWorld().isServer()) {
-			if (definition.getItemReward() != null) {
-				ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());
-				ItemStackEntity.spawn(getWorld(), items, getPosition());
-			}
-			for (int i = 0; i < inventory.size(); i++) {
-				ItemStack itemStack = inventory.getSlot(i);
-				if (itemStack != null) {
-					ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-					itemStackEntity.getPosition().set(getPosition());
-					getWorld().getEntityPool().addNew(itemStackEntity);
-					itemStackEntity.spawnRandom();
+			if (behaviorData.getCustomData() != VanishBehavior.VANISH_MARKER) {
+				if (definition.getItemReward() != null) {
+					ItemStack[] items = definition.getItemReward().produce(getWorld().getRandom());
+					ItemStackEntity.spawn(getWorld(), items, getPosition());
+				}
+				for (int i = 0; i < inventory.size(); i++) {
+					ItemStack itemStack = inventory.getSlot(i);
+					if (itemStack != null) {
+						ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
+						itemStackEntity.getPosition().set(getPosition());
+						getWorld().getEntityPool().addNew(itemStackEntity);
+						itemStackEntity.spawnRandom();
+					}
 				}
 			}
 			currentBehavior.end(this);
