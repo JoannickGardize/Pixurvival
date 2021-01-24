@@ -145,6 +145,9 @@ public class TiledMap {
 	private void insertChunk(Chunk chunk) {
 		Chunk existingChunk = chunks.get(chunk.getPosition());
 		if (existingChunk == null || chunk.getUpdateTimestamp() >= existingChunk.getUpdateTimestamp()) {
+			if (getWorld().isClient() && existingChunk != null) {
+				chunk.getEntities().addAll(existingChunk.getEntities());
+			}
 			chunks.put(chunk.getPosition(), chunk);
 			List<StructureUpdate> updates = pollStructureUpdates(chunk.getPosition());
 			if (updates != null) {
