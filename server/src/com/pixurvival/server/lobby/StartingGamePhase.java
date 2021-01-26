@@ -137,6 +137,7 @@ public class StartingGamePhase implements LobbyPhase {
 				session.terminate();
 				waitingGameSession
 						.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0, s.getPlayerEntity().getPosition(), s.getPlayerEntity().getItemCraftDiscovery().getDiscovereditemCraftIds())));
+				System.out.println("pif");
 				session.getServer().runGame(waitingGameSession);
 				session.getServer().addListener(waitingGameSession);
 			}

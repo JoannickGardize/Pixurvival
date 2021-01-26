@@ -30,13 +30,11 @@ public class ChunkManager {
 	private final BlockingQueue<ChunkPosition> requestedPositions = new LinkedBlockingDeque<>();
 	private ChunkPosition checkPosition = new ChunkPosition(0, 0);
 	private final List<ChunkManagerPlugin> plugins = Collections.synchronizedList(new ArrayList<>());
-	private Thread thread;
 	private @Setter boolean running = true;
 
 	public ChunkManager(TiledMap map) {
 		this.map = map;
-		thread = new Thread(this::run, "Chunk Manager");
-		thread.start();
+		new Thread(this::run, "Chunk Manager").start();
 	}
 
 	public void addPlugin(ChunkManagerPlugin plugin) {

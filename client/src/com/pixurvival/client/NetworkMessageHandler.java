@@ -71,7 +71,6 @@ class NetworkMessageHandler extends Listener {
 				player.getTeam().addDead(player);
 				player.setRespawnTime(playerDead.getRespawnTime());
 				game.getWorld().getEntityPool().notifyPlayerDied(player);
-
 			}
 		});
 		putMessageAction(PlayerRespawn[].class, pr -> {

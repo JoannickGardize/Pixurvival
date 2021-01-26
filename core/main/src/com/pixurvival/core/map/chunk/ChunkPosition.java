@@ -8,14 +8,14 @@ import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
 
-@Value
+@Getter
 @AllArgsConstructor
 public class ChunkPosition {
 
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
 
 	public ChunkPosition() {
 		x = 0;
@@ -56,7 +56,7 @@ public class ChunkPosition {
 	 * 
 	 * @param position
 	 *            the position to convert
-	 * @return the ChunkPosition corresponding to the paramter position, reuse this
+	 * @return the ChunkPosition corresponding to the parameter position, reuse this
 	 *         instance if this is the same.
 	 */
 	public ChunkPosition createIfDifferent(Vector2 position) {

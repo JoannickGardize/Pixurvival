@@ -200,6 +200,11 @@ public abstract class Entity implements Body, CustomDataHolder {
 		}
 	}
 
+	/**
+	 * Called after this entity has been removed from the world. {@link #getChunk()}
+	 * returns null at this point. Nothing by default, intended to be overridden
+	 * when needed.
+	 */
 	protected void onDeath() {
 
 	}

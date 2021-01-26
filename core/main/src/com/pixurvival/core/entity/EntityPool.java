@@ -87,11 +87,11 @@ public class EntityPool extends EntityCollection {
 				if (entity.isAlive()) {
 					entity.update();
 				} else {
-					entity.onDeath();
 					if (entity.getChunk() != null) {
 						entity.getChunk().getEntities().remove(entity);
 					}
 					it.remove();
+					entity.onDeath();
 					notifyRemoved(entity);
 				}
 			}
