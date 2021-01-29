@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.FollowingElementAlteration;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
@@ -23,8 +25,6 @@ import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.sprite.Frame;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.SneakyThrows;

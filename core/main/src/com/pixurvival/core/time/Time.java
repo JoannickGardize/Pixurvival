@@ -1,6 +1,8 @@
 package com.pixurvival.core.time;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.util.MathUtils;
@@ -24,6 +26,8 @@ public class Time {
 	private @Getter float averagePing = 0;
 	private @Getter long tickCount = 0;
 	private float timeDiffAccumulator = 0;
+	private long previousSecond = 0;
+	private List<TimeIntervalListener> timeIntervalListeners = new ArrayList<>();
 
 	/**
 	 * Current time to consider for reading / writing relative time based data.
@@ -42,6 +46,11 @@ public class Time {
 		}
 		timeMillis += integerPart;
 		dayCycle.update(timeMillis);
+		long currentSecond = timeMillis / 1000L;
+		while (previousSecond < currentSecond) {
+			previousSecond++;
+			timeIntervalListeners.forEach(l -> l.tick(1));
+		}
 	}
 
 	public void synchronizeTime(TimeSync timeResponse) {
@@ -81,5 +90,9 @@ public class Time {
 
 	public void setSerializationContextTimeToNow() {
 		serializationContextTime = timeMillis;
+	}
+
+	public void addTimeIntervalListener(TimeIntervalListener listener) {
+		timeIntervalListeners.add(listener);
 	}
 }

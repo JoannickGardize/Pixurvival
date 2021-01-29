@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.CheckListHolder;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.OffsetAngleEffect;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.CheckListHolder;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
@@ -57,7 +57,7 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
 			if (!delayedFollowingElements.isEmpty()) {
 				creationTime = getWorld().getTime().getTimeMillis();
 				int repeat = (int) definition.getEffect().getRepeatFollowingElements().getValue(this);
-				numberOfDelayedFollowingElements = delayedFollowingElements.size() * (repeat + 1);
+				numberOfDelayedFollowingElements = delayedFollowingElements.size() * repeat;
 				termTimeMillis = Math.max(definition.getEffect().getDuration(), delayedFollowingElements.get(delayedFollowingElements.size() - 1).getDelay() * repeat)
 						+ getWorld().getTime().getTimeMillis();
 			} else {

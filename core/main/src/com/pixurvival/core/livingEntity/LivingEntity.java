@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.Healable;
+import com.pixurvival.core.alteration.PersistentAlteration;
+import com.pixurvival.core.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.item.InventoryHolder;
@@ -12,8 +14,6 @@ import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilityData;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
-import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
-import com.pixurvival.core.livingEntity.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.Team;
@@ -482,6 +482,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
 	@Override
 	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		buffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
+		buffer.putFloat(getStats().get(StatType.AGILITY).getBase());
+		buffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
 		writeUpdate(buffer, (byte) (getFullUpdateContentMask() & ~UPDATE_CONTENT_MASK_STATS));
 		buffer.putFloat(spawnPosition.getX());
 		buffer.putFloat(spawnPosition.getY());
@@ -496,6 +499,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		getStats().get(StatType.STRENGTH).setBase(buffer.getFloat());
+		getStats().get(StatType.AGILITY).setBase(buffer.getFloat());
+		getStats().get(StatType.INTELLIGENCE).setBase(buffer.getFloat());
 		super.applyRepositoryUpdate(buffer);
 		spawnPosition = new Vector2(buffer.getFloat(), buffer.getFloat());
 		int size = VarLenNumberIO.readPositiveVarInt(buffer);

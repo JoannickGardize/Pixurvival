@@ -69,8 +69,15 @@ public class GameMode extends NamedIdentifiedElement {
 
 	private PlayerRespawnType playerRespawnType = PlayerRespawnType.NONE;
 
+	private boolean keepPermanentStats = false;
+
 	@Positive
 	private long playerRespawnDelay = 5_000;
+
+	@Positive
+	private float hungerPerMinute = 10f;
+
+	private transient float hungerPerSecond;
 
 	public boolean updateEndGameConditions(World world) {
 		for (EndGameCondition condition : endGameConditions) {
@@ -86,5 +93,6 @@ public class GameMode extends NamedIdentifiedElement {
 		for (int i = 0; i < endGameConditions.size(); i++) {
 			endGameConditions.get(i).setId(i);
 		}
+		hungerPerSecond = hungerPerMinute / 60f;
 	}
 }

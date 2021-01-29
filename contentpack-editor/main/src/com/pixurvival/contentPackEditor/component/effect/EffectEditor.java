@@ -16,14 +16,14 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.RootElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.AlterationTarget;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.DrawDepth;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.OrientationType;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
 
 public class EffectEditor extends RootElementEditor<Effect> {
 

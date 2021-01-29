@@ -8,9 +8,9 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.InstantEatAlteration;
 import com.pixurvival.core.contentPack.item.EdibleItem;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
 
 public class EdiblePanel extends ItemSpecificPartPanel {
 

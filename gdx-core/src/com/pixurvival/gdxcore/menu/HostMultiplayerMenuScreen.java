@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.util.upnp.UPnP;
 import com.pixurvival.server.util.ServerMainArgs;
 
@@ -79,6 +78,7 @@ public class HostMultiplayerMenuScreen implements Screen {
 		connectButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				MultiplayerMenuUtils.savePlayerName(nameField);
 				int port = Integer.parseInt(portField.getText());
 				if (UPnP.isUPnPAvailable()) {
 					checkPortForwarding(port);
@@ -96,10 +96,7 @@ public class HostMultiplayerMenuScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
-		String username = NotificationPushManager.getInstance().getUsername();
-		if (username != null) {
-			nameField.setText(username);
-		}
+		MultiplayerMenuUtils.setPlayerName(nameField);
 		connectionMessageWindow.setVisible(false);
 	}
 

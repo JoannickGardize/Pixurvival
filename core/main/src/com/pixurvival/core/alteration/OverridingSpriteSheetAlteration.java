@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity.alteration;
+package com.pixurvival.core.alteration;
 
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;

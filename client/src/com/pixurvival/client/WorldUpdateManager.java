@@ -68,7 +68,6 @@ public class WorldUpdateManager implements Plugin<World> {
 			}
 			for (CompressedChunk compressed : u.getCompressedChunks()) {
 				world.getChunkManager().requestChunk(compressed.getPosition());
-
 			}
 			world.getMap().applyUpdate(u.getStructureUpdates());
 			if (u.getEntityUpdateLength() > 0) {

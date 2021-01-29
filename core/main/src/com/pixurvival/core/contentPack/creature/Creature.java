@@ -3,6 +3,8 @@ package com.pixurvival.core.contentPack.creature;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -16,8 +18,6 @@ import com.pixurvival.core.livingEntity.ability.Ability;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.AccessLevel;
 import lombok.Getter;

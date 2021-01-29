@@ -251,9 +251,6 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void writeRepositoryUpdate(ByteBuffer buffer) {
-		buffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
-		buffer.putFloat(getStats().get(StatType.AGILITY).getBase());
-		buffer.putFloat(getStats().get(StatType.INTELLIGENCE).getBase());
 		super.writeRepositoryUpdate(buffer);
 		if (getDefinition().getLifetime() > 0) {
 			ByteBufferUtils.writePastTime(buffer, getWorld(), creationTime);
@@ -271,9 +268,6 @@ public class CreatureEntity extends LivingEntity {
 
 	@Override
 	public void applyRepositoryUpdate(ByteBuffer buffer) {
-		getStats().get(StatType.STRENGTH).setBase(buffer.getFloat());
-		getStats().get(StatType.AGILITY).setBase(buffer.getFloat());
-		getStats().get(StatType.INTELLIGENCE).setBase(buffer.getFloat());
 		super.applyRepositoryUpdate(buffer);
 		if (getDefinition().getLifetime() > 0) {
 			creationTime = ByteBufferUtils.readPastTime(buffer, getWorld());

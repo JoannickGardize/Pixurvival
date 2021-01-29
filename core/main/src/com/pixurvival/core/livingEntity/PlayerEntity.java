@@ -36,6 +36,7 @@ import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
+import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -56,8 +57,6 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	public static final float COLLISION_RADIUS = 0.42f;
 	public static final float MAX_HUNGER = 100;
-	public static final float HUNGER_DECREASE = 100f / (60 * 10);
-	public static final float HUNGER_DAMAGE = 10;
 
 	public static final int INVENTORY_SIZE = 32;
 
@@ -108,10 +107,6 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	@Override
 	public void update() {
-		addHungerSneaky(-(HUNGER_DECREASE * getWorld().getTime().getDeltaTime()));
-		if (hunger <= 0) {
-			takeTrueDamageSneaky(HUNGER_DAMAGE * getWorld().getTime().getDeltaTime());
-		}
 		if (getChunk() == null) {
 			foreachChunkInView(chunk -> getWorld().getMap().notifyEnterView(this, chunk.getPosition()));
 		}
@@ -128,6 +123,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 			GameMode gameMode = getWorld().getGameMode();
 			gameMode.getPlayerDeathItemHandling().getHandler().accept(this);
 			respawnTime = gameMode.getPlayerRespawnType().getHandler().applyAsLong(this);
+			if (!gameMode.isKeepPermanentStats()) {
+				for (StatType statType : StatType.values()) {
+					getStats().get(statType).setBase(0);
+				}
+			}
 			getWorld().getEntityPool().notifyPlayerDied(this);
 			getWorld().getChatManager().received(new ChatEntry(getWorld(), name + " died."));
 		}

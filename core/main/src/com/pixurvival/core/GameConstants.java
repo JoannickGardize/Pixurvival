@@ -23,4 +23,6 @@ public class GameConstants {
 
 	public static final long CLIENT_STREAM_INTERVAL = 66;
 
+	public static final float HUNGER_DAMAGE_PER_SECOND = 10;
+
 }

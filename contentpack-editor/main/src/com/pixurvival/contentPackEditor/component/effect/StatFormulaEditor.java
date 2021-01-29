@@ -10,8 +10,8 @@ import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
-import com.pixurvival.core.livingEntity.alteration.StatMultiplier;
+import com.pixurvival.core.alteration.StatFormula;
+import com.pixurvival.core.alteration.StatMultiplier;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.InstantDamageAlteration;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
@@ -14,9 +17,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapTile;
 

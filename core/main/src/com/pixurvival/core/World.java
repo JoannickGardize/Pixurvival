@@ -18,6 +18,7 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.gameMode.role.Roles;
+import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -108,6 +109,13 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		playerInventoryKryo.setReferences(false);
 		playerInventoryKryo.register(ItemStack.class, new ItemStack.Serializer());
 		playerInventoryKryo.register(PlayerInventory.class, new PlayerInventory.Serializer());
+		time.addTimeIntervalListener(interval -> entityPool.get(EntityGroup.PLAYER).forEach(e -> {
+			PlayerEntity player = (PlayerEntity) e;
+			player.addHungerSneaky(-(gameMode.getHungerPerSecond() * interval));
+			if (player.getHunger() <= 0) {
+				player.takeTrueDamageSneaky(10 * interval);
+			}
+		}));
 	}
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {

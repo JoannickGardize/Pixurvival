@@ -2,10 +2,10 @@ package com.pixurvival.core.contentPack.item;
 
 import java.util.function.Consumer;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.ability.ItemAlterationAbility;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;

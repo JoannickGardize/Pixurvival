@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity.alteration;
+package com.pixurvival.core.alteration;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -110,4 +110,9 @@ public class ChunkPosition {
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "ChunkPosition(" + x + ", " + y + ")";
+	}
 }

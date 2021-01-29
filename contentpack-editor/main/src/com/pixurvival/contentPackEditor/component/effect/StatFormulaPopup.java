@@ -9,8 +9,8 @@ import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.util.RelativePopup;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
-import com.pixurvival.core.livingEntity.alteration.StatMultiplier;
+import com.pixurvival.core.alteration.StatFormula;
+import com.pixurvival.core.alteration.StatMultiplier;
 import com.pixurvival.core.livingEntity.stats.StatType;
 
 import lombok.Setter;

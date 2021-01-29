@@ -1,8 +1,8 @@
-package com.pixurvival.core.livingEntity.alteration;
+package com.pixurvival.core.alteration;
 
 import java.util.function.Consumer;
 
-import com.pixurvival.core.Damageable;
+import com.pixurvival.core.Healable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.team.TeamMember;
 
@@ -11,19 +11,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InstantDamageAlteration extends UniqueAlteration {
+public class InstantHealAlteration extends UniqueAlteration {
 
 	private static final long serialVersionUID = 1L;
 
 	@Valid
 	private StatFormula amount = new StatFormula();
 
-	private boolean applyToStructures = true;
-
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember target) {
-		if (target instanceof Damageable) {
-			((Damageable) target).takeDamage(amount.getValue(source));
+		if (target instanceof Healable) {
+			((Healable) target).takeHeal(amount.getValue(source));
 		}
 	}
 

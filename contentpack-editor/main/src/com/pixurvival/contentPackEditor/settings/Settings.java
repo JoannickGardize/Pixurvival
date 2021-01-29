@@ -2,22 +2,14 @@ package com.pixurvival.contentPackEditor.settings;
 
 import java.awt.Font;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.esotericsoftware.minlog.Log;
-import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.core.util.ReflectionUtils;
+import com.pixurvival.core.util.PropertiesFileUtils;
 import com.pixurvival.core.util.WorkingDirectory;
 
 import lombok.Getter;
@@ -42,34 +34,11 @@ public class Settings {
 	private Skin skin = Skin.SYSTEM_DEFAULT;
 
 	public Settings() {
-		File file = new File(WorkingDirectory.get(), FILE_NAME);
-		if (file.exists()) {
-			try (FileInputStream fis = new FileInputStream(file)) {
-				Properties properties = new Properties();
-				properties.load(fis);
-				for (Entry<Object, Object> entry : properties.entrySet()) {
-					Field field = Settings.class.getDeclaredField((String) entry.getKey());
-					ArgsUtils.setValue(this, field, (String) entry.getValue());
-				}
-			} catch (IOException | NoSuchFieldException | SecurityException e) {
-				Log.warn("Error when loading the file " + file, e);
-			}
-		}
+		PropertiesFileUtils.apply(new File(WorkingDirectory.get(), FILE_NAME), this);
 	}
 
 	public void save() {
-		File file = new File(WorkingDirectory.get(), FILE_NAME);
-		Properties properties = new Properties();
-		try (FileOutputStream fos = new FileOutputStream(file)) {
-			for (Field field : ReflectionUtils.getAllFields(Settings.class)) {
-				if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
-					properties.put(field.getName(), field.get(this).toString());
-				}
-			}
-			properties.store(fos, null);
-		} catch (IOException | IllegalArgumentException | IllegalAccessException e) {
-			Log.warn("Error when saving the file " + file, e);
-		}
+		PropertiesFileUtils.save(new File(WorkingDirectory.get(), FILE_NAME), this);
 	}
 
 	/**

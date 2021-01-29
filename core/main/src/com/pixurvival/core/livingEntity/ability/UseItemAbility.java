@@ -1,5 +1,6 @@
 package com.pixurvival.core.livingEntity.ability;
 
+import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
@@ -7,7 +8,6 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
 
 public class UseItemAbility extends WorkAbility {
 

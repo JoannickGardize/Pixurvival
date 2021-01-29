@@ -3,11 +3,11 @@ package com.pixurvival.core.livingEntity.ability;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 
 import lombok.Getter;
 import lombok.Setter;

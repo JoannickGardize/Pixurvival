@@ -7,11 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.pixurvival.core.alteration.StatFormula;
+import com.pixurvival.core.alteration.StatMultiplier;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.TranslationKey;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
-import com.pixurvival.core.livingEntity.alteration.StatMultiplier;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.util.CaseUtils;
@@ -108,15 +108,23 @@ public class RepresenterUtils {
 		return table;
 	}
 
-	public static void appendLabelledRow(Table table, String labelKey, StatFormula statAmount) {
+	public static String statAmount(StatFormula statAmount) {
 		sb.setLength(0);
 		RepresenterUtils.appendStatAmount(sb, statAmount);
-		appendLabelledRow(table, labelKey, sb.toString());
+		return sb.toString();
+	}
+
+	public static void appendLabelledRow(Table table, String labelKey, StatFormula statAmount) {
+		appendLabelledRow(table, labelKey, statAmount(statAmount));
 	}
 
 	public static void appendLabelledRow(Table table, String labelKey, String value) {
+		appendRawLabelledRow(table, PixurvivalGame.getString(labelKey), value);
+	}
+
+	public static void appendRawLabelledRow(Table table, String label, String value) {
 		sb.setLength(0);
-		sb.append(PixurvivalGame.getString(labelKey)).append(" ");
+		sb.append(label).append(" ");
 		table.add(new Label(sb.toString(), PixurvivalGame.getSkin(), "white")).expand();
 		Label valueLabel = new Label(value, PixurvivalGame.getSkin(), "white");
 		valueLabel.setAlignment(Align.right);

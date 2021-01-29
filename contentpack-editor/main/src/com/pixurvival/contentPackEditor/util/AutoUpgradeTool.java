@@ -26,8 +26,8 @@ public class AutoUpgradeTool {
 	private static final String RELEASE_VERSION_YML_ATTRIBUTE = "releaseVersion: ";
 
 	private static final Map<Integer, Consumer<StringBuilder>> SERIALIZATION_UPGRADERS = new HashMap<>();
-
 	private static final Map<Integer, Consumer<StringBuilder>> LAYOUT_UPGRADERS = new HashMap<>();
+	private static final Map<Integer, Consumer<ContentPack>> CONTENT_PACK_UPGRADERS = new HashMap<>();
 
 	static {
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> {
@@ -40,6 +40,8 @@ public class AutoUpgradeTool {
 		LAYOUT_UPGRADERS.put(ReleaseVersion.ALPHA_5.ordinal(), sb -> replaceAll(sb, "MAP_GENERATOR", "MAP_PROVIDER"));
 
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_9.ordinal(), sb -> replaceAll(sb, "!!DropItemsBehavior", "!!DoNothingBehavior"));
+
+		CONTENT_PACK_UPGRADERS.put(ReleaseVersion.ALPHA_10.ordinal(), cp -> cp.getEffects().forEach(e -> e.getRepeatFollowingElements().setBase(e.getRepeatFollowingElements().getBase() + 1f)));
 	}
 
 	/**
@@ -56,6 +58,7 @@ public class AutoUpgradeTool {
 			upgradeEntry(layoutSb, LAYOUT_UPGRADERS, startIndex);
 			LayoutManager.getInstance().setOverridedSource(new ByteArrayInputStream(layoutSb.toString().getBytes()));
 			ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(fileService.getCurrentFile(), new ByteArrayInputStream(serializationSb.toString().getBytes()));
+			upgradeContentPack(contentPack, startIndex);
 			LayoutManager.getInstance().setOverridedSource(null);
 			return contentPack;
 		} catch (IOException | ContentPackException e) {
@@ -73,6 +76,13 @@ public class AutoUpgradeTool {
 		for (int i = startIndex; i < ReleaseVersion.values().length; i++) {
 			upgrader.getOrDefault(i, s -> {
 			}).accept(sb);
+		}
+	}
+
+	private static void upgradeContentPack(ContentPack contentPack, int startIndex) {
+		for (int i = startIndex; i < ReleaseVersion.values().length; i++) {
+			CONTENT_PACK_UPGRADERS.getOrDefault(i, s -> {
+			}).accept(contentPack);
 		}
 	}
 

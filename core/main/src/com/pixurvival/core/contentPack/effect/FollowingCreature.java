@@ -1,10 +1,10 @@
 package com.pixurvival.core.contentPack.effect;
 
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;

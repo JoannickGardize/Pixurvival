@@ -8,11 +8,11 @@ import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.AlterationTarget;
+import com.pixurvival.core.alteration.InstantDamageAlteration;
 import com.pixurvival.core.contentPack.effect.EffectTarget;
 import com.pixurvival.core.contentPack.effect.TargetType;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
-import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
 
 public class EffectTargetEditor extends ElementEditor<EffectTarget> {
 

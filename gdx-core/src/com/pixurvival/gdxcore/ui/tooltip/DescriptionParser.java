@@ -1,6 +1,6 @@
 package com.pixurvival.gdxcore.ui.tooltip;
 
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 import lombok.experimental.UtilityClass;

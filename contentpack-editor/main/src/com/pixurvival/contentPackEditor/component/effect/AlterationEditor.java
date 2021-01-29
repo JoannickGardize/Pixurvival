@@ -19,30 +19,32 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.SoundPreset;
+import com.pixurvival.core.alteration.AddItemAlteration;
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.AlterationTarget;
+import com.pixurvival.core.alteration.ContinuousDamageAlteration;
+import com.pixurvival.core.alteration.DelayedAlteration;
+import com.pixurvival.core.alteration.DropItemsAlteration;
+import com.pixurvival.core.alteration.FixedMovementAlteration;
+import com.pixurvival.core.alteration.FollowingElementAlteration;
+import com.pixurvival.core.alteration.InstantDamageAlteration;
+import com.pixurvival.core.alteration.InstantEatAlteration;
+import com.pixurvival.core.alteration.InstantHealAlteration;
+import com.pixurvival.core.alteration.InvincibleAlteration;
+import com.pixurvival.core.alteration.OverridingSpriteSheetAlteration;
+import com.pixurvival.core.alteration.PermanentStatAlteration;
+import com.pixurvival.core.alteration.PersistentAlteration;
+import com.pixurvival.core.alteration.PlaySoundAlteration;
+import com.pixurvival.core.alteration.RepeatAlteration;
+import com.pixurvival.core.alteration.SilenceAlteration;
+import com.pixurvival.core.alteration.SourceDirection;
+import com.pixurvival.core.alteration.StatAlteration;
+import com.pixurvival.core.alteration.StunAlteration;
+import com.pixurvival.core.alteration.TeleportationAlteration;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemStack;
-import com.pixurvival.core.livingEntity.alteration.AddItemAlteration;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.AlterationTarget;
-import com.pixurvival.core.livingEntity.alteration.ContinuousDamageAlteration;
-import com.pixurvival.core.livingEntity.alteration.DelayedAlteration;
-import com.pixurvival.core.livingEntity.alteration.DropItemsAlteration;
-import com.pixurvival.core.livingEntity.alteration.FixedMovementAlteration;
-import com.pixurvival.core.livingEntity.alteration.FollowingElementAlteration;
-import com.pixurvival.core.livingEntity.alteration.InstantDamageAlteration;
-import com.pixurvival.core.livingEntity.alteration.InstantEatAlteration;
-import com.pixurvival.core.livingEntity.alteration.InstantHealAlteration;
-import com.pixurvival.core.livingEntity.alteration.InvincibleAlteration;
-import com.pixurvival.core.livingEntity.alteration.OverridingSpriteSheetAlteration;
-import com.pixurvival.core.livingEntity.alteration.PersistentAlteration;
-import com.pixurvival.core.livingEntity.alteration.PlaySoundAlteration;
-import com.pixurvival.core.livingEntity.alteration.RepeatAlteration;
-import com.pixurvival.core.livingEntity.alteration.SilenceAlteration;
-import com.pixurvival.core.livingEntity.alteration.SourceDirection;
-import com.pixurvival.core.livingEntity.alteration.StatAlteration;
-import com.pixurvival.core.livingEntity.alteration.StunAlteration;
-import com.pixurvival.core.livingEntity.alteration.TeleportationAlteration;
+import com.pixurvival.core.livingEntity.stats.StatType;
 
 public class AlterationEditor extends InstanceChangingElementEditor<Alteration> {
 
@@ -231,6 +233,16 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(itemsSet, "items", DropItemsAlteration.class);
 			bind(maxQuantityInput, "maxQuantity", DropItemsAlteration.class);
 			return LayoutUtils.createVerticalBox(itemsSet, LayoutUtils.labelled("alterationEditor.maxQuantity", maxQuantityInput));
+		}));
+
+		// PermanentStatAlteration
+		entries.add(new ClassEntry(PermanentStatAlteration.class, () -> {
+			EnumChooser<StatType> statTypeChooser = new EnumChooser<>(StatType.class);
+			StatFormulaEditor amountEditor = new StatFormulaEditor();
+			bind(statTypeChooser, "statType", PermanentStatAlteration.class);
+			bind(amountEditor, "amount", PermanentStatAlteration.class);
+			return LayoutUtils.createHorizontalLabelledBox("statModifierEditor.statType", statTypeChooser, "generic.add", amountEditor);
+
 		}));
 
 		return entries;

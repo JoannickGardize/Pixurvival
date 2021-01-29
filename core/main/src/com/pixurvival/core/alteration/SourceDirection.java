@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity.alteration;
+package com.pixurvival.core.alteration;
 
 import com.pixurvival.core.team.TeamMember;
 

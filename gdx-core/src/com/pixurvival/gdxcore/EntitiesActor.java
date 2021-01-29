@@ -44,7 +44,6 @@ public class EntitiesActor extends Actor {
 	private List<Body> objectsToDraw = new ArrayList<>();
 	private List<Body> allObjectsToDraw = new ArrayList<>();
 	private int actualY;
-	private int count;
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());

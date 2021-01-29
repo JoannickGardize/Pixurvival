@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
 
 import lombok.Getter;
 import lombok.Setter;

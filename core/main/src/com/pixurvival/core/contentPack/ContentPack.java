@@ -13,6 +13,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
@@ -35,8 +37,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
-import com.pixurvival.core.livingEntity.alteration.StatFormula;
 import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.ReflectionUtils;
 import com.pixurvival.core.util.ReleaseVersion;

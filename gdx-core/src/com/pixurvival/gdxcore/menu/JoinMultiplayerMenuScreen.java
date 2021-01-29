@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 
 public class JoinMultiplayerMenuScreen implements Screen {
 
@@ -38,7 +37,7 @@ public class JoinMultiplayerMenuScreen implements Screen {
 		table.row();
 
 		table.add(new Label(PixurvivalGame.getString("menu.multiplayer.playerName"), skin)).right();
-		nameField = new TextField("Bob", skin);
+		nameField = new TextField("", skin);
 		table.add(nameField);
 		table.row();
 
@@ -59,6 +58,7 @@ public class JoinMultiplayerMenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				connectionMessageWindow.showWaitingMessage();
+				MultiplayerMenuUtils.savePlayerName(nameField);
 				new Thread(() -> PixurvivalGame.getClient().connectToServer(ipField.getText(), Integer.parseInt(portField.getText()), nameField.getText())).start();
 			}
 		});
@@ -67,10 +67,7 @@ public class JoinMultiplayerMenuScreen implements Screen {
 	@Override
 	public void show() {
 		Gdx.input.setInputProcessor(stage);
-		String username = NotificationPushManager.getInstance().getUsername();
-		if (username != null) {
-			nameField.setText(username);
-		}
+		MultiplayerMenuUtils.setPlayerName(nameField);
 		connectionMessageWindow.setVisible(false);
 	}
 

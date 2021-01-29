@@ -10,8 +10,8 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
+import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.livingEntity.ability.AlterationAbility;
-import com.pixurvival.core.livingEntity.alteration.Alteration;
 
 public abstract class AlterationAbilityEditor<T extends AlterationAbility> extends ElementEditor<T> {
 
