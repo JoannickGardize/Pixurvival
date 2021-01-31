@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.Healable;
+import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.alteration.PersistentAlteration;
 import com.pixurvival.core.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -60,7 +61,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	private long stunTermTime = 0;
 	private long invincibleTermTime = 0;
 
-	private @Getter Vector2 spawnPosition;
+	private @Getter @Setter Vector2 spawnPosition;
 
 	@Override
 	protected boolean canForward() {
@@ -228,19 +229,20 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 	}
 
 	@Override
-	public void takeDamage(float amount) {
-		takeTrueDamage(amount * (1 - stats.getValue(StatType.ARMOR)));
+	public void takeDamage(float amount, DamageAttributes attributes) {
+		takeTrueDamage(attributes.isTrueDamage() ? amount : amount * (1 - stats.getValue(StatType.ARMOR)), attributes);
 	}
 
-	public void takeTrueDamage(float amount) {
-		takeTrueDamageSneaky(amount);
+	public void takeTrueDamage(float amount, DamageAttributes attributes) {
+		takeTrueDamageSneaky(amount, attributes);
 		setStateChanged(true);
 	}
 
-	public void takeTrueDamageSneaky(float amount) {
-		if (getWorld().getTime().getTimeMillis() < invincibleTermTime) {
+	public void takeTrueDamageSneaky(float amount, DamageAttributes attributes) {
+		if (!attributes.isBypassInvincibility() && getWorld().getTime().getTimeMillis() < invincibleTermTime) {
 			return;
 		}
+		System.out.println(this + " takes " + amount);
 		health -= amount;
 		if (health < 0) {
 			health = 0;

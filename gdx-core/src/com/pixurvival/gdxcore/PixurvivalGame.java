@@ -103,7 +103,11 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	}
 
 	public static ContentPackTextures getContentPackTextures() {
-		return instance.worldScreen.getContentPackTextures();
+		if (instance.worldScreen == null) {
+			return null;
+		} else {
+			return instance.worldScreen.getContentPackTextures();
+		}
 	}
 
 	public static ChunkTileTexturesManager getChunkTileTexturesManager() {

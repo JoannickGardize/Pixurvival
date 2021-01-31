@@ -50,6 +50,9 @@ import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlayerEquipmentAbilityRequest;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
+import com.pixurvival.core.system.mapLimits.MapLimitsAnchorRun;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
+import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.experimental.UtilityClass;
@@ -141,6 +144,9 @@ public class KryoInitializer {
 		register(kryo, Respawn.class);
 		register(kryo, PlayerRespawn.class);
 		register(kryo, PlayerRespawn[].class);
+		register(kryo, Rectangle.class);
+		register(kryo, MapLimitsAnchorRun.class);
+		register(kryo, MapLimitsSystemData.class);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -3,6 +3,7 @@ package com.pixurvival.core.map;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.Damageable;
+import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -43,7 +44,7 @@ public class DamageableMapStructure extends MapStructure implements TeamMember, 
 	}
 
 	@Override
-	public void takeDamage(float amount) {
+	public void takeDamage(float amount, DamageAttributes attributes) {
 		health -= amount;
 		if (health < 0) {
 			health = 0;

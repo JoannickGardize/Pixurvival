@@ -18,10 +18,13 @@ public class ContinuousDamageAlteration extends Alteration {
 	@Valid
 	private StatFormula damagePerSecond = new StatFormula();
 
+	@Valid
+	private DamageAttributes attributes = new DamageAttributes();
+
 	@Override
 	public void targetedApply(TeamMember source, TeamMember target) {
 		if (target instanceof Damageable) {
-			((Damageable) target).takeDamage(damagePerSecond.getValue(source.getStats()) * target.getWorld().getTime().getDeltaTime());
+			((Damageable) target).takeDamage(damagePerSecond.getValue(source.getStats()) * target.getWorld().getTime().getDeltaTime(), attributes);
 		}
 	}
 

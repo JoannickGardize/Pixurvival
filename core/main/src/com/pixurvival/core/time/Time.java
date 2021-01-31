@@ -1,24 +1,22 @@
 package com.pixurvival.core.time;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.pixurvival.core.message.TimeSync;
+import com.pixurvival.core.system.interest.InterestSubscription;
+import com.pixurvival.core.system.interest.InterestSubscriptionSet;
+import com.pixurvival.core.system.interest.TimeIntervalInterest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
 public class Time {
 
 	private @Setter @Getter long timeMillis = 0;
 	private float decimalAccumulator = 0;
-	private @Getter @NonNull DayCycleRun dayCycle;
+	private @Getter DayCycleRun dayCycle;
 
 	private @Getter float deltaTime = 0;
 	private @Getter float deltaTimeMillis = 0;
@@ -27,12 +25,17 @@ public class Time {
 	private @Getter long tickCount = 0;
 	private float timeDiffAccumulator = 0;
 	private long previousSecond = 0;
-	private List<TimeIntervalListener> timeIntervalListeners = new ArrayList<>();
+	private @Getter InterestSubscription<TimeIntervalInterest> timeIntervalSubscription;
 
 	/**
 	 * Current time to consider for reading / writing relative time based data.
 	 */
 	private @Setter @Getter long serializationContextTime;
+
+	public Time(DayCycleRun dayCycle, InterestSubscriptionSet interestSubscriptionSet) {
+		this.dayCycle = dayCycle;
+		timeIntervalSubscription = interestSubscriptionSet.get(TimeIntervalInterest.class);
+	}
 
 	public void update(float deltaTimeMillis) {
 		tickCount++;
@@ -49,7 +52,7 @@ public class Time {
 		long currentSecond = timeMillis / 1000L;
 		while (previousSecond < currentSecond) {
 			previousSecond++;
-			timeIntervalListeners.forEach(l -> l.tick(1));
+			timeIntervalSubscription.forEach(l -> l.tick(1));
 		}
 	}
 
@@ -90,9 +93,5 @@ public class Time {
 
 	public void setSerializationContextTimeToNow() {
 		serializationContextTime = timeMillis;
-	}
-
-	public void addTimeIntervalListener(TimeIntervalListener listener) {
-		timeIntervalListeners.add(listener);
 	}
 }

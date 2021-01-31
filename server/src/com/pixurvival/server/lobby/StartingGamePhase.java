@@ -37,6 +37,7 @@ public class StartingGamePhase implements LobbyPhase {
 	public void started() {
 		ContentPack contentPack = data.getContentPack();
 		World world = World.createServerWorld(contentPack, data.getGameModeId());
+
 		waitingGameSession = new GameSession(world);
 		CreateWorld createWorld = new CreateWorld();
 		createWorld.setId(world.getId());
@@ -54,10 +55,9 @@ public class StartingGamePhase implements LobbyPhase {
 			teamCompositionList.add(new TeamComposition(team.getName(), playerInformations));
 		}
 		TeamComposition[] teamCompositions = teamCompositionList.toArray(new TeamComposition[teamCompositionList.size()]);
-
 		waitingGameSession.setTeamCompositions(teamCompositions);
 		createWorld.setTeamCompositions(teamCompositions);
-
+		world.addSystem(waitingGameSession);
 		try {
 			world.initializeNewGame();
 		} catch (MapAnalyticsException e) {
@@ -65,7 +65,7 @@ public class StartingGamePhase implements LobbyPhase {
 			session.setCurrentPhase(PreparingPhase.class);
 			return;
 		}
-
+		createWorld.setWorldSpawnCenter(world.getSpawnCenter());
 		waitingGameSession.foreachPlayers(playerSession -> {
 			PlayerEntity playerEntity = playerSession.getPlayerEntity();
 			createWorld.setMyPlayerId(playerEntity.getId());
@@ -73,6 +73,8 @@ public class StartingGamePhase implements LobbyPhase {
 			createWorld.setMyTeamId(playerEntity.getTeam().getId());
 			createWorld.setMyPosition(playerEntity.getPosition());
 			createWorld.setInventory(playerEntity.getInventory());
+			createWorld.setMySpawnCenter(playerEntity.getSpawnPosition());
+			createWorld.setDiscoveredItemCrafts(playerEntity.getItemCraftDiscovery().getDiscovereditemCraftIds());
 			setVisibleRoles(world, teamCompositions, playerEntity);
 			playerSession.getConnection().sendTCP(createWorld);
 		});
@@ -135,9 +137,7 @@ public class StartingGamePhase implements LobbyPhase {
 			readySessions.add(playerSession);
 			if (readySessions.size() == session.getPlayerSessions().size()) {
 				session.terminate();
-				waitingGameSession
-						.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0, s.getPlayerEntity().getPosition(), s.getPlayerEntity().getItemCraftDiscovery().getDiscovereditemCraftIds())));
-				System.out.println("pif");
+				waitingGameSession.foreachPlayers(s -> s.getConnection().sendTCP(new StartGame(0)));
 				session.getServer().runGame(waitingGameSession);
 				session.getServer().addListener(waitingGameSession);
 			}

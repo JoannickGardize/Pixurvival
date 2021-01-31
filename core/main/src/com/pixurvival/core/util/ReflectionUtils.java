@@ -27,6 +27,16 @@ public class ReflectionUtils {
 		return list.toArray(new Method[list.size()]);
 	}
 
+	public static Class<?>[] getAllInterfaces(Class<?> clazz) {
+		List<Class<?>> list = new ArrayList<>();
+		Class<?> currentClass = clazz;
+		while (currentClass != Object.class) {
+			list.addAll(Arrays.asList(currentClass.getInterfaces()));
+			currentClass = currentClass.getSuperclass();
+		}
+		return list.toArray(new Class[list.size()]);
+	}
+
 	/**
 	 * @param clazz
 	 * @return All the field of the class and superclasses, with superclasses fields

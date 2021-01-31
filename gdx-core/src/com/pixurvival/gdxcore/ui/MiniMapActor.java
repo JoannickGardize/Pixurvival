@@ -110,7 +110,7 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 
 	// TODO Thread this
 	private void addChunk(Chunk chunk) {
-		if (chunkTextures.containsKey(chunk.getPosition())) {
+		if (chunkTextures.containsKey(chunk.getPosition()) || PixurvivalGame.getContentPackTextures() == null) {
 			return;
 		}
 		Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);

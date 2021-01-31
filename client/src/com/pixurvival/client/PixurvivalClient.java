@@ -53,6 +53,7 @@ import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyRequest;
 import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
+import com.pixurvival.core.system.SystemData;
 import com.pixurvival.core.util.CommonMainArgs;
 import com.pixurvival.core.util.LocaleUtils;
 import com.pixurvival.core.util.PluginHolder;
@@ -208,11 +209,12 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		client.sendTCP(new ContentPackRequest(identifier));
 	}
 
-	public void initializeNetworkWorld(CreateWorld createWorld) {
+	public void createClientWorld(CreateWorld createWorld) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
 			myOriginalPlayerId = createWorld.getMyOriginalPlayerId();
 			setWorld(World.createClientWorld(createWorld, contentPackContext));
+			discovered(createWorld.getDiscoveredItemCrafts());
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = getLocaleFor(world.getContentPack());
 			removeAllPlugins();
@@ -228,6 +230,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			if (spectator) {
 				notify(ClientGameListener::playerFocusChanged);
 			}
+			world.initializeClientGame(createWorld);
 		} catch (ContentPackException e) {
 			// TODO
 			throw new RuntimeException(e);
@@ -416,5 +419,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 
 	public PlayerEntity getMyOriginalPlayerEntity() {
 		return world.getPlayerEntities().get(myOriginalPlayerId);
+	}
+
+	public void handleSystemData(SystemData data) {
+		if (world != null) {
+			world.getSystem(data.systemOwnerType()).accept(data);
+		}
 	}
 }

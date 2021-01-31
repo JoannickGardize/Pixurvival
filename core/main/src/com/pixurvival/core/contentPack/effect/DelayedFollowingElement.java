@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack.effect;
 
 import java.io.Serializable;
 
+import com.pixurvival.core.contentPack.FloatHolder;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
@@ -10,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DelayedFollowingElement implements Serializable {
+public class DelayedFollowingElement implements Serializable, FloatHolder {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,4 +20,9 @@ public class DelayedFollowingElement implements Serializable {
 
 	@Valid
 	private FollowingElement followingElement;
+
+	@Override
+	public float getFloatValue() {
+		return delay;
+	}
 }

@@ -38,12 +38,12 @@ import com.pixurvival.core.map.chunk.ChunkRepository;
 import com.pixurvival.core.map.chunk.CompressedChunk;
 import com.pixurvival.core.map.chunk.ServerChunkRepositoryEntry;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
-import com.pixurvival.core.mapLimits.MapLimitsAnchorRun;
-import com.pixurvival.core.mapLimits.MapLimitsManager;
-import com.pixurvival.core.mapLimits.MapLimitsRun;
-import com.pixurvival.core.mapLimits.NextMapLimitAnchorAction;
 import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.message.WorldUpdate;
+import com.pixurvival.core.system.interest.PersistenceInterest;
+import com.pixurvival.core.system.mapLimits.MapLimitsAnchorRun;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
+import com.pixurvival.core.system.mapLimits.NextMapLimitAnchorAction;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.LongSequenceIOHelper;
@@ -99,7 +99,7 @@ public class WorldSerialization {
 			// kryo stuff
 			kryo.writeObject(kryoOutput, world.getActionTimerManager().getActionTimerQueue());
 			kryo.writeObject(kryoOutput, world.getEndGameConditionData());
-			kryo.writeObjectOrNull(kryoOutput, world.getMapLimitsRun(), MapLimitsRun.class);
+			world.getInterestSubscriptionSet().get(PersistenceInterest.class).forEach(pi -> pi.save(kryoOutput, kryo));
 			kryo.writeObject(kryoOutput, world.getChunkCreatureSpawnManager().getActionMemory());
 			kryo.writeObject(kryoOutput, world.getSpawnCenter());
 			kryoOutput.flush();
@@ -166,14 +166,10 @@ public class WorldSerialization {
 			kryoInput.setPosition(buffer.position());
 			world.getActionTimerManager().setActionTimerQueue(kryo.readObject(kryoInput, PriorityQueue.class));
 			world.setEndGameConditionData(kryo.readObject(kryoInput, HashMap.class));
-			world.setMapLimitsRun(kryo.readObjectOrNull(kryoInput, MapLimitsRun.class));
+			world.getInterestSubscriptionSet().get(PersistenceInterest.class).forEach(pi -> pi.load(kryoInput, kryo));
 			world.getChunkCreatureSpawnManager().setActionMemory(kryo.readObject(kryoInput, HashMap.class));
 			world.setSpawnCenter(kryo.readObject(kryoInput, Vector2.class));
 			buffer.position(kryoInput.position());
-		}
-		if (world.getMapLimitsRun() != null) {
-			MapLimitsManager mapLimitsManager = new MapLimitsManager();
-			world.addPlugin(mapLimitsManager);
 		}
 		world.setSaveName(saveName);
 		return world;
@@ -217,10 +213,10 @@ public class WorldSerialization {
 		kryo.register(HashSet.class);
 		kryo.register(Rectangle.class);
 		kryo.register(MapLimitsAnchorRun.class);
-		kryo.register(MapLimitsRun.class);
 		kryo.register(Vector2.class);
 		kryo.register(ActionTimer.class);
 		kryo.register(PlayerRespawnAction.class);
+		kryo.register(MapLimitsSystemData.class);
 		return kryo;
 	}
 

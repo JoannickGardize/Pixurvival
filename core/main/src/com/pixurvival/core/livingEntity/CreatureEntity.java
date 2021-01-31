@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Positionnable;
+import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.BehaviorData;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -96,8 +97,8 @@ public class CreatureEntity extends LivingEntity {
 	}
 
 	@Override
-	public void takeDamage(float amount) {
-		super.takeDamage(amount);
+	public void takeDamage(float amount, DamageAttributes attributes) {
+		super.takeDamage(amount, attributes);
 		behaviorData.setTookDamage(true);
 	}
 

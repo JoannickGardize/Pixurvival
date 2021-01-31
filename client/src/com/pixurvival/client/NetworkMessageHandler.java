@@ -28,16 +28,17 @@ import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.EnterLobby;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyServerMessage;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
 
 class NetworkMessageHandler extends Listener {
 
-	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>(9);
+	private Map<Class<?>, Consumer<?>> messageActions = new IdentityHashMap<>();
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
 	public NetworkMessageHandler(PixurvivalClient game) {
 		putMessageAction(LoginResponse.class, r -> game.notify(l -> l.loginResponse(r)));
-		putMessageAction(CreateWorld.class, game::initializeNetworkWorld);
+		putMessageAction(CreateWorld.class, game::createClientWorld);
 		putMessageAction(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept(p));
 
 		// TODO Download system
@@ -57,10 +58,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(StartGame.class, g -> {
 			game.addPlugin(new WorldUpdater());
 			game.getWorld().getTime().setTimeMillis(g.getWorldTime());
-			game.getWorld().setSpawnCenter(g.getSpawnCenter());
-			game.getWorld().initializeMapLimits();
 			game.notify(ClientGameListener::gameStarted);
-			game.discovered(g.getDiscoveredItemCrafts());
 		});
 		putMessageAction(ChatEntry.class, c -> game.getWorld().getChatManager().received(c));
 		putMessageAction(Spectate.class, game::spectate);
@@ -86,6 +84,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(LobbyServerMessage.class, lm -> game.notify(l -> l.lobbyMessageReceived(lm)));
 		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
 		putMessageAction(ItemCraftAvailable.class, i -> game.discovered(i.getItemCraftIds()));
+		putMessageAction(MapLimitsSystemData.class, data -> game.handleSystemData(data));
 	}
 
 	@Override

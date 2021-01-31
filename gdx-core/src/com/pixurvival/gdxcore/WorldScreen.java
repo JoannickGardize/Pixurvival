@@ -22,6 +22,7 @@ import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystem;
 import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
@@ -166,8 +167,9 @@ public class WorldScreen implements Screen {
 	}
 
 	public void gameStarted() {
-		if (world.getMapLimitsRun() != null) {
-			worldStage.addActor(new MapLimitActor(world.getMapLimitsRun().getRectangle()));
+		MapLimitsSystem mapLimitsSystem = world.getSystem(MapLimitsSystem.class);
+		if (mapLimitsSystem != null) {
+			worldStage.addActor(new MapLimitActor(mapLimitsSystem));
 		}
 		if (world.getMyPlayer() != null && !world.getMyPlayer().isAlive()) {
 			respawnTimerActor.playerDied(world.getMyPlayer());

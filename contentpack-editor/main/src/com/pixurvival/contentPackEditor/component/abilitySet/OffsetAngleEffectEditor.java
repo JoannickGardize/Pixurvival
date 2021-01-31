@@ -37,6 +37,6 @@ public class OffsetAngleEffectEditor extends ElementEditor<OffsetAngleEffect> {
 		LayoutUtils.addHorizontalLabelledItem(panel, "generic.randomAngle", randomAngleInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		gbc.gridheight = 2;
-		panel.add(LayoutUtils.labelled("elementType.effect", effectChooser), gbc);
+		panel.add(LayoutUtils.single(LayoutUtils.labelled("elementType.effect", effectChooser)), gbc);
 	}
 }

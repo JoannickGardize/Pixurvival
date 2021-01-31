@@ -119,11 +119,12 @@ public class LayoutUtils {
 		gbc.fill = GridBagConstraints.BOTH;
 		parent.add(left, gbc);
 		gbc.gridx++;
+		gbc.insets.left = DEFAULT_GAP;
 		parent.add(right, gbc);
 
 	}
 
-	public static Container sideBySide(Component left, Component right) {
+	public static Component sideBySide(Component left, Component right) {
 		JPanel result = new JPanel();
 		addSideBySide(result, left, right);
 		return result;

@@ -74,16 +74,21 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		entries.add(new ClassEntry(InstantDamageAlteration.class, () -> {
 			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
 			BooleanCheckBox applyToStructuresCheckBox = new BooleanCheckBox();
+			DamageAttributesEditor damageAttributesEditor = new DamageAttributesEditor();
 			bind(damageAmountEditor, "amount", InstantDamageAlteration.class);
 			bind(applyToStructuresCheckBox, "applyToStructures", InstantDamageAlteration.class);
-			return LayoutUtils.single(LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox));
+			bind(damageAttributesEditor, "attributes", InstantDamageAlteration.class);
+			return (JPanel) LayoutUtils.sideBySide(
+					LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox), damageAttributesEditor);
 		}));
 
 		// ContinuousDamageAlteration
 		entries.add(new ClassEntry(ContinuousDamageAlteration.class, () -> {
 			StatFormulaEditor damageAmountEditor = new StatFormulaEditor();
+			DamageAttributesEditor damageAttributesEditor = new DamageAttributesEditor();
 			bind(damageAmountEditor, "damagePerSecond", ContinuousDamageAlteration.class);
-			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor));
+			bind(damageAttributesEditor, "attributes", ContinuousDamageAlteration.class);
+			return (JPanel) LayoutUtils.sideBySide(LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor)), damageAttributesEditor);
 		}));
 
 		// InstantHealAlteration

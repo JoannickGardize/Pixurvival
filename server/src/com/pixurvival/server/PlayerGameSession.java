@@ -161,8 +161,7 @@ public class PlayerGameSession implements InventoryListener, PlayerConnectionLis
 	public void handleGameReady(GameReady gameReady) {
 		setGameReady(true);
 		if (isReconnecting()) {
-			getConnection().sendTCP(
-					new StartGame(playerEntity.getWorld().getTime().getTimeMillis(), playerEntity.getWorld().getSpawnCenter(), playerEntity.getItemCraftDiscovery().getDiscovereditemCraftIds()));
+			getConnection().sendTCP(new StartGame(playerEntity.getWorld().getTime().getTimeMillis()));
 			setReconnecting(false);
 		}
 	}

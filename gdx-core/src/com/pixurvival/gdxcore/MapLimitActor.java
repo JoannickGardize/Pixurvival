@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystem;
 import com.pixurvival.core.util.Rectangle;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 
@@ -18,10 +19,11 @@ public class MapLimitActor extends Actor {
 	public static final Color LIMIT_COLOR = new Color(1, 1, 1, 0.6f);
 	public static final float BORDER_SIZE = 0.2f;
 
-	private Rectangle limitRectangle;
+	private MapLimitsSystem mapLimitsSystem;
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		Rectangle limitRectangle = mapLimitsSystem.getData().getRectangle();
 		Vector3 camPos = getStage().getCamera().position;
 		OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
 		Viewport viewport = getStage().getViewport();

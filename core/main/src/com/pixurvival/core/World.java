@@ -2,6 +2,7 @@ package com.pixurvival.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -18,7 +19,6 @@ import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.gameMode.role.Roles;
-import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -28,12 +28,19 @@ import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
 import com.pixurvival.core.map.generator.ChunkSupplier;
-import com.pixurvival.core.mapLimits.MapLimitsManager;
-import com.pixurvival.core.mapLimits.MapLimitsRun;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.message.WorldKryo;
+import com.pixurvival.core.system.BaseSystem;
+import com.pixurvival.core.system.HungerSystem;
+import com.pixurvival.core.system.interest.InitializeNewClientWorldInterest;
+import com.pixurvival.core.system.interest.InitializeNewServerWorldInterest;
+import com.pixurvival.core.system.interest.InterestSubscription;
+import com.pixurvival.core.system.interest.InterestSubscriptionSet;
+import com.pixurvival.core.system.interest.PersistenceInterest;
+import com.pixurvival.core.system.interest.WorldUpdateInterest;
+import com.pixurvival.core.system.mapLimits.MapLimitsSystem;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
@@ -45,6 +52,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
@@ -62,6 +70,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	private final Type type;
+	private InterestSubscriptionSet interestSubscriptionSet = new InterestSubscriptionSet();
 	private Time time;
 	private TiledMap map;
 	private ChunkManager chunkManager;
@@ -81,11 +90,15 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private Map<Long, PlayerEntity> playerEntities = new HashMap<>();
 	private List<WorldListener> listeners = new ArrayList<>();
 	private boolean gameEnded = false;
-	private @Setter MapLimitsRun mapLimitsRun;
 	private ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
 	private @Setter String saveName;
 	private long seed;
 	private WorldKryo playerInventoryKryo;
+	private Map<Class<? extends BaseSystem>, BaseSystem> systems = new LinkedHashMap<>();
+	private InterestSubscription<InitializeNewServerWorldInterest> initializeNewServerWorldSubscription = interestSubscriptionSet.get(InitializeNewServerWorldInterest.class);
+	private InterestSubscription<InitializeNewClientWorldInterest> initializeNewClientWorldSubscription = interestSubscriptionSet.get(InitializeNewClientWorldInterest.class);
+	private InterestSubscription<WorldUpdateInterest> worldUpdateSubscription = interestSubscriptionSet.get(WorldUpdateInterest.class);
+	private InterestSubscription<PersistenceInterest> persitenceSubscription = interestSubscriptionSet.get(PersistenceInterest.class);
 
 	private World(long id, Type type, ContentPack contentPack, int gameModeId) {
 		this(id, type, contentPack, gameModeId, new Random().nextLong());
@@ -100,7 +113,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		this.contentPack = contentPack;
 		this.gameMode = contentPack.getGameModes().get(gameModeId);
 		this.seed = seed;
-		time = new Time(gameMode.getDayCycle().create());
+		time = new Time(gameMode.getDayCycle().create(), interestSubscriptionSet);
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this);
 		chunkManager = new ChunkManager(map);
@@ -109,13 +122,32 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		playerInventoryKryo.setReferences(false);
 		playerInventoryKryo.register(ItemStack.class, new ItemStack.Serializer());
 		playerInventoryKryo.register(PlayerInventory.class, new PlayerInventory.Serializer());
-		time.addTimeIntervalListener(interval -> entityPool.get(EntityGroup.PLAYER).forEach(e -> {
-			PlayerEntity player = (PlayerEntity) e;
-			player.addHungerSneaky(-(gameMode.getHungerPerSecond() * interval));
-			if (player.getHunger() <= 0) {
-				player.takeTrueDamageSneaky(10 * interval);
-			}
-		}));
+		addSystem(HungerSystem.class);
+		addSystem(MapLimitsSystem.class);
+	}
+
+	@SneakyThrows
+	public void addSystem(Class<? extends BaseSystem> type) {
+		systems.put(type, type.getConstructor(World.class).newInstance(this));
+	}
+
+	/**
+	 * Not the preferred way, should be made deprecated one day.
+	 * 
+	 * @param system
+	 */
+	public void addSystem(BaseSystem system) {
+		systems.put(system.getClass(), system);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends BaseSystem> T getSystem(Class<? extends BaseSystem> type) {
+		return (T) systems.get(type);
+	}
+
+	private void initializeSystems() {
+		systems.values().removeIf(s -> !s.isRequired());
+		systems.values().forEach(BaseSystem::initialize);
 	}
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {
@@ -139,10 +171,13 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		}
 		PlayerEntity myPlayer = world.playerEntities.get(createWorld.getMyPlayerId());
 		myPlayer.getPosition().set(createWorld.getMyPosition());
+		myPlayer.setSpawnPosition(createWorld.getMySpawnCenter());
+
 		createWorld.getInventory().computeQuantities();
 		myPlayer.setInventory(createWorld.getInventory());
 		world.myPlayer = myPlayer;
 		world.getEntityPool().add(myPlayer);
+		world.setSpawnCenter(createWorld.getWorldSpawnCenter());
 		return world;
 	}
 
@@ -190,6 +225,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			return;
 		}
 		updatePlugins(this);
+		worldUpdateSubscription.forEach(w -> w.update(time.getDeltaTime()));
 		time.update(deltaTimeMillis);
 		actionTimerManager.update();
 		entityPool.update();
@@ -224,6 +260,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	 * @throws MapAnalyticsException
 	 */
 	public void initializeNewGame() throws MapAnalyticsException {
+		initializeSystems();
 		entityPool.flushNewEntities();
 		gameMode.getPlayerSpawn().apply(this);
 		for (PlayerEntity player : getPlayerEntities().values()) {
@@ -234,16 +271,22 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			c.initialize(this);
 			c.initializeNewGameData(this);
 		});
-		initializeMapLimits();
 		initializeRoles();
+		initializeNewServerWorldSubscription.forEach(InitializeNewServerWorldInterest::initializeNewServerWorld);
 	}
 
 	public void initializeLoadedGame() {
+		initializeSystems();
 		gameMode.getEndGameConditions().forEach(c -> c.initialize(this));
 		// TODO Change this when multiplayer save implemented
 		setMyPlayer(getPlayerEntities().values().iterator().next());
 		playerEntities.put(getMyPlayer().getId(), getMyPlayer());
 		entityPool.flushNewEntities();
+	}
+
+	public void initializeClientGame(CreateWorld createWorld) {
+		initializeSystems();
+		initializeNewClientWorldSubscription.forEach(i -> i.initializeNewClientWorld(createWorld));
 	}
 
 	public void received(ChatEntry chatEntry) {
@@ -260,14 +303,6 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private void initializeEvents() {
 		for (int i = 0; i < gameMode.getEvents().size(); i++) {
 			actionTimerManager.addActionTimer(new EventAction(i), gameMode.getEvents().get(i).getStartTime());
-		}
-	}
-
-	public void initializeMapLimits() {
-		if (gameMode.getMapLimits() != null) {
-			MapLimitsManager mapLimitsManager = new MapLimitsManager();
-			mapLimitsManager.initialize(this, spawnCenter);
-			addPlugin(mapLimitsManager);
 		}
 	}
 

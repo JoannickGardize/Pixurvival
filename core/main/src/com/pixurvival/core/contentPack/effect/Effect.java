@@ -12,6 +12,7 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirement;
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
+import com.pixurvival.core.contentPack.validation.annotation.Ascending;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
@@ -67,8 +68,11 @@ public class Effect extends NamedIdentifiedElement {
 	/**
 	 * Must be ascending by delay.
 	 */
+	@Valid
+	@Ascending
 	private List<DelayedFollowingElement> delayedFollowingElements = new ArrayList<>();
 
+	@Valid
 	private List<Alteration> deathAlterations = new ArrayList<>();
 
 	@Override

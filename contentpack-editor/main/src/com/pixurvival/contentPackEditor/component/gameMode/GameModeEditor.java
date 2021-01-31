@@ -1,6 +1,6 @@
 package com.pixurvival.contentPackEditor.component.gameMode;
 
-import java.awt.Container;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collections;
@@ -84,7 +84,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
 
 		dayCycleDefinitionEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.dayCycle"));
 		endGameConditionsEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.endGameCondition"));
-		Container teamPanel = LayoutUtils.sideBySide(teamNumberInterval, teamSizeInterval);
+		Component teamPanel = LayoutUtils.sideBySide(teamNumberInterval, teamSizeInterval);
 		JPanel elementLinksPanel = LayoutUtils.createHorizontalLabelledBox("elementType.ecosystem", ecosystemChooser, "elementType.mapProvider", mapGeneratorChooser);
 		playerSpawnEditor.setBorder(LayoutUtils.createGroupBorder("gameMode.playerSpawn"));
 
