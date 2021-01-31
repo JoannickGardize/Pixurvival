@@ -242,7 +242,6 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 		if (!attributes.isBypassInvincibility() && getWorld().getTime().getTimeMillis() < invincibleTermTime) {
 			return;
 		}
-		System.out.println(this + " takes " + amount);
 		health -= amount;
 		if (health < 0) {
 			health = 0;

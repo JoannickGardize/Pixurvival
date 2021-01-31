@@ -47,7 +47,7 @@ public class StatFormula implements Serializable {
 		for (StatMultiplier multiplier : statMultipliers) {
 			result += statSet.getValue(multiplier.getStatType()) * multiplier.getMultiplier();
 		}
-		return Math.max(result, 0);
+		return result;
 	}
 
 	public float getValue(TeamMember sourceProvider) {
