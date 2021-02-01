@@ -214,7 +214,6 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			myTeamId = createWorld.getMyTeamId();
 			myOriginalPlayerId = createWorld.getMyOriginalPlayerId();
 			setWorld(World.createClientWorld(createWorld, contentPackContext));
-			discovered(createWorld.getDiscoveredItemCrafts());
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = getLocaleFor(world.getContentPack());
 			removeAllPlugins();
@@ -231,6 +230,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 				notify(ClientGameListener::playerFocusChanged);
 			}
 			world.initializeClientGame(createWorld);
+			discovered(createWorld.getDiscoveredItemCrafts());
 		} catch (ContentPackException e) {
 			// TODO
 			throw new RuntimeException(e);

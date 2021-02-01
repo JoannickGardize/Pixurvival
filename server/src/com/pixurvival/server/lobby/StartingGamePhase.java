@@ -20,6 +20,8 @@ import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.server.GameSession;
+import com.pixurvival.server.PlayerGameSession;
+import com.pixurvival.server.system.SystemDataChangedSenderSystem;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -55,9 +57,10 @@ public class StartingGamePhase implements LobbyPhase {
 			teamCompositionList.add(new TeamComposition(team.getName(), playerInformations));
 		}
 		TeamComposition[] teamCompositions = teamCompositionList.toArray(new TeamComposition[teamCompositionList.size()]);
-		waitingGameSession.setTeamCompositions(teamCompositions);
 		createWorld.setTeamCompositions(teamCompositions);
-		world.addSystem(waitingGameSession);
+		waitingGameSession.setTeamCompositions(teamCompositions);
+		world.addAdditonalAttribute(waitingGameSession.getPlayers(), List.class, PlayerGameSession.class);
+		world.addSystem(SystemDataChangedSenderSystem.class);
 		try {
 			world.initializeNewGame();
 		} catch (MapAnalyticsException e) {

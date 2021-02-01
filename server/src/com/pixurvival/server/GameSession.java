@@ -34,17 +34,15 @@ import com.pixurvival.core.message.PlayerRespawn;
 import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TeamComposition;
-import com.pixurvival.core.system.BaseSystem;
-import com.pixurvival.core.system.mapLimits.MapLimitsAnchorInterest;
-import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
 import com.pixurvival.core.team.Team;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class GameSession extends BaseSystem implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener, ServerGameListener, MapLimitsAnchorInterest {
+public class GameSession implements TiledMapListener, PlayerMapEventListener, EntityPoolListener, ChatListener, WorldListener, ServerGameListener {
 
-	private List<PlayerGameSession> players = new ArrayList<>();
+	private @Getter World world;
+	private @Getter List<PlayerGameSession> players = new ArrayList<>();
 	private Map<Long, PlayerGameSession> sessionsByOriginalPlayers = new HashMap<>();
 	private Map<Long, Set<PlayerGameSession>> sessionsByEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
@@ -59,7 +57,7 @@ public class GameSession extends BaseSystem implements TiledMapListener, PlayerM
 	private @Getter boolean ended = false;
 
 	public GameSession(World world) {
-		super(world);
+		this.world = world;
 		world.getMap().addListener(this);
 		world.getMap().addPlayerMapEventListener(this);
 		world.getEntityPool().addListener(this);
@@ -142,7 +140,7 @@ public class GameSession extends BaseSystem implements TiledMapListener, PlayerM
 	@Override
 	public void enterVision(PlayerEntity entity, ChunkPosition position) {
 		for (PlayerGameSession playerSession : getSessionsForPlayerEntity(entity)) {
-			Chunk chunk = getWorld().getMap().chunkAt(position);
+			Chunk chunk = world.getMap().chunkAt(position);
 			addChunk(playerSession, position, chunk);
 			playerSession.addNewPosition(position);
 		}
@@ -249,9 +247,9 @@ public class GameSession extends BaseSystem implements TiledMapListener, PlayerM
 				}
 				playerEntity.foreachChunkInView(c -> ps.addNewPosition(c.getPosition()));
 				CreateWorld createWorld = new CreateWorld();
-				createWorld.setId(getWorld().getId());
-				createWorld.setContentPackIdentifier(new ContentPackIdentifier(getWorld().getContentPack().getIdentifier()));
-				createWorld.setGameModeId(getWorld().getGameMode().getId());
+				createWorld.setId(world.getId());
+				createWorld.setContentPackIdentifier(new ContentPackIdentifier(world.getContentPack().getIdentifier()));
+				createWorld.setGameModeId(world.getGameMode().getId());
 				createWorld.setTeamCompositions(teamCompositions);
 				createWorld.setMyPlayerId(playerEntity.getId());
 				createWorld.setMySpawnCenter(playerEntity.getSpawnPosition());
@@ -261,7 +259,7 @@ public class GameSession extends BaseSystem implements TiledMapListener, PlayerM
 				createWorld.setInventory(playerEntity.getInventory());
 				createWorld.setPlayerDeadIds(playerDeadIds(playerEntity.getWorld()));
 				createWorld.setSpectator(ps.isSpectator());
-				createWorld.setWorldSpawnCenter(getWorld().getSpawnCenter());
+				createWorld.setWorldSpawnCenter(world.getSpawnCenter());
 				createWorld.setDiscoveredItemCrafts(playerEntity.getItemCraftDiscovery().getDiscovereditemCraftIds());
 				ps.setConnection(connection);
 				ps.setRequestedFullUpdate(true);
@@ -318,10 +316,5 @@ public class GameSession extends BaseSystem implements TiledMapListener, PlayerM
 		playerSession.setSpectator(false);
 		setSessionFocusOn(playerSession, player);
 		playerSession.getConnection().sendTCP(new Respawn(player));
-	}
-
-	@Override
-	public void anchorChanged(MapLimitsSystemData data) {
-		players.forEach(p -> p.getConnection().sendTCP(data));
 	}
 }

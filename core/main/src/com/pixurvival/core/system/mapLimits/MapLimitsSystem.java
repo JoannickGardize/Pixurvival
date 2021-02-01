@@ -2,50 +2,68 @@ package com.pixurvival.core.system.mapLimits;
 
 import java.util.List;
 
-import com.pixurvival.core.World;
+import com.pixurvival.core.ActionTimerManager;
 import com.pixurvival.core.alteration.DamageAttributes;
+import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.MapLimits;
 import com.pixurvival.core.contentPack.gameMode.MapLimitsAnchor;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.message.CreateWorld;
-import com.pixurvival.core.system.BaseSystem;
+import com.pixurvival.core.system.GameSystem;
 import com.pixurvival.core.system.SystemData;
+import com.pixurvival.core.system.Inject;
 import com.pixurvival.core.system.interest.InitializeNewClientWorldInterest;
 import com.pixurvival.core.system.interest.InitializeNewServerWorldInterest;
 import com.pixurvival.core.system.interest.InterestSubscription;
 import com.pixurvival.core.system.interest.PersistenceInterest;
+import com.pixurvival.core.system.interest.SystemDataChangedInterest;
 import com.pixurvival.core.system.interest.WorldUpdateInterest;
+import com.pixurvival.core.time.Time;
 import com.pixurvival.core.util.Rectangle;
+import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
-public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWorldInterest, InitializeNewClientWorldInterest, WorldUpdateInterest, PersistenceInterest {
+@Setter
+public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInterest, InitializeNewClientWorldInterest, WorldUpdateInterest, PersistenceInterest {
 
-	private MapLimitsSystemData data = new MapLimitsSystemData();
+	private @Getter MapLimitsSystemData data = new MapLimitsSystemData();
 
-	private InterestSubscription<MapLimitsAnchorInterest> mapLimitsAnchorSubscription;
+	@Inject
+	private InterestSubscription<SystemDataChangedInterest> dataChangedInterestSubscription;
 
-	public MapLimitsSystem(World world) {
-		super(world);
-		mapLimitsAnchorSubscription = world.getInterestSubscriptionSet().get(MapLimitsAnchorInterest.class);
-	}
+	@Inject
+	private GameMode gameMode;
+
+	@Inject
+	private ActionTimerManager actionTimerManager;
+
+	@Inject
+	private Vector2 spawnCenter;
+
+	@Inject
+	private Time time;
+
+	@Inject
+	private EntityPool entityPool;
 
 	@Override
-	public boolean isRequired() {
-		return getWorld().getGameMode().getMapLimits() != null;
+	public boolean isRequired(GameMode gameMode) {
+		return gameMode.getMapLimits() != null;
 	}
 
 	@Override
 	public void initializeNewServerWorld() {
 		commonInitialization();
-		List<MapLimitsAnchor> anchors = getWorld().getGameMode().getMapLimits().getAnchors();
+		List<MapLimitsAnchor> anchors = gameMode.getMapLimits().getAnchors();
 		if (!anchors.isEmpty()) {
 			for (int i = 1; i < anchors.size(); i++) {
 				MapLimitsAnchor anchor = anchors.get(i);
-				getWorld().getActionTimerManager().addActionTimer(new NextMapLimitAnchorAction(anchor), anchors.get(i - 1).getTime());
+				actionTimerManager.addActionTimer(new NextMapLimitAnchorAction(anchor), anchors.get(i - 1).getTime());
 			}
 		}
 	}
@@ -56,8 +74,8 @@ public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWo
 	}
 
 	private void commonInitialization() {
-		MapLimits mapLimits = getWorld().getGameMode().getMapLimits();
-		data.setRectangle(new Rectangle(getWorld().getSpawnCenter(), mapLimits.getInitialSize()));
+		MapLimits mapLimits = gameMode.getMapLimits();
+		data.setRectangle(new Rectangle(spawnCenter, mapLimits.getInitialSize()));
 		data.setTrueDamagePerSecond(mapLimits.getInitialDamagePerSecond());
 		MapLimitsAnchorRun initialAnchorRun = new MapLimitsAnchorRun();
 		initialAnchorRun.setDamagePerSecond(mapLimits.getInitialDamagePerSecond());
@@ -67,7 +85,7 @@ public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWo
 		List<MapLimitsAnchor> anchors = mapLimits.getAnchors();
 		data.setTo(initialAnchorRun);
 		if (!anchors.isEmpty()) {
-			new NextMapLimitAnchorAction(anchors.get(0)).perform(getWorld());
+			actionTimerManager.addActionTimer(new NextMapLimitAnchorAction(anchors.get(0)), 0);
 		}
 	}
 
@@ -78,8 +96,7 @@ public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWo
 		long diffTime = to.getTime() - from.getTime();
 		Rectangle rectangle = data.getRectangle();
 		if (diffTime > 0) {
-			long time = getWorld().getTime().getTimeMillis();
-			float alpha = Math.min(1, (float) ((double) (time - from.getTime()) / diffTime));
+			float alpha = Math.min(1, (float) ((double) (time.getTimeMillis() - from.getTime()) / diffTime));
 			Rectangle fromRect = from.getRectangle();
 			Rectangle toRect = to.getRectangle();
 			rectangle.setStartX(fromRect.getStartX() + (toRect.getStartX() - fromRect.getStartX()) * alpha);
@@ -88,7 +105,7 @@ public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWo
 			rectangle.setEndY(fromRect.getEndY() + (toRect.getEndY() - fromRect.getEndY()) * alpha);
 			data.setTrueDamagePerSecond(from.getDamagePerSecond() + (to.getDamagePerSecond() - from.getDamagePerSecond()) * alpha);
 		}
-		for (Entity e : getWorld().getEntityPool().get(EntityGroup.PLAYER)) {
+		for (Entity e : entityPool.get(EntityGroup.PLAYER)) {
 			if (!rectangle.contains(e.getPosition())) {
 				((LivingEntity) e).takeTrueDamageSneaky(data.getTrueDamagePerSecond() * deltaTime, DamageAttributes.getDefaults());
 			}
@@ -107,6 +124,6 @@ public class MapLimitsSystem extends BaseSystem implements InitializeNewServerWo
 
 	// TODO generic data changed
 	void notifyAnchorChanged() {
-		mapLimitsAnchorSubscription.forEach(i -> i.anchorChanged(data));
+		dataChangedInterestSubscription.forEach(i -> i.dataChanged(data));
 	}
 }

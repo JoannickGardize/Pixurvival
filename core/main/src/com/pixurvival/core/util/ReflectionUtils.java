@@ -74,6 +74,11 @@ public class ReflectionUtils {
 		return object.getClass().getMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1)).invoke(object);
 	}
 
+	@SneakyThrows
+	public static void setBySetter(Object object, Field field, Object value) {
+		object.getClass().getMethod("set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1), field.getType()).invoke(object, value);
+	}
+
 	public static Map<String, Field> getAllFieldsMap(Class<?> clazz) {
 		Field[] fields = getAllFields(clazz);
 		Map<String, Field> fieldMap = new HashMap<>();
@@ -130,13 +135,31 @@ public class ReflectionUtils {
 		throw new NoSuchFieldException("Field " + name + " does not exists in type " + type + " or its superclasses");
 	}
 
+	public static Class<?>[] getGenericTypeArguments(Field field) {
+		Type fieldType = field.getGenericType();
+		if (!(fieldType instanceof ParameterizedType)) {
+			return new Class<?>[0];
+		}
+
+		ParameterizedType parameterizedType = (ParameterizedType) fieldType;
+		Type[] types = parameterizedType.getActualTypeArguments();
+		for (Type type : types) {
+			if (!(type instanceof Class)) {
+				return new Class<?>[0];
+			}
+
+		}
+		Class<?>[] result = new Class<?>[types.length];
+		System.arraycopy(types, 0, result, 0, types.length);
+		return result;
+	}
+
 	public static Class<?> getGenericTypeArgument(Field field) {
-		ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-		Type type = parameterizedType.getActualTypeArguments()[0];
-		if (type instanceof Class) {
-			return (Class<?>) parameterizedType.getActualTypeArguments()[0];
-		} else {
+		Class<?>[] types = getGenericTypeArguments(field);
+		if (types.length == 0) {
 			return null;
+		} else {
+			return types[0];
 		}
 	}
 }

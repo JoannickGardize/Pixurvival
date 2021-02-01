@@ -84,7 +84,7 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(LobbyServerMessage.class, lm -> game.notify(l -> l.lobbyMessageReceived(lm)));
 		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
 		putMessageAction(ItemCraftAvailable.class, i -> game.discovered(i.getItemCraftIds()));
-		putMessageAction(MapLimitsSystemData.class, data -> game.handleSystemData(data));
+		putMessageAction(MapLimitsSystemData.class, game::handleSystemData);
 	}
 
 	@Override

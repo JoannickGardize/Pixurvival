@@ -32,8 +32,9 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.message.WorldKryo;
-import com.pixurvival.core.system.BaseSystem;
+import com.pixurvival.core.system.GameSystem;
 import com.pixurvival.core.system.HungerSystem;
+import com.pixurvival.core.system.WorldAttributesAccessor;
 import com.pixurvival.core.system.interest.InitializeNewClientWorldInterest;
 import com.pixurvival.core.system.interest.InitializeNewServerWorldInterest;
 import com.pixurvival.core.system.interest.InterestSubscription;
@@ -94,7 +95,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private @Setter String saveName;
 	private long seed;
 	private WorldKryo playerInventoryKryo;
-	private Map<Class<? extends BaseSystem>, BaseSystem> systems = new LinkedHashMap<>();
+
+	private List<AdditionalAttribute> additionalAttributes = new ArrayList<>();
+	private Map<Class<? extends GameSystem>, GameSystem> systems = new LinkedHashMap<>();
+
 	private InterestSubscription<InitializeNewServerWorldInterest> initializeNewServerWorldSubscription = interestSubscriptionSet.get(InitializeNewServerWorldInterest.class);
 	private InterestSubscription<InitializeNewClientWorldInterest> initializeNewClientWorldSubscription = interestSubscriptionSet.get(InitializeNewClientWorldInterest.class);
 	private InterestSubscription<WorldUpdateInterest> worldUpdateSubscription = interestSubscriptionSet.get(WorldUpdateInterest.class);
@@ -126,28 +130,25 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		addSystem(MapLimitsSystem.class);
 	}
 
-	@SneakyThrows
-	public void addSystem(Class<? extends BaseSystem> type) {
-		systems.put(type, type.getConstructor(World.class).newInstance(this));
+	public void addAdditonalAttribute(Object o, Class<?> type, Class<?> genericTypes) {
+		additionalAttributes.add(new AdditionalAttribute(o, type, genericTypes));
 	}
 
-	/**
-	 * Not the preferred way, should be made deprecated one day.
-	 * 
-	 * @param system
-	 */
-	public void addSystem(BaseSystem system) {
-		systems.put(system.getClass(), system);
+	@SneakyThrows
+	public void addSystem(Class<? extends GameSystem> type) {
+		systems.put(type, type.getConstructor().newInstance());
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends BaseSystem> T getSystem(Class<? extends BaseSystem> type) {
+	public <T extends GameSystem> T getSystem(Class<? extends GameSystem> type) {
 		return (T) systems.get(type);
 	}
 
 	private void initializeSystems() {
-		systems.values().removeIf(s -> !s.isRequired());
-		systems.values().forEach(BaseSystem::initialize);
+		systems.values().removeIf(s -> !s.isRequired(gameMode));
+		WorldAttributesAccessor worldAttributesAccessor = new WorldAttributesAccessor(this);
+		systems.values().forEach(worldAttributesAccessor::inject);
+		systems.values().forEach(interestSubscriptionSet::subscribeAll);
 	}
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {
@@ -260,7 +261,6 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	 * @throws MapAnalyticsException
 	 */
 	public void initializeNewGame() throws MapAnalyticsException {
-		initializeSystems();
 		entityPool.flushNewEntities();
 		gameMode.getPlayerSpawn().apply(this);
 		for (PlayerEntity player : getPlayerEntities().values()) {
@@ -272,16 +272,17 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 			c.initializeNewGameData(this);
 		});
 		initializeRoles();
+		initializeSystems();
 		initializeNewServerWorldSubscription.forEach(InitializeNewServerWorldInterest::initializeNewServerWorld);
 	}
 
 	public void initializeLoadedGame() {
-		initializeSystems();
 		gameMode.getEndGameConditions().forEach(c -> c.initialize(this));
 		// TODO Change this when multiplayer save implemented
 		setMyPlayer(getPlayerEntities().values().iterator().next());
 		playerEntities.put(getMyPlayer().getId(), getMyPlayer());
 		entityPool.flushNewEntities();
+		initializeSystems();
 	}
 
 	public void initializeClientGame(CreateWorld createWorld) {
