@@ -11,6 +11,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.swing.JButton;
@@ -27,6 +28,7 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 public class SearchPopup<T extends NamedIdentifiedElement> extends RelativePopup {
 
@@ -54,6 +56,7 @@ public class SearchPopup<T extends NamedIdentifiedElement> extends RelativePopup
 	private List<ItemMatchEntry> sortedList = new ArrayList<>();
 	private SearchPopupSelectionModel selectionModel;
 	private List<ValueChangeListener<T>> listeners = new ArrayList<>();
+	private @Setter Predicate<T> additionalFilter = e -> true;
 
 	public SearchPopup(Supplier<Collection<T>> itemsSupplier) {
 		this.itemsSupplier = itemsSupplier;
@@ -125,16 +128,18 @@ public class SearchPopup<T extends NamedIdentifiedElement> extends RelativePopup
 		if (!searchText.isEmpty()) {
 			for (T item : items) {
 				int index;
-				if (item.getName() != null && item.getName().length() > 0 && (index = item.getName().toLowerCase().indexOf(searchText.toLowerCase())) != -1) {
+				if (additionalFilter.test(item) && item.getName() != null && item.getName().length() > 0 && (index = item.getName().toLowerCase().indexOf(searchText.toLowerCase())) != -1) {
 					sortedList.add(new ItemMatchEntry(item, index * 10000 + item.getName().length()));
 				}
 			}
 		} else {
 			int index = 0;
 			for (T item : items) {
-				sortedList.add(new ItemMatchEntry(item, index++));
-				if (index >= RESULT_SIZE) {
-					break;
+				if (additionalFilter.test(item)) {
+					sortedList.add(new ItemMatchEntry(item, index++));
+					if (index >= RESULT_SIZE) {
+						break;
+					}
 				}
 			}
 		}

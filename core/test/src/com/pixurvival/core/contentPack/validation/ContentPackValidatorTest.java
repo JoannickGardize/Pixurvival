@@ -74,6 +74,7 @@ class ContentPackValidatorTest {
 		TileGenerator tileGenerator = new TileGenerator();
 		TileHashmapEntry entry = new TileHashmapEntry();
 		entry.setTile(pack.getTiles().get(0));
+		entry.setNext(1);
 		tileGenerator.getTileHashmap().getEntries().add(entry);
 		tileGenerator.getTileHashmap().setHeightmap(new Heightmap());
 		return tileGenerator;

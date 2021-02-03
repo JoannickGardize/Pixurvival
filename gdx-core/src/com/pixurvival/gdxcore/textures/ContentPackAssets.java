@@ -1,17 +1,23 @@
 package com.pixurvival.gdxcore.textures;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.item.Item;
@@ -19,11 +25,14 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
+import com.pixurvival.gdxcore.util.EmptySound;
+import com.pixurvival.gdxcore.util.InputStreamFileHandleProxy;
 
 import lombok.Getter;
 
-public class ContentPackTextures {
+public class ContentPackAssets {
 
 	private Map<SpriteSheet, TextureAnimationSet> animationSet;
 	private Map<Integer, Texture> textureShadows;
@@ -33,16 +42,17 @@ public class ContentPackTextures {
 	private int[] tileAvgColors;
 	private @Getter float truePixelWidth;
 	private @Getter float largestLightRadius;
-
 	private SpriteSheetPixmap[] tilePixmaps;
+	private Sound[] sounds;
 
-	public void load(ContentPack pack, int pixelWidth) throws ContentPackException {
+	public void load(ContentPack pack, int pixelWidth, Sound[] presetSounds) throws ContentPackException {
 		truePixelWidth = 1.0f / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		textureShadows = new HashMap<>();
 		loadAnimationSet(pack, pixelWidth);
 		loadTileMapTextures(pack);
 		loadItemTextures(pack, pixelWidth);
 		loadLights(pack);
+		loadCustomSounds(pack, presetSounds);
 	}
 
 	public TextureAnimationSet getAnimationSet(SpriteSheet spriteSheet) {
@@ -120,6 +130,10 @@ public class ContentPackTextures {
 		return texture;
 	}
 
+	public Sound getSound(int id) {
+		return sounds[id];
+	}
+
 	public void dispose() {
 		animationSet.values().forEach(TextureAnimationSet::dispose);
 		textureShadows.values().forEach(Texture::dispose);
@@ -136,6 +150,7 @@ public class ContentPackTextures {
 			}
 			tilePixmaps = null;
 		}
+		Arrays.stream(sounds, SoundPreset.values().length, sounds.length).forEach(Sound::dispose);
 	}
 
 	private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
@@ -213,6 +228,20 @@ public class ContentPackTextures {
 				if (largestLightRadius < radius) {
 					largestLightRadius = radius;
 				}
+			}
+		}
+	}
+
+	private void loadCustomSounds(ContentPack pack, Sound[] presetSounds) {
+		sounds = new Sound[pack.getSoundIdByName().size() + presetSounds.length];
+		System.arraycopy(presetSounds, 0, sounds, 0, presetSounds.length);
+		for (Entry<String, Integer> sound : pack.getSoundIdByName().entrySet()) {
+			byte[] data = pack.getResource(sound.getKey());
+			try {
+				sounds[sound.getValue()] = Gdx.audio.newSound(new InputStreamFileHandleProxy(() -> new ByteArrayInputStream(data), FileUtils.fileExtensionOf(sound.getKey())));
+			} catch (Exception e) {
+				Log.error("Error when trying to load the sound " + sound.getKey(), e);
+				sounds[sound.getValue()] = EmptySound.getInstance();
 			}
 		}
 	}

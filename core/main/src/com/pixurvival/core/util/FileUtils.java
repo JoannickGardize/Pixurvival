@@ -119,4 +119,14 @@ public class FileUtils {
 		return name.trim().matches("[a-zA-Z0-9\\-\\s_]+");
 	}
 
+	public static String fileExtensionOf(String string) {
+		int index = string.lastIndexOf('.');
+		if (index == -1) {
+			return "";
+		} else if (index >= string.length() - 2) {
+			return "";
+		} else {
+			return string.substring(index + 1).toLowerCase();
+		}
+	}
 }

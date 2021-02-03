@@ -126,16 +126,30 @@ public class ElementChooserButton<T extends NamedIdentifiedElement> extends JBut
 		super.paint(g);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Annotation annotation) {
 		if (annotation instanceof Nullable) {
 			nullable = true;
 		} else if (annotation instanceof ResourceReference) {
+			ResourceReference resourceReference = (ResourceReference) annotation;
+			Predicate<ResourceEntry> typePredicate;
+			switch (resourceReference.type()) {
+			case IMAGE:
+				typePredicate = r -> r.getPreview() instanceof BufferedImage;
+				break;
+			case SOUND:
+				typePredicate = r -> r.getPreview() == null;
+				break;
+			default:
+				throw new UnsupportedOperationException();
+			}
+			((SearchPopup<ResourceEntry>) searchPopup).setAdditionalFilter(typePredicate);
 			additionalCondition = additionalCondition.and(r -> {
 				if (r == null) {
 					return true;
 				} else {
-					return ((ResourceEntry) r).getPreview() instanceof BufferedImage;
+					return typePredicate.test((ResourceEntry) r);
 				}
 			});
 		} else if (annotation instanceof AnimationTemplateRequirement) {

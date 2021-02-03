@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.ResourceEntry;
+import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.item.StatModifierEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -34,6 +36,7 @@ import com.pixurvival.core.alteration.InvincibleAlteration;
 import com.pixurvival.core.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.alteration.PermanentStatAlteration;
 import com.pixurvival.core.alteration.PersistentAlteration;
+import com.pixurvival.core.alteration.PlayCustomSoundAlteration;
 import com.pixurvival.core.alteration.PlaySoundAlteration;
 import com.pixurvival.core.alteration.RepeatAlteration;
 import com.pixurvival.core.alteration.SilenceAlteration;
@@ -228,6 +231,14 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			EnumChooser<SoundPreset> soundPresetChooser = new EnumChooser<>(SoundPreset.class);
 			bind(soundPresetChooser, "preset", PlaySoundAlteration.class);
 			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundPresetChooser));
+		}));
+
+		// PlayCustomSoundAlteration
+		entries.add(new ClassEntry(PlayCustomSoundAlteration.class, () -> {
+			ElementChooserButton<ResourceEntry> soundChooser = new ElementChooserButton<>(ResourcesService.getInstance().getResourcesSupplier());
+			bind(soundChooser, "sound", PlayCustomSoundAlteration.class).getter(v -> v.getSound() == null ? null : ResourcesService.getInstance().getResource(v.getSound()))
+					.setter((v, f) -> v.setSound(f == null ? null : f.getName()));
+			return LayoutUtils.single(LayoutUtils.labelled("alterationEditor.sound", soundChooser));
 		}));
 
 		// DropItemsAlteration

@@ -22,12 +22,13 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	public static final long MIN_DELAY_SAME_SOUND = 200;
 
 	private World world;
-	private long[] lastPlayedTimes = new long[SoundPreset.values().length];
+	private long[] lastPlayedTimes;
 
 	public DefaultSoundsPlayer(World world) {
 		this.world = world;
 		world.getMap().addListener(this);
 		world.getEntityPool().addListener(this);
+		lastPlayedTimes = new long[SoundPreset.values().length + world.getContentPack().getSoundIdByName().size()];
 	}
 
 	public void playSounds() {
@@ -51,9 +52,9 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 		if (mapStructure instanceof HarvestableMapStructure) {
 			HarvestableMapStructure hms = (HarvestableMapStructure) mapStructure;
 			if (hms.isHarvested()) {
-				playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH, hms.getPosition()));
+				playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH.ordinal(), hms.getPosition()));
 			} else {
-				playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, hms.getPosition()));
+				playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP.ordinal(), hms.getPosition()));
 			}
 		}
 	}
@@ -64,7 +65,7 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 
 	@Override
 	public void structureRemoved(MapStructure mapStructure) {
-		playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH, mapStructure.getPosition()));
+		playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH.ordinal(), mapStructure.getPosition()));
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	@Override
 	public void sneakyEntityRemoved(Entity e) {
 		if (e instanceof ItemStackEntity && ((ItemStackEntity) e).getState() == State.MAGNTIZED) {
-			playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP, e.getPosition()));
+			playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.POP.ordinal(), e.getPosition()));
 		}
 	}
 
@@ -90,11 +91,11 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 		float distanceSquared = myPlayer.distanceSquared(soundEffect.getPosition());
 		if (distanceSquared <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
 			long time = System.currentTimeMillis();
-			if (time - lastPlayedTimes[soundEffect.getPreset().ordinal()] > MIN_DELAY_SAME_SOUND) {
-				lastPlayedTimes[soundEffect.getPreset().ordinal()] = time;
-				Sound sound = PixurvivalGame.getInstance().getSound(soundEffect.getPreset());
-				float volume = 1f - 0.8f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
-				float pan = 0.1f + 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
+			if (time - lastPlayedTimes[soundEffect.getId()] > MIN_DELAY_SAME_SOUND) {
+				lastPlayedTimes[soundEffect.getId()] = time;
+				Sound sound = PixurvivalGame.getInstance().getSound(soundEffect);
+				float volume = 1f - 0.9f * distanceSquared / (GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE);
+				float pan = 0.9f * (soundEffect.getPosition().getX() - myPlayer.getPosition().getX()) / GameConstants.PLAYER_VIEW_DISTANCE;
 				sound.play(volume * PixurvivalGame.getInstance().getGlobalVolume(), 1f, pan);
 			}
 		}

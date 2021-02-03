@@ -21,7 +21,11 @@ public class PlaySoundAlteration extends UniqueAlteration {
 
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember target) {
-		SoundEffect soundEffect = new SoundEffect(preset, target.getPosition());
+		playSound(target, preset.ordinal());
+	}
+
+	static void playSound(TeamMember target, int soundId) {
+		SoundEffect soundEffect = new SoundEffect(soundId, target.getPosition());
 		EntitySearchUtils.foreachEntities(target, EntityGroup.PLAYER, GameConstants.PLAYER_VIEW_DISTANCE, e -> {
 			if (e.distanceSquared(soundEffect.getPosition()) <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
 				((PlayerEntity) e).getSoundEffectsToConsume().add(soundEffect);

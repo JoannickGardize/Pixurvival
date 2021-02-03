@@ -37,7 +37,7 @@ import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.overlay.OverlaysActor;
 import com.pixurvival.gdxcore.textures.ChunkTileTexturesManager;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.ContentPackAssets;
 import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.EndGameUI;
@@ -70,7 +70,7 @@ public class WorldScreen implements Screen {
 	// ExtendViewport(VIEWPORT_WORLD_WIDTH
 	// * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH,
 	// VIEWPORT_WORLD_WIDTH));
-	private @Getter ContentPackTextures contentPackTextures = new ContentPackTextures();
+	private @Getter ContentPackAssets contentPackTextures = new ContentPackAssets();
 	private Stage hudStage = new Stage(new ScreenViewport());
 	private WorldKeyboardProcessor keyboardInputProcessor = new WorldKeyboardProcessor();
 	private CameraControlProcessor cameraControlProcessor;
@@ -95,7 +95,7 @@ public class WorldScreen implements Screen {
 		if (this.world != null) {
 			throw new IllegalStateException("Cannot change world of the world screen");
 		}
-		contentPackTextures = new ContentPackTextures();
+		contentPackTextures = new ContentPackAssets();
 		world.getChunkManager().addPlugin(new MapStructureFliper());
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
@@ -106,7 +106,7 @@ public class WorldScreen implements Screen {
 			// Seems better :
 			int pixelWidth = 3;
 			Log.info("Loading texture with pixel width : " + pixelWidth);
-			contentPackTextures.load(world.getContentPack(), pixelWidth);
+			contentPackTextures.load(world.getContentPack(), pixelWidth, PixurvivalGame.getInstance().getSoundPresets());
 		} catch (ContentPackException e) {
 			Log.error("Error when loading contentPack.", e);
 		}

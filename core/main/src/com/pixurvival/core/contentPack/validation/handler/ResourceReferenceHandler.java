@@ -8,6 +8,7 @@ import com.pixurvival.core.contentPack.validation.ErrorCollection;
 import com.pixurvival.core.contentPack.validation.ImageAccessor;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.reflection.visitor.VisitNode;
+import com.pixurvival.core.util.FileUtils;
 
 public class ResourceReferenceHandler implements AnnotationHandler {
 
@@ -26,9 +27,22 @@ public class ResourceReferenceHandler implements AnnotationHandler {
 	@Override
 	public void handle(VisitNode node, Annotation annotation, ErrorCollection errors) {
 
-		// TODO other types than images
-		if (imageAccessor.get((String) node.getObject()) == null) {
-			errors.add(node, annotation);
+		ResourceReference resourceReference = (ResourceReference) annotation;
+		switch (resourceReference.type()) {
+		case IMAGE:
+			if (imageAccessor.get((String) node.getObject()) == null) {
+				errors.add(node, annotation);
+			}
+			break;
+		case SOUND:
+			String extension = FileUtils.fileExtensionOf((String) node.getObject());
+			if (!extension.equals("wav") && !extension.equals("mp3")) {
+				errors.add(node, annotation);
+			}
+			break;
+		default:
+			break;
+
 		}
 	}
 

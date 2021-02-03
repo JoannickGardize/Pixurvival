@@ -37,7 +37,7 @@ public class ChunkTileTexturesManager {
 	private BlockingDeque<Chunk> chunkQueue = new LinkedBlockingDeque<>();
 
 	public ChunkTileTexturesManager() {
-		ContentPackTextures contentPackTextures = PixurvivalGame.getContentPackTextures();
+		ContentPackAssets contentPackTextures = PixurvivalGame.getContentPackTextures();
 		for (Tile tile : PixurvivalGame.getWorld().getContentPack().getTiles()) {
 			tileTextures.put(TileTextureKey.ofAll(tile), contentPackTextures.getTileTextures(tile));
 		}

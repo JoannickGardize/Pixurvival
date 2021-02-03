@@ -40,10 +40,10 @@ public class InterestSubscriptionSet {
 	 *            {@link InterestSubscription}s.
 	 */
 	@SuppressWarnings("unchecked")
-	public void subscribeAll(Interest subscriber) {
+	public void subscribeAll(Object subscriber) {
 		for (Class<?> type : ReflectionUtils.getAllInterfaces(subscriber.getClass())) {
 			if (Interest.class.isAssignableFrom(type)) {
-				get((Class<Interest>) type).subscribe(subscriber);
+				get((Class<Interest>) type).subscribe((Interest) subscriber);
 			}
 		}
 	}

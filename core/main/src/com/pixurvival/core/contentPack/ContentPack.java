@@ -13,7 +13,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.alteration.Alteration;
+import com.pixurvival.core.alteration.PlayCustomSoundAlteration;
 import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
@@ -62,6 +64,8 @@ public class ContentPack implements Serializable {
 	private transient Map<Long, StatFormula> statFormulas = new HashMap<>();
 
 	private transient Map<Integer, Alteration> alterations = new HashMap<>();
+
+	private transient Map<String, Integer> soundIdByName;
 
 	@Valid
 	private ContentPackIdentifier identifier;
@@ -183,6 +187,7 @@ public class ContentPack implements Serializable {
 		initialized = true;
 		initializeStatFormulaMap();
 		initializeAlterationMap();
+		initializeCustomSoundsArray();
 		elementsByName = new HashMap<>();
 		elementsLists = new HashMap<>();
 		callElementsInitializeMethod();
@@ -234,17 +239,32 @@ public class ContentPack implements Serializable {
 		}
 	}
 
-	public void initializeStatFormulaMap() {
+	private void initializeStatFormulaMap() {
 		statFormulas.clear();
 		forEachStatFormulas(f -> statFormulas.put(f.getId(), f));
 	}
 
-	public void initializeAlterationMap() {
+	private void initializeAlterationMap() {
 		IntWrapper nextId = new IntWrapper();
 		forEachAlteration(a -> {
 			a.setId(nextId.increment());
 			alterations.put(a.getId(), a);
 		});
+	}
+
+	private void initializeCustomSoundsArray() {
+		soundIdByName = new HashMap<>();
+		for (Alteration alteration : alterations.values()) {
+			if (alteration instanceof PlayCustomSoundAlteration) {
+				PlayCustomSoundAlteration playCustomSoundAlteration = (PlayCustomSoundAlteration) alteration;
+				Integer soundId = soundIdByName.get(playCustomSoundAlteration.getSound());
+				if (soundId == null) {
+					soundId = soundIdByName.size() + SoundPreset.values().length;
+					soundIdByName.put(playCustomSoundAlteration.getSound(), soundId);
+				}
+				playCustomSoundAlteration.setSoundId(soundId);
+			}
+		}
 	}
 
 	public void forEachStatFormulas(Consumer<StatFormula> action) {

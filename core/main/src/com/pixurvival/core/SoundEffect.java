@@ -11,21 +11,21 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SoundEffect {
-	private SoundPreset preset;
+	private int id;
 	private Vector2 position;
 
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<SoundEffect> {
 
 		@Override
 		public void write(Kryo kryo, Output output, SoundEffect object) {
-			output.writeByte(object.preset.ordinal());
+			output.writeVarInt(object.id, false);
 			output.writeFloat(object.position.getX());
 			output.writeFloat(object.position.getY());
 		}
 
 		@Override
 		public SoundEffect read(Kryo kryo, Input input, Class<SoundEffect> type) {
-			return new SoundEffect(SoundPreset.values()[input.readByte()], new Vector2(input.readFloat(), input.readFloat()));
+			return new SoundEffect(input.readVarInt(false), new Vector2(input.readFloat(), input.readFloat()));
 		}
 	}
 }

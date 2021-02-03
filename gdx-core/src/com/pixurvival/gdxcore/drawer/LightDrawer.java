@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.map.Light;
 import com.pixurvival.core.time.DayCycleRun;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.ContentPackAssets;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class LightDrawer {
@@ -43,7 +43,7 @@ public class LightDrawer {
 		batch.begin();
 		// light color
 		batch.setColor(1f, 1f, 1f, 1f);
-		ContentPackTextures cpt = PixurvivalGame.getContentPackTextures();
+		ContentPackAssets cpt = PixurvivalGame.getContentPackTextures();
 		DrawUtils.foreachChunksInScreen(worldStage, cpt.getLargestLightRadius(), chunk -> {
 			for (Light light : chunk.getLights()) {
 				Texture texture = cpt.getLightTexture(light.getRadius());

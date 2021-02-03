@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class InventoryActionRequest implements IPlayerActionRequest {
 
 	@Getter
-	public static enum Type {
+	public enum Type {
 		SWAP_CLICK_MY_INVENTORY,
 		SPLIT_CLICK_MY_INVENTORY;
 	}

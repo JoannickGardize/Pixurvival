@@ -20,6 +20,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Pattern;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
+import com.pixurvival.core.contentPack.validation.annotation.ResourceType;
 import com.pixurvival.core.contentPack.validation.annotation.SpriteHeight;
 import com.pixurvival.core.contentPack.validation.annotation.SpriteWidth;
 import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteFrame;
@@ -66,7 +67,7 @@ public class ErrorToString {
 		addToStringFunction(NullErrorCause.class, n -> "the element is missing");
 		addToStringFunction(Pattern.class, p -> "the character sequence must match the pattern " + p.value());
 		addToStringFunction(Positive.class, p -> "the value cannot be negative");
-		addToStringFunction(ResourceReference.class, p -> "the resource does not exists or is not an image");
+		addToStringFunction(ResourceReference.class, p -> "the resource does not exists or is not " + (p.type() == ResourceType.IMAGE ? "an image" : "a sound (.wav, .mp3)"));
 		addToStringFunction(SpriteWidth.class, p -> "the sprite width does not divide correctly the image width");
 		addToStringFunction(SpriteHeight.class, p -> "the sprite height is not a multiple of the image height");
 		addToStringFunction(SpriteHeight.class, p -> "the sprite height is not a multiple of the image height");

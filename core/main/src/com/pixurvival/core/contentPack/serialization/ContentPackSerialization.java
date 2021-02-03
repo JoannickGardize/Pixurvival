@@ -42,6 +42,7 @@ import com.pixurvival.core.alteration.InstantEatAlteration;
 import com.pixurvival.core.alteration.InstantHealAlteration;
 import com.pixurvival.core.alteration.InvincibleAlteration;
 import com.pixurvival.core.alteration.OverridingSpriteSheetAlteration;
+import com.pixurvival.core.alteration.PlayCustomSoundAlteration;
 import com.pixurvival.core.alteration.PlaySoundAlteration;
 import com.pixurvival.core.alteration.RepeatAlteration;
 import com.pixurvival.core.alteration.SilenceAlteration;
@@ -329,6 +330,7 @@ public class ContentPackSerialization {
 		addClassTag(representer, StaticPlayerSpawn.class);
 		addClassTag(representer, DelayedAlteration.class);
 		addClassTag(representer, DropItemsAlteration.class);
+		addClassTag(representer, PlayCustomSoundAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

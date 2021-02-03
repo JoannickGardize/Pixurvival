@@ -32,6 +32,7 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.client.ClientGameListener;
 import com.pixurvival.client.PixurvivalClient;
 import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
@@ -46,7 +47,7 @@ import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.textures.ChunkTileTexturesManager;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.ContentPackAssets;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
 import com.pixurvival.server.PixurvivalServer;
 import com.pixurvival.server.util.ServerMainArgs;
@@ -102,7 +103,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		return instance.assetManager.get(DEFAULT_ITALIC_FONT, BitmapFont.class);
 	}
 
-	public static ContentPackTextures getContentPackTextures() {
+	public static ContentPackAssets getContentPackTextures() {
 		if (instance.worldScreen == null) {
 			return null;
 		} else {
@@ -132,7 +133,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	private float interpolationTime = 0;
 	private Skin skin;
 	private @Getter boolean zoomEnabled;
-	private Sound[] sounds;
+	private @Getter Sound[] soundPresets;
 	private @Getter float globalVolume = 1;
 	private PixurvivalServer server;
 	private FileOutputStream errorOutput;
@@ -167,8 +168,13 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		}
 	}
 
-	public Sound getSound(SoundPreset sound) {
-		return sounds[sound.ordinal()];
+	public Sound getSound(SoundEffect sound) {
+		ContentPackAssets contentPackAssets = getContentPackTextures();
+		if (contentPackAssets != null) {
+			return contentPackAssets.getSound(sound.getId());
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -181,9 +187,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.load(RIGHT_CLICK_ICON, Texture.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
-		sounds = new Sound[SoundPreset.values().length];
-		for (int i = 0; i < sounds.length; i++) {
-			sounds[i] = assetManager.get(getSoundFileName(SoundPreset.values()[i]));
+		soundPresets = new Sound[SoundPreset.values().length];
+		for (int i = 0; i < soundPresets.length; i++) {
+			soundPresets[i] = assetManager.get(getSoundFileName(SoundPreset.values()[i]));
 		}
 		getDefaultFont().getData().markupEnabled = true;
 		skin = new Skin();

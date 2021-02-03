@@ -1,9 +1,8 @@
 package com.pixurvival.core.system;
 
 import com.pixurvival.core.contentPack.gameMode.GameMode;
-import com.pixurvival.core.system.interest.Interest;
 
-public interface GameSystem extends Interest {
+public interface GameSystem {
 
 	/**
 	 * Called before initializing this system to check if it is required for the

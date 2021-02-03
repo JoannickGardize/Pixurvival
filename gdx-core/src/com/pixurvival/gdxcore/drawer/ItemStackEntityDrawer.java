@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.util.Vector2;
 import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.textures.ContentPackTextures;
+import com.pixurvival.gdxcore.textures.ContentPackAssets;
 import com.pixurvival.gdxcore.textures.ItemTexture;
 import com.pixurvival.gdxcore.textures.TextureMetrics;
 
@@ -15,7 +15,7 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 
 	@Override
 	public void drawShadow(Batch batch, ItemStackEntity e) {
-		ContentPackTextures contentPackTextures = PixurvivalGame.getContentPackTextures();
+		ContentPackAssets contentPackTextures = PixurvivalGame.getContentPackTextures();
 		ItemTexture itemTexture = contentPackTextures.getItem(e.getItemStack().getItem().getId());
 		Texture shadow = itemTexture.getShadow();
 		TextureMetrics metrics = itemTexture.getMetrics();
@@ -28,7 +28,7 @@ public class ItemStackEntityDrawer extends EntityDrawer<ItemStackEntity> {
 
 	@Override
 	public void draw(Batch batch, ItemStackEntity e) {
-		ContentPackTextures contentPackTextures = PixurvivalGame.getContentPackTextures();
+		ContentPackAssets contentPackTextures = PixurvivalGame.getContentPackTextures();
 		ItemTexture itemTexture = contentPackTextures.getItem(e.getItemStack().getItem().getId());
 		Texture texture = itemTexture.getTexture();
 		TextureMetrics metrics = itemTexture.getMetrics();
