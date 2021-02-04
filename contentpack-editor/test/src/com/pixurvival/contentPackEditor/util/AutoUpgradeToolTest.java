@@ -16,6 +16,6 @@ public class AutoUpgradeToolTest {
 		sb = new StringBuilder("one\ntwo\nreleaseVersion: ALPHA_5\nthree");
 		Assertions.assertEquals(ReleaseVersion.ALPHA_5, AutoUpgradeTool.findReleaseVersion(sb));
 		sb = new StringBuilder("one\ntwo\nreleaseVersion: ABCDE");
-		Assertions.assertNull(AutoUpgradeTool.findReleaseVersion(sb));
+		Assertions.assertEquals(ReleaseVersion.OLDER, AutoUpgradeTool.findReleaseVersion(sb));
 	}
 }

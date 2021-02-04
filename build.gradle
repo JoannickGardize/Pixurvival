@@ -207,7 +207,7 @@ project(":gdx-core") {
 }
 
 task packageDistribution(type: GradleBuild) {
-     tasks = ['clientFatJar', 'serverFatJar', 'editorFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
+     tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
 }
 
 task copyJars(type: Copy) {
