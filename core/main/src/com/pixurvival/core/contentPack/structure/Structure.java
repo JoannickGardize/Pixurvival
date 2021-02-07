@@ -15,6 +15,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
+import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.chunk.Chunk;
 
@@ -53,6 +54,9 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 	@Positive
 	private long deconstructionDuration = 0;
 
+	@Positive
+	private float maxHealth = 0;
+
 	private transient Item deconstructionItem;
 
 	/**
@@ -68,6 +72,10 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 	 * @return a MapStructure instance for this structure definition
 	 */
 	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
-		return new MapStructure(chunk, this, x, y);
+		if (maxHealth == 0) {
+			return new MapStructure(chunk, this, x, y);
+		} else {
+			return new DamageableMapStructure(chunk, this, x, y);
+		}
 	}
 }

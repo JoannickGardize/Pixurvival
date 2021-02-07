@@ -12,6 +12,7 @@ public class RemoveDurationStructureAction implements Action {
 
 	private int x;
 	private int y;
+	private long id;
 
 	@Override
 	public void perform(World world) {
@@ -19,7 +20,7 @@ public class RemoveDurationStructureAction implements Action {
 		if (tile instanceof TileAndStructure) {
 			MapStructure mapStructure = ((TileAndStructure) tile).getStructure();
 			long duration = mapStructure.getDefinition().getDuration();
-			if (duration > 0 && world.getTime().getTimeMillis() - mapStructure.getCreationTime() >= duration) {
+			if (mapStructure.getId() == id && duration > 0 && world.getTime().getTimeMillis() - mapStructure.getCreationTime() >= duration) {
 				mapStructure.getChunk().removeStructure(x, y);
 			}
 		}

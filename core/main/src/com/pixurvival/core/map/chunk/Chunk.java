@@ -136,14 +136,24 @@ public class Chunk {
 		return mapStructure;
 	}
 
-	public MapStructure addStructure(Structure structure, int x, int y) {
+	public MapStructure addStructure(Structure structure, int x, int y, long id) {
 		MapStructure mapStructure = createStructure(structure, x, y);
+		mapStructure.setId(id);
 		notifyStructureAdded(mapStructure);
 		return mapStructure;
 	}
 
+	/**
+	 * Does not initialize id
+	 * 
+	 * @param structure
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public MapStructure addStructureSilently(Structure structure, int x, int y) {
-		return createStructure(structure, x, y);
+		MapStructure mapStructure = createStructure(structure, x, y);
+		return mapStructure;
 	}
 
 	private MapStructure createStructure(Structure structure, int x, int y) {
@@ -172,7 +182,7 @@ public class Chunk {
 		fileSync = false;
 	}
 
-	public boolean isEmpty(int x, int y, int width, int height) {
+	public boolean isFree(int x, int y, int width, int height) {
 		int localX = x - offsetX;
 		int localY = y - offsetY;
 		return isEmptyLocal(localX, localY, width, height);

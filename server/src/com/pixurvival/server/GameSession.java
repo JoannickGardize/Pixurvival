@@ -111,13 +111,14 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 
 	@Override
 	public void structureAdded(MapStructure mapStructure) {
-		StructureUpdate structureUpdate = new AddStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getDefinition().getId(), mapStructure.getCreationTime());
+		StructureUpdate structureUpdate = new AddStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getId(), mapStructure.getDefinition().getId(),
+				mapStructure.getCreationTime());
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
 	@Override
 	public void structureRemoved(MapStructure mapStructure) {
-		StructureUpdate structureUpdate = new RemoveStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY());
+		StructureUpdate structureUpdate = new RemoveStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getId());
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
@@ -305,6 +306,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		// loop
 		for (PlayerGameSession playerSession : tmpPlayerSessions) {
 			playerSession.setSpectator(true);
+			playerSession.setInventoryChanged(true);
 			spectateBestTarget(playerSession);
 		}
 	}
@@ -314,6 +316,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		playerRespawnList.add(new PlayerRespawn(player.getId()));
 		PlayerGameSession playerSession = sessionsByOriginalPlayers.get(player.getId());
 		playerSession.setSpectator(false);
+		playerSession.setInventoryChanged(true);
 		setSessionFocusOn(playerSession, player);
 		playerSession.getConnection().sendTCP(new Respawn(player));
 	}

@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.map.DamageableMapStructure;
+import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.chunk.Chunk;
 
@@ -11,15 +12,16 @@ public class DamageableStructureUpdate extends StructureUpdate {
 
 	private float health;
 
-	public DamageableStructureUpdate(int x, int y, float health) {
-		super(x, y);
+	public DamageableStructureUpdate(int x, int y, long id, float health) {
+		super(x, y, id);
 		this.health = health;
 	}
 
 	@Override
 	public void apply(Chunk chunk) {
 		MapTile mapTile = chunk.tileAt(getX(), getY());
-		if (mapTile.getStructure() instanceof DamageableMapStructure) {
+		MapStructure mapStructure = mapTile.getStructure();
+		if (mapStructure != null && mapStructure.getId() == getId()) {
 			DamageableMapStructure structure = (DamageableMapStructure) mapTile.getStructure();
 			structure.setHealth(health);
 			chunk.getMap().notifyListeners(l -> l.structureChanged(structure, this));
@@ -33,12 +35,13 @@ public class DamageableStructureUpdate extends StructureUpdate {
 		public void write(Kryo kryo, Output output, DamageableStructureUpdate object) {
 			output.writeInt(object.getX());
 			output.writeInt(object.getY());
+			output.writeVarLong(object.getId(), true);
 			output.writeFloat(object.health);
 		}
 
 		@Override
 		public DamageableStructureUpdate read(Kryo kryo, Input input, Class<DamageableStructureUpdate> type) {
-			return new DamageableStructureUpdate(input.readInt(), input.readInt(), input.readFloat());
+			return new DamageableStructureUpdate(input.readInt(), input.readInt(), input.readVarLong(true), input.readFloat());
 		}
 	}
 }

@@ -13,6 +13,7 @@ public abstract class StructureUpdate {
 
 	private int x;
 	private int y;
+	private long id;
 
 	public abstract void apply(Chunk chunk);
 }

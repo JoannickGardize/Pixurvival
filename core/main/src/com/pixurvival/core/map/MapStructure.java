@@ -7,6 +7,7 @@ import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.map.chunk.Chunk;
+import com.pixurvival.core.util.LongSequenceIOHelper;
 import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 
@@ -21,6 +22,7 @@ public class MapStructure implements Body, CustomDataHolder {
 		MapStructure apply(Chunk chunk, Structure structure, int x, int y);
 	}
 
+	private @Setter long id;
 	private Chunk chunk;
 	private Structure definition;
 	private int tileX;
@@ -39,10 +41,12 @@ public class MapStructure implements Body, CustomDataHolder {
 
 	public void initiliazeNewlyCreated() {
 		World world = chunk.getMap().getWorld();
-		if (world.isServer() && definition.getDuration() > 0) {
-			creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
-			// TODO can go wrong, structures needs ids
-			world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(tileX, tileY), definition.getDuration());
+		if (world.isServer()) {
+			id = chunk.getMap().nextStructureId();
+			if (definition.getDuration() > 0) {
+				creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
+				world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(tileX, tileY, id), definition.getDuration());
+			}
 		}
 	}
 
@@ -69,7 +73,8 @@ public class MapStructure implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 */
-	public void writeData(ByteBuffer buffer) {
+	public void writeData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
+		idSequence.write(buffer, id);
 		if (definition.getDuration() > 0) {
 			VarLenNumberIO.writePositiveVarLong(buffer, (getChunk().getUpdateTimestamp() - creationTime));
 		}
@@ -80,7 +85,8 @@ public class MapStructure implements Body, CustomDataHolder {
 	 * 
 	 * @param buffer
 	 */
-	public void applyData(ByteBuffer buffer) {
+	public void applyData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
+		id = idSequence.read(buffer);
 		if (definition.getDuration() > 0) {
 			creationTime = getChunk().getUpdateTimestamp() - VarLenNumberIO.readPositiveVarLong(buffer);
 		}

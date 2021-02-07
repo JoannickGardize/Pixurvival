@@ -18,7 +18,6 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
-import com.pixurvival.core.contentPack.structure.DamageableStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 
@@ -43,6 +42,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 			tileChooser.setBorder(LayoutUtils.createBorder());
 			return tileChooser;
 		}, () -> null);
+		FloatInput maxHealthInput = new FloatInput();
 
 		// Binding
 		bind(randomHorizontalFlipCheckBox, "randomHorizontalFlip");
@@ -54,6 +54,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		bind(bannedTilesEditor, "bannedTiles");
 		bind(lightEmissionRadiusInput, "lightEmissionRadius");
 		bind(deconstructionDuration, "deconstructionDuration");
+		bind(maxHealthInput, "maxHealth");
 
 		// Layouting
 		setLayout(new GridBagLayout());
@@ -73,6 +74,7 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 		gbc.gridy = 4;
 		gbc.weighty = 0;
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.deconstructionDuration", deconstructionDuration, gbc);
+		LayoutUtils.addHorizontalLabelledItem(northPanel, "structureEditor.damageable.health", maxHealthInput, gbc);
 		LayoutUtils.nextColumn(gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "generic.solid", solidCheckBox, gbc);
 		LayoutUtils.addHorizontalLabelledItem(northPanel, "elementType.spriteSheet", spriteSheetChooser, gbc);
@@ -96,12 +98,6 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 			HarvestablePanel harvestablePanel = new HarvestablePanel();
 			harvestablePanel.bindTo(this);
 			return harvestablePanel;
-		}));
-
-		entries.add(new ClassEntry(DamageableStructure.class, () -> {
-			FloatInput healthInput = new FloatInput();
-			bind(healthInput, "maxHealth", DamageableStructure.class);
-			return LayoutUtils.single(LayoutUtils.labelled("structureEditor.damageable.health", healthInput));
 		}));
 
 		return entries;

@@ -42,6 +42,8 @@ public class AutoUpgradeTool {
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_9.ordinal(), sb -> replaceAll(sb, "!!DropItemsBehavior", "!!DoNothingBehavior"));
 
 		CONTENT_PACK_UPGRADERS.put(ReleaseVersion.ALPHA_10.ordinal(), cp -> cp.getEffects().forEach(e -> e.getRepeatFollowingElements().setBase(e.getRepeatFollowingElements().getBase() + 1f)));
+
+		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_12.ordinal(), sb -> replaceAll(sb, "!!DamageableStructure", "!!Structure"));
 	}
 
 	/**

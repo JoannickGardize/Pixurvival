@@ -10,6 +10,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.HarvestableStructureUpdate;
+import com.pixurvival.core.util.LongSequenceIOHelper;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,22 +30,23 @@ public class HarvestableMapStructure extends MapStructure {
 			return new ItemStack[0];
 		}
 		harvested = true;
-		getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new HarvestableStructureUpdate(getTileX(), getTileY(), harvested)));
+		getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new HarvestableStructureUpdate(getTileX(), getTileY(), getId(), harvested)));
 		getChunk().updateTimestamp();
 		World world = getChunk().getMap().getWorld();
-		world.getActionTimerManager().addActionTimer(new HarvestableStructureUpdate(getTileX(), getTileY(), false), ((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));
+		world.getActionTimerManager().addActionTimer(new HarvestableStructureUpdate(getTileX(), getTileY(), getId(), false),
+				((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));
 		return ((HarvestableStructure) getDefinition()).getItemReward().produce(random);
 	}
 
 	@Override
-	public void writeData(ByteBuffer buffer) {
-		super.writeData(buffer);
+	public void writeData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
+		super.writeData(buffer, idSequence);
 		buffer.put(harvested ? (byte) 1 : (byte) 0);
 	}
 
 	@Override
-	public void applyData(ByteBuffer buffer) {
-		super.applyData(buffer);
+	public void applyData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
+		super.applyData(buffer, idSequence);
 		harvested = buffer.get() == 1;
 	}
 }

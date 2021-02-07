@@ -30,6 +30,7 @@ import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class TiledMap {
 
@@ -56,6 +57,8 @@ public class TiledMap {
 	private Map<ChunkPosition, ChunkPosition> waitingPositions = new ConcurrentHashMap<>();
 
 	private @Getter ChunkRepository repository;
+
+	private @Getter @Setter long nextStructureId = 1;
 
 	private Light tmpResult;
 
@@ -89,6 +92,10 @@ public class TiledMap {
 		if (world.isServer()) {
 			addListener(world.getChunkCreatureSpawnManager());
 		}
+	}
+
+	public long nextStructureId() {
+		return nextStructureId++;
 	}
 
 	public void addListener(TiledMapListener listener) {
