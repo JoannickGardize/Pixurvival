@@ -357,10 +357,6 @@ public abstract class Entity implements Body, CustomDataHolder {
 		return closestEntity;
 	}
 
-	public float distanceSquared(Positionnable other) {
-		return position.distanceSquared(other.getPosition());
-	}
-
 	public float nullSafeDistanceSquared(Entity other) {
 		return other == null ? Float.POSITIVE_INFINITY : position.distanceSquared(other.position);
 	}

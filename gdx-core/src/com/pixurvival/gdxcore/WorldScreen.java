@@ -43,6 +43,7 @@ import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.EndGameUI;
 import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
+import com.pixurvival.gdxcore.ui.InteractionDialogUI;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.MouseIconActor;
@@ -88,6 +89,7 @@ public class WorldScreen implements Screen {
 	private MiniMapUI miniMapUI = new MiniMapUI();
 	private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
 	private MouseIconActor mouseIconActor = new MouseIconActor();
+	private @Getter InventoryUI inventoryUI = new InventoryUI();
 
 	private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
 
@@ -132,13 +134,14 @@ public class WorldScreen implements Screen {
 		miniMapUI.setPosition(0, hudStage.getHeight() - miniMapUI.getHeight());
 		EquipmentUI equipmentUI = new EquipmentUI();
 		hudStage.addActor(equipmentUI);
-		InventoryUI inventoryUI = new InventoryUI();
 		hudStage.addActor(inventoryUI);
 		hudStage.addActor(craftUI);
 		world.getChatManager().addListener(chatUI);
 		TimeUI timeUI = new TimeUI();
 		hudStage.addActor(timeUI);
 		hudStage.addActor(chatUI);
+		InteractionDialogUI.getInstance();
+		hudStage.addActor(InteractionDialogUI.getInstance());
 		hudStage.addActor(heldItemStackActor);
 		hudStage.addActor(statusBarUI);
 		hudStage.addActor(mouseIconActor);
@@ -255,6 +258,7 @@ public class WorldScreen implements Screen {
 		endGameUI.update(hudStage.getViewport());
 		pauseUI.update();
 		respawnTimerActor.setPosition(width / 2f, height - height / 3f);
+		InteractionDialogUI.getInstance();
 	}
 
 	@Override

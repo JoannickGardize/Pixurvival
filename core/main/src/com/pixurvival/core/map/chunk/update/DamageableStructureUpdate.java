@@ -3,7 +3,6 @@ package com.pixurvival.core.map.chunk.update;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -20,9 +19,8 @@ public class DamageableStructureUpdate extends StructureUpdate {
 	@Override
 	public void apply(Chunk chunk) {
 		MapTile mapTile = chunk.tileAt(getX(), getY());
-		MapStructure mapStructure = mapTile.getStructure();
-		if (mapStructure != null && mapStructure.getId() == getId()) {
-			DamageableMapStructure structure = (DamageableMapStructure) mapTile.getStructure();
+		MapStructure structure = mapTile.getStructure();
+		if (structure != null && structure.getId() == getId()) {
 			structure.setHealth(health);
 			chunk.getMap().notifyListeners(l -> l.structureChanged(structure, this));
 		}

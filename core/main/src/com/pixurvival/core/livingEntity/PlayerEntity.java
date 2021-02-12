@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.SoundEffect;
 import com.pixurvival.core.chat.ChatEntry;
@@ -23,6 +21,7 @@ import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CooldownAbilityData;
 import com.pixurvival.core.livingEntity.ability.CraftAbility;
@@ -101,9 +100,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
 	private @Setter Role role;
 
-	private @Getter ItemCraftDiscovery itemCraftDiscovery;
+	private ItemCraftDiscovery itemCraftDiscovery;
 
-	private @Getter @Setter long respawnTime;
+	private @Setter long respawnTime;
+
+	private @Setter InteractionDialog interactionDialog;
 
 	@Override
 	public void update() {
@@ -313,11 +314,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 			VarLenNumberIO.writePositiveVarLong(byteBuffer, respawnTime);
 		}
 		ByteBufferUtils.putString(byteBuffer, name);
-		try (Output output = new Output(byteBuffer.array())) {
-			output.setPosition(byteBuffer.position());
-			getWorld().getPlayerInventoryKryo().writeObject(output, inventory);
-			byteBuffer.position(output.position());
-		}
+		getWorld().writeInventory(byteBuffer, inventory);
 		itemCraftDiscovery.write(byteBuffer);
 	}
 
@@ -331,11 +328,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 			respawnTime = VarLenNumberIO.readPositiveVarLong(byteBuffer);
 		}
 		setName(ByteBufferUtils.getString(byteBuffer));
-		try (Input input = new Input(byteBuffer.array())) {
-			input.setPosition(byteBuffer.position());
-			inventory.set(getWorld().getPlayerInventoryKryo().readObject(input, PlayerInventory.class));
-			byteBuffer.position(input.position());
-		}
+		getWorld().readInventory(byteBuffer, inventory);
 		itemCraftDiscovery.apply(byteBuffer, getWorld().getContentPack().getItems());
 		addHealthAdapterListener();
 	}

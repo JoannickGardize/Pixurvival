@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.core.map.HarvestableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
@@ -20,7 +19,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	@Override
 	public void drawShadow(Batch batch, MapStructure e) {
-		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
+		TextureAnimationSet animationSet = getTextureAnimationSet(e);
 		// TODO gérer les entités non dessinés directement dans l'entityDrawer
 		if (animationSet == null || animationSet.getShadow() == null) {
 			return;
@@ -33,7 +32,7 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 
 	@Override
 	public void draw(Batch batch, MapStructure e) {
-		TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
+		TextureAnimationSet animationSet = getTextureAnimationSet(e);
 		if (animationSet == null) {
 			return;
 		}
@@ -46,11 +45,11 @@ public class MapStructureDrawer implements ElementDrawer<MapStructure> {
 				false);
 	}
 
-	private TextureAnimation getTextureAnimation(MapStructure e, TextureAnimationSet animationSet) {
-		if (e instanceof HarvestableMapStructure && ((HarvestableMapStructure) e).isHarvested()) {
-			TextureAnimation harvestedAnimation = animationSet.get(ActionAnimation.HARVESTED);
-			return harvestedAnimation == null ? animationSet.get(ActionAnimation.DEFAULT) : harvestedAnimation;
-		}
+	protected TextureAnimationSet getTextureAnimationSet(MapStructure e) {
+		return PixurvivalGame.getContentPackTextures().getAnimationSet(e.getDefinition().getSpriteSheet());
+	}
+
+	protected TextureAnimation getTextureAnimation(MapStructure e, TextureAnimationSet animationSet) {
 		return animationSet.get(ActionAnimation.DEFAULT);
 	}
 

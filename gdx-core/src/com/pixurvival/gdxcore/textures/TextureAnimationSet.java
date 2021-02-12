@@ -27,15 +27,12 @@ public class TextureAnimationSet {
 	private @Getter float shadowWidth;
 	private @Getter @Setter(AccessLevel.PACKAGE) Texture shadow;
 
-	public TextureAnimationSet(ContentPack pack, SpriteSheet spriteSheet, PixelTextureBuilder transform) throws ContentPackException {
-		float truePixelWidth = 1f / (transform.getPixelWidth() * GameConstants.PIXEL_PER_UNIT);
+	public TextureAnimationSet(ContentPack pack, SpriteSheet spriteSheet, int pixelWidth, TextureSheet textureSheet) throws ContentPackException {
+		float truePixelWidth = 1f / (pixelWidth * GameConstants.PIXEL_PER_UNIT);
 		shadowWidth = (float) spriteSheet.getShadowWidth() / GameConstants.PIXEL_PER_UNIT;
 		width = (float) spriteSheet.getWidth() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2;
 		height = (float) spriteSheet.getHeight() / GameConstants.PIXEL_PER_UNIT + truePixelWidth * 2;
 		yOffset = (-truePixelWidth) - spriteSheet.getHeightOffset() / 8;
-
-		SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()), spriteSheet.getWidth(), spriteSheet.getHeight());
-		TextureSheet textureSheet = new TextureSheet(sheetPixmap, transform);
 
 		AnimationTemplate template = spriteSheet.getAnimationTemplate();
 		for (Entry<ActionAnimation, Animation> entries : template.getAnimations().entrySet()) {

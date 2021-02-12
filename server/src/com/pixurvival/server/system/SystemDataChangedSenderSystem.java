@@ -21,5 +21,4 @@ public class SystemDataChangedSenderSystem implements GameSystem, SystemDataChan
 	public void dataChanged(SystemData data) {
 		players.forEach(p -> p.getConnection().sendTCP(data));
 	}
-
 }

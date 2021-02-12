@@ -102,6 +102,7 @@ import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
+import com.pixurvival.core.contentPack.structure.InventoryStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.item.ItemStack;
@@ -329,6 +330,7 @@ public class ContentPackSerialization {
 		addClassTag(representer, DelayedAlteration.class);
 		addClassTag(representer, DropItemsAlteration.class);
 		addClassTag(representer, PlayCustomSoundAlteration.class);
+		addClassTag(representer, InventoryStructure.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

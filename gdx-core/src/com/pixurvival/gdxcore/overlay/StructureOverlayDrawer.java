@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
@@ -22,7 +21,7 @@ public class StructureOverlayDrawer implements OverlayDrawer<MapStructure> {
 		}
 
 		boolean hasDuration = mapStructure.getDefinition().getDuration() != 0;
-		boolean hasDamage = mapStructure instanceof DamageableMapStructure && ((DamageableMapStructure) mapStructure).getPercentHealth() < 1;
+		boolean hasDamage = mapStructure.getMaxHealth() > 0 && mapStructure.getPercentHealth() < 1;
 		if (hasDuration || hasDamage) {
 			TextureAnimationSet animationSet = PixurvivalGame.getContentPackTextures().getAnimationSet(mapStructure.getDefinition().getSpriteSheet());
 			animationSet.getHeight();
@@ -38,7 +37,7 @@ public class StructureOverlayDrawer implements OverlayDrawer<MapStructure> {
 						OverlayConstants.DURATION_BAR_COLOR);
 			}
 			if (hasDamage) {
-				float percentHealth = ((DamageableMapStructure) mapStructure).getPercentHealth();
+				float percentHealth = mapStructure.getPercentHealth();
 				tmpRectangle.width = OverlayConstants.WORKING_BAR_WIDTH;
 				tmpRectangle.height = OverlayConstants.WORKING_BAR_HEIGH;
 				tmpRectangle.x = tmpVector2.x - tmpRectangle.width / 2;

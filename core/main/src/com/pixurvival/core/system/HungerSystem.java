@@ -19,6 +19,11 @@ public class HungerSystem implements GameSystem, TimeIntervalInterest {
 	private GameMode gameMode;
 
 	@Override
+	public boolean isRequired(GameMode gameMode) {
+		return gameMode.getHungerPerMinute() > 0;
+	}
+
+	@Override
 	public void tick(float deltaTime) {
 		entityPool.get(EntityGroup.PLAYER).forEach(e -> {
 			PlayerEntity player = (PlayerEntity) e;

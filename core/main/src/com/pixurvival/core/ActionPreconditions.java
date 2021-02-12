@@ -5,6 +5,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.InventoryMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -54,7 +55,15 @@ public class ActionPreconditions {
 	}
 
 	public static boolean canInteract(LivingEntity entity, MapStructure structure) {
-		return structure != null && (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0)
-				&& entity.distanceSquared(structure.getPosition()) <= GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE * GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE;
+		return structure != null && (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0
+				|| structure instanceof InventoryMapStructure) && checkInteractionDistance(entity, structure);
+	}
+	
+	public static boolean canDeconstruct(LivingEntity entity, MapStructure structure) {
+		return structure.getDefinition().getDeconstructionDuration() > 0 && checkInteractionDistance(entity, structure);
+	}
+
+	public static boolean checkInteractionDistance(Positionnable p1, Positionnable p2) {
+		return p1.distanceSquared(p2) <= GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE * GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE;
 	}
 }

@@ -44,7 +44,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	private @Getter World world;
 	private @Getter List<PlayerGameSession> players = new ArrayList<>();
 	private Map<Long, PlayerGameSession> sessionsByOriginalPlayers = new HashMap<>();
-	private Map<Long, Set<PlayerGameSession>> sessionsByEntities = new HashMap<>();
+	private @Getter Map<Long, Set<PlayerGameSession>> sessionsByEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> removedEntities = new HashMap<>();
 	private @Getter Map<ChunkPosition, List<Entity>> chunkChangedEntities = new HashMap<>();
 	private List<PlayerDead> playerDeadList = new ArrayList<>();

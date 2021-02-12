@@ -18,7 +18,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.entity.EffectEntity;
-import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.MapTile;
 
 import lombok.Getter;
@@ -98,8 +97,8 @@ public class Effect extends NamedIdentifiedElement {
 						entity.setAlive(false);
 						entity.setSneakyDeath(true);
 					}
-					if (tile.getStructure() instanceof DamageableMapStructure) {
-						structureDamageAlteration.apply(entity, ((DamageableMapStructure) tile.getStructure()));
+					if (tile.getStructure() != null && tile.getStructure().getMaxHealth() > 0) {
+						structureDamageAlteration.apply(entity, tile.getStructure());
 						entity.flushCheckList();
 					}
 				};
@@ -113,8 +112,8 @@ public class Effect extends NamedIdentifiedElement {
 			}
 		} else if (structureDamageAlteration != null) {
 			tileCollisionAction = (entity, tile) -> {
-				if (tile.getStructure() instanceof DamageableMapStructure) {
-					structureDamageAlteration.apply(entity, ((DamageableMapStructure) tile.getStructure()));
+				if (tile.getStructure() != null && tile.getStructure().getMaxHealth() > 0) {
+					structureDamageAlteration.apply(entity, tile.getStructure());
 					entity.flushCheckList();
 				}
 			};

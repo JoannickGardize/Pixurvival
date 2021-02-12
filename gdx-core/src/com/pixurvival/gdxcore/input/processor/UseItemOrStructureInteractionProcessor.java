@@ -15,6 +15,8 @@ import com.pixurvival.core.message.playerRequest.UseItemRequest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
+import com.pixurvival.gdxcore.input.InputAction;
+import com.pixurvival.gdxcore.input.InputManager;
 
 public class UseItemOrStructureInteractionProcessor implements InputActionProcessor {
 
@@ -35,7 +37,7 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 			Vector2 position = WorldScreen.getWorldCursorPosition();
 			MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
 			if (ActionPreconditions.canInteract(myPlayer, structure)) {
-				PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY()));
+				PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY(), InputManager.getInstance().isPressed(InputAction.SPLIT_INVENTORY)));
 			}
 		}
 	}

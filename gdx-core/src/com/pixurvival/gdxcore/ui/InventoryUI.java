@@ -5,12 +5,16 @@ import com.pixurvival.core.item.Inventory;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.input.InputAction;
 
+import lombok.Getter;
+
 public class InventoryUI extends UIWindow {
+
+	private @Getter InventoryTable inventoryTable;
 
 	public InventoryUI() {
 		super("inventory");
 		Inventory inv = PixurvivalGame.getClient().getMyInventory();
-		add(new InventoryTable(inv, 8) {
+		inventoryTable = new InventoryTable(inv, 8) {
 			@Override
 			public Actor newSlot(Inventory inventory, int index) {
 				InventorySlot slot = new InventorySlot(inventory, index);
@@ -20,7 +24,8 @@ public class InventoryUI extends UIWindow {
 				}
 				return slot;
 			}
-		}).expand().fill();
+		};
+		add(inventoryTable).expand().fill();
 	}
 
 }

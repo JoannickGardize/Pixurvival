@@ -312,6 +312,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	public void sendAction(IPlayerActionRequest request) {
 		if (world != null) {
 			if (world.getType() == World.Type.CLIENT) {
+				// TODO TCP for some actions
 				client.sendUDP(request);
 				if (request.isClientPreapply() && world.getMyPlayer().getId() == myOriginalPlayerId) {
 					synchronized (playerActionRequests) {

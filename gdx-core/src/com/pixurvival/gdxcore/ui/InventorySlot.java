@@ -14,7 +14,7 @@ import lombok.Setter;
 
 public class InventorySlot extends Button {
 
-	private Inventory inventory;
+	private @Getter Inventory inventory;
 	private @Getter int slotIndex;
 	private ItemStackDrawer itemStackDrawer;
 	private @Setter ShortcutDrawer shortcutDrawer;
@@ -25,7 +25,6 @@ public class InventorySlot extends Button {
 		this.slotIndex = slotIndex;
 
 		itemStackDrawer = new ItemStackDrawer(this, 2);
-
 		this.addListener(new InventorySlotInputListener(inventory, slotIndex));
 	}
 

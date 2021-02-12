@@ -2,9 +2,6 @@ package com.pixurvival.core.livingEntity;
 
 import java.nio.ByteBuffer;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Positionnable;
 import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.creature.Behavior;
@@ -51,13 +48,6 @@ public class CreatureEntity extends LivingEntity {
 	private boolean targetedAlterationPrepared = false;
 
 	private long creationTime;
-
-	private static final Kryo INVENTORY_KRYO = new Kryo();
-
-	static {
-		INVENTORY_KRYO.register(ItemStack.class, new ItemStack.Serializer());
-		INVENTORY_KRYO.register(Inventory.class, new Inventory.Serializer());
-	}
 
 	@Override
 	public void initialize() {
@@ -259,11 +249,7 @@ public class CreatureEntity extends LivingEntity {
 		TeamMemberSerialization.writeNullSafe(buffer, master == this ? null : master, true);
 		VarLenNumberIO.writePositiveVarInt(buffer, currentBehavior.getId());
 		if (definition.getInventorySize() > 0) {
-			try (Output output = new Output(buffer.array())) {
-				output.setPosition(buffer.position());
-				INVENTORY_KRYO.writeObject(output, inventory);
-				buffer.position(output.position());
-			}
+			getWorld().writeInventory(buffer, inventory);
 		}
 	}
 
@@ -286,11 +272,7 @@ public class CreatureEntity extends LivingEntity {
 		// TODO smart reset behavior
 		currentBehavior.begin(this);
 		if (definition.getInventorySize() > 0) {
-			try (Input input = new Input(buffer.array())) {
-				input.setPosition(buffer.position());
-				inventory.set(INVENTORY_KRYO.readObject(input, Inventory.class));
-				buffer.position(input.position());
-			}
+			getWorld().readInventory(buffer, inventory);
 		}
 		addHealthAdapterListener();
 	}

@@ -1,5 +1,7 @@
 package com.pixurvival.core.item;
 
-public interface InventoryHolder {
+import com.pixurvival.core.team.TeamMember;
+
+public interface InventoryHolder extends TeamMember {
 	Inventory getInventory();
 }

@@ -18,6 +18,7 @@ import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.contentPack.summary.GameModeSummary;
 import com.pixurvival.core.contentPack.summary.RoleSummary;
+import com.pixurvival.core.interactionDialog.InventoryInteractionDialog;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -41,7 +42,9 @@ import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
 import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
+import com.pixurvival.core.message.playerRequest.CloseInteractionDialogRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
+import com.pixurvival.core.message.playerRequest.DialogInteractionActionRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
@@ -147,6 +150,10 @@ public class KryoInitializer {
 		register(kryo, Rectangle.class);
 		register(kryo, MapLimitsAnchorRun.class);
 		register(kryo, MapLimitsSystemData.class);
+		register(kryo, InventoryInteractionDialog.class);
+		register(kryo, UpdateInteractionDialog.class);
+		register(kryo, DialogInteractionActionRequest.class);
+		register(kryo, CloseInteractionDialogRequest.class);
 	}
 
 	@SuppressWarnings("unchecked")

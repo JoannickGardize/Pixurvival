@@ -25,14 +25,16 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.DamageableMapStructure;
 import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.InventoryMapStructure;
 import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.EffectDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
+import com.pixurvival.gdxcore.drawer.HarvestableMapStructureDrawer;
+import com.pixurvival.gdxcore.drawer.InventoryMapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackEntityDrawer;
 import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
@@ -47,10 +49,9 @@ public class EntitiesActor extends Actor {
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
-		MapStructureDrawer mapStructureDrawer = new MapStructureDrawer();
-		drawers.put(HarvestableMapStructure.class, mapStructureDrawer);
-		drawers.put(MapStructure.class, mapStructureDrawer);
-		drawers.put(DamageableMapStructure.class, mapStructureDrawer);
+		drawers.put(HarvestableMapStructure.class, new HarvestableMapStructureDrawer());
+		drawers.put(MapStructure.class, new MapStructureDrawer());
+		drawers.put(InventoryMapStructure.class, new InventoryMapStructureDrawer());
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackEntityDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());

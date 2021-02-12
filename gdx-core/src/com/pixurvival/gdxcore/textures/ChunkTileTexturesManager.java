@@ -69,7 +69,7 @@ public class ChunkTileTexturesManager {
 	private void run() {
 		try {
 			while (running) {
-				Chunk c = chunkQueue.poll(1, TimeUnit.SECONDS);
+				Chunk c = chunkQueue.poll(500, TimeUnit.MILLISECONDS);
 				if (c != null) {
 					ChunkTileTextures chunkTileTextures;
 					synchronized (chunkTileTextureMap) {

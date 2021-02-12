@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.map.DamageableMapStructure;
+import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.VarLenNumberIO;
 
 import lombok.experimental.UtilityClass;
@@ -14,7 +15,7 @@ import lombok.experimental.UtilityClass;
 public class TeamMemberSerialization {
 
 	private static final byte ENTITY_TYPE = 0;
-	private static final byte DAMAGEABLE_MAP_STRUCTURE_TYPE = 1;
+	private static final byte MAP_STRUCTURE_TYPE = 1;
 	private static final byte FLAT_TYPE = 2;
 
 	public static void write(ByteBuffer buffer, TeamMember teamMember, boolean safeMode) {
@@ -26,10 +27,15 @@ public class TeamMemberSerialization {
 			if (safeMode) {
 				writeFlatTeamMember(buffer, teamMember);
 			}
-		} else if (teamMember instanceof DamageableMapStructure) {
-			buffer.put(DAMAGEABLE_MAP_STRUCTURE_TYPE);
-			// TODO structure as origin
-			throw new UnsupportedOperationException("DAMAGEABLE_MAP_STRUCTURE_TYPE");
+		} else if (teamMember instanceof MapStructure) {
+			buffer.put(MAP_STRUCTURE_TYPE);
+			MapStructure mapStructure = (MapStructure) teamMember;
+			VarLenNumberIO.writePositiveVarLong(buffer, mapStructure.getId());
+			VarLenNumberIO.writePositiveVarInt(buffer, mapStructure.getTileX());
+			VarLenNumberIO.writePositiveVarInt(buffer, mapStructure.getTileY());
+			if (safeMode) {
+				writeFlatTeamMember(buffer, teamMember);
+			}
 		} else if (teamMember instanceof EntityNotFoundProxy) {
 			EntityNotFoundProxy proxy = (EntityNotFoundProxy) teamMember;
 			buffer.put(ENTITY_TYPE);
@@ -42,28 +48,14 @@ public class TeamMemberSerialization {
 			buffer.put(FLAT_TYPE);
 			writeFlatTeamMember(buffer, teamMember);
 		}
-
 	}
 
 	public static TeamMember read(ByteBuffer buffer, World world, boolean safeMode) {
 		switch (buffer.get()) {
 		case ENTITY_TYPE:
-			EntityGroup group = EntityGroup.values()[buffer.get()];
-			long id = VarLenNumberIO.readPositiveVarLong(buffer);
-			Entity e = world.getEntityPool().get(group, id);
-			if (e == null) {
-				EntityNotFoundProxy proxy = new EntityNotFoundProxy(world, group, id);
-				if (safeMode) {
-					applyFlatTeamMember(buffer, proxy);
-				}
-				return proxy;
-			} else {
-				if (safeMode) {
-					// Read for skipping
-					applyFlatTeamMember(buffer, new EntityNotFoundProxy(world, group, id));
-				}
-				return (TeamMember) e;
-			}
+			return readEntity(buffer, world, safeMode);
+		case MAP_STRUCTURE_TYPE:
+			return readStructure(buffer, world, safeMode);
 		case FLAT_TYPE:
 			FlatTeamMember result = new FlatTeamMember(world);
 			applyFlatTeamMember(buffer, result);
@@ -88,6 +80,47 @@ public class TeamMemberSerialization {
 			return null;
 		} else {
 			return read(buffer, world, safeMode);
+		}
+	}
+
+	private static TeamMember readStructure(ByteBuffer buffer, World world, boolean safeMode) {
+		long id = VarLenNumberIO.readPositiveVarLong(buffer);
+		int x = VarLenNumberIO.readPositiveVarInt(buffer);
+		int y = VarLenNumberIO.readPositiveVarInt(buffer);
+		Chunk chunk = world.getMap().chunkAt(x, y);
+		if (chunk != null) {
+			MapStructure structure = chunk.tileAt(x, y).getStructure();
+			if (structure != null && structure.getId() == id) {
+				if (safeMode) {
+					// Read for skipping
+					applyFlatTeamMember(buffer, new StructureNotFoundProxy(world, id, x, y));
+				}
+				return structure;
+			}
+		}
+		StructureNotFoundProxy proxy = new StructureNotFoundProxy(world, id, x, y);
+		if (safeMode) {
+			applyFlatTeamMember(buffer, proxy);
+		}
+		return proxy;
+	}
+
+	private static TeamMember readEntity(ByteBuffer buffer, World world, boolean safeMode) {
+		EntityGroup group = EntityGroup.values()[buffer.get()];
+		long id = VarLenNumberIO.readPositiveVarLong(buffer);
+		Entity e = world.getEntityPool().get(group, id);
+		if (e == null) {
+			EntityNotFoundProxy proxy = new EntityNotFoundProxy(world, group, id);
+			if (safeMode) {
+				applyFlatTeamMember(buffer, proxy);
+			}
+			return proxy;
+		} else {
+			if (safeMode) {
+				// Read for skipping
+				applyFlatTeamMember(buffer, new EntityNotFoundProxy(world, group, id));
+			}
+			return (TeamMember) e;
 		}
 	}
 

@@ -3,6 +3,7 @@ package com.pixurvival.server.lobby;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.esotericsoftware.minlog.Log;
@@ -21,6 +22,7 @@ import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.server.GameSession;
 import com.pixurvival.server.PlayerGameSession;
+import com.pixurvival.server.system.InteractionDialogChangeSenderSystem;
 import com.pixurvival.server.system.SystemDataChangedSenderSystem;
 
 import lombok.NonNull;
@@ -60,7 +62,9 @@ public class StartingGamePhase implements LobbyPhase {
 		createWorld.setTeamCompositions(teamCompositions);
 		waitingGameSession.setTeamCompositions(teamCompositions);
 		world.addAdditonalAttribute(waitingGameSession.getPlayers(), List.class, PlayerGameSession.class);
+		world.addAdditonalAttribute(waitingGameSession.getSessionsByEntities(), Map.class, Long.class, Set.class);
 		world.addSystem(SystemDataChangedSenderSystem.class);
+		world.addSystem(InteractionDialogChangeSenderSystem.class);
 		try {
 			world.initializeNewGame();
 		} catch (MapAnalyticsException e) {

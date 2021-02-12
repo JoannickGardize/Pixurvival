@@ -1,5 +1,6 @@
 package com.pixurvival.core;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatManager;
 import com.pixurvival.core.chat.ChatSender;
@@ -20,6 +23,7 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.event.EventAction;
 import com.pixurvival.core.contentPack.gameMode.role.Roles;
 import com.pixurvival.core.entity.EntityPool;
+import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
@@ -34,6 +38,7 @@ import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.system.GameSystem;
 import com.pixurvival.core.system.HungerSystem;
+import com.pixurvival.core.system.InteractionDialogSystem;
 import com.pixurvival.core.system.WorldAttributesAccessor;
 import com.pixurvival.core.system.interest.InitializeNewClientWorldInterest;
 import com.pixurvival.core.system.interest.InitializeNewServerWorldInterest;
@@ -94,7 +99,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	private ChunkCreatureSpawnManager chunkCreatureSpawnManager = new ChunkCreatureSpawnManager();
 	private @Setter String saveName;
 	private long seed;
-	private WorldKryo playerInventoryKryo;
+	private WorldKryo inventoryKryo;
 
 	private List<AdditionalAttribute> additionalAttributes = new ArrayList<>();
 	private Map<Class<? extends GameSystem>, GameSystem> systems = new LinkedHashMap<>();
@@ -121,16 +126,18 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		map = new TiledMap(this);
 		chunkSupplier = new ChunkSupplier(this);
 		chunkManager = new ChunkManager(map);
-		playerInventoryKryo = new WorldKryo();
-		playerInventoryKryo.setWorld(this);
-		playerInventoryKryo.setReferences(false);
-		playerInventoryKryo.register(ItemStack.class, new ItemStack.Serializer());
-		playerInventoryKryo.register(PlayerInventory.class, new PlayerInventory.Serializer());
+		inventoryKryo = new WorldKryo();
+		inventoryKryo.setWorld(this);
+		inventoryKryo.setReferences(false);
+		inventoryKryo.register(ItemStack.class, new ItemStack.Serializer());
+		inventoryKryo.register(PlayerInventory.class, new PlayerInventory.Serializer());
+		inventoryKryo.register(Inventory.class, new Inventory.Serializer());
 		addSystem(HungerSystem.class);
 		addSystem(MapLimitsSystem.class);
+		addSystem(InteractionDialogSystem.class);
 	}
 
-	public void addAdditonalAttribute(Object o, Class<?> type, Class<?> genericTypes) {
+	public void addAdditonalAttribute(Object o, Class<?> type, Class<?>... genericTypes) {
 		additionalAttributes.add(new AdditionalAttribute(o, type, genericTypes));
 	}
 
@@ -311,6 +318,22 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		Roles roles = gameMode.getRoles();
 		if (roles != null) {
 			roles.apply(this);
+		}
+	}
+
+	public void writeInventory(ByteBuffer buffer, Inventory inventory) {
+		try (Output output = new Output(buffer.array())) {
+			output.setPosition(buffer.position());
+			getWorld().getInventoryKryo().writeObject(output, inventory);
+			buffer.position(output.position());
+		}
+	}
+
+	public void readInventory(ByteBuffer buffer, Inventory inventory) {
+		try (Input input = new Input(buffer.array())) {
+			input.setPosition(buffer.position());
+			inventory.set(getWorld().getInventoryKryo().readObject(input, inventory.getClass()));
+			buffer.position(input.position());
 		}
 	}
 

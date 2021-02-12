@@ -36,6 +36,7 @@ public class DeconstructAbility extends WorkAbility {
 			MapStructure actual = world.getMap().tileAt(structure.getTileX(), structure.getTileY()).getStructure();
 			if (structure == actual) {
 				structure.getChunk().removeStructure(structure.getTileX(), structure.getTileY());
+				structure.onDeath();
 				Item item = structure.getDefinition().getDeconstructionItem();
 				if (item != null) {
 					ItemStackEntity.spawn(world, new ItemStack[] { new ItemStack(item) }, structure.getPosition());

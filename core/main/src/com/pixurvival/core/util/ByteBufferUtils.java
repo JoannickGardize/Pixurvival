@@ -4,6 +4,10 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.esotericsoftware.kryo.io.ByteBufferInput;
+import com.esotericsoftware.kryo.io.ByteBufferOutput;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.item.Item;
@@ -122,5 +126,27 @@ public class ByteBufferUtils {
 
 	public static long readPastTime(ByteBuffer buffer, World world) {
 		return world.getTime().getSerializationContextTime() - VarLenNumberIO.readPositiveVarLong(buffer);
+	}
+
+	public static ByteBuffer asByteBuffer(Output output) {
+		ByteBuffer buffer;
+		if (output.getBuffer() != null) {
+			buffer = ByteBuffer.wrap(output.getBuffer());
+			buffer.position(output.position());
+		} else {
+			buffer = ((ByteBufferOutput) output).getByteBuffer();
+		}
+		return buffer;
+	}
+
+	public static ByteBuffer asByteBuffer(Input input) {
+		ByteBuffer buffer;
+		if (input.getBuffer() != null) {
+			buffer = ByteBuffer.wrap(input.getBuffer());
+			buffer.position(input.position());
+		} else {
+			buffer = ((ByteBufferInput) input).getByteBuffer();
+		}
+		return buffer;
 	}
 }

@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore.textures;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,10 +87,18 @@ public class ContentPackAssets {
 	}
 
 	private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackException {
-		animationSet = new HashMap<>();
+		animationSet = new IdentityHashMap<>();
+		Map<SpriteSheetImageKey, TextureSheet> textureSheets = new HashMap<>();
 		PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
 		for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
-			TextureAnimationSet set = new TextureAnimationSet(pack, spriteSheet, transform);
+			SpriteSheetImageKey key = new SpriteSheetImageKey(spriteSheet);
+			TextureSheet textureSheet = textureSheets.get(key);
+			if (textureSheet == null) {
+				SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()), spriteSheet.getWidth(), spriteSheet.getHeight());
+				textureSheet = new TextureSheet(sheetPixmap, transform);
+				textureSheets.put(key, textureSheet);
+			}
+			TextureAnimationSet set = new TextureAnimationSet(pack, spriteSheet, pixelWidth, textureSheet);
 			if (spriteSheet.isShadow()) {
 				set.setShadow(getShadow(spriteSheet.getShadowWidth()));
 			}

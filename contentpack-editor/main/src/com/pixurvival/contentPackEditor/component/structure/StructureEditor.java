@@ -11,15 +11,19 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.DimensionsEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingRootElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
+import com.pixurvival.core.contentPack.structure.InventoryStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.structure.StructureDeathItemHandling;
 
 public class StructureEditor extends InstanceChangingRootElementEditor<Structure> {
 	private static final long serialVersionUID = 1L;
@@ -98,6 +102,18 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 			HarvestablePanel harvestablePanel = new HarvestablePanel();
 			harvestablePanel.bindTo(this);
 			return harvestablePanel;
+		}));
+
+		entries.add(new ClassEntry(InventoryStructure.class, () -> {
+			ElementChooserButton<SpriteSheet> openSpriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
+			IntegerInput inventorySizeInput = new IntegerInput();
+			EnumChooser<StructureDeathItemHandling> itemHandlingOnDeathChooser = new EnumChooser<>(StructureDeathItemHandling.class, "playerDeathItemHandling");
+			// StructureDeathItemHandling itemHandlingOnDeath
+			bind(inventorySizeInput, "inventorySize", InventoryStructure.class);
+			bind(openSpriteSheetChooser, "openSpriteSheet", InventoryStructure.class);
+			bind(itemHandlingOnDeathChooser, "itemHandlingOnDeath", InventoryStructure.class);
+			return LayoutUtils.single(LayoutUtils.createVerticalLabelledBox("structureEditor.openSpriteSheet", openSpriteSheetChooser, "creatureEditor.inventorySize", inventorySizeInput,
+					"structureEditor.itemHandlingOnDeath", itemHandlingOnDeathChooser));
 		}));
 
 		return entries;

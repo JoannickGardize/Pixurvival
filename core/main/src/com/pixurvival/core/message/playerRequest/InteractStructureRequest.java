@@ -6,7 +6,9 @@ import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.InventoryMapStructure;
 import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.system.interest.InteractionDialogRequestInterest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,17 +17,27 @@ import lombok.Getter;
 @AllArgsConstructor
 public class InteractStructureRequest implements IPlayerActionRequest {
 
-	int x;
-	int y;
+	private int x;
+	private int y;
+	private boolean secondaryAction;
 
 	@Override
 	public void apply(PlayerEntity player) {
 		MapStructure structure = player.getWorld().getMap().tileAt(x, y).getStructure();
-		if (ActionPreconditions.canInteract(player, structure)) {
-			if (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested()) {
-				player.harvest((HarvestableMapStructure) structure);
-			} else {
+		if (secondaryAction) {
+			if (ActionPreconditions.canDeconstruct(player, structure)) {
 				player.deconstruct(structure);
+			}
+		} else {
+			if (ActionPreconditions.canInteract(player, structure)) {
+				if (structure instanceof HarvestableMapStructure) {
+					player.harvest((HarvestableMapStructure) structure);
+				} else if (structure instanceof InventoryMapStructure) {
+					player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class)
+							.forEach(i -> i.openDialogRequest(player, ((InventoryMapStructure) structure).getInteractionDialog()));
+				} else {
+					player.deconstruct(structure);
+				}
 			}
 		}
 	}
@@ -41,11 +53,12 @@ public class InteractStructureRequest implements IPlayerActionRequest {
 		public void write(Kryo kryo, Output output, InteractStructureRequest object) {
 			output.writeInt(object.x);
 			output.writeInt(object.y);
+			output.writeBoolean(object.secondaryAction);
 		}
 
 		@Override
 		public InteractStructureRequest read(Kryo kryo, Input input, Class<InteractStructureRequest> type) {
-			return new InteractStructureRequest(input.readInt(), input.readInt());
+			return new InteractStructureRequest(input.readInt(), input.readInt(), input.readBoolean());
 		}
 
 	}

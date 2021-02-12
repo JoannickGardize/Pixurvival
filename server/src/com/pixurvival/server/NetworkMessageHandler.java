@@ -25,7 +25,9 @@ import com.pixurvival.core.message.lobby.RefuseContentPack;
 import com.pixurvival.core.message.lobby.RemoveTeamRequest;
 import com.pixurvival.core.message.lobby.RenameTeamRequest;
 import com.pixurvival.core.message.playerRequest.ChatRequest;
+import com.pixurvival.core.message.playerRequest.CloseInteractionDialogRequest;
 import com.pixurvival.core.message.playerRequest.CraftItemRequest;
+import com.pixurvival.core.message.playerRequest.DialogInteractionActionRequest;
 import com.pixurvival.core.message.playerRequest.DropItemRequest;
 import com.pixurvival.core.message.playerRequest.EquipmentActionRequest;
 import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
@@ -46,7 +48,7 @@ class NetworkMessageHandler extends Listener {
 	}
 
 	private List<ClientMessage> clientMessages = new ArrayList<>();
-	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(15);
+	private Map<Class<?>, Consumer<ClientMessage>> messageActions = new IdentityHashMap<>(26);
 
 	public NetworkMessageHandler(PixurvivalServer game) {
 		messageActions.put(LoginRequest.class, m -> {
@@ -82,7 +84,9 @@ class NetworkMessageHandler extends Listener {
 		messageActions.put(EquipmentActionRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(DropItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(CraftItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(DialogInteractionActionRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(PlayerEquipmentAbilityRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
+		messageActions.put(CloseInteractionDialogRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(ClientStream.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handleClientStream((ClientStream) m.getObject())));
 		messageActions.put(UseItemRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));
 		messageActions.put(ChatRequest.class, m -> m.getConnection().getPlayerConnectionListeners().forEach(l -> l.handlePlayerActionRequest((IPlayerActionRequest) m.getObject())));

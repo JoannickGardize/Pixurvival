@@ -13,8 +13,8 @@ import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.system.GameSystem;
-import com.pixurvival.core.system.SystemData;
 import com.pixurvival.core.system.Inject;
+import com.pixurvival.core.system.SystemData;
 import com.pixurvival.core.system.interest.InitializeNewClientWorldInterest;
 import com.pixurvival.core.system.interest.InitializeNewServerWorldInterest;
 import com.pixurvival.core.system.interest.InterestSubscription;
@@ -122,7 +122,6 @@ public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInte
 		setData(data);
 	}
 
-	// TODO generic data changed
 	void notifyAnchorChanged() {
 		dataChangedInterestSubscription.forEach(i -> i.dataChanged(data));
 	}

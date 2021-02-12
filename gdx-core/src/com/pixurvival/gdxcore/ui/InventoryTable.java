@@ -10,10 +10,12 @@ import lombok.Getter;
 // TODO abstraction of inventory for craft
 public class InventoryTable extends Table {
 
+	private @Getter Inventory inventory;
 	private @Getter int rowCount;
 	private @Getter int rowLength;
 
 	public InventoryTable(Inventory inventory, int rowLength) {
+		this.inventory = inventory;
 		this.rowLength = rowLength;
 		int size = inventory.size();
 		rowCount = size / rowLength;
@@ -53,5 +55,20 @@ public class InventoryTable extends Table {
 	 */
 	public Actor newSlot(Inventory inventory, int index) {
 		return new InventorySlot(inventory, index);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setCellsPrefSize(float size) {
+		for (Cell cell : getCells()) {
+			cell.prefSize(size);
+		}
+	}
+
+	public float getActualCellSize() {
+		if (hasChildren()) {
+			return getChild(0).getWidth();
+		} else {
+			return 0;
+		}
 	}
 }

@@ -143,8 +143,16 @@ public class ReflectionUtils {
 
 		ParameterizedType parameterizedType = (ParameterizedType) fieldType;
 		Type[] types = parameterizedType.getActualTypeArguments();
-		for (Type type : types) {
-			if (!(type instanceof Class)) {
+		for (int i = 0; i < types.length; i++) {
+			Type type = types[i];
+			if (type instanceof ParameterizedType) {
+				Type subType = ((ParameterizedType) type).getRawType();
+				if (subType instanceof Class) {
+					types[i] = subType;
+				} else {
+					return new Class<?>[0];
+				}
+			} else if (!(type instanceof Class)) {
 				return new Class<?>[0];
 			}
 

@@ -1,6 +1,6 @@
 package com.pixurvival.core.system.interest;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.pixurvival.core.util.ReflectionUtils;
@@ -13,7 +13,7 @@ import com.pixurvival.core.util.ReflectionUtils;
  */
 public class InterestSubscriptionSet {
 
-	private Map<Class<? extends Interest>, InterestSubscription<? extends Interest>> interestSubscriptions = new HashMap<>();
+	private Map<Class<? extends Interest>, InterestSubscription<? extends Interest>> interestSubscriptions = new IdentityHashMap<>();
 
 	/**
 	 * Get or or create an {@link InterestSubscription} for the given

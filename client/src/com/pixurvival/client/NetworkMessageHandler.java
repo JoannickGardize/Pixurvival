@@ -11,6 +11,8 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.chat.ChatEntry;
+import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
+import com.pixurvival.core.interactionDialog.InventoryInteractionDialog;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackCheck;
@@ -24,11 +26,13 @@ import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.StartGame;
 import com.pixurvival.core.message.TimeSync;
+import com.pixurvival.core.message.UpdateInteractionDialog;
 import com.pixurvival.core.message.WorldUpdate;
 import com.pixurvival.core.message.lobby.EnterLobby;
 import com.pixurvival.core.message.lobby.LobbyData;
 import com.pixurvival.core.message.lobby.LobbyServerMessage;
 import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
+import com.pixurvival.core.team.TeamMember;
 
 class NetworkMessageHandler extends Listener {
 
@@ -85,6 +89,26 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(ContentPackCheck.class, game::checkContentPackValidity);
 		putMessageAction(ItemCraftAvailable.class, i -> game.discovered(i.getItemCraftIds()));
 		putMessageAction(MapLimitsSystemData.class, game::handleSystemData);
+		putMessageAction(UpdateInteractionDialog.class, d -> {
+			PlayerEntity p = game.getMyPlayer();
+			if (p != null) {
+				if (d.getDialog() instanceof InventoryInteractionDialog && p.getInteractionDialog() instanceof InventoryInteractionDialog
+						&& d.getDialog().getOwner() == p.getInteractionDialog().getOwner()) {
+					((InventoryInteractionDialog) p.getInteractionDialog()).getInventory().set(((InventoryInteractionDialog) d.getDialog()).getInventory());
+				} else {
+					p.setInteractionDialog(d.getDialog());
+				}
+				if (d.getDialog() != null) {
+					TeamMember owner = d.getDialog().getOwner();
+					if (owner != null) {
+						owner = owner.findIfNotFound();
+						if (owner instanceof InteractionDialogHolder) {
+							((InteractionDialogHolder) owner).setInteractionDialog(p.getInteractionDialog());
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@Override
