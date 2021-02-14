@@ -36,14 +36,18 @@ public class Inventory {
 		return slots.length;
 	}
 
-	public ItemStack setSlot(int index, ItemStack itemStack) {
+	/**
+	 * Set the given slot to the given itemStack.
+	 * 
+	 * @param index
+	 * @param itemStack
+	 */
+	public void setSlot(int index, ItemStack itemStack) {
 		if (!Objects.equals(itemStack, slots[index])) {
 			ItemStack previousItemStack = slots[index];
 			slots[index] = itemStack;
 			slotChanged(index, previousItemStack, itemStack);
-			return previousItemStack;
 		}
-		return itemStack;
 	}
 
 	public ItemStack getSlot(int index) {

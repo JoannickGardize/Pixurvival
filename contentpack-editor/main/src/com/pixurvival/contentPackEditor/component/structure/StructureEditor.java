@@ -20,6 +20,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.structure.FactoryStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.InventoryStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -108,13 +109,14 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 			ElementChooserButton<SpriteSheet> openSpriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 			IntegerInput inventorySizeInput = new IntegerInput();
 			EnumChooser<StructureDeathItemHandling> itemHandlingOnDeathChooser = new EnumChooser<>(StructureDeathItemHandling.class, "playerDeathItemHandling");
-			// StructureDeathItemHandling itemHandlingOnDeath
 			bind(inventorySizeInput, "inventorySize", InventoryStructure.class);
 			bind(openSpriteSheetChooser, "openSpriteSheet", InventoryStructure.class);
 			bind(itemHandlingOnDeathChooser, "itemHandlingOnDeath", InventoryStructure.class);
 			return LayoutUtils.single(LayoutUtils.createVerticalLabelledBox("structureEditor.openSpriteSheet", openSpriteSheetChooser, "creatureEditor.inventorySize", inventorySizeInput,
 					"structureEditor.itemHandlingOnDeath", itemHandlingOnDeathChooser));
 		}));
+
+		entries.add(new ClassEntry(FactoryStructure.class, () -> new FactoryStructurePanel(this)));
 
 		return entries;
 	}

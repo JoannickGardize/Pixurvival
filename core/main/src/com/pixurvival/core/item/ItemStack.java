@@ -13,6 +13,7 @@ import com.pixurvival.core.message.WorldKryo;
 
 import lombok.Data;
 
+// TODO separate item quantity class for content pack, then set this class immutable.
 @Data
 public class ItemStack implements Serializable {
 

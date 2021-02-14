@@ -26,6 +26,7 @@ public abstract class FormattedTextInput<T> extends JTextField implements ValueC
 
 	public FormattedTextInput() {
 		this(10);
+		setMinimumSize(new Dimension((int) getMinimumSize().getWidth(), 20));
 	}
 
 	public FormattedTextInput(int columns) {

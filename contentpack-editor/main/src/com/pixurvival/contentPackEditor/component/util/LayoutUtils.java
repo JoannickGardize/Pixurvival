@@ -192,9 +192,9 @@ public class LayoutUtils {
 		return panel;
 	}
 
-	public static JPanel createHorizontalLabelledBox(Object... labelAndComponents) {
+	public static void addHorizontallyLabelled(JPanel panel, Object... labelAndComponents) {
+		panel.setLayout(new GridBagLayout());
 		boolean nextIsLabel = true;
-		JPanel result = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0;
@@ -211,13 +211,18 @@ public class LayoutUtils {
 					nextLabelKey = (String) labelAndComponents[i];
 				} else {
 					Component component = (Component) labelAndComponents[i];
-					result.add(LayoutUtils.labelled(nextLabelKey, component), gbc);
+					panel.add(LayoutUtils.labelled(nextLabelKey, component), gbc);
 					gbc.insets.left = 0;
 					gbc.gridx++;
 				}
 				nextIsLabel = !nextIsLabel;
 			}
 		}
+	}
+
+	public static JPanel createHorizontalLabelledBox(Object... labelAndComponents) {
+		JPanel result = new JPanel();
+		addHorizontallyLabelled(result, labelAndComponents);
 		return result;
 	}
 
