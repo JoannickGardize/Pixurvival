@@ -1,5 +1,6 @@
 package com.pixurvival.core.item;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,8 +11,16 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.util.VarLenNumberIO;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+@EqualsAndHashCode(of = "slots")
 public class Inventory {
 
 	protected ItemStack[] slots;
@@ -30,6 +39,10 @@ public class Inventory {
 
 	public void addListener(InventoryListener listener) {
 		listeners.add(listener);
+	}
+
+	public void removeListener(InventoryListener listener) {
+		listeners.remove(listener);
 	}
 
 	public int size() {
@@ -60,6 +73,12 @@ public class Inventory {
 		return itemStack;
 	}
 
+	/**
+	 * 
+	 * @param itemStacks
+	 *            each item stack must have a different item type
+	 * @return
+	 */
 	public boolean contains(Collection<ItemStack> itemStacks) {
 		for (ItemStack itemStack : itemStacks) {
 			if (totalOf(itemStack.getItem()) < itemStack.getQuantity()) {
@@ -99,10 +118,7 @@ public class Inventory {
 		if (!contains(itemStacks)) {
 			return false;
 		}
-
-		for (ItemStack itemStack : itemStacks) {
-			unsafeRemove(itemStack);
-		}
+		unsafeRemove(itemStacks);
 		return true;
 	}
 
@@ -137,6 +153,19 @@ public class Inventory {
 		}
 		unsafeRemove(item, quantity);
 		return true;
+	}
+
+	/**
+	 * Remove all possible items from the given collection. A call to
+	 * {@link #contains(Collection)} before this method is recommended to make sure
+	 * all the quantity will be removed.
+	 * 
+	 * @param itemStacks
+	 */
+	public void unsafeRemove(Collection<ItemStack> itemStacks) {
+		for (ItemStack itemStack : itemStacks) {
+			unsafeRemove(itemStack);
+		}
 	}
 
 	public boolean unsafeRemove(ItemStack itemStack) {
@@ -215,6 +244,68 @@ public class Inventory {
 		return itemStack.copy(remainingQuantity);
 	}
 
+	@Getter
+	@AllArgsConstructor
+	private static class SetSlotMemory {
+		int index;
+		ItemStack itemStack;
+	}
+
+	/**
+	 * <p>
+	 * Add all ItemStacks in parameters if possible. Return false if this is not
+	 * possible. It will never add a part of the collection. Items are added with
+	 * the same behavior of {@link #add(ItemStack)}.
+	 * <p>
+	 * The parameter must contains only one entry per item type, otherwise the
+	 * behavior of this method is undetermined.
+	 * 
+	 * @param itemStacks
+	 *            the item stacks to add together in this inventory. It must
+	 *            contains only one entry per item type
+	 * @return true if the items has been added, false otherwise
+	 */
+	public boolean addAllOrFail(Collection<ItemStack> itemStacks) {
+		List<SetSlotMemory> setSlotMemoryList = new ArrayList<>();
+		int emptySlotIndex = 0;
+		for (ItemStack itemStack : itemStacks) {
+			emptySlotIndex = addLater(itemStack, emptySlotIndex, setSlotMemoryList);
+			if (emptySlotIndex == -1) {
+				return false;
+			}
+		}
+		for (SetSlotMemory setSlotMemory : setSlotMemoryList) {
+			setSlot(setSlotMemory.getIndex(), setSlotMemory.getItemStack());
+		}
+		return true;
+	}
+
+	private int addLater(ItemStack itemStack, int emptySlotBeginIndex, List<SetSlotMemory> setSlotMemoryList) {
+		Item item = itemStack.getItem();
+		int remainingQuantity = itemStack.getQuantity();
+		for (int i = 0; i < slots.length; i++) {
+			ItemStack slot = slots[i];
+			if (slot != null && slot.getItem() == item) {
+				int overflow = slot.overflowingQuantity(remainingQuantity);
+				setSlotMemoryList.add(new SetSlotMemory(i, slot.add(remainingQuantity - overflow)));
+				if (overflow == 0) {
+					return emptySlotBeginIndex;
+				}
+				remainingQuantity = overflow;
+			}
+		}
+		int emptySlot = emptySlotBeginIndex;
+		while ((emptySlot = findEmptySlot(emptySlot)) != -1) {
+			int maxQuantity = Math.min(remainingQuantity, itemStack.getItem().getMaxStackSize());
+			setSlotMemoryList.add(new SetSlotMemory(emptySlot, itemStack.copy(maxQuantity)));
+			remainingQuantity -= maxQuantity;
+			if (remainingQuantity <= 0) {
+				return emptySlot + 1;
+			}
+		}
+		return -1;
+	}
+
 	public void foreachItemStacks(Consumer<ItemStack> action) {
 		for (int i = 0; i < slots.length; i++) {
 			ItemStack slot = slots[i];
@@ -231,6 +322,15 @@ public class Inventory {
 	public int findEmptySlot(int startIndex) {
 		for (int i = startIndex; i < slots.length; i++) {
 			if (slots[i] == null) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public int findNotEmptySlot(int startIndex) {
+		for (int i = startIndex; i < slots.length; i++) {
+			if (slots[i] != null) {
 				return i;
 			}
 		}
@@ -267,6 +367,49 @@ public class Inventory {
 			if (itemStack != null) {
 				ensureQuantitiesArrayLength(itemStack.getItem().getId());
 				quantities[itemStack.getItem().getId()] += itemStack.getQuantity();
+			}
+		}
+	}
+
+	/**
+	 * Small compression topic here, by counting successive empty slots.
+	 * 
+	 * @param buffer
+	 */
+	public void write(ByteBuffer buffer) {
+		int emptyAntiCount = 0;
+		for (ItemStack itemStack : slots) {
+			if (itemStack == null) {
+				emptyAntiCount--;
+			} else {
+				if (emptyAntiCount < 0) {
+					VarLenNumberIO.writeVarInt(buffer, emptyAntiCount);
+					emptyAntiCount = 0;
+				}
+				VarLenNumberIO.writeVarInt(buffer, itemStack.getItem().getId());
+				VarLenNumberIO.writePositiveVarInt(buffer, itemStack.getQuantity());
+			}
+		}
+		if (emptyAntiCount < 0) {
+			VarLenNumberIO.writeVarInt(buffer, emptyAntiCount);
+		}
+	}
+
+	public void apply(World world, ByteBuffer buffer) {
+		apply(world.getContentPack(), buffer);
+	}
+
+	public void apply(ContentPack contentPack, ByteBuffer buffer) {
+		int i = 0;
+		while (i < size()) {
+			int id = VarLenNumberIO.readVarInt(buffer);
+			if (id < 0) {
+				for (id = i - id; i < id; i++) {
+					setSlot(i, null);
+				}
+			} else {
+				setSlot(i, new ItemStack(contentPack.getItems().get(id), VarLenNumberIO.readPositiveVarInt(buffer)));
+				i++;
 			}
 		}
 	}

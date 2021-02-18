@@ -17,10 +17,11 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.EntityCollection;
 import com.pixurvival.core.map.Light;
-import com.pixurvival.core.map.MapStructure;
 import com.pixurvival.core.map.MapTile;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.TileAndStructure;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class Chunk {
 
 	private MapTile[] tiles;
 
-	private @Getter(AccessLevel.NONE) Map<Integer, List<MapStructure>> structures = new HashMap<>();
+	private @Getter(AccessLevel.NONE) Map<Integer, List<StructureEntity>> structures = new HashMap<>();
 
 	private ChunkPosition position;
 
@@ -59,7 +60,9 @@ public class Chunk {
 
 	private @Setter boolean newlyCreated = false;
 
-	private short structureCount = 0;
+	private int structureCount = 0;
+
+	private @Setter int factoryCount = 0;
 
 	public Chunk(TiledMap map, int x, int y) {
 		this.map = map;
@@ -71,8 +74,8 @@ public class Chunk {
 		check();
 	}
 
-	public List<MapStructure> getStructures(int typeId) {
-		List<MapStructure> list = structures.get(typeId);
+	public List<StructureEntity> getStructures(int typeId) {
+		List<StructureEntity> list = structures.get(typeId);
 		if (list == null) {
 			return Collections.emptyList();
 		} else {
@@ -84,7 +87,7 @@ public class Chunk {
 		return lights.values();
 	}
 
-	public Set<Entry<Integer, List<MapStructure>>> getStructures() {
+	public Set<Entry<Integer, List<StructureEntity>>> getStructures() {
 		return structures.entrySet();
 	}
 
@@ -125,19 +128,19 @@ public class Chunk {
 		fileSync = false;
 	}
 
-	public void forEachStructure(Consumer<MapStructure> action) {
+	public void forEachStructure(Consumer<StructureEntity> action) {
 		structures.values().forEach(list -> list.forEach(action));
 	}
 
-	public MapStructure addNewStructure(Structure structure, int x, int y) {
-		MapStructure mapStructure = createStructure(structure, x, y);
+	public StructureEntity addNewStructure(Structure structure, int x, int y) {
+		StructureEntity mapStructure = createStructure(structure, x, y);
 		mapStructure.initiliazeNewlyCreated();
 		notifyStructureAdded(mapStructure);
 		return mapStructure;
 	}
 
-	public MapStructure addStructure(Structure structure, int x, int y, long id) {
-		MapStructure mapStructure = createStructure(structure, x, y);
+	public StructureEntity addStructure(Structure structure, int x, int y, long id) {
+		StructureEntity mapStructure = createStructure(structure, x, y);
 		mapStructure.setId(id);
 		notifyStructureAdded(mapStructure);
 		return mapStructure;
@@ -151,14 +154,14 @@ public class Chunk {
 	 * @param y
 	 * @return
 	 */
-	public MapStructure addStructureSilently(Structure structure, int x, int y) {
-		MapStructure mapStructure = createStructure(structure, x, y);
+	public StructureEntity addStructureSilently(Structure structure, int x, int y) {
+		StructureEntity mapStructure = createStructure(structure, x, y);
 		return mapStructure;
 	}
 
-	private MapStructure createStructure(Structure structure, int x, int y) {
+	private StructureEntity createStructure(Structure structure, int x, int y) {
 		// TODO ajouter les structure sur tous les chunks plutôt qu'un seul
-		MapStructure mapStructure = structure.newMapStructure(this, x, y);
+		StructureEntity mapStructure = structure.newStructureEntity(this, x, y);
 		if (structure.getLightEmissionRadius() > 0) {
 			lights.put(mapStructure, new Light(mapStructure.getPosition(), structure.getLightEmissionRadius()));
 		}
@@ -176,9 +179,9 @@ public class Chunk {
 		return mapStructure;
 	}
 
-	private void notifyStructureAdded(MapStructure mapStructure) {
+	private void notifyStructureAdded(StructureEntity mapStructure) {
 		updateTimestamp();
-		getMap().notifyListeners(l -> l.structureAdded(mapStructure));
+		getMap().notifyStructureAdded(mapStructure);
 		fileSync = false;
 	}
 
@@ -215,7 +218,7 @@ public class Chunk {
 	public void removeStructure(int x, int y, boolean notify) {
 		MapTile tile = tileAt(x, y);
 		if (tile.getStructure() != null) {
-			MapStructure structure = tile.getStructure();
+			StructureEntity structure = tile.getStructure();
 			if (structure.getDefinition().getLightEmissionRadius() > 0) {
 				lights.remove(structure);
 			}
@@ -230,10 +233,16 @@ public class Chunk {
 			structureCount--;
 			updateTimestamp();
 			if (notify) {
-				getMap().notifyListeners(l -> l.structureRemoved(structure));
+				getMap().notifyStructureRemoved(structure);
+
 			}
 			fileSync = false;
 		}
+	}
+
+	public void notifyStructureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
+		updateTimestamp();
+		map.notifyStructureChanged(mapStructure, structureUpdate);
 	}
 
 	public CompressedChunk getCompressed() {

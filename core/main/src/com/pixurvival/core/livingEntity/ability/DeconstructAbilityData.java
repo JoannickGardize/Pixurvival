@@ -3,7 +3,7 @@ package com.pixurvival.core.livingEntity.ability;
 import java.nio.ByteBuffer;
 
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 
@@ -14,9 +14,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class DeconstructAbilityData extends WorkAbilityData {
 
-	private MapStructure structure;
+	private StructureEntity structure;
 
-	public void setStructure(MapStructure structure) {
+	public void setStructure(StructureEntity structure) {
 		this.structure = structure;
 		setDurationMillis(structure.getDefinition().getDeconstructionDuration());
 	}
@@ -39,7 +39,7 @@ public class DeconstructAbilityData extends WorkAbilityData {
 		if (buffer.get() == -1) {
 			structure = null;
 		} else {
-			MapStructure mapStructure = entity.getWorld().getMap().tileAt(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer)).getStructure();
+			StructureEntity mapStructure = entity.getWorld().getMap().tileAt(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer)).getStructure();
 			setStructure(mapStructure);
 		}
 	}

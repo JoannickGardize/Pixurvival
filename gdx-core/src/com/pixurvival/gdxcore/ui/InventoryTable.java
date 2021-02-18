@@ -15,6 +15,10 @@ public class InventoryTable extends Table {
 	private @Getter int rowLength;
 
 	public InventoryTable(Inventory inventory, int rowLength) {
+		this(inventory, rowLength, 0);
+	}
+
+	public InventoryTable(Inventory inventory, int rowLength, int actionIndexOffset) {
 		this.inventory = inventory;
 		this.rowLength = rowLength;
 		int size = inventory.size();
@@ -23,12 +27,11 @@ public class InventoryTable extends Table {
 			rowCount++;
 		}
 		defaults().fill().minSize(10).maxSize(60).prefSize(60).padLeft(-1).padTop(-1);
-		for (int i = 0; i < rowCount; i++) {
-			for (int j = 0; j < rowLength; j++) {
-				int index = i * rowLength + j;
-				add(newSlot(inventory, index));
+		for (int i = 0; i < inventory.size(); i++) {
+			add(newSlot(inventory, i, i + actionIndexOffset));
+			if ((i + 1) % rowLength == 0) {
+				row();
 			}
-			row();
 		}
 	}
 
@@ -53,14 +56,14 @@ public class InventoryTable extends Table {
 	 * @param index
 	 * @return
 	 */
-	public Actor newSlot(Inventory inventory, int index) {
-		return new InventorySlot(inventory, index);
+	public Actor newSlot(Inventory inventory, int index, int actionIndex) {
+		return new InventorySlot(inventory, index, actionIndex);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void setCellsPrefSize(float size) {
 		for (Cell cell : getCells()) {
-			cell.prefSize(size);
+			cell.size(size);
 		}
 	}
 

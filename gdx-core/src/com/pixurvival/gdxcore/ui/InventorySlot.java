@@ -15,17 +15,23 @@ import lombok.Setter;
 public class InventorySlot extends Button {
 
 	private @Getter Inventory inventory;
-	private @Getter int slotIndex;
+	private int slotIndex;
+	private @Getter int actionIndex;
 	private ItemStackDrawer itemStackDrawer;
 	private @Setter ShortcutDrawer shortcutDrawer;
 
 	public InventorySlot(Inventory inventory, int slotIndex) {
+		this(inventory, slotIndex, slotIndex);
+	}
+
+	public InventorySlot(Inventory inventory, int slotIndex, int actionIndex) {
 		super(PixurvivalGame.getSkin());
 		this.inventory = inventory;
 		this.slotIndex = slotIndex;
+		this.actionIndex = actionIndex;
 
 		itemStackDrawer = new ItemStackDrawer(this, 2);
-		this.addListener(new InventorySlotInputListener(inventory, slotIndex));
+		this.addListener(new InventorySlotInputListener(inventory, slotIndex, actionIndex));
 	}
 
 	@Override
@@ -47,5 +53,4 @@ public class InventorySlot extends Button {
 	public String toString() {
 		return "InventorySlot " + slotIndex;
 	}
-
 }

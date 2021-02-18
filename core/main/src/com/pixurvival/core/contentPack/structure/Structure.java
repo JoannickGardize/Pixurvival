@@ -15,7 +15,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
@@ -59,18 +59,18 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 	private transient Item deconstructionItem;
 
 	/**
-	 * Called by the game engine to create a new {@link MapStructure} of this
+	 * Called by the game engine to create a new {@link StructureEntity} of this
 	 * Structure definition. Structures with special behaviors must override to
-	 * instantiate an appropriate specialization of {@code MapStructure}.
+	 * instantiate an appropriate specialization of {@link StructureEntity}.
 	 * 
 	 * @param chunk
 	 * @param x
 	 *            the bottom-left tile X position in world coordinate.
 	 * @param y
 	 *            the bottom-left tile Y position in world coordinate.
-	 * @return a MapStructure instance for this structure definition
+	 * @return a StructureEntity instance for this structure definition
 	 */
-	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
-		return new MapStructure(chunk, this, x, y);
+	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
+		return new StructureEntity(chunk, this, x, y);
 	}
 }

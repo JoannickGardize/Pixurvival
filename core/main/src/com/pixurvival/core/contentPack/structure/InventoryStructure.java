@@ -6,8 +6,8 @@ import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRe
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
-import com.pixurvival.core.map.InventoryMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.InventoryStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class InventoryStructure extends Structure {
 	private StructureDeathItemHandling itemHandlingOnDeath = StructureDeathItemHandling.DROP;
 
 	@Override
-	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
-		return new InventoryMapStructure(chunk, this, x, y);
+	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
+		return new InventoryStructureEntity(chunk, this, x, y);
 	}
 }

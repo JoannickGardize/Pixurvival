@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.pixurvival.core.ActionPreconditions;
+import com.pixurvival.core.World;
 import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.core.interactionDialog.InteractionDialogChangeListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -21,6 +22,11 @@ public class InteractionDialogSystem implements GameSystem, InteractionDialogReq
 	private InterestSubscription<InteractionDialogInterest> interactionDialogSubscrition;
 
 	private Collection<PlayerEntity> viewingPlayers = new ArrayList<>();
+
+	@Override
+	public boolean isRequired(World world) {
+		return world.isServer();
+	}
 
 	@Override
 	public void openDialogRequest(PlayerEntity playerEntity, InteractionDialog interactionDialog) {

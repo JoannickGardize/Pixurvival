@@ -6,7 +6,7 @@ public interface MapTile {
 
 	Tile getTileDefinition();
 
-	default MapStructure getStructure() {
+	default StructureEntity getStructure() {
 		return null;
 	}
 

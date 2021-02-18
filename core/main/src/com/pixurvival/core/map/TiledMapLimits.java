@@ -81,15 +81,15 @@ public class TiledMapLimits implements TiledMapListener {
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
+	public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override
-	public void structureAdded(MapStructure mapStructure) {
+	public void structureAdded(StructureEntity mapStructure) {
 	}
 
 	@Override
-	public void structureRemoved(MapStructure mapStructure) {
+	public void structureRemoved(StructureEntity mapStructure) {
 	}
 
 	@Override

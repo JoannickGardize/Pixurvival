@@ -18,6 +18,7 @@ import com.pixurvival.core.contentPack.Version;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.contentPack.summary.GameModeSummary;
 import com.pixurvival.core.contentPack.summary.RoleSummary;
+import com.pixurvival.core.interactionDialog.FactoryInteractionDialog;
 import com.pixurvival.core.interactionDialog.InventoryInteractionDialog;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
@@ -154,6 +155,7 @@ public class KryoInitializer {
 		register(kryo, UpdateInteractionDialog.class);
 		register(kryo, DialogInteractionActionRequest.class);
 		register(kryo, CloseInteractionDialogRequest.class);
+		register(kryo, FactoryInteractionDialog.class);
 	}
 
 	@SuppressWarnings("unchecked")

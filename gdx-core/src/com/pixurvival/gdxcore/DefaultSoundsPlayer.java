@@ -10,8 +10,8 @@ import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.item.ItemStackEntity.State;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -48,9 +48,9 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
-		if (mapStructure instanceof HarvestableMapStructure) {
-			HarvestableMapStructure hms = (HarvestableMapStructure) mapStructure;
+	public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
+		if (mapStructure instanceof HarvestableStructureEntity) {
+			HarvestableStructureEntity hms = (HarvestableStructureEntity) mapStructure;
 			if (hms.isHarvested()) {
 				playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH.ordinal(), hms.getPosition()));
 			} else {
@@ -60,11 +60,11 @@ public class DefaultSoundsPlayer implements TiledMapListener, EntityPoolListener
 	}
 
 	@Override
-	public void structureAdded(MapStructure mapStructure) {
+	public void structureAdded(StructureEntity mapStructure) {
 	}
 
 	@Override
-	public void structureRemoved(MapStructure mapStructure) {
+	public void structureRemoved(StructureEntity mapStructure) {
 		playSound(world.getMyPlayer(), new SoundEffect(SoundPreset.SCRUNCH.ordinal(), mapStructure.getPosition()));
 	}
 

@@ -12,7 +12,6 @@ import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
-import com.pixurvival.core.interactionDialog.InventoryInteractionDialog;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.message.ContentPackCheck;
@@ -92,9 +91,8 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(UpdateInteractionDialog.class, d -> {
 			PlayerEntity p = game.getMyPlayer();
 			if (p != null) {
-				if (d.getDialog() instanceof InventoryInteractionDialog && p.getInteractionDialog() instanceof InventoryInteractionDialog
-						&& d.getDialog().getOwner() == p.getInteractionDialog().getOwner()) {
-					((InventoryInteractionDialog) p.getInteractionDialog()).getInventory().set(((InventoryInteractionDialog) d.getDialog()).getInventory());
+				if (d.getDialog().getClass() == p.getInteractionDialog().getClass() && d.getDialog().getOwner() == p.getInteractionDialog().getOwner()) {
+					p.getInteractionDialog().set(d.getDialog());
 				} else {
 					p.setInteractionDialog(d.getDialog());
 				}

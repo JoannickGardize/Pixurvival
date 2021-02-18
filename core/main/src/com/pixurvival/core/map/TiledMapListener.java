@@ -11,11 +11,11 @@ public interface TiledMapListener {
 
 	void chunkUnloaded(Chunk chunk);
 
-	void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate);
+	void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate);
 
-	void structureAdded(MapStructure mapStructure);
+	void structureAdded(StructureEntity mapStructure);
 
-	void structureRemoved(MapStructure mapStructure);
+	void structureRemoved(StructureEntity mapStructure);
 
 	void entityEnterChunk(ChunkPosition previousPosition, Entity e);
 }

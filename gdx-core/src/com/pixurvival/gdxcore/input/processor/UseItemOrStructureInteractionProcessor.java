@@ -8,7 +8,7 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;
 import com.pixurvival.core.message.playerRequest.UseItemRequest;
@@ -35,7 +35,7 @@ public class UseItemOrStructureInteractionProcessor implements InputActionProces
 			PixurvivalGame.getClient().sendAction(new UseItemRequest(PlayerInventory.HELD_ITEM_STACK_INDEX));
 		} else {
 			Vector2 position = WorldScreen.getWorldCursorPosition();
-			MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
+			StructureEntity structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
 			if (ActionPreconditions.canInteract(myPlayer, structure)) {
 				PixurvivalGame.getClient().sendAction(new InteractStructureRequest(structure.getTileX(), structure.getTileY(), InputManager.getInstance().isPressed(InputAction.SPLIT_INVENTORY)));
 			}

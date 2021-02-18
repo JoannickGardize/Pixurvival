@@ -7,7 +7,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.CollectionUtils;
 import com.pixurvival.core.util.IntWrapper;
@@ -34,7 +34,7 @@ public class StructureSpawner extends ChunkSpawner {
 
 	@Override
 	protected Object beginSpawn(Chunk chunk) {
-		List<MapStructure> structures = chunk.getStructures(structure.getId());
+		List<StructureEntity> structures = chunk.getStructures(structure.getId());
 		if (structures.isEmpty()) {
 			return null;
 		}

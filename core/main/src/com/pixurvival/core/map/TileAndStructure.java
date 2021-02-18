@@ -11,7 +11,7 @@ import lombok.NonNull;
 public class TileAndStructure implements MapTile {
 
 	private @NonNull Tile tileDefinition;
-	private @NonNull MapStructure structure;
+	private @NonNull StructureEntity structure;
 
 	@Override
 	public boolean isSolid() {

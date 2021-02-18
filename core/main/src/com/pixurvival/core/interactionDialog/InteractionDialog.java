@@ -72,7 +72,11 @@ public abstract class InteractionDialog {
 	 */
 	public abstract void interact(PlayerEntity player, int index, boolean splitMode);
 
-	protected void notifyChanged() {
+	public void set(InteractionDialog other) {
+		// Nothing by default
+	}
+
+	public void notifyChanged() {
 		listeners.forEach(l -> l.changed(this));
 	}
 }

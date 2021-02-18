@@ -3,6 +3,7 @@ package com.pixurvival.core.system.mapLimits;
 import java.util.List;
 
 import com.pixurvival.core.ActionTimerManager;
+import com.pixurvival.core.World;
 import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.contentPack.gameMode.MapLimits;
@@ -52,8 +53,8 @@ public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInte
 	private EntityPool entityPool;
 
 	@Override
-	public boolean isRequired(GameMode gameMode) {
-		return gameMode.getMapLimits() != null;
+	public boolean isRequired(World world) {
+		return world.getGameMode().getMapLimits() != null;
 	}
 
 	@Override

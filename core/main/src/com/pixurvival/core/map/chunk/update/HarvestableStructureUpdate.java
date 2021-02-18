@@ -7,9 +7,9 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.map.MapTile;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
@@ -29,13 +29,12 @@ public class HarvestableStructureUpdate extends StructureUpdate implements Actio
 	@Override
 	public void apply(Chunk chunk) {
 		MapTile mapTile = chunk.tileAt(getX(), getY());
-		MapStructure structure = mapTile.getStructure();
+		StructureEntity structure = mapTile.getStructure();
 		if (structure != null && structure.getId() == getId()) {
-			HarvestableMapStructure hms = (HarvestableMapStructure) mapTile.getStructure();
+			HarvestableStructureEntity hms = (HarvestableStructureEntity) mapTile.getStructure();
 			hms.setHarvested(harvested);
-			chunk.getMap().notifyListeners(l -> l.structureChanged(hms, this));
+			chunk.notifyStructureChanged(hms, this);
 		}
-		chunk.invalidateCompressed();
 	}
 
 	@Override

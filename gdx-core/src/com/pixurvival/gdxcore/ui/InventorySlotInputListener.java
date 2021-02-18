@@ -21,13 +21,14 @@ public class InventorySlotInputListener extends InputListener {
 
 	private Inventory inventory;
 	private int slotIndex;
+	private int actionIndex;
 
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 		if (button == Input.Buttons.LEFT) {
-			sendAction(inventory, slotIndex);
+			sendAction(inventory, actionIndex);
 		} else if (button == Input.Buttons.RIGHT && isMyInventory(inventory)) {
-			PixurvivalGame.getClient().sendAction(new UseItemRequest((short) slotIndex));
+			PixurvivalGame.getClient().sendAction(new UseItemRequest((short) actionIndex));
 		}
 		return true;
 	}
@@ -38,7 +39,7 @@ public class InventorySlotInputListener extends InputListener {
 			Actor actor = event.getStage().hit(event.getStageX(), event.getStageY(), true);
 			if (actor instanceof InventorySlot && actor != event.getListenerActor()) {
 				InventorySlot inventorySlot = (InventorySlot) actor;
-				sendAction(inventorySlot.getInventory(), inventorySlot.getSlotIndex());
+				sendAction(inventorySlot.getInventory(), inventorySlot.getActionIndex());
 			}
 		}
 	}

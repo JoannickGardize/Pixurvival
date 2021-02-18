@@ -22,11 +22,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class MapStructure implements Body, CustomDataHolder, TeamMember, Damageable {
+public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable {
 
 	@FunctionalInterface
 	private static interface StructureSupplier {
-		MapStructure apply(Chunk chunk, Structure structure, int x, int y);
+		StructureEntity apply(Chunk chunk, Structure structure, int x, int y);
 	}
 
 	private @Setter long id;
@@ -39,7 +39,7 @@ public class MapStructure implements Body, CustomDataHolder, TeamMember, Damagea
 	private @Setter Object customData;
 	private @Getter @Setter float health;
 
-	public MapStructure(Chunk chunk, Structure definition, int x, int y) {
+	public StructureEntity(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
 		this.definition = definition;
 		tileX = x;
@@ -129,7 +129,7 @@ public class MapStructure implements Body, CustomDataHolder, TeamMember, Damagea
 			getChunk().removeStructure(getTileX(), getTileY());
 			onDeath();
 		} else {
-			getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new DamageableStructureUpdate(getTileX(), getTileY(), getId(), health)));
+			getChunk().notifyStructureChanged(this, new DamageableStructureUpdate(getTileX(), getTileY(), getId(), health));
 		}
 	}
 

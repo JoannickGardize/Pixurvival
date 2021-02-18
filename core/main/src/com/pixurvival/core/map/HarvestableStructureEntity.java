@@ -16,9 +16,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class HarvestableMapStructure extends MapStructure {
+public class HarvestableStructureEntity extends StructureEntity {
 
-	public HarvestableMapStructure(Chunk chunk, Structure definition, int x, int y) {
+	public HarvestableStructureEntity(Chunk chunk, Structure definition, int x, int y) {
 		super(chunk, definition, x, y);
 	}
 
@@ -30,8 +30,7 @@ public class HarvestableMapStructure extends MapStructure {
 			return new ItemStack[0];
 		}
 		harvested = true;
-		getChunk().getMap().notifyListeners(l -> l.structureChanged(this, new HarvestableStructureUpdate(getTileX(), getTileY(), getId(), harvested)));
-		getChunk().updateTimestamp();
+		getChunk().notifyStructureChanged(this, new HarvestableStructureUpdate(getTileX(), getTileY(), getId(), harvested));
 		World world = getChunk().getMap().getWorld();
 		world.getActionTimerManager().addActionTimer(new HarvestableStructureUpdate(getTileX(), getTileY(), getId(), false),
 				((HarvestableStructure) getDefinition()).getRegrowthTime().next(world.getRandom()));

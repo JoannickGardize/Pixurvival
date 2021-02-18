@@ -1,15 +1,14 @@
 package com.pixurvival.core;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.chat.ChatManager;
 import com.pixurvival.core.chat.ChatSender;
@@ -36,6 +35,7 @@ import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.message.WorldKryo;
+import com.pixurvival.core.system.FactorySystem;
 import com.pixurvival.core.system.GameSystem;
 import com.pixurvival.core.system.HungerSystem;
 import com.pixurvival.core.system.InteractionDialogSystem;
@@ -135,6 +135,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		addSystem(HungerSystem.class);
 		addSystem(MapLimitsSystem.class);
 		addSystem(InteractionDialogSystem.class);
+		addSystem(FactorySystem.class);
 	}
 
 	public void addAdditonalAttribute(Object o, Class<?> type, Class<?>... genericTypes) {
@@ -152,10 +153,12 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	private void initializeSystems() {
-		systems.values().removeIf(s -> !s.isRequired(gameMode));
+		systems.values().removeIf(s -> !s.isRequired(this));
+		Log.info("Initalizing " + type + " world with the given systems: " + systems.keySet().stream().map(Class::getSimpleName).collect(Collectors.joining(", ", "[", "]")));
 		WorldAttributesAccessor worldAttributesAccessor = new WorldAttributesAccessor(this);
 		systems.values().forEach(worldAttributesAccessor::inject);
 		systems.values().forEach(interestSubscriptionSet::subscribeAll);
+		systems.values().forEach(s -> s.initialize(this));
 	}
 
 	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {
@@ -318,22 +321,6 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		Roles roles = gameMode.getRoles();
 		if (roles != null) {
 			roles.apply(this);
-		}
-	}
-
-	public void writeInventory(ByteBuffer buffer, Inventory inventory) {
-		try (Output output = new Output(buffer.array())) {
-			output.setPosition(buffer.position());
-			getWorld().getInventoryKryo().writeObject(output, inventory);
-			buffer.position(output.position());
-		}
-	}
-
-	public void readInventory(ByteBuffer buffer, Inventory inventory) {
-		try (Input input = new Input(buffer.array())) {
-			input.setPosition(buffer.position());
-			inventory.set(getWorld().getInventoryKryo().readObject(input, inventory.getClass()));
-			buffer.position(input.position());
 		}
 	}
 

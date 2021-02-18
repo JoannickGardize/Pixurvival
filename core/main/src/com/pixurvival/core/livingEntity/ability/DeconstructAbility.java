@@ -7,7 +7,7 @@ import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 
 public class DeconstructAbility extends WorkAbility {
 	private static final long serialVersionUID = 1L;
@@ -19,7 +19,7 @@ public class DeconstructAbility extends WorkAbility {
 
 	@Override
 	public ActionAnimation getActionAnimation(LivingEntity entity) {
-		MapStructure structure = ((DeconstructAbilityData) getAbilityData(entity)).getStructure();
+		StructureEntity structure = ((DeconstructAbilityData) getAbilityData(entity)).getStructure();
 		if (structure == null) {
 			return null;
 		} else {
@@ -32,8 +32,8 @@ public class DeconstructAbility extends WorkAbility {
 	public void workFinished(LivingEntity entity) {
 		World world = entity.getWorld();
 		if (world.isServer()) {
-			MapStructure structure = ((DeconstructAbilityData) getAbilityData(entity)).getStructure();
-			MapStructure actual = world.getMap().tileAt(structure.getTileX(), structure.getTileY()).getStructure();
+			StructureEntity structure = ((DeconstructAbilityData) getAbilityData(entity)).getStructure();
+			StructureEntity actual = world.getMap().tileAt(structure.getTileX(), structure.getTileY()).getStructure();
 			if (structure == actual) {
 				structure.getChunk().removeStructure(structure.getTileX(), structure.getTileY());
 				structure.onDeath();

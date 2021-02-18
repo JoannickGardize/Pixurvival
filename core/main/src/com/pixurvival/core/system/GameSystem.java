@@ -1,21 +1,30 @@
 package com.pixurvival.core.system;
 
-import com.pixurvival.core.contentPack.gameMode.GameMode;
+import com.pixurvival.core.World;
 
 public interface GameSystem {
 
 	/**
 	 * Called before initializing this system to check if it is required for the
 	 * given game mode. If not, this system will be removed from the world. True by
-	 * default.
+	 * default. Note that attributes are not injected at this point.
 	 * 
-	 * @param gameMode
-	 *            the game mode used by the starting world run
+	 * @param world
+	 *            the starting world
 	 * @return true if this system is required for the starting world run, false
 	 *         otherwise.
 	 */
-	default boolean isRequired(GameMode gameMode) {
+	default boolean isRequired(World world) {
 		return true;
+	}
+
+	/**
+	 * Called right after attributes injection.
+	 * 
+	 * @param world
+	 */
+	default void initialize(World world) {
+		// Nothing by default.
 	}
 
 	/**

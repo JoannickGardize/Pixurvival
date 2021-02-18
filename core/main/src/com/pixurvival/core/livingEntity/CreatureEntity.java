@@ -19,7 +19,7 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
-import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.ByteBufferUtils;
@@ -177,7 +177,7 @@ public class CreatureEntity extends LivingEntity {
 		return this.angleToward(target) + (randomAngle == 0 ? 0 : getWorld().getRandom().nextAngle(randomAngle));
 	}
 
-	public void harvest(HarvestableMapStructure harvestableStructure) {
+	public void harvest(HarvestableStructureEntity harvestableStructure) {
 		int abilityId = getDefinition().getHarvestAbilityId();
 		((HarvestAbilityData) getAbilityData(abilityId)).setStructure(harvestableStructure);
 		startAbility(abilityId);
@@ -249,7 +249,7 @@ public class CreatureEntity extends LivingEntity {
 		TeamMemberSerialization.writeNullSafe(buffer, master == this ? null : master, true);
 		VarLenNumberIO.writePositiveVarInt(buffer, currentBehavior.getId());
 		if (definition.getInventorySize() > 0) {
-			getWorld().writeInventory(buffer, inventory);
+			inventory.apply(getWorld(), buffer);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class CreatureEntity extends LivingEntity {
 		// TODO smart reset behavior
 		currentBehavior.begin(this);
 		if (definition.getInventorySize() > 0) {
-			getWorld().readInventory(buffer, inventory);
+			inventory.write(buffer);
 		}
 		addHealthAdapterListener();
 	}

@@ -5,8 +5,8 @@ import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class HarvestableStructure extends Structure {
 	private TimeInterval regrowthTime = new TimeInterval();
 
 	@Override
-	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
-		return new HarvestableMapStructure(chunk, this, x, y);
+	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
+		return new HarvestableStructureEntity(chunk, this, x, y);
 	}
 }

@@ -4,18 +4,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
-public class StructureOverlayDrawer implements OverlayDrawer<MapStructure> {
+public class StructureOverlayDrawer implements OverlayDrawer<StructureEntity> {
 
 	private static final Rectangle tmpRectangle = new Rectangle(0, 0, OverlayConstants.WORKING_BAR_WIDTH, OverlayConstants.WORKING_BAR_HEIGH);
 	private static final Vector2 tmpVector2 = new Vector2();
 
 	@Override
-	public void draw(Batch batch, Viewport worldViewport, MapStructure mapStructure) {
+	public void draw(Batch batch, Viewport worldViewport, StructureEntity mapStructure) {
 		if (mapStructure.getDefinition().getSpriteSheet() == null) {
 			return;
 		}

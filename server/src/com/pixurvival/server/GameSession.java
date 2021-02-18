@@ -20,7 +20,7 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -97,7 +97,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
+	public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
@@ -110,14 +110,14 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	@Override
-	public void structureAdded(MapStructure mapStructure) {
+	public void structureAdded(StructureEntity mapStructure) {
 		StructureUpdate structureUpdate = new AddStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getId(), mapStructure.getDefinition().getId(),
 				mapStructure.getCreationTime());
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
 
 	@Override
-	public void structureRemoved(MapStructure mapStructure) {
+	public void structureRemoved(StructureEntity mapStructure) {
 		StructureUpdate structureUpdate = new RemoveStructureUpdate(mapStructure.getTileX(), mapStructure.getTileY(), mapStructure.getId());
 		addStructureUpdate(mapStructure, structureUpdate);
 	}
@@ -127,7 +127,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		// I f*cking don't care of this event.
 	}
 
-	private void addStructureUpdate(MapStructure mapStructure, StructureUpdate structureUpdate) {
+	private void addStructureUpdate(StructureEntity mapStructure, StructureUpdate structureUpdate) {
 		for (PlayerGameSession player : players) {
 			ChunkPosition chunkPosition = mapStructure.getChunk().getPosition();
 			if (chunkPosition.insideSquare(player.getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {

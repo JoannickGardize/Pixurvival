@@ -1,7 +1,7 @@
 package com.pixurvival.gdxcore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,33 +25,36 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.InventoryMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.FactoryStructureEntity;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.InventoryStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.drawer.CreatureDrawer;
 import com.pixurvival.gdxcore.drawer.EffectDrawer;
 import com.pixurvival.gdxcore.drawer.ElementDrawer;
+import com.pixurvival.gdxcore.drawer.FactoryStructureEntityDrawer;
 import com.pixurvival.gdxcore.drawer.GhostStructureDrawer;
-import com.pixurvival.gdxcore.drawer.HarvestableMapStructureDrawer;
-import com.pixurvival.gdxcore.drawer.InventoryMapStructureDrawer;
+import com.pixurvival.gdxcore.drawer.HarvestableStructureEntityDrawer;
+import com.pixurvival.gdxcore.drawer.InventoryStructureEntityDrawer;
 import com.pixurvival.gdxcore.drawer.ItemStackEntityDrawer;
-import com.pixurvival.gdxcore.drawer.MapStructureDrawer;
 import com.pixurvival.gdxcore.drawer.PlayerDrawer;
+import com.pixurvival.gdxcore.drawer.StructureEntityDrawer;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
 public class EntitiesActor extends Actor {
 
-	private Map<Class<? extends Body>, ElementDrawer<? extends Body>> drawers = new HashMap<>();
+	private Map<Class<? extends Body>, ElementDrawer<? extends Body>> drawers = new IdentityHashMap<>();
 	private List<Body> objectsToDraw = new ArrayList<>();
 	private List<Body> allObjectsToDraw = new ArrayList<>();
 	private int actualY;
 
 	public EntitiesActor() {
 		drawers.put(PlayerEntity.class, new PlayerDrawer());
-		drawers.put(HarvestableMapStructure.class, new HarvestableMapStructureDrawer());
-		drawers.put(MapStructure.class, new MapStructureDrawer());
-		drawers.put(InventoryMapStructure.class, new InventoryMapStructureDrawer());
+		drawers.put(HarvestableStructureEntity.class, new HarvestableStructureEntityDrawer());
+		drawers.put(StructureEntity.class, new StructureEntityDrawer());
+		drawers.put(InventoryStructureEntity.class, new InventoryStructureEntityDrawer());
+		drawers.put(FactoryStructureEntity.class, new FactoryStructureEntityDrawer());
 		drawers.put(GhostStructure.class, new GhostStructureDrawer());
 		drawers.put(ItemStackEntity.class, new ItemStackEntityDrawer());
 		drawers.put(CreatureEntity.class, new CreatureDrawer());

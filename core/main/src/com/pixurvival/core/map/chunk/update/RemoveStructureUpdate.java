@@ -3,7 +3,7 @@ package com.pixurvival.core.map.chunk.update;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 public class RemoveStructureUpdate extends StructureUpdate {
@@ -14,7 +14,7 @@ public class RemoveStructureUpdate extends StructureUpdate {
 
 	@Override
 	public void apply(Chunk chunk) {
-		MapStructure structure = chunk.tileAt(getX(), getY()).getStructure();
+		StructureEntity structure = chunk.tileAt(getX(), getY()).getStructure();
 		if (structure != null && structure.getId() == getId()) {
 			chunk.removeStructure(getX(), getY());
 			chunk.invalidateCompressed();

@@ -1,16 +1,16 @@
 package com.pixurvival.gdxcore.drawer;
 
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 
-public class HarvestableMapStructureDrawer extends MapStructureDrawer {
+public class HarvestableStructureEntityDrawer extends StructureEntityDrawer {
 
 	@Override
-	protected TextureAnimation getTextureAnimation(MapStructure e, TextureAnimationSet animationSet) {
-		if (((HarvestableMapStructure) e).isHarvested()) {
+	protected TextureAnimation getTextureAnimation(StructureEntity e, TextureAnimationSet animationSet) {
+		if (((HarvestableStructureEntity) e).isHarvested()) {
 			TextureAnimation harvestedAnimation = animationSet.get(ActionAnimation.HARVESTED);
 			return harvestedAnimation == null ? animationSet.get(ActionAnimation.DEFAULT) : harvestedAnimation;
 		} else {

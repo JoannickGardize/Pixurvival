@@ -1,12 +1,12 @@
 package com.pixurvival.gdxcore;
 
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class GhostStructure extends MapStructure {
+public class GhostStructure extends StructureEntity {
 
 	@Getter
 	@Setter

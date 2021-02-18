@@ -80,7 +80,7 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 	private void forEachStructureSpawner(Chunk chunk, Consumer<StructureSpawner> action) {
 		World world = chunk.getMap().getWorld();
 		Ecosystem ecosystem = world.getGameMode().getEcosystem();
-		for (Entry<Integer, List<MapStructure>> entry : chunk.getStructures()) {
+		for (Entry<Integer, List<StructureEntity>> entry : chunk.getStructures()) {
 			List<StructureSpawner> structureSpawners = ecosystem.getStructureSpawnersPerStructure().get(entry.getKey());
 			if (structureSpawners == null || structureSpawners.isEmpty()) {
 				continue;
@@ -96,17 +96,17 @@ public class ChunkCreatureSpawnManager implements TiledMapListener {
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
+	public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override
-	public void structureAdded(MapStructure mapStructure) {
+	public void structureAdded(StructureEntity mapStructure) {
 		// TODO reactiver le spawner quand un nouveau type de structure apparait
 		// dans le chunk, pay attention to actual spawner events.
 	}
 
 	@Override
-	public void structureRemoved(MapStructure mapStructure) {
+	public void structureRemoved(StructureEntity mapStructure) {
 	}
 
 	@Override

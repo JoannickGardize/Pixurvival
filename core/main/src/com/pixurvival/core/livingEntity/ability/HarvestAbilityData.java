@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.livingEntity.LivingEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 
@@ -16,9 +16,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class HarvestAbilityData extends WorkAbilityData {
 
-	private HarvestableMapStructure structure;
+	private HarvestableStructureEntity structure;
 
-	public void setStructure(HarvestableMapStructure structure) {
+	public void setStructure(HarvestableStructureEntity structure) {
 		this.structure = structure;
 		setDurationMillis(((HarvestableStructure) structure.getDefinition()).getHarvestingTime());
 	}
@@ -41,9 +41,9 @@ public class HarvestAbilityData extends WorkAbilityData {
 		if (buffer.get() == -1) {
 			structure = null;
 		} else {
-			MapStructure mapStructure = entity.getWorld().getMap().tileAt(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer)).getStructure();
-			if (mapStructure instanceof HarvestableMapStructure) {
-				setStructure((HarvestableMapStructure) mapStructure);
+			StructureEntity mapStructure = entity.getWorld().getMap().tileAt(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarInt(buffer)).getStructure();
+			if (mapStructure instanceof HarvestableStructureEntity) {
+				setStructure((HarvestableStructureEntity) mapStructure);
 			}
 		}
 	}

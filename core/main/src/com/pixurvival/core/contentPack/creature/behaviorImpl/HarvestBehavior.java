@@ -17,7 +17,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.ability.HarvestAbility;
-import com.pixurvival.core.map.HarvestableMapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class HarvestBehavior extends Behavior {
 	private static final long serialVersionUID = 1L;
 
 	// TODO create manager for this
-	private static final Map<World, Set<HarvestableMapStructure>> BOOKED_STRUCTURES = new WeakHashMap<>();
+	private static final Map<World, Set<HarvestableStructureEntity>> BOOKED_STRUCTURES = new WeakHashMap<>();
 
 	@Positive
 	private float searchDistance = 10;
@@ -41,7 +41,7 @@ public class HarvestBehavior extends Behavior {
 
 	@Override
 	protected void step(CreatureEntity creature) {
-		HarvestableMapStructure currentStructureTarget = (HarvestableMapStructure) creature.getBehaviorData().getCustomData();
+		HarvestableStructureEntity currentStructureTarget = (HarvestableStructureEntity) creature.getBehaviorData().getCustomData();
 		if (creature.getCurrentAbility() instanceof HarvestAbility) {
 			if (!failIfCurrentStructureTargetIsInvalid(creature, currentStructureTarget)) {
 				setHarvestStandby(creature, currentStructureTarget);
@@ -83,14 +83,14 @@ public class HarvestBehavior extends Behavior {
 		updateTargetReference(creature, null);
 	}
 
-	private HarvestableMapStructure searchStructureToHarvest(CreatureEntity creature) {
-		HarvestableMapStructure currentStructureTarget = (HarvestableMapStructure) creature.getWorld().getMap().findClosestStructure(creature.getPosition(), searchDistance,
-				s -> structures.containsById(s), s -> s instanceof HarvestableMapStructure && !((HarvestableMapStructure) s).isHarvested() && !getBookedStructures(creature).contains(s));
+	private HarvestableStructureEntity searchStructureToHarvest(CreatureEntity creature) {
+		HarvestableStructureEntity currentStructureTarget = (HarvestableStructureEntity) creature.getWorld().getMap().findClosestStructure(creature.getPosition(), searchDistance,
+				s -> structures.containsById(s), s -> s instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) s).isHarvested() && !getBookedStructures(creature).contains(s));
 		updateTargetReference(creature, currentStructureTarget);
 		return currentStructureTarget;
 	}
 
-	private boolean failIfCurrentStructureTargetIsInvalid(CreatureEntity creature, HarvestableMapStructure currentStructureTarget) {
+	private boolean failIfCurrentStructureTargetIsInvalid(CreatureEntity creature, HarvestableStructureEntity currentStructureTarget) {
 		if (currentStructureTarget.isHarvested() || !currentStructureTarget.equals(currentStructureTarget.getWorld().getMap().tileAt(currentStructureTarget.getPosition()).getStructure())) {
 			stop(creature);
 			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
@@ -100,7 +100,7 @@ public class HarvestBehavior extends Behavior {
 		}
 	}
 
-	private void setHarvestStandby(CreatureEntity creature, HarvestableMapStructure currentStructureTarget) {
+	private void setHarvestStandby(CreatureEntity creature, HarvestableStructureEntity currentStructureTarget) {
 		creature.getBehaviorData().setNextUpdateDelayMillis(Math.min(((HarvestableStructure) currentStructureTarget.getDefinition()).getHarvestingTime(), BehaviorData.DEFAULT_STANDBY_DELAY));
 	}
 
@@ -110,7 +110,7 @@ public class HarvestBehavior extends Behavior {
 		updateTargetReference(creature, null);
 	}
 
-	private void updateTargetReference(CreatureEntity creature, HarvestableMapStructure target) {
+	private void updateTargetReference(CreatureEntity creature, HarvestableStructureEntity target) {
 		if (target == null) {
 			getBookedStructures(creature).remove(creature.getBehaviorData().getCustomData());
 		} else {
@@ -119,7 +119,7 @@ public class HarvestBehavior extends Behavior {
 		creature.getBehaviorData().setCustomData(target);
 	}
 
-	private Set<HarvestableMapStructure> getBookedStructures(CreatureEntity creature) {
+	private Set<HarvestableStructureEntity> getBookedStructures(CreatureEntity creature) {
 		return BOOKED_STRUCTURES.computeIfAbsent(creature.getWorld(), w -> new HashSet<>());
 	}
 }

@@ -29,7 +29,7 @@ public class EquipmentUI extends UIWindow {
 		Inventory inventory = new Inventory(4);
 		InventoryTable equipmentTable = new InventoryTable(inventory, 4) {
 			@Override
-			public Actor newSlot(Inventory inventory, int index) {
+			public Actor newSlot(Inventory inventory, int index, int actionIndex) {
 				switch (index) {
 				case 0:
 					return new EquipmentSlot(Equipment.CLOTHING_INDEX);

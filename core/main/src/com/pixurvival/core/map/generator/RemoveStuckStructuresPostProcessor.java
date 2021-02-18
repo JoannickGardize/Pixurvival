@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.GameConstants;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 public class RemoveStuckStructuresPostProcessor implements ChunkPostProcessor {
 
 	@Override
 	public void apply(Chunk chunk) {
-		List<MapStructure> toRemove = new ArrayList<>();
+		List<StructureEntity> toRemove = new ArrayList<>();
 		chunk.forEachStructure(mapStructure -> {
 			if (!mapStructure.getDefinition().isAvoidStuck()) {
 				return;

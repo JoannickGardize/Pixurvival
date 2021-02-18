@@ -47,6 +47,7 @@ public class ItemStack implements Serializable {
 		return new ItemStack(item, quantity);
 	}
 
+	// TODO remove this once this class is immutable
 	public ItemStack copy() {
 		return new ItemStack(item, quantity);
 	}

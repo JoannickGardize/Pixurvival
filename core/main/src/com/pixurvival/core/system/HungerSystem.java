@@ -1,5 +1,6 @@
 package com.pixurvival.core.system;
 
+import com.pixurvival.core.World;
 import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.entity.EntityGroup;
@@ -19,8 +20,8 @@ public class HungerSystem implements GameSystem, TimeIntervalInterest {
 	private GameMode gameMode;
 
 	@Override
-	public boolean isRequired(GameMode gameMode) {
-		return gameMode.getHungerPerMinute() > 0;
+	public boolean isRequired(World world) {
+		return world.getGameMode().getHungerPerMinute() > 0;
 	}
 
 	@Override

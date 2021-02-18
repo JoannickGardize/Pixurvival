@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.structure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FactoryCraft {
+public class FactoryCraft implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Valid
 	private List<ItemStack> recipes = new ArrayList<>();

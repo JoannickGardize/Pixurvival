@@ -26,6 +26,9 @@ import com.pixurvival.core.map.chunk.ClientChunkRepository;
 import com.pixurvival.core.map.chunk.ServerChunkRepository;
 import com.pixurvival.core.map.chunk.ServerChunkRepositoryEntry;
 import com.pixurvival.core.map.chunk.update.StructureUpdate;
+import com.pixurvival.core.system.interest.ChunkLoadInterest;
+import com.pixurvival.core.system.interest.InterestSubscription;
+import com.pixurvival.core.system.interest.StructureChangeInterest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 
@@ -35,6 +38,8 @@ import lombok.Setter;
 public class TiledMap {
 
 	private List<TiledMapListener> listeners = new ArrayList<>();
+	private InterestSubscription<ChunkLoadInterest> chunkLoadSubscription;
+	private InterestSubscription<StructureChangeInterest> structureChangeSubscription;
 	private List<PlayerMapEventListener> playerMapEventListeners = new ArrayList<>();
 	private List<ChunkRepositoryEntry> newChunks = new ArrayList<>();
 	private List<Chunk> toRemoveChunks = new ArrayList<>();
@@ -64,6 +69,8 @@ public class TiledMap {
 
 	public TiledMap(World world) {
 		this.world = world;
+		chunkLoadSubscription = world.getInterestSubscriptionSet().get(ChunkLoadInterest.class);
+		structureChangeSubscription = world.getInterestSubscriptionSet().get(StructureChangeInterest.class);
 
 		if (world.isServer()) {
 			repository = new ServerChunkRepository();
@@ -118,8 +125,19 @@ public class TiledMap {
 		playerMapEventListeners.forEach(l -> l.exitVision(player, position));
 	}
 
-	public void notifyListeners(Consumer<TiledMapListener> action) {
-		listeners.forEach(action);
+	public void notifyStructureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
+		listeners.forEach(l -> l.structureChanged(mapStructure, structureUpdate));
+		structureChangeSubscription.forEach(i -> i.structureChanged(mapStructure, structureUpdate));
+	}
+
+	public void notifyStructureAdded(StructureEntity mapStructure) {
+		listeners.forEach(l -> l.structureAdded(mapStructure));
+		structureChangeSubscription.forEach(i -> i.structureAdded(mapStructure));
+	}
+
+	public void notifyStructureRemoved(StructureEntity mapStructure) {
+		listeners.forEach(l -> l.structureRemoved(mapStructure));
+		structureChangeSubscription.forEach(i -> i.structureRemoved(mapStructure));
 	}
 
 	public MapTile tileAt(Vector2 position) {
@@ -163,6 +181,7 @@ public class TiledMap {
 			}
 			chunk.check();
 			listeners.forEach(l -> l.chunkLoaded(chunk));
+			chunkLoadSubscription.forEach(i -> i.chunkLoaded(chunk));
 		} else {
 			existingChunk.check();
 		}
@@ -176,6 +195,7 @@ public class TiledMap {
 		repository.save(chunk);
 		chunks.remove(chunk.getPosition());
 		listeners.forEach(l -> l.chunkUnloaded(chunk));
+		chunkLoadSubscription.forEach(i -> i.chunkUnloaded(chunk));
 	}
 
 	private void removePlayersFromChunk(Chunk chunk) {
@@ -400,15 +420,15 @@ public class TiledMap {
 	}
 
 	private static class FindClosestStructureRun {
-		MapStructure structure;
+		StructureEntity structure;
 		float distance = Float.POSITIVE_INFINITY;
 	}
 
-	public MapStructure findClosestStructure(Vector2 position, float searchRadius, IntPredicate groupFilter, Predicate<MapStructure> structureFilter) {
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, IntPredicate groupFilter, Predicate<StructureEntity> structureFilter) {
 		FindClosestStructureRun run = new FindClosestStructureRun();
 		forEachChunk(position, searchRadius, chunk -> chunk.getStructures().forEach(entry -> {
 			if (groupFilter.test(entry.getKey())) {
-				for (MapStructure structure : entry.getValue()) {
+				for (StructureEntity structure : entry.getValue()) {
 					if (structureFilter.test(structure)) {
 						float distance = position.distanceSquared(structure.getPosition());
 						if (distance <= searchRadius * searchRadius && distance < run.distance) {
@@ -422,19 +442,19 @@ public class TiledMap {
 		return run.structure;
 	}
 
-	public MapStructure findClosestStructure(Vector2 position, float searchRadius) {
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius) {
 		return findClosestStructure(position, searchRadius, type -> true, s -> true);
 	}
 
-	public MapStructure findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds) {
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds) {
 		return findClosestStructure(position, searchRadius, structureTypeIds::contains, s -> true);
 	}
 
-	public MapStructure findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds, Predicate<MapStructure> filter) {
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds, Predicate<StructureEntity> filter) {
 		return findClosestStructure(position, searchRadius, structureTypeIds::contains, filter);
 	}
 
-	public MapStructure findClosestStructure(Vector2 position, float searchRadius, int structureTypeId) {
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, int structureTypeId) {
 		return findClosestStructure(position, searchRadius, t -> t == structureTypeId, s -> true);
 	}
 

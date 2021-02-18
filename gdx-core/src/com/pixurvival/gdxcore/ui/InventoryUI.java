@@ -16,8 +16,8 @@ public class InventoryUI extends UIWindow {
 		Inventory inv = PixurvivalGame.getClient().getMyInventory();
 		inventoryTable = new InventoryTable(inv, 8) {
 			@Override
-			public Actor newSlot(Inventory inventory, int index) {
-				InventorySlot slot = new InventorySlot(inventory, index);
+			public Actor newSlot(Inventory inventory, int index, int actionIndex) {
+				InventorySlot slot = new InventorySlot(inventory, index, actionIndex);
 				if (index < 10) {
 					InputAction action = InputAction.valueOf("INVENTORY" + (index + 1));
 					slot.setShortcutDrawer(new ShortcutDrawer(slot, action, ShortcutDrawer.BOTTOM));

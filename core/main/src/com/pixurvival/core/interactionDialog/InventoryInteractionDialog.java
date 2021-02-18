@@ -53,6 +53,11 @@ public class InventoryInteractionDialog extends InteractionDialog implements Inv
 		notifyChanged();
 	}
 
+	@Override
+	public void set(InteractionDialog other) {
+		inventory.set(((InventoryInteractionDialog) other).getInventory());
+	}
+
 	public static class Serializer extends com.esotericsoftware.kryo.Serializer<InventoryInteractionDialog> {
 
 		@Override

@@ -14,8 +14,8 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.map.FactoryMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.FactoryStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 
 import lombok.Getter;
@@ -51,16 +51,20 @@ public class FactoryStructure extends Structure {
 
 	private transient Set<Item> possibleFuels;
 
+	private transient Map<Item, Float> fuelAmounts;
+
 	@Override
-	public MapStructure newMapStructure(Chunk chunk, int x, int y) {
-		return new FactoryMapStructure(chunk, this, x, y);
+	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
+		return new FactoryStructureEntity(chunk, this, x, y);
 	}
 
 	@Override
 	public void initialize() {
-		Map<Item, Item> recipesMap = new IdentityHashMap<>();
-		for (FactoryCraft craft : crafts) {
-
-		}
+		Map<Item, Item> tmpRecipes = new IdentityHashMap<>();
+		crafts.forEach(c -> c.getRecipes().forEach(i -> tmpRecipes.put(i.getItem(), i.getItem())));
+		possibleRecipes = tmpRecipes.keySet();
+		fuelAmounts = new IdentityHashMap<>();
+		fuels.forEach(f -> fuelAmounts.put(f.getItem(), f.getAmount()));
+		possibleFuels = fuelAmounts.keySet();
 	}
 }

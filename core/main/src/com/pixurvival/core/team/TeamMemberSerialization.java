@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.World;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.util.VarLenNumberIO;
 
@@ -27,9 +27,9 @@ public class TeamMemberSerialization {
 			if (safeMode) {
 				writeFlatTeamMember(buffer, teamMember);
 			}
-		} else if (teamMember instanceof MapStructure) {
+		} else if (teamMember instanceof StructureEntity) {
 			buffer.put(MAP_STRUCTURE_TYPE);
-			MapStructure mapStructure = (MapStructure) teamMember;
+			StructureEntity mapStructure = (StructureEntity) teamMember;
 			VarLenNumberIO.writePositiveVarLong(buffer, mapStructure.getId());
 			VarLenNumberIO.writePositiveVarInt(buffer, mapStructure.getTileX());
 			VarLenNumberIO.writePositiveVarInt(buffer, mapStructure.getTileY());
@@ -89,7 +89,7 @@ public class TeamMemberSerialization {
 		int y = VarLenNumberIO.readPositiveVarInt(buffer);
 		Chunk chunk = world.getMap().chunkAt(x, y);
 		if (chunk != null) {
-			MapStructure structure = chunk.tileAt(x, y).getStructure();
+			StructureEntity structure = chunk.tileAt(x, y).getStructure();
 			if (structure != null && structure.getId() == id) {
 				if (safeMode) {
 					// Read for skipping

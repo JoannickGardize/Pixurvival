@@ -36,8 +36,8 @@ import com.pixurvival.core.livingEntity.ability.SilenceAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbility;
 import com.pixurvival.core.livingEntity.ability.UseItemAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
@@ -216,12 +216,12 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 		}
 	}
 
-	public void harvest(HarvestableMapStructure harvestableStructure) {
+	public void harvest(HarvestableStructureEntity harvestableStructure) {
 		((HarvestAbilityData) getAbilityData(HARVEST_ABILITY_ID)).setStructure(harvestableStructure);
 		startAbility(HARVEST_ABILITY_ID);
 	}
 
-	public void deconstruct(MapStructure structure) {
+	public void deconstruct(StructureEntity structure) {
 		((DeconstructAbilityData) getAbilityData(DECONSTRUCT_ABILITY_ID)).setStructure(structure);
 		startAbility(DECONSTRUCT_ABILITY_ID);
 	}
@@ -307,29 +307,29 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 	}
 
 	@Override
-	public void writeRepositoryUpdate(ByteBuffer byteBuffer) {
-		super.writeRepositoryUpdate(byteBuffer);
-		ByteBufferUtils.putBooleans(byteBuffer, isAlive(), isOperator());
+	public void writeRepositoryUpdate(ByteBuffer buffer) {
+		super.writeRepositoryUpdate(buffer);
+		ByteBufferUtils.putBooleans(buffer, isAlive(), isOperator());
 		if (!isAlive()) {
-			VarLenNumberIO.writePositiveVarLong(byteBuffer, respawnTime);
+			VarLenNumberIO.writePositiveVarLong(buffer, respawnTime);
 		}
-		ByteBufferUtils.putString(byteBuffer, name);
-		getWorld().writeInventory(byteBuffer, inventory);
-		itemCraftDiscovery.write(byteBuffer);
+		ByteBufferUtils.putString(buffer, name);
+		inventory.write(buffer);
+		itemCraftDiscovery.write(buffer);
 	}
 
 	@Override
-	public void applyRepositoryUpdate(ByteBuffer byteBuffer) {
-		super.applyRepositoryUpdate(byteBuffer);
-		byte boolMask = ByteBufferUtils.getBooleansMask(byteBuffer);
+	public void applyRepositoryUpdate(ByteBuffer buffer) {
+		super.applyRepositoryUpdate(buffer);
+		byte boolMask = ByteBufferUtils.getBooleansMask(buffer);
 		setAlive(ByteBufferUtils.getBoolean1(boolMask));
 		setOperator(ByteBufferUtils.getBoolean2(boolMask));
 		if (!isAlive()) {
-			respawnTime = VarLenNumberIO.readPositiveVarLong(byteBuffer);
+			respawnTime = VarLenNumberIO.readPositiveVarLong(buffer);
 		}
-		setName(ByteBufferUtils.getString(byteBuffer));
-		getWorld().readInventory(byteBuffer, inventory);
-		itemCraftDiscovery.apply(byteBuffer, getWorld().getContentPack().getItems());
+		setName(ByteBufferUtils.getString(buffer));
+		inventory.apply(getWorld(), buffer);
+		itemCraftDiscovery.apply(buffer, getWorld().getContentPack().getItems());
 		addHealthAdapterListener();
 	}
 

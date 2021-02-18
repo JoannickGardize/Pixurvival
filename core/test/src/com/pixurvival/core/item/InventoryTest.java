@@ -1,12 +1,15 @@
 package com.pixurvival.core.item;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.item.ResourceItem;
 
@@ -32,7 +35,7 @@ public class InventoryTest {
 	}
 
 	@Test
-	public void add() {
+	void add() {
 		Assertions.assertNull(inventory.add(new ItemStack(itemA, 3)));
 		Assertions.assertNull(inventory.add(new ItemStack(itemB, 1)));
 		Assertions.assertNull(inventory.add(new ItemStack(itemC, 2)));
@@ -47,7 +50,7 @@ public class InventoryTest {
 	}
 
 	@Test
-	public void add2() {
+	void add2() {
 		Assertions.assertNull(inventory.add(new ItemStack(itemB, 3)));
 		Assertions.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(0));
 		Assertions.assertEquals(new ItemStack(itemB, 1), inventory.getSlot(1));
@@ -56,7 +59,24 @@ public class InventoryTest {
 	}
 
 	@Test
-	public void remove() {
+	void addAllTest() {
+		ItemStack itemStackB = new ItemStack(itemB);
+		inventory.setSlot(0, itemStackB);
+		inventory.setSlot(1, itemStackB);
+		inventory.setSlot(3, itemStackB);
+		Assertions.assertFalse(inventory.addAllOrFail(Arrays.asList(itemStackB, new ItemStack(itemA))));
+		assertContent(inventory, itemStackB, itemStackB, null, itemStackB);
+		inventory.setSlot(3, new ItemStack(itemA, 4));
+		Assertions.assertTrue(inventory.addAllOrFail(Arrays.asList(itemStackB, new ItemStack(itemA))));
+		assertContent(inventory, itemStackB, itemStackB, itemStackB, new ItemStack(itemA, 5));
+		inventory.setSlot(2, null);
+		inventory.setSlot(3, null);
+		Assertions.assertTrue(inventory.addAllOrFail(Arrays.asList(new ItemStack(itemA), new ItemStack(itemC))));
+		assertContent(inventory, itemStackB, itemStackB, new ItemStack(itemA), new ItemStack(itemC));
+	}
+
+	@Test
+	void remove() {
 		inventory.setSlot(0, new ItemStack(itemB, 1));
 		inventory.setSlot(1, new ItemStack(itemA, 5));
 		inventory.setSlot(2, new ItemStack(itemC, 4));
@@ -74,5 +94,30 @@ public class InventoryTest {
 		Assertions.assertEquals(new ItemStack(itemA, 3), inventory.getSlot(1));
 		Assertions.assertEquals(new ItemStack(itemC, 4), inventory.getSlot(2));
 		Assertions.assertNull(inventory.getSlot(3));
+	}
+
+	@Test
+	void serializationTest() {
+		Inventory inventory = new Inventory(10);
+		inventory.setSlot(4, new ItemStack(itemA, 3));
+		inventory.setSlot(5, new ItemStack(itemA, 2));
+		inventory.setSlot(8, new ItemStack(itemB, 1));
+		ContentPack contentPack = new ContentPack();
+		itemA.setId(0);
+		itemB.setId(1);
+		contentPack.getItems().add(itemA);
+		contentPack.getItems().add(itemB);
+		ByteBuffer buffer = ByteBuffer.allocate(128);
+		inventory.write(buffer);
+		buffer.flip();
+		Inventory copy = new Inventory(10);
+		copy.apply(contentPack, buffer);
+		Assertions.assertEquals(inventory, copy);
+	}
+
+	private void assertContent(Inventory inventory, ItemStack... content) {
+		for (int i = 0; i < inventory.size(); i++) {
+			Assertions.assertEquals(content[i], inventory.getSlot(i));
+		}
 	}
 }

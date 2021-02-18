@@ -8,7 +8,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.message.WorldKryo;
@@ -76,7 +76,7 @@ public class CompressedChunk {
 		int structureCount = VarLenNumberIO.readPositiveVarInt(buffer);
 		LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
 		for (int i = 0; i < structureCount; i++) {
-			MapStructure structure = chunk.addStructureSilently(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(),
+			StructureEntity structure = chunk.addStructureSilently(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(),
 					buffer.get() + chunk.getOffsetY());
 			structure.applyData(buffer, idSequence);
 		}

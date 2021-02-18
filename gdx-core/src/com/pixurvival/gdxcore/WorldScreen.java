@@ -20,14 +20,14 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
 import com.pixurvival.core.system.mapLimits.MapLimitsSystem;
 import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.drawer.LightDrawer;
-import com.pixurvival.gdxcore.drawer.MapStructureFliper;
+import com.pixurvival.gdxcore.drawer.StructureEntityFliper;
 import com.pixurvival.gdxcore.input.CameraControlProcessor;
 import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
@@ -43,7 +43,6 @@ import com.pixurvival.gdxcore.ui.CraftUI;
 import com.pixurvival.gdxcore.ui.EndGameUI;
 import com.pixurvival.gdxcore.ui.EquipmentUI;
 import com.pixurvival.gdxcore.ui.HeldItemStackActor;
-import com.pixurvival.gdxcore.ui.InteractionDialogUI;
 import com.pixurvival.gdxcore.ui.InventoryUI;
 import com.pixurvival.gdxcore.ui.MiniMapUI;
 import com.pixurvival.gdxcore.ui.MouseIconActor;
@@ -52,6 +51,7 @@ import com.pixurvival.gdxcore.ui.RespawnTimerActor;
 import com.pixurvival.gdxcore.ui.StatusBarUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
+import com.pixurvival.gdxcore.ui.interactionDialog.InteractionDialogUI;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.SubStatsTooltip;
@@ -98,7 +98,7 @@ public class WorldScreen implements Screen {
 			throw new IllegalStateException("Cannot change world of the world screen");
 		}
 		contentPackTextures = new ContentPackAssets();
-		world.getChunkManager().addPlugin(new MapStructureFliper());
+		world.getChunkManager().addPlugin(new StructureEntityFliper());
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
 			// Gdx.graphics.getHeight());
@@ -233,7 +233,7 @@ public class WorldScreen implements Screen {
 
 		hudStage.getViewport().apply();
 		Vector2 position = getWorldCursorPosition();
-		MapStructure structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
+		StructureEntity structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
 		setMouseInteractionIconVisible(ActionPreconditions.canInteract(myPlayer, structure));
 		hudStage.act();
 		hudStage.draw();
@@ -258,7 +258,7 @@ public class WorldScreen implements Screen {
 		endGameUI.update(hudStage.getViewport());
 		pauseUI.update();
 		respawnTimerActor.setPosition(width / 2f, height - height / 3f);
-		InteractionDialogUI.getInstance();
+		InteractionDialogUI.getInstance().sizeAndPosition();
 	}
 
 	@Override

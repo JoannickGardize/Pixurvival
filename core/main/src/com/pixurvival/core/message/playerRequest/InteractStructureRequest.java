@@ -4,10 +4,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.ActionPreconditions;
+import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.InventoryMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.system.interest.InteractionDialogRequestInterest;
 
 import lombok.AllArgsConstructor;
@@ -23,18 +23,18 @@ public class InteractStructureRequest implements IPlayerActionRequest {
 
 	@Override
 	public void apply(PlayerEntity player) {
-		MapStructure structure = player.getWorld().getMap().tileAt(x, y).getStructure();
+		StructureEntity structure = player.getWorld().getMap().tileAt(x, y).getStructure();
 		if (secondaryAction) {
 			if (ActionPreconditions.canDeconstruct(player, structure)) {
 				player.deconstruct(structure);
 			}
 		} else {
 			if (ActionPreconditions.canInteract(player, structure)) {
-				if (structure instanceof HarvestableMapStructure) {
-					player.harvest((HarvestableMapStructure) structure);
-				} else if (structure instanceof InventoryMapStructure) {
+				if (structure instanceof HarvestableStructureEntity) {
+					player.harvest((HarvestableStructureEntity) structure);
+				} else if (structure instanceof InteractionDialogHolder) {
 					player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class)
-							.forEach(i -> i.openDialogRequest(player, ((InventoryMapStructure) structure).getInteractionDialog()));
+							.forEach(i -> i.openDialogRequest(player, ((InteractionDialogHolder) structure).getInteractionDialog()));
 				} else {
 					player.deconstruct(structure);
 				}

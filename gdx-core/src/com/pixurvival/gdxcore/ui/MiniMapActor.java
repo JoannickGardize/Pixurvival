@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -83,15 +83,15 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
 	}
 
 	@Override
-	public void structureChanged(MapStructure mapStructure, StructureUpdate structureUpdate) {
+	public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
 	}
 
 	@Override
-	public void structureAdded(MapStructure mapStructure) {
+	public void structureAdded(StructureEntity mapStructure) {
 	}
 
 	@Override
-	public void structureRemoved(MapStructure mapStructure) {
+	public void structureRemoved(StructureEntity mapStructure) {
 	}
 
 	@Override

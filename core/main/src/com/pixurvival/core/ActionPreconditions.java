@@ -2,12 +2,12 @@ package com.pixurvival.core;
 
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.HarvestableMapStructure;
-import com.pixurvival.core.map.InventoryMapStructure;
-import com.pixurvival.core.map.MapStructure;
+import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.map.MapTile;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 
 import lombok.experimental.UtilityClass;
@@ -54,12 +54,12 @@ public class ActionPreconditions {
 		return true;
 	}
 
-	public static boolean canInteract(LivingEntity entity, MapStructure structure) {
-		return structure != null && (structure instanceof HarvestableMapStructure && !((HarvestableMapStructure) structure).isHarvested() || structure.getDefinition().getDeconstructionDuration() > 0
-				|| structure instanceof InventoryMapStructure) && checkInteractionDistance(entity, structure);
+	public static boolean canInteract(LivingEntity entity, StructureEntity structure) {
+		return structure != null && (structure instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) structure).isHarvested()
+				|| structure.getDefinition().getDeconstructionDuration() > 0 || structure instanceof InteractionDialogHolder) && checkInteractionDistance(entity, structure);
 	}
-	
-	public static boolean canDeconstruct(LivingEntity entity, MapStructure structure) {
+
+	public static boolean canDeconstruct(LivingEntity entity, StructureEntity structure) {
 		return structure.getDefinition().getDeconstructionDuration() > 0 && checkInteractionDistance(entity, structure);
 	}
 

@@ -15,27 +15,28 @@ import com.pixurvival.core.util.LongSequenceIOHelper;
 import lombok.Getter;
 import lombok.Setter;
 
-public class InventoryMapStructure extends MapStructure implements InteractionDialogHolder, InventoryHolder {
+public class InventoryStructureEntity extends StructureEntity implements InteractionDialogHolder, InventoryHolder {
 
 	private @Getter Inventory inventory;
 	private @Getter @Setter InteractionDialog interactionDialog;
 
-	public InventoryMapStructure(Chunk chunk, Structure definition, int x, int y) {
+	public InventoryStructureEntity(Chunk chunk, Structure definition, int x, int y) {
 		super(chunk, definition, x, y);
 		inventory = new Inventory(((InventoryStructure) definition).getInventorySize());
 		interactionDialog = new InventoryInteractionDialog(this, inventory);
+		inventory.addListener((i, s, p, n) -> getChunk().updateTimestamp());
 	}
 
 	@Override
 	public void writeData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
 		super.writeData(buffer, idSequence);
-		getChunk().getMap().getWorld().writeInventory(buffer, inventory);
+		inventory.write(buffer);
 	}
 
 	@Override
 	public void applyData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
 		super.applyData(buffer, idSequence);
-		getChunk().getMap().getWorld().readInventory(buffer, inventory);
+		inventory.apply(getWorld(), buffer);
 	}
 
 	@Override

@@ -64,6 +64,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	public static final String OVERLAY_FONT = "overlay_font.ttf";
 	public static final String ARROW = "arrow.png";
 	public static final String RIGHT_CLICK_ICON = "right_click_icon.png";
+	public static final String FACTORY_ARROW = "factory_arrow.png";
 
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
 
@@ -185,6 +186,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.load(I18N_BUNDLE, I18NBundle.class);
 		assetManager.load(ARROW, Texture.class);
 		assetManager.load(RIGHT_CLICK_ICON, Texture.class);
+		assetManager.load(FACTORY_ARROW, Texture.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
 		soundPresets = new Sound[SoundPreset.values().length];

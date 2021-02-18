@@ -18,7 +18,7 @@ public class RemoveDurationStructureAction implements Action {
 	public void perform(World world) {
 		MapTile tile = world.getMap().tileAt(x, y);
 		if (tile instanceof TileAndStructure) {
-			MapStructure mapStructure = ((TileAndStructure) tile).getStructure();
+			StructureEntity mapStructure = ((TileAndStructure) tile).getStructure();
 			long duration = mapStructure.getDefinition().getDuration();
 			if (mapStructure.getId() == id && duration > 0 && world.getTime().getTimeMillis() - mapStructure.getCreationTime() >= duration) {
 				mapStructure.getChunk().removeStructure(x, y);
