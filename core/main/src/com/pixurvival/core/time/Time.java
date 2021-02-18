@@ -88,6 +88,7 @@ public class Time {
 		tickCount = VarLenNumberIO.readPositiveVarLong(buffer);
 		decimalAccumulator = buffer.getFloat();
 		timeMillis = VarLenNumberIO.readPositiveVarLong(buffer);
+		previousSecond = timeMillis / 1000L;
 		dayCycle.apply(buffer);
 	}
 
