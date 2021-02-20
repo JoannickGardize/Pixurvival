@@ -18,12 +18,14 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.InventoryListener;
 import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.livingEntity.stats.StatListener;
+import com.pixurvival.core.livingEntity.stats.StatValue;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.util.DrawUtils;
 
 import lombok.Getter;
 
-public class ItemCraftTooltip extends Table implements InventoryListener {
+public class ItemCraftTooltip extends Table implements InventoryListener, StatListener {
 
 	private static @Getter ItemCraftTooltip instance = new ItemCraftTooltip();
 
@@ -114,6 +116,17 @@ public class ItemCraftTooltip extends Table implements InventoryListener {
 	public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
 		if (isVisible()) {
 			build();
+		} else {
+			itemCraft = null;
+		}
+	}
+
+	@Override
+	public void statChanged(float oldValue, StatValue statValue) {
+		if (isVisible()) {
+			build();
+		} else {
+			itemCraft = null;
 		}
 	}
 }

@@ -2,9 +2,10 @@ package com.pixurvival.core.contentPack.structure;
 
 import java.util.function.Consumer;
 
-import com.pixurvival.core.item.InventoryHolder;
+import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
+import com.pixurvival.core.item.MultiInventoryHolder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,25 +14,21 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum StructureDeathItemHandling {
 	DROP(h -> {
-		for (int i = 0; i < h.getInventory().size(); i++) {
-			dropItemOnDeath(h, h.getInventory().getSlot(i));
-		}
+		h.forEachInventory(inv -> inv.foreachItemStacks(i -> dropItemOnDeath(h, i)));
 		removeAll(h);
 	}),
 	REMOVE(StructureDeathItemHandling::removeAll);
 
-	private @Getter Consumer<InventoryHolder> handler;
+	private @Getter Consumer<MultiInventoryHolder> handler;
 
-	private static void dropItemOnDeath(InventoryHolder holder, ItemStack itemStack) {
-		if (itemStack != null) {
-			ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
-			holder.getWorld().getEntityPool().addNew(itemStackEntity);
-			itemStackEntity.getPosition().set(holder.getPosition());
-			itemStackEntity.spawnRandom();
-		}
+	private static void dropItemOnDeath(MultiInventoryHolder holder, ItemStack itemStack) {
+		ItemStackEntity itemStackEntity = new ItemStackEntity(itemStack);
+		holder.getWorld().getEntityPool().addNew(itemStackEntity);
+		itemStackEntity.getPosition().set(holder.getPosition());
+		itemStackEntity.spawnRandom();
 	}
 
-	private static void removeAll(InventoryHolder holder) {
-		holder.getInventory().removeAll();
+	private static void removeAll(MultiInventoryHolder holder) {
+		holder.forEachInventory(Inventory::removeAll);
 	}
 }

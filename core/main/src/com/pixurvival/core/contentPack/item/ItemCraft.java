@@ -10,6 +10,7 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Nullable;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Unique;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
 
@@ -29,6 +30,7 @@ public class ItemCraft extends NamedIdentifiedElement implements Serializable {
 	private ItemStack result = new ItemStack();
 
 	@Valid
+	@Unique
 	private List<ItemStack> recipes = new ArrayList<>();
 
 	@ElementReference

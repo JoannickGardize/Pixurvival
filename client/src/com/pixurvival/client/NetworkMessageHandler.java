@@ -91,7 +91,8 @@ class NetworkMessageHandler extends Listener {
 		putMessageAction(UpdateInteractionDialog.class, d -> {
 			PlayerEntity p = game.getMyPlayer();
 			if (p != null) {
-				if (d.getDialog().getClass() == p.getInteractionDialog().getClass() && d.getDialog().getOwner() == p.getInteractionDialog().getOwner()) {
+				if (p.getInteractionDialog() != null && d.getDialog() != null && d.getDialog().getClass() == p.getInteractionDialog().getClass()
+						&& d.getDialog().getOwner() == p.getInteractionDialog().getOwner()) {
 					p.getInteractionDialog().set(d.getDialog());
 				} else {
 					p.setInteractionDialog(d.getDialog());

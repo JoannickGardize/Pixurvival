@@ -16,10 +16,13 @@ import com.pixurvival.contentPackEditor.component.constraint.LengthConstraint;
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.core.contentPack.FloatHolder;
+import com.pixurvival.core.contentPack.IdentityHolder;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Ascending;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
+import com.pixurvival.core.contentPack.validation.annotation.Unique;
 import com.pixurvival.core.contentPack.validation.handler.AscendingHandler;
+import com.pixurvival.core.contentPack.validation.handler.UniqueHandler;
 
 import lombok.Getter;
 
@@ -147,6 +150,8 @@ public abstract class ListEditor<E> extends ElementEditor<List<E>> {
 			lengthConstraint = LengthConstraint.fromAnnotation((Length) annotation);
 		} else if (annotation instanceof Ascending) {
 			setAdditionalConstraint(list -> AscendingHandler.test((Collection<FloatHolder>) list, ((Ascending) annotation).lastValue()));
+		} else if (annotation instanceof Unique) {
+			setAdditionalConstraint(list -> UniqueHandler.test((List<IdentityHolder>) list));
 		}
 	}
 }

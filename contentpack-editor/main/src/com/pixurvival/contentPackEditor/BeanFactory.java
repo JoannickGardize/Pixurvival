@@ -1,7 +1,9 @@
 package com.pixurvival.contentPackEditor;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ import com.pixurvival.core.contentPack.item.ResourceItem;
 import com.pixurvival.core.contentPack.map.MapProvider;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.sprite.Frame;
+import com.pixurvival.core.util.CaseUtils;
 import com.pixurvival.core.util.Vector2;
 
 import lombok.SneakyThrows;
@@ -124,11 +127,17 @@ public class BeanFactory {
 		for (Method getter : clazz.getMethods()) {
 			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !NamedIdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
 				try {
-					Method setter = clazz.getMethod("set" + getter.getName().substring(3), getter.getReturnType());
+					String propertyName = getter.getName().substring(3);
+					String propertyCamelName = CaseUtils.pascalToCamelCase(propertyName);
+					Field field = clazz.getDeclaredField(propertyCamelName);
+					if (Modifier.isTransient(field.getModifiers())) {
+						continue;
+					}
+					Method setter = clazz.getMethod("set" + propertyName, getter.getReturnType());
 					if (setter.getParameterCount() == 1 && setter.getParameters()[0].getType() == getter.getReturnType()) {
 						action.accept(getter, setter);
 					}
-				} catch (NoSuchMethodException e) {
+				} catch (NoSuchMethodException | NoSuchFieldException | SecurityException e) {
 					// Nothing
 				}
 			}

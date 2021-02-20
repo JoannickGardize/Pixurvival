@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+// TODO abstract item collection
 @EqualsAndHashCode(of = "slots")
 public class Inventory {
 

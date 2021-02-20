@@ -120,12 +120,12 @@ public class ByteBufferUtils {
 		return VarLenNumberIO.readPositiveVarLong(buffer) + world.getTime().getSerializationContextTime();
 	}
 
-	public static void writeTime(ByteBuffer buffer, World world, long time) {
-		VarLenNumberIO.writePositiveVarLong(buffer, time - world.getTime().getSerializationContextTime());
+	public static void writeTime(ByteBuffer buffer, long time, long referenceTime) {
+		VarLenNumberIO.writePositiveVarLong(buffer, time - referenceTime);
 	}
 
-	public static long readTime(ByteBuffer buffer, World world) {
-		return VarLenNumberIO.readVarLong(buffer) + world.getTime().getSerializationContextTime();
+	public static long readTime(ByteBuffer buffer, long referenceTime) {
+		return VarLenNumberIO.readVarLong(buffer) + referenceTime;
 	}
 
 	public static void writePastTime(ByteBuffer buffer, World world, long time) {

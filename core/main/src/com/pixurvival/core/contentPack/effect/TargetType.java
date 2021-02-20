@@ -13,7 +13,8 @@ public enum TargetType {
 	ALL_ENEMIES((self, other) -> self.getTeam() != other.getTeam()),
 	ALL_ALLIES((self, other) -> self.getTeam() == other.getTeam()),
 	OTHER_ALLIES((self, other) -> self.getTeam() == other.getTeam() && self.getOrigin() != other),
-	ORIGIN((self, other) -> other == self.getOrigin());
+	ORIGIN((self, other) -> other == self.getOrigin()),
+	STRUCTURES((self, other) -> false);
 
 	private @Getter BiPredicate<TeamMember, LivingEntity> test;
 }

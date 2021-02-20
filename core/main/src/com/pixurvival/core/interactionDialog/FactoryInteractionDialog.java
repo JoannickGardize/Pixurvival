@@ -40,6 +40,9 @@ public class FactoryInteractionDialog extends InteractionDialog implements Inven
 		recipesInventory = new Inventory(factoryStructure.getRecipeSize());
 		fuelsInventory = new Inventory(factoryStructure.getFuelSize());
 		resultsInventory = new Inventory(factoryStructure.getResultSize());
+		recipesInventory.addListener(this);
+		fuelsInventory.addListener(this);
+		resultsInventory.addListener(this);
 	}
 
 	@Override
@@ -99,7 +102,6 @@ public class FactoryInteractionDialog extends InteractionDialog implements Inven
 			input.setPosition(buffer.position());
 			return result;
 		}
-
 	}
 
 	public static void write(ByteBuffer buffer, FactoryInteractionDialog dialog, World world) {
@@ -108,7 +110,7 @@ public class FactoryInteractionDialog extends InteractionDialog implements Inven
 		dialog.resultsInventory.write(buffer);
 		buffer.putFloat(dialog.fuelTank);
 		VarLenNumberIO.writeVarInt(buffer, dialog.actualCraftIndex);
-		ByteBufferUtils.writeTime(buffer, world, dialog.finishTime);
+		VarLenNumberIO.writePositiveVarLong(buffer, dialog.finishTime);
 	}
 
 	public static void read(ByteBuffer buffer, FactoryInteractionDialog dialog, World world) {
@@ -117,7 +119,7 @@ public class FactoryInteractionDialog extends InteractionDialog implements Inven
 		dialog.getResultsInventory().apply(world, buffer);
 		dialog.setFuelTank(buffer.getFloat());
 		dialog.setActualCraftIndex(VarLenNumberIO.readVarInt(buffer));
-		dialog.setFinishTime(ByteBufferUtils.readTime(buffer, world));
+		dialog.setFinishTime(VarLenNumberIO.readPositiveVarLong(buffer));
 	}
 
 }

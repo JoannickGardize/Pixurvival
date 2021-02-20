@@ -6,6 +6,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.IdentityHolder;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
@@ -15,7 +16,7 @@ import lombok.Data;
 
 // TODO separate item quantity class for content pack, then set this class immutable.
 @Data
-public class ItemStack implements Serializable {
+public class ItemStack implements Serializable, IdentityHolder {
 
 	private static final long serialVersionUID = 1L;
 
@@ -115,5 +116,10 @@ public class ItemStack implements Serializable {
 			return new ItemStack(pack.getItems().get(itemId), quantity);
 		}
 
+	}
+
+	@Override
+	public Object getIdentifier() {
+		return item;
 	}
 }

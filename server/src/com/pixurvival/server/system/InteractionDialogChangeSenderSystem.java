@@ -41,8 +41,8 @@ public class InteractionDialogChangeSenderSystem implements GameSystem, Interact
 	private void sendUpdate(PlayerEntity p, InteractionDialog interactionDialog) {
 		Set<PlayerGameSession> sessions = sessionsByEntities.get(p.getId());
 		if (sessions != null) {
-			UpdateInteractionDialog updateInteractionDialog = new UpdateInteractionDialog(interactionDialog);
-			sessions.forEach(s -> s.getConnection().sendTCP(updateInteractionDialog));
+			// TODO The last one per player only
+			sessions.forEach(s -> s.getConnection().sendTCP(new UpdateInteractionDialog(interactionDialog)));
 		}
 	}
 
@@ -51,5 +51,4 @@ public class InteractionDialogChangeSenderSystem implements GameSystem, Interact
 		notifiedDialogs.forEach(d -> d.getViewers().forEach(p -> sendUpdate(p, d)));
 		notifiedDialogs.clear();
 	}
-
 }

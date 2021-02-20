@@ -52,6 +52,7 @@ import com.pixurvival.gdxcore.ui.StatusBarUI;
 import com.pixurvival.gdxcore.ui.TimeUI;
 import com.pixurvival.gdxcore.ui.UILayoutManager;
 import com.pixurvival.gdxcore.ui.interactionDialog.InteractionDialogUI;
+import com.pixurvival.gdxcore.ui.tooltip.FactoryTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.SubStatsTooltip;
@@ -147,6 +148,7 @@ public class WorldScreen implements Screen {
 		hudStage.addActor(mouseIconActor);
 		statusBarUI.updatePosition();
 		hudStage.addActor(ItemCraftTooltip.getInstance());
+		hudStage.addActor(FactoryTooltip.getInstance());
 		hudStage.addActor(ItemTooltip.getInstance());
 		hudStage.addActor(SubStatsTooltip.getInstance());
 		SubStatsTooltip.getInstance().setVisible(false);
@@ -165,7 +167,10 @@ public class WorldScreen implements Screen {
 		uiLayoutManager.add(timeUI, UILayoutManager.RIGHT_SIDE, 100);
 
 		PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
+		PixurvivalGame.getClient().getMyInventory().addListener(FactoryTooltip.getInstance());
 		world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
+		world.getMyPlayer().getStats().addListener(ItemCraftTooltip.getInstance());
+
 		defaultSoundsPlayer = new DefaultSoundsPlayer(world);
 	}
 

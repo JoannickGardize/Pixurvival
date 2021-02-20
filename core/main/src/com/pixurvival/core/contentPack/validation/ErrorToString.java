@@ -23,6 +23,7 @@ import com.pixurvival.core.contentPack.validation.annotation.ResourceReference;
 import com.pixurvival.core.contentPack.validation.annotation.ResourceType;
 import com.pixurvival.core.contentPack.validation.annotation.SpriteHeight;
 import com.pixurvival.core.contentPack.validation.annotation.SpriteWidth;
+import com.pixurvival.core.contentPack.validation.annotation.Unique;
 import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteFrame;
 import com.pixurvival.core.contentPack.validation.annotation.UnitSpriteSheet;
 import com.pixurvival.core.contentPack.validation.handler.StaticMapResourceMissing;
@@ -82,6 +83,7 @@ public class ErrorToString {
 		addToStringFunction(Ascending.class,
 				p -> "the values of the list must be in ascending order" + (p.lastValue() > Float.NEGATIVE_INFINITY ? " and the last value must be " + p.lastValue() : ""));
 		addToStringFunction(StaticMapResourceMissing.class, r -> "the image resource " + r.getResourceName() + " is missing");
+		addToStringFunction(Unique.class, u -> "the elements must be unique");
 	}
 
 	public static String toString(Object cause) {

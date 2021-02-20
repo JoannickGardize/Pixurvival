@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Unique;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.ItemStack;
 
@@ -18,9 +19,11 @@ public class FactoryCraft implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Valid
+	@Unique
 	private List<ItemStack> recipes = new ArrayList<>();
 
 	@Valid
+	@Unique
 	private List<ItemStack> results = new ArrayList<>();
 
 	@Positive

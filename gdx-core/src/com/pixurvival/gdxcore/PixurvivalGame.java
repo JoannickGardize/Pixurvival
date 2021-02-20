@@ -20,6 +20,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -65,6 +66,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 	public static final String ARROW = "arrow.png";
 	public static final String RIGHT_CLICK_ICON = "right_click_icon.png";
 	public static final String FACTORY_ARROW = "factory_arrow.png";
+	public static final String FUEL_BAR = "fuel_bar.png";
 
 	public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##", DecimalFormatSymbols.getInstance(Locale.US));
 
@@ -187,8 +189,11 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		assetManager.load(ARROW, Texture.class);
 		assetManager.load(RIGHT_CLICK_ICON, Texture.class);
 		assetManager.load(FACTORY_ARROW, Texture.class);
+		assetManager.load(FUEL_BAR, Texture.class);
 		// TODO barre de chargement
 		assetManager.finishLoading();
+
+		assetManager.get(FACTORY_ARROW, Texture.class).setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		soundPresets = new Sound[SoundPreset.values().length];
 		for (int i = 0; i < soundPresets.length; i++) {
 			soundPresets[i] = assetManager.get(getSoundFileName(SoundPreset.values()[i]));

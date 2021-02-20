@@ -29,6 +29,7 @@ import com.pixurvival.core.contentPack.validation.handler.ResourceReferenceHandl
 import com.pixurvival.core.contentPack.validation.handler.SpriteHeightHandler;
 import com.pixurvival.core.contentPack.validation.handler.SpriteWidthHandler;
 import com.pixurvival.core.contentPack.validation.handler.StaticMapResourcesHandler;
+import com.pixurvival.core.contentPack.validation.handler.UniqueHandler;
 import com.pixurvival.core.contentPack.validation.handler.UnitSpriteFrameHandler;
 import com.pixurvival.core.contentPack.validation.handler.UnitSpriteSheetHandler;
 import com.pixurvival.core.reflection.visitor.VisitNode;
@@ -76,6 +77,7 @@ public class ContentPackValidator {
 		addAnnotationHandler(new UnitSpriteFrameHandler());
 		addAnnotationHandler(new AscendingHandler());
 		addAnnotationHandler(new StaticMapResourcesHandler());
+		addAnnotationHandler(new UniqueHandler());
 	}
 
 	public ErrorCollection validate(ContentPack contentPack) {

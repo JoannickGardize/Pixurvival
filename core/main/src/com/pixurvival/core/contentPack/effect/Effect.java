@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 
 import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.alteration.InstantDamageAlteration;
+import com.pixurvival.core.alteration.InstantHealAlteration;
 import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -29,7 +30,7 @@ public class Effect extends NamedIdentifiedElement {
 
 	private static final long serialVersionUID = 1L;
 
-	private transient InstantDamageAlteration structureDamageAlteration;
+	private transient List<Alteration> structureAlterations;
 
 	private transient BiConsumer<EffectEntity, MapTile> tileCollisionAction;
 
@@ -89,16 +90,16 @@ public class Effect extends NamedIdentifiedElement {
 
 	@Override
 	public void initialize() {
-		initializeStructureDamage();
+		initializeStructureAlterations();
 		if (solid) {
-			if (structureDamageAlteration != null) {
+			if (!structureAlterations.isEmpty()) {
 				tileCollisionAction = (entity, tile) -> {
 					if (tile.isSolid()) {
 						entity.setAlive(false);
 						entity.setSneakyDeath(true);
 					}
-					if (tile.getStructure() != null && tile.getStructure().getMaxHealth() > 0) {
-						structureDamageAlteration.apply(entity, tile.getStructure());
+					if (tile.getStructure() != null) {
+						structureAlterations.forEach(a -> a.apply(entity, tile.getStructure()));
 						entity.flushCheckList();
 					}
 				};
@@ -110,22 +111,31 @@ public class Effect extends NamedIdentifiedElement {
 					}
 				};
 			}
-		} else if (structureDamageAlteration != null) {
+		} else if (!structureAlterations.isEmpty()) {
 			tileCollisionAction = (entity, tile) -> {
-				if (tile.getStructure() != null && tile.getStructure().getMaxHealth() > 0) {
-					structureDamageAlteration.apply(entity, tile.getStructure());
+				if (tile.getStructure() != null) {
+					structureAlterations.forEach(a -> a.apply(entity, tile.getStructure()));
 					entity.flushCheckList();
 				}
 			};
 		}
 	}
 
-	public void initializeStructureDamage() {
+	private void initializeStructureAlterations() {
+		structureAlterations = new ArrayList<>();
 		for (EffectTarget effectTarget : targets) {
 			if (effectTarget.getTargetType() == TargetType.ALL_ENEMIES) {
 				for (Alteration alteration : effectTarget.getAlterations()) {
 					if (alteration instanceof InstantDamageAlteration && ((InstantDamageAlteration) alteration).isApplyToStructures()) {
-						structureDamageAlteration = (InstantDamageAlteration) alteration;
+						structureAlterations.add(alteration);
+						return;
+					}
+				}
+			}
+			if (effectTarget.getTargetType() == TargetType.STRUCTURES) {
+				for (Alteration alteration : effectTarget.getAlterations()) {
+					if (alteration instanceof InstantHealAlteration) {
+						structureAlterations.add(alteration);
 						return;
 					}
 				}

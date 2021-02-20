@@ -18,9 +18,9 @@ public class InstantDamageAlteration extends UniqueAlteration {
 	@Valid
 	private StatFormula amount = new StatFormula();
 
-	@Valid
 	private boolean applyToStructures = true;
 
+	@Valid
 	private DamageAttributes attributes = new DamageAttributes();
 
 	@Override

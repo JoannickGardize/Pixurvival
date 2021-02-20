@@ -120,4 +120,17 @@ public class StructureEditor extends InstanceChangingRootElementEditor<Structure
 
 		return entries;
 	}
+
+	@Override
+	protected void initialize(Structure oldInstance, Structure newInstance) {
+		newInstance.getDimensions().setWidth(oldInstance.getDimensions().getWidth());
+		newInstance.getDimensions().setHeight(oldInstance.getDimensions().getHeight());
+		newInstance.setSolid(oldInstance.isSolid());
+		newInstance.setSpriteSheet(oldInstance.getSpriteSheet());
+		newInstance.setRandomHorizontalFlip(oldInstance.isRandomHorizontalFlip());
+		newInstance.setAvoidStuck(oldInstance.isAvoidStuck());
+		newInstance.setDuration(oldInstance.getDuration());
+		newInstance.setLightEmissionRadius(oldInstance.getLightEmissionRadius());
+		super.initialize(oldInstance, newInstance);
+	}
 }

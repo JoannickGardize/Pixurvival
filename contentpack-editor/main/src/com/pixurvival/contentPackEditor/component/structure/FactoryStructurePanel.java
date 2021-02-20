@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
@@ -13,6 +14,7 @@ import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.FactoryCraft;
 import com.pixurvival.core.contentPack.structure.FactoryFuel;
 import com.pixurvival.core.contentPack.structure.FactoryStructure;
+import com.pixurvival.core.contentPack.structure.StructureDeathItemHandling;
 
 public class FactoryStructurePanel extends JPanel {
 
@@ -20,6 +22,7 @@ public class FactoryStructurePanel extends JPanel {
 
 	public FactoryStructurePanel(StructureEditor structureEditor) {
 		ElementChooserButton<SpriteSheet> workingSpriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
+		EnumChooser<StructureDeathItemHandling> itemHandlingOnDeathChooser = new EnumChooser<>(StructureDeathItemHandling.class, "playerDeathItemHandling");
 
 		IntegerInput recipeSizeInput = new IntegerInput();
 		IntegerInput fuelSizeInput = new IntegerInput();
@@ -28,6 +31,7 @@ public class FactoryStructurePanel extends JPanel {
 		ListEditor<FactoryFuel> fuelsEditor = new HorizontalListEditor<>(FactoryFuelEditor::new, FactoryFuel::new);
 		ListEditor<FactoryCraft> craftsEditor = new VerticalListEditor<>(FactoryCraftEditor::new, FactoryCraft::new);
 
+		structureEditor.bind(itemHandlingOnDeathChooser, "itemHandlingOnDeath", FactoryStructure.class);
 		structureEditor.bind(workingSpriteSheetChooser, "workingSpriteSheet", FactoryStructure.class);
 		structureEditor.bind(recipeSizeInput, "recipeSize", FactoryStructure.class);
 		structureEditor.bind(fuelSizeInput, "fuelSize", FactoryStructure.class);
@@ -43,7 +47,8 @@ public class FactoryStructurePanel extends JPanel {
 		craftsEditor.setBorder(LayoutUtils.createGroupBorder("factoryStructureEditor.crafts"));
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(LayoutUtils.single(LayoutUtils.labelled("factoryStructureEditor. workingSpriteSheet", workingSpriteSheetChooser)));
+		add(LayoutUtils.createHorizontalLabelledBox("factoryStructureEditor. workingSpriteSheet", LayoutUtils.single(workingSpriteSheetChooser), "structureEditor.itemHandlingOnDeath",
+				LayoutUtils.single(itemHandlingOnDeathChooser)));
 		add(inventoryPanel);
 		add(fuelsEditor);
 		add(craftsEditor);

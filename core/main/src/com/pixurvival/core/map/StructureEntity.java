@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import com.pixurvival.core.Body;
 import com.pixurvival.core.CustomDataHolder;
 import com.pixurvival.core.Damageable;
+import com.pixurvival.core.Healable;
 import com.pixurvival.core.World;
 import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -22,7 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable {
+public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable, Healable {
 
 	@FunctionalInterface
 	private static interface StructureSupplier {
@@ -123,6 +124,9 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
 
 	@Override
 	public void takeDamage(float amount, DamageAttributes attributes) {
+		if (definition.getMaxHealth() == 0) {
+			return;
+		}
 		health -= amount;
 		if (health < 0) {
 			health = 0;
@@ -157,5 +161,17 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
 	@Override
 	public Team getTeam() {
 		return TeamSet.WILD_TEAM;
+	}
+
+	@Override
+	public void takeHeal(float amount) {
+		if (definition.getMaxHealth() == 0) {
+			return;
+		}
+		health += amount;
+		if (health > definition.getMaxHealth()) {
+			health = getMaxHealth();
+		}
+		getChunk().notifyStructureChanged(this, new DamageableStructureUpdate(getTileX(), getTileY(), getId(), health));
 	}
 }

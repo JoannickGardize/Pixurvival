@@ -1,12 +1,15 @@
 package com.pixurvival.core.map;
 
 import java.nio.ByteBuffer;
+import java.util.function.Consumer;
 
 import com.pixurvival.core.contentPack.structure.FactoryStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.interactionDialog.FactoryInteractionDialog;
 import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
+import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.MultiInventoryHolder;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.FactoryStructureUpdate;
 import com.pixurvival.core.util.ByteBufferUtils;
@@ -15,7 +18,7 @@ import com.pixurvival.core.util.LongSequenceIOHelper;
 import lombok.Getter;
 import lombok.Setter;
 
-public class FactoryStructureEntity extends StructureEntity implements InteractionDialogHolder {
+public class FactoryStructureEntity extends StructureEntity implements InteractionDialogHolder, MultiInventoryHolder {
 
 	private @Getter FactoryInteractionDialog interactionDialog;
 	private @Getter @Setter boolean waitingInput;
@@ -58,6 +61,11 @@ public class FactoryStructureEntity extends StructureEntity implements Interacti
 		}
 	}
 
+	@Override
+	public void onDeath() {
+		((FactoryStructure) getDefinition()).getItemHandlingOnDeath().getHandler().accept(this);
+	}
+
 	private void updateWaitingInput() {
 		waitingInput = false;
 		getChunk().updateTimestamp();
@@ -66,5 +74,12 @@ public class FactoryStructureEntity extends StructureEntity implements Interacti
 	private void updateWaitingOutput() {
 		waitingOutput = false;
 		getChunk().updateTimestamp();
+	}
+
+	@Override
+	public void forEachInventory(Consumer<Inventory> action) {
+		action.accept(interactionDialog.getRecipesInventory());
+		action.accept(interactionDialog.getFuelsInventory());
+		action.accept(interactionDialog.getResultsInventory());
 	}
 }

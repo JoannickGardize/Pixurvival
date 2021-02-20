@@ -104,6 +104,7 @@ public class FactorySystem implements GameSystem, ChunkLoadInterest, StructureCh
 	private void finishCraftIfPossible(FactoryStructureEntity entity, FactoryInteractionDialog dialog) {
 		if (dialog.getResultsInventory().addAllOrFail(dialog.getFactoryStructure().getCrafts().get(dialog.getActualCraftIndex()).getResults())) {
 			dialog.setActualCraftIndex(-1);
+			dialog.notifyChanged();
 		} else {
 			entity.setWaitingOutput(true);
 		}
@@ -128,6 +129,7 @@ public class FactorySystem implements GameSystem, ChunkLoadInterest, StructureCh
 				} else {
 					dialog.setFinishTime(time.getTimeMillis() + craft.getDuration());
 				}
+				dialog.notifyChanged();
 				return;
 			}
 		}
