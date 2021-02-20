@@ -34,7 +34,9 @@ public class ChunkManager {
 
 	public ChunkManager(TiledMap map) {
 		this.map = map;
-		new Thread(this::run, "Chunk Manager").start();
+		Thread t = new Thread(this::run, "Chunk Manager");
+		t.setPriority(4);
+		t.start();
 	}
 
 	public void addPlugin(ChunkManagerPlugin plugin) {

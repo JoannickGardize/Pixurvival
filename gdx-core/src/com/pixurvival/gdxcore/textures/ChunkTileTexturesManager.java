@@ -41,7 +41,9 @@ public class ChunkTileTexturesManager {
 		for (Tile tile : PixurvivalGame.getWorld().getContentPack().getTiles()) {
 			tileTextures.put(TileTextureKey.ofAll(tile), contentPackTextures.getTileTextures(tile));
 		}
-		new Thread(this::run, "Chunk-texturer").start();
+		Thread t = new Thread(this::run, "Chunk-texturer");
+		t.setPriority(3);
+		t.start();
 	}
 
 	public void update(Stage worldStage) {
