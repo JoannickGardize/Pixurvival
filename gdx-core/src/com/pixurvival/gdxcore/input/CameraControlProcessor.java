@@ -39,7 +39,7 @@ public class CameraControlProcessor extends InputAdapter {
 	public void updateCameraPosition(Vector2 playerPosition) {
 		updateTargetPosition(Gdx.input.getX(), Gdx.input.getY());
 		Vector2 targetPosition = new Vector2(playerPosition).add(relativeCameraPosition);
-		float timeForward = Gdx.graphics.getRawDeltaTime();
+		float timeForward = Gdx.graphics.getDeltaTime();
 		// if (timeForward > 0.1f) {
 		// timeForward = 0.1f;
 		// }
