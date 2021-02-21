@@ -249,7 +249,7 @@ public class CreatureEntity extends LivingEntity {
 		TeamMemberSerialization.writeNullSafe(buffer, master == this ? null : master, true);
 		VarLenNumberIO.writePositiveVarInt(buffer, currentBehavior.getId());
 		if (definition.getInventorySize() > 0) {
-			inventory.apply(getWorld(), buffer);
+			inventory.write(buffer);
 		}
 	}
 
@@ -272,7 +272,7 @@ public class CreatureEntity extends LivingEntity {
 		// TODO smart reset behavior
 		currentBehavior.begin(this);
 		if (definition.getInventorySize() > 0) {
-			inventory.write(buffer);
+			inventory.apply(getWorld(), buffer);
 		}
 		addHealthAdapterListener();
 	}
