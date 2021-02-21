@@ -4,10 +4,12 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserButton;
 import com.pixurvival.contentPackEditor.component.item.StatModifierEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
@@ -39,6 +41,7 @@ import com.pixurvival.core.alteration.PersistentAlteration;
 import com.pixurvival.core.alteration.PlayCustomSoundAlteration;
 import com.pixurvival.core.alteration.PlaySoundAlteration;
 import com.pixurvival.core.alteration.RepeatAlteration;
+import com.pixurvival.core.alteration.SetSpawnPositionAlteration;
 import com.pixurvival.core.alteration.SilenceAlteration;
 import com.pixurvival.core.alteration.SourceDirection;
 import com.pixurvival.core.alteration.StatAlteration;
@@ -259,6 +262,11 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(amountEditor, "amount", PermanentStatAlteration.class);
 			return LayoutUtils.createHorizontalLabelledBox("statModifierEditor.statType", statTypeChooser, "generic.add", amountEditor);
 
+		}));
+
+		// SetSpawnPositionAlteration
+		entries.add(new ClassEntry(SetSpawnPositionAlteration.class, () -> {
+			return LayoutUtils.single(new JLabel(TranslationService.getInstance().getString("alterationEditor.setSpawnPosition")));
 		}));
 
 		return entries;

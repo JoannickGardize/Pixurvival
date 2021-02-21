@@ -45,6 +45,7 @@ import com.pixurvival.core.alteration.OverridingSpriteSheetAlteration;
 import com.pixurvival.core.alteration.PlayCustomSoundAlteration;
 import com.pixurvival.core.alteration.PlaySoundAlteration;
 import com.pixurvival.core.alteration.RepeatAlteration;
+import com.pixurvival.core.alteration.SetSpawnPositionAlteration;
 import com.pixurvival.core.alteration.SilenceAlteration;
 import com.pixurvival.core.alteration.StatAlteration;
 import com.pixurvival.core.alteration.StunAlteration;
@@ -101,6 +102,7 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
+import com.pixurvival.core.contentPack.structure.FactoryStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.InventoryStructure;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -331,6 +333,8 @@ public class ContentPackSerialization {
 		addClassTag(representer, DropItemsAlteration.class);
 		addClassTag(representer, PlayCustomSoundAlteration.class);
 		addClassTag(representer, InventoryStructure.class);
+		addClassTag(representer, FactoryStructure.class);
+		addClassTag(representer, SetSpawnPositionAlteration.class);
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {
