@@ -1,6 +1,7 @@
 package com.pixurvival.server.lobby;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class LobbySession {
 
 	private static final String DEFAULT_TEAM_NAME = "Default";
 
-	private @Getter List<PlayerLobbySession> playerSessions = new ArrayList<>();
+	private @Getter List<PlayerLobbySession> playerSessions = Collections.synchronizedList(new ArrayList<>());
 	private @Getter List<LobbySessionTeam> teams = new ArrayList<>();
 	private @Getter PixurvivalServer server;
 

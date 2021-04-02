@@ -179,11 +179,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	}
 
 	public Locale getLocaleFor(Collection<String> localTags) {
-		List<Locale> locales = new ArrayList<>();
-		for (String localTag : localTags) {
-			locales.add(Locale.forLanguageTag(localTag));
-		}
-		return LocaleUtils.findBestMatch(localePriorityList, locales);
+		return LocaleUtils.findBestMatch(localePriorityList, LocaleUtils.toLocale(localTags));
 	}
 
 	public void checkContentPackValidity(ContentPackCheck check) {

@@ -9,28 +9,17 @@ import lombok.AllArgsConstructor;
  * Enum representing All the history of the release versions since the alpha 5.
  * The latest enum constant is current version. The ordinal of the constants is
  * the order of the release dates.
- * 
+ *
  * @author SharkHendrix
  *
  */
 @AllArgsConstructor
 public enum ReleaseVersion {
 
-	OLDER(BackwardCompatibility.NONE),
-	ALPHA_4(BackwardCompatibility.NONE),
-	ALPHA_4B(BackwardCompatibility.NONE),
-	ALPHA_5(BackwardCompatibility.NONE),
-	ALPHA_5B(BackwardCompatibility.NONE),
-	ALPHA_6(BackwardCompatibility.NONE),
-	ALPHA_6B(BackwardCompatibility.FULL),
-	ALPHA_7(BackwardCompatibility.FULL),
-	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY),
-	ALPHA_8B(BackwardCompatibility.FULL),
-	ALPHA_9(BackwardCompatibility.NONE),
-	ALPHA_10(BackwardCompatibility.NONE),
-	ALPHA_11(BackwardCompatibility.FULL),
-	ALPHA_12(BackwardCompatibility.NONE),
-	ALPHA_12B(BackwardCompatibility.FULL);
+	OLDER(BackwardCompatibility.NONE), ALPHA_4(BackwardCompatibility.NONE), ALPHA_4B(BackwardCompatibility.NONE), ALPHA_5(BackwardCompatibility.NONE),
+	ALPHA_5B(BackwardCompatibility.NONE), ALPHA_6(BackwardCompatibility.NONE), ALPHA_6B(BackwardCompatibility.FULL), ALPHA_7(BackwardCompatibility.FULL),
+	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY), ALPHA_8B(BackwardCompatibility.FULL), ALPHA_9(BackwardCompatibility.NONE), ALPHA_10(BackwardCompatibility.NONE),
+	ALPHA_11(BackwardCompatibility.FULL), ALPHA_12(BackwardCompatibility.NONE), ALPHA_12B(BackwardCompatibility.FULL);
 
 	private BackwardCompatibility backwardCompatibility;
 
@@ -46,7 +35,7 @@ public enum ReleaseVersion {
 	/**
 	 * Same as {@link #valueOf(String)}, but returns {@link #OLDER} if no match
 	 * instead of throwing exception.
-	 * 
+	 *
 	 * @param s
 	 * @return
 	 */
@@ -64,11 +53,16 @@ public enum ReleaseVersion {
 
 	/**
 	 * Null safe version of {{@link #displayName()}
-	 * 
+	 *
 	 * @param version
 	 * @return
 	 */
 	public static String displayNameOf(ReleaseVersion version) {
+		return version == null ? "Unknown" : version.displayName();
+	}
+
+	public static String displayNameOf(String constantName) {
+		ReleaseVersion version = ReleaseVersion.valueFor(constantName);
 		return version == null ? "Unknown" : version.displayName();
 	}
 
@@ -95,11 +89,10 @@ public enum ReleaseVersion {
 	 * <p>
 	 * For two release versions, {@code v1.isCompatibleWith(v2)} will always returns
 	 * the same result as {@code v2.isCompatibleWith(v1)}.
-	 * 
-	 * @param other
-	 *            the version to check if this version is compatible with.
+	 *
+	 * @param other      the version to check if this version is compatible with.
 	 * @param flagGetter
-	 * 
+	 *
 	 * @return true if the versions are compatible, false otherwise.
 	 */
 	private boolean isCompatibleWith(ReleaseVersion other, Predicate<ReleaseVersion> flagGetter) {

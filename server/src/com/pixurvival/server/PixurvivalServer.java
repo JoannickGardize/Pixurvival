@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EndGameData;
+import com.pixurvival.core.WorldListener;
 import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.message.KryoInitializer;
 import com.pixurvival.core.message.WorldKryo;
@@ -22,7 +24,7 @@ import com.pixurvival.server.util.ServerMainArgs;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-public class PixurvivalServer {
+public class PixurvivalServer implements WorldListener {
 
 	private Server server;
 	private NetworkMessageHandler serverListener = new NetworkMessageHandler(this);
@@ -36,8 +38,11 @@ public class PixurvivalServer {
 	private String[] gameBeginningCommands;
 
 	@SneakyThrows
-	public PixurvivalServer(ServerMainArgs serverArgs) {
+	public PixurvivalServer(ServerMainArgs serverArgs, ServerGameListener... listeners) {
 		Log.info("Starting server version " + ReleaseVersion.actual().displayName());
+		for (ServerGameListener listener : listeners) {
+			this.listeners.add(listener);
+		}
 		if (MathUtils.equals(serverArgs.getSimulatePacketLossRate(), 0)) {
 			server = new KryoServer();
 		} else {
@@ -64,10 +69,13 @@ public class PixurvivalServer {
 		for (String command : gameBeginningCommands) {
 			engineThread.requestCommand(command);
 		}
+		listeners.forEach(l -> l.gameStarted(session));
+		session.getWorld().addListener(this);
 	}
 
 	public void addLobbySession(LobbySession lobby) {
 		lobbySessions.add(lobby);
+		listeners.forEach(l -> l.lobbyStarted(lobby));
 	}
 
 	public void removeLobbySession(LobbySession lobby) {
@@ -78,8 +86,12 @@ public class PixurvivalServer {
 		connectionsByName.put(playerConnection.toString(), playerConnection);
 	}
 
+	public int countPlayerConnection() {
+		return connectionsByName.size();
+	}
+
 	public void removePlayerConnection(String name) {
-		connectionsByName.remove(name);
+		listeners.forEach(l -> l.disconnected(connectionsByName.remove(name)));
 	}
 
 	public PlayerConnection getPlayerConnection(String name) {
@@ -107,8 +119,9 @@ public class PixurvivalServer {
 		if (lobbySessions.size() == 1) {
 			LobbySession gameLobby = lobbySessions.get(0);
 			gameLobby.addPlayer(playerConnection);
-		} else {
 			listeners.forEach(l -> l.playerLoggedIn(playerConnection));
+		} else {
+			listeners.forEach(l -> l.playerRejoined(playerConnection));
 		}
 	}
 
@@ -122,5 +135,10 @@ public class PixurvivalServer {
 				action.accept((PlayerConnection) connection);
 			}
 		}
+	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		listeners.forEach(l -> l.gameEnded(data));
 	}
 }

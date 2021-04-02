@@ -13,13 +13,16 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
-import com.pixurvival.server.PlayerConnection;
+import com.pixurvival.server.GameSession;
 import com.pixurvival.server.PixurvivalServer;
+import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGameListener;
 import com.pixurvival.server.console.CommandMultiplexer;
 import com.pixurvival.server.console.ServerCommands;
+import com.pixurvival.server.lobby.LobbySession;
 import com.pixurvival.server.util.ServerMainArgs;
 
 public class ServerFrame extends JPanel implements ServerGameListener {
@@ -68,7 +71,7 @@ public class ServerFrame extends JPanel implements ServerGameListener {
 	}
 
 	@Override
-	public void playerLoggedIn(PlayerConnection playerConnection) {
+	public void playerRejoined(PlayerConnection playerConnection) {
 		Log.info("New player connected : " + playerConnection);
 	}
 
@@ -79,6 +82,36 @@ public class ServerFrame extends JPanel implements ServerGameListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+	}
+
+	@Override
+	public void lobbyStarted(LobbySession lobbySession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void gameStarted(GameSession gameSession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void playerLoggedIn(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnected(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

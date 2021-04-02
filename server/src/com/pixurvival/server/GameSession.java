@@ -20,8 +20,8 @@ import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPoolListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.PlayerMapEventListener;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
@@ -35,6 +35,7 @@ import com.pixurvival.core.message.Respawn;
 import com.pixurvival.core.message.Spectate;
 import com.pixurvival.core.message.TeamComposition;
 import com.pixurvival.core.team.Team;
+import com.pixurvival.server.lobby.LobbySession;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -90,7 +91,8 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	@Override
 	public void chunkLoaded(Chunk chunk) {
 		for (PlayerGameSession playerSession : players) {
-			if (playerSession.isMissingAndRemove(chunk.getPosition()) || chunk.getPosition().insideSquare(playerSession.getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
+			if (playerSession.isMissingAndRemove(chunk.getPosition())
+					|| chunk.getPosition().insideSquare(playerSession.getPlayerEntity().getPosition(), GameConstants.PLAYER_VIEW_DISTANCE)) {
 				playerSession.addChunkIfNotKnown(chunk);
 			}
 		}
@@ -236,7 +238,7 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 	}
 
 	@Override
-	public void playerLoggedIn(PlayerConnection connection) {
+	public void playerRejoined(PlayerConnection connection) {
 		for (PlayerGameSession ps : players) {
 			if (!ps.getConnection().isConnected() && ps.getConnection().toString().equals(connection.toString())) {
 				ps.getKnownPositions().clear();
@@ -292,6 +294,10 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		return sessionsByEntities.computeIfAbsent(playerEntity.getId(), id -> new HashSet<>());
 	}
 
+	public PlayerGameSession sessionOfPlayerId(long id) {
+		return sessionsByOriginalPlayers.get(id);
+	}
+
 	@Override
 	public void sneakyEntityRemoved(Entity e) {
 	}
@@ -319,5 +325,29 @@ public class GameSession implements TiledMapListener, PlayerMapEventListener, En
 		playerSession.setInventoryChanged(true);
 		setSessionFocusOn(playerSession, player);
 		playerSession.getConnection().sendTCP(new Respawn(player));
+	}
+
+	@Override
+	public void lobbyStarted(LobbySession lobbySession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void gameStarted(GameSession gameSession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void playerLoggedIn(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnected(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
 	}
 }
