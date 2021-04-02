@@ -154,7 +154,7 @@ project(":gdx-desktop") {
     			exclude 'contentPacks'
     			srcDir '../contentpack-editor/main/resources'
     			// TODO le dossier est présent dans le jar, mais vide
- 			}   		
+ 			}
     	}
     }
 
@@ -226,10 +226,19 @@ project(":discord-bot") {
     test {
     	useJUnitPlatform()
 	}
+	
+	task botFatJar(type: Jar) {
+	    manifest {
+	        attributes 'Main-Class': "com.pixurvival.discordbot.PixBot"
+	    }
+	    archiveName = "pixurvival-discord-bot.jar"
+	    from { (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect { it.isDirectory() ? it : zipTree(it) } }
+	    with jar
+	}
 }
 
 task packageDistribution(type: GradleBuild) {
-     tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
+     tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
 }
 
 task copyJars(type: Copy) {

@@ -24,7 +24,7 @@ public class DiscordUtils {
 
 	public static final String CONTENT_PACK_MANAGER_ROLE = "Content Pack Manager";
 
-	public static final String PLAY_CHANNEL = "moderator-only";
+	public static final String PLAY_CHANNEL = "play-together";
 
 	private static final @Getter Collection<Locale> localePriority = Collections.singleton(Locale.US);
 
