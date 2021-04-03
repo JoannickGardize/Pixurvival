@@ -1,5 +1,9 @@
 package com.pixurvival.discordbot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Arrays;
 
 import javax.security.auth.login.LoginException;
@@ -26,7 +30,12 @@ public class PixBot extends ListenerAdapter {
 
 	private MultiCommand commands = new MultiCommand("root", "");
 
-	public static void main(String[] args) throws LoginException {
+	public static void main(String[] args) throws LoginException, FileNotFoundException {
+
+		File file = new File("err.txt");
+		FileOutputStream fos = new FileOutputStream(file);
+		PrintStream ps = new PrintStream(fos);
+		System.setErr(ps);
 
 		PixBot bot = new PixBot();
 
