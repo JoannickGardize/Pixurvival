@@ -24,6 +24,14 @@ public class LocaleUtils {
 		}
 	}
 
+	public static Collection<Locale> toLocale(Collection<String> localeTags) {
+		List<Locale> locales = new ArrayList<>();
+		for (String localTag : localeTags) {
+			locales.add(Locale.forLanguageTag(localTag));
+		}
+		return locales;
+	}
+
 	private static List<LanguageRange> toLanguageRanges(Collection<Locale> locales) {
 		ArrayList<LanguageRange> languageRanges = new ArrayList<>();
 		for (Locale locale : locales) {

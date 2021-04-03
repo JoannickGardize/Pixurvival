@@ -3,11 +3,14 @@ package com.pixurvival.server.console;
 import java.util.Scanner;
 
 import com.esotericsoftware.minlog.Log;
+import com.pixurvival.core.EndGameData;
 import com.pixurvival.core.command.CommandArgsUtils;
 import com.pixurvival.core.util.ArgsUtils;
+import com.pixurvival.server.GameSession;
 import com.pixurvival.server.PixurvivalServer;
 import com.pixurvival.server.PlayerConnection;
 import com.pixurvival.server.ServerGameListener;
+import com.pixurvival.server.lobby.LobbySession;
 import com.pixurvival.server.util.ServerMainArgs;
 
 public class ServerConsole implements Runnable, ServerGameListener {
@@ -30,7 +33,7 @@ public class ServerConsole implements Runnable, ServerGameListener {
 	}
 
 	@Override
-	public void playerLoggedIn(PlayerConnection playerConnection) {
+	public void playerRejoined(PlayerConnection playerConnection) {
 		Log.info("New player connected : " + playerConnection);
 	}
 
@@ -55,5 +58,35 @@ public class ServerConsole implements Runnable, ServerGameListener {
 	public static void main(String[] args) {
 		new ServerConsole(ArgsUtils.readArgs(args, ServerMainArgs.class)).run();
 		System.exit(0);
+	}
+
+	@Override
+	public void lobbyStarted(LobbySession lobbySession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void gameStarted(GameSession gameSession) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void gameEnded(EndGameData data) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void playerLoggedIn(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void disconnected(PlayerConnection playerConnection) {
+		// TODO Auto-generated method stub
+
 	}
 }

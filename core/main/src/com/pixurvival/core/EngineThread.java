@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public abstract class EngineThread extends Thread {
 
-	private boolean running = true;
+	private volatile boolean running = true;
 	private float frameDurationMillis = 1000f / GameConstants.FPS;
 	private int maxUpdatePerFrame = 5;
 
