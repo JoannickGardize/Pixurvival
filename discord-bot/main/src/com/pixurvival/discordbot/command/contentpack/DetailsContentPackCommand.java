@@ -27,7 +27,11 @@ public class DetailsContentPackCommand extends ContentPackCommand {
 		} catch (ContentPackException e) {
 			builder.setFooter("Game version: " + ReleaseVersion.displayNameOf(summary.getReleaseVersion()) + ", File size: file not found!");
 		}
-		builder.setDescription("Game modes:");
+		if (summary.getIdentifier().getAuthor().trim().length() > 1) {
+			builder.setDescription("A content pack by " + summary.getIdentifier().getAuthor() + ".\nGame modes:");
+		} else {
+			builder.setDescription("Game modes:");
+		}
 		String languageTag = null;
 		for (GameModeSummary gms : summary.getGameModeSummaries()) {
 			if (languageTag == null) {
@@ -49,5 +53,4 @@ public class DetailsContentPackCommand extends ContentPackCommand {
 			return preffix + interval.getMin() + " - " + interval.getMax();
 		}
 	}
-
 }

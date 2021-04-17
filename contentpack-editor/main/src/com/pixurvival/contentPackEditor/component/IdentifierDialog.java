@@ -21,6 +21,7 @@ public class IdentifierDialog extends EditorDialog {
 
 	private JTextField nameField = new JTextField(20);
 	private JTextField versionField = new JTextField(20);
+	private JTextField authorField = new JTextField(20);
 
 	public IdentifierDialog() {
 		super("identifierDialog.title");
@@ -41,12 +42,18 @@ public class IdentifierDialog extends EditorDialog {
 			}
 		}));
 
+		authorField.getDocument().addDocumentListener(new DocumentAdapter(e -> {
+			String name = authorField.getText().trim();
+			FileService.getInstance().getCurrentContentPack().getIdentifier().setAuthor(name);
+		}));
+
 		JPanel content = (JPanel) getContentPane();
 		content.setLayout(new GridBagLayout());
 		content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		LayoutUtils.addHorizontalLabelledItem(content, "identifierDialog.name", nameField, gbc);
 		LayoutUtils.addHorizontalLabelledItem(content, "identifierDialog.version", versionField, gbc);
+		LayoutUtils.addHorizontalLabelledItem(content, "identifierDialog.author", authorField, gbc);
 		pack();
 	}
 
@@ -56,6 +63,7 @@ public class IdentifierDialog extends EditorDialog {
 		ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
 		nameField.setText(contentPack.getIdentifier().getName());
 		versionField.setText(contentPack.getIdentifier().getVersion().toString());
+		authorField.setText(contentPack.getIdentifier().getAuthor());
 		super.setVisible(b);
 	}
 }

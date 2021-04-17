@@ -16,10 +16,22 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum ReleaseVersion {
 
-	OLDER(BackwardCompatibility.NONE), ALPHA_4(BackwardCompatibility.NONE), ALPHA_4B(BackwardCompatibility.NONE), ALPHA_5(BackwardCompatibility.NONE),
-	ALPHA_5B(BackwardCompatibility.NONE), ALPHA_6(BackwardCompatibility.NONE), ALPHA_6B(BackwardCompatibility.FULL), ALPHA_7(BackwardCompatibility.FULL),
-	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY), ALPHA_8B(BackwardCompatibility.FULL), ALPHA_9(BackwardCompatibility.NONE), ALPHA_10(BackwardCompatibility.NONE),
-	ALPHA_11(BackwardCompatibility.FULL), ALPHA_12(BackwardCompatibility.NONE), ALPHA_12B(BackwardCompatibility.FULL);
+	OLDER(BackwardCompatibility.NONE),
+	ALPHA_4(BackwardCompatibility.NONE),
+	ALPHA_4B(BackwardCompatibility.NONE),
+	ALPHA_5(BackwardCompatibility.NONE),
+	ALPHA_5B(BackwardCompatibility.NONE),
+	ALPHA_6(BackwardCompatibility.NONE),
+	ALPHA_6B(BackwardCompatibility.FULL),
+	ALPHA_7(BackwardCompatibility.FULL),
+	ALPHA_8(BackwardCompatibility.CONTENT_PACK_ONLY),
+	ALPHA_8B(BackwardCompatibility.FULL),
+	ALPHA_9(BackwardCompatibility.NONE),
+	ALPHA_10(BackwardCompatibility.NONE),
+	ALPHA_11(BackwardCompatibility.FULL),
+	ALPHA_12(BackwardCompatibility.NONE),
+	ALPHA_12B(BackwardCompatibility.FULL),
+	ALPHA_12C(BackwardCompatibility.FULL);
 
 	private BackwardCompatibility backwardCompatibility;
 

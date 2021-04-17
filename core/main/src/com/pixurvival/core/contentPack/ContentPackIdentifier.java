@@ -8,9 +8,11 @@ import com.pixurvival.core.contentPack.validation.annotation.Valid;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(of = { "name", "version" })
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentPackIdentifier implements Serializable {
@@ -22,6 +24,8 @@ public class ContentPackIdentifier implements Serializable {
 
 	@Valid
 	private Version version = new Version(1, 0);
+
+	private String author = "";
 
 	private transient byte[] checksum;
 
