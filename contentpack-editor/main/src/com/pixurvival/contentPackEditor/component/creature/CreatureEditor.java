@@ -50,12 +50,13 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		ElementChooserButton<AbilitySet> abilitySetChooser = new ElementChooserButton<>(AbilitySet.class);
 		JTextField maxHealthField = new JTextField(DECIMAL_FORMAT.format(StatType.MAX_HEALTH.getFormula().compute(statSet)));
 		JTextField speedField = new JTextField(DECIMAL_FORMAT.format(StatType.SPEED.getFormula().compute(statSet)));
-		JTextField armorField = new JTextField((DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%"));
+		JTextField armorField = new JTextField(DECIMAL_FORMAT.format(StatType.ARMOR.getFormula().compute(statSet) * 100) + "%");
 		FloatInput collisionRadiusInput = new FloatInput();
 		maxHealthField.setEditable(false);
 		speedField.setEditable(false);
 		armorField.setEditable(false);
 		BooleanCheckBox solidCheckbox = new BooleanCheckBox();
+		BooleanCheckBox hideFullLifeBarCheckbox = new BooleanCheckBox();
 		TimeInput lifetimeInput = new TimeInput();
 		IntegerInput inventorySizeInput = new IntegerInput();
 
@@ -82,6 +83,7 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		bind(solidCheckbox, "solid");
 		bind(lifetimeInput, "lifetime");
 		bind(inventorySizeInput, "inventorySize");
+		bind(hideFullLifeBarCheckbox, "hideFullLifeBar");
 
 		// Layouting
 
@@ -97,9 +99,10 @@ public class CreatureEditor extends RootElementEditor<Creature> {
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.abilitySet", abilitySetChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "elementType.itemReward", itemRewardChooser, gbc);
 		LayoutUtils.addHorizontalLabelledItem(topPanel, "generic.solid", solidCheckbox, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.inventorySize", inventorySizeInput, gbc);
+		LayoutUtils.addHorizontalLabelledItem(topPanel, "creature.hideFullLifeBar", hideFullLifeBarCheckbox, gbc);
 
 		JPanel statsPanel = new JPanel(new GridBagLayout());
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "creatureEditor.inventorySize", inventorySizeInput, gbc);
 		statsPanel.setBorder(LayoutUtils.createGroupBorder("creatureEditor.stats"));
 		gbc = LayoutUtils.createGridBagConstraints();
 		gbc.insets.bottom = 2;

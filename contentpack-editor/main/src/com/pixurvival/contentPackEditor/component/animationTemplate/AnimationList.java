@@ -37,6 +37,7 @@ public class AnimationList extends JPanel {
 	private JList<Animation> list = new JList<>(new EnumMapListModel<>(ActionAnimation.class));
 	private JButton addButton = new CPEButton("generic.add", this::add);
 	private JButton removeButton = new CPEButton("generic.remove", this::remove);
+	private JButton addForCharacterButton = new CPEButton("animationList.addForCharacter", this::addForCharacter);
 	private List<Consumer<Map<ActionAnimation, Animation>>> listChangedListener = new ArrayList<>();
 
 	public AnimationList() {
@@ -71,6 +72,8 @@ public class AnimationList extends JPanel {
 		add(addButton, gbc);
 		gbc.gridy++;
 		add(removeButton, gbc);
+		gbc.gridy++;
+		add(addForCharacterButton, gbc);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,8 +108,8 @@ public class AnimationList extends JPanel {
 
 	private void add() {
 		ActionAnimation actionAnimation = (ActionAnimation) JOptionPane.showInputDialog(SwingUtilities.getRoot(this),
-				TranslationService.getInstance().getString("animationTemplateEditor.addAnimationMessage"), TranslationService.getInstance().getString("generic.add"), JOptionPane.PLAIN_MESSAGE, null,
-				ActionAnimation.values(), ActionAnimation.MOVE_RIGHT);
+				TranslationService.getInstance().getString("animationTemplateEditor.addAnimationMessage"), TranslationService.getInstance().getString("generic.add"),
+				JOptionPane.PLAIN_MESSAGE, null, ActionAnimation.values(), ActionAnimation.MOVE_RIGHT);
 		add(actionAnimation);
 	}
 
@@ -121,6 +124,21 @@ public class AnimationList extends JPanel {
 				list.setSelectedIndex(index);
 			}
 		}
+	}
+
+	private void addForCharacter() {
+		add(ActionAnimation.MOVE_RIGHT);
+		add(ActionAnimation.MOVE_UP);
+		add(ActionAnimation.MOVE_LEFT);
+		add(ActionAnimation.MOVE_DOWN);
+		add(ActionAnimation.STAND_RIGHT);
+		add(ActionAnimation.STAND_UP);
+		add(ActionAnimation.STAND_LEFT);
+		add(ActionAnimation.STAND_DOWN);
+		add(ActionAnimation.WORK_RIGHT);
+		add(ActionAnimation.WORK_UP);
+		add(ActionAnimation.WORK_DOWN);
+		add(ActionAnimation.WORK_LEFT);
 	}
 
 	@SuppressWarnings("unchecked")

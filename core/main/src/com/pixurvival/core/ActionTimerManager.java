@@ -21,12 +21,15 @@ public class ActionTimerManager {
 
 	public void update() {
 		boolean actionConsumed = true;
-		while (actionConsumed) {
+		int initialSize = actionTimerQueue.size();
+		int i = 0;
+		while (actionConsumed && i < initialSize) {
 			ActionTimer actionTimer = actionTimerQueue.peek();
 			if (actionTimer != null && world.getTime().getTimeMillis() >= actionTimer.getActionTimeMillis()) {
 				actionConsumed = true;
 				actionTimer.getAction().perform(world);
 				actionTimerQueue.poll();
+				i++;
 			} else {
 				actionConsumed = false;
 			}

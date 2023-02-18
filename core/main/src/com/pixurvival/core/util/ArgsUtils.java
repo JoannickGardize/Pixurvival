@@ -58,6 +58,9 @@ public class ArgsUtils {
 
 	@SneakyThrows
 	public static void setValue(Object instance, Field field, String stringValue) {
+		if (field == null) {
+			return;
+		}
 		if (!field.isAccessible()) {
 			field.setAccessible(true);
 		}

@@ -15,8 +15,10 @@ import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.ElementSetEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.FloatInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.HorizontalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
@@ -28,9 +30,11 @@ import com.pixurvival.core.contentPack.creature.changeConditionImpl.InventoryCon
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.NothingToDoCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TaskFinishedCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.TileCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TookDamageCondition;
 import com.pixurvival.core.contentPack.item.Item;
+import com.pixurvival.core.contentPack.map.Tile;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
 
@@ -102,6 +106,12 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
 
 			return LayoutUtils.createVerticalBox(itemSetEditor,
 					LayoutUtils.createHorizontalBox(new JLabel(TranslationService.getInstance().getString("behaviorEditor.sum")), operatorChooser, valueInput));
+		}));
+
+		classEntries.add(new ClassEntry(TileCondition.class, () -> {
+			ListEditor<Tile> tileList = new HorizontalListEditor<>(() -> new ElementChooserButton<>(Tile.class), () -> null);
+			bind(tileList, "tiles", TileCondition.class);
+			return tileList;
 		}));
 		return classEntries;
 	}

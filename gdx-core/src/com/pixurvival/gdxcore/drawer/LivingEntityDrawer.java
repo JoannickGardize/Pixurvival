@@ -28,7 +28,8 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 			Vector2 drawPosition = data.getDrawPosition();
 			float x = drawPosition.getX() - textureAnimationSet.getShadowWidth() / 2;
 			float y = drawPosition.getY();
-			batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(), textureAnimationSet.getShadowWidth() / 2);
+			batch.draw(textureAnimationSet.getShadow(), x, y - textureAnimationSet.getShadowWidth() / 4, textureAnimationSet.getShadowWidth(),
+					textureAnimationSet.getShadowWidth() / 2);
 		}
 	}
 
@@ -42,7 +43,8 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
 		Vector2 drawPosition = data.getDrawPosition();
 		float x = drawPosition.getX() - textureAnimationSet.getWidth() / 2;
 		float y = drawPosition.getY();
-		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 && textureAnimation.getRotationPerSecond() == 0 ? textureAnimationSet.getHeight() * 0.3f
+		float yOffset = e.getWorld().getMap().tileAt(drawPosition).getTileDefinition().getVelocityFactor() < 1 && e.isSolid() && textureAnimation.getRotationPerSecond() == 0
+				? textureAnimationSet.getHeight() * 0.3f
 				: 0;
 		float equipmentY = y - yOffset;
 		drawBeforeBody(batch, e, textureAnimation, actionAnimation, index, x, equipmentY);

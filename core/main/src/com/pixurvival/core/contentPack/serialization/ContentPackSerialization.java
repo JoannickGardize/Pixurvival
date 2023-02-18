@@ -69,6 +69,7 @@ import com.pixurvival.core.contentPack.creature.changeConditionImpl.InventoryCon
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.IsDayCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.NothingToDoCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TaskFinishedCondition;
+import com.pixurvival.core.contentPack.creature.changeConditionImpl.TileCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TimeCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.TookDamageCondition;
 import com.pixurvival.core.contentPack.effect.BackToOriginEffectMovement;
@@ -117,7 +118,7 @@ import lombok.SneakyThrows;
 /**
  * I/O for {@link ContentPack}s, create or read the zip containing all resources
  * and the yaml file for all elements definitions.
- * 
+ *
  * @author SharkHendrix
  *
  */
@@ -312,6 +313,7 @@ public class ContentPackSerialization {
 		addClassTag(representer, StatAlteration.class);
 		addClassTag(representer, PlaySoundAlteration.class);
 		addClassTag(representer, DistanceToStructureCondition.class);
+		addClassTag(representer, TileCondition.class);
 		addClassTag(representer, HarvestBehavior.class);
 		addClassTag(representer, PickUpItemsBehavior.class);
 		addClassTag(representer, NothingToDoCondition.class);

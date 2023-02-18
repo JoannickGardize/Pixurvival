@@ -61,6 +61,7 @@ public abstract class ChunkSpawner implements Serializable {
 		Creature creature = creatureChooser.next(random);
 		if (isSpawnValid(chunk, creature, randomPosition)) {
 			CreatureEntity entity = new CreatureEntity(creature);
+			entity.setMovingAngle(random.nextAngle());
 			entity.getPosition().set(randomPosition);
 			chunk.getMap().getWorld().getEntityPool().addNew(entity);
 		}
@@ -73,9 +74,8 @@ public abstract class ChunkSpawner implements Serializable {
 
 	/**
 	 * For override
-	 * 
-	 * @param chunk
-	 *            The chunk
+	 *
+	 * @param chunk The chunk
 	 * @return true if the chunk is eligible for this spawner.
 	 */
 	public boolean isChunkEligible(Chunk chunk) {
@@ -84,9 +84,8 @@ public abstract class ChunkSpawner implements Serializable {
 
 	/**
 	 * Initialize data for a creature spawning
-	 * 
-	 * @param chunk
-	 *            The chunk where spawn must be done
+	 *
+	 * @param chunk The chunk where spawn must be done
 	 * @return the data for the spawning, or null to abort spawning
 	 */
 	protected Object beginSpawn(Chunk chunk) {
@@ -95,8 +94,7 @@ public abstract class ChunkSpawner implements Serializable {
 
 	/**
 	 * @param chunk
-	 * @param data
-	 *            Data initialized with {@link ChunkSpawner#beginSpawn(Chunk)}
+	 * @param data  Data initialized with {@link ChunkSpawner#beginSpawn(Chunk)}
 	 * @return
 	 */
 	protected Vector2 nextSpawnPosition(Chunk chunk, Object data) {
@@ -106,8 +104,7 @@ public abstract class ChunkSpawner implements Serializable {
 
 	/**
 	 * @param chunk
-	 * @param data
-	 *            Data initialized with {@link ChunkSpawner#beginSpawn(Chunk)}
+	 * @param data  Data initialized with {@link ChunkSpawner#beginSpawn(Chunk)}
 	 * @return
 	 */
 	protected int countCreatures(Chunk chunk, Object data) {

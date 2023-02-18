@@ -18,7 +18,7 @@ public class SpriteSheetChooserPreviewTabs extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private JTabbedPane previewTabs = new JTabbedPane();
-	private @Getter ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<SpriteSheet>(SpriteSheet.class);
+	private @Getter ElementChooserButton<SpriteSheet> spriteSheetChooser = new ElementChooserButton<>(SpriteSheet.class);
 	private @Getter SpriteSheetPreview spriteSheetPreview = new SpriteSheetPreview();
 
 	public SpriteSheetChooserPreviewTabs() {

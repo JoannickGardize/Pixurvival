@@ -47,6 +47,7 @@ public class Creature extends NamedIdentifiedElement {
 	private float intelligence;
 
 	private boolean solid = true;
+	private boolean hideFullLifeBar = false;
 
 	@AbilityIndexes
 	@ElementReference
