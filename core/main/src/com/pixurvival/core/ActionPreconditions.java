@@ -15,8 +15,8 @@ import lombok.experimental.UtilityClass;
 /**
  * Contains all the methods that check if an action is feasible according to the
  * situation
- * 
- * 
+ *
+ *
  * @author SharkHendrix
  *
  */
@@ -25,8 +25,8 @@ public class ActionPreconditions {
 
 	public static boolean canCraft(PlayerEntity playerEntity, ItemCraft itemCraft) {
 		Structure requiredStructure = itemCraft.getRequiredStructure();
-		if (requiredStructure != null
-				&& playerEntity.getWorld().getMap().findClosestStructure(playerEntity.getPosition(), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE, requiredStructure.getId()) == null) {
+		if (requiredStructure != null && playerEntity.getWorld().getMap().findClosestStructure(playerEntity.getPosition(), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE,
+				requiredStructure.getId()) == null) {
 			return false;
 		}
 		return playerEntity.getInventory().contains(itemCraft.getRecipes());
@@ -46,7 +46,8 @@ public class ActionPreconditions {
 		for (int xi = x; xi < x2; xi++) {
 			for (int yi = y; yi < y2; yi++) {
 				MapTile mapTile = player.getWorld().getMap().tileAt(x, y);
-				if (mapTile.isSolid() || mapTile.getStructure() != null || structure.getBannedTiles().contains(mapTile.getTileDefinition())) {
+				if (mapTile.isSolid() || mapTile.getStructure() != null && !mapTile.getStructure().getDefinition().isAutoDestroy()
+						|| structure.getBannedTiles().contains(mapTile.getTileDefinition())) {
 					return false;
 				}
 			}
@@ -55,8 +56,10 @@ public class ActionPreconditions {
 	}
 
 	public static boolean canInteract(LivingEntity entity, StructureEntity structure) {
-		return structure != null && (structure instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) structure).isHarvested()
-				|| structure.getDefinition().getDeconstructionDuration() > 0 || structure instanceof InteractionDialogHolder) && checkInteractionDistance(entity, structure);
+		return structure != null
+				&& (structure instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) structure).isHarvested()
+						|| structure.getDefinition().getDeconstructionDuration() > 0 || structure instanceof InteractionDialogHolder)
+				&& checkInteractionDistance(entity, structure);
 	}
 
 	public static boolean canDeconstruct(LivingEntity entity, StructureEntity structure) {

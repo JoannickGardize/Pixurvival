@@ -11,9 +11,11 @@ public class StructureEntityFliper implements ChunkManagerPlugin {
 	public void chunkLoaded(Chunk chunk) {
 		Random random = chunk.createFixedRandom();
 		chunk.forEachStructure(ms -> {
-			DrawData drawData = new DrawData();
-			drawData.setFlip(random.nextBoolean());
-			ms.setCustomData(drawData);
+			if (ms.getDefinition().isRandomHorizontalFlip()) {
+				DrawData drawData = new DrawData();
+				drawData.setFlip(random.nextBoolean());
+				ms.setCustomData(drawData);
+			}
 		});
 	}
 }

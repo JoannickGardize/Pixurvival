@@ -27,7 +27,6 @@ import com.pixurvival.core.time.EternalDayCycleRun;
 import com.pixurvival.gdxcore.debug.DebugInfosActor;
 import com.pixurvival.gdxcore.drawer.DrawData;
 import com.pixurvival.gdxcore.drawer.LightDrawer;
-import com.pixurvival.gdxcore.drawer.StructureEntityFliper;
 import com.pixurvival.gdxcore.input.CameraControlProcessor;
 import com.pixurvival.gdxcore.input.InputManager;
 import com.pixurvival.gdxcore.input.WorldKeyboardProcessor;
@@ -99,7 +98,6 @@ public class WorldScreen implements Screen {
 			throw new IllegalStateException("Cannot change world of the world screen");
 		}
 		contentPackTextures = new ContentPackAssets();
-		world.getChunkManager().addPlugin(new StructureEntityFliper());
 		try {
 			// int screenWidth = Math.min(Gdx.graphics.getWidth(),
 			// Gdx.graphics.getHeight());
@@ -182,8 +180,8 @@ public class WorldScreen implements Screen {
 		if (world.getMyPlayer() != null && !world.getMyPlayer().isAlive()) {
 			respawnTimerActor.playerDied(world.getMyPlayer());
 		}
-		NotificationPushManager.getInstance()
-				.push(Notification.builder().status("In game").party(new Party(world.getPlayerEntities().size(), world.getPlayerEntities().size())).startTime(Instant.now().getEpochSecond()).build());
+		NotificationPushManager.getInstance().push(Notification.builder().status("In game").party(new Party(world.getPlayerEntities().size(), world.getPlayerEntities().size()))
+				.startTime(Instant.now().getEpochSecond()).build());
 	}
 
 	public void switchShowCollisionBoxes() {
@@ -238,7 +236,8 @@ public class WorldScreen implements Screen {
 
 		hudStage.getViewport().apply();
 		Vector2 position = getWorldCursorPosition();
-		StructureEntity structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y), GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
+		StructureEntity structure = myPlayer.getWorld().getMap().findClosestStructure(new com.pixurvival.core.util.Vector2(position.x, position.y),
+				GameConstants.MAX_STRUCTURE_INTERACTION_DISTANCE);
 		setMouseInteractionIconVisible(ActionPreconditions.canInteract(myPlayer, structure));
 		hudStage.act();
 		hudStage.draw();

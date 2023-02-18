@@ -60,12 +60,13 @@ public class LoadSingleplayerLobbyScreen implements Screen {
 
 		TextButton playButton = new MenuButton("lobby.play", () -> {
 			try {
-				PixurvivalGame.getClient().loadAndStartLocalGame(saveChooser.getSelectedSave().getName());
+				PixurvivalGame.getClient().loadAndStartLocalGame(saveChooser.getSelectedSave().getName(), PixurvivalGame.getRequiredChunkManagerPlugins());
 			} catch (LoadGameException e) {
 				LoadGameUtils.handleLoadGameError(e, errorWindow);
 			}
 		});
-		TextButton removeButton = new MenuButton("lobby.remove", () -> removeConfirm.setVisible(PixurvivalGame.getString("lobby.confirmRemove", saveChooser.getSelectedSave().getName())));
+		TextButton removeButton = new MenuButton("lobby.remove",
+				() -> removeConfirm.setVisible(PixurvivalGame.getString("lobby.confirmRemove", saveChooser.getSelectedSave().getName())));
 		TextButton renameButton = new MenuButton("lobby.rename", () -> renameWindow.setVisible(saveChooser.getSelectedSave().getName()));
 
 		mainGroup.add(new ScrollPane(saveChooser)).fillX();

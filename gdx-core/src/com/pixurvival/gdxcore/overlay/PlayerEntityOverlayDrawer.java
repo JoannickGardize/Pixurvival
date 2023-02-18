@@ -10,7 +10,7 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 	private EntityOverlayStackDrawer<PlayerEntity> spectatedPlayerDrawer = new EntityOverlayStackDrawer<>();
 	private EntityOverlayStackDrawer<PlayerEntity> selfDrawer = new EntityOverlayStackDrawer<>();
 	private EntityOverlayStackDrawer<PlayerEntity> alliesDrawer = new EntityOverlayStackDrawer<>();
-	private EntityOverlayStackDrawer<PlayerEntity> ennemiesDrawer = new EntityOverlayStackDrawer<>();
+	private EntityOverlayStackDrawer<PlayerEntity> enemiesDrawer = new EntityOverlayStackDrawer<>();
 
 	public PlayerEntityOverlayDrawer() {
 		spectatedPlayerDrawer.add(new LifeHungerBarDrawer());
@@ -27,9 +27,9 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 		alliesDrawer.add(new NameDrawer());
 		alliesDrawer.add(new WorkingBarDrawer());
 
-		ennemiesDrawer.add(new LifeBarDrawer());
-		ennemiesDrawer.add(new RoleDrawer());
-		ennemiesDrawer.add(new NameDrawer());
+		enemiesDrawer.add(new LifeBarDrawer());
+		enemiesDrawer.add(new RoleDrawer());
+		enemiesDrawer.add(new NameDrawer());
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class PlayerEntityOverlayDrawer implements OverlayDrawer<PlayerEntity> {
 		} else if (e.getTeam().getId() == myPlayer.getTeam().getId()) {
 			alliesDrawer.draw(batch, worldViewport, e);
 		} else {
-			ennemiesDrawer.draw(batch, worldViewport, e);
+			enemiesDrawer.draw(batch, worldViewport, e);
 		}
 	}
 }

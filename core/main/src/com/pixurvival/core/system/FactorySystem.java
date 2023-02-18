@@ -87,10 +87,11 @@ public class FactorySystem implements GameSystem, ChunkLoadInterest, StructureCh
 	 * </ul>
 	 * For the first and second part, a flag is set to indicate that a change to the
 	 * relevant inventories is expected, to avoid useless computation.
-	 * 
+	 *
 	 * @param entity
 	 */
 	private void update(FactoryStructureEntity entity) {
+		// TODO event system instead of checking time every frame?
 		FactoryInteractionDialog dialog = entity.getInteractionDialog();
 		if (!entity.isWaitingOutput() && dialog.getActualCraftIndex() >= 0 && time.getTimeMillis() >= dialog.getFinishTime()) {
 			finishCraftIfPossible(entity, dialog);

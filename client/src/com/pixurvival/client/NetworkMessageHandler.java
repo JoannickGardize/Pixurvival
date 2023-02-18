@@ -1,10 +1,12 @@
 package com.pixurvival.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -14,6 +16,7 @@ import com.pixurvival.core.chat.ChatEntry;
 import com.pixurvival.core.interactionDialog.InteractionDialogHolder;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.map.chunk.ChunkManagerPlugin;
 import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.ContentPackPart;
 import com.pixurvival.core.message.CreateWorld;
@@ -39,9 +42,9 @@ class NetworkMessageHandler extends Listener {
 
 	private List<Object> receivedObjects = new ArrayList<>();
 
-	public NetworkMessageHandler(PixurvivalClient game) {
+	public NetworkMessageHandler(PixurvivalClient game, Supplier<Collection<ChunkManagerPlugin>> chunkManagerPluginSupplier) {
 		putMessageAction(LoginResponse.class, r -> game.notify(l -> l.loginResponse(r)));
-		putMessageAction(CreateWorld.class, game::createClientWorld);
+		putMessageAction(CreateWorld.class, c -> game.createClientWorld(c, chunkManagerPluginSupplier.get()));
 		putMessageAction(ContentPackPart.class, p -> game.getContentPackDownloadManager().accept(p));
 
 		// TODO Download system

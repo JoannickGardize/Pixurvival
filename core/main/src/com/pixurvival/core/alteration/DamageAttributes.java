@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DamageAttributes extends Object {
+public class DamageAttributes {
 
 	private static final @Getter DamageAttributes defaults = new DamageAttributes() {
 

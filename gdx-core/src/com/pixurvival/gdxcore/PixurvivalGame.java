@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -39,9 +40,11 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.map.chunk.ChunkManagerPlugin;
 import com.pixurvival.core.message.LoginResponse;
 import com.pixurvival.core.message.lobby.LobbyMessage;
 import com.pixurvival.gdxcore.drawer.DrawData;
+import com.pixurvival.gdxcore.drawer.StructureEntityFliper;
 import com.pixurvival.gdxcore.input.InputMapping;
 import com.pixurvival.gdxcore.lobby.MultiplayerLobbyScreen;
 import com.pixurvival.gdxcore.lobby.NewSingleplayerLobbyScreen;
@@ -156,7 +159,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
 		zoomEnabled = clientArgs.isZoomEnabled();
 		instance = this;
-		client = new PixurvivalClient(clientArgs);
+		client = new PixurvivalClient(clientArgs, PixurvivalGame::getRequiredChunkManagerPlugins);
 		client.addListener(this);
 		if (clientArgs.isRedirectErrorToFile()) {
 			File file = new File("err.txt");
@@ -420,5 +423,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 		if (screen instanceof WorldScreen) {
 			((WorldScreen) screen).addItemCrafts(itemCrafts);
 		}
+	}
+
+	public static Collection<ChunkManagerPlugin> getRequiredChunkManagerPlugins() {
+		return Collections.singletonList(new StructureEntityFliper());
 	}
 }

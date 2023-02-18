@@ -39,6 +39,7 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
 	private @Setter long creationTime;
 	private @Setter Object customData;
 	private @Getter @Setter float health;
+	private boolean flip = false;
 
 	public StructureEntity(Chunk chunk, Structure definition, int x, int y) {
 		this.chunk = chunk;
@@ -80,13 +81,13 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
 
 	/**
 	 * Write data for chunk serialization
-	 * 
+	 *
 	 * @param buffer
 	 */
 	public void writeData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {
 		idSequence.write(buffer, id);
 		if (definition.getDuration() > 0) {
-			VarLenNumberIO.writePositiveVarLong(buffer, (getChunk().getUpdateTimestamp() - creationTime));
+			VarLenNumberIO.writePositiveVarLong(buffer, getChunk().getUpdateTimestamp() - creationTime);
 		}
 		if (definition.getMaxHealth() > 0) {
 			buffer.putFloat(health);
@@ -95,7 +96,7 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
 
 	/**
 	 * Read data from serialized chunk
-	 * 
+	 *
 	 * @param buffer
 	 */
 	public void applyData(ByteBuffer buffer, LongSequenceIOHelper idSequence) {

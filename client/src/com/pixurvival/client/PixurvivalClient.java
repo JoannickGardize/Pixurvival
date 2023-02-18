@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.esotericsoftware.kryonet.Client;
@@ -33,6 +34,7 @@ import com.pixurvival.core.livingEntity.ItemCraftDiscoveryListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
+import com.pixurvival.core.map.chunk.ChunkManagerPlugin;
 import com.pixurvival.core.message.ClientStream;
 import com.pixurvival.core.message.ContentPackCheck;
 import com.pixurvival.core.message.ContentPackRequest;
@@ -84,10 +86,10 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 	private ContentPackIdentifier waitingContentPack;
 	private SingleplayerLobby singlePlayerLobby;
 
-	public PixurvivalClient(CommonMainArgs clientArgs) {
+	public PixurvivalClient(CommonMainArgs clientArgs, Supplier<Collection<ChunkManagerPlugin>> chunkManagerPluginSupplier) {
 		KryoInitializer.apply(client.getKryo());
 		contentPackContext = new ContentPackContext(new File(clientArgs.getContentPackDirectory()));
-		clientListener = new NetworkMessageHandler(this);
+		clientListener = new NetworkMessageHandler(this, chunkManagerPluginSupplier);
 		clientArgs.apply(client, clientListener);
 		gameBeginningCommands = clientArgs.getGameBeginingCommands();
 		localePriorityList.add(Locale.getDefault());
@@ -205,11 +207,11 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		client.sendTCP(new ContentPackRequest(identifier));
 	}
 
-	public void createClientWorld(CreateWorld createWorld) {
+	public void createClientWorld(CreateWorld createWorld, Collection<ChunkManagerPlugin> chunkManagerPlugins) {
 		try {
 			myTeamId = createWorld.getMyTeamId();
 			myOriginalPlayerId = createWorld.getMyOriginalPlayerId();
-			setWorld(World.createClientWorld(createWorld, contentPackContext));
+			setWorld(World.createClientWorld(createWorld, contentPackContext, chunkManagerPlugins));
 			world.addPlugin(new WorldUpdateManager(this));
 			currentLocale = getLocaleFor(world.getContentPack());
 			removeAllPlugins();
@@ -233,7 +235,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		}
 	}
 
-	public void startNewLocalGame(String saveName) throws LoadGameException {
+	public void startNewLocalGame(String saveName, Collection<ChunkManagerPlugin> chunkManagerPlugins) throws LoadGameException {
 		if (singlePlayerLobby == null) {
 			throw new IllegalStateException("No SingleplayerLobby to initialize the local game");
 		}
@@ -256,7 +258,7 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 			throw new LoadGameException(Reason.CONTAINS_ERRORS);
 		}
 		currentLocale = getLocaleFor(localGamePack);
-		setWorld(World.createNewLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex()));
+		setWorld(World.createNewLocalWorld(localGamePack, singlePlayerLobby.getSelectedGameModeIndex(), chunkManagerPlugins));
 		world.setSaveName(saveName);
 		GameMode gameMode = world.getGameMode();
 		if (gameMode.getTeamNumberInterval().getMin() > 1 || gameMode.getTeamSizeInterval().getMin() > 1) {
@@ -278,9 +280,9 @@ public class PixurvivalClient extends PluginHolder<PixurvivalClient> implements 
 		notify(ClientGameListener::gameStarted);
 	}
 
-	public void loadAndStartLocalGame(String saveName) throws LoadGameException {
+	public void loadAndStartLocalGame(String saveName, Collection<ChunkManagerPlugin> chunkManagerPlugins) throws LoadGameException {
 		try {
-			setWorld(WorldSerialization.load(saveName, contentPackContext));
+			setWorld(WorldSerialization.load(saveName, contentPackContext, chunkManagerPlugins));
 			currentLocale = getLocaleFor(world.getContentPack());
 			world.initializeLoadedGame();
 			notify(ClientGameListener::initializeGame);

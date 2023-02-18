@@ -51,7 +51,7 @@ public class NewSingleplayerLobbyScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				try {
 					if (FileUtils.isValidFileName(saveNameField.getText())) {
-						PixurvivalGame.getClient().startNewLocalGame(saveNameField.getText());
+						PixurvivalGame.getClient().startNewLocalGame(saveNameField.getText(), PixurvivalGame.getRequiredChunkManagerPlugins());
 					} else {
 						errorWindow.getContentLabel().setText("Save name must be a valid file name (no special character)");
 						errorWindow.setVisible(true);

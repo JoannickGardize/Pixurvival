@@ -1,6 +1,7 @@
 package com.pixurvival.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import com.pixurvival.core.map.ChunkCreatureSpawnManager;
 import com.pixurvival.core.map.TiledMap;
 import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.map.chunk.ChunkManager;
+import com.pixurvival.core.map.chunk.ChunkManagerPlugin;
 import com.pixurvival.core.map.generator.ChunkSupplier;
 import com.pixurvival.core.message.CreateWorld;
 import com.pixurvival.core.message.PlayerInformation;
@@ -161,10 +163,12 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 		systems.values().forEach(s -> s.initialize(this));
 	}
 
-	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext) throws ContentPackException {
+	public static World createClientWorld(CreateWorld createWorld, ContentPackContext contentPackContext, Collection<ChunkManagerPlugin> chunkManagerPlugins)
+			throws ContentPackException {
 		ContentPack pack = contentPackContext.load(createWorld.getContentPackIdentifier());
 		pack.initialize();
 		World world = new World(createWorld.getId(), Type.CLIENT, pack, createWorld.getGameModeId());
+		chunkManagerPlugins.forEach(p -> world.getChunkManager().addPlugin(p));
 		for (TeamComposition teamComposition : createWorld.getTeamCompositions()) {
 			Team team = world.teamSet.createTeam(teamComposition.getTeamName());
 			for (PlayerInformation playerInformation : teamComposition.getMembers()) {
@@ -200,9 +204,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	// createNewLocalWorld
-	public static World createNewLocalWorld(ContentPack contentPack, int gameModeId) {
+	public static World createNewLocalWorld(ContentPack contentPack, int gameModeId, Collection<ChunkManagerPlugin> chunkManagerPlugins) {
 		contentPack.initialize();
 		World world = new World(0, Type.LOCAL, contentPack, gameModeId);
+		chunkManagerPlugins.forEach(p -> world.getChunkManager().addPlugin(p));
 		PlayerEntity playerEntity = new PlayerEntity();
 		world.getEntityPool().addNew(playerEntity);
 		playerEntity.setOperator(true);
@@ -213,9 +218,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	}
 
 	// createExistingLocalWorld
-	public static World createExistingLocalWorld(ContentPack contentPack, int gameModeId, long seed) {
+	public static World createExistingLocalWorld(ContentPack contentPack, int gameModeId, long seed, Collection<ChunkManagerPlugin> chunkManagerPlugins) {
 		contentPack.initialize();
 		World world = new World(0, Type.LOCAL, contentPack, gameModeId, seed);
+		chunkManagerPlugins.forEach(p -> world.getChunkManager().addPlugin(p));
 		return world;
 	}
 
@@ -267,7 +273,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 	/**
 	 * Called after all players are added in the EntityPool and Teams are sets. This
 	 * will place players and set the map limit if present.
-	 * 
+	 *
 	 * @throws MapAnalyticsException
 	 */
 	public void initializeNewGame() throws MapAnalyticsException {

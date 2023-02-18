@@ -33,6 +33,7 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerRespawnAction;
 import com.pixurvival.core.map.RemoveDurationStructureAction;
 import com.pixurvival.core.map.SpawnAction;
+import com.pixurvival.core.map.chunk.ChunkManagerPlugin;
 import com.pixurvival.core.map.chunk.ChunkPosition;
 import com.pixurvival.core.map.chunk.ChunkRepository;
 import com.pixurvival.core.map.chunk.CompressedChunk;
@@ -109,7 +110,8 @@ public class WorldSerialization {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static World load(String saveName, ContentPackContext contentPackSerialization) throws IOException, LoadGameException {
+	public static World load(String saveName, ContentPackContext contentPackSerialization, Collection<ChunkManagerPlugin> chunkManagerPlugins)
+			throws IOException, LoadGameException {
 		ByteBuffer buffer = ByteBuffer.wrap(FileUtils.readBytes(getSaveFile(saveName)));
 		// Global data
 		ReleaseVersion version = ReleaseVersion.valueFor(ByteBufferUtils.getString(buffer));
@@ -133,7 +135,7 @@ public class WorldSerialization {
 		if (checkResult == ContentPackValidityCheckResult.NOT_SAME) {
 			throw new LoadGameException(Reason.NOT_SAME_CONTENT_PACK, identifier);
 		}
-		World world = World.createExistingLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong());
+		World world = World.createExistingLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong(), chunkManagerPlugins);
 		Kryo kryo = getKryo(world);
 		world.getTime().apply(buffer);
 		world.getEntityPool().setNextId(VarLenNumberIO.readPositiveVarLong(buffer));

@@ -38,6 +38,12 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 
 	private boolean avoidStuck = false;
 
+	/**
+	 * When true, the structure won't block new structure placement and will be
+	 * destroyed in this case.
+	 */
+	private boolean autoDestroy = false;
+
 	@Valid
 	private Dimensions dimensions = new Dimensions(1, 1);
 
@@ -62,12 +68,10 @@ public class Structure extends NamedIdentifiedElement implements Serializable {
 	 * Called by the game engine to create a new {@link StructureEntity} of this
 	 * Structure definition. Structures with special behaviors must override to
 	 * instantiate an appropriate specialization of {@link StructureEntity}.
-	 * 
+	 *
 	 * @param chunk
-	 * @param x
-	 *            the bottom-left tile X position in world coordinate.
-	 * @param y
-	 *            the bottom-left tile Y position in world coordinate.
+	 * @param x     the bottom-left tile X position in world coordinate.
+	 * @param y     the bottom-left tile Y position in world coordinate.
 	 * @return a StructureEntity instance for this structure definition
 	 */
 	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
