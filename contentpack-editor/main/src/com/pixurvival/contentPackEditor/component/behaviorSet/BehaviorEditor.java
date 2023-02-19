@@ -29,6 +29,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.HarvestBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardStructureBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.PickUpItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
@@ -95,6 +96,18 @@ public class BehaviorEditor extends InstanceChangingElementEditor<Behavior> {
 			bind(targetChooser, "targetType", MoveTowardBehavior.class);
 			bind(randomAngleInput, "randomAngle", MoveTowardBehavior.class);
 			return LayoutUtils.createHorizontalLabelledBox("generic.target", targetChooser, "generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput);
+		}));
+
+		// MOVE_TOWARD STRUCTURE
+		classEntries.add(new ClassEntry(MoveTowardStructureBehavior.class, () -> {
+			ElementSetEditor<Structure> structureSet = new ElementSetEditor<>(Structure.class);
+			FloatInput minDistanceInput = new FloatInput();
+			AngleInput randomAngleInput = new AngleInput();
+			bind(minDistanceInput, "minDistance", MoveTowardStructureBehavior.class);
+			bind(structureSet, "structureSet", MoveTowardStructureBehavior.class);
+			bind(randomAngleInput, "randomAngle", MoveTowardStructureBehavior.class);
+			return LayoutUtils.createVerticalBox(structureSet,
+					LayoutUtils.createHorizontalLabelledBox("generic.minDistance", minDistanceInput, "generic.randomAngle", randomAngleInput));
 		}));
 
 		// TURN_AROUND

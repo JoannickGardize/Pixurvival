@@ -14,7 +14,9 @@ import java.util.function.Predicate;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.livingEntity.PlayerEntity;
@@ -293,9 +295,8 @@ public class TiledMap {
 
 	/**
 	 * Returns the chunk at the given position, waiting for it if necessary.
-	 * 
-	 * @param position
-	 *            The position of the requested chunk
+	 *
+	 * @param position The position of the requested chunk
 	 * @return The chunk at the given position
 	 */
 	public Chunk chunkAtWait(ChunkPosition position) {
@@ -446,8 +447,8 @@ public class TiledMap {
 		return findClosestStructure(position, searchRadius, type -> true, s -> true);
 	}
 
-	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds) {
-		return findClosestStructure(position, searchRadius, structureTypeIds::contains, s -> true);
+	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, ElementSet<Structure> structureSet) {
+		return findClosestStructure(position, searchRadius, structureSet::containsById, s -> true);
 	}
 
 	public StructureEntity findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds, Predicate<StructureEntity> filter) {

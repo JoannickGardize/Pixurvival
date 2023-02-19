@@ -1,33 +1,33 @@
 package com.pixurvival.core.contentPack.creature.changeConditionImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
+import com.pixurvival.core.contentPack.elementSet.AllElementSet;
+import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.structure.Structure;
-import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
+import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-import com.pixurvival.core.util.IdSetHelper;
 
-// TODO ???
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DistanceToStructureCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;
 
-	@ElementReference
-	private List<Structure> structures = new ArrayList<>();
+	@Valid
+	private ElementSet<Structure> structureSet = new AllElementSet<>();
 
-	private FloatComparison comparison;
+	private FloatComparison operator;
 
 	@Positive
 	private float targetDistance;
 
-	private transient IdSetHelper idSetHelper = new IdSetHelper();
-
 	@Override
 	public boolean test(CreatureEntity creature) {
-		return comparison.testPresence(creature.getWorld().getMap().findClosestStructure(creature.getPosition(), targetDistance, idSetHelper.get(structures)));
+		return operator.testPresence(creature.getWorld().getMap().findClosestStructure(creature.getPosition(), targetDistance, structureSet));
 	}
 
 }

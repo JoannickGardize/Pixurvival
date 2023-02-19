@@ -16,7 +16,7 @@ public class RepairStructureAlteration extends UniqueAlteration {
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember entity) {
 		if (entity instanceof Healable) {
-			((Healable) entity).takeHeal(amount.getValue(source.getStats()));
+			((Healable) entity).takeHeal(amount.getValue(source));
 		}
 	}
 

@@ -20,6 +20,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.StatFormulaEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.SoundPreset;

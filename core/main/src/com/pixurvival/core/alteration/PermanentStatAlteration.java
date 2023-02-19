@@ -6,14 +6,13 @@ import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
 
-import lombok.Setter;
-
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Permanent stats are applied to the base value of the living entity and never
  * disappear, once he died (according to the game mode rule).
- * 
+ *
  * @author SharkHendrix
  *
  */
@@ -30,7 +29,7 @@ public class PermanentStatAlteration extends UniqueAlteration {
 
 	@Override
 	public void uniqueApply(TeamMember source, TeamMember entity) {
-		entity.getStats().get(statType).addToBase(amount.getValue(source.getStats()));
+		entity.getStats().get(statType).addToBase(amount.getValue(source));
 	}
 
 	@Override

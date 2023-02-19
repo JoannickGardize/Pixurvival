@@ -13,6 +13,7 @@ import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.elementSet.ExclusiveElementSet;
 import com.pixurvival.core.contentPack.elementSet.InclusiveElementSet;
+import com.pixurvival.core.util.CaseUtils;
 
 public class ElementSetEditor<T extends NamedIdentifiedElement> extends InstanceChangingElementEditor<ElementSet<T>> {
 
@@ -21,6 +22,7 @@ public class ElementSetEditor<T extends NamedIdentifiedElement> extends Instance
 		setLayout(new BorderLayout(2, 2));
 		add(LayoutUtils.single(LayoutUtils.labelled("generic.type", getTypeChooser())), BorderLayout.NORTH);
 		add(getSpecificPartPanel(), BorderLayout.CENTER);
+		setBorder(LayoutUtils.createGroupBorder("elementType." + CaseUtils.pascalToCamelCase(type.getSimpleName())));
 	}
 
 	private static final long serialVersionUID = 1L;

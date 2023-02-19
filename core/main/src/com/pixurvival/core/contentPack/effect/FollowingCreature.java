@@ -36,10 +36,9 @@ public class FollowingCreature extends FollowingElement {
 			creatureEntity.setMaster(origin);
 		}
 		StatSet creatureStats = creatureEntity.getStats();
-		StatSet originStats = origin.getStats();
-		creatureStats.get(StatType.STRENGTH).setBase(strengthBonus.getValue(originStats));
-		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(originStats));
-		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(originStats));
+		creatureStats.get(StatType.STRENGTH).setBase(strengthBonus.getValue(origin));
+		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(origin));
+		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(origin));
 		creatureEntity.getPosition().set(ancestor.getPosition());
 		ancestor.getWorld().getEntityPool().addNew(creatureEntity);
 	}

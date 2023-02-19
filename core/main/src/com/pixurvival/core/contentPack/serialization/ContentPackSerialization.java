@@ -58,6 +58,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.GetAwayFromLightBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.HarvestBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardBehavior;
+import com.pixurvival.core.contentPack.creature.behaviorImpl.MoveTowardStructureBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.PickUpItemsBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.TurnAroundBehavior;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.VanishBehavior;
@@ -103,6 +104,7 @@ import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.contentPack.item.WeaponItem;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.structure.FactoryStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.InventoryStructure;
@@ -278,9 +280,8 @@ public class ContentPackSerialization {
 		addClassTag(representer, GetAwayBehavior.class);
 		addClassTag(representer, DistanceCondition.class);
 		addClassTag(representer, TimeCondition.class);
-		addClassTag(representer, MoveTowardBehavior.class);
-		addClassTag(representer, MoveTowardBehavior.class);
-		addClassTag(representer, MoveTowardBehavior.class);
+		addClassTag(representer, MoveTowardStructureBehavior.class);
+		addClassTag(representer, DistanceToStructureCondition.class);
 		addClassTag(representer, ItemAlterationAbility.class);
 		addClassTag(representer, CreatureAlterationAbility.class);
 		addClassTag(representer, RemainingTeamEndCondition.class);
@@ -312,7 +313,6 @@ public class ContentPackSerialization {
 		addClassTag(representer, EffectEvent.class);
 		addClassTag(representer, StatAlteration.class);
 		addClassTag(representer, PlaySoundAlteration.class);
-		addClassTag(representer, DistanceToStructureCondition.class);
 		addClassTag(representer, TileCondition.class);
 		addClassTag(representer, HarvestBehavior.class);
 		addClassTag(representer, PickUpItemsBehavior.class);
@@ -337,6 +337,8 @@ public class ContentPackSerialization {
 		addClassTag(representer, InventoryStructure.class);
 		addClassTag(representer, FactoryStructure.class);
 		addClassTag(representer, SetSpawnPositionAlteration.class);
+		addClassTag(representer, Tile.class);
+
 	}
 
 	private void addClassTag(Representer representer, Class<?> type) {

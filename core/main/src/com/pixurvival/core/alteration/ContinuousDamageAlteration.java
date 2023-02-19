@@ -24,7 +24,7 @@ public class ContinuousDamageAlteration extends Alteration {
 	@Override
 	public void targetedApply(TeamMember source, TeamMember target) {
 		if (target instanceof Damageable) {
-			((Damageable) target).takeDamage(damagePerSecond.getValue(source.getStats()) * target.getWorld().getTime().getDeltaTime(), attributes);
+			((Damageable) target).takeDamage(damagePerSecond.getValue(source) * target.getWorld().getTime().getDeltaTime(), attributes);
 		}
 	}
 

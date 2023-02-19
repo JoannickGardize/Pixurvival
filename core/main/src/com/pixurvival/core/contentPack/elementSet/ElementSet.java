@@ -9,5 +9,4 @@ public interface ElementSet<T extends NamedIdentifiedElement> extends Serializab
 	boolean contains(T element);
 
 	boolean containsById(int id);
-
 }

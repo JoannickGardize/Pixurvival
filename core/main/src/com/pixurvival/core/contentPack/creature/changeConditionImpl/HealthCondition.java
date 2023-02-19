@@ -7,7 +7,11 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
-// TODO ContentPackEditor
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class HealthCondition extends ChangeCondition {
 
 	private static final long serialVersionUID = 1L;

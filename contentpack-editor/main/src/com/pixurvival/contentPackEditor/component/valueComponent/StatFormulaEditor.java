@@ -1,4 +1,4 @@
-package com.pixurvival.contentPackEditor.component.effect;
+package com.pixurvival.contentPackEditor.component.valueComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,6 @@ import javax.swing.JLabel;
 
 import com.pixurvival.contentPackEditor.ContentPackEditionService;
 import com.pixurvival.contentPackEditor.TranslationService;
-import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeListener;
-import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.alteration.StatMultiplier;
 
@@ -72,6 +70,17 @@ public class StatFormulaEditor extends JButton implements ValueComponent<StatFor
 				sb.append(" x ");
 				sb.append(multiplier.getMultiplier());
 			}
+		}
+		if (value.getRandomValue() != 0) {
+			sb.append(" + ");
+			sb.append(TranslationService.getInstance().getString("statFormulaEditor.random"));
+			sb.append(" [0 ; ");
+			sb.append(value.getRandomValue());
+			sb.append("]");
+		}
+		if (sb.length() > 100) {
+			sb.setLength(97);
+			sb.append("...");
 		}
 		setText(sb.toString());
 	}

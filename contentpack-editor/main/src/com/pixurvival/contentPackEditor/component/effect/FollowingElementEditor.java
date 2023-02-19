@@ -12,6 +12,7 @@ import com.pixurvival.contentPackEditor.component.elementChooser.ElementChooserB
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.BooleanCheckBox;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.StatFormulaEditor;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.effect.FollowingCreature;
 import com.pixurvival.core.contentPack.effect.FollowingEffect;

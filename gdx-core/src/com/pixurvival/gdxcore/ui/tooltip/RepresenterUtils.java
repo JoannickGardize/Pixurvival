@@ -91,7 +91,7 @@ public class RepresenterUtils {
 	}
 
 	public static void appendStatAmount(StringBuilder sb, StatFormula statAmount) {
-		sb.append(PixurvivalGame.DECIMAL_FORMAT.format(statAmount.getBase()));
+		sb.append(PixurvivalGame.DECIMAL_FORMAT.format(statAmount.getBase() + statAmount.getRandomValue() / 2f));
 		if (!statAmount.getStatMultipliers().isEmpty()) {
 			sb.append(" ");
 		}
@@ -99,6 +99,9 @@ public class RepresenterUtils {
 		for (StatMultiplier statMultiplier : statAmount.getStatMultipliers()) {
 			StatType type = statMultiplier.getStatType();
 			sb.append(getColorTag(type)).append("(+").append(PixurvivalGame.DECIMAL_FORMAT.format(stats.getValue(type) * statMultiplier.getMultiplier())).append(")");
+		}
+		if (statAmount.getRandomValue() != 0) {
+			sb.append("[WHITE](+/-").append(PixurvivalGame.DECIMAL_FORMAT.format(statAmount.getRandomValue() / 2f)).append(")");
 		}
 	}
 
