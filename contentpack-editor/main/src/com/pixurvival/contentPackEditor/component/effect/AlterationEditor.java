@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.pixurvival.contentPackEditor.BeanFactory;
 import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.TranslationService;
@@ -20,8 +21,10 @@ import com.pixurvival.contentPackEditor.component.valueComponent.EnumChooser;
 import com.pixurvival.contentPackEditor.component.valueComponent.InstanceChangingElementEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.ItemStackEditor;
+import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.StatFormulaEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
+import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValueProducerEditor;
 import com.pixurvival.core.SoundPreset;
 import com.pixurvival.core.alteration.AddItemAlteration;
@@ -66,7 +69,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		if (targetElements.length > 0) {
 			EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, targetElements);
 			bind(alterationTargetChooser, "targetType");
-			LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "alterationEditor.applyTo", alterationTargetChooser), getSpecificPartPanel());
+			LayoutUtils.addHorizontally(this, 1, LayoutUtils.createVerticalLabelledBox("generic.type", getTypeChooser(), "alterationEditor.applyTo", alterationTargetChooser),
+					getSpecificPartPanel());
 		} else {
 			LayoutUtils.addHorizontally(this, 1, LayoutUtils.labelled("generic.type", getTypeChooser()), getSpecificPartPanel());
 
@@ -86,7 +90,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(applyToStructuresCheckBox, "applyToStructures", InstantDamageAlteration.class);
 			bind(damageAttributesEditor, "attributes", InstantDamageAlteration.class);
 			return (JPanel) LayoutUtils.sideBySide(
-					LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox), damageAttributesEditor);
+					LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox),
+					damageAttributesEditor);
 		}));
 
 		// ContinuousDamageAlteration
@@ -121,7 +126,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(stackPolicyChooser, "stackPolicy", StatAlteration.class);
 			bind(statModifierEditor, "statModifier", StatAlteration.class);
 			JPanel statAlterationPanel = new JPanel(new BorderLayout());
-			statAlterationPanel.add(LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.stackPolicy", stackPolicyChooser), BorderLayout.WEST);
+			statAlterationPanel.add(LayoutUtils.createVerticalLabelledBox("generic.duration", durationInput, "alterationEditor.stackPolicy", stackPolicyChooser),
+					BorderLayout.WEST);
 			statAlterationPanel.add(statModifierEditor, BorderLayout.CENTER);
 			return statAlterationPanel;
 		}));
@@ -168,12 +174,13 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			// DelayedAlteration
 			entries.add(new ClassEntry(DelayedAlteration.class, () -> {
 				TimeInput delayInput = new TimeInput();
-				AlterationEditor alterationEditor = new AlterationEditor(false);
+				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
 				bind(delayInput, "duration", DelayedAlteration.class);
-				bind(alterationEditor, "alteration", DelayedAlteration.class);
+				bind(alterationsEditor, "alterations", DelayedAlteration.class);
 				JPanel panel = new JPanel(new BorderLayout());
-				panel.add(LayoutUtils.labelled("generic.delay", delayInput), BorderLayout.WEST);
-				panel.add(alterationEditor, BorderLayout.CENTER);
+				panel.add(LayoutUtils.single(LayoutUtils.labelled("generic.delay", delayInput)), BorderLayout.WEST);
+				panel.add(alterationsEditor, BorderLayout.CENTER);
 				return panel;
 			}));
 
@@ -181,13 +188,14 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			entries.add(new ClassEntry(RepeatAlteration.class, () -> {
 				IntegerInput numberOfRepeatInput = new IntegerInput();
 				TimeInput intervalInput = new TimeInput();
-				AlterationEditor alterationEditor = new AlterationEditor(false);
+				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
 				bind(numberOfRepeatInput, "numberOfRepeat", RepeatAlteration.class);
 				bind(intervalInput, "interval", RepeatAlteration.class);
-				bind(alterationEditor, "alteration", RepeatAlteration.class);
+				bind(alterationsEditor, "alterations", RepeatAlteration.class);
 				JPanel panel = new JPanel(new BorderLayout());
 				panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
-				panel.add(alterationEditor);
+				panel.add(alterationsEditor);
 				return panel;
 			}));
 		}
@@ -226,7 +234,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(itemStacksEditor, "itemStacks", AddItemAlteration.class);
 			bind(dropRemainderCheckbox, "dropRemainder", AddItemAlteration.class);
 
-			return LayoutUtils.createVerticalBox(LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("generic.repeat", repeatEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox)),
+			return LayoutUtils.createVerticalBox(
+					LayoutUtils.single(LayoutUtils.createHorizontalLabelledBox("generic.repeat", repeatEditor, "alterationEditor.dropRemainder", dropRemainderCheckbox)),
 					itemStacksEditor);
 		}));
 
@@ -266,9 +275,8 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		}));
 
 		// SetSpawnPositionAlteration
-		entries.add(new ClassEntry(SetSpawnPositionAlteration.class, () -> {
-			return LayoutUtils.single(new JLabel(TranslationService.getInstance().getString("alterationEditor.setSpawnPosition")));
-		}));
+		entries.add(new ClassEntry(SetSpawnPositionAlteration.class,
+				() -> LayoutUtils.single(new JLabel(TranslationService.getInstance().getString("alterationEditor.setSpawnPosition")))));
 
 		return entries;
 	}

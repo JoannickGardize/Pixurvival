@@ -3,6 +3,7 @@ package com.pixurvival.contentPackEditor.component.valueComponent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -50,6 +51,9 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		setLayout(new BorderLayout());
 		listPanel.setLayout(new GridBagLayout());
 		listPanel.setBorder(new EmptyBorder(1, 5, 1, 5));
+		listPanel.setMinimumSize(new Dimension(200, 100));
+		listPanel.setSize(200, 100);
+
 		if (useScrollPane) {
 			JPanel pusherPanel = new JPanel(new BorderLayout());
 			pusherPanel.add(listPanel, BorderLayout.NORTH);
@@ -105,8 +109,8 @@ public class VerticalListEditor<E> extends ListEditor<E> {
 		LayoutUtils.setFixedSize(removeButton, 30, 30);
 		LayoutUtils.setFixedSize(downButton, 30, 30);
 
-		JPanel buttonsPanel = LayoutUtils
-				.single(buttonAlignment == VERTICAL ? LayoutUtils.createVerticalBox(upButton, removeButton, downButton) : LayoutUtils.createHorizontalBox(upButton, removeButton, downButton));
+		JPanel buttonsPanel = LayoutUtils.single(buttonAlignment == VERTICAL ? LayoutUtils.createVerticalBox(upButton, removeButton, downButton)
+				: LayoutUtils.createHorizontalBox(upButton, removeButton, downButton));
 
 		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;

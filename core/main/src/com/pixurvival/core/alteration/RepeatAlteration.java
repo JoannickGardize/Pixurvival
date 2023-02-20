@@ -1,6 +1,8 @@
 package com.pixurvival.core.alteration;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
@@ -20,10 +22,12 @@ public class RepeatAlteration extends PersistentAlteration {
 
 	@Bounds(min = 1)
 	private int numberOfRepeat;
+
 	@Positive
 	private long interval;
+
 	@Valid
-	private Alteration alteration;
+	private List<Alteration> alterations = new ArrayList<>();
 
 	@Override
 	public Object begin(TeamMember source, LivingEntity entity) {
@@ -37,7 +41,9 @@ public class RepeatAlteration extends PersistentAlteration {
 		long nextTrigger = (long) data;
 		long currentTime = source.getWorld().getTime().getTimeMillis();
 		if (currentTime >= nextTrigger) {
-			alteration.apply(source, entity);
+			for (Alteration alteration : alterations) {
+				alteration.apply(source, entity);
+			}
 			nextTrigger += interval;
 		}
 		return nextTrigger;

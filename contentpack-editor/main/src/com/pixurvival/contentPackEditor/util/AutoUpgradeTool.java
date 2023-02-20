@@ -41,9 +41,15 @@ public class AutoUpgradeTool {
 
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_9.ordinal(), sb -> replaceAll(sb, "!!DropItemsBehavior", "!!DoNothingBehavior"));
 
-		CONTENT_PACK_UPGRADERS.put(ReleaseVersion.ALPHA_10.ordinal(), cp -> cp.getEffects().forEach(e -> e.getRepeatFollowingElements().setBase(e.getRepeatFollowingElements().getBase() + 1f)));
+		CONTENT_PACK_UPGRADERS.put(ReleaseVersion.ALPHA_10.ordinal(),
+				cp -> cp.getEffects().forEach(e -> e.getRepeatFollowingElements().setBase(e.getRepeatFollowingElements().getBase() + 1f)));
 
 		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_12.ordinal(), sb -> replaceAll(sb, "!!DamageableStructure", "!!Structure"));
+
+		SERIALIZATION_UPGRADERS.put(ReleaseVersion.ALPHA_13.ordinal(), sb -> {
+			replaceNodeAfterEachNode(sb, "!!RepeatAlteration", "alteration: ", s -> "alterations:\n" + s + "- ");
+			replaceNodeAfterEachNode(sb, "!!DelayedAlteration", "alteration: ", s -> "alterations:\n" + s + "- ");
+		});
 	}
 
 	/**
@@ -59,7 +65,8 @@ public class AutoUpgradeTool {
 			StringBuilder layoutSb = asStringBuilder(zipFile, LayoutManager.LAYOUT_ENTRY);
 			upgradeEntry(layoutSb, LAYOUT_UPGRADERS, startIndex);
 			LayoutManager.getInstance().setOverridedSource(new ByteArrayInputStream(layoutSb.toString().getBytes()));
-			ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(fileService.getCurrentFile(), new ByteArrayInputStream(serializationSb.toString().getBytes()));
+			ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(fileService.getCurrentFile(),
+					new ByteArrayInputStream(serializationSb.toString().getBytes()));
 			upgradeContentPack(contentPack, startIndex);
 			LayoutManager.getInstance().setOverridedSource(null);
 			return contentPack;
@@ -114,6 +121,38 @@ public class AutoUpgradeTool {
 			}
 			currentIndex += sb.indexOf("\n", currentIndex) + 1;
 		}
+	}
+
+	static void replaceNodeAfterEachNode(StringBuilder sb, String parentNode, String childNode, UnaryOperator<String> replacementChildNode) {
+		int index = 0;
+		while (index != -1) {
+			index = replaceNodeAfterNode(sb, index, parentNode, childNode, replacementChildNode);
+		}
+	}
+
+	private static int replaceNodeAfterNode(StringBuilder sb, int startIndex, String parentNode, String childNode, UnaryOperator<String> replacementChildNode) {
+		int index = sb.indexOf(parentNode, startIndex);
+		if (index == -1) {
+			return -1;
+		}
+		index += parentNode.length();
+		index = sb.indexOf(childNode, index);
+		if (index == -1) {
+			return -1;
+		}
+		String replacement = replacementChildNode.apply(getLineContentBefore(sb, index));
+		sb.replace(index, index + childNode.length(), replacement);
+		return index + replacement.length();
+	}
+
+	private static String getLineContentBefore(StringBuilder sb, int index) {
+		int i;
+		for (i = index - 1; sb.charAt(i) != '\n' && i > 0; i--) {
+		}
+		if (i > 0) {
+			i++;
+		}
+		return sb.substring(i, index);
 	}
 
 	static ReleaseVersion findReleaseVersion(StringBuilder sb) {
