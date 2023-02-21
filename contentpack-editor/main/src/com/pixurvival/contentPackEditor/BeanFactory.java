@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 
 import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.alteration.FollowingElementAlteration;
+import com.pixurvival.core.alteration.condition.AlterationCondition;
+import com.pixurvival.core.alteration.condition.HealthAlterationCondition;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 import com.pixurvival.core.contentPack.effect.Effect;
@@ -78,6 +80,8 @@ public class BeanFactory {
 		suppliers.put(MapProvider.class, ProcedurallyGeneratedMapProvider::new);
 
 		suppliers.put(Vector2.class, Vector2::new);
+
+		suppliers.put(AlterationCondition.class, HealthAlterationCondition::new);
 	}
 
 	@SneakyThrows
@@ -125,7 +129,8 @@ public class BeanFactory {
 
 	private static void forEachPropertyMethods(Class<?> clazz, BiConsumer<Method, Method> action) {
 		for (Method getter : clazz.getMethods()) {
-			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0 && !NamedIdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
+			if (getter.getName().startsWith("get") && getter.getName().length() > 3 && getter.getParameterCount() == 0
+					&& !NamedIdentifiedElement.class.isAssignableFrom(getter.getReturnType())) {
 				try {
 					String propertyName = getter.getName().substring(3);
 					String propertyCamelName = CaseUtils.pascalToCamelCase(propertyName);

@@ -51,6 +51,8 @@ import com.pixurvival.core.alteration.SourceDirection;
 import com.pixurvival.core.alteration.StatAlteration;
 import com.pixurvival.core.alteration.StunAlteration;
 import com.pixurvival.core.alteration.TeleportationAlteration;
+import com.pixurvival.core.alteration.condition.AlterationCondition;
+import com.pixurvival.core.alteration.condition.ConditionAlteration;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.item.ItemStack;
@@ -89,7 +91,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			bind(damageAmountEditor, "amount", InstantDamageAlteration.class);
 			bind(applyToStructuresCheckBox, "applyToStructures", InstantDamageAlteration.class);
 			bind(damageAttributesEditor, "attributes", InstantDamageAlteration.class);
-			return (JPanel) LayoutUtils.sideBySide(
+			return LayoutUtils.sideBySide(
 					LayoutUtils.createVerticalLabelledBox("alterationEditor.amount", damageAmountEditor, "alterationEditor.applyToStructures", applyToStructuresCheckBox),
 					damageAttributesEditor);
 		}));
@@ -100,7 +102,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 			DamageAttributesEditor damageAttributesEditor = new DamageAttributesEditor();
 			bind(damageAmountEditor, "damagePerSecond", ContinuousDamageAlteration.class);
 			bind(damageAttributesEditor, "attributes", ContinuousDamageAlteration.class);
-			return (JPanel) LayoutUtils.sideBySide(LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor)), damageAttributesEditor);
+			return LayoutUtils.sideBySide(LayoutUtils.single(LayoutUtils.labelled("alterationEditor.amountPerSecond", damageAmountEditor)), damageAttributesEditor);
 		}));
 
 		// InstantHealAlteration
@@ -169,36 +171,6 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 
 		// TeleportationAlteration
 		entries.add(new ClassEntry(TeleportationAlteration.class, JPanel::new));
-
-		if (Boolean.TRUE.equals(params)) {
-			// DelayedAlteration
-			entries.add(new ClassEntry(DelayedAlteration.class, () -> {
-				TimeInput delayInput = new TimeInput();
-				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
-						VerticalListEditor.HORIZONTAL, false);
-				bind(delayInput, "duration", DelayedAlteration.class);
-				bind(alterationsEditor, "alterations", DelayedAlteration.class);
-				JPanel panel = new JPanel(new BorderLayout());
-				panel.add(LayoutUtils.single(LayoutUtils.labelled("generic.delay", delayInput)), BorderLayout.WEST);
-				panel.add(alterationsEditor, BorderLayout.CENTER);
-				return panel;
-			}));
-
-			// RepeatAlteration
-			entries.add(new ClassEntry(RepeatAlteration.class, () -> {
-				IntegerInput numberOfRepeatInput = new IntegerInput();
-				TimeInput intervalInput = new TimeInput();
-				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
-						VerticalListEditor.HORIZONTAL, false);
-				bind(numberOfRepeatInput, "numberOfRepeat", RepeatAlteration.class);
-				bind(intervalInput, "interval", RepeatAlteration.class);
-				bind(alterationsEditor, "alterations", RepeatAlteration.class);
-				JPanel panel = new JPanel(new BorderLayout());
-				panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
-				panel.add(alterationsEditor);
-				return panel;
-			}));
-		}
 
 		// FollowingElementAlteration
 		entries.add(new ClassEntry(FollowingElementAlteration.class, () -> {
@@ -277,6 +249,53 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
 		// SetSpawnPositionAlteration
 		entries.add(new ClassEntry(SetSpawnPositionAlteration.class,
 				() -> LayoutUtils.single(new JLabel(TranslationService.getInstance().getString("alterationEditor.setSpawnPosition")))));
+
+		if (Boolean.TRUE.equals(params)) {
+			// DelayedAlteration
+			entries.add(new ClassEntry(DelayedAlteration.class, () -> {
+				TimeInput delayInput = new TimeInput();
+				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
+				bind(delayInput, "duration", DelayedAlteration.class);
+				bind(alterationsEditor, "alterations", DelayedAlteration.class);
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.add(LayoutUtils.single(LayoutUtils.labelled("generic.delay", delayInput)), BorderLayout.WEST);
+				panel.add(alterationsEditor, BorderLayout.CENTER);
+				return panel;
+			}));
+
+			// RepeatAlteration
+			entries.add(new ClassEntry(RepeatAlteration.class, () -> {
+				IntegerInput numberOfRepeatInput = new IntegerInput();
+				TimeInput intervalInput = new TimeInput();
+				ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
+				bind(numberOfRepeatInput, "numberOfRepeat", RepeatAlteration.class);
+				bind(intervalInput, "interval", RepeatAlteration.class);
+				bind(alterationsEditor, "alterations", RepeatAlteration.class);
+				JPanel panel = new JPanel(new BorderLayout());
+				panel.add(LayoutUtils.createVerticalLabelledBox("alterationEditor.numberOfRepeat", numberOfRepeatInput, "generic.interval", intervalInput), BorderLayout.WEST);
+				panel.add(alterationsEditor, BorderLayout.CENTER);
+				return panel;
+			}));
+
+			// ConditionAlteration
+			entries.add(new ClassEntry(ConditionAlteration.class, () -> {
+				ListEditor<AlterationCondition> alterationConditionsEditor = new VerticalListEditor<>(AlterationConditionEditor::new, BeanFactory.of(AlterationCondition.class),
+						VerticalListEditor.HORIZONTAL, false);
+				alterationConditionsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.if"));
+				ListEditor<Alteration> trueAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
+				trueAlterationsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.then"));
+				ListEditor<Alteration> falseAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+						VerticalListEditor.HORIZONTAL, false);
+				falseAlterationsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.else"));
+				bind(alterationConditionsEditor, "conditions", ConditionAlteration.class);
+				bind(trueAlterationsEditor, "trueAlterations", ConditionAlteration.class);
+				bind(falseAlterationsEditor, "falseAlterations", ConditionAlteration.class);
+				return LayoutUtils.createVerticalBox(alterationConditionsEditor, trueAlterationsEditor, falseAlterationsEditor);
+			}));
+		}
 
 		return entries;
 	}

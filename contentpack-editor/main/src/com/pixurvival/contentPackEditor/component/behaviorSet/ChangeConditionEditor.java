@@ -24,7 +24,6 @@ import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.DistanceCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.DistanceToStructureCondition;
-import com.pixurvival.core.contentPack.creature.changeConditionImpl.FloatComparison;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.HealthCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.InLightCondition;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.InventoryContainsCondition;
@@ -37,6 +36,7 @@ import com.pixurvival.core.contentPack.creature.changeConditionImpl.TookDamageCo
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.util.FloatComparison;
 
 public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeCondition> {
 

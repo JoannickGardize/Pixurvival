@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.creature.changeConditionImpl;
+package com.pixurvival.core.util;
 
 import lombok.AllArgsConstructor;
 

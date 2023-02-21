@@ -9,6 +9,7 @@ import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.util.FloatComparison;
 
 import lombok.Getter;
 import lombok.Setter;

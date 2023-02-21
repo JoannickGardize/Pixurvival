@@ -5,6 +5,7 @@ import com.pixurvival.core.contentPack.creature.behaviorImpl.BehaviorTarget;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
+import com.pixurvival.core.util.FloatComparison;
 
 import lombok.Getter;
 import lombok.Setter;

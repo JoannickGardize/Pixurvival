@@ -124,7 +124,7 @@ public class LayoutUtils {
 
 	}
 
-	public static Component sideBySide(Component left, Component right) {
+	public static JPanel sideBySide(Component left, Component right) {
 		JPanel result = new JPanel();
 		addSideBySide(result, left, right);
 		return result;
@@ -133,7 +133,7 @@ public class LayoutUtils {
 	public static JPanel labelled(String labelKey, Component component) {
 		String tooltipKey = labelKey + ".tooltip";
 		JPanel panel = new JPanel(new BorderLayout(DEFAULT_GAP, 0));
-		JLabel label = new JLabel(TranslationService.getInstance().getString(labelKey));
+		JLabel label = label(labelKey);
 		panel.add(label, BorderLayout.WEST);
 		panel.add(component, BorderLayout.CENTER);
 		if (component instanceof ValueComponent) {
@@ -147,6 +147,10 @@ public class LayoutUtils {
 			label.setToolTipText(toolTipText);
 		}
 		return panel;
+	}
+
+	public static JLabel label(String labelKey) {
+		return new JLabel(TranslationService.getInstance().getString(labelKey));
 	}
 
 	public static Border createGroupBorder(String titlekey) {
