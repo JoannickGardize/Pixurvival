@@ -1,12 +1,12 @@
 package com.pixurvival.core.contentPack.elementSet;
 
-import java.io.Serializable;
-
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+
+import java.io.Serializable;
 
 public interface ElementSet<T extends NamedIdentifiedElement> extends Serializable {
 
-	boolean contains(T element);
+    boolean contains(T element);
 
-	boolean containsById(int id);
+    boolean containsById(int id);
 }

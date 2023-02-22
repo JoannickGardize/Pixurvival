@@ -1,27 +1,27 @@
 package com.pixurvival.gdxcore.ui.interactionDialog;
 
-import java.util.function.Consumer;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.gdxcore.ui.InventoryTable;
 
+import java.util.function.Consumer;
+
 public abstract class DialogContent extends Table {
 
-	// DialogContent() {
-	// setFillParent(true);
-	// }
+    // DialogContent() {
+    // setFillParent(true);
+    // }
 
-	/**
-	 * @param dialog
-	 * @return true if rebuild has been made
-	 */
-	public abstract boolean build(InteractionDialog dialog);
+    /**
+     * @param dialog
+     * @return true if rebuild has been made
+     */
+    public abstract boolean build(InteractionDialog dialog);
 
-	public abstract void forEachInventories(Consumer<InventoryTable> action);
+    public abstract void forEachInventories(Consumer<InventoryTable> action);
 
-	public abstract Actor getAlignActor();
+    public abstract Actor getAlignActor();
 
-	public abstract Class<? extends InteractionDialog> getDialogType();
+    public abstract Class<? extends InteractionDialog> getDialogType();
 }

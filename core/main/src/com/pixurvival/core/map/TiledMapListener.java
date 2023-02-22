@@ -7,15 +7,15 @@ import com.pixurvival.core.map.chunk.update.StructureUpdate;
 
 public interface TiledMapListener {
 
-	void chunkLoaded(Chunk chunk);
+    void chunkLoaded(Chunk chunk);
 
-	void chunkUnloaded(Chunk chunk);
+    void chunkUnloaded(Chunk chunk);
 
-	void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate);
+    void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate);
 
-	void structureAdded(StructureEntity mapStructure);
+    void structureAdded(StructureEntity mapStructure);
 
-	void structureRemoved(StructureEntity mapStructure);
+    void structureRemoved(StructureEntity mapStructure);
 
-	void entityEnterChunk(ChunkPosition previousPosition, Entity e);
+    void entityEnterChunk(ChunkPosition previousPosition, Entity e);
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EndGameData {
 
-	private long time;
-	private PlayerEndGameData[] playerWonIds;
-	private PlayerEndGameData[] playerLostIds;
+    private long time;
+    private PlayerEndGameData[] playerWonIds;
+    private PlayerEndGameData[] playerLostIds;
 }

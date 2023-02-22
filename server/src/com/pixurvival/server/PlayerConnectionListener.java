@@ -8,21 +8,21 @@ import com.pixurvival.core.message.playerRequest.IPlayerActionRequest;
 
 public interface PlayerConnectionListener {
 
-	default void handleGameReady(GameReady gameReady) {
-	}
+    default void handleGameReady(GameReady gameReady) {
+    }
 
-	default void handleRefreshRequest(RefreshRequest refreshRequest) {
-	}
+    default void handleRefreshRequest(RefreshRequest refreshRequest) {
+    }
 
-	default void handlePlayerActionRequest(IPlayerActionRequest playerActionRequest) {
-	}
+    default void handlePlayerActionRequest(IPlayerActionRequest playerActionRequest) {
+    }
 
-	default void handleClientStream(ClientStream clientStream) {
-	}
+    default void handleClientStream(ClientStream clientStream) {
+    }
 
-	default void handleLobbyMessage(LobbyMessage message) {
-	}
+    default void handleLobbyMessage(LobbyMessage message) {
+    }
 
-	default void handleDisconnected() {
-	}
+    default void handleDisconnected() {
+    }
 }

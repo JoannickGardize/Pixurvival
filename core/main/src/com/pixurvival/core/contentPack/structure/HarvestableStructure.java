@@ -8,7 +8,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,19 +15,19 @@ import lombok.Setter;
 @Setter
 public class HarvestableStructure extends Structure {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Bounds(min = 0)
-	private long harvestingTime;
+    @Bounds(min = 0)
+    private long harvestingTime;
 
-	@ElementReference
-	private ItemReward itemReward;
+    @ElementReference
+    private ItemReward itemReward;
 
-	@Valid
-	private TimeInterval regrowthTime = new TimeInterval();
+    @Valid
+    private TimeInterval regrowthTime = new TimeInterval();
 
-	@Override
-	public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
-		return new HarvestableStructureEntity(chunk, this, x, y);
-	}
+    @Override
+    public StructureEntity newStructureEntity(Chunk chunk, int x, int y) {
+        return new HarvestableStructureEntity(chunk, this, x, y);
+    }
 }

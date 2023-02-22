@@ -10,7 +10,6 @@ import com.pixurvival.core.item.Inventory;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.util.FloatComparison;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,25 +17,25 @@ import lombok.Setter;
 @Setter
 public class InventoryContainsCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Valid
-	private ElementSet<Item> items = new AllElementSet<>();
-	private FloatComparison operator = FloatComparison.GREATER_THAN;
-	@Positive
-	private int value;
+    @Valid
+    private ElementSet<Item> items = new AllElementSet<>();
+    private FloatComparison operator = FloatComparison.GREATER_THAN;
+    @Positive
+    private int value;
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		Inventory inventory = creature.getInventory();
-		int sum = 0;
-		for (int i = 0; i < inventory.size(); i++) {
-			ItemStack itemStack = inventory.getSlot(i);
-			if (itemStack != null && items.contains(itemStack.getItem())) {
-				sum += itemStack.getQuantity();
-			}
-		}
-		return operator.test(sum, value);
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        Inventory inventory = creature.getInventory();
+        int sum = 0;
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack itemStack = inventory.getSlot(i);
+            if (itemStack != null && items.contains(itemStack.getItem())) {
+                sum += itemStack.getQuantity();
+            }
+        }
+        return operator.test(sum, value);
+    }
 
 }

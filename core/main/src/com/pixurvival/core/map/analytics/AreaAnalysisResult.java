@@ -7,7 +7,7 @@ import lombok.Value;
 @AllArgsConstructor
 public class AreaAnalysisResult {
 
-	private Area area;
-	private BooleanExtensibleGrid freePositions;
-	private int pointsInterval;
+    private Area area;
+    private BooleanExtensibleGrid freePositions;
+    private int pointsInterval;
 }

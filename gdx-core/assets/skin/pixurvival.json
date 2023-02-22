@@ -1,168 +1,168 @@
 {
-com.badlogic.gdx.graphics.Color: {
-	black: {
-		r: 0
-		g: 0
-		b: 0
-		a: 1
-	}
-	gray: {
-		r: 0.62
-		g: 0.33
-		b: 0.13
-		a: 1
-	}
-	white: {
-		r: 1
-		g: 1
-		b: 1
-		a: 1
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
-	clothing-icon-black: {
-		name: clothing-icon
-		color: {
-			r: 0
-			g: 0
-			b: 0
-			a: 1
-		}
-	}
-	weapon-icon-black: {
-		name: weapon-icon
-		color: {
-			r: 0
-			g: 0
-			b: 0
-			a: 1
-		}
-	}
-	accessory-icon-black: {
-		name: accessory-icon
-		color: {
-			r: 0
-			g: 0
-			b: 0
-			a: 1
-		}
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
-	default: {
-		up: Button-white
-		down: Button-gray-reverted
-		over: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-	default: {
-		checkboxOn: Button-white
-		checkboxOff: Button-gray-reverted
-		font: default
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
-	default: {
-		up: Button-white
-		down: Button-gray-reverted
-		over: Button-gray
-	}
-	clothing: {
-		parent: default
-		imageUp: clothing-icon-black
-	}
-	weapon: {
-		parent: default
-		imageUp: weapon-icon-black
-	}
-	accessory: {
-		imageUp: accessory-icon-black
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
-	default: {
-		parent: default
-		font: default
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-	default: {
-		font: default
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-	default: {
-		font: default
-		fontColorSelected: gray
-		fontColorUnselected: white
-		selection: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
-	default-horizontal: {
-		background: Button-gray
-		knobBefore: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-	default: {
-		background: Button-gray
-		hScroll: clothing-icon-black
-		vScroll: clothing-icon-black
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
-	default: {
-		font: default
-		fontColor: gray
-		scrollStyle: default
-		listStyle: default
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
-	default-horizontal: {
-		background: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
-	default-horizontal: {
-		handle: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	default: {
-		font: default
-		fontColor: black
-		up: Button-white
-		down: Button-gray-reverted
-		over: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-	default: {
-		font: default
-		fontColor: black
-		background: Button-gray-reverted
-		cursor: weapon-icon-black
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
-	default: {
-		label: default
-		background: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
-	default: {
-		plus: Button-gray
-		minus: Button-gray
-	}
-}
-com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-	default: {
-		background: Window
-		titleFont: default
-	}
-}
+  com.badlogic.gdx.graphics.Color: {
+    black: {
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    }
+    gray: {
+      r: 0.62
+      g: 0.33
+      b: 0.13
+      a: 1
+    }
+    white: {
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
+    clothing-icon-black: {
+      name: clothing-icon
+      color: {
+        r: 0
+        g: 0
+        b: 0
+        a: 1
+      }
+    }
+    weapon-icon-black: {
+      name: weapon-icon
+      color: {
+        r: 0
+        g: 0
+        b: 0
+        a: 1
+      }
+    }
+    accessory-icon-black: {
+      name: accessory-icon
+      color: {
+        r: 0
+        g: 0
+        b: 0
+        a: 1
+      }
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+    default: {
+      up: Button-white
+      down: Button-gray-reverted
+      over: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+    default: {
+      checkboxOn: Button-white
+      checkboxOff: Button-gray-reverted
+      font: default
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
+    default: {
+      up: Button-white
+      down: Button-gray-reverted
+      over: Button-gray
+    }
+    clothing: {
+      parent: default
+      imageUp: clothing-icon-black
+    }
+    weapon: {
+      parent: default
+      imageUp: weapon-icon-black
+    }
+    accessory: {
+      imageUp: accessory-icon-black
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
+    default: {
+      parent: default
+      font: default
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+    default: {
+      font: default
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
+    default: {
+      font: default
+      fontColorSelected: gray
+      fontColorUnselected: white
+      selection: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
+    default-horizontal: {
+      background: Button-gray
+      knobBefore: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
+    default: {
+      background: Button-gray
+      hScroll: clothing-icon-black
+      vScroll: clothing-icon-black
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
+    default: {
+      font: default
+      fontColor: gray
+      scrollStyle: default
+      listStyle: default
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
+    default-horizontal: {
+      background: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
+    default-horizontal: {
+      handle: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
+    default: {
+      font: default
+      fontColor: black
+      up: Button-white
+      down: Button-gray-reverted
+      over: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+    default: {
+      font: default
+      fontColor: black
+      background: Button-gray-reverted
+      cursor: weapon-icon-black
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+    default: {
+      label: default
+      background: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Tree$TreeStyle: {
+    default: {
+      plus: Button-gray
+      minus: Button-gray
+    }
+  }
+  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+    default: {
+      background: Window
+      titleFont: default
+    }
+  }
 }

@@ -2,5 +2,5 @@ package com.pixurvival.core.interactionDialog;
 
 public interface InteractionDialogChangeListener {
 
-	void changed(InteractionDialog interactionDialog);
+    void changed(InteractionDialog interactionDialog);
 }

@@ -2,7 +2,7 @@ package com.pixurvival.core;
 
 public interface CustomDataHolder {
 
-	Object getCustomData();
+    Object getCustomData();
 
-	void setCustomData(Object data);
+    void setCustomData(Object data);
 }

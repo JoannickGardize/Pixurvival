@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ClientMessage {
 
-	private PlayerConnection connection;
-	private Object object;
+    private PlayerConnection connection;
+    private Object object;
 }

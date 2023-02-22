@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class StaticMapResourceMissing {
-	private String resourceName;
+    private String resourceName;
 }

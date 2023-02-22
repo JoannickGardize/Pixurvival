@@ -4,7 +4,6 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,29 +11,29 @@ import lombok.Setter;
 @Setter
 public class Role extends NamedIdentifiedElement {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public enum Visibility {
-		NONE,
-		SAME_ONLY,
-		ALL
-	}
+    public enum Visibility {
+        NONE,
+        SAME_ONLY,
+        ALL
+    }
 
-	private Visibility teammatesVisiblity = Visibility.NONE;
-	private Visibility enemiesVisiblity = Visibility.NONE;
+    private Visibility teammatesVisiblity = Visibility.NONE;
+    private Visibility enemiesVisiblity = Visibility.NONE;
 
-	@Positive
-	private int minimumPerTeam;
+    @Positive
+    private int minimumPerTeam;
 
-	@Positive
-	private int maximumPerTeam;
+    @Positive
+    private int maximumPerTeam;
 
-	@Bounds(min = 0, max = 1, maxInclusive = false)
-	private float recommandedRatioPerTeam;
+    @Bounds(min = 0, max = 1, maxInclusive = false)
+    private float recommandedRatioPerTeam;
 
-	@Valid
-	private StarterKit starterKit = new StarterKit();
+    @Valid
+    private StarterKit starterKit = new StarterKit();
 
-	@Valid
-	private WinCondition winCondition = new TeamSurvivedWinCondition();
+    @Valid
+    private WinCondition winCondition = new TeamSurvivedWinCondition();
 }

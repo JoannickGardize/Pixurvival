@@ -2,7 +2,6 @@ package com.pixurvival.core.contentPack.map;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ColorMapping<T extends NamedIdentifiedElement> {
 
-	@ElementReference
-	private T element;
+    @ElementReference
+    private T element;
 
-	private int color;
+    private int color;
 }

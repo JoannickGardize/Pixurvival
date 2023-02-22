@@ -12,7 +12,6 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,55 +19,55 @@ import lombok.Setter;
 @Setter
 public class PickUpItemsBehavior extends Behavior {
 
-	public static final float WORK_FINISHED_DISTANCE_TOLERANCE = 1;
+    public static final float WORK_FINISHED_DISTANCE_TOLERANCE = 1;
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Positive
-	private float searchDistance = 10;
+    @Positive
+    private float searchDistance = 10;
 
-	@Valid
-	private ElementSet<Item> items = new AllElementSet<>();
+    @Valid
+    private ElementSet<Item> items = new AllElementSet<>();
 
-	@Override
-	protected void step(CreatureEntity creature) {
-		Entity currentItemTarget = (Entity) creature.getBehaviorData().getCustomData();
-		if (currentItemTarget == null) {
-			EntitySearchResult result = creature.findClosest(EntityGroup.ITEM_STACK, searchDistance, e -> items.contains(((ItemStackEntity) e).getItemStack().getItem()));
-			if (result.getDistanceSquared() <= searchDistance * searchDistance) {
-				currentItemTarget = result.getEntity();
-				creature.getBehaviorData().setCustomData(currentItemTarget);
-			} else {
-				stop(creature);
-				creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
-				creature.getBehaviorData().setNothingToDo(true);
-				return;
-			}
-		}
-		if (currentItemTarget.isAlive()) {
-			float distanceSquared = creature.distanceSquared(currentItemTarget);
-			if (distanceSquared > WORK_FINISHED_DISTANCE_TOLERANCE * WORK_FINISHED_DISTANCE_TOLERANCE) {
-				float distance = (float) Math.sqrt(distanceSquared);
-				creature.moveTowardPrecisely(currentItemTarget, distance);
-				creature.setTargetEntity(currentItemTarget);
-				creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(distance);
-			} else {
-				creature.setForward(false);
-				creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
+    @Override
+    protected void step(CreatureEntity creature) {
+        Entity currentItemTarget = (Entity) creature.getBehaviorData().getCustomData();
+        if (currentItemTarget == null) {
+            EntitySearchResult result = creature.findClosest(EntityGroup.ITEM_STACK, searchDistance, e -> items.contains(((ItemStackEntity) e).getItemStack().getItem()));
+            if (result.getDistanceSquared() <= searchDistance * searchDistance) {
+                currentItemTarget = result.getEntity();
+                creature.getBehaviorData().setCustomData(currentItemTarget);
+            } else {
+                stop(creature);
+                creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
+                creature.getBehaviorData().setNothingToDo(true);
+                return;
+            }
+        }
+        if (currentItemTarget.isAlive()) {
+            float distanceSquared = creature.distanceSquared(currentItemTarget);
+            if (distanceSquared > WORK_FINISHED_DISTANCE_TOLERANCE * WORK_FINISHED_DISTANCE_TOLERANCE) {
+                float distance = (float) Math.sqrt(distanceSquared);
+                creature.moveTowardPrecisely(currentItemTarget, distance);
+                creature.setTargetEntity(currentItemTarget);
+                creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed(distance);
+            } else {
+                creature.setForward(false);
+                creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
 
-			}
-		} else {
-			stop(creature);
-			creature.getBehaviorData().setNextUpdateDelayMillis(0);
-			if (creature.distanceSquared(currentItemTarget) <= WORK_FINISHED_DISTANCE_TOLERANCE * WORK_FINISHED_DISTANCE_TOLERANCE) {
-				creature.getBehaviorData().setTaskFinished(true);
-			}
-		}
-	}
+            }
+        } else {
+            stop(creature);
+            creature.getBehaviorData().setNextUpdateDelayMillis(0);
+            if (creature.distanceSquared(currentItemTarget) <= WORK_FINISHED_DISTANCE_TOLERANCE * WORK_FINISHED_DISTANCE_TOLERANCE) {
+                creature.getBehaviorData().setTaskFinished(true);
+            }
+        }
+    }
 
-	public void stop(CreatureEntity creature) {
-		creature.setForward(false);
-		creature.getBehaviorData().setCustomData(null);
-	}
+    public void stop(CreatureEntity creature) {
+        creature.setForward(false);
+        creature.getBehaviorData().setCustomData(null);
+    }
 
 }

@@ -10,13 +10,13 @@ import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 
 public class AbilitySetEditor extends RootElementEditor<AbilitySet> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public AbilitySetEditor() {
-		super(AbilitySet.class);
-		ListEditor<Ability> abilitiesEditor = new VerticalListEditor<>(CreatureAlterationAbilityEditor::new, CreatureAlterationAbility::new, VerticalListEditor.VERTICAL);
-		bind(abilitiesEditor, "abilities");
+    public AbilitySetEditor() {
+        super(AbilitySet.class);
+        ListEditor<Ability> abilitiesEditor = new VerticalListEditor<>(CreatureAlterationAbilityEditor::new, CreatureAlterationAbility::new, VerticalListEditor.VERTICAL);
+        bind(abilitiesEditor, "abilities");
 
-		LayoutUtils.fill(this, abilitiesEditor);
-	}
+        LayoutUtils.fill(this, abilitiesEditor);
+    }
 }

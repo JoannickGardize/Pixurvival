@@ -4,7 +4,7 @@ import com.pixurvival.core.map.chunk.Chunk;
 
 public interface ChunkLoadInterest extends Interest {
 
-	void chunkLoaded(Chunk chunk);
+    void chunkLoaded(Chunk chunk);
 
-	void chunkUnloaded(Chunk chunk);
+    void chunkUnloaded(Chunk chunk);
 }

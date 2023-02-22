@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChooseRoleRequest implements LobbyRequest {
 
-	private int id;
+    private int id;
 }

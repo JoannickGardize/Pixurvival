@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FloatWrapper {
-	private float value;
+    private float value;
 }

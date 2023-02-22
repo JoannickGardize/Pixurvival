@@ -4,7 +4,7 @@ import com.pixurvival.core.team.TeamMember;
 
 public interface InteractionDialogHolder extends TeamMember {
 
-	InteractionDialog getInteractionDialog();
+    InteractionDialog getInteractionDialog();
 
-	void setInteractionDialog(InteractionDialog interactionDialog);
+    void setInteractionDialog(InteractionDialog interactionDialog);
 }

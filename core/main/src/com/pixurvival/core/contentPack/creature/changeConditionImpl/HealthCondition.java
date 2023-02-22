@@ -7,7 +7,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.util.FloatComparison;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,20 +14,20 @@ import lombok.Setter;
 @Setter
 public class HealthCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private BehaviorTarget targetType;
-	private FloatComparison operator;
-	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private float percentValue;
+    private BehaviorTarget targetType;
+    private FloatComparison operator;
+    @Bounds(min = 0, max = 1, maxInclusive = true)
+    private float percentValue;
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		Entity entity = targetType.getEntityGetter().apply(creature);
-		if (entity instanceof Damageable) {
-			return operator.test(((Damageable) entity).getPercentHealth(), percentValue);
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        Entity entity = targetType.getEntityGetter().apply(creature);
+        if (entity instanceof Damageable) {
+            return operator.test(((Damageable) entity).getPercentHealth(), percentValue);
+        } else {
+            return false;
+        }
+    }
 }

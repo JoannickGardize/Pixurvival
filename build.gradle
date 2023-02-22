@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -20,7 +20,7 @@ allprojects {
     targetCompatibility = 1.8
 
     ext {
-    	version = rootProject.file('core/main/resources/version.txt').text.trim()
+        version = rootProject.file('core/main/resources/version.txt').text.trim()
         appName = "Pixurvival"
         gdxVersion = '1.9.10'
         roboVMVersion = '2.3.1'
@@ -37,7 +37,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         jcenter()
         flatDir {
-        	dirs 'libs'
+            dirs 'libs'
         }
     }
 }
@@ -47,26 +47,26 @@ project(":core") {
 
 
     dependencies {
-    	compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+        compile "com.esotericsoftware:kryonet:2.22.0-RC1"
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-    	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-    	testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-    	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    	compile "org.yaml:snakeyaml:1.24"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        compile "org.yaml:snakeyaml:1.24"
     }
-    
+
     test {
-    	useJUnitPlatform()
-	}
-    
+        useJUnitPlatform()
+    }
+
     sourceSets {
-    	main {
-    		resources {
-    			srcDirs "src/main/resources"
- 			}   		
-    	}
+        main {
+            resources {
+                srcDirs "src/main/resources"
+            }
+        }
     }
 }
 
@@ -74,7 +74,7 @@ project(":client") {
     apply plugin: "java"
 
     dependencies {
-    	compile project(":core")
+        compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -86,7 +86,7 @@ project(":contentpack-editor") {
     apply plugin: "java"
 
     dependencies {
-    	compile project(":core")
+        compile project(":core")
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
@@ -94,19 +94,19 @@ project(":contentpack-editor") {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
-    
+
     test {
-    	useJUnitPlatform()
-	}
-    
+        useJUnitPlatform()
+    }
+
     task editorFatJar(type: Jar) {
-	    manifest {
-	        attributes 'Main-Class': "com.pixurvival.contentPackEditor.ContentPackEditor"
-	    }
-	    archiveName = "content-pack-editor.jar"
-	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	    with jar
-	}
+        manifest {
+            attributes 'Main-Class': "com.pixurvival.contentPackEditor.ContentPackEditor"
+        }
+        archiveName = "content-pack-editor.jar"
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
 }
 
 
@@ -114,27 +114,27 @@ project(":server") {
     apply plugin: "java"
 
     dependencies {
-    	compile project(":core")
-    	compileOnly "org.projectlombok:lombok:$lombokVersion"
-    	annotationProcessor "org.projectlombok:lombok:$lombokVersion"
-    	testCompileOnly "org.projectlombok:lombok:$lombokVersion"
-    	testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-    	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        compile project(":core")
+        compileOnly "org.projectlombok:lombok:$lombokVersion"
+        annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testCompileOnly "org.projectlombok:lombok:$lombokVersion"
+        testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
-    
+
     test {
-    	useJUnitPlatform()
-	}
-    
+        useJUnitPlatform()
+    }
+
     task serverFatJar(type: Jar) {
-	    manifest {
-	        attributes 'Main-Class': "com.pixurvival.server.console.ServerConsole"
-	    }
-	    archiveName = "server.jar"
-	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	    with jar
-	}
+        manifest {
+            attributes 'Main-Class': "com.pixurvival.server.console.ServerConsole"
+        }
+        archiveName = "server.jar"
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
 }
 
 project(":gdx-desktop") {
@@ -146,27 +146,27 @@ project(":gdx-desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
-    
+
     sourceSets {
-    	main {
-    		resources {
-    			srcDir '../gdx-core/assets'
-    			exclude 'contentPacks'
-    			srcDir '../contentpack-editor/main/resources'
-    			// TODO le dossier est présent dans le jar, mais vide
- 			}
-    	}
+        main {
+            resources {
+                srcDir '../gdx-core/assets'
+                exclude 'contentPacks'
+                srcDir '../contentpack-editor/main/resources'
+                // TODO le dossier est présent dans le jar, mais vide
+            }
+        }
     }
 
-	task clientFatJar(type: Jar) {
-	    manifest {
-	        attributes 'Main-Class': "com.pixurvival.desktop.DesktopLauncher"
-	    }
-	    archiveName = "pixurvival.jar"
-	    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	    with jar
-	}
-    
+    task clientFatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': "com.pixurvival.desktop.DesktopLauncher"
+        }
+        archiveName = "pixurvival.jar"
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
+
 }
 
 /*project(":gdx-html") {
@@ -188,8 +188,8 @@ project(":gdx-core") {
 
 
     dependencies {
-    	compile project(":server")
-    	compile project(":client")
+        compile project(":server")
+        compile project(":client")
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile name: "discord-rpc"
@@ -201,10 +201,10 @@ project(":gdx-core") {
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
         testImplementation project(':core').sourceSets.test.output
     }
-    
+
     test {
-    	useJUnitPlatform()
-	}
+        useJUnitPlatform()
+    }
 }
 
 project(":discord-bot") {
@@ -212,8 +212,8 @@ project(":discord-bot") {
 
 
     dependencies {
-    	compile project(":core")
-    	compile project(":server")
+        compile project(":core")
+        compile project(":server")
         compile 'net.dv8tion:JDA:4.2.0_168'
         compileOnly "org.projectlombok:lombok:$lombokVersion"
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
@@ -222,37 +222,37 @@ project(":discord-bot") {
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     }
-    
+
     test {
-    	useJUnitPlatform()
-	}
-	
-	task botFatJar(type: Jar) {
-	    manifest {
-	        attributes 'Main-Class': "com.pixurvival.discordbot.PixBot"
-	    }
-	    archiveName = "pixurvival-discord-bot.jar"
-	    from { (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect { it.isDirectory() ? it : zipTree(it) } }
-	    with jar
-	}
+        useJUnitPlatform()
+    }
+
+    task botFatJar(type: Jar) {
+        manifest {
+            attributes 'Main-Class': "com.pixurvival.discordbot.PixBot"
+        }
+        archiveName = "pixurvival-discord-bot.jar"
+        from { (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
 }
 
 task packageDistribution(type: GradleBuild) {
-     tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
+    tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
 }
 
 task copyJars(type: Copy) {
-	from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
-	into 'build/package'
+    from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
+    into 'build/package'
 }
 
 task copyContentPack(type: Copy) {
-	from 'gdx-core/assets/contentPacks'
-	into 'build/package/contentPacks'
+    from 'gdx-core/assets/contentPacks'
+    into 'build/package/contentPacks'
 }
 
 task zipPackage(type: Zip) {
-	archiveName = "pixurvival-"+project.ext.version+".zip"
+    archiveName = "pixurvival-" + project.ext.version + ".zip"
     destinationDir = file("$buildDir")
     from 'build/package'
 }

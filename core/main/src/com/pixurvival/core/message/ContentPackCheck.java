@@ -1,7 +1,6 @@
 package com.pixurvival.core.message;
 
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ContentPackCheck {
 
-	private ContentPackIdentifier identifier;
-	private byte[] checksum;
+    private ContentPackIdentifier identifier;
+    private byte[] checksum;
 }

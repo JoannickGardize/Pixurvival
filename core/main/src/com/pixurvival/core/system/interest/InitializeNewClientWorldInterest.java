@@ -4,5 +4,5 @@ import com.pixurvival.core.message.CreateWorld;
 
 public interface InitializeNewClientWorldInterest extends Interest {
 
-	void initializeNewClientWorld(CreateWorld createWorld);
+    void initializeNewClientWorld(CreateWorld createWorld);
 }

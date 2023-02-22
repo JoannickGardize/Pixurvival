@@ -2,5 +2,5 @@ package com.pixurvival.core;
 
 public interface WorldListener {
 
-	void gameEnded(EndGameData data);
+    void gameEnded(EndGameData data);
 }

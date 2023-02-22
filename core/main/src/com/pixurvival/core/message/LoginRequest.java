@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-	private String playerName;
-	private String gameVersion;
+    private String playerName;
+    private String gameVersion;
 }

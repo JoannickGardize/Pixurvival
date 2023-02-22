@@ -6,12 +6,12 @@ import com.pixurvival.core.util.Vector2;
 
 public class DarknessSpawner extends ChunkSpawner {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected boolean isSpawnValid(Chunk chunk, Creature creature, Vector2 position) {
-		boolean isDay = chunk.getMap().getWorld().getTime().getDayCycle().isDay();
-		return !isDay && super.isSpawnValid(chunk, creature, position) && !chunk.getMap().isInAnyLight(position);
-	}
+    @Override
+    protected boolean isSpawnValid(Chunk chunk, Creature creature, Vector2 position) {
+        boolean isDay = chunk.getMap().getWorld().getTime().getDayCycle().isDay();
+        return !isDay && super.isSpawnValid(chunk, creature, position) && !chunk.getMap().isInAnyLight(position);
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.pixurvival.gdxcore.util;
 
 import com.pixurvival.core.util.CommonMainArgs;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +8,8 @@ import lombok.Setter;
 @Setter
 public class ClientMainArgs extends CommonMainArgs {
 
-	private boolean zoomEnabled = false;
-	private boolean redirectErrorToFile = true;
-	private boolean mute = false;
-	private String language = null;
+    private boolean zoomEnabled = false;
+    private boolean redirectErrorToFile = true;
+    private boolean mute = false;
+    private String language = null;
 }

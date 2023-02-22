@@ -4,5 +4,5 @@ import com.pixurvival.core.system.SystemData;
 
 public interface SystemDataChangedInterest extends Interest {
 
-	void dataChanged(SystemData data);
+    void dataChanged(SystemData data);
 }

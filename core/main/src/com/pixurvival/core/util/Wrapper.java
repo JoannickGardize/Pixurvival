@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Wrapper<T> {
 
-	private T value;
+    private T value;
 }

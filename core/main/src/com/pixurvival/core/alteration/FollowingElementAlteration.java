@@ -4,7 +4,6 @@ import com.pixurvival.core.contentPack.effect.FollowingElement;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.LivingEntity;
 import com.pixurvival.core.team.TeamMember;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,16 +11,16 @@ import lombok.Setter;
 @Setter
 public class FollowingElementAlteration extends UniqueAlteration {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Valid
-	private FollowingElement followingElement;
+    @Valid
+    private FollowingElement followingElement;
 
-	@Override
-	public void uniqueApply(TeamMember source, TeamMember entity) {
-		if (entity instanceof LivingEntity) {
-			((LivingEntity) entity).prepareTargetedAlteration();
-		}
-		followingElement.apply(entity);
-	}
+    @Override
+    public void uniqueApply(TeamMember source, TeamMember entity) {
+        if (entity instanceof LivingEntity) {
+            ((LivingEntity) entity).prepareTargetedAlteration();
+        }
+        followingElement.apply(entity);
+    }
 }

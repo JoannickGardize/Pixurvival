@@ -5,7 +5,6 @@ import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRe
 import com.pixurvival.core.contentPack.validation.annotation.AnimationTemplateRequirementSet;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.RequiredEquipmentOffset;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,11 +12,11 @@ import lombok.Setter;
 @Setter
 public class ClothingItem extends EquipableItem {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ElementReference
-	@AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
-	@RequiredEquipmentOffset
-	private SpriteSheet spriteSheet;
+    @ElementReference
+    @AnimationTemplateRequirement(AnimationTemplateRequirementSet.CHARACTER)
+    @RequiredEquipmentOffset
+    private SpriteSheet spriteSheet;
 
 }

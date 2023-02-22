@@ -6,7 +6,6 @@ import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.util.FloatComparison;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,19 +13,19 @@ import lombok.Setter;
 @Setter
 public class DistanceCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private BehaviorTarget targetType;
+    private BehaviorTarget targetType;
 
-	private FloatComparison operator;
+    private FloatComparison operator;
 
-	@Positive
-	private float targetDistance;
+    @Positive
+    private float targetDistance;
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		Entity target = targetType.getEntityGetter().apply(creature);
-		float distance = creature.nullSafeDistanceSquared(target);
-		return operator.test(distance, targetDistance * targetDistance);
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        Entity target = targetType.getEntityGetter().apply(creature);
+        float distance = creature.nullSafeDistanceSquared(target);
+        return operator.test(distance, targetDistance * targetDistance);
+    }
 }

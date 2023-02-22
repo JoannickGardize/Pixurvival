@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ChooseGameModeRequest implements LobbyRequest {
 
-	private int contentPackIndex;
-	private int gameModeIndex;
+    private int contentPackIndex;
+    private int gameModeIndex;
 }

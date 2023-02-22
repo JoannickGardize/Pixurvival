@@ -7,16 +7,16 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class MouseIconActor extends Actor {
-	private Texture iconTexture;
+    private Texture iconTexture;
 
-	public MouseIconActor() {
-		iconTexture = PixurvivalGame.getInstance().getAssetManager().get(PixurvivalGame.RIGHT_CLICK_ICON, Texture.class);
-	}
+    public MouseIconActor() {
+        iconTexture = PixurvivalGame.getInstance().getAssetManager().get(PixurvivalGame.RIGHT_CLICK_ICON, Texture.class);
+    }
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(1, 1, 1, 0.7f);
-		setPosition(Gdx.input.getX(), Gdx.input.getY());
-		batch.draw(iconTexture, getX() + 15, Gdx.graphics.getHeight() - getY() - iconTexture.getHeight() - 5);
-	}
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.setColor(1, 1, 1, 0.7f);
+        setPosition(Gdx.input.getX(), Gdx.input.getY());
+        batch.draw(iconTexture, getX() + 15, Gdx.graphics.getHeight() - getY() - iconTexture.getHeight() - 5);
+    }
 }

@@ -3,7 +3,6 @@ package com.pixurvival.core.util;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.minlog.Log;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -12,34 +11,34 @@ import lombok.SneakyThrows;
 @Setter
 public class CommonMainArgs {
 
-	private String logLevel = "INFO";
+    private String logLevel = "INFO";
 
-	private boolean simulateLag = false;
+    private boolean simulateLag = false;
 
-	private int minSimulateLag = 23;
+    private int minSimulateLag = 23;
 
-	private int maxSimulateLag = 27;
+    private int maxSimulateLag = 27;
 
-	private String contentPackDirectory = DefaultValues.CONTENT_PACK_DIRECTORY;
+    private String contentPackDirectory = DefaultValues.CONTENT_PACK_DIRECTORY;
 
-	private String onGameBeginning = null;
+    private String onGameBeginning = null;
 
-	@SneakyThrows
-	public void apply(EndPoint endPoint, Listener listener) {
-		Log.class.getMethod(logLevel.toUpperCase()).invoke(null);
-		if (simulateLag) {
-			endPoint.addListener(new Listener.LagListener(minSimulateLag, maxSimulateLag, listener));
-			Log.warn("Lag simulation mode enabled : [" + getMinSimulateLag() + " ms, " + getMaxSimulateLag() + " ms]");
-		} else {
-			endPoint.addListener(listener);
-		}
-	}
+    @SneakyThrows
+    public void apply(EndPoint endPoint, Listener listener) {
+        Log.class.getMethod(logLevel.toUpperCase()).invoke(null);
+        if (simulateLag) {
+            endPoint.addListener(new Listener.LagListener(minSimulateLag, maxSimulateLag, listener));
+            Log.warn("Lag simulation mode enabled : [" + getMinSimulateLag() + " ms, " + getMaxSimulateLag() + " ms]");
+        } else {
+            endPoint.addListener(listener);
+        }
+    }
 
-	public String[] getGameBeginingCommands() {
-		if (onGameBeginning != null) {
-			return onGameBeginning.split(";");
-		} else {
-			return new String[0];
-		}
-	}
+    public String[] getGameBeginingCommands() {
+        if (onGameBeginning != null) {
+            return onGameBeginning.split(";");
+        } else {
+            return new String[0];
+        }
+    }
 }

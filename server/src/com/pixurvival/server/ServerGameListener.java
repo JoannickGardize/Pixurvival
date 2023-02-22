@@ -5,15 +5,15 @@ import com.pixurvival.server.lobby.LobbySession;
 
 public interface ServerGameListener {
 
-	void lobbyStarted(LobbySession lobbySession);
+    void lobbyStarted(LobbySession lobbySession);
 
-	void gameStarted(GameSession gameSession);
+    void gameStarted(GameSession gameSession);
 
-	void gameEnded(EndGameData data);
+    void gameEnded(EndGameData data);
 
-	void playerLoggedIn(PlayerConnection playerConnection);
+    void playerLoggedIn(PlayerConnection playerConnection);
 
-	void playerRejoined(PlayerConnection playerConnection);
+    void playerRejoined(PlayerConnection playerConnection);
 
-	void disconnected(PlayerConnection playerConnection);
+    void disconnected(PlayerConnection playerConnection);
 }

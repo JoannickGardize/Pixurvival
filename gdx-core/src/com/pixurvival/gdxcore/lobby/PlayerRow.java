@@ -7,7 +7,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class PlayerRow extends Label {
 
-	public PlayerRow(LobbyPlayer player) {
-		super(player.getPlayerName(), PixurvivalGame.getSkin(), "default", player.isReady() ? Color.GREEN : Color.RED);
-	}
+    public PlayerRow(LobbyPlayer player) {
+        super(player.getPlayerName(), PixurvivalGame.getSkin(), "default", player.isReady() ? Color.GREEN : Color.RED);
+    }
 }

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReadyRequest implements LobbyRequest {
 
-	private boolean ready;
-	private int modCount;
+    private boolean ready;
+    private int modCount;
 }

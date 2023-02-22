@@ -4,13 +4,13 @@ import com.pixurvival.core.alteration.DamageAttributes;
 
 public interface Damageable {
 
-	float getHealth();
+    float getHealth();
 
-	float getMaxHealth();
+    float getMaxHealth();
 
-	void takeDamage(float amount, DamageAttributes attributes);
+    void takeDamage(float amount, DamageAttributes attributes);
 
-	default float getPercentHealth() {
-		return getHealth() / getMaxHealth();
-	}
+    default float getPercentHealth() {
+        return getHealth() / getMaxHealth();
+    }
 }

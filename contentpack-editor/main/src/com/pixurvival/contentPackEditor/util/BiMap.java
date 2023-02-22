@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface BiMap<K, V> extends Map<K, V> {
 
-	BiMap<V, K> inverse();
+    BiMap<V, K> inverse();
 }

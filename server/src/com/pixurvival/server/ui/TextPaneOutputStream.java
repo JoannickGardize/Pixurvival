@@ -1,43 +1,42 @@
 package com.pixurvival.server.ui;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.OutputStream;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-
-import lombok.NonNull;
-import lombok.SneakyThrows;
+import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class TextPaneOutputStream extends OutputStream {
 
-	private JTextPane textPane;
-	private StringBuilder sb = new StringBuilder();
+    private JTextPane textPane;
+    private StringBuilder sb = new StringBuilder();
 
-	private AttributeSet aset;
+    private AttributeSet aset;
 
-	public TextPaneOutputStream(@NonNull JTextPane textPane, @NonNull Color appendColor) {
-		this.textPane = textPane;
-		StyleContext sc = StyleContext.getDefaultStyleContext();
-		aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, appendColor);
-		aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
-		aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
-	}
+    public TextPaneOutputStream(@NonNull JTextPane textPane, @NonNull Color appendColor) {
+        this.textPane = textPane;
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, appendColor);
+        aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
+        aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+    }
 
-	@Override
-	public void write(int b) throws IOException {
-		sb.append((char) b);
-	}
+    @Override
+    public void write(int b) throws IOException {
+        sb.append((char) b);
+    }
 
-	@Override
-	@SneakyThrows
-	public void flush() throws IOException {
-		textPane.getDocument().insertString(textPane.getDocument().getLength(), sb.toString(), aset);
-		sb.setLength(0);
-	}
+    @Override
+    @SneakyThrows
+    public void flush() throws IOException {
+        textPane.getDocument().insertString(textPane.getDocument().getLength(), sb.toString(), aset);
+        sb.setLength(0);
+    }
 
 }

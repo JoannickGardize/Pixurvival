@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class EntitySearchResult {
 
-	private Entity entity = null;
-	private float distanceSquared = Float.POSITIVE_INFINITY;
+    private Entity entity = null;
+    private float distanceSquared = Float.POSITIVE_INFINITY;
 }

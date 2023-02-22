@@ -10,7 +10,6 @@ import com.pixurvival.core.map.analytics.MapAnalyticsException;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.Vector2;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,34 +17,34 @@ import lombok.Setter;
 @Setter
 public class AutoSquarePlayerSpawn implements PlayerSpawn {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Positive
-	private int size = 490;
+    @Positive
+    private int size = 490;
 
-	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private float minFreeSpace = 0.4f;
+    @Bounds(min = 0, max = 1, maxInclusive = true)
+    private float minFreeSpace = 0.4f;
 
-	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private float maxFreeSpace = 1;
+    @Bounds(min = 0, max = 1, maxInclusive = true)
+    private float maxFreeSpace = 1;
 
-	@Override
-	public void apply(World world) throws MapAnalyticsException {
-		TeamSet teamSet = world.getTeamSet();
-		AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
-		areaSearchCriteria.setNumberOfSpawnSpots(teamSet.getPlayerTeamSize());
-		areaSearchCriteria.setSquareSize(size);
-		areaSearchCriteria.setMinFreeArea(minFreeSpace);
-		areaSearchCriteria.setMaxFreeArea(maxFreeSpace);
-		MapAnalytics mapAnalytics = new MapAnalytics(world.getRandom());
-		GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), areaSearchCriteria);
-		world.setSpawnCenter(config.getArea().center());
-		int i = 0;
-		for (Team team : teamSet) {
-			if (team.isPlayerTeam()) {
-				Vector2 spawnPosition = config.getSpawnSpots()[i++];
-				spawnTeam(team, spawnPosition);
-			}
-		}
-	}
+    @Override
+    public void apply(World world) throws MapAnalyticsException {
+        TeamSet teamSet = world.getTeamSet();
+        AreaSearchCriteria areaSearchCriteria = new AreaSearchCriteria();
+        areaSearchCriteria.setNumberOfSpawnSpots(teamSet.getPlayerTeamSize());
+        areaSearchCriteria.setSquareSize(size);
+        areaSearchCriteria.setMinFreeArea(minFreeSpace);
+        areaSearchCriteria.setMaxFreeArea(maxFreeSpace);
+        MapAnalytics mapAnalytics = new MapAnalytics(world.getRandom());
+        GameAreaConfiguration config = mapAnalytics.buildGameAreaConfiguration(world.getMap(), areaSearchCriteria);
+        world.setSpawnCenter(config.getArea().center());
+        int i = 0;
+        for (Team team : teamSet) {
+            if (team.isPlayerTeam()) {
+                Vector2 spawnPosition = config.getSpawnSpots()[i++];
+                spawnTeam(team, spawnPosition);
+            }
+        }
+    }
 }

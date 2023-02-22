@@ -6,6 +6,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class Party {
-	private int actual;
-	private int maximum;
+    private int actual;
+    private int maximum;
 }

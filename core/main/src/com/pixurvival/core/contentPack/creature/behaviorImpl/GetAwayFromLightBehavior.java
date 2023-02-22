@@ -7,23 +7,23 @@ import com.pixurvival.core.map.Light;
 
 public class GetAwayFromLightBehavior extends Behavior {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void step(CreatureEntity creature) {
-		Light light = (Light) creature.getBehaviorData().getCustomData();
-		if (light == null) {
-			light = creature.getWorld().getMap().getAnyCollidingLight(creature.getPosition());
-			creature.getBehaviorData().setCustomData(light);
-		}
-		if (light == null) {
-			creature.setForward(false);
-			creature.getBehaviorData().setTaskFinished(true);
-			creature.getBehaviorData().setNothingToDo(true);
-			creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
-		} else {
-			creature.getAwayFrom(light.getPosition());
-			creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed();
-		}
-	}
+    @Override
+    protected void step(CreatureEntity creature) {
+        Light light = (Light) creature.getBehaviorData().getCustomData();
+        if (light == null) {
+            light = creature.getWorld().getMap().getAnyCollidingLight(creature.getPosition());
+            creature.getBehaviorData().setCustomData(light);
+        }
+        if (light == null) {
+            creature.setForward(false);
+            creature.getBehaviorData().setTaskFinished(true);
+            creature.getBehaviorData().setNothingToDo(true);
+            creature.getBehaviorData().setNextUpdateDelayMillis(BehaviorData.DEFAULT_STANDBY_DELAY);
+        } else {
+            creature.getAwayFrom(light.getPosition());
+            creature.getBehaviorData().setNextUpdateDelayRelativeToSpeed();
+        }
+    }
 }

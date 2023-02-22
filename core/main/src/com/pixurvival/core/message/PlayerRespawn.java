@@ -10,5 +10,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PlayerRespawn {
-	private long id;
+    private long id;
 }

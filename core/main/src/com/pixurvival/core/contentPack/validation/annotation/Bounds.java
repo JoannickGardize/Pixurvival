@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Bounds {
 
-	float min() default Float.NEGATIVE_INFINITY;
+    float min() default Float.NEGATIVE_INFINITY;
 
-	float max() default Float.POSITIVE_INFINITY;
+    float max() default Float.POSITIVE_INFINITY;
 
-	boolean minInclusive() default true;
+    boolean minInclusive() default true;
 
-	boolean maxInclusive() default false;
+    boolean maxInclusive() default false;
 }

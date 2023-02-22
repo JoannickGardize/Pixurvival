@@ -7,17 +7,17 @@ import com.pixurvival.core.contentPack.effect.DelayedFollowingElement;
 
 public class DelayedFollowingElementEditor extends ElementEditor<DelayedFollowingElement> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public DelayedFollowingElementEditor() {
-		super(DelayedFollowingElement.class);
-		TimeInput delayInput = new TimeInput();
-		FollowingElementEditor followingElementEditor = new FollowingElementEditor("generic.delay", delayInput);
+    public DelayedFollowingElementEditor() {
+        super(DelayedFollowingElement.class);
+        TimeInput delayInput = new TimeInput();
+        FollowingElementEditor followingElementEditor = new FollowingElementEditor("generic.delay", delayInput);
 
-		bind(delayInput, "delay");
-		bind(followingElementEditor, "followingElement");
+        bind(delayInput, "delay");
+        bind(followingElementEditor, "followingElement");
 
-		LayoutUtils.fill(this, followingElementEditor);
-	}
+        LayoutUtils.fill(this, followingElementEditor);
+    }
 
 }

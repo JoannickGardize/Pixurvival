@@ -17,67 +17,67 @@ import com.pixurvival.gdxcore.ui.UILabel;
 
 public class TeamNameWindow extends Window {
 
-	private TextField teamNameField;
+    private TextField teamNameField;
 
-	public TeamNameWindow() {
-		super(PixurvivalGame.getString("lobby.addTeam"), PixurvivalGame.getSkin());
-		setResizable(false);
-		setModal(true);
+    public TeamNameWindow() {
+        super(PixurvivalGame.getString("lobby.addTeam"), PixurvivalGame.getSkin());
+        setResizable(false);
+        setModal(true);
 
-		teamNameField = new TextField("", PixurvivalGame.getSkin());
-		TextButton addButton = new TextButton(PixurvivalGame.getString("generic.add"), PixurvivalGame.getSkin());
-		TextButton cancelButton = new TextButton(PixurvivalGame.getString("generic.cancel"), PixurvivalGame.getSkin());
+        teamNameField = new TextField("", PixurvivalGame.getSkin());
+        TextButton addButton = new TextButton(PixurvivalGame.getString("generic.add"), PixurvivalGame.getSkin());
+        TextButton cancelButton = new TextButton(PixurvivalGame.getString("generic.cancel"), PixurvivalGame.getSkin());
 
-		teamNameField.addListener(new InputListener() {
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				if (keycode == Keys.ENTER) {
-					sendNewTeam();
-				}
-				return true;
-			}
-		});
-		addButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				sendNewTeam();
-			}
-		});
+        teamNameField.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Keys.ENTER) {
+                    sendNewTeam();
+                }
+                return true;
+            }
+        });
+        addButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                sendNewTeam();
+            }
+        });
 
-		cancelButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				setVisible(false);
-			}
-		});
+        cancelButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setVisible(false);
+            }
+        });
 
-		defaults().pad(2);
-		add(new UILabel("lobby.teamNameQuestion", Color.WHITE)).expand().fill();
-		row();
-		add(teamNameField).expandX().align(Align.center);
-		row();
-		HorizontalGroup buttonGroup = new HorizontalGroup();
-		buttonGroup.addActor(addButton);
-		buttonGroup.addActor(cancelButton);
-		add(buttonGroup);
-		pack();
-	}
+        defaults().pad(2);
+        add(new UILabel("lobby.teamNameQuestion", Color.WHITE)).expand().fill();
+        row();
+        add(teamNameField).expandX().align(Align.center);
+        row();
+        HorizontalGroup buttonGroup = new HorizontalGroup();
+        buttonGroup.addActor(addButton);
+        buttonGroup.addActor(cancelButton);
+        add(buttonGroup);
+        pack();
+    }
 
-	@Override
-	public void setVisible(boolean visible) {
-		if (visible && getStage() != null) {
-			teamNameField.setText("");
-			getStage().setKeyboardFocus(teamNameField);
-		}
-		super.setVisible(visible);
-	}
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible && getStage() != null) {
+            teamNameField.setText("");
+            getStage().setKeyboardFocus(teamNameField);
+        }
+        super.setVisible(visible);
+    }
 
-	public void update(Viewport viewport) {
-		setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
-	}
+    public void update(Viewport viewport) {
+        setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
+    }
 
-	private void sendNewTeam() {
-		PixurvivalGame.getClient().send(new CreateTeamRequest(teamNameField.getText()));
-		setVisible(false);
-	}
+    private void sendNewTeam() {
+        PixurvivalGame.getClient().send(new CreateTeamRequest(teamNameField.getText()));
+        setVisible(false);
+    }
 }

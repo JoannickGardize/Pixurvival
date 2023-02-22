@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RenameTeamRequest implements LobbyRequest {
 
-	private String oldName;
-	private String newName;
+    private String oldName;
+    private String newName;
 }

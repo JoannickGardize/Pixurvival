@@ -6,11 +6,11 @@ import com.pixurvival.gdxcore.WorldScreen;
 
 public class PauseMenuProcessor implements InputActionProcessor {
 
-	@Override
-	public void buttonDown() {
-		Screen screen = PixurvivalGame.getInstance().getScreen();
-		if (screen instanceof WorldScreen) {
-			((WorldScreen) screen).switchPauseMenu();
-		}
-	}
+    @Override
+    public void buttonDown() {
+        Screen screen = PixurvivalGame.getInstance().getScreen();
+        if (screen instanceof WorldScreen) {
+            ((WorldScreen) screen).switchPauseMenu();
+        }
+    }
 }

@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class GeneralSettings {
 
-	private String playerName;
+    private String playerName;
 }

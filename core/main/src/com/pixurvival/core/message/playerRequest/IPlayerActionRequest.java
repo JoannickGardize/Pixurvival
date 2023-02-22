@@ -4,18 +4,16 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 
 /**
  * Main interface for all player actions
- * 
- * @author SharkHendrix
  *
+ * @author SharkHendrix
  */
 public interface IPlayerActionRequest {
 
-	void apply(PlayerEntity player);
+    void apply(PlayerEntity player);
 
-	/**
-	 * 
-	 * @return True if the client must directly apply locally the action change,
-	 *         for visual preview.
-	 */
-	boolean isClientPreapply();
+    /**
+     * @return True if the client must directly apply locally the action change,
+     * for visual preview.
+     */
+    boolean isClientPreapply();
 }

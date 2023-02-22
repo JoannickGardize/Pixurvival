@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ResourceRemovedEvent extends Event {
 
-	private String resourceName;
+    private String resourceName;
 }

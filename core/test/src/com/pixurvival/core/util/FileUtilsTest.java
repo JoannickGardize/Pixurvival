@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 class FileUtilsTest {
 
-	@Test
-	void fileExtensionOfTest() {
-		Assertions.assertEquals("wav", FileUtils.fileExtensionOf("truc.wav"));
-		Assertions.assertEquals("", FileUtils.fileExtensionOf("truc"));
-	}
+    @Test
+    void fileExtensionOfTest() {
+        Assertions.assertEquals("wav", FileUtils.fileExtensionOf("truc.wav"));
+        Assertions.assertEquals("", FileUtils.fileExtensionOf("truc"));
+    }
 
 }

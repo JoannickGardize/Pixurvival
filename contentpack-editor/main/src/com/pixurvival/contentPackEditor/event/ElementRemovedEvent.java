@@ -1,7 +1,6 @@
 package com.pixurvival.contentPackEditor.event;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ElementRemovedEvent extends Event {
 
-	private NamedIdentifiedElement element;
+    private NamedIdentifiedElement element;
 }

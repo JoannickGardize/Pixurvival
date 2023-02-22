@@ -1,12 +1,12 @@
 package com.pixurvival.core.contentPack.validation.annotation;
 
+import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.pixurvival.core.contentPack.ContentPack;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 
 /**
  * <p>
@@ -22,12 +22,11 @@ import com.pixurvival.core.contentPack.NamedIdentifiedElement;
  * {@link ContentPack} root object.<br>
  * "<" means parent object, "." means that the following word is the name of a
  * field of the current object.
- * 
- * @author SharkHendrix
  *
+ * @author SharkHendrix
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ElementReference {
-	String value() default "";
+    String value() default "";
 }

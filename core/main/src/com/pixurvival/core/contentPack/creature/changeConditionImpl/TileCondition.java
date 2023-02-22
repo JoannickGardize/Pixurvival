@@ -6,7 +6,6 @@ import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,14 +13,14 @@ import lombok.Setter;
 @Setter
 public class TileCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Valid
-	private ElementSet<Tile> tileSet = new AllElementSet<>();
+    @Valid
+    private ElementSet<Tile> tileSet = new AllElementSet<>();
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		return tileSet.contains(creature.getWorld().getMap().tileAt(creature.getPosition()).getTileDefinition());
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        return tileSet.contains(creature.getWorld().getMap().tileAt(creature.getPosition()).getTileDefinition());
+    }
 
 }

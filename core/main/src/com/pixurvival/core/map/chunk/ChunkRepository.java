@@ -4,23 +4,23 @@ import java.util.Collection;
 
 public interface ChunkRepository {
 
-	/**
-	 * Optional operation.
-	 * 
-	 * @param compressedChunk
-	 */
-	void save(CompressedChunk compressedChunk);
+    /**
+     * Optional operation.
+     *
+     * @param compressedChunk
+     */
+    void save(CompressedChunk compressedChunk);
 
-	void save(Chunk chunk);
+    void save(Chunk chunk);
 
-	ChunkRepositoryEntry load(ChunkPosition position);
+    ChunkRepositoryEntry load(ChunkPosition position);
 
-	/**
-	 * optional operation
-	 * 
-	 * @return
-	 */
-	Collection<ServerChunkRepositoryEntry> getAll();
+    /**
+     * optional operation
+     *
+     * @return
+     */
+    Collection<ServerChunkRepositoryEntry> getAll();
 
-	void add(ServerChunkRepositoryEntry data);
+    void add(ServerChunkRepositoryEntry data);
 }

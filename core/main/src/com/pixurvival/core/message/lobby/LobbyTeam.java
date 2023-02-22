@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LobbyTeam {
 
-	private String name;
-	private LobbyPlayer[] members;
+    private String name;
+    private LobbyPlayer[] members;
 }

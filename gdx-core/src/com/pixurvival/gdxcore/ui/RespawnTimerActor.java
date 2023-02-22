@@ -10,56 +10,56 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class RespawnTimerActor extends Actor implements EntityPoolListener {
 
-	private long respawnTime;
-	private long actualRespawnCount = Long.MAX_VALUE;
-	private GlyphLayout actualGlyph;
+    private long respawnTime;
+    private long actualRespawnCount = Long.MAX_VALUE;
+    private GlyphLayout actualGlyph;
 
-	public RespawnTimerActor() {
-		setVisible(false);
-	}
+    public RespawnTimerActor() {
+        setVisible(false);
+    }
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		updateGlyph();
-		if (actualGlyph != null) {
-			PixurvivalGame.getOverlayFont().draw(batch, actualGlyph, getX() - actualGlyph.width / 2, getY() + actualGlyph.height);
-		}
-	}
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        updateGlyph();
+        if (actualGlyph != null) {
+            PixurvivalGame.getOverlayFont().draw(batch, actualGlyph, getX() - actualGlyph.width / 2, getY() + actualGlyph.height);
+        }
+    }
 
-	@Override
-	public void entityAdded(Entity e) {
-	}
+    @Override
+    public void entityAdded(Entity e) {
+    }
 
-	@Override
-	public void entityRemoved(Entity e) {
-	}
+    @Override
+    public void entityRemoved(Entity e) {
+    }
 
-	@Override
-	public void sneakyEntityRemoved(Entity e) {
-	}
+    @Override
+    public void sneakyEntityRemoved(Entity e) {
+    }
 
-	@Override
-	public void playerDied(PlayerEntity player) {
+    @Override
+    public void playerDied(PlayerEntity player) {
 
-		if (player == PixurvivalGame.getClient().getMyOriginalPlayerEntity() && player.getRespawnTime() != -1) {
-			setVisible(true);
-			this.respawnTime = player.getRespawnTime();
-			actualRespawnCount = Long.MAX_VALUE;
-		}
-	}
+        if (player == PixurvivalGame.getClient().getMyOriginalPlayerEntity() && player.getRespawnTime() != -1) {
+            setVisible(true);
+            this.respawnTime = player.getRespawnTime();
+            actualRespawnCount = Long.MAX_VALUE;
+        }
+    }
 
-	@Override
-	public void playerRespawned(PlayerEntity player) {
-		if (player == PixurvivalGame.getClient().getMyOriginalPlayerEntity()) {
-			setVisible(false);
-		}
-	}
+    @Override
+    public void playerRespawned(PlayerEntity player) {
+        if (player == PixurvivalGame.getClient().getMyOriginalPlayerEntity()) {
+            setVisible(false);
+        }
+    }
 
-	private void updateGlyph() {
-		long newRespawnCount = (long) Math.ceil((respawnTime - PixurvivalGame.getWorld().getTime().getTimeMillis()) / 1000.0);
-		if (newRespawnCount < actualRespawnCount && newRespawnCount >= 0) {
-			actualRespawnCount = newRespawnCount;
-			actualGlyph = new GlyphLayout(PixurvivalGame.getOverlayFont(), PixurvivalGame.getString("hud.respawnIn", actualRespawnCount));
-		}
-	}
+    private void updateGlyph() {
+        long newRespawnCount = (long) Math.ceil((respawnTime - PixurvivalGame.getWorld().getTime().getTimeMillis()) / 1000.0);
+        if (newRespawnCount < actualRespawnCount && newRespawnCount >= 0) {
+            actualRespawnCount = newRespawnCount;
+            actualGlyph = new GlyphLayout(PixurvivalGame.getOverlayFont(), PixurvivalGame.getString("hud.respawnIn", actualRespawnCount));
+        }
+    }
 }

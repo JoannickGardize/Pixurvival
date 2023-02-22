@@ -2,9 +2,9 @@ package com.pixurvival.core.util;
 
 public interface Sized {
 
-	int size();
+    int size();
 
-	default boolean isEmpty() {
-		return size() == 0;
-	}
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 }

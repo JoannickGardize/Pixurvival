@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateTeamRequest implements LobbyRequest {
-	private String teamName;
+    private String teamName;
 }

@@ -6,12 +6,12 @@ import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 
 public class CreatureAlterationAbilityEditor extends AlterationAbilityEditor<CreatureAlterationAbility> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CreatureAlterationAbilityEditor() {
-		super(CreatureAlterationAbility.class);
-		FloatInput predictionBulletSpeedInput = new FloatInput();
-		bind(predictionBulletSpeedInput, "predictionBulletSpeed");
-		build(false, LayoutUtils.labelled("alterationAbilityEditor.predictionBulletSpeed", LayoutUtils.single(predictionBulletSpeedInput)));
-	}
+    public CreatureAlterationAbilityEditor() {
+        super(CreatureAlterationAbility.class);
+        FloatInput predictionBulletSpeedInput = new FloatInput();
+        bind(predictionBulletSpeedInput, "predictionBulletSpeed");
+        build(false, LayoutUtils.labelled("alterationAbilityEditor.predictionBulletSpeed", LayoutUtils.single(predictionBulletSpeedInput)));
+    }
 }

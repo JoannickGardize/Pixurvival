@@ -7,7 +7,6 @@ import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.Equipment;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.EquipmentAbilityProxy;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,35 +14,35 @@ import lombok.Getter;
 @Getter
 public class EquipmentActionRequest implements IPlayerActionRequest {
 
-	private short index;
+    private short index;
 
-	@Override
-	public void apply(PlayerEntity player) {
-		if ((player.getInventory().getHeldItemStack() == null || Equipment.canEquip(index, player.getInventory().getHeldItemStack()))
-				&& !(player.getCurrentAbility() instanceof EquipmentAbilityProxy)) {
-			ItemStack previousEquipment = player.getEquipment().get(index);
-			player.getEquipment().set(index, player.getInventory().getHeldItemStack());
-			player.getInventory().setHeldItemStack(previousEquipment);
-		}
-	}
+    @Override
+    public void apply(PlayerEntity player) {
+        if ((player.getInventory().getHeldItemStack() == null || Equipment.canEquip(index, player.getInventory().getHeldItemStack()))
+                && !(player.getCurrentAbility() instanceof EquipmentAbilityProxy)) {
+            ItemStack previousEquipment = player.getEquipment().get(index);
+            player.getEquipment().set(index, player.getInventory().getHeldItemStack());
+            player.getInventory().setHeldItemStack(previousEquipment);
+        }
+    }
 
-	@Override
-	public boolean isClientPreapply() {
-		return true;
-	}
+    @Override
+    public boolean isClientPreapply() {
+        return true;
+    }
 
-	public static class Serializer extends com.esotericsoftware.kryo.Serializer<EquipmentActionRequest> {
+    public static class Serializer extends com.esotericsoftware.kryo.Serializer<EquipmentActionRequest> {
 
-		@Override
-		public void write(Kryo kryo, Output output, EquipmentActionRequest object) {
-			output.writeShort(object.index);
+        @Override
+        public void write(Kryo kryo, Output output, EquipmentActionRequest object) {
+            output.writeShort(object.index);
 
-		}
+        }
 
-		@Override
-		public EquipmentActionRequest read(Kryo kryo, Input input, Class<EquipmentActionRequest> type) {
-			return new EquipmentActionRequest(input.readShort());
-		}
+        @Override
+        public EquipmentActionRequest read(Kryo kryo, Input input, Class<EquipmentActionRequest> type) {
+            return new EquipmentActionRequest(input.readShort());
+        }
 
-	}
+    }
 }

@@ -7,14 +7,14 @@ import com.pixurvival.core.util.PseudoAIUtils;
 // TODO ???
 public class ClearWayCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		if (creature.getTargetEntity() == null) {
-			return false;
-		}
-		return !PseudoAIUtils.collideInDirection(creature, creature.angleToward(creature.getTargetEntity()), (int) CreatureEntity.DEFAULT_OBSTACLE_VISION_DISTANCE);
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        if (creature.getTargetEntity() == null) {
+            return false;
+        }
+        return !PseudoAIUtils.collideInDirection(creature, creature.angleToward(creature.getTargetEntity()), (int) CreatureEntity.DEFAULT_OBSTACLE_VISION_DISTANCE);
+    }
 
 }

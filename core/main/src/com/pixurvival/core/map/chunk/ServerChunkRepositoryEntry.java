@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ServerChunkRepositoryEntry {
-	private long time;
-	private CompressedChunk compressedChunk;
-	private byte[] entityData;
+    private long time;
+    private CompressedChunk compressedChunk;
+    private byte[] entityData;
 }

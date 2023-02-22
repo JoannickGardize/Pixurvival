@@ -4,5 +4,5 @@ import com.pixurvival.core.map.chunk.Chunk;
 
 public interface ChunkPostProcessor {
 
-	void apply(Chunk chunk);
+    void apply(Chunk chunk);
 }

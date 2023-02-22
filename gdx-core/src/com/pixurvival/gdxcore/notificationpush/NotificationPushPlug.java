@@ -2,13 +2,13 @@ package com.pixurvival.gdxcore.notificationpush;
 
 public interface NotificationPushPlug {
 
-	void connect();
+    void connect();
 
-	void push(Notification notification);
+    void push(Notification notification);
 
-	void update();
+    void update();
 
-	void disconnect();
+    void disconnect();
 
-	String getUsername();
+    String getUsername();
 }

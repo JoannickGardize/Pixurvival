@@ -5,13 +5,13 @@ import java.util.List;
 
 public class ChatManager {
 
-	private List<ChatListener> listeners = new ArrayList<>();
+    private List<ChatListener> listeners = new ArrayList<>();
 
-	public void addListener(ChatListener listener) {
-		listeners.add(listener);
-	}
+    public void addListener(ChatListener listener) {
+        listeners.add(listener);
+    }
 
-	public void received(ChatEntry chatEntry) {
-		listeners.forEach(l -> l.received(chatEntry));
-	}
+    public void received(ChatEntry chatEntry) {
+        listeners.forEach(l -> l.received(chatEntry));
+    }
 }

@@ -8,19 +8,19 @@ import com.pixurvival.core.contentPack.map.TileHashmapEntry;
 
 public class TileHashmapEntryEditor extends ElementEditor<TileHashmapEntry> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public TileHashmapEntryEditor() {
-		super(TileHashmapEntry.class);
+    public TileHashmapEntryEditor() {
+        super(TileHashmapEntry.class);
 
-		ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class);
-		FloatInput nextInput = new FloatInput();
+        ElementChooserButton<Tile> tileChooser = new ElementChooserButton<>(Tile.class);
+        FloatInput nextInput = new FloatInput();
 
-		bind(tileChooser, "tile");
-		bind(nextInput, "next");
+        bind(tileChooser, "tile");
+        bind(nextInput, "next");
 
-		add(tileChooser);
-		add(nextInput);
-	}
+        add(tileChooser);
+        add(nextInput);
+    }
 
 }

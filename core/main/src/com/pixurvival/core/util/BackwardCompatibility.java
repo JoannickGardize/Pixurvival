@@ -6,10 +6,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 enum BackwardCompatibility {
-	NONE(false, false),
-	CONTENT_PACK_ONLY(true, false),
-	FULL(true, true);
+    NONE(false, false),
+    CONTENT_PACK_ONLY(true, false),
+    FULL(true, true);
 
-	private boolean contentPacks;
-	private boolean saves;
+    private boolean contentPacks;
+    private boolean saves;
 }

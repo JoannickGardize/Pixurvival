@@ -3,7 +3,6 @@ package com.pixurvival.core.contentPack.creature.changeConditionImpl;
 import com.pixurvival.core.contentPack.creature.ChangeCondition;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,13 +10,13 @@ import lombok.Setter;
 @Setter
 public class TimeCondition extends ChangeCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Positive
-	private long targetTime;
+    @Positive
+    private long targetTime;
 
-	@Override
-	public boolean test(CreatureEntity creature) {
-		return creature.getBehaviorData().getElapsedTimeMillis() >= targetTime;
-	}
+    @Override
+    public boolean test(CreatureEntity creature) {
+        return creature.getBehaviorData().getElapsedTimeMillis() >= targetTime;
+    }
 }

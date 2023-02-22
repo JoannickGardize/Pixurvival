@@ -7,7 +7,6 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntitySearchUtils;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.team.TeamMember;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,21 +14,21 @@ import lombok.Setter;
 @Setter
 public class PlaySoundAlteration extends UniqueAlteration {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private SoundPreset preset;
+    private SoundPreset preset;
 
-	@Override
-	public void uniqueApply(TeamMember source, TeamMember target) {
-		playSound(target, preset.ordinal());
-	}
+    @Override
+    public void uniqueApply(TeamMember source, TeamMember target) {
+        playSound(target, preset.ordinal());
+    }
 
-	static void playSound(TeamMember target, int soundId) {
-		SoundEffect soundEffect = new SoundEffect(soundId, target.getPosition());
-		EntitySearchUtils.foreachEntities(target, EntityGroup.PLAYER, GameConstants.PLAYER_VIEW_DISTANCE, e -> {
-			if (e.distanceSquared(soundEffect.getPosition()) <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
-				((PlayerEntity) e).getSoundEffectsToConsume().add(soundEffect);
-			}
-		});
-	}
+    static void playSound(TeamMember target, int soundId) {
+        SoundEffect soundEffect = new SoundEffect(soundId, target.getPosition());
+        EntitySearchUtils.foreachEntities(target, EntityGroup.PLAYER, GameConstants.PLAYER_VIEW_DISTANCE, e -> {
+            if (e.distanceSquared(soundEffect.getPosition()) <= GameConstants.PLAYER_VIEW_DISTANCE * GameConstants.PLAYER_VIEW_DISTANCE) {
+                ((PlayerEntity) e).getSoundEffectsToConsume().add(soundEffect);
+            }
+        });
+    }
 }

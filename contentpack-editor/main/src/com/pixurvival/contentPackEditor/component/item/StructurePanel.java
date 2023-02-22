@@ -7,16 +7,16 @@ import com.pixurvival.core.contentPack.structure.Structure;
 
 public class StructurePanel extends ItemSpecificPartPanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class);
+    private ElementChooserButton<Structure> structureChooser = new ElementChooserButton<>(Structure.class);
 
-	public StructurePanel() {
-		add(LayoutUtils.labelled("elementType.structure", structureChooser));
-	}
+    public StructurePanel() {
+        add(LayoutUtils.labelled("elementType.structure", structureChooser));
+    }
 
-	@Override
-	public void bindTo(ItemEditor itemEditor) {
-		itemEditor.bind(structureChooser, "structure", StructureItem.class);
-	}
+    @Override
+    public void bindTo(ItemEditor itemEditor) {
+        itemEditor.bind(structureChooser, "structure", StructureItem.class);
+    }
 }

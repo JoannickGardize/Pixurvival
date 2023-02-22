@@ -8,21 +8,21 @@ import com.pixurvival.core.livingEntity.PlayerEntity;
 
 public class OpCommandProcessor extends CommandProcessor {
 
-	public OpCommandProcessor() {
-		super(true);
-	}
+    public OpCommandProcessor() {
+        super(true);
+    }
 
-	@Override
-	protected String execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
-		CommandArgsUtils.checkArgsLength(args, 2, 2);
-		PlayerEntity player = CommandArgsUtils.singlePlayer(executor, args[1]);
-		player.setOperator(true);
-		return player + " is now operator.";
-	}
+    @Override
+    protected String execute(CommandExecutor executor, String[] args) throws CommandExecutionException {
+        CommandArgsUtils.checkArgsLength(args, 2, 2);
+        PlayerEntity player = CommandArgsUtils.singlePlayer(executor, args[1]);
+        player.setOperator(true);
+        return player + " is now operator.";
+    }
 
-	@Override
-	public Class<?> getAutocompleteArgType(int argIndex) {
-		return null;
-	}
+    @Override
+    public Class<?> getAutocompleteArgType(int argIndex) {
+        return null;
+    }
 
 }

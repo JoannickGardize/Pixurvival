@@ -14,59 +14,59 @@ import com.pixurvival.gdxcore.ui.UILabel;
 
 public class QuestionWindow extends Window {
 
-	private Label contentLabel;
+    private Label contentLabel;
 
-	public QuestionWindow(String titleKey, String messageKey, Runnable yesAction, Runnable noAction) {
-		this(titleKey, yesAction, noAction);
-		contentLabel.setText(PixurvivalGame.getString(messageKey));
-	}
+    public QuestionWindow(String titleKey, String messageKey, Runnable yesAction, Runnable noAction) {
+        this(titleKey, yesAction, noAction);
+        contentLabel.setText(PixurvivalGame.getString(messageKey));
+    }
 
-	public QuestionWindow(String titleKey, Runnable yesAction, Runnable noAction) {
-		super(PixurvivalGame.getString(titleKey), PixurvivalGame.getSkin());
-		setResizable(false);
-		setModal(true);
+    public QuestionWindow(String titleKey, Runnable yesAction, Runnable noAction) {
+        super(PixurvivalGame.getString(titleKey), PixurvivalGame.getSkin());
+        setResizable(false);
+        setModal(true);
 
-		TextButton yesButton = new TextButton(PixurvivalGame.getString("generic.yes"), PixurvivalGame.getSkin());
-		TextButton noButton = new TextButton(PixurvivalGame.getString("generic.no"), PixurvivalGame.getSkin());
+        TextButton yesButton = new TextButton(PixurvivalGame.getString("generic.yes"), PixurvivalGame.getSkin());
+        TextButton noButton = new TextButton(PixurvivalGame.getString("generic.no"), PixurvivalGame.getSkin());
 
-		yesButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				yesAction.run();
-				setVisible(false);
-			}
+        yesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                yesAction.run();
+                setVisible(false);
+            }
 
-		});
+        });
 
-		noButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				noAction.run();
-				setVisible(false);
-			}
-		});
+        noButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                noAction.run();
+                setVisible(false);
+            }
+        });
 
-		defaults().pad(2);
-		contentLabel = UILabel.rawText("", Color.WHITE);
-		contentLabel.setAlignment(Align.left);
-		contentLabel.setWrap(true);
-		add(contentLabel).expand().fill();
-		row();
-		HorizontalGroup buttonGroup = new HorizontalGroup();
-		buttonGroup.space(2);
-		buttonGroup.addActor(yesButton);
-		buttonGroup.addActor(noButton);
-		add(buttonGroup);
-	}
+        defaults().pad(2);
+        contentLabel = UILabel.rawText("", Color.WHITE);
+        contentLabel.setAlignment(Align.left);
+        contentLabel.setWrap(true);
+        add(contentLabel).expand().fill();
+        row();
+        HorizontalGroup buttonGroup = new HorizontalGroup();
+        buttonGroup.space(2);
+        buttonGroup.addActor(yesButton);
+        buttonGroup.addActor(noButton);
+        add(buttonGroup);
+    }
 
-	public void setVisible(String message) {
-		contentLabel.setText(message);
-		super.setVisible(true);
-	}
+    public void setVisible(String message) {
+        contentLabel.setText(message);
+        super.setVisible(true);
+    }
 
-	public void update(Viewport viewport) {
-		setWidth(viewport.getWorldWidth() / 3);
-		setHeight(viewport.getWorldHeight() / 3);
-		setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
-	}
+    public void update(Viewport viewport) {
+        setWidth(viewport.getWorldWidth() / 3);
+        setHeight(viewport.getWorldHeight() / 3);
+        setPosition(viewport.getWorldWidth() / 2 - getWidth() / 2, viewport.getWorldHeight() / 2 - getHeight() / 2);
+    }
 }

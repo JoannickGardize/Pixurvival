@@ -1,13 +1,12 @@
 package com.pixurvival.core.contentPack.sprite;
 
-import java.io.Serializable;
-
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -15,17 +14,17 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class FrameOffset extends Frame implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Positive
-	private int offsetX;
+    @Positive
+    private int offsetX;
 
-	@Positive
-	private int offsetY;
+    @Positive
+    private int offsetY;
 
-	private boolean back;
+    private boolean back;
 
-	public FrameOffset(int x, int y) {
-		super(x, y);
-	}
+    public FrameOffset(int x, int y) {
+        super(x, y);
+    }
 }

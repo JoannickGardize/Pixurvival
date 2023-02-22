@@ -10,9 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntWrapper {
-	private int value;
+    private int value;
 
-	public void increment() {
-		++value;
-	}
+    public void increment() {
+        ++value;
+    }
 }

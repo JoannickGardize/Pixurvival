@@ -8,14 +8,16 @@ import com.pixurvival.gdxcore.textures.ColorTextures;
 
 public class FillActor extends Actor {
 
-	private Texture colorTexture;
+    private Texture colorTexture;
 
-	public FillActor(Color color) {
-		colorTexture = ColorTextures.get(color);
-	}
+    public FillActor(Color color) {
+        colorTexture = ColorTextures.get(color);
+    }
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		batch.draw(colorTexture, 0, 0, getStage().getWidth(), getStage().getHeight());
-	};
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.draw(colorTexture, 0, 0, getStage().getWidth(), getStage().getHeight());
+    }
+
+    ;
 }

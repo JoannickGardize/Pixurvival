@@ -6,17 +6,17 @@ import com.pixurvival.core.util.Vector2;
 
 public interface TeamMember extends Positionnable {
 
-	Team getTeam();
+    Team getTeam();
 
-	StatSet getStats();
+    StatSet getStats();
 
-	Vector2 getTargetPosition();
+    Vector2 getTargetPosition();
 
-	TeamMember getOrigin();
+    TeamMember getOrigin();
 
-	default TeamMember findIfNotFound() {
-		return this;
-	}
+    default TeamMember findIfNotFound() {
+        return this;
+    }
 
-	boolean isAlive();
+    boolean isAlive();
 }

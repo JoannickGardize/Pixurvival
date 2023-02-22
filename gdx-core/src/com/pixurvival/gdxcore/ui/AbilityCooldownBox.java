@@ -1,9 +1,5 @@
 package com.pixurvival.gdxcore.ui;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -16,66 +12,70 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.input.InputAction;
 import com.pixurvival.gdxcore.textures.ColorTextures;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 public class AbilityCooldownBox extends Actor {
 
-	private static final long COOLDOWN_TOLERANCE = 50;
+    private static final long COOLDOWN_TOLERANCE = 50;
 
-	DecimalFormat secondsFormat = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.US));
-	DecimalFormat millisecondsFormat = new DecimalFormat("0.0", DecimalFormatSymbols.getInstance(Locale.US));
+    DecimalFormat secondsFormat = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.US));
+    DecimalFormat millisecondsFormat = new DecimalFormat("0.0", DecimalFormatSymbols.getInstance(Locale.US));
 
-	private EquipmentAbilityType type;
-	private ShortcutDrawer shortcutDrawer;
-	private ItemStackDrawer itemStackDrawer;
-	private GlyphLayout glyphLayout = new GlyphLayout();
+    private EquipmentAbilityType type;
+    private ShortcutDrawer shortcutDrawer;
+    private ItemStackDrawer itemStackDrawer;
+    private GlyphLayout glyphLayout = new GlyphLayout();
 
-	public AbilityCooldownBox(EquipmentAbilityType type) {
-		this.type = type;
-		itemStackDrawer = new ItemStackDrawer(this, 2);
-		switch (type) {
-		case WEAPON_BASE:
-			shortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_BASE_OR_DROP_ITEM, ShortcutDrawer.BOTTOM);
-			break;
-		case WEAPON_SPECIAL:
-			shortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_SPECIAL, ShortcutDrawer.BOTTOM);
-			break;
-		case ACCESSORY1_SPECIAL:
-			shortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY1_SPECIAL, ShortcutDrawer.BOTTOM);
-			break;
-		case ACCESSORY2_SPECIAL:
-			shortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY2_SPECIAL, ShortcutDrawer.BOTTOM);
-			break;
-		}
-	}
+    public AbilityCooldownBox(EquipmentAbilityType type) {
+        this.type = type;
+        itemStackDrawer = new ItemStackDrawer(this, 2);
+        switch (type) {
+            case WEAPON_BASE:
+                shortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_BASE_OR_DROP_ITEM, ShortcutDrawer.BOTTOM);
+                break;
+            case WEAPON_SPECIAL:
+                shortcutDrawer = new ShortcutDrawer(this, InputAction.WEAPON_SPECIAL, ShortcutDrawer.BOTTOM);
+                break;
+            case ACCESSORY1_SPECIAL:
+                shortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY1_SPECIAL, ShortcutDrawer.BOTTOM);
+                break;
+            case ACCESSORY2_SPECIAL:
+                shortcutDrawer = new ShortcutDrawer(this, InputAction.ACCESSORY2_SPECIAL, ShortcutDrawer.BOTTOM);
+                break;
+        }
+    }
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(1, 1, 1, parentAlpha);
-		PixurvivalGame.getSkin().getDrawable("Button-gray").draw(batch, getX(), getY(), getWidth(), getHeight());
-		PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
-		AlterationAbility ability = type.getAbilityGetter().apply(myPlayer.getEquipment());
-		itemStackDrawer.setItemStack(type.getItemGetter().apply(myPlayer.getEquipment()));
-		if (ability != null && !ability.isEmpty()) {
-			itemStackDrawer.draw(batch);
-		}
-		shortcutDrawer.draw(batch);
-		CooldownAbilityData data = (CooldownAbilityData) myPlayer.getAbilityData(type.getAbilityId());
-		long cooldown = data.getReadyTimeMillis() - myPlayer.getWorld().getTime().getTimeMillis();
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.setColor(1, 1, 1, parentAlpha);
+        PixurvivalGame.getSkin().getDrawable("Button-gray").draw(batch, getX(), getY(), getWidth(), getHeight());
+        PlayerEntity myPlayer = PixurvivalGame.getClient().getMyPlayer();
+        AlterationAbility ability = type.getAbilityGetter().apply(myPlayer.getEquipment());
+        itemStackDrawer.setItemStack(type.getItemGetter().apply(myPlayer.getEquipment()));
+        if (ability != null && !ability.isEmpty()) {
+            itemStackDrawer.draw(batch);
+        }
+        shortcutDrawer.draw(batch);
+        CooldownAbilityData data = (CooldownAbilityData) myPlayer.getAbilityData(type.getAbilityId());
+        long cooldown = data.getReadyTimeMillis() - myPlayer.getWorld().getTime().getTimeMillis();
 
-		if (cooldown > COOLDOWN_TOLERANCE || ability == null || ability.isEmpty()) {
-			batch.draw(ColorTextures.get(Color.BLACK), getX(), getY(), getWidth(), getHeight());
-		}
-		if (cooldown > COOLDOWN_TOLERANCE && ability != null && !ability.isEmpty()) {
-			glyphLayout.setText(PixurvivalGame.getOverlayFont(), toCooldownDisplay(cooldown));
-			PixurvivalGame.getOverlayFont().draw(batch, glyphLayout, getX() + getWidth() / 2 - glyphLayout.width / 2, getY() + getHeight() / 2 + glyphLayout.height / 2);
-		}
-	}
+        if (cooldown > COOLDOWN_TOLERANCE || ability == null || ability.isEmpty()) {
+            batch.draw(ColorTextures.get(Color.BLACK), getX(), getY(), getWidth(), getHeight());
+        }
+        if (cooldown > COOLDOWN_TOLERANCE && ability != null && !ability.isEmpty()) {
+            glyphLayout.setText(PixurvivalGame.getOverlayFont(), toCooldownDisplay(cooldown));
+            PixurvivalGame.getOverlayFont().draw(batch, glyphLayout, getX() + getWidth() / 2 - glyphLayout.width / 2, getY() + getHeight() / 2 + glyphLayout.height / 2);
+        }
+    }
 
-	private String toCooldownDisplay(long cooldown) {
-		float s = (cooldown / 1000f) % 60;
-		if (s >= 1) {
-			return secondsFormat.format(s);
-		} else {
-			return millisecondsFormat.format(s);
-		}
-	}
+    private String toCooldownDisplay(long cooldown) {
+        float s = (cooldown / 1000f) % 60;
+        if (s >= 1) {
+            return secondsFormat.format(s);
+        } else {
+            return millisecondsFormat.format(s);
+        }
+    }
 }

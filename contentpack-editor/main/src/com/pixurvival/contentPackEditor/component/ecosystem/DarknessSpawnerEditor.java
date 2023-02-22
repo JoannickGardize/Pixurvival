@@ -1,11 +1,5 @@
 package com.pixurvival.contentPackEditor.component.ecosystem;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.JPanel;
-
 import com.pixurvival.contentPackEditor.component.elementEditor.ElementEditor;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.valueComponent.IntegerInput;
@@ -14,39 +8,42 @@ import com.pixurvival.contentPackEditor.component.valueComponent.WeightedValuePr
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.DarknessSpawner;
 
+import javax.swing.*;
+import java.awt.*;
+
 public class DarknessSpawnerEditor extends ElementEditor<DarknessSpawner> {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
+    private WeightedValueProducerEditor<Creature> creatureChooser = new WeightedValueProducerEditor<>(Creature.class);
 
-	public DarknessSpawnerEditor() {
-		super(DarknessSpawner.class);
-		setBorder(LayoutUtils.createBorder());
+    public DarknessSpawnerEditor() {
+        super(DarknessSpawner.class);
+        setBorder(LayoutUtils.createBorder());
 
-		// Construction
+        // Construction
 
-		IntegerInput initialSpawnInput = new IntegerInput();
-		IntegerInput maximumCreaturesInput = new IntegerInput();
-		TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");
+        IntegerInput initialSpawnInput = new IntegerInput();
+        IntegerInput maximumCreaturesInput = new IntegerInput();
+        TimeIntervalInput respawnTimeInput = new TimeIntervalInput("structureSpawnerEditor.respawnTimePerChunk");
 
-		// Binding
+        // Binding
 
-		bind(creatureChooser, "creatureChooser");
-		bind(initialSpawnInput, "initialSpawn");
-		bind(maximumCreaturesInput, "maximumCreatures");
-		bind(respawnTimeInput, "respawnTime");
+        bind(creatureChooser, "creatureChooser");
+        bind(initialSpawnInput, "initialSpawn");
+        bind(maximumCreaturesInput, "maximumCreatures");
+        bind(respawnTimeInput, "respawnTime");
 
-		// Layouting
+        // Layouting
 
-		setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
-		JPanel topPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.initialSpawnPerChunk", initialSpawnInput, gbc);
-		LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.maximumCreatures", maximumCreaturesInput, gbc);
-		add(LayoutUtils.createVerticalBox(topPanel, respawnTimeInput), BorderLayout.NORTH);
-		creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
-		add(creatureChooser, BorderLayout.SOUTH);
-	}
+        JPanel topPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = LayoutUtils.createGridBagConstraints();
+        LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.initialSpawnPerChunk", initialSpawnInput, gbc);
+        LayoutUtils.addHorizontalLabelledItem(topPanel, "structureSpawnerEditor.maximumCreatures", maximumCreaturesInput, gbc);
+        add(LayoutUtils.createVerticalBox(topPanel, respawnTimeInput), BorderLayout.NORTH);
+        creatureChooser.setBorder(LayoutUtils.createGroupBorder("structureSpawnerEditor.creatureChooser"));
+        add(creatureChooser, BorderLayout.SOUTH);
+    }
 }

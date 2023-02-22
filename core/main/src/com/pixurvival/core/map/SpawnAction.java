@@ -5,7 +5,6 @@ import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.ecosystem.ChunkSpawner;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -13,17 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SpawnAction implements Action {
 
-	private ChunkPosition chunkPosition;
-	private ChunkSpawner spawner;
+    private ChunkPosition chunkPosition;
+    private ChunkSpawner spawner;
 
-	@Override
-	public void perform(World world) {
-		Chunk chunk = world.getMap().chunkAt(chunkPosition);
-		if (chunk != null && spawner.isChunkEligible(chunk)) {
-			spawner.spawn(chunk);
-			world.getActionTimerManager().addActionTimer(this, spawner.getRespawnTime().next(world.getRandom()));
-		} else {
-			world.getChunkCreatureSpawnManager().removeChunkSpawnerMemory(chunkPosition, spawner);
-		}
-	}
+    @Override
+    public void perform(World world) {
+        Chunk chunk = world.getMap().chunkAt(chunkPosition);
+        if (chunk != null && spawner.isChunkEligible(chunk)) {
+            spawner.spawn(chunk);
+            world.getActionTimerManager().addActionTimer(this, spawner.getRespawnTime().next(world.getRandom()));
+        } else {
+            world.getChunkCreatureSpawnManager().removeChunkSpawnerMemory(chunkPosition, spawner);
+        }
+    }
 }

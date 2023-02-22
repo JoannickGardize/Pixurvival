@@ -6,21 +6,21 @@ import com.pixurvival.core.contentPack.item.AccessoryItem;
 
 public class AccessoryPanel extends EquipablePanel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private ItemAlterationAbilityEditor abilityEditor = new ItemAlterationAbilityEditor(true);
+    private ItemAlterationAbilityEditor abilityEditor = new ItemAlterationAbilityEditor(true);
 
-	public AccessoryPanel() {
-		super(false);
-		EventManager.getInstance().register(abilityEditor);
-		abilityEditor.setBorder(LayoutUtils.createGroupBorder("accessoryEditor.ability"));
-		finalizeLayout(abilityEditor);
-	}
+    public AccessoryPanel() {
+        super(false);
+        EventManager.getInstance().register(abilityEditor);
+        abilityEditor.setBorder(LayoutUtils.createGroupBorder("accessoryEditor.ability"));
+        finalizeLayout(abilityEditor);
+    }
 
-	@Override
-	public void bindTo(ItemEditor itemEditor) {
-		super.bindTo(itemEditor, AccessoryItem.class);
-		itemEditor.bind(abilityEditor, "ability", AccessoryItem.class);
-	}
+    @Override
+    public void bindTo(ItemEditor itemEditor) {
+        super.bindTo(itemEditor, AccessoryItem.class);
+        itemEditor.bind(abilityEditor, "ability", AccessoryItem.class);
+    }
 
 }

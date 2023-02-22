@@ -8,12 +8,12 @@ import com.pixurvival.core.message.WorldUpdate;
 
 public class KryoServer extends Server {
 
-	public KryoServer() {
-		super(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2, new KryoSerialization(new WorldKryo()));
-	}
+    public KryoServer() {
+        super(WorldUpdate.BUFFER_SIZE * 2, WorldUpdate.BUFFER_SIZE * 2, new KryoSerialization(new WorldKryo()));
+    }
 
-	@Override
-	protected Connection newConnection() {
-		return new PlayerConnection();
-	}
+    @Override
+    protected Connection newConnection() {
+        return new PlayerConnection();
+    }
 }

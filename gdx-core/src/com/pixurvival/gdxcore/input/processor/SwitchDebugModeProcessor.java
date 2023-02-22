@@ -6,11 +6,11 @@ import com.pixurvival.gdxcore.WorldScreen;
 
 public class SwitchDebugModeProcessor implements InputActionProcessor {
 
-	@Override
-	public void buttonDown() {
-		Screen screen = PixurvivalGame.getInstance().getScreen();
-		if (screen instanceof WorldScreen) {
-			((WorldScreen) screen).switchShowCollisionBoxes();
-		}
-	}
+    @Override
+    public void buttonDown() {
+        Screen screen = PixurvivalGame.getInstance().getScreen();
+        if (screen instanceof WorldScreen) {
+            ((WorldScreen) screen).switchShowCollisionBoxes();
+        }
+    }
 }

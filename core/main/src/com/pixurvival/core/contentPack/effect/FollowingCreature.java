@@ -8,7 +8,6 @@ import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
 import com.pixurvival.core.team.TeamMember;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,31 +15,31 @@ import lombok.Setter;
 @Setter
 public class FollowingCreature extends FollowingElement {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ElementReference
-	private Creature creature;
-	private boolean owned = true;
-	@Valid
-	private StatFormula strengthBonus = new StatFormula();
-	@Valid
-	private StatFormula agilityBonus = new StatFormula();
-	@Valid
-	private StatFormula intelligenceBonus = new StatFormula();
+    @ElementReference
+    private Creature creature;
+    private boolean owned = true;
+    @Valid
+    private StatFormula strengthBonus = new StatFormula();
+    @Valid
+    private StatFormula agilityBonus = new StatFormula();
+    @Valid
+    private StatFormula intelligenceBonus = new StatFormula();
 
-	@Override
-	public void apply(TeamMember ancestor) {
-		TeamMember origin = ancestor.getOrigin();
-		CreatureEntity creatureEntity = new CreatureEntity(creature);
-		if (owned) {
-			creatureEntity.setMaster(origin);
-		}
-		StatSet creatureStats = creatureEntity.getStats();
-		creatureStats.get(StatType.STRENGTH).setBase(strengthBonus.getValue(origin));
-		creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(origin));
-		creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(origin));
-		creatureEntity.getPosition().set(ancestor.getPosition());
-		ancestor.getWorld().getEntityPool().addNew(creatureEntity);
-	}
+    @Override
+    public void apply(TeamMember ancestor) {
+        TeamMember origin = ancestor.getOrigin();
+        CreatureEntity creatureEntity = new CreatureEntity(creature);
+        if (owned) {
+            creatureEntity.setMaster(origin);
+        }
+        StatSet creatureStats = creatureEntity.getStats();
+        creatureStats.get(StatType.STRENGTH).setBase(strengthBonus.getValue(origin));
+        creatureStats.get(StatType.AGILITY).setBase(agilityBonus.getValue(origin));
+        creatureStats.get(StatType.INTELLIGENCE).setBase(intelligenceBonus.getValue(origin));
+        creatureEntity.getPosition().set(ancestor.getPosition());
+        ancestor.getWorld().getEntityPool().addNew(creatureEntity);
+    }
 
 }

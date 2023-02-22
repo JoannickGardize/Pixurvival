@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class ActionTimer implements Comparable<ActionTimer> {
 
-	private Action action;
-	private long actionTimeMillis;
+    private Action action;
+    private long actionTimeMillis;
 
-	@Override
-	public int compareTo(ActionTimer o) {
-		return (int) (actionTimeMillis - o.actionTimeMillis);
-	}
+    @Override
+    public int compareTo(ActionTimer o) {
+        return (int) (actionTimeMillis - o.actionTimeMillis);
+    }
 }

@@ -5,10 +5,10 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class RefreshProcessor implements InputActionProcessor {
 
-	@Override
-	public void buttonDown() {
-		if (PixurvivalGame.getClient().getWorld().getType() == Type.CLIENT) {
-			PixurvivalGame.getClient().requestRefresh();
-		}
-	}
+    @Override
+    public void buttonDown() {
+        if (PixurvivalGame.getClient().getWorld().getType() == Type.CLIENT) {
+            PixurvivalGame.getClient().requestRefresh();
+        }
+    }
 }

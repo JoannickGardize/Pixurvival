@@ -1,7 +1,6 @@
 package com.pixurvival.core.map.analytics;
 
 import com.pixurvival.core.util.Vector2;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
@@ -9,8 +8,8 @@ import lombok.Value;
 @AllArgsConstructor
 public class GameAreaConfiguration {
 
-	private Area area;
+    private Area area;
 
-	private Vector2[] spawnSpots;
+    private Vector2[] spawnSpots;
 
 }

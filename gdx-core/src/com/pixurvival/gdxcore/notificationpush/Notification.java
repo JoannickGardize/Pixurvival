@@ -7,10 +7,10 @@ import lombok.Value;
 @Builder
 public class Notification {
 
-	private String status;
-	private String details;
-	private String image = "pixurvival_cover";
-	private Party party;
-	private Long startTime;
+    private String status;
+    private String details;
+    private String image = "pixurvival_cover";
+    private Party party;
+    private Long startTime;
 
 }

@@ -11,5 +11,5 @@ import lombok.Setter;
 @Setter
 public class StartGame {
 
-	private long worldTime = 0;
+    private long worldTime = 0;
 }

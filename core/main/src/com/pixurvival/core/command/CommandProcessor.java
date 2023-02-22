@@ -5,18 +5,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class CommandProcessor {
 
-	private boolean requireOperator;
+    private boolean requireOperator;
 
-	public String process(CommandExecutor executor, String[] args) throws CommandExecutionException {
-		if (!requireOperator || executor.isOperator()) {
-			return execute(executor, args);
-		} else {
-			throw new CommandExecutionException("Operator right required");
-		}
-	}
+    public String process(CommandExecutor executor, String[] args) throws CommandExecutionException {
+        if (!requireOperator || executor.isOperator()) {
+            return execute(executor, args);
+        } else {
+            throw new CommandExecutionException("Operator right required");
+        }
+    }
 
-	protected abstract String execute(CommandExecutor executor, String[] args) throws CommandExecutionException;
+    protected abstract String execute(CommandExecutor executor, String[] args) throws CommandExecutionException;
 
-	// TODO String list instead of class type
-	public abstract Class<?> getAutocompleteArgType(int argIndex);
+    // TODO String list instead of class type
+    public abstract Class<?> getAutocompleteArgType(int argIndex);
 }

@@ -6,5 +6,5 @@ import com.pixurvival.core.Body;
 
 public interface OverlayDrawer<E extends Body> {
 
-	void draw(Batch batch, Viewport worldViewport, E e);
+    void draw(Batch batch, Viewport worldViewport, E e);
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PlayerInformation {
 
-	private long id;
-	private String name;
-	private int roleId;
+    private long id;
+    private String name;
+    private int roleId;
 }

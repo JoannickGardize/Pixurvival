@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class LobbyPlayer {
 
-	private String playerName;
-	private int selectedRole = -1;
-	private boolean ready;
+    private String playerName;
+    private int selectedRole = -1;
+    private boolean ready;
 }

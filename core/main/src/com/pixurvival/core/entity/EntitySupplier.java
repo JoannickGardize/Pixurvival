@@ -4,5 +4,5 @@ import com.pixurvival.core.World;
 
 public interface EntitySupplier {
 
-	Entity get(World world, long id);
+    Entity get(World world, long id);
 }

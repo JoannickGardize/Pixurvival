@@ -4,7 +4,6 @@ import com.pixurvival.core.contentPack.IdentifiedElement;
 import com.pixurvival.core.contentPack.validation.annotation.ElementReference;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.livingEntity.CreatureEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,13 +11,13 @@ import lombok.Setter;
 @Setter
 public abstract class ChangeCondition extends IdentifiedElement {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ElementReference("<<<")
-	private Behavior nextBehavior;
+    @ElementReference("<<<")
+    private Behavior nextBehavior;
 
-	@Positive
-	private float affectedNeighborsDistance;
+    @Positive
+    private float affectedNeighborsDistance;
 
-	public abstract boolean test(CreatureEntity creature);
+    public abstract boolean test(CreatureEntity creature);
 }

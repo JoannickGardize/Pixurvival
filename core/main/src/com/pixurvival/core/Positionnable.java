@@ -4,11 +4,11 @@ import com.pixurvival.core.util.Vector2;
 
 public interface Positionnable {
 
-	Vector2 getPosition();
+    Vector2 getPosition();
 
-	World getWorld();
+    World getWorld();
 
-	default float distanceSquared(Positionnable other) {
-		return getPosition().distanceSquared(other.getPosition());
-	}
+    default float distanceSquared(Positionnable other) {
+        return getPosition().distanceSquared(other.getPosition());
+    }
 }

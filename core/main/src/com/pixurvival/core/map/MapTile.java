@@ -4,11 +4,11 @@ import com.pixurvival.core.contentPack.map.Tile;
 
 public interface MapTile {
 
-	Tile getTileDefinition();
+    Tile getTileDefinition();
 
-	default StructureEntity getStructure() {
-		return null;
-	}
+    default StructureEntity getStructure() {
+        return null;
+    }
 
-	boolean isSolid();
+    boolean isSolid();
 }

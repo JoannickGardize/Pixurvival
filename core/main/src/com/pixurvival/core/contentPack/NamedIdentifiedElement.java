@@ -1,15 +1,14 @@
 package com.pixurvival.core.contentPack;
 
-import java.util.function.Consumer;
-
 import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.alteration.StatFormula;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.function.Consumer;
 
 @Getter
 @Setter
@@ -17,31 +16,31 @@ import lombok.Setter;
 @AllArgsConstructor
 public abstract class NamedIdentifiedElement extends IdentifiedElement {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Length(min = 1)
-	private String name;
+    @Length(min = 1)
+    private String name;
 
-	protected NamedIdentifiedElement(String name, int id) {
-		super(id);
-		this.name = name;
-	}
+    protected NamedIdentifiedElement(String name, int id) {
+        super(id);
+        this.name = name;
+    }
 
-	public void forEachStatFormula(Consumer<StatFormula> action) {
-		// for override
-	}
+    public void forEachStatFormula(Consumer<StatFormula> action) {
+        // for override
+    }
 
-	public void forEachAlteration(Consumer<Alteration> action) {
+    public void forEachAlteration(Consumer<Alteration> action) {
 
-	}
+    }
 
-	public void initialize() {
-		// for override
-	}
+    public void initialize() {
+        // for override
+    }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }

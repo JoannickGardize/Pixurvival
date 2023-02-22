@@ -4,7 +4,6 @@ import com.pixurvival.core.Damageable;
 import com.pixurvival.core.contentPack.validation.annotation.Bounds;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.FloatComparison;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,18 +11,18 @@ import lombok.Setter;
 @Setter
 public class HealthAlterationCondition implements AlterationCondition {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private FloatComparison operator;
-	@Bounds(min = 0, max = 1, maxInclusive = true)
-	private float percentValue;
+    private FloatComparison operator;
+    @Bounds(min = 0, max = 1, maxInclusive = true)
+    private float percentValue;
 
-	@Override
-	public boolean test(TeamMember entity) {
-		if (entity instanceof Damageable) {
-			return operator.test(((Damageable) entity).getPercentHealth(), percentValue);
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public boolean test(TeamMember entity) {
+        if (entity instanceof Damageable) {
+            return operator.test(((Damageable) entity).getPercentHealth(), percentValue);
+        } else {
+            return false;
+        }
+    }
 }

@@ -4,11 +4,11 @@ import com.pixurvival.core.message.lobby.LobbyMessage;
 
 public interface LobbyPhase {
 
-	void started();
+    void started();
 
-	void playerEntered(PlayerLobbySession playerSession);
+    void playerEntered(PlayerLobbySession playerSession);
 
-	void playerLeaved(PlayerLobbySession playerSession);
+    void playerLeaved(PlayerLobbySession playerSession);
 
-	void received(PlayerLobbySession playerSession, LobbyMessage lobbyMessage);
+    void received(PlayerLobbySession playerSession, LobbyMessage lobbyMessage);
 }

@@ -1,5 +1,7 @@
 package com.pixurvival.gdxcore.lobby;
 
+import lombok.Getter;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,32 +13,30 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 
-import lombok.Getter;
-
 public class Save {
 
-	private static DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
 
-	private @Getter File file;
-	private @Getter LocalDateTime creationTime;
-	private String toString;
+    private @Getter File file;
+    private @Getter LocalDateTime creationTime;
+    private String toString;
 
-	public Save(File file) {
-		this.file = file;
-		try {
-			BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-			ZonedDateTime zonedDateTime = attr.creationTime().toInstant().atZone(ZoneId.systemDefault());
-			creationTime = zonedDateTime.toLocalDateTime();
-			LocalDate date = zonedDateTime.toLocalDate();
-			toString = date.format(formatter) + " - " + file.getName();
-		} catch (IOException e) {
-			e.printStackTrace();
-			toString = file.getName();
-		}
-	}
+    public Save(File file) {
+        this.file = file;
+        try {
+            BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            ZonedDateTime zonedDateTime = attr.creationTime().toInstant().atZone(ZoneId.systemDefault());
+            creationTime = zonedDateTime.toLocalDateTime();
+            LocalDate date = zonedDateTime.toLocalDate();
+            toString = date.format(formatter) + " - " + file.getName();
+        } catch (IOException e) {
+            e.printStackTrace();
+            toString = file.getName();
+        }
+    }
 
-	@Override
-	public String toString() {
-		return toString;
-	}
+    @Override
+    public String toString() {
+        return toString;
+    }
 }

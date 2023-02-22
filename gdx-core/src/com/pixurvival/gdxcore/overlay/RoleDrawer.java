@@ -8,14 +8,14 @@ import com.pixurvival.gdxcore.util.Caches;
 
 public class RoleDrawer implements OverlayStackElementDrawer<PlayerEntity> {
 
-	@Override
-	public float draw(Batch batch, OverlayInfos infos, PlayerEntity e) {
-		if (e.getRole() != null) {
-			GlyphLayout layout = Caches.overlayYellowGlyphLayout.get(e.getRole().getName());
-			PixurvivalGame.getOverlayFont().draw(batch, layout, infos.getReferencePosition().x - layout.width / 2, infos.getReferencePosition().y + layout.height);
-			return layout.height;
-		} else {
-			return 0;
-		}
-	}
+    @Override
+    public float draw(Batch batch, OverlayInfos infos, PlayerEntity e) {
+        if (e.getRole() != null) {
+            GlyphLayout layout = Caches.overlayYellowGlyphLayout.get(e.getRole().getName());
+            PixurvivalGame.getOverlayFont().draw(batch, layout, infos.getReferencePosition().x - layout.width / 2, infos.getReferencePosition().y + layout.height);
+            return layout.height;
+        } else {
+            return 0;
+        }
+    }
 }

@@ -10,17 +10,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IntWrapper {
-	private int value;
+    private int value;
 
-	public void add(int toAdd) {
-		value += toAdd;
-	}
+    public void add(int toAdd) {
+        value += toAdd;
+    }
 
-	public int increment() {
-		return value++;
-	}
+    public int increment() {
+        return value++;
+    }
 
-	public void decrement() {
-		--value;
-	}
+    public void decrement() {
+        --value;
+    }
 }

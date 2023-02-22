@@ -1,7 +1,6 @@
 package com.pixurvival.core.map.chunk.update;
 
 import com.pixurvival.core.map.chunk.Chunk;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public abstract class StructureUpdate {
 
-	private int x;
-	private int y;
-	private long id;
+    private int x;
+    private int y;
+    private long id;
 
-	public abstract void apply(Chunk chunk);
+    public abstract void apply(Chunk chunk);
 }

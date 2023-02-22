@@ -12,28 +12,28 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 
 public class HeldItemStackActor extends Actor {
 
-	private ItemStackDrawer itemStackDrawer;
+    private ItemStackDrawer itemStackDrawer;
 
-	public HeldItemStackActor() {
-		itemStackDrawer = new ItemStackDrawer(this, 0);
-		setSize(40, 40);
-		setTouchable(Touchable.disabled);
-	}
+    public HeldItemStackActor() {
+        itemStackDrawer = new ItemStackDrawer(this, 0);
+        setSize(40, 40);
+        setTouchable(Touchable.disabled);
+    }
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(Color.WHITE);
-		PlayerInventory inventory = PixurvivalGame.getClient().getMyInventory();
-		if (inventory == null) {
-			return;
-		}
-		ItemStack heldItemStack = inventory.getHeldItemStack();
-		if (heldItemStack == null) {
-			return;
-		}
-		Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-		setPosition(mousePos.x/* - getWidth() / 2 */, mousePos.y - getHeight());
-		itemStackDrawer.setItemStack(heldItemStack);
-		itemStackDrawer.draw(batch);
-	}
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        batch.setColor(Color.WHITE);
+        PlayerInventory inventory = PixurvivalGame.getClient().getMyInventory();
+        if (inventory == null) {
+            return;
+        }
+        ItemStack heldItemStack = inventory.getHeldItemStack();
+        if (heldItemStack == null) {
+            return;
+        }
+        Vector2 mousePos = getStage().getViewport().unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        setPosition(mousePos.x/* - getWidth() / 2 */, mousePos.y - getHeight());
+        itemStackDrawer.setItemStack(heldItemStack);
+        itemStackDrawer.draw(batch);
+    }
 }
