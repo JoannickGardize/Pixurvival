@@ -89,7 +89,7 @@ public class ChangeConditionEditor extends InstanceChangingElementEditor<ChangeC
             bind(itemSetEditor, "items", InventoryContainsCondition.class);
 
             return LayoutUtils.createVerticalBox(itemSetEditor,
-                    LayoutUtils.createHorizontalBox(new JLabel(TranslationService.getInstance().getString("behaviorEditor.sum")), operatorChooser, valueInput));
+                    LayoutUtils.createHorizontalBox(new JLabel(TranslationService.getInstance().getString("generic.sum")), operatorChooser, valueInput));
         }));
         classEntries.add(new ClassEntry(TileCondition.class, () -> {
             ElementSetEditor<Tile> tileSet = new ElementSetEditor<>(Tile.class);

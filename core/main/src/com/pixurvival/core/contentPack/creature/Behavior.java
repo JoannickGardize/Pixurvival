@@ -83,7 +83,7 @@ public abstract class Behavior extends NamedIdentifiedElement {
     private void affectNeighbors(ChangeCondition condition, CreatureEntity creature) {
         if (condition.getAffectedNeighborsDistance() > 0) {
             float squaredDistance = condition.getAffectedNeighborsDistance() * condition.getAffectedNeighborsDistance();
-            EntitySearchUtils.foreachEntities(creature, EntityGroup.CREATURE, condition.getAffectedNeighborsDistance(), e -> {
+            EntitySearchUtils.forEach(creature, EntityGroup.CREATURE, condition.getAffectedNeighborsDistance(), e -> {
                 CreatureEntity c = (CreatureEntity) e;
                 if (c.getDefinition() == creature.getDefinition() && c.getCurrentBehavior() == this && e.distanceSquared(creature) <= squaredDistance) {
                     pass(c, condition);

@@ -21,7 +21,7 @@ public class EntitySearchUtils {
      *                          chunks.
      * @param action
      */
-    public static void foreachEntities(Positionnable origin, EntityGroup group, float maxSquareDistance, Consumer<Entity> action) {
+    public static void forEach(Positionnable origin, EntityGroup group, float maxSquareDistance, Consumer<Entity> action) {
         TiledMap map = origin.getWorld().getMap();
         map.forEachChunk(origin.getPosition(), maxSquareDistance, c -> c.getEntities().get(group).forEach(action::accept));
     }
@@ -33,8 +33,8 @@ public class EntitySearchUtils {
                 action.accept(livingEntity);
             }
         };
-        foreachEntities(searcher, EntityGroup.PLAYER, maxSquareDistance, actionFilter);
-        foreachEntities(searcher, EntityGroup.CREATURE, maxSquareDistance, actionFilter);
+        forEach(searcher, EntityGroup.PLAYER, maxSquareDistance, actionFilter);
+        forEach(searcher, EntityGroup.CREATURE, maxSquareDistance, actionFilter);
     }
 
     public static EntitySearchResult findClosest(TeamMember searcher, TargetType targetType, float maxSquareDistance) {

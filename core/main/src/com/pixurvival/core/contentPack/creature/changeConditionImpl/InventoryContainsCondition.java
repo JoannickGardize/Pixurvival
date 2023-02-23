@@ -6,8 +6,7 @@ import com.pixurvival.core.contentPack.elementSet.ElementSet;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
-import com.pixurvival.core.item.Inventory;
-import com.pixurvival.core.item.ItemStack;
+import com.pixurvival.core.item.InventoryUtils;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 import com.pixurvival.core.util.FloatComparison;
 import lombok.Getter;
@@ -27,15 +26,7 @@ public class InventoryContainsCondition extends ChangeCondition {
 
     @Override
     public boolean test(CreatureEntity creature) {
-        Inventory inventory = creature.getInventory();
-        int sum = 0;
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack itemStack = inventory.getSlot(i);
-            if (itemStack != null && items.contains(itemStack.getItem())) {
-                sum += itemStack.getQuantity();
-            }
-        }
-        return operator.test(sum, value);
+        return InventoryUtils.testContent(creature, items, operator, value);
     }
 
 }

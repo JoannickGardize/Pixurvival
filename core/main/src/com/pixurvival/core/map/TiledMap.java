@@ -432,6 +432,16 @@ public class TiledMap {
         return run.structure;
     }
 
+    public void forEachStructure(Vector2 position, float searchRadius, Consumer<StructureEntity> action) {
+        forEachChunk(position, searchRadius, chunk -> chunk.getStructures().forEach(entry -> {
+            for (StructureEntity structure : entry.getValue()) {
+                if (position.distanceSquared(structure.getPosition()) <= searchRadius * searchRadius) {
+                    action.accept(structure);
+                }
+            }
+        }));
+    }
+
     public StructureEntity findClosestStructure(Vector2 position, float searchRadius) {
         return findClosestStructure(position, searchRadius, type -> true, s -> true);
     }
