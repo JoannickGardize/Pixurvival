@@ -30,8 +30,11 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
         this(true, targetElements);
     }
 
+    private AlterationTarget[] targetElements;
+
     public AlterationEditor(boolean showDelayedAlteration, AlterationTarget... targetElements) {
         super(Alteration.class, "alterationType", showDelayedAlteration);
+        this.targetElements = targetElements;
         if (targetElements.length > 0) {
             EnumChooser<AlterationTarget> alterationTargetChooser = new EnumChooser<>(AlterationTarget.class, targetElements);
             bind(alterationTargetChooser, "targetType");
@@ -218,7 +221,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
             // DelayedAlteration
             entries.add(new ClassEntry(DelayedAlteration.class, () -> {
                 TimeInput delayInput = new TimeInput();
-                ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+                ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false, targetElements), BeanFactory.of(Alteration.class),
                         VerticalListEditor.HORIZONTAL, false);
                 bind(delayInput, "duration", DelayedAlteration.class);
                 bind(alterationsEditor, "alterations", DelayedAlteration.class);
@@ -232,7 +235,7 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
             entries.add(new ClassEntry(RepeatAlteration.class, () -> {
                 IntegerInput numberOfRepeatInput = new IntegerInput();
                 TimeInput intervalInput = new TimeInput();
-                ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+                ListEditor<Alteration> alterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false, targetElements), BeanFactory.of(Alteration.class),
                         VerticalListEditor.HORIZONTAL, false);
                 bind(numberOfRepeatInput, "numberOfRepeat", RepeatAlteration.class);
                 bind(intervalInput, "interval", RepeatAlteration.class);
@@ -248,10 +251,10 @@ public class AlterationEditor extends InstanceChangingElementEditor<Alteration> 
                 ListEditor<AlterationCondition> alterationConditionsEditor = new VerticalListEditor<>(AlterationConditionEditor::new, BeanFactory.of(AlterationCondition.class),
                         VerticalListEditor.HORIZONTAL, false);
                 alterationConditionsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.if"));
-                ListEditor<Alteration> trueAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+                ListEditor<Alteration> trueAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false, targetElements), BeanFactory.of(Alteration.class),
                         VerticalListEditor.HORIZONTAL, false);
                 trueAlterationsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.then"));
-                ListEditor<Alteration> falseAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false), BeanFactory.of(Alteration.class),
+                ListEditor<Alteration> falseAlterationsEditor = new VerticalListEditor<>(() -> new AlterationEditor(false, targetElements), BeanFactory.of(Alteration.class),
                         VerticalListEditor.HORIZONTAL, false);
                 falseAlterationsEditor.setBorder(LayoutUtils.createGroupBorder("conditionAlterationEditor.else"));
                 bind(alterationConditionsEditor, "conditions", ConditionAlteration.class);

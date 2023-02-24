@@ -28,6 +28,7 @@ import com.pixurvival.core.system.interest.PersistenceInterest;
 import com.pixurvival.core.system.mapLimits.MapLimitsAnchorRun;
 import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
 import com.pixurvival.core.system.mapLimits.NextMapLimitAnchorAction;
+import com.pixurvival.core.system.trigger.TimerTriggerAction;
 import com.pixurvival.core.util.*;
 import lombok.experimental.UtilityClass;
 
@@ -84,7 +85,7 @@ public class WorldSerialization {
             // kryo stuff
             kryo.writeObject(kryoOutput, world.getActionTimerManager().getActionTimerQueue());
             kryo.writeObject(kryoOutput, world.getEndGameConditionData());
-            world.getInterestSubscriptionSet().get(PersistenceInterest.class).forEach(pi -> pi.save(kryoOutput, kryo));
+            world.getInterestSubscriptionSet().get(PersistenceInterest.class).publish(pi -> pi.save(kryoOutput, kryo));
             kryo.writeObject(kryoOutput, world.getChunkCreatureSpawnManager().getActionMemory());
             kryo.writeObject(kryoOutput, world.getSpawnCenter());
             kryoOutput.flush();
@@ -153,7 +154,7 @@ public class WorldSerialization {
             kryoInput.setPosition(buffer.position());
             world.getActionTimerManager().setActionTimerQueue(kryo.readObject(kryoInput, PriorityQueue.class));
             world.setEndGameConditionData(kryo.readObject(kryoInput, HashMap.class));
-            world.getInterestSubscriptionSet().get(PersistenceInterest.class).forEach(pi -> pi.load(kryoInput, kryo));
+            world.getInterestSubscriptionSet().get(PersistenceInterest.class).publish(pi -> pi.load(kryoInput, kryo));
             world.getChunkCreatureSpawnManager().setActionMemory(kryo.readObject(kryoInput, HashMap.class));
             world.setSpawnCenter(kryo.readObject(kryoInput, Vector2.class));
             buffer.position(kryoInput.position());
@@ -204,6 +205,7 @@ public class WorldSerialization {
         kryo.register(ActionTimer.class);
         kryo.register(PlayerRespawnAction.class);
         kryo.register(MapLimitsSystemData.class);
+        kryo.register(TimerTriggerAction.class);
         return kryo;
     }
 

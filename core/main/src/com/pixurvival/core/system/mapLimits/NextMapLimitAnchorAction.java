@@ -19,12 +19,12 @@ public class NextMapLimitAnchorAction implements Action {
         if (system == null) {
             return;
         }
-        system.getData().setFrom(system.getData().getTo());
+        system.getPersistenceData().setFrom(system.getPersistenceData().getTo());
         MapLimitsAnchorRun anchorRun = new MapLimitsAnchorRun();
-        system.getData().setTo(anchorRun);
+        system.getPersistenceData().setTo(anchorRun);
         anchorRun.setTime(anchor.getTime());
         anchorRun.setDamagePerSecond(anchor.getDamagePerSecond());
-        anchorRun.setRectangle(buildNextRectangle(system.getData().getFrom(), world, anchor));
+        anchorRun.setRectangle(buildNextRectangle(system.getPersistenceData().getFrom(), world, anchor));
         system.notifyAnchorChanged();
     }
 

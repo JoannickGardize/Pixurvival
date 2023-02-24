@@ -6,11 +6,11 @@ import com.pixurvival.core.contentPack.gameMode.GameMode;
 import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.entity.EntityPool;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import com.pixurvival.core.system.interest.TimeIntervalInterest;
+import com.pixurvival.core.system.interest.SecondIntervalInterest;
 import lombok.Setter;
 
 @Setter
-public class HungerSystem implements GameSystem, TimeIntervalInterest {
+public class HungerSystem implements GameSystem, SecondIntervalInterest {
 
     @Inject
     private EntityPool entityPool;

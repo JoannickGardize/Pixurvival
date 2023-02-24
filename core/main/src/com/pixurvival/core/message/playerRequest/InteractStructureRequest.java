@@ -33,7 +33,7 @@ public class InteractStructureRequest implements IPlayerActionRequest {
                     player.harvest((HarvestableStructureEntity) structure);
                 } else if (structure instanceof InteractionDialogHolder) {
                     player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class)
-                            .forEach(i -> i.openDialogRequest(player, ((InteractionDialogHolder) structure).getInteractionDialog()));
+                            .publish(i -> i.openDialogRequest(player, ((InteractionDialogHolder) structure).getInteractionDialog()));
                 } else {
                     player.deconstruct(structure);
                 }

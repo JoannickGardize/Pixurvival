@@ -73,7 +73,7 @@ public class InteractionDialogSystem implements GameSystem, InteractionDialogReq
         }
         interactionDialog.addViewer(playerEntity);
         playerEntity.setInteractionDialog(interactionDialog);
-        interactionDialogSubscrition.forEach(i -> i.dialogOpened(playerEntity, interactionDialog));
+        interactionDialogSubscrition.publish(i -> i.dialogOpened(playerEntity, interactionDialog));
     }
 
     private boolean closeCurrent(PlayerEntity playerEntity) {
@@ -84,7 +84,7 @@ public class InteractionDialogSystem implements GameSystem, InteractionDialogReq
                 dialog.removeListener(this);
             }
             playerEntity.setInteractionDialog(null);
-            interactionDialogSubscrition.forEach(i -> i.dialogClosed(playerEntity, dialog));
+            interactionDialogSubscrition.publish(i -> i.dialogClosed(playerEntity, dialog));
             return true;
         } else {
             return false;
@@ -98,6 +98,6 @@ public class InteractionDialogSystem implements GameSystem, InteractionDialogReq
 
     @Override
     public void changed(InteractionDialog interactionDialog) {
-        interactionDialogSubscrition.forEach(i -> i.viewingDialogChanged(interactionDialog));
+        interactionDialogSubscrition.publish(i -> i.viewingDialogChanged(interactionDialog));
     }
 }

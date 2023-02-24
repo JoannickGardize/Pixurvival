@@ -6,15 +6,15 @@ import com.esotericsoftware.kryo.io.Output;
 
 public interface PersistenceInterest extends Interest {
 
-    Object getData();
+    Object getPersistenceData();
 
-    void setData(Object data);
+    void setPersistenceData(Object data);
 
     default void save(Output output, Kryo kryo) {
-        kryo.writeClassAndObject(output, getData());
+        kryo.writeClassAndObject(output, getPersistenceData());
     }
 
     default void load(Input input, Kryo kryo) {
-        setData(kryo.readClassAndObject(input));
+        setPersistenceData(kryo.readClassAndObject(input));
     }
 }

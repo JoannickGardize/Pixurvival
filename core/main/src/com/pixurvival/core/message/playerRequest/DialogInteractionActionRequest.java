@@ -19,7 +19,7 @@ public class DialogInteractionActionRequest implements IPlayerActionRequest {
 
     @Override
     public void apply(PlayerEntity player) {
-        player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class).forEach(i -> i.interactDialogRequest(player, slotIndex, splitMode));
+        player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class).publish(i -> i.interactDialogRequest(player, slotIndex, splitMode));
     }
 
     @Override

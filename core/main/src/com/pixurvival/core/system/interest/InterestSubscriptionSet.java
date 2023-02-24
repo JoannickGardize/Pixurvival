@@ -15,7 +15,7 @@ public class InterestSubscriptionSet {
     private Map<Class<? extends Interest>, InterestSubscription<? extends Interest>> interestSubscriptions = new IdentityHashMap<>();
 
     /**
-     * Get or or create an {@link InterestSubscription} for the given
+     * Get or create an {@link InterestSubscription} for the given
      * {@link Interest} type.
      *
      * @param <T>  the interest type

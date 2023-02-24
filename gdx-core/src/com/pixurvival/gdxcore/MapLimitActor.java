@@ -22,7 +22,7 @@ public class MapLimitActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        Rectangle limitRectangle = mapLimitsSystem.getData().getRectangle();
+        Rectangle limitRectangle = mapLimitsSystem.getPersistenceData().getRectangle();
         Vector3 camPos = getStage().getCamera().position;
         OrthographicCamera camera = (OrthographicCamera) getStage().getCamera();
         Viewport viewport = getStage().getViewport();

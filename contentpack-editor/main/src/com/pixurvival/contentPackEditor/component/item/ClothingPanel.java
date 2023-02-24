@@ -2,7 +2,7 @@ package com.pixurvival.contentPackEditor.component.item;
 
 import com.pixurvival.core.contentPack.item.ClothingItem;
 
-import javax.swing.*;
+import java.util.Collections;
 
 public class ClothingPanel extends EquipablePanel {
 
@@ -10,7 +10,7 @@ public class ClothingPanel extends EquipablePanel {
 
     public ClothingPanel() {
         super(true);
-        finalizeLayout(new JPanel());
+        finalizeLayout(Collections.emptyList());
     }
 
     @Override

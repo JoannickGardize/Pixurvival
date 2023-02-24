@@ -19,6 +19,8 @@ import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkGroupChangeHelper;
 import com.pixurvival.core.message.playerRequest.PlayerMovementRequest;
+import com.pixurvival.core.system.interest.EquipmentInterest;
+import com.pixurvival.core.system.interest.InterestSubscription;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.util.ByteBufferUtils;
@@ -69,6 +71,8 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
     private @Setter PlayerInventory inventory;
 
     private Equipment equipment = new Equipment();
+
+    private int[] equipmentModCounts;
 
     private float hunger = MAX_HUNGER;
 
@@ -121,11 +125,25 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         super.initialize();
         if (getWorld().isServer()) {
             setInventory(new PlayerInventory(INVENTORY_SIZE));
+            equipmentModCounts = new int[Equipment.EQUIPMENT_SIZE];
+            if (getWorld().isServer()) {
+                equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
+                    equipmentModCounts[equipmentIndex]++;
+                    if (previousItemStack != null) {
+                        ((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+                    }
+                });
+            }
             equipment.addListener((concernedEquipment, equipmentIndex, previousItemStack, newItemStack) -> {
                 setStateChanged(true);
                 addUpdateContentMask(UPDATE_CONTENT_MASK_EQUIPMENT);
-                if (previousItemStack != null && getWorld().isServer()) {
-                    ((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+                InterestSubscription<EquipmentInterest> interest = getWorld().getInterestSubscriptionSet().get(EquipmentInterest.class);
+
+                if (previousItemStack != null) {
+                    if (getWorld().isServer()) {
+                        ((EquipableItem) previousItemStack.getItem()).getStatModifiers().forEach(m -> getStats().removeModifier(m));
+                    }
+                    interest.publish(ei -> ei.unequipped(this, equipmentIndex, (EquipableItem) previousItemStack.getItem()));
                 }
                 if (newItemStack != null) {
                     ((EquipableItem) newItemStack.getItem()).getStatModifiers().forEach(m -> getStats().addModifier(m));
@@ -144,6 +162,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
                         CooldownAbilityData abilityData = (CooldownAbilityData) getAbilityData(EquipmentAbilityType.ACCESSORY2_SPECIAL.getAbilityId());
                         abilityData.setReadyTimeMillis(getWorld().getTime().getTimeMillis() + accessoryItem.getAbility().getCooldown());
                     }
+                    interest.publish(ei -> ei.equipped(this, equipmentIndex, (EquipableItem) newItemStack.getItem()));
                 }
             });
             itemCraftDiscovery = new ItemCraftDiscovery(inventory, getWorld().getContentPack().getItemCrafts());
@@ -298,6 +317,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         ByteBufferUtils.putString(buffer, name);
         inventory.write(buffer);
         itemCraftDiscovery.write(buffer);
+        ByteBufferUtils.putInts(buffer, equipmentModCounts);
     }
 
     @Override
@@ -312,6 +332,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         setName(ByteBufferUtils.getString(buffer));
         inventory.apply(getWorld(), buffer);
         itemCraftDiscovery.apply(buffer, getWorld().getContentPack().getItems());
+        equipmentModCounts = ByteBufferUtils.getInts(buffer);
         addHealthAdapterListener();
     }
 

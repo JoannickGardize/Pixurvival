@@ -1,7 +1,10 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.core.contentPack.item.WeaponItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeaponPanel extends EquipablePanel {
 
@@ -12,10 +15,10 @@ public class WeaponPanel extends EquipablePanel {
 
     public WeaponPanel() {
         super(true);
-        baseAbilityEditor.setBorder(LayoutUtils.createGroupBorder("weaponEditor.baseAbility"));
-        specialAbilityEditor.setBorder(LayoutUtils.createGroupBorder("equipableEditor.specialAbility"));
-        finalizeLayout(LayoutUtils.createVerticalBox(baseAbilityEditor, specialAbilityEditor));
-
+        List<Tab> tabs = new ArrayList<>();
+        tabs.add(new Tab(TranslationService.getInstance().getString("weaponEditor.baseAbility"), baseAbilityEditor));
+        tabs.add(new Tab(TranslationService.getInstance().getString("equipableEditor.specialAbility"), specialAbilityEditor));
+        finalizeLayout(tabs);
     }
 
     @Override

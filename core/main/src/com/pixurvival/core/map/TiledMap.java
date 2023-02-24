@@ -118,17 +118,17 @@ public class TiledMap {
 
     public void notifyStructureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
         listeners.forEach(l -> l.structureChanged(mapStructure, structureUpdate));
-        structureChangeSubscription.forEach(i -> i.structureChanged(mapStructure, structureUpdate));
+        structureChangeSubscription.publish(i -> i.structureChanged(mapStructure, structureUpdate));
     }
 
     public void notifyStructureAdded(StructureEntity mapStructure) {
         listeners.forEach(l -> l.structureAdded(mapStructure));
-        structureChangeSubscription.forEach(i -> i.structureAdded(mapStructure));
+        structureChangeSubscription.publish(i -> i.structureAdded(mapStructure));
     }
 
     public void notifyStructureRemoved(StructureEntity mapStructure) {
         listeners.forEach(l -> l.structureRemoved(mapStructure));
-        structureChangeSubscription.forEach(i -> i.structureRemoved(mapStructure));
+        structureChangeSubscription.publish(i -> i.structureRemoved(mapStructure));
     }
 
     public MapTile tileAt(Vector2 position) {
@@ -172,7 +172,7 @@ public class TiledMap {
             }
             chunk.check();
             listeners.forEach(l -> l.chunkLoaded(chunk));
-            chunkLoadSubscription.forEach(i -> i.chunkLoaded(chunk));
+            chunkLoadSubscription.publish(i -> i.chunkLoaded(chunk));
         } else {
             existingChunk.check();
         }
@@ -186,7 +186,7 @@ public class TiledMap {
         repository.save(chunk);
         chunks.remove(chunk.getPosition());
         listeners.forEach(l -> l.chunkUnloaded(chunk));
-        chunkLoadSubscription.forEach(i -> i.chunkUnloaded(chunk));
+        chunkLoadSubscription.publish(i -> i.chunkUnloaded(chunk));
     }
 
     private void removePlayersFromChunk(Chunk chunk) {

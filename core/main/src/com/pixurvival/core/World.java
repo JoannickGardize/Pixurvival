@@ -31,6 +31,7 @@ import com.pixurvival.core.message.WorldKryo;
 import com.pixurvival.core.system.*;
 import com.pixurvival.core.system.interest.*;
 import com.pixurvival.core.system.mapLimits.MapLimitsSystem;
+import com.pixurvival.core.system.trigger.TriggerSystem;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.time.Time;
@@ -118,6 +119,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
         addSystem(MapLimitsSystem.class);
         addSystem(InteractionDialogSystem.class);
         addSystem(FactorySystem.class);
+        addSystem(TriggerSystem.class);
     }
 
     public void addAdditonalAttribute(Object o, Class<?> type, Class<?>... genericTypes) {
@@ -222,7 +224,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
             return;
         }
         updatePlugins(this);
-        worldUpdateSubscription.forEach(w -> w.update(time.getDeltaTime()));
+        worldUpdateSubscription.publish(w -> w.update(time.getDeltaTime()));
         time.update(deltaTimeMillis);
         actionTimerManager.update();
         entityPool.update();
@@ -269,7 +271,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
         });
         initializeRoles();
         initializeSystems();
-        initializeNewServerWorldSubscription.forEach(InitializeNewServerWorldInterest::initializeNewServerWorld);
+        initializeNewServerWorldSubscription.publish(InitializeNewServerWorldInterest::initializeNewServerWorld);
     }
 
     public void initializeLoadedGame() {
@@ -283,7 +285,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
 
     public void initializeClientGame(CreateWorld createWorld) {
         initializeSystems();
-        initializeNewClientWorldSubscription.forEach(i -> i.initializeNewClientWorld(createWorld));
+        initializeNewClientWorldSubscription.publish(i -> i.initializeNewClientWorld(createWorld));
     }
 
     public void received(ChatEntry chatEntry) {

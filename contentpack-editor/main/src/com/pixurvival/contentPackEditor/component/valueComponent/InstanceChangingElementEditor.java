@@ -34,8 +34,8 @@ public abstract class InstanceChangingElementEditor<E> extends ElementEditor<E> 
     private Map<Class<?>, E> stash = new HashMap<>();
     private int previousElementId;
 
-    protected InstanceChangingElementEditor(Class<? super E> defaultType, String translationPreffix) {
-        this(defaultType, translationPreffix, null);
+    protected InstanceChangingElementEditor(Class<? super E> defaultType, String translationPrefix) {
+        this(defaultType, translationPrefix, null);
     }
 
     @SuppressWarnings("unchecked")

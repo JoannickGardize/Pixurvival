@@ -26,7 +26,7 @@ import java.util.List;
 @Setter
 public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInterest, InitializeNewClientWorldInterest, WorldUpdateInterest, PersistenceInterest {
 
-    private @Getter MapLimitsSystemData data = new MapLimitsSystemData();
+    private @Getter MapLimitsSystemData persistenceData = new MapLimitsSystemData();
 
     @Inject
     private InterestSubscription<SystemDataChangedInterest> dataChangedInterestSubscription;
@@ -70,15 +70,15 @@ public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInte
 
     private void commonInitialization() {
         MapLimits mapLimits = gameMode.getMapLimits();
-        data.setRectangle(new Rectangle(spawnCenter, mapLimits.getInitialSize()));
-        data.setTrueDamagePerSecond(mapLimits.getInitialDamagePerSecond());
+        persistenceData.setRectangle(new Rectangle(spawnCenter, mapLimits.getInitialSize()));
+        persistenceData.setTrueDamagePerSecond(mapLimits.getInitialDamagePerSecond());
         MapLimitsAnchorRun initialAnchorRun = new MapLimitsAnchorRun();
         initialAnchorRun.setDamagePerSecond(mapLimits.getInitialDamagePerSecond());
-        initialAnchorRun.setRectangle(data.getRectangle());
+        initialAnchorRun.setRectangle(persistenceData.getRectangle());
         initialAnchorRun.setTime(0);
-        data.setFrom(initialAnchorRun);
+        persistenceData.setFrom(initialAnchorRun);
         List<MapLimitsAnchor> anchors = mapLimits.getAnchors();
-        data.setTo(initialAnchorRun);
+        persistenceData.setTo(initialAnchorRun);
         if (!anchors.isEmpty()) {
             actionTimerManager.addActionTimer(new NextMapLimitAnchorAction(anchors.get(0)), 0);
         }
@@ -86,10 +86,10 @@ public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInte
 
     @Override
     public void update(float deltaTime) {
-        MapLimitsAnchorRun from = data.getFrom();
-        MapLimitsAnchorRun to = data.getTo();
+        MapLimitsAnchorRun from = persistenceData.getFrom();
+        MapLimitsAnchorRun to = persistenceData.getTo();
         long diffTime = to.getTime() - from.getTime();
-        Rectangle rectangle = data.getRectangle();
+        Rectangle rectangle = persistenceData.getRectangle();
         if (diffTime > 0) {
             float alpha = Math.min(1, (float) ((double) (time.getTimeMillis() - from.getTime()) / diffTime));
             Rectangle fromRect = from.getRectangle();
@@ -98,26 +98,26 @@ public class MapLimitsSystem implements GameSystem, InitializeNewServerWorldInte
             rectangle.setStartY(fromRect.getStartY() + (toRect.getStartY() - fromRect.getStartY()) * alpha);
             rectangle.setEndX(fromRect.getEndX() + (toRect.getEndX() - fromRect.getEndX()) * alpha);
             rectangle.setEndY(fromRect.getEndY() + (toRect.getEndY() - fromRect.getEndY()) * alpha);
-            data.setTrueDamagePerSecond(from.getDamagePerSecond() + (to.getDamagePerSecond() - from.getDamagePerSecond()) * alpha);
+            persistenceData.setTrueDamagePerSecond(from.getDamagePerSecond() + (to.getDamagePerSecond() - from.getDamagePerSecond()) * alpha);
         }
         for (Entity e : entityPool.get(EntityGroup.PLAYER)) {
             if (!rectangle.contains(e.getPosition())) {
-                ((LivingEntity) e).takeTrueDamageSneaky(data.getTrueDamagePerSecond() * deltaTime, DamageAttributes.getDefaults());
+                ((LivingEntity) e).takeTrueDamageSneaky(persistenceData.getTrueDamagePerSecond() * deltaTime, DamageAttributes.getDefaults());
             }
         }
     }
 
     @Override
-    public void setData(Object data) {
-        this.data = (MapLimitsSystemData) data;
+    public void setPersistenceData(Object data) {
+        this.persistenceData = (MapLimitsSystemData) data;
     }
 
     @Override
     public void accept(SystemData data) {
-        setData(data);
+        setPersistenceData(data);
     }
 
     void notifyAnchorChanged() {
-        dataChangedInterestSubscription.forEach(i -> i.dataChanged(data));
+        dataChangedInterestSubscription.publish(i -> i.dataChanged(persistenceData));
     }
 }

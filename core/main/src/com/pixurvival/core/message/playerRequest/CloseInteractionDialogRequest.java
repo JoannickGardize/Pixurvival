@@ -7,7 +7,7 @@ public class CloseInteractionDialogRequest implements IPlayerActionRequest {
 
     @Override
     public void apply(PlayerEntity player) {
-        player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class).forEach(i -> i.closeDialogRequest(player));
+        player.getWorld().getInterestSubscriptionSet().get(InteractionDialogRequestInterest.class).publish(i -> i.closeDialogRequest(player));
     }
 
     @Override

@@ -24,7 +24,7 @@ public class InterestSubscription<T extends Interest> {
         subscribers.remove(subscriber);
     }
 
-    public void forEach(Consumer<T> action) {
+    public void publish(Consumer<T> action) {
         subscribers.forEach(action);
     }
 }

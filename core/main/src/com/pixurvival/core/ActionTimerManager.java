@@ -5,6 +5,12 @@ import lombok.*;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+/**
+ * TODO make this a system
+ * <p>
+ * This class manages actions that have to be executed later.
+ * The internal list of action is kept sorted, in this way, the update() method has most of the time a constant O(1) complexity.
+ */
 @RequiredArgsConstructor
 public class ActionTimerManager {
 
@@ -12,8 +18,12 @@ public class ActionTimerManager {
     private @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE) Queue<ActionTimer> actionTimerQueue = new PriorityQueue<>();
 
-    public void addActionTimer(Action action, long timeMillis) {
-        actionTimerQueue.add(new ActionTimer(action, world.getTime().getTimeMillis() + timeMillis));
+    public void addActionTimer(Action action, long delayMillis) {
+        actionTimerQueue.add(new ActionTimer(action, world.getTime().getTimeMillis() + delayMillis));
+    }
+
+    public void addActionTimerAtWorldTime(Action action, long worldTimeMillis) {
+        actionTimerQueue.add(new ActionTimer(action, worldTimeMillis));
     }
 
     public void update() {

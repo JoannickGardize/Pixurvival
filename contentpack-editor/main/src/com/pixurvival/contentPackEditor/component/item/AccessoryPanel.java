@@ -1,8 +1,10 @@
 package com.pixurvival.contentPackEditor.component.item;
 
-import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
-import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.core.contentPack.item.AccessoryItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccessoryPanel extends EquipablePanel {
 
@@ -12,9 +14,9 @@ public class AccessoryPanel extends EquipablePanel {
 
     public AccessoryPanel() {
         super(false);
-        EventManager.getInstance().register(abilityEditor);
-        abilityEditor.setBorder(LayoutUtils.createGroupBorder("accessoryEditor.ability"));
-        finalizeLayout(abilityEditor);
+        List<Tab> tabs = new ArrayList<>();
+        tabs.add(new Tab(TranslationService.getInstance().getString("accessoryEditor.ability"), abilityEditor));
+        finalizeLayout(tabs);
     }
 
     @Override

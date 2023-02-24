@@ -3,7 +3,7 @@ package com.pixurvival.core.time;
 import com.pixurvival.core.message.TimeSync;
 import com.pixurvival.core.system.interest.InterestSubscription;
 import com.pixurvival.core.system.interest.InterestSubscriptionSet;
-import com.pixurvival.core.system.interest.TimeIntervalInterest;
+import com.pixurvival.core.system.interest.SecondIntervalInterest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class Time {
     private @Getter long tickCount = 0;
     private float timeDiffAccumulator = 0;
     private long previousSecond = 0;
-    private @Getter InterestSubscription<TimeIntervalInterest> timeIntervalSubscription;
+    private @Getter InterestSubscription<SecondIntervalInterest> timeIntervalSubscription;
 
     /**
      * Current time to consider for reading / writing relative time based data.
@@ -35,7 +35,7 @@ public class Time {
 
     public Time(DayCycleRun dayCycle, InterestSubscriptionSet interestSubscriptionSet) {
         this.dayCycle = dayCycle;
-        timeIntervalSubscription = interestSubscriptionSet.get(TimeIntervalInterest.class);
+        timeIntervalSubscription = interestSubscriptionSet.get(SecondIntervalInterest.class);
     }
 
     public void update(float deltaTimeMillis) {
@@ -53,7 +53,7 @@ public class Time {
         long currentSecond = timeMillis / 1000L;
         while (previousSecond < currentSecond) {
             previousSecond++;
-            timeIntervalSubscription.forEach(l -> l.tick(1));
+            timeIntervalSubscription.publish(l -> l.tick(1));
         }
     }
 
