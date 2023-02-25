@@ -20,6 +20,7 @@ import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.ByteBufferUtils;
 import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,6 +52,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     private Vector2 targetPosition = new Vector2();
 
     private List<PersistentAlterationEntry> persistentAlterationEntries = new ArrayList<>();
+    private @Getter(AccessLevel.NONE) List<PersistentAlterationEntry> newPersistentAlterationEntries = new ArrayList<>();
 
     private @Setter Team team = TeamSet.WILD_TEAM;
 
@@ -258,32 +260,41 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     }
 
     public void applyPersistentAlteration(TeamMember source, PersistentAlteration alteration) {
-        PersistentAlterationEntry entry = new PersistentAlterationEntry(source, alteration);
-        switch (alteration.getStackPolicy()) {
-            case IGNORE:
-                if (!persistentAlterationEntries.contains(entry)) {
+        newPersistentAlterationEntries.add(new PersistentAlterationEntry(source, alteration));
+
+    }
+
+    private void insertNewPersistentAlterations() {
+        // Classical for mandatory here because the list can grow during the loop
+        for (int i = 0; i < newPersistentAlterationEntries.size(); i++) {
+            PersistentAlterationEntry entry = newPersistentAlterationEntries.get(i);
+            switch (entry.getAlteration().getStackPolicy()) {
+                case IGNORE:
+                    if (!persistentAlterationEntries.contains(entry)) {
+                        persistentAlterationEntries.add(entry);
+                        beginPersistentAlteration(entry);
+                    }
+                    break;
+                case REPLACE:
+                    int index = persistentAlterationEntries.indexOf(entry);
+                    if (index == -1) {
+                        persistentAlterationEntries.add(entry);
+                    } else {
+                        PersistentAlterationEntry oldEntry = persistentAlterationEntries.get(index);
+                        oldEntry.getAlteration().end(oldEntry.getSource(), this, oldEntry.getData());
+                        persistentAlterationEntries.set(index, entry);
+                    }
+                    beginPersistentAlteration(entry);
+                    break;
+                case STACK:
                     persistentAlterationEntries.add(entry);
                     beginPersistentAlteration(entry);
-                }
-                break;
-            case REPLACE:
-                int index = persistentAlterationEntries.indexOf(entry);
-                if (index == -1) {
-                    persistentAlterationEntries.add(entry);
-                } else {
-                    PersistentAlterationEntry oldEntry = persistentAlterationEntries.get(index);
-                    oldEntry.getAlteration().end(oldEntry.getSource(), this, oldEntry.getData());
-                    persistentAlterationEntries.set(index, entry);
-                }
-                beginPersistentAlteration(entry);
-                break;
-            case STACK:
-                persistentAlterationEntries.add(entry);
-                beginPersistentAlteration(entry);
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
+        newPersistentAlterationEntries.clear();
     }
 
     private void beginPersistentAlteration(PersistentAlterationEntry entry) {
@@ -297,6 +308,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     @Override
     public void update() {
         long timeMillis = getWorld().getTime().getTimeMillis();
+
         persistentAlterationEntries.removeIf(entry -> {
             entry.setData(entry.getAlteration().update(entry.getSource(), this, entry.getData()));
             if (timeMillis >= entry.getTermTimeMillis()) {
@@ -317,6 +329,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
                 currentAbility = null;
             }
         }
+        insertNewPersistentAlterations();
         super.update();
     }
 
