@@ -52,7 +52,7 @@ public class ErrorToString {
         addToStringFunction(SpriteWidth.class, p -> "the sprite width does not divide correctly the image width");
         addToStringFunction(SpriteHeight.class, p -> "the sprite height is not a multiple of the image height");
         addToStringFunction(SpriteHeight.class, p -> "the sprite height is not a multiple of the image height");
-        addToStringFunction(AnimationTemplateRequirement.class, a -> "the Animtation Template of the Sprite Sheet must contains at least the following actions: " + a.value());
+        addToStringFunction(AnimationTemplateRequirement.class, a -> "the Animation Template of the Sprite Sheet must contains at least the following actions: " + a.value());
         addToStringFunction(RequiredEquipmentOffset.class, p -> "the Sprite Sheet must have an Equipment Offset");
         addToStringFunction(AnimationTemplateFrames.class, p -> "the Animation Template has a frame that does not exists for this Sprite Sheet's image (FYI top-left is 0; 0)");
         addToStringFunction(EquipmentOffsetFrames.class, p -> "the Equipment Offset is not compatible with this Sprite Sheet's image");

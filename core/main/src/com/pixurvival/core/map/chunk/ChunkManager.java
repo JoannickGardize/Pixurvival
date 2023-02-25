@@ -1,19 +1,20 @@
 package com.pixurvival.core.map.chunk;
 
+import com.pixurvival.core.GameConstants;
+import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.map.TiledMap;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Manage chunk loading and unloading of multiples {@link TiledMap}s. It runs in
- * a separated thread, to prevent FPS drop of the main game thread. It unload
+ * a separated thread, to prevent FPS drop of the main game thread. It unloads
  * chunks that are too far for a fixed amount of time, they are compressed and
  * kept in memory.
  *
@@ -89,6 +90,11 @@ public class ChunkManager {
                 map.addChunk(chunkEntry);
                 map.notifyChunkAvailable(chunkEntry.getChunk().getPosition());
             }
+            synchronized (requestedPositions) {
+                if (requestedPositions.isEmpty()) {
+                    requestedPositions.notify();
+                }
+            }
         }
     }
 
@@ -116,5 +122,33 @@ public class ChunkManager {
             }
         }
         checkPosition = new ChunkPosition(nextX, nextY);
+    }
+
+    @SneakyThrows
+    public void forceUnloadTooFar(Collection<PlayerEntity> playerEntities) {
+        synchronized (requestedPositions) {
+            if (!requestedPositions.isEmpty()) {
+                requestedPositions.wait();
+            }
+        }
+        synchronized (map) {
+            map.flushChunks();
+            map.getWorld().getEntityPool().flushNewEntities();
+            Set<ChunkPosition> aliveChunkPositions = getAliveChunkPositions(playerEntities);
+            map.forAllChunk(c -> {
+                if (!aliveChunkPositions.contains(c)) {
+                    map.removeChunk(c);
+                }
+            });
+            map.flushChunks();
+        }
+    }
+
+    private Set<ChunkPosition> getAliveChunkPositions(Collection<PlayerEntity> playerEntities) {
+        Set<ChunkPosition> result = new HashSet<>();
+        for (PlayerEntity e : playerEntities) {
+            ChunkPosition.forEachChunkPosition(e.getPosition(), GameConstants.KEEP_ALIVE_DISTANCE, result::add);
+        }
+        return result;
     }
 }

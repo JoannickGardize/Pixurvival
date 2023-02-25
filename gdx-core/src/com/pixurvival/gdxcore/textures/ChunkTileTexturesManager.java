@@ -5,9 +5,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
+import com.pixurvival.core.entity.Entity;
+import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.TiledMap;
+import com.pixurvival.core.map.TiledMapListener;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.ChunkPosition;
+import com.pixurvival.core.map.chunk.update.StructureUpdate;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.SpriteSheetPixmap.Region;
 import com.pixurvival.gdxcore.util.DrawUtils;
@@ -20,7 +24,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public class ChunkTileTexturesManager {
+public class ChunkTileTexturesManager implements TiledMapListener {
 
     private TileTextureKey tileTextureKey = new TileTextureKey();
     private Map<TileTextureKey, Texture[]> tileTextures = new HashMap<>();
@@ -356,5 +360,38 @@ public class ChunkTileTexturesManager {
     private Region getRegionFor(Tile tile, int frameIndex) {
         Frame frame = tile.getFrames().get(frameIndex % tile.getFrames().size());
         return PixurvivalGame.getContentPackTextures().getTilePixmap(tileTextureKey.getMiddle()).getRegion(frame.getX(), frame.getY());
+    }
+
+    @Override
+    public void chunkLoaded(Chunk chunk) {
+
+    }
+
+    @Override
+    public void chunkUnloaded(Chunk chunk) {
+        ChunkTileTextures ctt;
+        synchronized (chunkTileTextureMap) {
+            ctt = chunkTileTextureMap.remove(chunk.getPosition());
+        }
+    }
+
+    @Override
+    public void structureChanged(StructureEntity mapStructure, StructureUpdate structureUpdate) {
+
+    }
+
+    @Override
+    public void structureAdded(StructureEntity mapStructure) {
+
+    }
+
+    @Override
+    public void structureRemoved(StructureEntity mapStructure) {
+
+    }
+
+    @Override
+    public void entityEnterChunk(ChunkPosition previousPosition, Entity e) {
+
     }
 }

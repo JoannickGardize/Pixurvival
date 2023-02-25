@@ -99,6 +99,7 @@ public class WorldScreen implements Screen {
             Log.error("Error when loading contentPack.", e);
         }
         chunkTileTexturesManager = new ChunkTileTexturesManager();
+        world.getMap().addListener(chunkTileTexturesManager);
         worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH * 0.75f, VIEWPORT_WORLD_WIDTH * 0.75f));
         cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
         this.world = world;

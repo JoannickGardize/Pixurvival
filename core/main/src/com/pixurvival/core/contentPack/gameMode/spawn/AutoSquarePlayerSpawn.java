@@ -46,5 +46,6 @@ public class AutoSquarePlayerSpawn implements PlayerSpawn {
                 spawnTeam(team, spawnPosition);
             }
         }
+        world.getMap().forceUnloadFarChunks();
     }
 }
