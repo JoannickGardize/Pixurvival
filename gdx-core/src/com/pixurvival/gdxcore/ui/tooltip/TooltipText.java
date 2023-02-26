@@ -7,11 +7,7 @@ import com.pixurvival.gdxcore.PixurvivalGame;
 public class TooltipText extends Label {
 
     public TooltipText(CharSequence text) {
-        this(text, false);
-    }
-
-    public TooltipText(CharSequence text, boolean italic) {
-        super(text, PixurvivalGame.getSkin(), italic ? "white-italic" : "white");
+        super(text, PixurvivalGame.getSkin(), "white");
         setWrap(true);
     }
 

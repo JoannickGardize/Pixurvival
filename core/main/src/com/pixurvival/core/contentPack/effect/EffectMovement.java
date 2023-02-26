@@ -12,7 +12,7 @@ public interface EffectMovement extends Serializable {
      *
      * @param entity
      */
-    void initialize(EffectEntity entity);
+    void initialize(EffectEntity entity, float angle);
 
     void update(EffectEntity entity);
 

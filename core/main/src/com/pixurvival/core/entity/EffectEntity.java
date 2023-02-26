@@ -53,7 +53,9 @@ public class EffectEntity extends Entity implements CheckListHolder, TeamMember 
     @Override
     public void initializeAtCreation() {
         if (getWorld().isServer()) {
-            definition.getEffect().getMovement().initialize(this);
+            float angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + getDefinition().getOffsetAngle()
+                    + getWorld().getRandom().nextAngle(getDefinition().getRandomAngle());
+            definition.getEffect().getMovement().initialize(this, angle);
             List<DelayedFollowingElement> delayedFollowingElements = definition.getEffect().getDelayedFollowingElements();
             if (!delayedFollowingElements.isEmpty()) {
                 creationTime = getWorld().getTime().getTimeMillis();

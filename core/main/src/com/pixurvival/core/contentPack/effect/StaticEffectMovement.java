@@ -20,11 +20,10 @@ public class StaticEffectMovement implements EffectMovement {
     private float maxDistance;
 
     @Override
-    public void initialize(EffectEntity entity) {
+    public void initialize(EffectEntity entity, float angle) {
         TeamMember ancestor = entity.getAncestor();
         float distanceSquared = ancestor.getPosition().distanceSquared(ancestor.getTargetPosition());
-        float angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
-                + entity.getWorld().getRandom().nextAngle(entity.getDefinition().getRandomAngle());
+
         if (distanceSquared <= minDistance * minDistance) {
             entity.getPosition().set(ancestor.getPosition()).addEuclidean(minDistance, angle);
         } else if (distanceSquared >= maxDistance * maxDistance) {

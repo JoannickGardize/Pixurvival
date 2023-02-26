@@ -34,8 +34,10 @@ public class EffectMovementEditor extends InstanceChangingElementEditor<EffectMo
         // BoundEffectMovement
         list.add(new ClassEntry(BoundEffectMovement.class, () -> {
             FloatInput distanceInput = new FloatInput();
+            FloatInput randomDistanceInput = new FloatInput();
             bind(distanceInput, "distance", BoundEffectMovement.class);
-            return LayoutUtils.labelled("generic.distance", distanceInput);
+            bind(randomDistanceInput, "randomDistance", BoundEffectMovement.class);
+            return LayoutUtils.createHorizontalLabelledBox("generic.distance", distanceInput, "effectMovementEditor.randomDistance", randomDistanceInput);
         }));
 
         // LinearEffectMovement

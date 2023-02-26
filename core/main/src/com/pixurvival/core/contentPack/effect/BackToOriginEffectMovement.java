@@ -19,7 +19,7 @@ public class BackToOriginEffectMovement implements EffectMovement {
     private float speed;
 
     @Override
-    public void initialize(EffectEntity entity) {
+    public void initialize(EffectEntity entity, float angle) {
         entity.getPosition().set(entity.getAncestor().getPosition());
         entity.setForward(true);
     }

@@ -11,6 +11,7 @@ import com.pixurvival.core.contentPack.TranslationKey;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.livingEntity.stats.StatListener;
 import com.pixurvival.core.livingEntity.stats.StatValue;
+import com.pixurvival.core.util.Cache;
 import com.pixurvival.core.util.CaseUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.ui.Separator;
@@ -27,6 +28,12 @@ public class ItemTooltip extends Table implements StatListener {
 
     private Item item;
     private boolean standalone;
+
+    private Cache<String, Description> descriptionCache = new Cache<>(key -> {
+        Locale locale = PixurvivalGame.getClient().getCurrentLocale();
+        ContentPack contentPack = PixurvivalGame.getWorld().getContentPack();
+        return DescriptionParser.parse(contentPack.getTranslation(locale, key));
+    });
 
     public ItemTooltip(boolean standalone) {
         this.standalone = standalone;
@@ -71,7 +78,7 @@ public class ItemTooltip extends Table implements StatListener {
         row();
         add(new Separator()).colspan(2).pad(0);
         row();
-        Label descriptionLabel = new TooltipText(contentPack.getTranslation(locale, item, TranslationKey.DESCRIPTION), true);
+        Label descriptionLabel = new TooltipText(descriptionCache.get(TranslationKey.DESCRIPTION.getKey(item)).get());
         descriptionLabel.setWrap(true);
         add(descriptionLabel).colspan(2);
         invalidate();

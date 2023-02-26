@@ -20,10 +20,13 @@ public class BoundEffectMovement implements EffectMovement {
     @Positive
     private float distance;
 
+    @Positive
+    private float randomDistance;
+
     @Override
-    public void initialize(EffectEntity entity) {
-        TeamMember ancestor = entity.getAncestor();
-        Vector2 relativeVector = Vector2.fromEuclidean(distance, ancestor.getPosition().angleToward(ancestor.getTargetPosition()));
+    public void initialize(EffectEntity entity, float angle) {
+        float random = randomDistance == 0 ? 0 : entity.getWorld().getRandom().nextFloat() * randomDistance;
+        Vector2 relativeVector = Vector2.fromEuclidean(distance + random, angle);
         entity.setMovementData(relativeVector);
         entity.getPosition().set(entity.getAncestor().getPosition()).add(relativeVector);
     }

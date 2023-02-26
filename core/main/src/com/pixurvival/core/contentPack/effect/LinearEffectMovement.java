@@ -29,10 +29,8 @@ public class LinearEffectMovement implements EffectMovement {
     private boolean destroyAtTargetPosition;
 
     @Override
-    public void initialize(EffectEntity entity) {
+    public void initialize(EffectEntity entity, float angle) {
         TeamMember ancestor = entity.getAncestor();
-        float angle = ancestor.getPosition().angleToward(ancestor.getTargetPosition()) + entity.getDefinition().getOffsetAngle()
-                + entity.getWorld().getRandom().nextAngle(entity.getDefinition().getRandomAngle());
         entity.getPosition().set(ancestor.getPosition());
         if (initialDistance > 0) {
             entity.getPosition().add(Vector2.fromEuclidean(initialDistance, angle));
