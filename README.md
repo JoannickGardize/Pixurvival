@@ -7,6 +7,6 @@ pack with the editor.
 
 *[Trello board](https://trello.com/b/84pvuPq8/pixurvival-dev)*
 
-# Contributing
+## Contributing
 
 Contribution guide TODO. For now, join the [Discord](https://discord.gg/VXEpJhJ) to discuss if you want to contribute.
