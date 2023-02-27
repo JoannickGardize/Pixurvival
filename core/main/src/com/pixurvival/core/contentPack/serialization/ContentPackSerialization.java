@@ -2,9 +2,11 @@ package com.pixurvival.core.contentPack.serialization;
 
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.alteration.*;
+import com.pixurvival.core.alteration.condition.*;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.creature.behaviorImpl.*;
 import com.pixurvival.core.contentPack.creature.changeConditionImpl.*;
 import com.pixurvival.core.contentPack.effect.*;
@@ -25,6 +27,9 @@ import com.pixurvival.core.contentPack.gameMode.role.TeamSurvivedWinCondition;
 import com.pixurvival.core.contentPack.gameMode.spawn.AutoSquarePlayerSpawn;
 import com.pixurvival.core.contentPack.gameMode.spawn.StaticPlayerSpawn;
 import com.pixurvival.core.contentPack.item.*;
+import com.pixurvival.core.contentPack.item.trigger.EquippedTrigger;
+import com.pixurvival.core.contentPack.item.trigger.TimerTrigger;
+import com.pixurvival.core.contentPack.item.trigger.UnequippedTrigger;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
@@ -274,7 +279,19 @@ public class ContentPackSerialization {
         addClassTag(representer, FactoryStructure.class);
         addClassTag(representer, SetSpawnPositionAlteration.class);
         addClassTag(representer, Tile.class);
-
+        addClassTag(representer, TimerTrigger.class);
+        addClassTag(representer, UnequippedTrigger.class);
+        addClassTag(representer, ConditionAlteration.class);
+        addClassTag(representer, HealthAlterationCondition.class);
+        addClassTag(representer, EntityAroundCountAlterationCondition.class);
+        addClassTag(representer, Creature.class);
+        addClassTag(representer, EquippedTrigger.class);
+        addClassTag(representer, ActualSpeedAlterationCondition.class);
+        addClassTag(representer, InventoryContainsAlterationCondition.class);
+        addClassTag(representer, RandomAlterationCondition.class);
+        addClassTag(representer, StatAlterationCondition.class);
+        addClassTag(representer, StructureAroundCountAlterationCondition.class);
+        addClassTag(representer, TileAlterationCondition.class);
     }
 
     private void addClassTag(Representer representer, Class<?> type) {
