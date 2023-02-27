@@ -1,8 +1,9 @@
-<iframe frameborder="0" src="https://itch.io/embed/543178" width="552" height="167"><a href="https://sharkhendrix.itch.io/pixurvival">
-Pixurvival by SharkHendrix</a></iframe>
+# Pixurvival
 
 Pixurvival is a pixelated top-down mega sandbox written in Java. Play the vanilla content or create your own content
 pack with the editor.
+
+*[Itch.io download page](https://sharkhendrix.itch.io/pixurvival)*
 
 *[Trello board](https://trello.com/b/84pvuPq8/pixurvival-dev)*
 
