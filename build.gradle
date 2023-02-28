@@ -242,7 +242,7 @@ task packageDistribution(type: GradleBuild) {
 }
 
 task copyJars(type: Copy) {
-    from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar'
+    from 'gdx-desktop/build/libs/pixurvival.jar', 'server/build/libs/server.jar', 'contentpack-editor/build/libs/content-pack-editor.jar', 'LICENSE'
     into 'build/package'
 }
 

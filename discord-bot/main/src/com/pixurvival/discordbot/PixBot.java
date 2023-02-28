@@ -22,6 +22,8 @@ public class PixBot extends ListenerAdapter {
 
     private static @Getter JDA jda;
 
+    private static String token = "copy/paste your token here";
+
     private MultiCommand commands = new MultiCommand("root", "");
 
     public static void main(String[] args) throws LoginException, FileNotFoundException {
@@ -45,7 +47,7 @@ public class PixBot extends ListenerAdapter {
         bot.commands.add(cp);
         bot.commands.add(new PlayCommand());
 
-        jda = JDABuilder.createDefault("NzQyODI1MjU5MTkwNzE0NDM5.XzLv7g.3ENctC1QLEN7BrRK2uExCHVcYLY").addEventListeners(bot).build();
+        jda = JDABuilder.createDefault(token).addEventListeners(bot).build();
     }
 
     @Override
