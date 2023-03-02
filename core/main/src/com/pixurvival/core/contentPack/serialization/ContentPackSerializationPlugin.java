@@ -1,13 +1,12 @@
 package com.pixurvival.core.contentPack.serialization;
 
 import com.pixurvival.core.contentPack.ContentPack;
-
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import com.pixurvival.core.contentPack.serialization.io.StoreInput;
+import com.pixurvival.core.contentPack.serialization.io.StoreOutput;
 
 public interface ContentPackSerializationPlugin {
 
-    void read(ContentPack contentPack, ZipFile zipFile);
+    void read(ContentPack contentPack, StoreInput input);
 
-    void write(ContentPack contentPack, ZipOutputStream zipOutputStream);
+    void write(ContentPack contentPack, StoreOutput output);
 }

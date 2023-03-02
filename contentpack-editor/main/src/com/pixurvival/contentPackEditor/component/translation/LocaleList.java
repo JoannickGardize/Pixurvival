@@ -54,7 +54,7 @@ public class LocaleList extends JPanel {
         Map<Locale, Properties> translations = event.getContentPack().getTranslations();
         List<Locale> tmpList = new ArrayList<>(translations.size());
         tmpList.addAll(translations.keySet());
-        tmpList.sort((l1, l2) -> l1.getDisplayName().compareTo(l2.getDisplayName()));
+        tmpList.sort(Comparator.comparing(Locale::getDisplayName));
         for (Locale locale : tmpList) {
             model.addElement(locale);
         }

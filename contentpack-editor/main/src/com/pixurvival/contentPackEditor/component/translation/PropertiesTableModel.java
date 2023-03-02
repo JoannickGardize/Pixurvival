@@ -3,10 +3,7 @@ package com.pixurvival.contentPackEditor.component.translation;
 import com.pixurvival.contentPackEditor.TranslationService;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class PropertiesTableModel extends AbstractTableModel {
 
@@ -20,7 +17,7 @@ public class PropertiesTableModel extends AbstractTableModel {
         this.properties = properties;
         orderedKeys.clear();
         orderedKeys.addAll((Set) properties.keySet());
-        orderedKeys.sort((k1, k2) -> k1.compareTo(k2));
+        orderedKeys.sort(Comparator.naturalOrder());
         fireTableDataChanged();
     }
 

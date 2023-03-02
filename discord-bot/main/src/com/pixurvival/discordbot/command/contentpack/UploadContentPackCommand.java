@@ -3,6 +3,7 @@ package com.pixurvival.discordbot.command.contentpack;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
+import com.pixurvival.core.contentPack.serialization.io.ZipStoreInput;
 import com.pixurvival.core.contentPack.validation.ContentPackValidator;
 import com.pixurvival.core.contentPack.validation.ErrorNode;
 import com.pixurvival.core.contentPack.validation.ErrorToString;
@@ -49,7 +50,7 @@ public class UploadContentPackCommand extends Command {
         }
         ContentPack contentPack;
         try {
-            contentPack = serialization.load(file);
+            contentPack = serialization.load(() -> new ZipStoreInput(file));
         } catch (ContentPackException e) {
             e.printStackTrace();
             DiscordUtils.sendMessage(event, "Something seems wrong with your content pack file. Note that my version is " + ReleaseVersion.actual().displayName());

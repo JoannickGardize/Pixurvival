@@ -15,6 +15,8 @@ public class ContentPackSummary {
     private GameModeSummary[] gameModeSummaries;
     private String releaseVersion;
 
+    private transient boolean directoryMode;
+
     public ContentPackSummary(ContentPack contentPack) {
         identifier = contentPack.getIdentifier();
         gameModeSummaries = new GameModeSummary[contentPack.getGameModes().size()];

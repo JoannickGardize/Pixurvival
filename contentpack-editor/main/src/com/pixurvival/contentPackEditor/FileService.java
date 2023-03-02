@@ -12,6 +12,9 @@ import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.serialization.io.DirectoryStoreOutput;
+import com.pixurvival.core.contentPack.serialization.io.StoreFactory;
+import com.pixurvival.core.contentPack.serialization.io.ZipStoreOutput;
 import com.pixurvival.core.util.ReleaseVersion;
 import lombok.Getter;
 
@@ -29,7 +32,7 @@ public class FileService {
     private @Getter ContentPackContext contentPackContext;
 
     private FileService() {
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     }
 
     public void initialize(File contentPackDirectory) {
@@ -72,7 +75,7 @@ public class FileService {
         boolean forceUpgrade = false;
         ContentPack previousContentPack = currentContentPack;
         try {
-            currentContentPack = contentPackContext.getSerialization().load(file);
+            currentContentPack = contentPackContext.getSerialization().load(() -> StoreFactory.input(file));
         } catch (Exception e) {
             Log.warn("Content pack cannot be read.", e);
             forceUpgrade = true;
@@ -118,7 +121,9 @@ public class FileService {
                 return;
             }
             currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
-            contentPackContext.getSerialization().save(currentFile, currentContentPack);
+            contentPackContext.getSerialization().save(
+                    () -> currentFile.isDirectory() ? new DirectoryStoreOutput(currentFile) : new ZipStoreOutput(currentFile),
+                    currentContentPack);
             previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
             EventManager.getInstance().fire(new ContentPackSavedEvent());
         } catch (Exception e) {

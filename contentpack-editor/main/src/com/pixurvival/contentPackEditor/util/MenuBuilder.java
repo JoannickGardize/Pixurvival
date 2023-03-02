@@ -13,23 +13,24 @@ public class MenuBuilder {
     private Container rootContainer;
     private String translationPreffix;
 
-    public void addItem(String path, Runnable action) {
-        addItem(path, action, TranslationService.getInstance().getString(translationPreffix + "." + path));
+    public JMenuItem addItem(String path, Runnable action) {
+        return addItem(path, action, TranslationService.getInstance().getString(translationPreffix + "." + path));
     }
 
-    public void addItem(String path, Runnable action, Icon icon) {
-        addItem(path, action, TranslationService.getInstance().getString(translationPreffix + "." + path), icon);
+    public JMenuItem addItem(String path, Runnable action, Icon icon) {
+        return addItem(path, action, TranslationService.getInstance().getString(translationPreffix + "." + path), icon);
     }
 
-    public void addItem(String path, Runnable action, String label) {
-        addItem(path, action, label, null);
+    public JMenuItem addItem(String path, Runnable action, String label) {
+        return addItem(path, action, label, null);
     }
 
-    public void addItem(String path, Runnable action, String label, Icon icon) {
+    public JMenuItem addItem(String path, Runnable action, String label, Icon icon) {
         String[] split = path.split("\\.");
         JMenuItem item = findOrCreate(rootContainer, split, 0, icon);
         item.setText(label);
         item.addActionListener(l -> action.run());
+        return item;
     }
 
     private JMenuItem findOrCreate(Container component, String[] split, int index, Icon icon) {

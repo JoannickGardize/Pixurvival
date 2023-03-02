@@ -5,6 +5,7 @@ import com.pixurvival.contentPackEditor.component.tree.LayoutManager;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
+import com.pixurvival.core.contentPack.serialization.io.StoreFactory;
 import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.ReleaseVersion;
 import lombok.experimental.UtilityClass;
@@ -64,8 +65,10 @@ public class AutoUpgradeTool {
             StringBuilder layoutSb = asStringBuilder(zipFile, LayoutManager.LAYOUT_ENTRY);
             upgradeEntry(layoutSb, LAYOUT_UPGRADERS, startIndex);
             LayoutManager.getInstance().setOverridedSource(new ByteArrayInputStream(layoutSb.toString().getBytes()));
-            ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(fileService.getCurrentFile(),
-                    new ByteArrayInputStream(serializationSb.toString().getBytes()));
+            ContentPack contentPack = fileService.getContentPackContext().getSerialization().load(
+                    () -> StoreFactory.input(fileService.getCurrentFile()),
+                    new ByteArrayInputStream(serializationSb.toString().getBytes())
+            );
             upgradeContentPack(contentPack, startIndex);
             LayoutManager.getInstance().setOverridedSource(null);
             return contentPack;

@@ -4,10 +4,7 @@ import com.pixurvival.contentPackEditor.ResourceEntry;
 import com.pixurvival.contentPackEditor.ResourcesService;
 import com.pixurvival.contentPackEditor.event.*;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.NONE)
 public class StaticMapResourceManager {
 
     public StaticMapResourceManager() {

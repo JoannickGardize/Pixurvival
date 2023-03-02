@@ -2,6 +2,7 @@ package com.pixurvival.core.contentPack;
 
 import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.ContentPackValidityCheckResult;
+import com.pixurvival.core.contentPack.serialization.io.StoreFactory;
 import com.pixurvival.core.contentPack.summary.ContentPackSummary;
 import com.pixurvival.core.contentPack.validation.ContentPackValidator;
 import com.pixurvival.core.contentPack.validation.ErrorNode;
@@ -50,9 +51,6 @@ public class ContentPackContext {
         }
         summaries = new ArrayList<>();
         for (File file : workingDirectory.listFiles()) {
-            if (!file.isFile()) {
-                continue;
-            }
             ContentPackSummary summary = serialization.readSummary(file);
             if (summary != null) {
                 summaries.add(summary);
@@ -91,7 +89,8 @@ public class ContentPackContext {
     }
 
     public ContentPack load(ContentPackIdentifier identifier) throws ContentPackException {
-        return serialization.load(fileOf(identifier));
+        File file = fileOf(identifier);
+        return serialization.load(() -> StoreFactory.input(file));
     }
 
     public ContentPackValidityCheckResult checkSameness(ContentPackIdentifier identifier, byte[] checksum) throws ContentPackException {

@@ -33,6 +33,10 @@ import com.pixurvival.core.contentPack.item.trigger.UnequippedTrigger;
 import com.pixurvival.core.contentPack.map.ProcedurallyGeneratedMapProvider;
 import com.pixurvival.core.contentPack.map.StaticMapProvider;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.serialization.io.IOSupplier;
+import com.pixurvival.core.contentPack.serialization.io.StoreFactory;
+import com.pixurvival.core.contentPack.serialization.io.StoreInput;
+import com.pixurvival.core.contentPack.serialization.io.StoreOutput;
 import com.pixurvival.core.contentPack.structure.FactoryStructure;
 import com.pixurvival.core.contentPack.structure.HarvestableStructure;
 import com.pixurvival.core.contentPack.structure.InventoryStructure;
@@ -55,9 +59,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 /**
  * I/O for {@link ContentPack}s, create or read the zip containing all resources
@@ -74,6 +75,7 @@ public class ContentPackSerialization {
     private static final String RESOURCES_ROOT = "resources/";
 
     private static final String TRANSLATIONS_ROOT = "translations/";
+    public static final String TRANSLATION_FILE_PREFIX = "translation_";
 
     private Yaml yaml;
     private NameAnchorGenerator nameAnchorGenerator = new NameAnchorGenerator();
@@ -107,60 +109,57 @@ public class ContentPackSerialization {
         plugins.add(plugin);
     }
 
-    public void save(File file, ContentPack contentPack) throws IOException {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file)), StandardCharsets.UTF_8)) {
-            zipOutputStream.putNextEntry(new ZipEntry(SUMMARY_ENTRY_NAME));
-            yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8));
-            zipOutputStream.putNextEntry(new ZipEntry(SERIALIZATION_ENTRY_NAME));
+    public void save(IOSupplier<StoreOutput> outputSupplier, ContentPack contentPack) throws IOException {
+        save(outputSupplier, contentPack, null);
+    }
+
+    public void save(IOSupplier<StoreOutput> outputSupplier, ContentPack contentPack, Set<String> updateFilter) throws IOException {
+        try (StoreOutput output = outputSupplier.get()) {
+            OutputStream currentStream = output.nextEntry(SUMMARY_ENTRY_NAME);
+            yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(new BufferedOutputStream(currentStream), StandardCharsets.UTF_8));
+            currentStream = output.nextEntry(SERIALIZATION_ENTRY_NAME);
             nameAnchorGenerator.reset();
-            yaml.dump(contentPack, new OutputStreamWriter(zipOutputStream, StandardCharsets.UTF_8));
+            yaml.dump(contentPack, new OutputStreamWriter(currentStream, StandardCharsets.UTF_8));
             for (Entry<String, byte[]> resource : contentPack.getResources().entrySet()) {
-                zipOutputStream.putNextEntry(new ZipEntry(RESOURCES_ROOT + resource.getKey()));
-                zipOutputStream.write(resource.getValue());
+                String path = RESOURCES_ROOT + resource.getKey();
+                if (updateFilter == null || updateFilter.contains(path)) {
+                    currentStream = output.nextEntry(RESOURCES_ROOT + resource.getKey());
+                    currentStream.write(resource.getValue());
+                }
             }
             for (Entry<Locale, Properties> translation : contentPack.getTranslations().entrySet()) {
-                zipOutputStream.putNextEntry(new ZipEntry(TRANSLATIONS_ROOT + "translation_" + translation.getKey().toLanguageTag() + ".properties"));
-                translation.getValue().store(zipOutputStream, null);
-            }
-            for (ContentPackSerializationPlugin plugin : plugins) {
-                plugin.write(contentPack, zipOutputStream);
-            }
-            zipOutputStream.closeEntry();
-        }
-    }
-
-    public ContentPack load(File file) throws ContentPackException {
-        return load(file, null);
-    }
-
-    public ContentPack load(File file, InputStream externalContentPackSerialization) throws ContentPackException {
-        if (!file.exists()) {
-            throw new ContentPackException(new FileNotFoundException(file.getAbsolutePath()));
-        }
-        try (ZipFile zipFile = new ZipFile(file, StandardCharsets.UTF_8)) {
-            ZipEntry entry = zipFile.getEntry(SERIALIZATION_ENTRY_NAME);
-            InputStream contentPackSerialization = externalContentPackSerialization == null ? zipFile.getInputStream(entry) : externalContentPackSerialization;
-            ContentPack contentPack = yaml.loadAs(new InputStreamReader(contentPackSerialization, StandardCharsets.UTF_8), ContentPack.class);
-            Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
-            while (enumeration.hasMoreElements()) {
-                entry = enumeration.nextElement();
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                if (entry.getName().startsWith(RESOURCES_ROOT)) {
-                    contentPack.addResource(entry.getName().substring(10), FileUtils.readBytes(zipFile.getInputStream(entry)));
-                } else if (entry.getName().startsWith(TRANSLATIONS_ROOT)) {
-                    Properties properties = new Properties();
-                    properties.load(zipFile.getInputStream(entry));
-                    Locale locale = Locale.forLanguageTag(entry.getName().substring(25).split("\\.")[0]);
-                    contentPack.addTranslation(locale, properties);
+                String path = TRANSLATIONS_ROOT + TRANSLATION_FILE_PREFIX + translation.getKey().toLanguageTag() + ".properties";
+                if (updateFilter == null || updateFilter.contains(path)) {
+                    currentStream = output.nextEntry(path);
+                    translation.getValue().store(currentStream, null);
                 }
             }
             for (ContentPackSerializationPlugin plugin : plugins) {
-                plugin.read(contentPack, zipFile);
+                plugin.write(contentPack, output);
+            }
+        }
+    }
+
+    public ContentPack load(IOSupplier<StoreInput> inputSupplier) throws ContentPackException {
+        return load(inputSupplier, null);
+    }
+
+    public ContentPack load(IOSupplier<StoreInput> inputSupplier, InputStream externalContentPackSerialization) throws ContentPackException {
+        try (StoreInput input = inputSupplier.get()) {
+            InputStream contentPackSerialization = externalContentPackSerialization == null ? input.nextEntry(SERIALIZATION_ENTRY_NAME) : externalContentPackSerialization;
+            ContentPack contentPack = yaml.loadAs(new InputStreamReader(new BufferedInputStream(contentPackSerialization), StandardCharsets.UTF_8), ContentPack.class);
+            input.forEachEntry(RESOURCES_ROOT, name -> contentPack.addResource(name.substring(RESOURCES_ROOT.length()), FileUtils.readBytes(input.nextEntry(name))));
+            input.forEachEntry(TRANSLATIONS_ROOT, name -> {
+                Properties properties = new Properties();
+                properties.load(input.nextEntry(name));
+                Locale locale = Locale.forLanguageTag(name.substring(TRANSLATIONS_ROOT.length() + TRANSLATION_FILE_PREFIX.length()).split("\\.")[0]);
+                contentPack.addTranslation(locale, properties);
+            });
+            for (ContentPackSerializationPlugin plugin : plugins) {
+                plugin.read(contentPack, input);
             }
             if (contentPack.getIdentifier() == null) {
-                contentPack.setIdentifier(ContentPackIdentifier.getIndentifierBasedOnFileName(file.getName()));
+                contentPack.setIdentifier(ContentPackIdentifier.getIndentifierBasedOnFileName(input.getName()));
                 if (contentPack.getIdentifier() == null) {
                     contentPack.setIdentifier(new ContentPackIdentifier());
                 }
@@ -172,13 +171,11 @@ public class ContentPackSerialization {
     }
 
     public ContentPackSummary readSummary(File file) {
-        try (ZipFile zipFile = new ZipFile(file)) {
-            ZipEntry entry = zipFile.getEntry(SUMMARY_ENTRY_NAME);
-            if (entry == null) {
-                return null;
-            }
-            ContentPackSummary summary = yaml.loadAs(new InputStreamReader(zipFile.getInputStream(entry), StandardCharsets.UTF_8), ContentPackSummary.class);
+        try (StoreInput input = StoreFactory.input(file)) {
+            InputStream inputStream = input.nextEntry(SUMMARY_ENTRY_NAME);
+            ContentPackSummary summary = yaml.loadAs(new InputStreamReader(inputStream, StandardCharsets.UTF_8), ContentPackSummary.class);
             summary.getIdentifier().setFile(file);
+            summary.setDirectoryMode(file.isDirectory());
             return summary;
         } catch (Exception e) {
             Log.warn("An error occured when trying to read the summary of the content pack " + file.getAbsolutePath(), e);
@@ -188,6 +185,10 @@ public class ContentPackSerialization {
 
     @SneakyThrows
     public byte[] getChecksum(File file) {
+        if (!file.isFile()) {
+            // TODO checksum for directories?
+            return new byte[]{0};
+        }
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         try (FileInputStream is = new FileInputStream(file)) {
             byte[] buffer = new byte[1024];

@@ -6,6 +6,8 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.serialization.ContentPackSerializationPlugin;
 import com.pixurvival.core.contentPack.serialization.DeclarationPropertyOrderUtils;
+import com.pixurvival.core.contentPack.serialization.io.StoreInput;
+import com.pixurvival.core.contentPack.serialization.io.StoreOutput;
 import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
@@ -21,9 +23,6 @@ import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 public class LayoutManager implements ContentPackSerializationPlugin {
 
@@ -64,12 +63,11 @@ public class LayoutManager implements ContentPackSerializationPlugin {
     }
 
     @Override
-    public void read(ContentPack contentPack, ZipFile zipFile) {
-        ZipEntry entry = zipFile.getEntry(LAYOUT_ENTRY);
-        if (entry != null) {
+    public void read(ContentPack contentPack, StoreInput input) {
+        if (input.exists(LAYOUT_ENTRY)) {
             try {
                 if (overridedSource == null) {
-                    read(zipFile.getInputStream(entry));
+                    read(input.nextEntry(LAYOUT_ENTRY));
                 } else {
                     read(overridedSource);
                 }
@@ -93,11 +91,10 @@ public class LayoutManager implements ContentPackSerializationPlugin {
     }
 
     @Override
-    public void write(ContentPack contentPack, ZipOutputStream zipOutputStream) {
+    public void write(ContentPack contentPack, StoreOutput output) {
         updateIndexes();
         try {
-            zipOutputStream.putNextEntry(new ZipEntry(LAYOUT_ENTRY));
-            yaml.dump(root, new OutputStreamWriter(zipOutputStream));
+            yaml.dump(root, new OutputStreamWriter(output.nextEntry(LAYOUT_ENTRY)));
         } catch (IOException e) {
             e.printStackTrace();
         }
