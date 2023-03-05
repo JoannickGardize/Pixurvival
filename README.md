@@ -11,9 +11,9 @@ pack with the editor.
 
 You must use a JDK 8 to build the project.
 
-run the game: `./gradlew gdx-desktop:run`
-run the content pack editor: `./gradlew contentpack-editor:run`
-run the standalone server: `./gradlew server:run`
+run the game: `./gradlew gdx-desktop:run`\
+run the content pack editor: `./gradlew contentpack-editor:run`\
+run the standalone server: `./gradlew server:run`\
 build the distribution package : `./gradlew packageDistribution`
 
 ## Contributing
