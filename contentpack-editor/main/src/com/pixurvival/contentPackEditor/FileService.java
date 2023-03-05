@@ -12,9 +12,11 @@ import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackContext;
 import com.pixurvival.core.contentPack.ContentPackIdentifier;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 import com.pixurvival.core.contentPack.serialization.io.DirectoryStoreOutput;
 import com.pixurvival.core.contentPack.serialization.io.StoreFactory;
 import com.pixurvival.core.contentPack.serialization.io.ZipStoreOutput;
+import com.pixurvival.core.util.FileUtils;
 import com.pixurvival.core.util.ReleaseVersion;
 import lombok.Getter;
 
@@ -98,6 +100,10 @@ public class FileService {
     }
 
     public void save() {
+        save(false);
+    }
+
+    public void save(boolean isNew) {
         if (currentContentPack == null) {
             return;
         }
@@ -116,17 +122,30 @@ public class FileService {
             }
         }
         try {
-            if (!ValidationService.getInstance().getErrorList().isEmpty() && JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveErroredContentPackQuestion"),
+            if (!isNew && isDirectoryMode()) {
+
+            }
+            if (!ValidationService.getInstance().getErrorList().isEmpty()
+                    && JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.saveErroredContentPackQuestion"),
                     "", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
                 return;
+            }
+            if (isNew && isDirectoryMode() && anyManagedDirectoryExists()) {
+                if (JOptionPane.showConfirmDialog(null, TranslationService.getInstance().getString("dialog.eraseResourceFolders"),
+                        "", JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+                    return;
+                } else {
+                    clearDirectoryForSave();
+                }
             }
             currentContentPack.setReleaseVersion(ReleaseVersion.actual().name());
             contentPackContext.getSerialization().save(
                     () -> currentFile.isDirectory() ? new DirectoryStoreOutput(currentFile) : new ZipStoreOutput(currentFile),
-                    currentContentPack);
+                    currentContentPack, isNew || !isDirectoryMode());
             previousIdentifier = new ContentPackIdentifier(currentContentPack.getIdentifier());
             EventManager.getInstance().fire(new ContentPackSavedEvent());
         } catch (Exception e) {
+            e.printStackTrace();
             DialogUtils.showErrorDialog(e);
         }
     }
@@ -143,7 +162,7 @@ public class FileService {
     public void saveAs() {
         if (chooseFile()) {
             previousIdentifier = null;
-            save();
+            save(true);
         }
     }
 
@@ -157,6 +176,30 @@ public class FileService {
             }
         }
         return true;
+    }
+
+    public boolean isDirectoryMode() {
+        return currentFile != null && currentFile.isDirectory();
+    }
+
+    public boolean anyManagedDirectoryExists() {
+        File res = getCurrentResourcesDirectory();
+        File tra = getCurrentTranslationsDirectory();
+        return res != null && res.isDirectory() || tra != null && tra.isDirectory();
+    }
+
+    public File getCurrentResourcesDirectory() {
+        if (currentFile == null || !currentFile.isDirectory()) {
+            throw new IllegalStateException();
+        }
+        return new File(currentFile, ContentPackSerialization.RESOURCES_ROOT);
+    }
+
+    public File getCurrentTranslationsDirectory() {
+        if (currentFile == null || !currentFile.isDirectory()) {
+            throw new IllegalStateException();
+        }
+        return new File(currentFile, ContentPackSerialization.TRANSLATIONS_ROOT);
     }
 
     private boolean chooseFile() {
@@ -198,5 +241,16 @@ public class FileService {
             }
         }
         return !forceUpgrade;
+    }
+
+    private void clearDirectoryForSave() {
+        File f = getCurrentResourcesDirectory();
+        if (f != null) {
+            FileUtils.deleteDirectoryRecursively(f);
+        }
+        f = getCurrentTranslationsDirectory();
+        if (f != null) {
+            FileUtils.deleteDirectoryRecursively(f);
+        }
     }
 }

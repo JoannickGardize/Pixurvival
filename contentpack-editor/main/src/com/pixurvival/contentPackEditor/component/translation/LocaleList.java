@@ -1,17 +1,21 @@
 package com.pixurvival.contentPackEditor.component.translation;
 
 import com.pixurvival.contentPackEditor.FileService;
+import com.pixurvival.contentPackEditor.TranslationService;
 import com.pixurvival.contentPackEditor.component.util.CPEButton;
 import com.pixurvival.contentPackEditor.component.util.LayoutUtils;
 import com.pixurvival.contentPackEditor.component.util.SpecialCellRenderer;
 import com.pixurvival.contentPackEditor.event.ContentPackLoadedEvent;
 import com.pixurvival.contentPackEditor.event.EventListener;
 import com.pixurvival.contentPackEditor.event.EventManager;
+import com.pixurvival.contentPackEditor.util.DialogUtils;
 import com.pixurvival.core.contentPack.ContentPack;
+import com.pixurvival.core.contentPack.serialization.ContentPackSerialization;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.io.File;
 import java.util.List;
 import java.util.*;
 
@@ -82,6 +86,19 @@ public class LocaleList extends JPanel {
     private void modify() {
         Locale locale = localeList.getSelectedValue();
         if (locale != null && localeChooserDialog.show(locale) == LocaleChooserDialog.OK_CODE) {
+            if (FileService.getInstance().getCurrentContentPack().getTranslations().containsKey(localeChooserDialog.getSelectedLocale())) {
+                DialogUtils.showMessageDialog("localeList.exists");
+                return;
+            }
+            if (FileService.getInstance().isDirectoryMode()) {
+                File file = getTranslationFile(locale);
+                if (file.exists()) {
+                    if (!file.renameTo(getTranslationFile(localeChooserDialog.getSelectedLocale()))) {
+                        DialogUtils.showMessageDialog("localeList.unableRenameFile");
+                        return;
+                    }
+                }
+            }
             Properties removed = remove(locale);
             add(localeChooserDialog.getSelectedLocale(), removed);
         }
@@ -93,6 +110,10 @@ public class LocaleList extends JPanel {
      */
     private Properties remove() {
         Locale locale = localeList.getSelectedValue();
+        if (locale == null || JOptionPane.showConfirmDialog(this.getRootPane(),
+                TranslationService.getInstance().getString("localeList.confirmRemove")) != JOptionPane.YES_OPTION) {
+            return null;
+        }
         return remove(locale);
     }
 
@@ -102,6 +123,13 @@ public class LocaleList extends JPanel {
      */
     private Properties remove(Locale locale) {
         if (locale != null) {
+            File file = getTranslationFile(locale);
+            if (FileService.getInstance().isDirectoryMode() && file.exists()) {
+                if (!file.delete()) {
+                    DialogUtils.showMessageDialog("localeList.unableDeleteFile");
+                    return null;
+                }
+            }
             ContentPack contentPack = FileService.getInstance().getCurrentContentPack();
             DefaultListModel<Locale> model = (DefaultListModel<Locale>) localeList.getModel();
             model.removeElement(locale);
@@ -122,5 +150,9 @@ public class LocaleList extends JPanel {
         }
         model.add(insertIndex, locale);
         return insertIndex;
+    }
+
+    private File getTranslationFile(Locale locale) {
+        return new File(FileService.getInstance().getCurrentFile(), ContentPackSerialization.buildTranslationFileName(locale));
     }
 }

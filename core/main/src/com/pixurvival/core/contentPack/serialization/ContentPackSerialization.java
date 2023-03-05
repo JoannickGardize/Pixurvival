@@ -72,9 +72,9 @@ public class ContentPackSerialization {
 
     public static final String SUMMARY_ENTRY_NAME = "summary.yml";
 
-    private static final String RESOURCES_ROOT = "resources/";
+    public static final String RESOURCES_ROOT = "resources/";
 
-    private static final String TRANSLATIONS_ROOT = "translations/";
+    public static final String TRANSLATIONS_ROOT = "translations/";
     public static final String TRANSLATION_FILE_PREFIX = "translation_";
 
     private Yaml yaml;
@@ -105,34 +105,32 @@ public class ContentPackSerialization {
         yaml.setBeanAccess(BeanAccess.FIELD);
     }
 
+    public static String buildTranslationFileName(Locale locale) {
+        return TRANSLATIONS_ROOT + TRANSLATION_FILE_PREFIX + locale.toLanguageTag() + ".properties";
+    }
+
     public void addPlugin(ContentPackSerializationPlugin plugin) {
         plugins.add(plugin);
     }
 
-    public void save(IOSupplier<StoreOutput> outputSupplier, ContentPack contentPack) throws IOException {
-        save(outputSupplier, contentPack, null);
-    }
 
-    public void save(IOSupplier<StoreOutput> outputSupplier, ContentPack contentPack, Set<String> updateFilter) throws IOException {
+    public void save(IOSupplier<StoreOutput> outputSupplier, ContentPack contentPack, boolean saveResources) throws IOException {
         try (StoreOutput output = outputSupplier.get()) {
             OutputStream currentStream = output.nextEntry(SUMMARY_ENTRY_NAME);
             yaml.dump(new ContentPackSummary(contentPack), new OutputStreamWriter(new BufferedOutputStream(currentStream), StandardCharsets.UTF_8));
             currentStream = output.nextEntry(SERIALIZATION_ENTRY_NAME);
             nameAnchorGenerator.reset();
             yaml.dump(contentPack, new OutputStreamWriter(currentStream, StandardCharsets.UTF_8));
-            for (Entry<String, byte[]> resource : contentPack.getResources().entrySet()) {
-                String path = RESOURCES_ROOT + resource.getKey();
-                if (updateFilter == null || updateFilter.contains(path)) {
+            if (saveResources) {
+                for (Entry<String, byte[]> resource : contentPack.getResources().entrySet()) {
+                    String path = RESOURCES_ROOT + resource.getKey();
                     currentStream = output.nextEntry(RESOURCES_ROOT + resource.getKey());
                     currentStream.write(resource.getValue());
                 }
             }
             for (Entry<Locale, Properties> translation : contentPack.getTranslations().entrySet()) {
-                String path = TRANSLATIONS_ROOT + TRANSLATION_FILE_PREFIX + translation.getKey().toLanguageTag() + ".properties";
-                if (updateFilter == null || updateFilter.contains(path)) {
-                    currentStream = output.nextEntry(path);
-                    translation.getValue().store(currentStream, null);
-                }
+                currentStream = output.nextEntry(buildTranslationFileName(translation.getKey()));
+                translation.getValue().store(currentStream, null);
             }
             for (ContentPackSerializationPlugin plugin : plugins) {
                 plugin.write(contentPack, output);

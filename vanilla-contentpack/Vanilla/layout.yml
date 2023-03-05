@@ -1,0 +1,699 @@
+!!folder
+name: root
+children:
+- !!folder
+  name: Generic
+  children:
+  - !!element {type: SPRITE_SHEET, id: 21}
+  - !!element {type: SPRITE_SHEET, id: 30}
+  - !!element {type: SPRITE_SHEET, id: 40}
+  - !!element {type: ANIMATION_TEMPLATE, id: 0}
+  - !!element {type: ANIMATION_TEMPLATE, id: 2}
+  - !!element {type: ANIMATION_TEMPLATE, id: 3}
+  - !!element {type: ANIMATION_TEMPLATE, id: 4}
+  - !!element {type: ANIMATION_TEMPLATE, id: 6}
+  - !!element {type: ANIMATION_TEMPLATE, id: 7}
+  - !!element {type: ANIMATION_TEMPLATE, id: 13}
+  - !!element {type: ANIMATION_TEMPLATE, id: 14}
+  - !!element {type: ANIMATION_TEMPLATE, id: 18}
+  - !!element {type: ANIMATION_TEMPLATE, id: 10}
+  - !!element {type: SPRITE_SHEET, id: 0}
+  - !!element {type: EQUIPMENT_OFFSET, id: 0}
+  - !!element {type: EFFECT, id: 16}
+  - !!element {type: EQUIPMENT_OFFSET, id: 6}
+- !!folder
+  name: Items
+  children:
+  - !!folder
+    name: Resources
+    children:
+    - !!element {type: ITEM, id: 1}
+    - !!element {type: ITEM, id: 2}
+    - !!element {type: ITEM, id: 7}
+    - !!element {type: ITEM, id: 5}
+    - !!element {type: ITEM, id: 11}
+    - !!element {type: ITEM, id: 10}
+    - !!element {type: ITEM_CRAFT, id: 1}
+    - !!element {type: ITEM, id: 14}
+    - !!element {type: ITEM, id: 18}
+    - !!element {type: ITEM, id: 19}
+    - !!element {type: ITEM, id: 29}
+    - !!element {type: ITEM, id: 28}
+    - !!element {type: ITEM, id: 30}
+    - !!element {type: ITEM, id: 38}
+    - !!element {type: ITEM, id: 31}
+    - !!element {type: ITEM, id: 13}
+    - !!element {type: ITEM, id: 8}
+    - !!element {type: ITEM, id: 54}
+    - !!element {type: ITEM, id: 55}
+    - !!element {type: ITEM, id: 56}
+    - !!element {type: ITEM, id: 58}
+    - !!element {type: ITEM, id: 59}
+    - !!element {type: ITEM, id: 60}
+    - !!element {type: ITEM, id: 62}
+  - !!folder
+    name: Weapons
+    children:
+    - !!folder
+      name: Wood sword
+      children:
+      - !!element {type: ITEM, id: 0}
+      - !!element {type: EQUIPMENT_OFFSET, id: 1}
+      - !!element {type: SPRITE_SHEET, id: 7}
+      - !!element {type: SPRITE_SHEET, id: 15}
+      - !!element {type: ITEM_CRAFT, id: 0}
+      - !!element {type: EFFECT, id: 2}
+    - !!folder
+      name: Wood bow
+      children:
+      - !!element {type: ITEM, id: 15}
+      - !!element {type: ITEM_CRAFT, id: 5}
+      - !!element {type: SPRITE_SHEET, id: 10}
+      - !!element {type: SPRITE_SHEET, id: 11}
+      - !!element {type: EFFECT, id: 0}
+      - !!element {type: EQUIPMENT_OFFSET, id: 10}
+    - !!folder
+      name: Magic wand
+      children:
+      - !!element {type: ITEM, id: 34}
+      - !!element {type: ITEM_CRAFT, id: 16}
+      - !!element {type: SPRITE_SHEET, id: 59}
+      - !!element {type: SPRITE_SHEET, id: 60}
+      - !!element {type: EFFECT, id: 34}
+      - !!element {type: EQUIPMENT_OFFSET, id: 8}
+    - !!folder
+      name: Warlock wand
+      children:
+      - !!element {type: SPRITE_SHEET, id: 18}
+      - !!element {type: SPRITE_SHEET, id: 19}
+      - !!element {type: SPRITE_SHEET, id: 20}
+      - !!element {type: SPRITE_SHEET, id: 22}
+      - !!element {type: ANIMATION_TEMPLATE, id: 5}
+      - !!element {type: ITEM, id: 16}
+      - !!element {type: ITEM, id: 17}
+      - !!element {type: ITEM_CRAFT, id: 6}
+      - !!element {type: EFFECT, id: 4}
+      - !!element {type: EFFECT, id: 6}
+      - !!element {type: EFFECT, id: 5}
+      - !!element {type: EQUIPMENT_OFFSET, id: 2}
+    - !!folder
+      name: Iron sword
+      children:
+      - !!element {type: ITEM, id: 25}
+      - !!element {type: SPRITE_SHEET, id: 23}
+      - !!element {type: SPRITE_SHEET, id: 44}
+      - !!element {type: ITEM_CRAFT, id: 7}
+      - !!element {type: EFFECT, id: 7}
+      - !!element {type: EFFECT, id: 20}
+    - !!folder
+      name: Barbaric axe
+      children:
+      - !!element {type: SPRITE_SHEET, id: 29}
+      - !!element {type: EQUIPMENT_OFFSET, id: 4}
+      - !!element {type: ITEM, id: 21}
+      - !!element {type: ITEM_CRAFT, id: 8}
+      - !!element {type: EFFECT, id: 9}
+      - !!element {type: EFFECT, id: 8}
+    - !!folder
+      name: Shurirang
+      children:
+      - !!element {type: SPRITE_SHEET, id: 39}
+      - !!element {type: EQUIPMENT_OFFSET, id: 5}
+      - !!element {type: ANIMATION_TEMPLATE, id: 12}
+      - !!element {type: ITEM, id: 23}
+      - !!element {type: EFFECT, id: 14}
+      - !!element {type: EFFECT, id: 15}
+      - !!element {type: ITEM_CRAFT, id: 9}
+      - !!element {type: EFFECT, id: 13}
+    - !!folder
+      name: Fire sword
+      children:
+      - !!element {type: SPRITE_SHEET, id: 43}
+      - !!element {type: SPRITE_SHEET, id: 41}
+      - !!element {type: SPRITE_SHEET, id: 42}
+      - !!element {type: ITEM, id: 24}
+      - !!element {type: ITEM_CRAFT, id: 10}
+      - !!element {type: EFFECT, id: 19}
+      - !!element {type: EFFECT, id: 18}
+    - !!folder
+      name: Ice sword
+      children:
+      - !!element {type: SPRITE_SHEET, id: 45}
+      - !!element {type: SPRITE_SHEET, id: 46}
+      - !!element {type: SPRITE_SHEET, id: 47}
+      - !!element {type: SPRITE_SHEET, id: 48}
+      - !!element {type: ITEM, id: 26}
+      - !!element {type: ITEM_CRAFT, id: 11}
+      - !!element {type: EFFECT, id: 22}
+      - !!element {type: EFFECT, id: 23}
+      - !!element {type: EFFECT, id: 21}
+    - !!folder
+      name: Demonic scythe
+      children:
+      - !!element {type: SPRITE_SHEET, id: 49}
+      - !!element {type: SPRITE_SHEET, id: 50}
+      - !!element {type: SPRITE_SHEET, id: 51}
+      - !!element {type: ITEM, id: 27}
+      - !!element {type: ITEM_CRAFT, id: 12}
+      - !!element {type: EFFECT, id: 24}
+      - !!element {type: EQUIPMENT_OFFSET, id: 7}
+    - !!folder
+      name: Fire wand
+      children:
+      - !!element {type: ITEM, id: 33}
+      - !!element {type: ITEM_CRAFT, id: 18}
+      - !!element {type: SPRITE_SHEET, id: 57}
+      - !!element {type: SPRITE_SHEET, id: 56}
+      - !!element {type: ANIMATION_TEMPLATE, id: 15}
+      - !!element {type: EFFECT, id: 32}
+      - !!element {type: EFFECT, id: 33}
+      - !!element {type: SPRITE_SHEET, id: 58}
+      - !!element {type: EFFECT, id: 31}
+    - !!folder
+      name: Ice wand
+      children:
+      - !!element {type: ITEM, id: 35}
+      - !!element {type: ITEM_CRAFT, id: 17}
+      - !!element {type: SPRITE_SHEET, id: 61}
+      - !!element {type: SPRITE_SHEET, id: 62}
+      - !!element {type: ANIMATION_TEMPLATE, id: 16}
+      - !!element {type: EFFECT, id: 36}
+      - !!element {type: EFFECT, id: 35}
+    - !!folder
+      name: Light sword
+      children:
+      - !!element {type: SPRITE_SHEET, id: 63}
+      - !!element {type: ITEM, id: 37}
+      - !!element {type: ITEM_CRAFT, id: 19}
+      - !!element {type: SPRITE_SHEET, id: 64}
+      - !!element {type: EFFECT, id: 37}
+      - !!element {type: EFFECT, id: 38}
+      - !!element {type: SPRITE_SHEET, id: 65}
+    - !!folder
+      name: Light wand
+      children:
+      - !!element {type: ITEM, id: 39}
+      - !!element {type: ITEM_CRAFT, id: 20}
+      - !!element {type: SPRITE_SHEET, id: 66}
+      - !!element {type: SPRITE_SHEET, id: 67}
+      - !!element {type: SPRITE_SHEET, id: 68}
+      - !!element {type: ANIMATION_TEMPLATE, id: 17}
+      - !!element {type: EFFECT, id: 39}
+      - !!element {type: EQUIPMENT_OFFSET, id: 9}
+    - !!folder
+      name: Rhinobow
+      children:
+      - !!element {type: ITEM, id: 49}
+      - !!element {type: SPRITE_SHEET, id: 76}
+      - !!element {type: EQUIPMENT_OFFSET, id: 11}
+      - !!element {type: SPRITE_SHEET, id: 77}
+      - !!element {type: ITEM_CRAFT, id: 29}
+      - !!element {type: EFFECT, id: 46}
+    - !!folder
+      name: Hammer
+      children:
+      - !!element {type: ITEM, id: 63}
+      - !!element {type: EFFECT, id: 61}
+      - !!element {type: SPRITE_SHEET, id: 105}
+      - !!element {type: EQUIPMENT_OFFSET, id: 12}
+      - !!element {type: ITEM_CRAFT, id: 37}
+  - !!folder
+    name: Clothing
+    children:
+    - !!element {type: ITEM_CRAFT, id: 3}
+    - !!element {type: ITEM_CRAFT, id: 4}
+    - !!element {type: ITEM_CRAFT, id: 13}
+    - !!element {type: ITEM_CRAFT, id: 14}
+    - !!element {type: ITEM_CRAFT, id: 15}
+    - !!element {type: ITEM_CRAFT, id: 26}
+    - !!element {type: ITEM_CRAFT, id: 27}
+    - !!element {type: ITEM_CRAFT, id: 40}
+    - !!element {type: ITEM_CRAFT, id: 41}
+    - !!element {type: ITEM_CRAFT, id: 42}
+    - !!element {type: SPRITE_SHEET, id: 3}
+    - !!element {type: SPRITE_SHEET, id: 28}
+    - !!element {type: SPRITE_SHEET, id: 38}
+    - !!element {type: SPRITE_SHEET, id: 1}
+    - !!element {type: SPRITE_SHEET, id: 2}
+    - !!element {type: SPRITE_SHEET, id: 72}
+    - !!element {type: SPRITE_SHEET, id: 73}
+    - !!element {type: SPRITE_SHEET, id: 117}
+    - !!element {type: SPRITE_SHEET, id: 119}
+    - !!element {type: SPRITE_SHEET, id: 120}
+    - !!element {type: SPRITE_SHEET, id: 121}
+    - !!element {type: ITEM, id: 4}
+    - !!element {type: ITEM, id: 12}
+    - !!element {type: ITEM, id: 20}
+    - !!element {type: ITEM, id: 22}
+    - !!element {type: ITEM, id: 32}
+    - !!element {type: ITEM, id: 45}
+    - !!element {type: ITEM, id: 46}
+    - !!element {type: ITEM, id: 66}
+    - !!element {type: ITEM, id: 67}
+    - !!element {type: ITEM, id: 68}
+    - !!element {type: EQUIPMENT_OFFSET, id: 3}
+    - !!element {type: EQUIPMENT_OFFSET, id: 13}
+    - !!element {type: SPRITE_SHEET, id: 118}
+    - !!element {type: EFFECT, id: 62}
+    - !!element {type: EFFECT, id: 63}
+    - !!element {type: EFFECT, id: 64}
+  - !!folder
+    name: Edible
+    children:
+    - !!element {type: ITEM, id: 6}
+    - !!element {type: ITEM, id: 50}
+    - !!element {type: ITEM, id: 51}
+    - !!element {type: ITEM, id: 3}
+    - !!element {type: ITEM_CRAFT, id: 2}
+    - !!element {type: ITEM, id: 53}
+    - !!element {type: ITEM_CRAFT, id: 34}
+    - !!element {type: ITEM, id: 65}
+    - !!element {type: ITEM_CRAFT, id: 39}
+  - !!folder
+    name: Structures
+    children:
+    - !!folder
+      name: campfire
+      children:
+      - !!element {type: ITEM, id: 9}
+      - !!element {type: ITEM_CRAFT, id: 31}
+      - !!element {type: SPRITE_SHEET, id: 8}
+      - !!element {type: STRUCTURE, id: 3}
+    - !!folder
+      name: Stone wall
+      children:
+      - !!element {type: ITEM, id: 52}
+      - !!element {type: ITEM_CRAFT, id: 33}
+      - !!element {type: SPRITE_SHEET, id: 83}
+      - !!element {type: STRUCTURE, id: 9}
+    - !!folder
+      name: chest
+      children:
+      - !!element {type: STRUCTURE, id: 14}
+      - !!element {type: SPRITE_SHEET, id: 101}
+      - !!element {type: ITEM, id: 57}
+      - !!element {type: ITEM_CRAFT, id: 35}
+      - !!element {type: SPRITE_SHEET, id: 102}
+    - !!folder
+      name: furnace
+      children:
+      - !!element {type: STRUCTURE, id: 15}
+      - !!element {type: SPRITE_SHEET, id: 103}
+      - !!element {type: SPRITE_SHEET, id: 104}
+      - !!element {type: ITEM, id: 61}
+      - !!element {type: ITEM_CRAFT, id: 36}
+    - !!folder
+      name: Crafting table
+      children:
+      - !!element {type: STRUCTURE, id: 16}
+      - !!element {type: SPRITE_SHEET, id: 106}
+      - !!element {type: ITEM, id: 64}
+      - !!element {type: ITEM_CRAFT, id: 38}
+  - !!folder
+    name: Accessories
+    children:
+    - !!folder
+      name: Rings
+      children:
+      - !!element {type: ITEM, id: 36}
+      - !!element {type: ITEM, id: 40}
+      - !!element {type: ITEM, id: 41}
+      - !!element {type: ITEM, id: 42}
+      - !!element {type: ITEM_CRAFT, id: 21}
+      - !!element {type: ITEM_CRAFT, id: 22}
+      - !!element {type: ITEM_CRAFT, id: 23}
+      - !!element {type: ITEM_CRAFT, id: 24}
+    - !!folder
+      name: Reusable trap
+      children:
+      - !!element {type: SPRITE_SHEET, id: 69}
+      - !!element {type: ITEM, id: 43}
+      - !!element {type: ITEM_CRAFT, id: 25}
+      - !!element {type: SPRITE_SHEET, id: 70}
+      - !!element {type: EFFECT, id: 41}
+      - !!element {type: EFFECT, id: 40}
+    - !!folder
+      name: Dynarcanite
+      children:
+      - !!element {type: ITEM, id: 44}
+      - !!element {type: ITEM_CRAFT, id: 32}
+      - !!element {type: SPRITE_SHEET, id: 71}
+      - !!element {type: ANIMATION_TEMPLATE, id: 19}
+      - !!element {type: EFFECT, id: 42}
+    - !!folder
+      name: Grappling hook
+      children:
+      - !!element {type: SPRITE_SHEET, id: 74}
+      - !!element {type: ITEM, id: 47}
+      - !!element {type: EFFECT, id: 44}
+      - !!element {type: ITEM_CRAFT, id: 28}
+      - !!element {type: EFFECT, id: 43}
+    - !!folder
+      name: Shield
+      children:
+      - !!element {type: ITEM, id: 48}
+      - !!element {type: ITEM_CRAFT, id: 30}
+      - !!element {type: SPRITE_SHEET, id: 75}
+      - !!element {type: EFFECT, id: 45}
+    - !!element {type: ITEM_CRAFT, id: 43}
+    - !!element {type: ITEM, id: 69}
+  - !!folder
+    name: Misc
+    children:
+    - !!element {type: ITEM, id: 70}
+    - !!element {type: ITEM, id: 71}
+    - !!element {type: ITEM_CRAFT, id: 44}
+    - !!element {type: SPRITE_SHEET, id: 123}
+    - !!element {type: ANIMATION_TEMPLATE, id: 26}
+    - !!element {type: SPRITE_SHEET, id: 124}
+    - !!element {type: EFFECT, id: 65}
+    - !!element {type: EFFECT, id: 66}
+    - !!element {type: ITEM, id: 72}
+- !!folder
+  name: Creatures
+  children:
+  - !!folder
+    name: Pixie
+    children:
+    - !!element {type: SPRITE_SHEET, id: 9}
+    - !!element {type: CREATURE, id: 0}
+    - !!element {type: ITEM_REWARD, id: 3}
+    - !!element {type: BEHAVIOR_SET, id: 1}
+  - !!folder
+    name: Ninja pig
+    children:
+    - !!element {type: SPRITE_SHEET, id: 14}
+    - !!element {type: CREATURE, id: 1}
+    - !!element {type: BEHAVIOR_SET, id: 0}
+    - !!element {type: ITEM_REWARD, id: 6}
+    - !!element {type: EFFECT, id: 1}
+    - !!element {type: ABILITY_SET, id: 0}
+    - !!element {type: SPRITE_SHEET, id: 80}
+    - !!element {type: EFFECT, id: 50}
+  - !!folder
+    name: Ghost
+    children:
+    - !!element {type: SPRITE_SHEET, id: 16}
+    - !!element {type: CREATURE, id: 2}
+    - !!element {type: ABILITY_SET, id: 1}
+    - !!element {type: BEHAVIOR_SET, id: 2}
+    - !!element {type: EFFECT, id: 49}
+  - !!folder
+    name: zombie
+    children:
+    - !!element {type: SPRITE_SHEET, id: 33}
+    - !!element {type: CREATURE, id: 6}
+    - !!element {type: EFFECT, id: 3}
+    - !!element {type: ABILITY_SET, id: 3}
+    - !!element {type: BEHAVIOR_SET, id: 6}
+  - !!folder
+    name: Holemon
+    children:
+    - !!element {type: BEHAVIOR_SET, id: 3}
+    - !!element {type: SPRITE_SHEET, id: 17}
+    - !!element {type: CREATURE, id: 3}
+    - !!element {type: ABILITY_SET, id: 11}
+    - !!element {type: EFFECT, id: 51}
+    - !!element {type: EFFECT, id: 52}
+    - !!element {type: SPRITE_SHEET, id: 82}
+  - !!folder
+    name: Golem
+    children:
+    - !!element {type: SPRITE_SHEET, id: 26}
+    - !!element {type: SPRITE_SHEET, id: 27}
+    - !!element {type: SPRITE_SHEET, id: 78}
+    - !!element {type: CREATURE, id: 4}
+    - !!element {type: ABILITY_SET, id: 2}
+    - !!element {type: ANIMATION_TEMPLATE, id: 8}
+    - !!element {type: ANIMATION_TEMPLATE, id: 9}
+    - !!element {type: BEHAVIOR_SET, id: 4}
+    - !!element {type: ITEM_REWARD, id: 13}
+    - !!element {type: EFFECT, id: 25}
+    - !!element {type: EFFECT, id: 47}
+  - !!folder
+    name: Arcanite Golem
+    children:
+    - !!element {type: SPRITE_SHEET, id: 52}
+    - !!element {type: CREATURE, id: 9}
+    - !!element {type: ABILITY_SET, id: 7}
+    - !!element {type: BEHAVIOR_SET, id: 9}
+    - !!element {type: ITEM_REWARD, id: 10}
+    - !!element {type: SPRITE_SHEET, id: 53}
+    - !!element {type: EFFECT, id: 27}
+    - !!element {type: EFFECT, id: 26}
+  - !!folder
+    name: Bosses
+    children:
+    - !!element {type: ANIMATION_TEMPLATE, id: 11}
+    - !!folder
+      name: Necrodramon
+      children:
+      - !!element {type: SPRITE_SHEET, id: 31}
+      - !!element {type: SPRITE_SHEET, id: 32}
+      - !!element {type: CREATURE, id: 5}
+      - !!element {type: ITEM_REWARD, id: 9}
+      - !!element {type: ABILITY_SET, id: 4}
+      - !!element {type: BEHAVIOR_SET, id: 5}
+      - !!element {type: EFFECT, id: 11}
+      - !!element {type: EFFECT, id: 10}
+    - !!folder
+      name: Fire dragon
+      children:
+      - !!element {type: SPRITE_SHEET, id: 34}
+      - !!element {type: SPRITE_SHEET, id: 36}
+      - !!element {type: CREATURE, id: 7}
+      - !!element {type: ITEM_REWARD, id: 7}
+      - !!element {type: ABILITY_SET, id: 5}
+      - !!element {type: BEHAVIOR_SET, id: 7}
+      - !!element {type: EFFECT, id: 12}
+    - !!folder
+      name: Ice dragon
+      children:
+      - !!element {type: SPRITE_SHEET, id: 37}
+      - !!element {type: SPRITE_SHEET, id: 35}
+      - !!element {type: CREATURE, id: 8}
+      - !!element {type: ITEM_REWARD, id: 8}
+      - !!element {type: ABILITY_SET, id: 6}
+      - !!element {type: BEHAVIOR_SET, id: 8}
+      - !!element {type: EFFECT, id: 17}
+    - !!folder
+      name: Chaos
+      children:
+      - !!element {type: SPRITE_SHEET, id: 122}
+      - !!element {type: CREATURE, id: 25}
+      - !!element {type: BEHAVIOR_SET, id: 21}
+      - !!element {type: ABILITY_SET, id: 22}
+      - !!element {type: ITEM_REWARD, id: 21}
+  - !!folder
+    name: Pixie warrior
+    children:
+    - !!element {type: CREATURE, id: 10}
+    - !!element {type: SPRITE_SHEET, id: 54}
+    - !!element {type: BEHAVIOR_SET, id: 10}
+    - !!element {type: ABILITY_SET, id: 8}
+    - !!element {type: ITEM_REWARD, id: 11}
+    - !!element {type: EFFECT, id: 29}
+  - !!folder
+    name: Dark rhino
+    children:
+    - !!element {type: CREATURE, id: 11}
+    - !!element {type: BEHAVIOR_SET, id: 11}
+    - !!element {type: ABILITY_SET, id: 9}
+    - !!element {type: ITEM_REWARD, id: 12}
+    - !!element {type: SPRITE_SHEET, id: 55}
+    - !!element {type: EFFECT, id: 30}
+  - !!folder
+    name: Giant crab
+    children:
+    - !!element {type: CREATURE, id: 12}
+    - !!element {type: SPRITE_SHEET, id: 79}
+    - !!element {type: ANIMATION_TEMPLATE, id: 20}
+    - !!element {type: BEHAVIOR_SET, id: 12}
+    - !!element {type: ABILITY_SET, id: 10}
+    - !!element {type: SPRITE_SHEET, id: 81}
+    - !!element {type: ITEM_REWARD, id: 14}
+    - !!element {type: EFFECT, id: 48}
+  - !!folder
+    name: Wooden puppet
+    children:
+    - !!element {type: CREATURE, id: 13}
+    - !!element {type: SPRITE_SHEET, id: 84}
+    - !!element {type: BEHAVIOR_SET, id: 13}
+    - !!element {type: ABILITY_SET, id: 16}
+  - !!folder
+    name: Dark mage
+    children:
+    - !!element {type: SPRITE_SHEET, id: 92}
+    - !!element {type: SPRITE_SHEET, id: 93}
+    - !!element {type: ANIMATION_TEMPLATE, id: 23}
+    - !!element {type: CREATURE, id: 17}
+    - !!element {type: BEHAVIOR_SET, id: 16}
+    - !!element {type: ABILITY_SET, id: 14}
+    - !!element {type: EFFECT, id: 60}
+    - !!element {type: EFFECT, id: 58}
+    - !!element {type: SPRITE_SHEET, id: 94}
+    - !!element {type: ITEM_REWARD, id: 16}
+    - !!element {type: SPRITE_SHEET, id: 96}
+    - !!element {type: CREATURE, id: 18}
+    - !!element {type: BEHAVIOR_SET, id: 17}
+    - !!element {type: ABILITY_SET, id: 15}
+    - !!element {type: SPRITE_SHEET, id: 95}
+    - !!element {type: EFFECT, id: 59}
+  - !!folder
+    name: Desert pixie
+    children:
+    - !!element {type: SPRITE_SHEET, id: 97}
+    - !!element {type: CREATURE, id: 19}
+    - !!element {type: ITEM_REWARD, id: 18}
+  - !!folder
+    name: Secret thing
+    children:
+    - !!folder
+      name: Do not open!
+      children:
+      - !!folder
+        name: You dumb.
+        children:
+        - !!element {type: SPRITE_SHEET, id: 100}
+        - !!element {type: CREATURE, id: 20}
+        - !!element {type: BEHAVIOR_SET, id: 18}
+        - !!element {type: ABILITY_SET, id: 17}
+  - !!folder
+    name: Bird
+    children:
+    - !!element {type: SPRITE_SHEET, id: 109}
+    - !!element {type: SPRITE_SHEET, id: 110}
+    - !!element {type: SPRITE_SHEET, id: 112}
+    - !!element {type: SPRITE_SHEET, id: 113}
+    - !!element {type: SPRITE_SHEET, id: 114}
+    - !!element {type: SPRITE_SHEET, id: 115}
+    - !!element {type: ANIMATION_TEMPLATE, id: 24}
+    - !!element {type: ANIMATION_TEMPLATE, id: 25}
+    - !!element {type: BEHAVIOR_SET, id: 19}
+    - !!element {type: ABILITY_SET, id: 18}
+    - !!element {type: ABILITY_SET, id: 20}
+    - !!element {type: ABILITY_SET, id: 21}
+    - !!element {type: CREATURE, id: 21}
+    - !!element {type: CREATURE, id: 23}
+    - !!element {type: CREATURE, id: 24}
+  - !!folder
+    name: Tumbleweed
+    children:
+    - !!element {type: SPRITE_SHEET, id: 111}
+    - !!element {type: CREATURE, id: 22}
+    - !!element {type: BEHAVIOR_SET, id: 20}
+    - !!element {type: ABILITY_SET, id: 19}
+- !!folder
+  name: Map
+  children:
+  - !!element {type: MAP_PROVIDER, id: 0}
+  - !!folder
+    name: Structures
+    children:
+    - !!element {type: ANIMATION_TEMPLATE, id: 1}
+    - !!folder
+      name: Forest
+      children:
+      - !!element {type: ITEM_REWARD, id: 0}
+      - !!element {type: ITEM_REWARD, id: 1}
+      - !!element {type: ITEM_REWARD, id: 20}
+      - !!element {type: STRUCTURE, id: 0}
+      - !!element {type: STRUCTURE, id: 1}
+      - !!element {type: STRUCTURE, id: 13}
+      - !!element {type: STRUCTURE, id: 17}
+      - !!element {type: STRUCTURE, id: 18}
+      - !!element {type: SPRITE_SHEET, id: 6}
+      - !!element {type: SPRITE_SHEET, id: 4}
+      - !!element {type: SPRITE_SHEET, id: 99}
+      - !!element {type: SPRITE_SHEET, id: 107}
+      - !!element {type: SPRITE_SHEET, id: 108}
+    - !!folder
+      name: Magic Forest
+      children:
+      - !!element {type: SPRITE_SHEET, id: 24}
+      - !!element {type: SPRITE_SHEET, id: 25}
+      - !!element {type: ITEM_REWARD, id: 4}
+      - !!element {type: ITEM_REWARD, id: 5}
+      - !!element {type: STRUCTURE, id: 6}
+      - !!element {type: STRUCTURE, id: 7}
+    - !!folder
+      name: Graveyard
+      children:
+      - !!element {type: SPRITE_SHEET, id: 13}
+      - !!element {type: SPRITE_SHEET, id: 12}
+      - !!element {type: STRUCTURE, id: 4}
+      - !!element {type: STRUCTURE, id: 5}
+    - !!folder
+      name: Mountain
+      children:
+      - !!element {type: ITEM_REWARD, id: 2}
+      - !!element {type: STRUCTURE, id: 2}
+      - !!element {type: SPRITE_SHEET, id: 5}
+    - !!folder
+      name: desert
+      children:
+      - !!element {type: STRUCTURE, id: 10}
+      - !!element {type: SPRITE_SHEET, id: 90}
+      - !!element {type: STRUCTURE, id: 11}
+      - !!element {type: SPRITE_SHEET, id: 91}
+      - !!element {type: ITEM_REWARD, id: 17}
+      - !!element {type: STRUCTURE, id: 12}
+      - !!element {type: SPRITE_SHEET, id: 98}
+      - !!element {type: ITEM_REWARD, id: 19}
+    - !!folder
+      name: Beach
+      children:
+      - !!element {type: STRUCTURE, id: 8}
+      - !!element {type: SPRITE_SHEET, id: 116}
+  - !!folder
+    name: Tiles
+    children:
+    - !!element {type: TILE, id: 0}
+    - !!element {type: TILE, id: 1}
+    - !!element {type: TILE, id: 2}
+    - !!element {type: TILE, id: 3}
+    - !!element {type: TILE, id: 4}
+    - !!element {type: TILE, id: 5}
+    - !!element {type: TILE, id: 6}
+    - !!element {type: TILE, id: 7}
+    - !!element {type: TILE, id: 8}
+    - !!element {type: TILE, id: 9}
+    - !!element {type: TILE, id: 10}
+    - !!element {type: TILE, id: 11}
+- !!element {type: GAME_MODE, id: 0}
+- !!element {type: GAME_MODE, id: 1}
+- !!element {type: GAME_MODE, id: 2}
+- !!element {type: ECOSYSTEM, id: 0}
+- !!element {type: ECOSYSTEM, id: 1}
+- !!element {type: EFFECT, id: 28}
+- !!element {type: EFFECT, id: 53}
+- !!folder
+  name: Pig revenge
+  children:
+  - !!folder
+    name: Sumo pig
+    children:
+    - !!element {type: SPRITE_SHEET, id: 85}
+    - !!element {type: SPRITE_SHEET, id: 86}
+    - !!element {type: CREATURE, id: 14}
+    - !!element {type: BEHAVIOR_SET, id: 14}
+    - !!element {type: ABILITY_SET, id: 12}
+    - !!element {type: EFFECT, id: 54}
+    - !!element {type: SPRITE_SHEET, id: 87}
+    - !!element {type: ANIMATION_TEMPLATE, id: 21}
+    - !!element {type: ANIMATION_TEMPLATE, id: 22}
+  - !!folder
+    name: Care package
+    children:
+    - !!element {type: SPRITE_SHEET, id: 88}
+    - !!element {type: BEHAVIOR_SET, id: 15}
+    - !!element {type: ABILITY_SET, id: 13}
+    - !!element {type: CREATURE, id: 15}
+    - !!element {type: SPRITE_SHEET, id: 89}
+    - !!element {type: EFFECT, id: 57}
+  - !!element {type: GAME_MODE, id: 3}
+  - !!element {type: MAP_PROVIDER, id: 1}
+  - !!element {type: EFFECT, id: 55}
+  - !!element {type: EFFECT, id: 56}
+  - !!element {type: CREATURE, id: 16}
+  - !!element {type: ITEM_REWARD, id: 15}

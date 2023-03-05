@@ -105,6 +105,7 @@ public class FileUtils {
         }
     }
 
+    //TODO
     public static boolean isValidFileName(String name) {
         return name.trim().matches("[a-zA-Z0-9\\-\\s_]+");
     }
@@ -118,5 +119,24 @@ public class FileUtils {
         } else {
             return string.substring(index + 1).toLowerCase();
         }
+    }
+
+    public static boolean areParentAndChild(File possibleParent, File possibleChild) {
+        File parent = possibleChild.getParentFile();
+        while (parent != null) {
+            if (parent.equals(possibleParent)) {
+                return true;
+            }
+            parent = parent.getParentFile();
+        }
+        return false;
+    }
+
+    public static String getRelativeStandardPath(File root, File child) {
+        return getRelativeStandardPath(root, child.toPath());
+    }
+
+    public static String getRelativeStandardPath(File root, Path child) {
+        return root.toPath().relativize(child).toString().replace('\\', '/');
     }
 }

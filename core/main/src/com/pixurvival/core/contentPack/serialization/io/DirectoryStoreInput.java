@@ -1,5 +1,7 @@
 package com.pixurvival.core.contentPack.serialization.io;
 
+import com.pixurvival.core.util.FileUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class DirectoryStoreInput implements StoreInput {
     public void forEachEntry(String root, InputEntryConsumer consumer) throws IOException {
         Iterator<Path> it = Files.walk(new File(this.root, root).toPath()).filter(Files::isRegularFile).iterator();
         while (it.hasNext()) {
-            consumer.apply(this.root.toPath().relativize(it.next()).toString().replace('\\', '/'));
+            consumer.apply(FileUtils.getRelativeStandardPath(this.root, it.next()));
         }
     }
 

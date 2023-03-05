@@ -10,10 +10,8 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.function.Supplier;
 
 public class ResourcesService {
@@ -103,11 +101,16 @@ public class ResourcesService {
                 resources.clear();
             }
         }
+        File folderFile = fileChooser.getSelectedFile();
+        importFolder(folderFile);
+    }
+
+    public void importFolder(File folderFile) {
         try {
-            int preffixLength = fileChooser.getSelectedFile().getAbsolutePath().length() + 1;
-            Files.walk(fileChooser.getSelectedFile().toPath()).filter(Files::isRegularFile).forEach(p -> {
+            int prefixLength = folderFile.getAbsolutePath().length() + 1;
+            Files.walk(folderFile.toPath()).filter(Files::isRegularFile).forEach(p -> {
                 File f = p.toFile();
-                String name = f.getAbsolutePath().substring(preffixLength).replace('\\', '/');
+                String name = f.getAbsolutePath().substring(prefixLength).replace('\\', '/');
                 byte[] data = null;
                 try {
                     data = FileUtils.readBytes(f);
@@ -139,6 +142,11 @@ public class ResourcesService {
 
     public void clear() {
         resources.clear();
+    }
+
+    public void clearAndNotify() {
+        List<ResourceEntry> entries = new ArrayList<>(resources.values());
+        entries.forEach(e -> deleteResource(e.getName()));
     }
 
     private boolean putResource(String name, byte[] data) {

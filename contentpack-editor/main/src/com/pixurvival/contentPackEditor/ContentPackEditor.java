@@ -53,8 +53,11 @@ public class ContentPackEditor extends JFrame {
         if (!"fr".equals(language) && !"en".equals(language)) {
             Locale.setDefault(Locale.ENGLISH);
         }
-        MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
+
+        // Ensure static services are loaded
         ElementRelationService.getInstance();
+
+        MainArgs mainArgs = ArgsUtils.readArgs(args, MainArgs.class);
         FileService.getInstance().initialize(new File(mainArgs.getContentPackDirectory()));
         run(mainArgs);
         instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

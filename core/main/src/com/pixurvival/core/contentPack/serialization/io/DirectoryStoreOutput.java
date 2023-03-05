@@ -1,5 +1,7 @@
 package com.pixurvival.core.contentPack.serialization.io;
 
+import com.pixurvival.core.util.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class DirectoryStoreOutput implements StoreOutput {
     public OutputStream nextEntry(String path) throws IOException {
         close();
         File entryFile = new File(root, path).getAbsoluteFile();
-        if (!isParentAndChild(root, entryFile)) {
+        if (!FileUtils.areParentAndChild(root, entryFile)) {
             throw new IOException("The entry " + entryFile + " is not a child of the Store root " + root);
         }
         entryFile.getParentFile().mkdirs();
@@ -45,16 +47,5 @@ public class DirectoryStoreOutput implements StoreOutput {
         if (currentOutputStream != null) {
             currentOutputStream.close();
         }
-    }
-
-    private boolean isParentAndChild(File possibleParent, File possibleChild) {
-        File parent = possibleChild.getParentFile();
-        while (parent != null) {
-            if (parent.equals(possibleParent)) {
-                return true;
-            }
-            parent = parent.getParentFile();
-        }
-        return false;
     }
 }
