@@ -5,13 +5,14 @@ targetCompatibility = 1.8
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "com.pixurvival.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../gdx-core/assets");
+project.ext.assetsDir = new File("../gdx-core/assets")
 
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
+    args 'redirectErrorToFile=false', 'zoomEnabled=true', 'contentPackDirectory="../../vanilla-contentpack'
     ignoreExitValue = true
 }
 
@@ -20,6 +21,7 @@ task debug(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
+    args 'redirectErrorToFile=false', 'zoomEnabled=true', 'contentPackDirectory="../../vanilla-contentpack'
     ignoreExitValue = true
     debug = true
 }

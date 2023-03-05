@@ -12,3 +12,11 @@ sourceSets.test.resources.srcDirs = ["test/resources/"]
 eclipse.project {
     name = appName + "-contentpack-editor"
 }
+
+task run(dependsOn: classes, type: JavaExec) {
+    main = "com.pixurvival.contentPackEditor.ContentPackEditor"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    args 'contentPackDirectory="../vanilla-contentpack'
+    ignoreExitValue = true
+}

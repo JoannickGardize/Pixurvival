@@ -14,9 +14,10 @@ eclipse.project {
 
 
 task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
+    main = "com.pixurvival.server.console.ServerConsole"
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
+    args 'contentPackDirectory="../vanilla-contentpack'
     ignoreExitValue = true
 }
 
@@ -24,6 +25,7 @@ task debug(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
+    args 'contentPackDirectory="../vanilla-contentpack'
     ignoreExitValue = true
     debug = true
 }

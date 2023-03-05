@@ -11,14 +11,10 @@ pack with the editor.
 
 You must use a JDK 8 to build the project.
 
-Run configurations for IDEs:
-|Name|Module|Main class|Mandatory arguments|Recommended arguments|Working directory|
-|----|------|----------|-------------------|---------------------|-----------------|
-|Game|gdx-desktop|com.pixurvival.desktop.DesktopLauncher||redirectErrorToFile=false zoomEnabled=true|gdx-core\assets|
-|Editor|contentpack-editor|com.pixurvival.contentPackEditor.ContentPackEditor|contentPackDirectory="gdx-core/assets/contentPacks"|||
-|Server|server|com.pixurvival.server.console.ServerConsole|contentPackDirectory="gdx-core/assets/contentPacks"|||
-
-build the distrubtion package : `./gradlew packageDistribution`
+run the game: `./gradlew gdx-desktop:run`
+run the content pack editor: `./gradlew contentpack-editor:run`
+run the standalone server: `./gradlew server:run`
+build the distribution package : `./gradlew packageDistribution`
 
 ## Contributing
 
