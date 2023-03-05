@@ -103,7 +103,7 @@ project(":contentpack-editor") {
         manifest {
             attributes 'Main-Class': "com.pixurvival.contentPackEditor.ContentPackEditor"
         }
-        archiveName = "content-pack-editor.jar"
+        archiveFileName = "content-pack-editor.jar"
         from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
         with jar
     }
@@ -238,7 +238,7 @@ project(":discord-bot") {
 }
 
 task packageDistribution(type: GradleBuild) {
-    tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'copyContentPack', 'zipPackage']
+    tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'zipVanilla', 'zipPackage']
 }
 
 task copyJars(type: Copy) {
@@ -246,15 +246,29 @@ task copyJars(type: Copy) {
     into 'build/package'
 }
 
-task copyContentPack(type: Copy) {
-    from 'gdx-core/assets/contentPacks'
-    into 'build/package/contentPacks'
+task zipVanilla(type: Zip) {
+    String text = new File('vanilla-contentpack/Vanilla/summary.yml').getText('UTF-8')
+    java.util.regex.Pattern p = java.util.regex.Pattern.compile("version:\\s\\{major:\\s(\\d+),\\sminor:\\s(\\d+)\\}")
+    java.util.regex.Matcher m = p.matcher(text)
+    if (!m.find()) {
+        throw new GradleException("Invalid Vanilla summary");
+    }
+    String major = m.group(1)
+    String minor = m.group(2)
+    archiveFileName = "Vanilla_" + major + "." + minor + ".zip"
+    destinationDirectory = file("$buildDir" + "/package/contentPacks")
+    from 'vanilla-contentpack/Vanilla'
 }
 
 task zipPackage(type: Zip) {
-    archiveName = "pixurvival-" + project.ext.version + ".zip"
-    destinationDir = file("$buildDir")
+
+    archiveFileName = "pixurvival-" + project.ext.version + ".zip"
+    destinationDirectory = file("$buildDir")
     from 'build/package'
+}
+
+dependencies {
+    implementation project(path: ':core')
 }
 
 tasks.eclipse.doLast {
