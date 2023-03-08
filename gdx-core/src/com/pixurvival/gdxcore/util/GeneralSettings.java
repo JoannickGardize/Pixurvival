@@ -8,4 +8,6 @@ import lombok.Setter;
 public class GeneralSettings {
 
     private String playerName;
+    // private WorldScreen.ScreenConfiguration worldScreenConfiguration;
+    // TODO UI States
 }

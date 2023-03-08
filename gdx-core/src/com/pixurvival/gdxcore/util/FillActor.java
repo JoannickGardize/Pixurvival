@@ -18,6 +18,4 @@ public class FillActor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(colorTexture, 0, 0, getStage().getWidth(), getStage().getHeight());
     }
-
-    ;
 }

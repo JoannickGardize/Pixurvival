@@ -20,6 +20,12 @@ public class InputMapping {
     private String name;
 
     public InputMapping(Properties properties) {
+        // Bind default first so new binding will not conflict with actual user binding
+        InputMapping mappingDefaults = InputMappingDefaults.findBestDefaultMatch();
+        for (Entry<InputButton, InputAction> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
+            bind(defaultEntries.getValue(), defaultEntries.getKey());
+        }
+        // Binding user values
         for (Entry<Object, Object> entry : properties.entrySet()) {
             InputAction action = Enums.valueOfOrNull(InputAction.class, (String) entry.getKey());
             if (action == null) {
@@ -31,13 +37,6 @@ public class InputMapping {
                 } else {
                     bind(action, button);
                 }
-            }
-        }
-        // Bind missing actions with the default one
-        InputMapping mappingDefaults = InputMappingDefaults.findBestDefaultMatch();
-        for (Entry<InputButton, InputAction> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
-            if (getButton(defaultEntries.getValue()) == null) {
-                bind(defaultEntries.getValue(), defaultEntries.getKey());
             }
         }
     }

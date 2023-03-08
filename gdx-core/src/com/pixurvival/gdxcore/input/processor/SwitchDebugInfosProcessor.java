@@ -10,7 +10,7 @@ public class SwitchDebugInfosProcessor implements InputActionProcessor {
     public void buttonDown() {
         Screen screen = PixurvivalGame.getInstance().getScreen();
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).switchShowDebugInfos();
+            ((WorldScreen) screen).getHudStage().switchShowDebugInfos();
         }
     }
 }

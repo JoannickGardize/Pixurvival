@@ -69,6 +69,7 @@ public class InputMappingDefaults {
         mapping.bind(InputAction.REQUEST_REFRESH, InputButton.keyboard(Keys.F5));
         mapping.bind(InputAction.PAUSE_MENU, InputButton.keyboard(Keys.ESCAPE));
         mapping.bind(InputAction.CHAT, InputButton.keyboard(Keys.ENTER));
+        mapping.bind(InputAction.SWITCH_UI_DISPLAY, InputButton.keyboard(Keys.I));
     }
 
 }

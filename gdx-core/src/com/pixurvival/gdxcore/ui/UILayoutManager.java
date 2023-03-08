@@ -1,19 +1,22 @@
 package com.pixurvival.gdxcore.ui;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class UILayoutManager {
 
     public static final int LEFT_SIDE = 0;
     public static final int RIGHT_SIDE = 1;
 
-    private static final int MIN_WIDTH = 150;
+    private static final int MIN_WIDTH = 300;
 
+    @Getter
     @AllArgsConstructor
-    private static class Entry {
+    public static class Entry {
 
         UIWindow window;
         float yPercent;
@@ -21,6 +24,11 @@ public class UILayoutManager {
 
     private List<Entry> leftEntries = new ArrayList<>();
     private List<Entry> rightEntries = new ArrayList<>();
+
+    public void forEach(Consumer<UIWindow> uiWindowConsumer) {
+        leftEntries.forEach(e -> uiWindowConsumer.accept(e.window));
+        rightEntries.forEach(e -> uiWindowConsumer.accept(e.window));
+    }
 
     public void add(UIWindow window, int side, float yPercent) {
         Entry entry = new Entry(window, yPercent);

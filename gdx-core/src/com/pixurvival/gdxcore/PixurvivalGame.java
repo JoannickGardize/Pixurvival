@@ -320,7 +320,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
             worldScreen.dispose();
         }
         worldScreen = new WorldScreen();
-        worldScreen.setWorld(client.getWorld());
+        worldScreen.initialize(client.getWorld());
         setScreen(worldScreen);
         if (client.getWorld().getType() == World.Type.CLIENT) {
             client.sendGameReady();
@@ -345,7 +345,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
     public void gameEnded(EndGameData data) {
         Screen screen = getScreen();
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).showEndGame(data);
+            ((WorldScreen) screen).getHudStage().showEndGame(data);
         }
     }
 
@@ -354,7 +354,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
         if (getScreen() instanceof WorldScreen) {
             WorldScreen worldScreen = (WorldScreen) getScreen();
             setScreen(MultiplayerLobbyScreen.class);
-            ((MultiplayerLobbyScreen) getScreen()).showEndGameUI(worldScreen.getEndGameUI());
+            ((MultiplayerLobbyScreen) getScreen()).showEndGameUI(worldScreen.getHudStage().getEndGameUI());
         } else {
             setScreen(MultiplayerLobbyScreen.class);
         }
@@ -393,7 +393,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
     public void focusChat() {
         Screen screen = getScreen();
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).getChatUI().focusTextInput();
+            ((WorldScreen) screen).getHudStage().getChatUI().focusTextInput();
         }
     }
 
@@ -412,7 +412,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
     @Override
     public void discovered(Collection<ItemCraft> itemCrafts) {
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).addItemCrafts(itemCrafts);
+            ((WorldScreen) screen).getHudStage().addItemCrafts(itemCrafts);
         }
     }
 

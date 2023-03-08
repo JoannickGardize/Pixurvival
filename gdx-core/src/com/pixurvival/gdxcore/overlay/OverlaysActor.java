@@ -65,22 +65,11 @@ public class OverlaysActor extends Actor implements EventListener {
     @Override
     public boolean handle(Event event) {
         if (event instanceof ScreenResizeEvent) {
-            ScreenResizeEvent screenResizeEvent = (ScreenResizeEvent) event;
-            int width = screenResizeEvent.getNewScreenWidth();
-            int height = screenResizeEvent.getNewScreenHeight();
-            if (width > height) {
-                int gutterSize = (width - height) / 2;
-                scissors.setX(gutterSize);
-                scissors.setY(0);
-                scissors.setWidth(height);
-                scissors.setHeight(height);
-            } else {
-                int gutterSize = (height - width) / 2;
-                scissors.setX(0);
-                scissors.setY(gutterSize);
-                scissors.setWidth(width);
-                scissors.setHeight(width);
-            }
+            Viewport viewport = ((ScreenResizeEvent) event).getViewport();
+            scissors.setX(viewport.getScreenX());
+            scissors.setY(viewport.getScreenY());
+            scissors.setWidth(viewport.getScreenWidth());
+            scissors.setHeight(viewport.getScreenHeight());
         }
         return false;
     }
