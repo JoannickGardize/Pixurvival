@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.item.*;
 import com.pixurvival.core.util.CaseUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
@@ -70,7 +71,7 @@ public class CraftUI extends UIWindow {
         }
         for (Entry<CraftCategory, CategoryEntry> entry : sortedItemCrafts.entrySet()) {
             entry.getValue().title = new Label(entry.getKey().getTitle(), PixurvivalGame.getSkin(), "white");
-            table.add(entry.getValue().title).expandX();
+            table.add(entry.getValue().title).expandX().align(Align.left);
             table.row();
             List<ItemCraft> categoryList = entry.getValue().itemCrafts;
             entry.getValue().tableCell = table.add(new CraftGroup(categoryList)).expandX().fill();

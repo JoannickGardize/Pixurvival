@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.input.InputAction;
+import com.pixurvival.gdxcore.input.InputButton;
 import com.pixurvival.gdxcore.input.InputManager;
 
 import java.lang.ref.WeakReference;
@@ -53,7 +54,8 @@ public class ShortcutDrawer {
     }
 
     public void updateText() {
-        String s = InputManager.getInstance().getMapping().getButton(action).toString();
+        InputButton button = InputManager.getInstance().getMapping().getButton(action);
+        String s = button == null ? "???" : button.toString();
         BitmapFont font = PixurvivalGame.getOverlayFont();
         text = new GlyphLayout(font, s, COLOR, 0, Align.left, false);
     }

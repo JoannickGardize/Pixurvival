@@ -13,7 +13,7 @@ public class CraftGroup extends HorizontalGroup {
         wrapSpace(2);
         pad(2);
         space(2);
-        align(Align.center);
+        align(Align.left);
         for (ItemCraft itemCraft : itemCrafts) {
             addSlot(itemCraft, false);
         }

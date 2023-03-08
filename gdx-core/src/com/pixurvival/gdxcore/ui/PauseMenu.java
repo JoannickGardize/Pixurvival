@@ -32,7 +32,7 @@ public class PauseMenu extends Window {
         mainMenuTable.add(new MenuButton("hud.pause.resume", () -> {
             Screen screen = PixurvivalGame.getInstance().getScreen();
             if (screen instanceof WorldScreen) {
-                ((WorldScreen) screen).switchPauseMenu();
+                ((WorldScreen) screen).getHudStage().switchPauseMenu();
             }
         }));
         // mainMenuTable.row();

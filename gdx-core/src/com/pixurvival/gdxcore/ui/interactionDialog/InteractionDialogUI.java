@@ -73,7 +73,7 @@ public class InteractionDialogUI extends Table {
         if (!(s instanceof WorldScreen)) {
             return;
         }
-        InventoryUI inventoryUI = ((WorldScreen) s).getInventoryUI();
+        InventoryUI inventoryUI = ((WorldScreen) s).getHudStage().getInventoryUI();
         actualContent.forEachInventories(i -> i.setCellsPrefSize(inventoryUI.getInventoryTable().getActualCellSize()));
         actualContent.invalidate();
         actualContent.validate();
