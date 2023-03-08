@@ -170,8 +170,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
         myPlayer.getPosition().set(createWorld.getMyPosition());
         myPlayer.setSpawnPosition(createWorld.getMySpawnCenter());
 
-        createWorld.getInventory().computeQuantities();
-        myPlayer.setInventory(createWorld.getInventory());
+        PlayerInventory inventory = createWorld.getInventory(pack);
+        inventory.computeQuantities();
+        myPlayer.setInventory(inventory);
         world.myPlayer = myPlayer;
         world.getEntityPool().add(myPlayer);
         world.setSpawnCenter(createWorld.getWorldSpawnCenter());

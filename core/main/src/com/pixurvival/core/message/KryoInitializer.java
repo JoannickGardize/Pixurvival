@@ -46,6 +46,9 @@ public class KryoInitializer {
         register(kryo, LoginRequest.class);
         register(kryo, LoginResponse.class);
         register(kryo, WorldUpdate.class);
+        register(kryo, CreateWorld.ItemIdStack.class);
+        register(kryo, CreateWorld.ItemIdStack[].class);
+        register(kryo, CreateWorld.Inventory.class);
         register(kryo, CreateWorld.class);
         register(kryo, byte[].class);
         register(kryo, Version.class);

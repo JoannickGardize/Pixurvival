@@ -2,6 +2,7 @@ package com.pixurvival.core.alteration.condition;
 
 import com.pixurvival.core.contentPack.elementSet.AllElementSet;
 import com.pixurvival.core.contentPack.elementSet.ElementSet;
+import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.team.TeamMember;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class TileAlterationCondition implements AlterationCondition {
 
-    private ElementSet tiles = new AllElementSet();
+    private ElementSet<Tile> tiles = new AllElementSet<>();
 
     @Override
     public boolean test(TeamMember entity) {
