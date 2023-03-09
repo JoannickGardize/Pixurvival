@@ -35,7 +35,7 @@ public class StatFormulaPopup extends RelativePopup {
         for (int i = 0; i < StatType.values().length; i++) {
             statMultiplierInputs[i] = new FloatInput();
             statMultiplierInputs[i].setColumns(6);
-            LayoutUtils.addHorizontalLabelledItem(getContentPane(), "+ " + TranslationService.getInstance().getString(StatType.values()[i]) + " x", false, null,
+            LayoutUtils.addHorizontalLabelledItem(getContentPane(), "+ " + TranslationService.getInstance().getString(StatType.values()[i]) + " ×", false, null,
                     statMultiplierInputs[i], gbc);
         }
         LayoutUtils.addHorizontalLabelledItem(getContentPane(), "statFormulaPopup.random", randomInput, gbc);
