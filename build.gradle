@@ -238,7 +238,7 @@ project(":discord-bot") {
 }
 
 task packageDistribution(type: GradleBuild) {
-    tasks = ['test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'zipVanilla', 'zipPackage']
+    tasks = ['clean', 'test', 'clientFatJar', 'serverFatJar', 'editorFatJar', 'botFatJar', 'copyJars', 'zipVanilla', 'zipPackage']
 }
 
 task copyJars(type: Copy) {
@@ -249,16 +249,14 @@ task copyJars(type: Copy) {
 task zipVanilla(type: Zip) {
     String major
     String minor
-    doFirst {
-        String text = new File('vanilla-contentpack/Vanilla/summary.yml').getText('UTF-8')
-        java.util.regex.Pattern p = java.util.regex.Pattern.compile("version:\\s\\{major:\\s(\\d+),\\sminor:\\s(\\d+)\\}")
-        java.util.regex.Matcher m = p.matcher(text)
-        if (!m.find()) {
-            throw new GradleException("Invalid Vanilla summary");
-        }
-        major = m.group(1)
-        minor = m.group(2)
+    String text = new File('vanilla-contentpack/Vanilla/summary.yml').getText('UTF-8')
+    java.util.regex.Pattern p = java.util.regex.Pattern.compile("version:\\s\\{major:\\s(\\d+),\\sminor:\\s(\\d+)}")
+    java.util.regex.Matcher m = p.matcher(text)
+    if (!m.find()) {
+        throw new GradleException("Invalid Vanilla summary");
     }
+    major = m.group(1)
+    minor = m.group(2)
     archiveFileName = "Vanilla_" + major + "." + minor + ".zip"
     destinationDirectory = file("$buildDir" + "/package/contentPacks")
     from 'vanilla-contentpack/Vanilla'
