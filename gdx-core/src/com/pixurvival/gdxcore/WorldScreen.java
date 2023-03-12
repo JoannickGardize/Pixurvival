@@ -27,7 +27,7 @@ import com.pixurvival.gdxcore.input.WorldMouseProcessor;
 import com.pixurvival.gdxcore.notificationpush.Notification;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
-import com.pixurvival.gdxcore.textures.ChunkTileTexturesManager;
+import com.pixurvival.gdxcore.textures.ChunkTextureManager;
 import com.pixurvival.gdxcore.textures.ContentPackAssets;
 import lombok.Getter;
 
@@ -54,7 +54,7 @@ public class WorldScreen implements Screen {
     private EntitiesActor entitiesActor;
     private DefaultSoundsPlayer defaultSoundsPlayer;
     private LightDrawer lightDrawer = new LightDrawer();
-    private @Getter ChunkTileTexturesManager chunkTileTexturesManager;
+    private @Getter ChunkTextureManager chunkTextureManager;
     private ScreenConfiguration screenConfiguration = ScreenConfiguration.LARGE;
 
     public void initialize(World world) {
@@ -75,8 +75,8 @@ public class WorldScreen implements Screen {
         } catch (ContentPackException e) {
             Log.error("Error when loading contentPack.", e);
         }
-        chunkTileTexturesManager = new ChunkTileTexturesManager();
-        world.getMap().addListener(chunkTileTexturesManager);
+        chunkTextureManager = new ChunkTextureManager();
+        world.getMap().addListener(chunkTextureManager);
         if (screenConfiguration == ScreenConfiguration.SQUARE) {
             // TODO always extend but change values
             worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
@@ -88,7 +88,7 @@ public class WorldScreen implements Screen {
         cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
         this.world = world;
         worldStage.clear();
-        worldStage.addActor(new TilesActor(world.getMap()));
+        worldStage.addActor(new TilesActor());
         entitiesActor = new EntitiesActor();
         worldStage.addActor(entitiesActor);
         // worldStage.addActor(new MapAnalyticsDebugActor());
@@ -186,8 +186,7 @@ public class WorldScreen implements Screen {
         lightDrawer.dispose();
         contentPackTextures.dispose();
         PixurvivalGame.getClient().getWorld().unload();
-        chunkTileTexturesManager.setRunning(false);
-        chunkTileTexturesManager.dispose();
+        chunkTextureManager.dispose();
         world.unload();
     }
 

@@ -43,7 +43,7 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
     public void initialize(World world) {
         Random random = new Random(world.getSeed());
         for (Heightmap heightmap : heightmaps) {
-            heightmap.initialiaze(random.nextLong());
+            heightmap.initialize(random.nextLong());
         }
         postProcessors = Collections.singletonList(new RemoveStuckStructuresPostProcessor());
     }
@@ -55,19 +55,19 @@ public class ProcedurallyGeneratedMapProvider extends MapProvider {
     }
 
     @Override
-    public Tile getTileAt(int x, int y) {
+    public Tile getTileAt(int x, int y, float[] run) {
         for (TileGenerator tileGenerator : tileGenerators) {
-            if (tileGenerator.test(x, y)) {
-                return tileGenerator.getTileAt(x, y);
+            if (tileGenerator.test(x, y, run)) {
+                return tileGenerator.getTileAt(x, y, run);
             }
         }
         return defaultTile;
     }
 
     @Override
-    public Structure getStructureAt(int x, int y, Tile tile) {
+    public Structure getStructureAt(int x, int y, Tile tile, float[] run) {
         for (StructureGenerator structureGenerator : structureGenerators) {
-            if (structureGenerator.test(x, y)) {
+            if (structureGenerator.test(x, y, run)) {
                 return structureGenerator.next(tile, chunkRandom);
             }
         }

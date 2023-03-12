@@ -20,7 +20,7 @@ public class CraftSlot extends Button {
     private ItemStackDrawer itemStackDrawer;
     private @Getter ItemCraft itemCraft;
     private @Setter
-    @Getter boolean newlyDiscovered = true;
+    @Getter boolean newlyDiscovered;
     private boolean canCraft = false;
 
     public CraftSlot(ItemCraft itemCraft, boolean newlyDiscovered) {
@@ -30,18 +30,27 @@ public class CraftSlot extends Button {
         itemStackDrawer = new ItemStackDrawer(this, 2);
         itemStackDrawer.setItemStack(new ItemStack(itemCraft.getResult().getItem()));
         addListener(new CraftSlotInputListener(this));
+        updateState();
+    }
+
+    public void updateState() {
+        boolean newCanCraft = ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft);
+        if (newCanCraft != canCraft) {
+            if (newCanCraft) {
+                if (isVisible()) {
+                    addAction(Scene2dUtils.yellowLightning());
+                }
+            } else {
+                clearActions();
+            }
+            canCraft = newCanCraft;
+        }
+        setColor(newCanCraft ? Color.WHITE : UNCRAFTABLE_COLOR);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        // TODO do not compute this each frame
-        boolean canCraftNow = ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft);
-        setColor(canCraftNow ? Color.WHITE : UNCRAFTABLE_COLOR);
-        if (!canCraft && canCraftNow) {
-            addAction(Scene2dUtils.yellowLightning());
-        }
-        canCraft = canCraftNow;
         itemStackDrawer.draw(batch);
         if (newlyDiscovered) {
             PixurvivalGame.getOverlayFont().draw(batch, "New!", getX() + 5, getY() + getHeight() - 5);

@@ -22,5 +22,4 @@ public class BackButton extends TextButton {
             }
         });
     }
-
 }

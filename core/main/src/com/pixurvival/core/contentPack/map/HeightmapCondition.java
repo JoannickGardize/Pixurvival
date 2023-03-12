@@ -20,8 +20,8 @@ public class HeightmapCondition implements Serializable {
     @Bounds(min = 0, max = 1, maxInclusive = true)
     private float max;
 
-    public boolean test(int x, int y) {
-        float noise = heightmap.getNoise(x, y);
+    public boolean test(int x, int y, float[] run) {
+        float noise = heightmap.getNoise(x, y, run);
         return noise >= min && noise < max;
     }
 }

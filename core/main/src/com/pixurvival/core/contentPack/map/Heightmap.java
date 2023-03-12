@@ -25,11 +25,16 @@ public class Heightmap extends NamedIdentifiedElement implements Serializable {
 
     private transient SimplexNoise simplexNoise;
 
-    public void initialiaze(long seed) {
+    public void initialize(long seed) {
         simplexNoise = new SimplexNoise(numberOfoctaves, persistence, scale, seed);
     }
 
-    public float getNoise(int x, int y) {
-        return simplexNoise.getNoise(x, y);
+    public float getNoise(int x, int y, float[] run) {
+        float result = run[getId()];
+        if (result == -1) {
+            result = simplexNoise.getNoise(x, y);
+            run[getId()] = result;
+        }
+        return result;
     }
 }

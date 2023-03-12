@@ -18,16 +18,16 @@ public class TileGenerator implements Serializable {
     @Valid
     private TileHashmap tileHashmap = new TileHashmap();
 
-    public boolean test(int x, int y) {
+    public boolean test(int x, int y, float[] heightmapRun) {
         for (HeightmapCondition h : heightmapConditions) {
-            if (!h.test(x, y)) {
+            if (!h.test(x, y, heightmapRun)) {
                 return false;
             }
         }
         return true;
     }
 
-    public Tile getTileAt(int x, int y) {
-        return tileHashmap.get(x, y);
+    public Tile getTileAt(int x, int y, float[] heightmapRun) {
+        return tileHashmap.get(x, y, heightmapRun);
     }
 }
