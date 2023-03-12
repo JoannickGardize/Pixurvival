@@ -54,6 +54,7 @@ public class HudStage extends Stage {
         addActor(equipmentUI);
         addActor(inventoryUI);
         addActor(craftUI);
+        world.getMyPlayer().getInventory().addListener(craftUI);
         world.getChatManager().addListener(chatUI);
         TimeUI timeUI = new TimeUI();
         addActor(timeUI);

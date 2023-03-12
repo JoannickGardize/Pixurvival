@@ -32,10 +32,10 @@ public class StructureGenerator implements Serializable {
     @Bounds(min = 0, max = 1, maxInclusive = true)
     private float density;
 
-    public boolean test(int x, int y) {
+    public boolean test(int x, int y, float[] run) {
         for (HeightmapCondition h : heightmapConditions) {
             // TODO keep computed values
-            if (!h.test(x, y)) {
+            if (!h.test(x, y, run)) {
                 return false;
             }
         }

@@ -1,12 +1,14 @@
 package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.item.*;
+import com.pixurvival.core.item.Inventory;
+import com.pixurvival.core.item.InventoryListener;
+import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.util.CaseUtils;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import lombok.AllArgsConstructor;
@@ -17,7 +19,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
 
-public class CraftUI extends UIWindow {
+public class CraftUI extends UIWindow implements InventoryListener {
 
     @AllArgsConstructor
     private enum CraftCategory {
@@ -49,15 +51,17 @@ public class CraftUI extends UIWindow {
         CraftCategory category;
         List<ItemCraft> itemCrafts = new ArrayList<>();
         Actor title;
-        Cell<CraftGroup> tableCell;
+        CraftGroup groupActor;
     }
 
     private Map<CraftCategory, CategoryEntry> sortedItemCrafts = new EnumMap<>(CraftCategory.class);
 
     public CraftUI() {
         super("crafting");
-        Table table = new Table();
-        table.defaults().pad(2);
+        VerticalGroup mainGroup = new VerticalGroup();
+        mainGroup.pad(2);
+        mainGroup.align(Align.topLeft);
+        mainGroup.expand().fill();
         List<ItemCraft> itemCrafts = PixurvivalGame.getWorld().getContentPack().getItemCrafts();
         for (CraftCategory category : CraftCategory.values()) {
             sortedItemCrafts.put(category, new CategoryEntry(category));
@@ -71,14 +75,12 @@ public class CraftUI extends UIWindow {
         }
         for (Entry<CraftCategory, CategoryEntry> entry : sortedItemCrafts.entrySet()) {
             entry.getValue().title = new Label(entry.getKey().getTitle(), PixurvivalGame.getSkin(), "white");
-            table.add(entry.getValue().title).expandX().align(Align.left);
-            table.row();
+            mainGroup.addActor(entry.getValue().title);
             List<ItemCraft> categoryList = entry.getValue().itemCrafts;
-            entry.getValue().tableCell = table.add(new CraftGroup(categoryList)).expandX().fill();
-            table.row();
+            entry.getValue().groupActor = (CraftGroup) new CraftGroup(categoryList).expand().fill();
+            mainGroup.addActor(entry.getValue().groupActor);
         }
-        table.add().expand();
-        ScrollPane scrollPane = new ScrollPane(table, PixurvivalGame.getSkin());
+        ScrollPane scrollPane = new ScrollPane(mainGroup, PixurvivalGame.getSkin());
         scrollPane.setScrollingDisabled(true, false);
         add(scrollPane).expand().fill();
     }
@@ -88,8 +90,12 @@ public class CraftUI extends UIWindow {
             CraftCategory category = CraftCategory.of(itemCraft.getResult().getItem());
             CategoryEntry entry = sortedItemCrafts.get(category);
             entry.itemCrafts.add(itemCraft);
-            entry.tableCell.getActor().addSlot(itemCraft, true);
+            entry.groupActor.addSlot(itemCraft, true);
         }
     }
 
+    @Override
+    public void slotChanged(Inventory inventory, int slotIndex, ItemStack previousItemStack, ItemStack newItemStack) {
+        sortedItemCrafts.values().forEach(c -> c.groupActor.updateCraftStates());
+    }
 }

@@ -28,9 +28,9 @@ public class CameraControlProcessor extends InputAdapter {
     }
 
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(float amountX, float amountY) {
         if (PixurvivalGame.getInstance().isZoomEnabled()) {
-            ((OrthographicCamera) viewport.getCamera()).zoom *= 1 + (amount * 0.2);
+            ((OrthographicCamera) viewport.getCamera()).zoom *= 1 + (amountY * 0.2);
         }
         return true;
     }

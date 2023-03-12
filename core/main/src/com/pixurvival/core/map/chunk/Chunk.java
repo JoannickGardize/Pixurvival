@@ -26,6 +26,9 @@ public class Chunk {
 
     private MapTile[] tiles;
 
+    // TODO IN PROGRESS
+    private Tile[] overflowingTiles;
+
     private @Getter(AccessLevel.NONE) Map<Integer, List<StructureEntity>> structures = new HashMap<>();
 
     private ChunkPosition position;

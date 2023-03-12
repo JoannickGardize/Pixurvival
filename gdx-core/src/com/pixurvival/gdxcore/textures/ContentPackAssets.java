@@ -33,7 +33,6 @@ public class ContentPackAssets {
     private Map<SpriteSheet, TextureAnimationSet> animationSet;
     private Map<Integer, Texture> textureShadows;
     private Map<Float, Texture> lightTextures;
-    private Texture[][] tileTextures;
     private ItemTexture[] itemTextures;
     private int[] tileAvgColors;
     private @Getter float truePixelWidth;
@@ -53,16 +52,6 @@ public class ContentPackAssets {
 
     public TextureAnimationSet getAnimationSet(SpriteSheet spriteSheet) {
         return animationSet.get(spriteSheet);
-    }
-
-    @Deprecated
-    public Texture getTile(int id, long frame) {
-        Texture[] frames = tileTextures[id];
-        return frames[(int) (frame % frames.length)];
-    }
-
-    public Texture[] getTileTextures(Tile tile) {
-        return tileTextures[tile.getId()];
     }
 
     public SpriteSheetPixmap getTilePixmap(Tile tile) {
@@ -142,7 +131,6 @@ public class ContentPackAssets {
         animationSet.values().forEach(TextureAnimationSet::dispose);
         textureShadows.values().forEach(Texture::dispose);
         lightTextures.values().forEach(Texture::dispose);
-        Arrays.stream(tileTextures).flatMap(Arrays::stream).forEach(Texture::dispose);
         for (ItemTexture texture : itemTextures) {
             texture.dispose();
         }
@@ -159,7 +147,6 @@ public class ContentPackAssets {
 
     private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
         List<Tile> tilesbyId = pack.getTiles();
-        tileTextures = new Texture[tilesbyId.size()][];
         tilePixmaps = new SpriteSheetPixmap[tilesbyId.size()];
         tileAvgColors = new int[tilesbyId.size()];
         Map<String, SpriteSheetPixmap> tilePixmapMap = new HashMap<>();
@@ -171,12 +158,6 @@ public class ContentPackAssets {
                 tilePixmapMap.put(tile.getImage(), pixmap);
             }
             List<Frame> frames = tile.getFrames();
-            Texture[] textures = new Texture[frames.size()];
-            for (int j = 0; j < frames.size(); j++) {
-                Frame frame = frames.get(j);
-                textures[j] = AddPaddingUtil.apply(pixmap.getRegion(frame.getX(), frame.getY()));
-            }
-            tileTextures[i] = textures;
             tilePixmaps[i] = pixmap;
             tileAvgColors[i] = getAverageColor(pixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
         }

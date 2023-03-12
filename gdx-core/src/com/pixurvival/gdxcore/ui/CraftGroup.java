@@ -31,4 +31,10 @@ public class CraftGroup extends HorizontalGroup {
         }
         addActor(new CraftSlot(itemCraft, newlyDiscovered));
     }
+
+    public void updateCraftStates() {
+        if (hasParent()) {
+            getChildren().forEach(a -> ((CraftSlot) a).updateState());
+        }
+    }
 }
