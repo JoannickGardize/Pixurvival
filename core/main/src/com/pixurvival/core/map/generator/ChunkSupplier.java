@@ -40,7 +40,7 @@ public class ChunkSupplier {
         int x = chunk.getPosition().getX();
         int y = chunk.getPosition().getY();
         float[] run = mapProvider instanceof ProcedurallyGeneratedMapProvider ?
-                new float[((ProcedurallyGeneratedMapProvider) mapProvider).getHeightmaps().size()] : null;
+                new float[((ProcedurallyGeneratedMapProvider) mapProvider).getHeightmaps().size()] : new float[0];
 
         for (int cx = GameConstants.CHUNK_SIZE - 1; cx >= 0; cx--) {
             // reverse x because we need generated tiles under structures first for the chunk.isEmptyLocal() call
