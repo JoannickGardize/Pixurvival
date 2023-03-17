@@ -20,7 +20,6 @@ public class ChunkTextureManager implements TiledMapListener {
     // TODO avoid this map by using the tiledmap chunk map (by giving to Chunk a customData field)
     private final @Getter Map<ChunkPosition, ChunkTexture> chunkTextures = new HashMap<>();
     private Queue<ChunkTexture> chunkTextureQueue = new ArrayDeque<>();
-
     private Map<Integer, ChunkTexture> monoTileTextures = new HashMap<>();
 
     public void update(Stage worldStage) {
@@ -53,10 +52,8 @@ public class ChunkTextureManager implements TiledMapListener {
         Integer id = chunk.tileAtLocal(0, 0).getTileDefinition().getId();
         ChunkTexture monoTexture = monoTileTextures.get(id);
         if (monoTexture != null) {
-            System.out.println("MONO");
             chunkTextures.put(chunk.getPosition(), monoTexture);
         } else {
-            System.out.println("NEW MONO");
             monoTexture = new ChunkTexture(chunk);
             chunkTextureQueue.add(monoTexture);
             monoTileTextures.put(id, monoTexture);

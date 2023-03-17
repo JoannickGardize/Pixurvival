@@ -163,7 +163,7 @@ public class WorldScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         worldStage.getViewport().update(width, height);
-        hudStage.resize(width, height, worldStage.getViewport());
+        hudStage.resize(width, height, worldStage.getViewport(), hudStage.getViewport());
         lightDrawer.resize(width, height);
     }
 

@@ -96,11 +96,12 @@ public class HudStage extends Stage {
         super.dispose();
     }
 
-    public void resize(int width, int height, Viewport worldViewport) {
+    public void resize(int width, int height, Viewport worldViewport, Viewport hudViewport) {
         getViewport().update(width, height, true);
         uiLayoutManager.resize(width, height, worldViewport.getLeftGutterWidth());
         statusBarUI.updatePosition();
         pauseUI.update();
+        endGameUI.update(hudViewport);
         respawnTimerActor.setPosition(width / 2f, height - height / 3f);
         InteractionDialogUI.getInstance().sizeAndPosition();
         ScreenResizeEvent event = new ScreenResizeEvent(worldViewport);
