@@ -15,6 +15,9 @@ import java.util.Properties;
 @EqualsAndHashCode(of = "buttonByAction")
 public class InputMapping {
 
+    public static final int VERSION = 2;
+    public static final String VERSION_KEY = "version";
+
     private Map<InputAction, InputButton> buttonByAction = new EnumMap<>(InputAction.class);
     private Map<InputButton, InputAction> actionByButton = new HashMap<>();
     private String name;
@@ -25,6 +28,11 @@ public class InputMapping {
         for (Entry<InputButton, InputAction> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
             bind(defaultEntries.getValue(), defaultEntries.getKey());
         }
+
+        if (!String.valueOf(VERSION).equals(properties.get("version"))) {
+            return;
+        }
+        properties.remove("version");
         // Binding user values
         for (Entry<Object, Object> entry : properties.entrySet()) {
             InputAction action = Enums.valueOfOrNull(InputAction.class, (String) entry.getKey());
@@ -65,6 +73,7 @@ public class InputMapping {
 
     public Properties toProperties() {
         Properties properties = new Properties();
+        properties.put(VERSION_KEY, String.valueOf(VERSION));
         for (Entry<InputAction, InputButton> mapping : buttonByAction.entrySet()) {
             properties.put(mapping.getKey().toString(), mapping.getValue().toStringCode());
         }

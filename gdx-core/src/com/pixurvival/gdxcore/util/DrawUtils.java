@@ -45,13 +45,13 @@ public class DrawUtils {
         }
         DrawData data = o;
         float timer = data.getTimer();
-        timer += Gdx.graphics.getRawDeltaTime();
+        timer += Gdx.graphics.getDeltaTime();
         while (timer >= textureAnimation.getFrameDuration() * textureAnimation.size()) {
             timer -= textureAnimation.getFrameDuration() * textureAnimation.size();
             data.setFirstLoop(false);
         }
         data.setTimer(timer);
-        data.setAngle(data.getAngle() + Gdx.graphics.getRawDeltaTime() * textureAnimation.getRotationPerSecond());
+        data.setAngle(data.getAngle() + Gdx.graphics.getDeltaTime() * textureAnimation.getRotationPerSecond());
         return (int) (timer / textureAnimation.getFrameDuration());
     }
 
@@ -115,10 +115,31 @@ public class DrawUtils {
         float width = worldStage.getViewport().getWorldWidth() * camera.zoom;
         float height = worldStage.getViewport().getWorldHeight() * camera.zoom;
         int startX = MathUtils.floor((camPos.x - width / 2 - margin) / GameConstants.CHUNK_SIZE);
-        int startY = MathUtils.floor((camPos.y - height / 2 - margin) / GameConstants.CHUNK_SIZE);
         int endX = MathUtils.floor((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
+        int startY = MathUtils.floor((camPos.y - height / 2 - margin) / GameConstants.CHUNK_SIZE);
         int endY = MathUtils.floor((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
         for (int y = endY; y >= startY; y--) {
+            for (int x = startX; x <= endX; x++) {
+                Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
+                if (chunk == null) {
+                    continue;
+                }
+                action.accept(chunk);
+            }
+        }
+    }
+
+    // TODO almost duplicated
+    public static void foreachChunksInScreenTopDown(Stage worldStage, float margin, Consumer<Chunk> action) {
+        OrthographicCamera camera = (OrthographicCamera) worldStage.getCamera();
+        Vector3 camPos = camera.position;
+        float width = worldStage.getViewport().getWorldWidth() * camera.zoom;
+        float height = worldStage.getViewport().getWorldHeight() * camera.zoom;
+        int startX = MathUtils.floor((camPos.x - width / 2 - margin) / GameConstants.CHUNK_SIZE);
+        int endX = MathUtils.floor((camPos.x + width / 2 + margin) / GameConstants.CHUNK_SIZE);
+        int startY = MathUtils.floor((camPos.y - height / 2 - margin) / GameConstants.CHUNK_SIZE);
+        int endY = MathUtils.floor((camPos.y + height / 2 + margin) / GameConstants.CHUNK_SIZE);
+        for (int y = startY; y <= endY; y++) {
             for (int x = startX; x <= endX; x++) {
                 Chunk chunk = PixurvivalGame.getWorld().getMap().chunkAt(new ChunkPosition(x, y));
                 if (chunk == null) {

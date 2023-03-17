@@ -47,13 +47,16 @@ public class CompressedChunk {
         }
         VarLenNumberIO.writePositiveVarInt(buffer, currentLength);
         buffer.put((byte) currentTile.getTileDefinition().getId());
-        VarLenNumberIO.writePositiveVarInt(buffer, chunk.getStructureCount());
+        VarLenNumberIO.writePositiveVarInt(buffer, chunk.getStructures().size());
         LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
-        chunk.forEachStructure(structure -> {
-            buffer.put((byte) structure.getDefinition().getId());
-            buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
-            buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
-            structure.writeData(buffer, idSequence);
+        chunk.forEachStructureGroup((typeId, list) -> {
+            buffer.put(typeId.byteValue());
+            VarLenNumberIO.writePositiveVarInt(buffer, list.size());
+            list.forEach(structure -> {
+                buffer.put((byte) (structure.getTileX() - chunk.getOffsetX()));
+                buffer.put((byte) (structure.getTileY() - chunk.getOffsetY()));
+                structure.writeData(buffer, idSequence);
+            });
         });
         data = Arrays.copyOf(buffer.array(), buffer.position());
     }
@@ -66,19 +69,24 @@ public class CompressedChunk {
         chunk.setUpdateTimestamp(VarLenNumberIO.readPositiveVarLong(buffer));
         MapTile[] chunkData = chunk.getTiles();
         int dataPosition = 0;
-        while (dataPosition < GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE) {
+        while (dataPosition < (GameConstants.CHUNK_SIZE + 2) * (GameConstants.CHUNK_SIZE + 2)) {
             int length = VarLenNumberIO.readPositiveVarInt(buffer);
             MapTile tile = map.getMapTilesById()[buffer.get()];
             Arrays.fill(chunkData, dataPosition, dataPosition + length, tile);
             dataPosition += length;
         }
-        int structureCount = VarLenNumberIO.readPositiveVarInt(buffer);
+        int structureTypeCount = VarLenNumberIO.readPositiveVarInt(buffer);
         LongSequenceIOHelper idSequence = new LongSequenceIOHelper();
-        for (int i = 0; i < structureCount; i++) {
-            StructureEntity structure = chunk.addStructureSilently(map.getWorld().getContentPack().getStructures().get(buffer.get()), buffer.get() + chunk.getOffsetX(),
-                    buffer.get() + chunk.getOffsetY());
-            structure.applyData(buffer, idSequence);
+        for (int i = 0; i < structureTypeCount; i++) {
+            int typeId = buffer.get();
+            int groupCount = VarLenNumberIO.readPositiveVarInt(buffer);
+            for (int j = 0; j < groupCount; j++) {
+                StructureEntity structure = chunk.addStructureSilently(map.getWorld().getContentPack().getStructures().get(typeId), buffer.get() + chunk.getOffsetX(),
+                        buffer.get() + chunk.getOffsetY());
+                structure.applyData(buffer, idSequence);
+            }
         }
+        chunk.computeMetadata();
         chunk.setCompressed(this);
         return chunk;
     }
