@@ -16,12 +16,4 @@ public class UIWindow extends Window {
         setResizable(false);
         setMovable(false);
     }
-
-    public float getCenterX() {
-        return getX() + getWidth() / 2;
-    }
-
-    public float getCenterY() {
-        return getY() + getHeight() / 2;
-    }
 }
