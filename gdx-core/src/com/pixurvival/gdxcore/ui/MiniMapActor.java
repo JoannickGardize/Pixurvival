@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.map.MapTile;
 import com.pixurvival.core.map.PlayerMapEventListener;
 import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.TiledMapListener;
@@ -108,7 +109,6 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
     public void exitVision(PlayerEntity entity, ChunkPosition position) {
     }
 
-    // TODO Thread this
     private void addChunk(Chunk chunk) {
         if (chunkTextures.containsKey(chunk.getPosition()) || PixurvivalGame.getContentPackTextures() == null) {
             return;
@@ -116,7 +116,12 @@ public class MiniMapActor extends Actor implements TiledMapListener, PlayerMapEv
         Pixmap pixmap = new Pixmap(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE, Format.RGBA8888);
         for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
             for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
-                pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y).getTileDefinition().getId()));
+                MapTile mapTile = chunk.tileAtLocal(x, GameConstants.CHUNK_SIZE - 1 - y);
+                if (mapTile.getStructure() != null && mapTile.getStructure().getDefinition().getSpriteSheet() != null) {
+                    pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getStructureColor(mapTile.getStructure().getDefinition().getId()));
+                } else {
+                    pixmap.drawPixel(x, y, PixurvivalGame.getContentPackTextures().getTileColor(mapTile.getTileDefinition().getId()));
+                }
             }
         }
         Texture texture = new Texture(pixmap, true);

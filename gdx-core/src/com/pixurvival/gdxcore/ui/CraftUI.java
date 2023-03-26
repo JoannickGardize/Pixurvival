@@ -1,6 +1,5 @@
 package com.pixurvival.gdxcore.ui;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -50,7 +49,7 @@ public class CraftUI extends UIWindow implements InventoryListener {
         @NonNull
         CraftCategory category;
         List<ItemCraft> itemCrafts = new ArrayList<>();
-        Actor title;
+        Label title;
         CraftGroup groupActor;
     }
 
@@ -60,8 +59,9 @@ public class CraftUI extends UIWindow implements InventoryListener {
         super("crafting");
         VerticalGroup mainGroup = new VerticalGroup();
         mainGroup.pad(2);
-        mainGroup.align(Align.topLeft);
-        mainGroup.expand().fill();
+        mainGroup.align(Align.top);
+        mainGroup.columnAlign(Align.top);
+        mainGroup.fill().expand();
         List<ItemCraft> itemCrafts = PixurvivalGame.getWorld().getContentPack().getItemCrafts();
         for (CraftCategory category : CraftCategory.values()) {
             sortedItemCrafts.put(category, new CategoryEntry(category));
@@ -75,6 +75,7 @@ public class CraftUI extends UIWindow implements InventoryListener {
         }
         for (Entry<CraftCategory, CategoryEntry> entry : sortedItemCrafts.entrySet()) {
             entry.getValue().title = new Label(entry.getKey().getTitle(), PixurvivalGame.getSkin(), "white");
+            entry.getValue().title.setAlignment(Align.center);
             mainGroup.addActor(entry.getValue().title);
             List<ItemCraft> categoryList = entry.getValue().itemCrafts;
             entry.getValue().groupActor = (CraftGroup) new CraftGroup(categoryList).expand().fill();

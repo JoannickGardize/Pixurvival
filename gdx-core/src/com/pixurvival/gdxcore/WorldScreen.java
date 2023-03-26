@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.esotericsoftware.minlog.Log;
 import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.GameConstants;
@@ -29,6 +28,7 @@ import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.textures.ChunkTextureManager;
 import com.pixurvival.gdxcore.textures.ContentPackAssets;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -36,9 +36,15 @@ import java.time.Instant;
 // TODO separated class for world stage and hud stage ?
 public class WorldScreen implements Screen {
 
+    @AllArgsConstructor
+    @Getter
     public enum ScreenConfiguration {
-        SQUARE,
-        LARGE
+        SQUARE(VIEWPORT_WORLD_WIDTH),
+        LARGE(CAMERA_BOUNDS * 2);
+
+        private float maxViewportWidth;
+
+
     }
 
 
@@ -63,12 +69,6 @@ public class WorldScreen implements Screen {
         }
         contentPackTextures = new ContentPackAssets();
         try {
-            // int screenWidth = Math.min(Gdx.graphics.getWidth(),
-            // Gdx.graphics.getHeight());
-            // int pixelWidth = Math.round(screenWidth /
-            // (WorldScreen.VIEWPORT_WORLD_WIDTH *
-            // GameConstants.PIXEL_PER_UNIT));
-            // Seems better :
             int pixelWidth = 3;
             Log.info("Loading texture with pixel width : " + pixelWidth);
             contentPackTextures.load(world.getContentPack(), pixelWidth, PixurvivalGame.getInstance().getSoundPresets());
@@ -77,13 +77,8 @@ public class WorldScreen implements Screen {
         }
         chunkTextureManager = new ChunkTextureManager();
         world.getMap().addListener(chunkTextureManager);
-        if (screenConfiguration == ScreenConfiguration.SQUARE) {
-            // TODO always extend but change values
-            worldStage = new Stage(new FitViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH));
-        } else {
-            worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH,
-                    CAMERA_BOUNDS * 2, CAMERA_BOUNDS * 2));
-        }
+        worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH,
+                screenConfiguration.getMaxViewportWidth(), screenConfiguration.getMaxViewportWidth()));
 
         cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
         this.world = world;
