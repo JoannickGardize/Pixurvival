@@ -4,22 +4,22 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class MiniMapUI extends UIWindow {
 
-    private MiniMapActor mapActor;
+    private MiniMapWidget mapWidget;
 
     public MiniMapUI() {
         super("miniMap");
-        mapActor = new MiniMapActor();
-        add(mapActor).fill().expand();
+        mapWidget = new MiniMapWidget();
+        add(mapWidget).grow();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        mapActor.setPosition(0, 0);
-        mapActor.setSize(getWidth(), getHeight());
+        /*mapActor.setPosition(0, 0);
+        mapActor.setSize(getWidth(), getHeight());*/
         super.draw(batch, parentAlpha);
     }
 
     public void dispose() {
-        mapActor.dispose();
+        mapWidget.dispose();
     }
 }

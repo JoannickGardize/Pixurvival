@@ -20,7 +20,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
-public class ItemTooltip extends Table implements StatListener {
+public class ItemTooltip extends Tooltip implements StatListener {
 
     public static final float ITEM_WIDTH = 20;
 

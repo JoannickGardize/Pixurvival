@@ -30,6 +30,7 @@ public class HudStage extends Stage {
     private @Getter EndGameUI endGameUI = new EndGameUI();
     private @Getter InventoryUI inventoryUI = new InventoryUI();
     private PauseMenu pauseUI = new PauseMenu();
+    private TimeUI timeUI = new TimeUI();
 
     private UILayoutManager uiLayoutManager = new UILayoutManager();
     private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
@@ -56,7 +57,6 @@ public class HudStage extends Stage {
         addActor(craftUI);
         world.getMyPlayer().getInventory().addListener(craftUI);
         world.getChatManager().addListener(chatUI);
-        TimeUI timeUI = new TimeUI();
         addActor(timeUI);
         addActor(chatUI);
         InteractionDialogUI.getInstance();
@@ -83,11 +83,11 @@ public class HudStage extends Stage {
         uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
         uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 80);
         uiLayoutManager.add(timeUI, UILayoutManager.RIGHT_SIDE, 100);
-
         PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
         PixurvivalGame.getClient().getMyInventory().addListener(FactoryTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemCraftTooltip.getInstance());
+        initializeCursorManager();
     }
 
     @Override
@@ -138,5 +138,14 @@ public class HudStage extends Stage {
 
     public void setMouseInteractionIconVisible(boolean visible) {
         mouseIconActor.setVisible(visible);
+    }
+
+    private void initializeCursorManager() {
+        UIWindowCursorManager manager = new UIWindowCursorManager();
+        chatUI.addHoverWindowListener(manager);
+        craftUI.addHoverWindowListener(manager);
+        miniMapUI.addHoverWindowListener(manager);
+        inventoryUI.addHoverWindowListener(manager);
+        timeUI.addHoverWindowListener(manager);
     }
 }

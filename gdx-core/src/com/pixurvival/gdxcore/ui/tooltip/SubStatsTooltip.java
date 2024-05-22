@@ -15,7 +15,7 @@ import com.pixurvival.gdxcore.ui.UILabel;
 import com.pixurvival.gdxcore.util.DrawUtils;
 import lombok.Getter;
 
-public class SubStatsTooltip extends Table {
+public class SubStatsTooltip extends Tooltip {
 
     public static final float ITEM_WIDTH = 20;
 

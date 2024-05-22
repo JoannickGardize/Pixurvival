@@ -24,7 +24,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
-public class ItemCraftTooltip extends Table implements InventoryListener, StatListener {
+public class ItemCraftTooltip extends Tooltip implements InventoryListener, StatListener {
 
     private static @Getter ItemCraftTooltip instance = new ItemCraftTooltip();
 

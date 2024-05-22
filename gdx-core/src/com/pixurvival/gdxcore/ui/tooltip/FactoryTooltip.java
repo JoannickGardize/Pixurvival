@@ -22,7 +22,7 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.Locale;
 
-public class FactoryTooltip extends Table implements InventoryListener {
+public class FactoryTooltip extends Tooltip implements InventoryListener {
 
     private static @Getter FactoryTooltip instance = new FactoryTooltip();
 

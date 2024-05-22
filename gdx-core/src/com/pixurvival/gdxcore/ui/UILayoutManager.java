@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Deprecated
 public class UILayoutManager {
 
     public static final int LEFT_SIDE = 0;
@@ -40,9 +41,9 @@ public class UILayoutManager {
     }
 
     public void resize(int screenWidth, int screenHeight, int gutterWidth) {
-        int width = Math.max(gutterWidth, MIN_WIDTH);
+        /*int width = Math.max(gutterWidth, MIN_WIDTH);
         layoutSide(screenHeight, width, leftEntries, 0);
-        layoutSide(screenHeight, width, rightEntries, (float) screenWidth - gutterWidth);
+        layoutSide(screenHeight, width, rightEntries, (float) screenWidth - gutterWidth);*/
     }
 
     private void layoutSide(int screenHeight, int width, List<Entry> entries, float x) {
