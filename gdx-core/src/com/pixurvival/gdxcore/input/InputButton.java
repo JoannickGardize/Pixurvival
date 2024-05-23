@@ -2,7 +2,7 @@ package com.pixurvival.gdxcore.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
+import com.pixurvival.gdxcore.util.InputUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
@@ -77,7 +77,7 @@ public class InputButton {
                     return "Button " + code;
             }
         } else {
-            return Keys.toString(code);
+            return InputUtils.getKeyString(code);
         }
     }
 
