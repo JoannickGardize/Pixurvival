@@ -36,6 +36,13 @@ Window
   orig: 32, 47
   offset: 0, 0
   index: -1
+window-title
+  rotate: false
+  xy: 5, 83
+  size: 23, 29
+  orig: 23, 29
+  offset: 0, 0
+  index: -1
 accessory-icon
   rotate: false
   xy: 69, 120

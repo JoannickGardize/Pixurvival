@@ -22,6 +22,7 @@ public class HeldItemStackActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        toFront();
         batch.setColor(Color.WHITE);
         PlayerInventory inventory = PixurvivalGame.getClient().getMyInventory();
         if (inventory == null) {

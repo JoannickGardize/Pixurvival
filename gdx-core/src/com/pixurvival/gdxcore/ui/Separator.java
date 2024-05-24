@@ -1,14 +1,23 @@
 package com.pixurvival.gdxcore.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.pixurvival.gdxcore.textures.ColorTextures;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class Separator extends Widget {
+
+    private final Color color;
+
+    public Separator() {
+        color = UIConstants.SEPARATOR_COLOR;
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(ColorTextures.get(UIConstants.SEPARATOR_COLOR), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation(), 0, 0, 1, 1, false,
+        batch.draw(ColorTextures.get(color), getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation(), 0, 0, 1, 1, false,
                 false);
         validate();
     }

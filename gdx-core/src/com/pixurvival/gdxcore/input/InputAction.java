@@ -34,8 +34,7 @@ public enum InputAction {
     SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor()),
     SWITCH_FULLSCREEN(new SwitchFullScreenProcessor()),
     REQUEST_REFRESH(new RefreshProcessor()),
-    PAUSE_MENU(new PauseMenuProcessor()),
-    SWITCH_UI_DISPLAY(new SwitchUiDisplayProcessor());
+    PAUSE_MENU(new PauseMenuProcessor());
 
     private @Getter InputActionProcessor processor;
 

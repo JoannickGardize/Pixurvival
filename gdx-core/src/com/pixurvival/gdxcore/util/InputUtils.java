@@ -8,6 +8,28 @@ import org.lwjgl.glfw.GLFW;
 public class InputUtils {
 
     public static String getKeyString(int code) {
+        switch (code) {
+            case 7:
+                return "0";
+            case 8:
+                return "1";
+            case 9:
+                return "2";
+            case 10:
+                return "3";
+            case 11:
+                return "4";
+            case 12:
+                return "5";
+            case 13:
+                return "6";
+            case 14:
+                return "7";
+            case 15:
+                return "8";
+            case 16:
+                return "9";
+        }
         String keyName = GLFW.glfwGetKeyName(getGlfwKeyCode(code), 0);
         if (keyName != null && !keyName.equals("")) {
             return keyName.toUpperCase();

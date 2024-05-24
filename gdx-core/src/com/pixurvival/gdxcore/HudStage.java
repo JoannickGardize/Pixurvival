@@ -28,11 +28,10 @@ public class HudStage extends Stage {
     private MiniMapUI miniMapUI = new MiniMapUI();
     private StatusBarUI statusBarUI = new StatusBarUI();
     private @Getter EndGameUI endGameUI = new EndGameUI();
-    private @Getter InventoryUI inventoryUI = new InventoryUI();
     private PauseMenu pauseUI = new PauseMenu();
     private TimeUI timeUI = new TimeUI();
+    private @Getter EquipmentAndInventoryUI equipmentAndInventoryUI = new EquipmentAndInventoryUI();
 
-    private UILayoutManager uiLayoutManager = new UILayoutManager();
     private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
     private MouseIconActor mouseIconActor = new MouseIconActor();
     private DebugInfosActor debugInfosActors;
@@ -50,10 +49,7 @@ public class HudStage extends Stage {
         world.getEntityPool().addListener(respawnTimerActor);
         addActor(respawnTimerActor);
         addActor(miniMapUI);
-        miniMapUI.setPosition(0, getHeight() - miniMapUI.getHeight());
-        EquipmentUI equipmentUI = new EquipmentUI();
-        addActor(equipmentUI);
-        addActor(inventoryUI);
+        addActor(equipmentAndInventoryUI);
         addActor(craftUI);
         world.getMyPlayer().getInventory().addListener(craftUI);
         world.getChatManager().addListener(chatUI);
@@ -77,17 +73,12 @@ public class HudStage extends Stage {
         blackPauseBackground.setVisible(false);
         addActor(blackPauseBackground);
 
-        uiLayoutManager.add(chatUI, UILayoutManager.LEFT_SIDE, 30);
-        uiLayoutManager.add(inventoryUI, UILayoutManager.LEFT_SIDE, 55);
-        uiLayoutManager.add(equipmentUI, UILayoutManager.LEFT_SIDE, 70);
-        uiLayoutManager.add(miniMapUI, UILayoutManager.LEFT_SIDE, 100);
-        uiLayoutManager.add(craftUI, UILayoutManager.RIGHT_SIDE, 80);
-        uiLayoutManager.add(timeUI, UILayoutManager.RIGHT_SIDE, 100);
         PixurvivalGame.getClient().getMyInventory().addListener(ItemCraftTooltip.getInstance());
         PixurvivalGame.getClient().getMyInventory().addListener(FactoryTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemCraftTooltip.getInstance());
         initializeCursorManager();
+        setDefaultUIPositions();
     }
 
     @Override
@@ -98,7 +89,6 @@ public class HudStage extends Stage {
 
     public void resize(int width, int height, Viewport worldViewport, Viewport hudViewport) {
         getViewport().update(width, height, true);
-        uiLayoutManager.resize(width, height, worldViewport.getLeftGutterWidth());
         statusBarUI.updatePosition();
         pauseUI.update();
         endGameUI.update(hudViewport);
@@ -110,10 +100,6 @@ public class HudStage extends Stage {
 
     public void onPlayerDield(PlayerEntity player) {
         respawnTimerActor.playerDied(player);
-    }
-
-    public void switchUIWindowDisplay() {
-        uiLayoutManager.forEach(ui -> ui.setVisible(!ui.isVisible()));
     }
 
     public void switchShowDebugInfos() {
@@ -145,7 +131,17 @@ public class HudStage extends Stage {
         chatUI.addHoverWindowListener(manager);
         craftUI.addHoverWindowListener(manager);
         miniMapUI.addHoverWindowListener(manager);
-        inventoryUI.addHoverWindowListener(manager);
         timeUI.addHoverWindowListener(manager);
+        equipmentAndInventoryUI.addHoverWindowListener(manager);
+    }
+
+    private void setDefaultUIPositions() {
+        chatUI.setPosition(0, 0);
+        equipmentAndInventoryUI.setPosition(0, chatUI.getY() + chatUI.getHeight());
+        timeUI.setPosition(0, getViewport().getWorldHeight() - timeUI.getHeight());
+        miniMapUI.setPosition(getViewport().getWorldWidth() - miniMapUI.getWidth(),
+                getViewport().getWorldHeight() - miniMapUI.getHeight());
+        craftUI.setHeight(getViewport().getWorldHeight() - miniMapUI.getHeight());
+        craftUI.setPosition(getViewport().getWorldWidth() - craftUI.getWidth(), 0);
     }
 }

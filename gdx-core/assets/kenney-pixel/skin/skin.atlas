@@ -224,6 +224,14 @@ window
   orig: 32, 47
   offset: 0, 0
   index: -1
+  window-title
+    rotate: false
+    xy: 219, 5
+    size: 16, 30
+    split: 0, 4, 0, 4
+    orig: 16, 30
+    offset: 0, 0
+    index: -1
 x
   rotate: false
   xy: 85, 8

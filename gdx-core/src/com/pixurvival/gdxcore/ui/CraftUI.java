@@ -84,6 +84,7 @@ public class CraftUI extends UIWindow implements InventoryListener {
         ScrollPane scrollPane = new ScrollPane(mainGroup, PixurvivalGame.getSkin());
         scrollPane.setScrollingDisabled(true, false);
         add(scrollPane).expand().fill();
+        pack();
     }
 
     public void addItemCrafts(Collection<ItemCraft> itemCrafts) {

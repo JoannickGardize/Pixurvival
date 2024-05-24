@@ -10,12 +10,11 @@ public class MiniMapUI extends UIWindow {
         super("miniMap");
         mapWidget = new MiniMapWidget();
         add(mapWidget).grow();
+        pack();
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        /*mapActor.setPosition(0, 0);
-        mapActor.setSize(getWidth(), getHeight());*/
         super.draw(batch, parentAlpha);
     }
 

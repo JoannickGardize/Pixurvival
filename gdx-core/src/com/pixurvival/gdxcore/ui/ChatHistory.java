@@ -54,12 +54,19 @@ public class ChatHistory extends Widget implements Cullable {
             chatEntry.buildGlyphLayout(PixurvivalGame.getDefaultFont(), getWidth());
             prefHeight += chatEntry.getGlyphLayout().height + MARGIN;
         });
+        if (prefHeight < 200) {
+            prefHeight = 200;
+        }
     }
 
     @Override
     public float getPrefHeight() {
         validate();
         return prefHeight;
+    }
+
+    public float getPrefWidth() {
+        return 500;
     }
 
     @Override

@@ -348,6 +348,10 @@
       name: window,
       color: background
     },
+    window-title: {
+      name: window-title,
+      color: background
+    },
     alpha: {
       name: dot,
       color: semiTransparent
@@ -513,6 +517,11 @@
     green: {
       font: default,
       fontColor: green
+    },
+    title: {
+      font: default,
+      fontColor: dark,
+      background: window-title
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {

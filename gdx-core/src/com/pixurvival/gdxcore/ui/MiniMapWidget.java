@@ -138,4 +138,13 @@ public class MiniMapWidget extends Widget implements TiledMapListener, PlayerMap
         mapElement.dispose();
         chunkTextures.values().forEach(Texture::dispose);
     }
+
+    public float getPrefWidth() {
+        return 300;
+    }
+
+    @Override
+    public float getPrefHeight() {
+        return 300;
+    }
 }
