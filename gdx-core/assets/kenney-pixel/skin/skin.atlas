@@ -307,3 +307,38 @@ bar-cursor
   orig: 13, 23
   offset: 0, 0
   index: -1
+inventory
+  rotate: false
+  xy: 124, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+craft
+  rotate: false
+  xy: 136, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+map
+  rotate: false
+  xy: 148, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+chat
+  rotate: false
+  xy: 160, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+time
+  rotate: false
+  xy: 172, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1

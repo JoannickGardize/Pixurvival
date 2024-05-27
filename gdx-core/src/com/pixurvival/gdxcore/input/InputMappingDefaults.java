@@ -46,6 +46,11 @@ public class InputMappingDefaults {
         mapping.bind(InputAction.MOVE_DOWN, InputButton.keyboard(Keys.S));
         mapping.bind(InputAction.ACCESSORY1_SPECIAL, InputButton.keyboard(Keys.Q));
         mapping.bind(InputAction.ACCESSORY2_SPECIAL, InputButton.keyboard(Keys.E));
+        mapping.bind(InputAction.SWITCH_EQUIPMENT_AND_INVENTORY_UI, InputButton.keyboard(Keys.F));
+        mapping.bind(InputAction.SWITCH_CRAFT_UI, InputButton.keyboard(Keys.Z));
+        mapping.bind(InputAction.SWITCH_MINI_MAP_UI, InputButton.keyboard(Keys.X));
+        mapping.bind(InputAction.SWITCH_CHAT_UI, InputButton.keyboard(Keys.C));
+        mapping.bind(InputAction.SWITCH_TIME_UI, InputButton.keyboard(Keys.V));
         return mapping;
     }
 

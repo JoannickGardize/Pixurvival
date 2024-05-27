@@ -27,8 +27,12 @@ public class DebugInfosActor extends Actor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void act(float delta) {
+        toFront();
+    }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
         World world = PixurvivalGame.getWorld();
         if (world == null) {
             return;

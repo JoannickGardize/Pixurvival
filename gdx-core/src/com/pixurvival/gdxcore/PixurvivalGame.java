@@ -38,6 +38,7 @@ import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.textures.ChunkTextureManager;
 import com.pixurvival.gdxcore.textures.ContentPackAssets;
+import com.pixurvival.gdxcore.ui.ChatUI;
 import com.pixurvival.gdxcore.util.ClientMainArgs;
 import com.pixurvival.server.PixurvivalServer;
 import com.pixurvival.server.util.ServerMainArgs;
@@ -402,7 +403,9 @@ public class PixurvivalGame extends Game implements ClientGameListener {
     public void focusChat() {
         Screen screen = getScreen();
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).getHudStage().getChatUI().focusTextInput();
+            ChatUI chatUI = ((WorldScreen) screen).getHudStage().getChatUI();
+            chatUI.setVisible(true);
+            chatUI.focusTextInput();
         }
     }
 

@@ -178,7 +178,7 @@
     },
     cross: {
       name: x,
-      color: font
+      color: dark
     },
     selection: {
       name: dot,
@@ -479,6 +479,41 @@
       down: buttonDown,
       disabled: buttonDisabled,
       imageUp: accessory
+    },
+    inventory: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: inventory
+    },
+    craft: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: craft
+    },
+    map: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: map
+    },
+    chat: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: chat
+    },
+    time: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: time
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {

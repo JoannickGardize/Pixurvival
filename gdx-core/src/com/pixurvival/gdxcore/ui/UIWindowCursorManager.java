@@ -43,7 +43,11 @@ public class UIWindowCursorManager implements HoverWindowListener {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.HorizontalResize);
             }
         } else if (y > window.getHeight() - window.getPadTop()) {
-            Gdx.graphics.setSystemCursor(Cursor.SystemCursor.AllResize);
+            if (window.isHoverTitleActor()) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            } else {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.AllResize);
+            }
         } else if (y < window.getPadBottom() + resizeBorder) {
             Gdx.graphics.setSystemCursor(Cursor.SystemCursor.VerticalResize);
         } else {

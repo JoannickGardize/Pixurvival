@@ -21,21 +21,25 @@ import lombok.Getter;
 
 import java.util.Collection;
 
-public class HudStage extends Stage {
+public class HudStage extends Stage implements UIContainer {
 
     private @Getter ChatUI chatUI = new ChatUI();
-    private CraftUI craftUI = new CraftUI();
-    private MiniMapUI miniMapUI = new MiniMapUI();
+    private @Getter CraftUI craftUI = new CraftUI();
+    private @Getter MiniMapUI miniMapUI = new MiniMapUI();
     private StatusBarUI statusBarUI = new StatusBarUI();
     private @Getter EndGameUI endGameUI = new EndGameUI();
     private PauseMenu pauseUI = new PauseMenu();
-    private TimeUI timeUI = new TimeUI();
+    private @Getter TimeUI timeUI = new TimeUI();
     private @Getter EquipmentAndInventoryUI equipmentAndInventoryUI = new EquipmentAndInventoryUI();
+    private UISwitchUI uiSwitchUI = new UISwitchUI(this);
 
     private RespawnTimerActor respawnTimerActor = new RespawnTimerActor();
     private MouseIconActor mouseIconActor = new MouseIconActor();
     private DebugInfosActor debugInfosActors;
     private FillActor blackPauseBackground = new FillActor(new Color(0, 0, 0, 0.5f));
+
+    private int previousWidth;
+    private int previousHeight;
 
     public HudStage(World world, Viewport worldViewport) {
         super(new ScreenViewport());
@@ -55,10 +59,11 @@ public class HudStage extends Stage {
         world.getChatManager().addListener(chatUI);
         addActor(timeUI);
         addActor(chatUI);
-        InteractionDialogUI.getInstance();
         addActor(InteractionDialogUI.getInstance());
         addActor(heldItemStackActor);
         addActor(statusBarUI);
+        addActor(uiSwitchUI);
+        uiSwitchUI.updatePosition();
         addActor(mouseIconActor);
         statusBarUI.updatePosition();
         addActor(ItemCraftTooltip.getInstance());
@@ -78,7 +83,7 @@ public class HudStage extends Stage {
         world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemCraftTooltip.getInstance());
         initializeCursorManager();
-        setDefaultUIPositions();
+        setDefaultUIPositionsAndVisibility();
     }
 
     @Override
@@ -90,12 +95,16 @@ public class HudStage extends Stage {
     public void resize(int width, int height, Viewport worldViewport, Viewport hudViewport) {
         getViewport().update(width, height, true);
         statusBarUI.updatePosition();
+        uiSwitchUI.updatePosition();
         pauseUI.update();
         endGameUI.update(hudViewport);
         respawnTimerActor.setPosition(width / 2f, height - height / 3f);
         InteractionDialogUI.getInstance().sizeAndPosition();
+        UIWindowScreenResizeUtil.resize(this, previousWidth, previousHeight, width, height);
         ScreenResizeEvent event = new ScreenResizeEvent(worldViewport);
         getRoot().fire(event);
+        previousWidth = width;
+        previousHeight = height;
     }
 
     public void onPlayerDield(PlayerEntity player) {
@@ -135,7 +144,13 @@ public class HudStage extends Stage {
         equipmentAndInventoryUI.addHoverWindowListener(manager);
     }
 
-    private void setDefaultUIPositions() {
+    private void setDefaultUIPositionsAndVisibility() {
+        equipmentAndInventoryUI.setVisible(false);
+        craftUI.setVisible(false);
+        miniMapUI.setVisible(false);
+        chatUI.setVisible(false);
+        timeUI.setVisible(false);
+
         chatUI.setPosition(0, 0);
         equipmentAndInventoryUI.setPosition(0, chatUI.getY() + chatUI.getHeight());
         timeUI.setPosition(0, getViewport().getWorldHeight() - timeUI.getHeight());
