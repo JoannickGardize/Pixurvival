@@ -5,11 +5,8 @@ import com.pixurvival.gdxcore.util.Enums;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 @NoArgsConstructor
 @EqualsAndHashCode(of = "buttonByAction")
@@ -19,14 +16,14 @@ public class InputMapping {
     public static final String VERSION_KEY = "version";
 
     private Map<InputAction, InputButton> buttonByAction = new EnumMap<>(InputAction.class);
-    private Map<InputButton, InputAction> actionByButton = new HashMap<>();
+    private Map<InputButton, Set<InputAction>> actionByButton = new HashMap<>();
     private String name;
 
     public InputMapping(Properties properties) {
         // Bind default first so new binding will not conflict with actual user binding
         InputMapping mappingDefaults = InputMappingDefaults.findBestDefaultMatch();
-        for (Entry<InputButton, InputAction> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
-            bind(defaultEntries.getValue(), defaultEntries.getKey());
+        for (Entry<InputButton, Set<InputAction>> defaultEntries : mappingDefaults.actionByButton.entrySet()) {
+            bind(defaultEntries.getValue().iterator().next(), defaultEntries.getKey());
         }
 
         if (!String.valueOf(VERSION).equals(properties.get("version"))) {
@@ -53,15 +50,21 @@ public class InputMapping {
         return buttonByAction.get(action);
     }
 
-    public InputAction getAction(InputButton button) {
+    public Set<InputAction> getAction(InputButton button) {
         return actionByButton.get(button);
     }
 
     public void bind(InputAction action, InputButton button) {
-        actionByButton.remove(buttonByAction.get(action));
-        buttonByAction.remove(actionByButton.get(button));
+        InputButton previousButton = buttonByAction.remove(action);
+        Set<InputAction> actions = actionByButton.get(previousButton);
+        if (actions != null) {
+            actions.remove(action);
+        }
         buttonByAction.put(action, button);
-        actionByButton.put(button, action);
+        actionByButton.merge(button, EnumSet.of(action), (e1, e2) -> {
+            e1.addAll(e2);
+            return e1;
+        });
     }
 
     public void set(InputMapping other) {

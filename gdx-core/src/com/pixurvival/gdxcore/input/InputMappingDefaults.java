@@ -51,6 +51,7 @@ public class InputMappingDefaults {
         mapping.bind(InputAction.SWITCH_MINI_MAP_UI, InputButton.keyboard(Keys.X));
         mapping.bind(InputAction.SWITCH_CHAT_UI, InputButton.keyboard(Keys.C));
         mapping.bind(InputAction.SWITCH_TIME_UI, InputButton.keyboard(Keys.V));
+        mapping.bind(InputAction.SWITCH_ALL_UI, InputButton.keyboard(Keys.TAB));
         return mapping;
     }
 

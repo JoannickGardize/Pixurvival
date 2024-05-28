@@ -68,7 +68,7 @@ public class ArgsUtils {
             field.set(instance, stringValue);
         } else if (field.getType().isPrimitive()) {
             primitiveSetters.get(field.getType()).accept(field, instance, stringValue);
-        } else { // At this point we assume that the field is a wrapper type or an enum value
+        } else { // At this point we assume that the field has a valueOf method like primitive wrappers or enums
             field.set(instance, field.getType().getMethod("valueOf", String.class).invoke(null, stringValue));
         }
     }

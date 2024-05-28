@@ -16,7 +16,7 @@ public class UIWindowScreenResizeUtil {
      * @param height
      */
     public static void resize(UIContainer container, int previousWidth, int previousHeight, int width, int height) {
-        if (previousWidth == 0 && previousHeight == 0) {
+        if (previousWidth == 0 && previousHeight == 0 || width == 0 || height == 0) {
             return;
         }
         container.forEachUIWindow(w -> {

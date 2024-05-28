@@ -40,7 +40,10 @@ public class PropertiesFileUtils {
             for (Field field : ReflectionUtils.getAllFields(wrapper.getClass())) {
                 if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                     field.setAccessible(true);
-                    properties.put(field.getName(), field.get(wrapper).toString());
+                    Object value = field.get(wrapper);
+                    if (value != null) {
+                        properties.put(field.getName(), value.toString());
+                    }
                 }
             }
             properties.store(fos, null);

@@ -3,6 +3,7 @@ package com.pixurvival.gdxcore;
 import com.pixurvival.gdxcore.ui.*;
 
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public interface UIContainer {
 
@@ -16,11 +17,11 @@ public interface UIContainer {
 
     EquipmentAndInventoryUI getEquipmentAndInventoryUI();
 
-    default void forEachUIWindow(Consumer<UIWindow> window) {
-        window.accept(getChatUI());
-        window.accept(getCraftUI());
-        window.accept(getMiniMapUI());
-        window.accept(getTimeUI());
-        window.accept(getEquipmentAndInventoryUI());
+    default Stream<UIWindow> uiWindowStream() {
+        return Stream.of(getChatUI(), getCraftUI(), getMiniMapUI(), getTimeUI(), getEquipmentAndInventoryUI());
+    }
+
+    default void forEachUIWindow(Consumer<UIWindow> action) {
+        uiWindowStream().forEach(action);
     }
 }

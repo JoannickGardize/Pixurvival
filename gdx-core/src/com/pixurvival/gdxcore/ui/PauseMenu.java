@@ -7,12 +7,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.pixurvival.core.World;
 import com.pixurvival.core.WorldSerialization;
+import com.pixurvival.gdxcore.HudStage;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
 import com.pixurvival.gdxcore.menu.ControlsPanel;
 import com.pixurvival.gdxcore.menu.MainMenuScreen;
 import com.pixurvival.gdxcore.menu.MenuButton;
+import com.pixurvival.gdxcore.util.GeneralSettings;
 import com.pixurvival.gdxcore.util.Scene2dUtils;
+import com.pixurvival.gdxcore.util.UserDirectory;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -50,6 +53,16 @@ public class PauseMenu extends Window {
             }
             try {
                 WorldSerialization.save(PixurvivalGame.getWorld(), PixurvivalGame.getClient().getContentPackContext());
+
+                Screen screen = PixurvivalGame.getInstance().getScreen();
+                if (screen instanceof WorldScreen) {
+                    HudStage hudStage = ((WorldScreen) screen).getHudStage();
+                    GeneralSettings generalSettings = UserDirectory.getGeneralSettings();
+                    generalSettings.setAllUIStates(hudStage);
+                    generalSettings.setLastScreenWidth((int) hudStage.getWidth());
+                    generalSettings.setLastScreenHeight((int) hudStage.getHeight());
+                    UserDirectory.saveGeneralSettings();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

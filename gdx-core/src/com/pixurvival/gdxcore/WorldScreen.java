@@ -28,27 +28,14 @@ import com.pixurvival.gdxcore.notificationpush.NotificationPushManager;
 import com.pixurvival.gdxcore.notificationpush.Party;
 import com.pixurvival.gdxcore.textures.ChunkTextureManager;
 import com.pixurvival.gdxcore.textures.ContentPackAssets;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Instant;
 
-// TODO separated class for world stage and hud stage ?
 public class WorldScreen implements Screen {
 
-    @AllArgsConstructor
-    @Getter
-    public enum ScreenConfiguration {
-        SQUARE(VIEWPORT_WORLD_WIDTH),
-        LARGE(CAMERA_BOUNDS * 2);
-
-        private float maxViewportWidth;
-
-
-    }
-
-
     public static final float CAMERA_BOUNDS = GameConstants.PLAYER_VIEW_DISTANCE - 5;
+    public static final float MAX_VIEWPORT_WIDTH = CAMERA_BOUNDS * 2;
     public static final float VIEWPORT_WORLD_WIDTH = (CAMERA_BOUNDS * 2) * 0.75f;
 
     private @Getter World world;
@@ -61,7 +48,6 @@ public class WorldScreen implements Screen {
     private DefaultSoundsPlayer defaultSoundsPlayer;
     private LightDrawer lightDrawer = new LightDrawer();
     private @Getter ChunkTextureManager chunkTextureManager;
-    private ScreenConfiguration screenConfiguration = ScreenConfiguration.LARGE;
 
     public void initialize(World world) {
         if (this.world != null) {
@@ -77,8 +63,7 @@ public class WorldScreen implements Screen {
         }
         chunkTextureManager = new ChunkTextureManager();
         world.getMap().addListener(chunkTextureManager);
-        worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH,
-                screenConfiguration.getMaxViewportWidth(), screenConfiguration.getMaxViewportWidth()));
+        worldStage = new Stage(new ExtendViewport(VIEWPORT_WORLD_WIDTH, VIEWPORT_WORLD_WIDTH, MAX_VIEWPORT_WIDTH, MAX_VIEWPORT_WIDTH));
 
         cameraControlProcessor = new CameraControlProcessor(worldStage.getViewport());
         this.world = world;
@@ -130,6 +115,9 @@ public class WorldScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        if (Gdx.graphics.getWidth() == 0 || Gdx.graphics.getHeight() == 0) {
+            return;
+        }
         PlayerMovementRequest request = InputManager.getInstance().updatePlayerMovement();
         if (request != null) {
             PixurvivalGame.getClient().sendAction(request);

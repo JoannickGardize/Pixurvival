@@ -17,6 +17,8 @@ import com.pixurvival.gdxcore.ui.tooltip.ItemCraftTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.ItemTooltip;
 import com.pixurvival.gdxcore.ui.tooltip.SubStatsTooltip;
 import com.pixurvival.gdxcore.util.FillActor;
+import com.pixurvival.gdxcore.util.GeneralSettings;
+import com.pixurvival.gdxcore.util.UserDirectory;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -83,7 +85,9 @@ public class HudStage extends Stage implements UIContainer {
         world.getMyPlayer().getStats().addListener(ItemTooltip.getInstance());
         world.getMyPlayer().getStats().addListener(ItemCraftTooltip.getInstance());
         initializeCursorManager();
-        setDefaultUIPositionsAndVisibility();
+        if (!loadSavedUIStatusPositions()) {
+            setDefaultUIPositionsAndVisibility();
+        }
     }
 
     @Override
@@ -158,5 +162,21 @@ public class HudStage extends Stage implements UIContainer {
                 getViewport().getWorldHeight() - miniMapUI.getHeight());
         craftUI.setHeight(getViewport().getWorldHeight() - miniMapUI.getHeight());
         craftUI.setPosition(getViewport().getWorldWidth() - craftUI.getWidth(), 0);
+    }
+
+    private boolean loadSavedUIStatusPositions() {
+        GeneralSettings gs = UserDirectory.getGeneralSettings();
+        if (gs.getInventoryUIState() == null) {
+            return false;
+        }
+        gs.getInventoryUIState().apply(equipmentAndInventoryUI);
+        gs.getCraftUIState().apply(craftUI);
+        gs.getMapUIState().apply(miniMapUI);
+        gs.getChatUIState().apply(chatUI);
+        gs.getTimeUIState().apply(timeUI);
+        UIWindowScreenResizeUtil.resize(this, gs.getLastScreenWidth(), gs.getLastScreenHeight(),
+                (int) getWidth(), (int) getHeight());
+
+        return true;
     }
 }
