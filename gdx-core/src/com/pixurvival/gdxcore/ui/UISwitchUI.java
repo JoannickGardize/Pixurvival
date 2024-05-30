@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,6 +21,7 @@ public class UISwitchUI extends Table {
         add(createSwitchButton("map", container.getMiniMapUI(), InputAction.SWITCH_MINI_MAP_UI));
         add(createSwitchButton("chat", container.getChatUI(), InputAction.SWITCH_CHAT_UI));
         add(createSwitchButton("time", container.getTimeUI(), InputAction.SWITCH_TIME_UI));
+        add(createSwitchButton("pause", () -> container.switchPauseMenu(), InputAction.PAUSE_MENU));
         pack();
     }
 
@@ -27,7 +29,11 @@ public class UISwitchUI extends Table {
         setPosition(Gdx.graphics.getWidth() / 2f - getWidth() / 2, Gdx.graphics.getHeight() - getHeight() - 30);
     }
 
-    private ImageButton createSwitchButton(String skin, UIWindow window, InputAction inputAction) {
+    private ImageButton createSwitchButton(String skin, Actor window, InputAction inputAction) {
+        return createSwitchButton(skin, () -> window.setVisible(!window.isVisible()), inputAction);
+    }
+
+    private ImageButton createSwitchButton(String skin, Runnable action, InputAction inputAction) {
         ImageButton button = new ImageButton(PixurvivalGame.getSkin(), skin) {
             private ShortcutDrawer shortcutDrawer = new ShortcutDrawer(this, inputAction, ShortcutDrawer.BOTTOM);
 
@@ -40,7 +46,7 @@ public class UISwitchUI extends Table {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                window.setVisible(!window.isVisible());
+                action.run();
             }
 
         });

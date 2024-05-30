@@ -74,6 +74,9 @@ public class GameMode extends NamedIdentifiedElement {
     private long playerRespawnDelay = 5_000;
 
     @Positive
+    private long spawnProtectionDuration = 0;
+
+    @Positive
     private float hungerPerMinute = 10f;
 
     private transient float hungerPerSecond;

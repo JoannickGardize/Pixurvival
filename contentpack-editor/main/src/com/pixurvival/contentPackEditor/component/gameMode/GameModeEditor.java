@@ -48,6 +48,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
         RolesEditor rolesEditor = new RolesEditor();
         EnumChooser<PlayerDeathItemHandling> playerDeathItemHandlingChooser = new EnumChooser<>(PlayerDeathItemHandling.class);
         EnumChooser<PlayerRespawnType> playerRespawnTypeChooser = new EnumChooser<>(PlayerRespawnType.class);
+        TimeInput spawnProtectionDurationInput = new TimeInput();
 
         // Binding
 
@@ -64,6 +65,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
         bind(playerDeathItemHandlingChooser, "playerDeathItemHandling");
         bind(playerRespawnTypeChooser, "playerRespawnType");
         bind(playerRespawnDelayInput, "playerRespawnDelay");
+        bind(spawnProtectionDurationInput, "spawnProtectionDuration");
         bind(keepPermanentStatsCheckBox, "keepPermanentStats");
         bind(hungerPerMinuteInput, "hungerPerMinute");
 
@@ -83,6 +85,7 @@ public class GameModeEditor extends RootElementEditor<GameMode> {
         LayoutUtils.nextColumn(gbc);
         LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.keepPermanentStats", keepPermanentStatsCheckBox, gbc);
         LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.playerRespawnDelay", playerRespawnDelayInput, gbc);
+        LayoutUtils.addHorizontalLabelledItem(deathPanel, "gameMode.spawnProtectionDuration", spawnProtectionDurationInput, gbc);
 
         JPanel allPanel = new JPanel();
         allPanel.setLayout(new BoxLayout(allPanel, BoxLayout.Y_AXIS));

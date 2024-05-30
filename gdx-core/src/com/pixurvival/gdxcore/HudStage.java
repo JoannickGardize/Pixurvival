@@ -123,12 +123,16 @@ public class HudStage extends Stage implements UIContainer {
         endGameUI.show(data);
     }
 
+    @Override
     public void switchPauseMenu() {
         pauseUI.toFront();
         boolean pausing = !pauseUI.isVisible();
         pauseUI.setVisible(pausing);
         blackPauseBackground.setVisible(pausing);
         PixurvivalGame.getClient().requestPause(pausing);
+        if (!pausing) {
+            unfocusAll();
+        }
     }
 
     public void addItemCrafts(Collection<ItemCraft> crafts) {

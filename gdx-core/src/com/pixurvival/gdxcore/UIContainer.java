@@ -17,6 +17,8 @@ public interface UIContainer {
 
     EquipmentAndInventoryUI getEquipmentAndInventoryUI();
 
+    void switchPauseMenu();
+
     default Stream<UIWindow> uiWindowStream() {
         return Stream.of(getChatUI(), getCraftUI(), getMiniMapUI(), getTimeUI(), getEquipmentAndInventoryUI());
     }

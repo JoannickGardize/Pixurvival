@@ -90,6 +90,8 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
 
     private @Setter long respawnTime;
 
+    private long spawnProtectionEndTime;
+
     private @Setter InteractionDialog interactionDialog;
 
     @Override
@@ -314,6 +316,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         if (!isAlive()) {
             VarLenNumberIO.writePositiveVarLong(buffer, respawnTime);
         }
+        VarLenNumberIO.writePositiveVarLong(buffer, spawnProtectionEndTime);
         ByteBufferUtils.putString(buffer, name);
         inventory.write(buffer);
         itemCraftDiscovery.write(buffer);
@@ -329,6 +332,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         if (!isAlive()) {
             respawnTime = VarLenNumberIO.readPositiveVarLong(buffer);
         }
+        setSpawnProtectionEndTime(VarLenNumberIO.readPositiveVarLong(buffer));
         setName(ByteBufferUtils.getString(buffer));
         inventory.apply(getWorld(), buffer);
         itemCraftDiscovery.apply(buffer, getWorld().getContentPack().getItems());
@@ -354,6 +358,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
     }
 
     public void respawn(Vector2 respawnPosition) {
+        setSpawnProtectionEndTime();
         setAlive(true);
         getTeam().addAlive(this);
         setHealth(getMaxHealth());
@@ -364,5 +369,20 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
         startAbility(-1);
         getWorld().getEntityPool().addOld(this);
         getWorld().getEntityPool().notifyPlayerRespawned(this);
+    }
+
+    public void setSpawnProtectionEndTime() {
+        setSpawnProtectionEndTime(getWorld().getTime().getTimeMillis()
+                + getWorld().getGameMode().getSpawnProtectionDuration());
+    }
+
+    public void setSpawnProtectionEndTime(long spawnProtectionEndTime) {
+        this.spawnProtectionEndTime = spawnProtectionEndTime;
+        setInvincibleTermTime(spawnProtectionEndTime);
+    }
+
+    @Override
+    public boolean isHiddenForEnemies() {
+        return getWorld().getTime().getTimeMillis() < spawnProtectionEndTime;
     }
 }

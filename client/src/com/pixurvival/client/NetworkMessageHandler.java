@@ -65,6 +65,7 @@ class NetworkMessageHandler extends Listener {
             for (PlayerRespawn playerRespawn : pr) {
                 PlayerEntity player = game.getWorld().getPlayerEntities().get(playerRespawn.getId());
                 player.getTeam().addAlive(player);
+                player.setSpawnProtectionEndTime();
                 game.getWorld().getEntityPool().notifyPlayerRespawned(player);
             }
         });

@@ -342,3 +342,10 @@ time
   orig: 12, 12
   offset: 0, 0
   index: -1
+pause
+  rotate: false
+  xy: 184, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1

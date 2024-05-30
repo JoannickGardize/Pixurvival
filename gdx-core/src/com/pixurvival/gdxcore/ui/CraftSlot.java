@@ -34,7 +34,10 @@ public class CraftSlot extends Button {
     }
 
     public void updateState() {
-        boolean newCanCraft = ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft);
+        updateState(ActionPreconditions.canCraft(PixurvivalGame.getClient().getMyPlayer(), itemCraft));
+    }
+
+    public void updateState(boolean newCanCraft) {
         if (newCanCraft != canCraft) {
             if (newCanCraft) {
                 if (isVisible()) {

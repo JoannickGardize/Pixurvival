@@ -11482,6 +11482,7 @@ gameModes:
   playerRespawnType: SPAWN_POSITION
   keepPermanentStats: false
   playerRespawnDelay: 10000
+  spawnProtectionDuration: 7000
   hungerPerMinute: 10.0
 - id: 1
   name: hardcore_cooperative_survival
@@ -11514,6 +11515,7 @@ gameModes:
   playerRespawnType: NONE
   keepPermanentStats: false
   playerRespawnDelay: 5000
+  spawnProtectionDuration: 0
   hungerPerMinute: 10.0
 - id: 2
   name: team_survival
@@ -11541,6 +11543,7 @@ gameModes:
   playerRespawnType: NONE
   keepPermanentStats: false
   playerRespawnDelay: 5000
+  spawnProtectionDuration: 0
   hungerPerMinute: 10.0
 - id: 3
   name: pig_revenge
@@ -11632,9 +11635,10 @@ gameModes:
   playerRespawnType: NONE
   keepPermanentStats: false
   playerRespawnDelay: 5000
+  spawnProtectionDuration: 0
   hungerPerMinute: 10.0
 constants:
   defaultCharacter: *character03
   outsideTile: *deep_water
   tileAnimationSpeed: 300
-releaseVersion: ALPHA_13
+releaseVersion: ALPHA_14

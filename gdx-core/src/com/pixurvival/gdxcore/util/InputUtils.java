@@ -29,6 +29,8 @@ public class InputUtils {
                 return "8";
             case 16:
                 return "9";
+            case 111:
+                return "Esc";
         }
         String keyName = GLFW.glfwGetKeyName(getGlfwKeyCode(code), 0);
         if (keyName != null && !keyName.equals("")) {

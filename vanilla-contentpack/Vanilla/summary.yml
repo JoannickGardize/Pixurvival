@@ -12,7 +12,7 @@ gameModeSummaries:
   teamNumberInterval: {min: 1, max: 1}
   teamSizeInterval: {min: 1, max: 10}
   roleSummaries: null
-- nameTranslations: {en: Hardcore Cooperative / Solo Survival, fr: Survie coopérative / solo hardcore, pl: Coop/Hardcore}
+- nameTranslations: {en: Hardcore cooperative / solo survival, fr: Survie coopérative / solo hardcore, pl: Coop/Hardcore}
   descriptionTranslations: {en: 'Survive as long as you can, alone or in a group, in an endless open world, watch out for
       invasions of ninja pigs, the night, and your stomach! In this hardcore mode, you cannot revive after death.', fr: 'Survivez
       aussi longtemps que possible, seul ou en groupe, dans un monde ouvert infini, prenez gare aux invasions de cochons ninja,
@@ -21,20 +21,20 @@ gameModeSummaries:
   teamNumberInterval: {min: 1, max: 1}
   teamSizeInterval: {min: 1, max: 10}
   roleSummaries: null
-- nameTranslations: {en: Team Survival, fr: Survie par équipe, pl: Drużynowe przetrwanie}
-  descriptionTranslations: {en: 'Be the last surviving squad in a map, with borders that shrink for 20 minutes!', fr: Soyez
-      la dernière escouade survivante dans un terrain qui se resserre à partir de 20 minutes !, pl: Bądź ostatnią drużyną
-      w ciągle zmniejszającym się terenie przez 20 minut!}
+- nameTranslations: {en: Team survival, fr: Survie par équipe, pl: Drużynowe przetrwanie}
+  descriptionTranslations: {en: Be the last surviving squad in a tightening terrain from 20 minutes!, fr: Soyez la dernière
+      escouade survivante dans un terrain qui se resserre à partir de 20 minutes !, pl: Bądź ostatnią drużyną w ciągle zmniejszającym
+      się terenie przez 20 minut!}
   teamNumberInterval: {min: 2, max: 6}
   teamSizeInterval: {min: 1, max: 4}
   roleSummaries: null
-- nameTranslations: {en: Pig Revenge, fr: La revanche des cochons, pl: Świnie atakują!}
-  descriptionTranslations: {en: Many bacon and sausage to be had. The pigs take their revenge! Survive their assaults for
-      15 minutes. Find supply crates to better equip yourself!, fr: 'Tellement de bacon et de saucisson. Les cochons se vengent
-      ! Survivez à leurs assaults pendant 15 minutes, trouvez les caisses de ravitaillement pour mieux vous équiper !', pl: Dużo
+- nameTranslations: {en: Pig revenge, fr: La revanche des cochons, pl: Świnie atakują!}
+  descriptionTranslations: {en: 'So much bacon and sausage. The pigs take revenge! Survive their assaults for 15 minutes,
+      find the supply crates to better equip yourself!', fr: 'Tellement de bacon et de saucisson. Les cochons se vengent !
+      Survivez à leurs assaults pendant 15 minutes, trouvez les caisses de ravitaillement pour mieux vous équiper !', pl: Dużo
       bekonu i szynki! Świnie atakują! Przetrwaj ich atak przez 15 minut i szukaj skrzynek z zaopatrzeniem aly lepiej się
       uzbroić!}
   teamNumberInterval: {min: 1, max: 1}
   teamSizeInterval: {min: 1, max: 10}
   roleSummaries: null
-releaseVersion: ALPHA_13B
+releaseVersion: ALPHA_13

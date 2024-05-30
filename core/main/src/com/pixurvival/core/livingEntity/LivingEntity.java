@@ -98,6 +98,12 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         }
     }
 
+    public void setInvincibleTermTime(long invincibleTermTime) {
+        if (invincibleTermTime > this.invincibleTermTime) {
+            this.invincibleTermTime = invincibleTermTime;
+        }
+    }
+
     public void setFixedMovement(float movingAngle, float speed) {
         movementChangeEnabled = true;
         setForwardFactor(1);

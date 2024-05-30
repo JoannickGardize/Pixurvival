@@ -514,6 +514,13 @@
       down: buttonDown,
       disabled: buttonDisabled,
       imageUp: time
+    },
+    pause: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: pause
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
