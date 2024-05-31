@@ -64,10 +64,12 @@ public class CraftUI extends UIWindow implements InventoryListener {
 
     private Map<CraftCategory, CategoryEntry> sortedItemCrafts = new EnumMap<>(CraftCategory.class);
     private Map<Structure, RequiredStructureSlots> slotsByRequiredStructure = new HashMap<>();
+    private VerticalGroup mainGroup;
 
     public CraftUI() {
         super("crafting");
-        VerticalGroup mainGroup = new VerticalGroup();
+        debug();
+        mainGroup = new VerticalGroup();
         mainGroup.pad(2);
         mainGroup.align(Align.top);
         mainGroup.columnAlign(Align.top);
@@ -116,6 +118,7 @@ public class CraftUI extends UIWindow implements InventoryListener {
                 entry.getValue().slots.forEach(slot -> slot.updateState(false));
             }
         }
+        super.act(delta);
     }
 
     public CraftGroup createCraftGroup(List<ItemCraft> categoryList) {

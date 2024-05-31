@@ -54,16 +54,16 @@ public class LoadSingleplayerLobbyScreen implements Screen {
 
         saveChooser.update();
 
-        TextButton playButton = new MenuButton("lobby.play", () -> {
+        TextButton playButton = new MenuButton("lobby.play", ifAnySelected(() -> {
             try {
                 PixurvivalGame.getClient().loadAndStartLocalGame(saveChooser.getSelectedSave().getName(), PixurvivalGame.getRequiredChunkManagerPlugins());
             } catch (LoadGameException e) {
                 LoadGameUtils.handleLoadGameError(e, errorWindow);
             }
-        });
+        }));
         TextButton removeButton = new MenuButton("lobby.remove",
-                () -> removeConfirm.setVisible(PixurvivalGame.getString("lobby.confirmRemove", saveChooser.getSelectedSave().getName())));
-        TextButton renameButton = new MenuButton("lobby.rename", () -> renameWindow.setVisible(saveChooser.getSelectedSave().getName()));
+                ifAnySelected(() -> removeConfirm.setVisible(PixurvivalGame.getString("lobby.confirmRemove", saveChooser.getSelectedSave().getName()))));
+        TextButton renameButton = new MenuButton("lobby.rename", ifAnySelected(() -> renameWindow.setVisible(saveChooser.getSelectedSave().getName())));
 
         mainGroup.add(new ScrollPane(saveChooser)).fillX();
         mainGroup.row();
@@ -121,5 +121,13 @@ public class LoadSingleplayerLobbyScreen implements Screen {
             stage.dispose();
             stage = null;
         }
+    }
+
+    private Runnable ifAnySelected(Runnable runnable) {
+        return () -> {
+            if (saveChooser.getSelectedSave() != null) {
+                runnable.run();
+            }
+        };
     }
 }

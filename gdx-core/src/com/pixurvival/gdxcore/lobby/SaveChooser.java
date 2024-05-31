@@ -29,7 +29,7 @@ public class SaveChooser extends Table {
     }
 
     public File getSelectedSave() {
-        return savesList.getSelected().getFile();
+        return savesList.getSelected() != null ? savesList.getSelected().getFile() : null;
     }
 
 }
