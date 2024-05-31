@@ -13,8 +13,12 @@ import lombok.Setter;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Chunks contains an overflow of one tile in each direction for graphical generation of tiles.
+ */
 @Getter
 public class Chunk {
 
@@ -52,14 +56,44 @@ public class Chunk {
 
     private @Setter int factoryCount = 0;
 
+    private boolean isMonoTile = false;
+
+    private int maxTileFrameCount = 1;
+
     public Chunk(TiledMap map, int x, int y) {
         this.map = map;
         this.position = new ChunkPosition(x, y);
         updateTimestamp = map.getWorld().getTime().getTimeMillis();
         offsetX = position.getX() * GameConstants.CHUNK_SIZE;
         offsetY = position.getY() * GameConstants.CHUNK_SIZE;
-        tiles = new MapTile[GameConstants.CHUNK_SIZE * GameConstants.CHUNK_SIZE];
+        tiles = new MapTile[(GameConstants.CHUNK_SIZE + 2) * (GameConstants.CHUNK_SIZE + 2)];
         check();
+    }
+
+    public void computeMetadata() {
+        Tile firstTile = tiles[0].getTileDefinition();
+        isMonoTile = true;
+        for (int x = 0; x < GameConstants.CHUNK_SIZE; x++) {
+            for (int y = 0; y < GameConstants.CHUNK_SIZE; y++) {
+                Tile tile = tileAtLocal(x, y).getTileDefinition();
+                if (tile != firstTile) {
+                    isMonoTile = false;
+                }
+                if (tile.getFrames().size() > maxTileFrameCount) {
+                    maxTileFrameCount = tile.getFrames().size();
+                }
+            }
+        }
+        if (tileAtLocal(0, -1).getTileDefinition() != firstTile
+                || tileAtLocal(-1, 0).getTileDefinition() != firstTile
+                || tileAtLocal(GameConstants.CHUNK_SIZE - 1, -1).getTileDefinition() != firstTile
+                || tileAtLocal(GameConstants.CHUNK_SIZE, 0).getTileDefinition() != firstTile
+                || tileAtLocal(-1, GameConstants.CHUNK_SIZE - 1).getTileDefinition() != firstTile
+                || tileAtLocal(0, GameConstants.CHUNK_SIZE).getTileDefinition() != firstTile
+                || tileAtLocal(GameConstants.CHUNK_SIZE - 1, GameConstants.CHUNK_SIZE).getTileDefinition() != firstTile
+                || tileAtLocal(GameConstants.CHUNK_SIZE, GameConstants.CHUNK_SIZE - 1).getTileDefinition() != firstTile) {
+            isMonoTile = false;
+        }
     }
 
     public List<StructureEntity> getStructures(int typeId) {
@@ -93,12 +127,12 @@ public class Chunk {
     }
 
     public void invalidateCompressed() {
-        // The CompressedChunk is not up to date anymore
+        // The CompressedChunk is not up-to-date anymore
         compressedChunkRef = NULL_COMPRESSED_REF;
     }
 
     public MapTile tileAtLocal(int x, int y) {
-        return tiles[y * GameConstants.CHUNK_SIZE + x];
+        return tiles[tileCoordToChunkCoord(x, y)];
     }
 
     public MapTile tileAt(int x, int y) {
@@ -112,12 +146,17 @@ public class Chunk {
     }
 
     public void set(int x, int y, MapTile tile) {
-        tiles[y * GameConstants.CHUNK_SIZE + x] = tile;
+        tiles[tileCoordToChunkCoord(x, y)] = tile;
         fileSync = false;
     }
 
     public void forEachStructure(Consumer<StructureEntity> action) {
         structures.values().forEach(list -> list.forEach(action));
+    }
+
+    public void forEachStructureGroup(BiConsumer<Integer, List<StructureEntity>> action) {
+
+        structures.forEach(action::accept);
     }
 
     public StructureEntity addNewStructure(Structure structure, int x, int y) {
@@ -143,8 +182,7 @@ public class Chunk {
      * @return
      */
     public StructureEntity addStructureSilently(Structure structure, int x, int y) {
-        StructureEntity mapStructure = createStructure(structure, x, y);
-        return mapStructure;
+        return createStructure(structure, x, y);
     }
 
     private StructureEntity createStructure(Structure structure, int x, int y) {
@@ -248,6 +286,10 @@ public class Chunk {
 
     public Random createFixedRandom() {
         return new Random((long) position.getX() << 32L ^ position.getY());
+    }
+
+    private static int tileCoordToChunkCoord(int x, int y) {
+        return (y + 1) * (GameConstants.CHUNK_SIZE + 2) + x + 1;
     }
 
     @Override

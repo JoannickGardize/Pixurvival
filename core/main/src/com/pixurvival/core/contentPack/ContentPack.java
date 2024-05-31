@@ -344,5 +344,4 @@ public class ContentPack implements Serializable {
         String result = translations.get(locale).getProperty(key);
         return result == null ? "" : result;
     }
-
 }

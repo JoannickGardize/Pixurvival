@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.TranslationKey;
@@ -22,7 +21,7 @@ import lombok.Getter;
 import java.util.Collection;
 import java.util.Locale;
 
-public class FactoryTooltip extends Table implements InventoryListener {
+public class FactoryTooltip extends Tooltip implements InventoryListener {
 
     private static @Getter FactoryTooltip instance = new FactoryTooltip();
 

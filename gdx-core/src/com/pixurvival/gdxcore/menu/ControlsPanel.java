@@ -37,11 +37,7 @@ public class ControlsPanel extends Table {
         Table resetDefaultsTable = new Table();
         resetDefaultsTable.defaults().pad(4).fill();
         SelectBox<InputMapping> defaultsBox = new SelectBox<>(PixurvivalGame.getSkin());
-        if (PixurvivalGame.getClient().getLocalePriorityList().get(0).getLanguage().equals("fr")) {
-            defaultsBox.setItems(InputMappingDefaults.azerty(), InputMappingDefaults.qwerty());
-        } else {
-            defaultsBox.setItems(InputMappingDefaults.qwerty(), InputMappingDefaults.azerty());
-        }
+        defaultsBox.setItems(InputMappingDefaults.qwerty()); // Since LWJGL3
         MenuButton applyButton = new MenuButton("generic.apply", () -> setMapping(defaultsBox.getSelected()));
         resetDefaultsTable.add(new UILabel("controlPanel.resetDefaults")).expand();
         resetDefaultsTable.add(defaultsBox);
@@ -79,14 +75,6 @@ public class ControlsPanel extends Table {
         popupWindow.toFront();
     }
 
-    public void showKeyInUseMessage(InputAction usingAction) {
-        popupWindow.getTitleLabel().setText(PixurvivalGame.getString("controlPanel.keyInUseWindow.title"));
-        popupWindow.getContentLabel().setText(PixurvivalGame.getString("controlPanel.keyInUseWindow.content") + " " + getInputActionTranslation(usingAction));
-        popupWindow.getOkButton().setVisible(true);
-        popupWindow.setVisible(true);
-        popupWindow.toFront();
-    }
-
     public void setMapping(InputMapping mapping) {
         this.mapping.set(mapping);
         for (InputAction action : InputAction.values()) {
@@ -112,14 +100,9 @@ public class ControlsPanel extends Table {
     private void bind(InputAction action, InputButton button) {
         popupWindow.setVisible(false);
         Gdx.input.setInputProcessor(previousInputProcessor);
-        InputAction currentAction = mapping.getAction(button);
-        if (currentAction == null) {
-            mapping.bind(action, button);
-            actionButtons[action.ordinal()].setText(button.toString());
-            saveButton.setDisabled(mapping.equals(InputManager.getInstance().getMapping()));
-        } else {
-            showKeyInUseMessage(currentAction);
-        }
+        mapping.bind(action, button);
+        actionButtons[action.ordinal()].setText(button.toString());
+        saveButton.setDisabled(mapping.equals(InputManager.getInstance().getMapping()));
     }
 
     private Table createKeysTable() {

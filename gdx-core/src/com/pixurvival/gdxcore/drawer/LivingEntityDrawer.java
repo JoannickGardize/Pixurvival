@@ -39,6 +39,9 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
         TextureAnimationSet textureAnimationSet = getBodyTextureAnimationSetOrAbility(e);
         TextureAnimation textureAnimation = textureAnimationSet.get(actionAnimation);
         int index = DrawUtils.getIndexAndUpdateTimer(e, textureAnimation);
+        if (skipDraw(e)) {
+            return;
+        }
         DrawData data = (DrawData) e.getCustomData();
         Vector2 drawPosition = data.getDrawPosition();
         float x = drawPosition.getX() - textureAnimationSet.getWidth() / 2;
@@ -56,6 +59,10 @@ public abstract class LivingEntityDrawer<E extends LivingEntity> extends EntityD
     @Override
     public void backgroundDraw(Batch batch, E e) {
         // Empty
+    }
+
+    protected boolean skipDraw(E e) {
+        return false;
     }
 
     protected void drawAfterBody(Batch batch, E e, TextureAnimation textureAnimation, ActionAnimation actionAnimation, int index, float x, float y) {

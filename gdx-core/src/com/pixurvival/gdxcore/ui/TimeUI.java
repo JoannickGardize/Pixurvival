@@ -42,5 +42,6 @@ public class TimeUI extends UIWindow {
         add(totalTimeValue).expand().fill().align(Align.left).padLeft(10);
         row();
         add(new DayCycleBar()).expand().fill().colspan(2);
+        pack();
     }
 }

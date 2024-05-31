@@ -26,6 +26,10 @@ public class ActionPreconditions {
                 requiredStructure.getId()) == null) {
             return false;
         }
+        return hasRequiredItems(playerEntity, itemCraft);
+    }
+
+    public static boolean hasRequiredItems(PlayerEntity playerEntity, ItemCraft itemCraft) {
         return playerEntity.getInventory().contains(itemCraft.getRecipes());
     }
 

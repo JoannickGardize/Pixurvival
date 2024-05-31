@@ -1,16 +1,11 @@
 package com.pixurvival.gdxcore.input.processor;
 
-import com.badlogic.gdx.Screen;
-import com.pixurvival.gdxcore.PixurvivalGame;
-import com.pixurvival.gdxcore.WorldScreen;
+import com.pixurvival.gdxcore.HudStage;
 
-public class SwitchDebugInfosProcessor implements InputActionProcessor {
+public class SwitchDebugInfosProcessor extends HudStageActionProcessor {
 
     @Override
-    public void buttonDown() {
-        Screen screen = PixurvivalGame.getInstance().getScreen();
-        if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).switchShowDebugInfos();
-        }
+    protected void process(HudStage hudStage) {
+        hudStage.switchShowDebugInfos();
     }
 }

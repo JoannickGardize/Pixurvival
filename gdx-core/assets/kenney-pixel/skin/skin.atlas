@@ -224,6 +224,14 @@ window
   orig: 32, 47
   offset: 0, 0
   index: -1
+  window-title
+    rotate: false
+    xy: 219, 5
+    size: 16, 30
+    split: 0, 4, 0, 4
+    orig: 16, 30
+    offset: 0, 0
+    index: -1
 x
   rotate: false
   xy: 85, 8
@@ -297,5 +305,47 @@ bar-cursor
   size : 13, 23
   split: 6, 6, 11, 11
   orig: 13, 23
+  offset: 0, 0
+  index: -1
+inventory
+  rotate: false
+  xy: 124, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+craft
+  rotate: false
+  xy: 136, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+map
+  rotate: false
+  xy: 148, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+chat
+  rotate: false
+  xy: 160, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+time
+  rotate: false
+  xy: 172, 0
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: -1
+pause
+  rotate: false
+  xy: 184, 0
+  size: 12, 12
+  orig: 12, 12
   offset: 0, 0
   index: -1

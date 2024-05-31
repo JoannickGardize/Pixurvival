@@ -10,7 +10,7 @@ public class PauseMenuProcessor implements InputActionProcessor {
     public void buttonDown() {
         Screen screen = PixurvivalGame.getInstance().getScreen();
         if (screen instanceof WorldScreen) {
-            ((WorldScreen) screen).switchPauseMenu();
+            ((WorldScreen) screen).getHudStage().switchPauseMenu();
         }
     }
 }

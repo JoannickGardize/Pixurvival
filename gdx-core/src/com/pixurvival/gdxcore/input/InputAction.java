@@ -30,6 +30,12 @@ public enum InputAction {
         // Does nothing on press / release
     }),
     CHAT(new ChatProcessor()),
+    SWITCH_EQUIPMENT_AND_INVENTORY_UI(new SwitchEquimentAndInventoryUIProcessor()),
+    SWITCH_CRAFT_UI(new SwitchCraftUIProcessor()),
+    SWITCH_MINI_MAP_UI(new SwitchMiniMapUIProcessor()),
+    SWITCH_CHAT_UI(new SwitchChatUIProcessor()),
+    SWITCH_TIME_UI(new SwitchTimeUIProcessor()),
+    SWITCH_ALL_UI(new SwitchAllUIProcessor()),
     SWITCH_DEBUG_MODE(new SwitchDebugModeProcessor()),
     SWITCH_DEBUG_INFOS(new SwitchDebugInfosProcessor()),
     SWITCH_FULLSCREEN(new SwitchFullScreenProcessor()),

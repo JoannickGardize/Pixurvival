@@ -1,7 +1,6 @@
 package com.pixurvival.gdxcore.textures;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.pixurvival.core.contentPack.ContentPackException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,12 +35,12 @@ public class SpriteSheetPixmap extends Pixmap {
             pixmap.drawPixmap(SpriteSheetPixmap.this, x, y, xIndex * spriteWidth, yIndex * spriteHeight, spriteWidth, spriteHeight);
         }
 
-        public void drawTo(Pixmap pixmap, int x, int y, int width, int height) {
-            pixmap.drawPixmap(SpriteSheetPixmap.this, x, y, xIndex * spriteWidth + x, yIndex * spriteHeight + y, width, height);
+        public void drawTo(Pixmap pixmap, int destOffsetX, int destOffsetY, int srcX, int srcY, int width, int height) {
+            pixmap.drawPixmap(SpriteSheetPixmap.this, destOffsetX + srcX, destOffsetY + srcY, xIndex * spriteWidth + srcX, yIndex * spriteHeight + srcY, width, height);
         }
 
-        public void drawPixelTo(Pixmap pixmap, int x, int y) {
-            pixmap.drawPixel(x, y, getPixel(x, y));
+        public void drawPixelTo(Pixmap pixmap, int destOffsetX, int destOffsetY, int srcX, int srcY) {
+            pixmap.drawPixel(destOffsetX + srcX, destOffsetY + srcY, getPixel(srcX, srcY));
         }
     }
 
@@ -54,7 +53,7 @@ public class SpriteSheetPixmap extends Pixmap {
         this.spriteHeight = spriteHeight;
     }
 
-    public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) throws ContentPackException {
+    public SpriteSheetPixmap(byte[] data, int spriteWidth, int spriteHeight) {
         super(data, 0, data.length);
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;

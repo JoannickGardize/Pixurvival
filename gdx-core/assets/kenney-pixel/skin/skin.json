@@ -178,7 +178,7 @@
     },
     cross: {
       name: x,
-      color: font
+      color: dark
     },
     selection: {
       name: dot,
@@ -348,6 +348,10 @@
       name: window,
       color: background
     },
+    window-title: {
+      name: window-title,
+      color: background
+    },
     alpha: {
       name: dot,
       color: semiTransparent
@@ -475,6 +479,48 @@
       down: buttonDown,
       disabled: buttonDisabled,
       imageUp: accessory
+    },
+    inventory: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: inventory
+    },
+    craft: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: craft
+    },
+    map: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: map
+    },
+    chat: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: chat
+    },
+    time: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: time
+    },
+    pause: {
+      up: buttonUp,
+      over: buttonOver,
+      down: buttonDown,
+      disabled: buttonDisabled,
+      imageUp: pause
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
@@ -513,6 +559,11 @@
     green: {
       font: default,
       fontColor: green
+    },
+    title: {
+      font: default,
+      fontColor: dark,
+      background: window-title
     }
   },
   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {

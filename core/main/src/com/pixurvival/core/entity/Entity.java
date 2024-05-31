@@ -385,4 +385,8 @@ public abstract class Entity implements Body, CustomDataHolder {
     public boolean isInvisible() {
         return false;
     }
+
+    public boolean isHiddenForEnemies() {
+        return false;
+    }
 }

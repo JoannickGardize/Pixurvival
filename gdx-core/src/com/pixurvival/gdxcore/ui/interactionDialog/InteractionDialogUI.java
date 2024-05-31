@@ -11,7 +11,7 @@ import com.pixurvival.core.interactionDialog.InventoryInteractionDialog;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.WorldScreen;
-import com.pixurvival.gdxcore.ui.InventoryUI;
+import com.pixurvival.gdxcore.ui.EquipmentAndInventoryUI;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -73,7 +73,7 @@ public class InteractionDialogUI extends Table {
         if (!(s instanceof WorldScreen)) {
             return;
         }
-        InventoryUI inventoryUI = ((WorldScreen) s).getInventoryUI();
+        EquipmentAndInventoryUI inventoryUI = ((WorldScreen) s).getHudStage().getEquipmentAndInventoryUI();
         actualContent.forEachInventories(i -> i.setCellsPrefSize(inventoryUI.getInventoryTable().getActualCellSize()));
         actualContent.invalidate();
         actualContent.validate();

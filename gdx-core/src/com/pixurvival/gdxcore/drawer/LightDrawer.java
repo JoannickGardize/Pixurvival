@@ -28,7 +28,7 @@ public class LightDrawer {
 
     public void draw(Stage worldStage) {
         Color ambientColor = getAmbientColor();
-        if (ambientColor == null) {
+        if (ambientColor == null || lightBuffer == null) {
             return;
         }
 
@@ -69,6 +69,9 @@ public class LightDrawer {
     public void resize(int screenWidth, int screenHeight) {
         int size = Math.min(screenWidth, screenHeight);
         dispose();
+        if (screenWidth == 0 || screenHeight == 0) {
+            return;
+        }
         lightBuffer = new FrameBuffer(Format.RGBA8888, size, size, false);
         lightBuffer.getColorBufferTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
         lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, lightBuffer.getWidth(), lightBuffer.getHeight());
@@ -78,6 +81,7 @@ public class LightDrawer {
     public void dispose() {
         if (lightBuffer != null) {
             lightBuffer.dispose();
+            lightBuffer = null;
         }
     }
 

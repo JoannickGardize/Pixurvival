@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.TranslationKey;
@@ -20,7 +19,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
-public class ItemTooltip extends Table implements StatListener {
+public class ItemTooltip extends Tooltip implements StatListener {
 
     public static final float ITEM_WIDTH = 20;
 

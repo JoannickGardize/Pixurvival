@@ -31,7 +31,7 @@ public class TiledMapCursor {
             // Request and wait for the missing Chunk.
             ChunkPosition chunkPosition = ChunkPosition.fromWorldPosition(x, y);
             currentChunk = tiledMap.chunkAtWait(chunkPosition);
-            // Request all neighburs Chunks, to avoid waiting for probable
+            // Request all neighbours Chunks, to avoid waiting for probable
             // future calls. This greatly improves performance.
             tiledMap.requestChunk(new ChunkPosition(chunkPosition.getX() - 1, chunkPosition.getY()));
             tiledMap.requestChunk(new ChunkPosition(chunkPosition.getX(), chunkPosition.getY() - 1));

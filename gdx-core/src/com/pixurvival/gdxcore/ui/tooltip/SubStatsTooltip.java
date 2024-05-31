@@ -3,7 +3,6 @@ package com.pixurvival.gdxcore.ui.tooltip;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.livingEntity.stats.StatSet;
@@ -15,7 +14,7 @@ import com.pixurvival.gdxcore.ui.UILabel;
 import com.pixurvival.gdxcore.util.DrawUtils;
 import lombok.Getter;
 
-public class SubStatsTooltip extends Table {
+public class SubStatsTooltip extends Tooltip {
 
     public static final float ITEM_WIDTH = 20;
 

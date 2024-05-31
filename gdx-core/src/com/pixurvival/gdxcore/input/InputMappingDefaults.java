@@ -4,9 +4,6 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import lombok.experimental.UtilityClass;
 
-import java.awt.im.InputContext;
-import java.util.Locale;
-
 /**
  * Factory methods for defaults input mappings.
  *
@@ -16,12 +13,16 @@ import java.util.Locale;
 public class InputMappingDefaults {
 
     public static InputMapping findBestDefaultMatch() {
-        Locale locale = InputContext.getInstance().getLocale();
+        // Bug on LWJGL3 : keyboard mapping is always in QWERTY,
+        // so actual hotfix is just always return the qwerty default layout
+
+        /*Locale locale = InputContext.getInstance().getLocale();
         if (locale.getLanguage().equals(Locale.FRENCH.getLanguage())) {
             return InputMappingDefaults.azerty();
         } else {
             return InputMappingDefaults.qwerty();
-        }
+        }*/
+        return InputMappingDefaults.qwerty();
     }
 
     public static InputMapping azerty() {
@@ -45,6 +46,12 @@ public class InputMappingDefaults {
         mapping.bind(InputAction.MOVE_DOWN, InputButton.keyboard(Keys.S));
         mapping.bind(InputAction.ACCESSORY1_SPECIAL, InputButton.keyboard(Keys.Q));
         mapping.bind(InputAction.ACCESSORY2_SPECIAL, InputButton.keyboard(Keys.E));
+        mapping.bind(InputAction.SWITCH_EQUIPMENT_AND_INVENTORY_UI, InputButton.keyboard(Keys.F));
+        mapping.bind(InputAction.SWITCH_CRAFT_UI, InputButton.keyboard(Keys.Z));
+        mapping.bind(InputAction.SWITCH_MINI_MAP_UI, InputButton.keyboard(Keys.X));
+        mapping.bind(InputAction.SWITCH_CHAT_UI, InputButton.keyboard(Keys.C));
+        mapping.bind(InputAction.SWITCH_TIME_UI, InputButton.keyboard(Keys.V));
+        mapping.bind(InputAction.SWITCH_ALL_UI, InputButton.keyboard(Keys.TAB));
         return mapping;
     }
 

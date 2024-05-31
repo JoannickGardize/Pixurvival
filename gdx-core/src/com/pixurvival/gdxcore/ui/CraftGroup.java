@@ -4,31 +4,36 @@ import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.item.ItemCraft;
 
-import java.util.List;
-
 public class CraftGroup extends HorizontalGroup {
 
-    public CraftGroup(List<ItemCraft> itemCrafts) {
+    public CraftGroup() {
         wrap(true);
         wrapSpace(2);
         pad(2);
         space(2);
         align(Align.center);
-        for (ItemCraft itemCraft : itemCrafts) {
-            addSlot(itemCraft, false);
-        }
+        rowAlign(Align.left);
     }
 
-    public void addSlot(ItemCraft itemCraft, boolean newlyDiscovered) {
+    public CraftSlot addSlot(ItemCraft itemCraft, boolean newlyDiscovered) {
         for (int i = 0; i < getChildren().size; i++) {
             int otherId = ((CraftSlot) getChild(i)).getItemCraft().getId();
             if (itemCraft.getId() == otherId) {
-                return;
+                return null;
             } else if (itemCraft.getId() < otherId) {
-                addActorAt(i, new CraftSlot(itemCraft, newlyDiscovered));
-                return;
+                CraftSlot craftSlot = new CraftSlot(itemCraft, newlyDiscovered);
+                addActorAt(i, craftSlot);
+                return craftSlot;
             }
         }
-        addActor(new CraftSlot(itemCraft, newlyDiscovered));
+        CraftSlot craftSlot = new CraftSlot(itemCraft, newlyDiscovered);
+        addActor(craftSlot);
+        return craftSlot;
+    }
+
+    public void updateCraftStates() {
+        if (hasParent()) {
+            getChildren().forEach(a -> ((CraftSlot) a).updateState());
+        }
     }
 }

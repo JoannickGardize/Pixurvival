@@ -43,13 +43,13 @@ public class StaticMapProvider extends MapProvider {
     }
 
     @Override
-    public Tile getTileAt(int x, int y) {
+    public Tile getTileAt(int x, int y, float[] run) {
         Tile result = tileMap.getElementAt(x, y);
         return result == null ? defaultTile : result;
     }
 
     @Override
-    public Structure getStructureAt(int x, int y, Tile tile) {
+    public Structure getStructureAt(int x, int y, Tile tile, float[] run) {
         return structureMap.getElementAt(x, y);
     }
 

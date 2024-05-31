@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.pixurvival.core.contentPack.ContentPack;
@@ -24,7 +23,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
-public class ItemCraftTooltip extends Table implements InventoryListener, StatListener {
+public class ItemCraftTooltip extends Tooltip implements InventoryListener, StatListener {
 
     private static @Getter ItemCraftTooltip instance = new ItemCraftTooltip();
 

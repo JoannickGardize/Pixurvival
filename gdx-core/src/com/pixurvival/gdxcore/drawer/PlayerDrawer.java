@@ -15,6 +15,7 @@ import com.pixurvival.gdxcore.textures.TextureAnimationSet;
 public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
 
     private TextureAnimationSet defaultBody = PixurvivalGame.getContentPackTextures().getAnimationSet(PixurvivalGame.getWorld().getContentPack().getConstants().getDefaultCharacter());
+    private boolean tmpSkipDraw;
 
     @Override
     public void frontDraw(Batch batch, PlayerEntity e) {
@@ -59,4 +60,8 @@ public class PlayerDrawer extends LivingEntityDrawer<PlayerEntity> {
         }
     }
 
+    @Override
+    protected boolean skipDraw(PlayerEntity e) {
+        return e.isHiddenForEnemies() && (e.getWorld().getTime().getTimeMillis() % 500) < 250;
+    }
 }

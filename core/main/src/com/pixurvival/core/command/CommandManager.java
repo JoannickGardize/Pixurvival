@@ -26,6 +26,9 @@ public class CommandManager {
         commands.put("ls", listCommandProcessor);
         commands.put("respawn", new RespawnCommandProcessor());
         commands.put("revive", new RespawnCommandProcessor());
+        DiscoverAllCraftsProcessor discoverAllCraftsProcessor = new DiscoverAllCraftsProcessor();
+        commands.put("discover_all_crafts", discoverAllCraftsProcessor);
+        commands.put("dac", discoverAllCraftsProcessor);
     }
 
     public String process(CommandExecutor executor, String[] args) {

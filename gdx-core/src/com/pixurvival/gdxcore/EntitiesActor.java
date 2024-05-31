@@ -27,6 +27,7 @@ import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.gdxcore.drawer.*;
 import com.pixurvival.gdxcore.util.DrawUtils;
+import com.pixurvival.gdxcore.util.GhostStructure;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;

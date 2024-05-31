@@ -6,6 +6,8 @@ import com.pixurvival.gdxcore.util.UserDirectory;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 public class InputManager {
 
     private static @Getter InputManager instance = new InputManager();
@@ -17,18 +19,24 @@ public class InputManager {
     private PlayerMovementRequest movementRequest = new PlayerMovementRequest();
 
     public void buttonDown(InputButton button) {
-        InputAction action = mapping.getAction(button);
-        if (action != null) {
-            pressedActions[action.ordinal()] = true;
-            action.getProcessor().buttonDown();
+        Set<InputAction> actions = mapping.getAction(button);
+        if (actions != null) {
+            actions.forEach(a -> {
+                pressedActions[a.ordinal()] = true;
+                a.getProcessor().buttonDown();
+            });
+
         }
     }
 
     public void buttonUp(InputButton button) {
-        InputAction action = mapping.getAction(button);
-        if (action != null) {
-            pressedActions[action.ordinal()] = false;
-            action.getProcessor().buttonUp();
+        Set<InputAction> actions = mapping.getAction(button);
+        if (actions != null) {
+            actions.forEach(a -> {
+                pressedActions[a.ordinal()] = false;
+                a.getProcessor().buttonUp();
+            });
+
         }
     }
 

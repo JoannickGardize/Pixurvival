@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
-import com.pixurvival.gdxcore.GhostStructure;
 import com.pixurvival.gdxcore.PixurvivalGame;
 import com.pixurvival.gdxcore.textures.TextureAnimation;
 import com.pixurvival.gdxcore.textures.TextureAnimationSet;
+import com.pixurvival.gdxcore.util.GhostStructure;
 
 public class GhostStructureDrawer implements ElementDrawer<GhostStructure> {
     @Override

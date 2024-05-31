@@ -15,6 +15,7 @@ import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.ContentPackException;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
+import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
@@ -33,9 +34,9 @@ public class ContentPackAssets {
     private Map<SpriteSheet, TextureAnimationSet> animationSet;
     private Map<Integer, Texture> textureShadows;
     private Map<Float, Texture> lightTextures;
-    private Texture[][] tileTextures;
     private ItemTexture[] itemTextures;
     private int[] tileAvgColors;
+    private int[] structureAvgColors;
     private @Getter float truePixelWidth;
     private @Getter float largestLightRadius;
     private SpriteSheetPixmap[] tilePixmaps;
@@ -55,22 +56,16 @@ public class ContentPackAssets {
         return animationSet.get(spriteSheet);
     }
 
-    @Deprecated
-    public Texture getTile(int id, long frame) {
-        Texture[] frames = tileTextures[id];
-        return frames[(int) (frame % frames.length)];
-    }
-
-    public Texture[] getTileTextures(Tile tile) {
-        return tileTextures[tile.getId()];
-    }
-
     public SpriteSheetPixmap getTilePixmap(Tile tile) {
         return tilePixmaps[tile.getId()];
     }
 
     public int getTileColor(int id) {
         return tileAvgColors[id];
+    }
+
+    public int getStructureColor(int id) {
+        return structureAvgColors[id];
     }
 
     public ItemTexture getItem(int id) {
@@ -84,12 +79,14 @@ public class ContentPackAssets {
     private void loadAnimationSet(ContentPack pack, int pixelWidth) throws ContentPackException {
         animationSet = new IdentityHashMap<>();
         Map<SpriteSheetImageKey, TextureSheet> textureSheets = new HashMap<>();
+        Map<SpriteSheet, SpriteSheetPixmap> pixmaps = new IdentityHashMap<>();
         PixelTextureBuilder transform = new PixelTextureBuilder(pixelWidth);
         for (SpriteSheet spriteSheet : pack.getSpriteSheets()) {
             SpriteSheetImageKey key = new SpriteSheetImageKey(spriteSheet);
             TextureSheet textureSheet = textureSheets.get(key);
             if (textureSheet == null) {
                 SpriteSheetPixmap sheetPixmap = new SpriteSheetPixmap(pack.getResource(spriteSheet.getImage()), spriteSheet.getWidth(), spriteSheet.getHeight());
+                pixmaps.put(spriteSheet, sheetPixmap);
                 textureSheet = new TextureSheet(sheetPixmap, transform);
                 textureSheets.put(key, textureSheet);
             }
@@ -100,6 +97,8 @@ public class ContentPackAssets {
             set.foreachAnimations(a -> a.setShadow(getShadow(a.getShadowWidth())));
             animationSet.put(spriteSheet, set);
         }
+        loadStructureAvgColors(pack, pixmaps);
+        pixmaps.values().forEach(p -> p.dispose());
         transform.dispose();
     }
 
@@ -142,7 +141,6 @@ public class ContentPackAssets {
         animationSet.values().forEach(TextureAnimationSet::dispose);
         textureShadows.values().forEach(Texture::dispose);
         lightTextures.values().forEach(Texture::dispose);
-        Arrays.stream(tileTextures).flatMap(Arrays::stream).forEach(Texture::dispose);
         for (ItemTexture texture : itemTextures) {
             texture.dispose();
         }
@@ -157,9 +155,8 @@ public class ContentPackAssets {
         Arrays.stream(sounds, SoundPreset.values().length, sounds.length).forEach(Sound::dispose);
     }
 
-    private void loadTileMapTextures(ContentPack pack) throws ContentPackException {
+    private void loadTileMapTextures(ContentPack pack) {
         List<Tile> tilesbyId = pack.getTiles();
-        tileTextures = new Texture[tilesbyId.size()][];
         tilePixmaps = new SpriteSheetPixmap[tilesbyId.size()];
         tileAvgColors = new int[tilesbyId.size()];
         Map<String, SpriteSheetPixmap> tilePixmapMap = new HashMap<>();
@@ -171,14 +168,19 @@ public class ContentPackAssets {
                 tilePixmapMap.put(tile.getImage(), pixmap);
             }
             List<Frame> frames = tile.getFrames();
-            Texture[] textures = new Texture[frames.size()];
-            for (int j = 0; j < frames.size(); j++) {
-                Frame frame = frames.get(j);
-                textures[j] = AddPaddingUtil.apply(pixmap.getRegion(frame.getX(), frame.getY()));
-            }
-            tileTextures[i] = textures;
             tilePixmaps[i] = pixmap;
             tileAvgColors[i] = getAverageColor(pixmap.getRegion(frames.get(0).getX(), frames.get(0).getY()));
+        }
+    }
+
+    private void loadStructureAvgColors(ContentPack contentPack, Map<SpriteSheet, SpriteSheetPixmap> pixmaps) {
+        structureAvgColors = new int[contentPack.getStructures().size()];
+        for (int i = 0; i < contentPack.getStructures().size(); i++) {
+            Structure structure = contentPack.getStructures().get(i);
+            if (structure.getSpriteSheet() != null) {
+                Frame frame = structure.getSpriteSheet().getAnimationTemplate().getAnimations().get(ActionAnimation.DEFAULT).getFrames().get(0);
+                structureAvgColors[i] = getAverageColor(pixmaps.get(structure.getSpriteSheet()).getRegion(frame.getX(), frame.getY()));
+            }
         }
     }
 
