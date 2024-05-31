@@ -56,6 +56,17 @@ public class CommandArgsUtils {
         }
     }
 
+    public static Collection<PlayerEntity> playerCollectionOrSelf(CommandExecutor executor, String[] args, int argNumber) throws CommandExecutionException {
+        if (args.length < argNumber + 1) {
+            if (!(executor instanceof PlayerEntity)) {
+                throw new CommandExecutionException("Error: you are not a player.");
+            }
+            return Collections.singleton((PlayerEntity) executor);
+        } else {
+            return CommandArgsUtils.playerCollection(executor, args[argNumber]);
+        }
+    }
+
     public static PlayerEntity singlePlayer(CommandExecutor executor, String arg) throws CommandExecutionException {
         Collection<PlayerEntity> collection = playerCollection(executor, arg);
         if (collection.size() == 1) {

@@ -17,5 +17,6 @@ public class DesktopLauncher {
         config.setTitle("Pixurvival - " + ReleaseVersion.actual().displayName());
         config.setWindowIcon(FileType.Internal, "icon.png");
         new Lwjgl3Application(new PixurvivalGame(ArgsUtils.readArgs(args, ClientMainArgs.class)), config);
+
     }
 }

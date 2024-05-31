@@ -32,8 +32,6 @@ public class TeleportCommandProcessor extends CommandProcessor {
         switch (argIndex) {
             case 1:
                 return PlayerEntity.class;
-            case 2:
-                return PlayerEntity.class;
             default:
                 return null;
         }

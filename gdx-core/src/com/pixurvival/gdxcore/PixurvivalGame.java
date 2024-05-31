@@ -2,6 +2,7 @@ package com.pixurvival.gdxcore;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
@@ -175,6 +176,23 @@ public class PixurvivalGame extends Game implements ClientGameListener {
 
     @Override
     public void create() {
+        Gdx.app.addLifecycleListener(new LifecycleListener() {
+            @Override
+            public void pause() {
+
+            }
+
+            @Override
+            public void resume() {
+
+            }
+
+            @Override
+            public void dispose() {
+                System.exit(-1);
+            }
+        });
+
         assetManager = new AssetManager();
         loadFonts();
         loadSounds();
@@ -199,6 +217,7 @@ public class PixurvivalGame extends Game implements ClientGameListener {
         skin.load(Gdx.files.internal(SKIN));
         NotificationPushManager.getInstance().start();
         setScreen(MainMenuScreen.class);
+
     }
 
     private void loadFonts() {
