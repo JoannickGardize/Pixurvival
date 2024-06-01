@@ -269,6 +269,9 @@ children:
     - !!element {type: ITEM_CRAFT, id: 34}
     - !!element {type: ITEM, id: 65}
     - !!element {type: ITEM_CRAFT, id: 39}
+    - !!element {type: ITEM, id: 73}
+    - !!element {type: ITEM, id: 74}
+    - !!element {type: ITEM_CRAFT, id: 45}
   - !!folder
     name: Structures
     children:
@@ -607,6 +610,9 @@ children:
       - !!element {type: SPRITE_SHEET, id: 99}
       - !!element {type: SPRITE_SHEET, id: 107}
       - !!element {type: SPRITE_SHEET, id: 108}
+      - !!element {type: SPRITE_SHEET, id: 125}
+      - !!element {type: ITEM_REWARD, id: 22}
+      - !!element {type: STRUCTURE, id: 19}
     - !!folder
       name: Magic Forest
       children:

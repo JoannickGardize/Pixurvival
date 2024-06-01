@@ -68,7 +68,6 @@ public class CraftUI extends UIWindow implements InventoryListener {
 
     public CraftUI() {
         super("crafting");
-        debug();
         mainGroup = new VerticalGroup();
         mainGroup.pad(2);
         mainGroup.align(Align.top);

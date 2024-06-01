@@ -1,7 +1,7 @@
 !!ContentPack
 identifier:
   name: Vanilla
-  version: {major: 2, minor: 3}
+  version: {major: 2, minor: 4}
   author: SharkHendrix
 animationTemplates:
 - &character
@@ -3060,6 +3060,17 @@ spriteSheets:
   heightOffset: 0.0
   shadow: false
   shadowResizing: 0
+- &berry_bush
+  id: 125
+  name: berry_bush
+  width: 15
+  height: 11
+  image: images/berry_bush.png
+  animationTemplate: *harvestable_structure
+  equipmentOffset: null
+  heightOffset: 0.0
+  shadow: true
+  shadowResizing: 0
 effects:
 - &wood_bow_hit
   id: 0
@@ -5567,13 +5578,13 @@ effects:
                     quantity: 100
                 - probability: 5.0
                   element: !!ItemStack
-                    item: &healing_pack !!EdibleItem
+                    item: &bandage !!EdibleItem
                       id: 3
-                      name: healing_pack
+                      name: bandage
                       maxStackSize: 10
                       frame: {x: 3, y: 0}
                       image: images/items.png
-                      duration: 5000
+                      duration: 4000
                       alterations:
                       - !!InstantHealAlteration
                         targetType: TARGET
@@ -5581,7 +5592,7 @@ effects:
                           id: 0
                           base: 0.0
                           statMultipliers:
-                          - {statType: MAX_HEALTH, multiplier: 0.5}
+                          - {statType: MAX_HEALTH, multiplier: 0.2}
                           randomValue: 0.0
                       - !!PlaySoundAlteration {targetType: TARGET, preset: BUBBLE}
                     quantity: 2
@@ -6963,7 +6974,7 @@ items:
   maxStackSize: 100
   frame: {x: 2, y: 0}
   image: images/items.png
-- *healing_pack
+- *bandage
 - &leather_armor02 !!ClothingItem
   id: 4
   name: leather_armor
@@ -8087,6 +8098,37 @@ items:
         effect: *chaos_summon03
   - !!PlaySoundAlteration {targetType: TARGET, preset: SCRUNCH}
 - *mysterious_message2
+- &berries !!EdibleItem
+  id: 73
+  name: berries
+  maxStackSize: 20
+  frame: {x: 0, y: 8}
+  image: images/items.png
+  duration: 500
+  alterations:
+  - !!InstantEatAlteration
+    targetType: TARGET
+    amount:
+      id: 155
+      base: 6.0
+      statMultipliers: []
+      randomValue: 0.0
+- &healing_potion !!EdibleItem
+  id: 74
+  name: healing_potion
+  maxStackSize: 10
+  frame: {x: 1, y: 8}
+  image: images/items.png
+  duration: 5000000
+  alterations:
+  - !!InstantHealAlteration
+    targetType: TARGET
+    amount:
+      id: 158
+      base: 0.0
+      statMultipliers:
+      - {statType: MAX_HEALTH, multiplier: 0.5}
+      randomValue: 0.0
 itemCrafts:
 - id: 0
   name: wood_sword
@@ -8111,16 +8153,14 @@ itemCrafts:
   discoveryItems: []
   requiredStructure: null
 - id: 2
-  name: healing_pack
+  name: bandage
   duration: 2000
   result: !!ItemStack
-    item: *healing_pack
+    item: *bandage
     quantity: 1
   recipes:
   - item: *cotton
-    quantity: 4
-  - item: *pixie_powder
-    quantity: 2
+    quantity: 5
   discoveryItems: []
   requiredStructure: null
 - id: 3
@@ -8789,6 +8829,21 @@ itemCrafts:
   discoveryItems:
   - *mysterious_message
   requiredStructure: *crafting_table02
+- id: 45
+  name: healing_potion
+  duration: 5000
+  result: !!ItemStack
+    item: *healing_potion
+    quantity: 1
+  recipes:
+  - item: *pixie_powder
+    quantity: 3
+  - item: *pure_arcanite
+    quantity: 1
+  discoveryItems:
+  - *pixie_powder
+  - *arcanite
+  requiredStructure: null
 itemRewards:
 - &tree02
   id: 0
@@ -9105,6 +9160,18 @@ itemRewards:
       quantity: 1
     probability: 0.2
 - *chaos02
+- &berries02
+  id: 22
+  name: berries
+  entries:
+  - itemStack: !!ItemStack
+      item: *berries
+      quantity: 1
+    probability: 1.0
+  - itemStack: !!ItemStack
+      item: *berries
+      quantity: 1
+    probability: 0.5
 behaviorSets:
 - *ninja_pig02
 - &pixie02
@@ -10836,7 +10903,8 @@ structures:
   autoDestroy: false
   dimensions: {width: 1, height: 1}
   duration: 0
-  bannedTiles: []
+  bannedTiles:
+  - *water
   lightEmissionRadius: 0.0
   deconstructionDuration: 0
   maxHealth: 0.0
@@ -10949,6 +11017,26 @@ structures:
   lightEmissionRadius: 0.0
   deconstructionDuration: 0
   maxHealth: 0.0
+- &berry_bush02 !!HarvestableStructure
+  id: 19
+  name: berry_bush
+  solid: false
+  spriteSheet: *berry_bush
+  randomHorizontalFlip: false
+  avoidStuck: false
+  autoDestroy: false
+  dimensions: {width: 1, height: 1}
+  duration: 0
+  bannedTiles:
+  - *water
+  - *path
+  - *bridge
+  lightEmissionRadius: 0.0
+  deconstructionDuration: 0
+  maxHealth: 0.0
+  harvestingTime: 2000
+  itemReward: *berries02
+  regrowthTime: {min: 600000, max: 900000}
 mapProviders:
 - &default !!ProcedurallyGeneratedMapProvider
   id: 0
@@ -11142,6 +11230,8 @@ mapProviders:
         element: *grass_tuft02
       - probability: 3.0
         element: *flower02
+      - probability: 0.25
+        element: *berry_bush02
     heightmapConditions:
     - heightmap: *height
       min: 0.36
@@ -11160,6 +11250,8 @@ mapProviders:
         element: *grass_tuft02
       - probability: 4.0
         element: *flower02
+      - probability: 0.5
+        element: *berry_bush02
     heightmapConditions:
     - heightmap: *height
       min: 0.36
@@ -11178,6 +11270,8 @@ mapProviders:
         element: *grass_tuft02
       - probability: 4.0
         element: *flower02
+      - probability: 0.5
+        element: *berry_bush02
     heightmapConditions:
     - heightmap: *height
       min: 0.36
@@ -11188,10 +11282,12 @@ mapProviders:
     density: 0.03
   - structureProducer:
       backingArray:
-      - probability: 1.0
+      - probability: 2.0
         element: *cotton_bush02
-      - probability: 1.0
+      - probability: 2.0
         element: *flower02
+      - probability: 0.25
+        element: *berry_bush02
     heightmapConditions:
     - heightmap: *height
       min: 0.36
@@ -11573,7 +11669,7 @@ gameModes:
           quantity: 1
         - item: *arrow
           quantity: 300
-        - item: *healing_pack
+        - item: *bandage
           quantity: 1
       winCondition: !!TeamSurvivedWinCondition {}
     - &Member
@@ -11594,7 +11690,7 @@ gameModes:
           quantity: 1
         - item: *arrow
           quantity: 100
-        - item: *healing_pack
+        - item: *bandage
           quantity: 1
       winCondition: !!TeamSurvivedWinCondition {}
   endGameConditions:
