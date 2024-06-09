@@ -6,7 +6,9 @@ import java.io.Serializable;
 
 public interface ElementSet<T extends NamedIdentifiedElement> extends Serializable {
 
-    boolean contains(T element);
+    default boolean contains(T element) {
+        return contains(element.getId());
+    }
 
-    boolean containsById(int id);
+    boolean contains(int id);
 }

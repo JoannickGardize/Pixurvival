@@ -84,7 +84,7 @@ public class HarvestBehavior extends Behavior {
 
     private HarvestableStructureEntity searchStructureToHarvest(CreatureEntity creature) {
         HarvestableStructureEntity currentStructureTarget = (HarvestableStructureEntity) creature.getWorld().getMap().findClosestStructure(creature.getPosition(), searchDistance,
-                s -> structures.containsById(s), s -> s instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) s).isHarvested() && !getBookedStructures(creature).contains(s));
+                s -> structures.contains(s), s -> s instanceof HarvestableStructureEntity && !((HarvestableStructureEntity) s).isHarvested() && !getBookedStructures(creature).contains(s));
         updateTargetReference(creature, currentStructureTarget);
         return currentStructureTarget;
     }

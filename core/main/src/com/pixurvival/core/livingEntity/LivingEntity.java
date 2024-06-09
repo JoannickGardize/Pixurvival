@@ -5,6 +5,8 @@ import com.pixurvival.core.alteration.DamageAttributes;
 import com.pixurvival.core.alteration.PersistentAlteration;
 import com.pixurvival.core.alteration.PersistentAlterationEntry;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
+import com.pixurvival.core.contentPack.tag.Tag;
+import com.pixurvival.core.contentPack.tag.TagValue;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.item.InventoryHolder;
 import com.pixurvival.core.livingEntity.ability.Ability;
@@ -13,11 +15,14 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.SilenceAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.livingEntity.tag.RemoveTagAction;
+import com.pixurvival.core.livingEntity.tag.TagInstance;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.team.TeamSet;
 import com.pixurvival.core.util.ByteBufferUtils;
+import com.pixurvival.core.util.IndexMap;
 import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
 import lombok.AccessLevel;
@@ -36,9 +41,10 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     public static final byte UPDATE_CONTENT_MASK_STATS = 1;
     public static final byte UPDATE_CONTENT_MASK_ABILITY = 2;
     public static final byte UPDATE_CONTENT_MASK_OTHERS = 4;
-    public static final byte UPDATE_CONTENT_MASK_FORWARD = 8;
-    public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED = 16;
-    public static final byte NEXT_UPDATE_CONTENT_MASK = 32;
+    public static final byte UPDATE_CONTENT_MASK_FORWARD_BOOL = 8;
+    public static final byte UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED_BOOL = 16;
+    public static final byte UPDATE_CONTENT_MASK_TAG = 32;
+    public static final byte NEXT_UPDATE_CONTENT_MASK = 64;
 
     private byte updateContentFlags = getFullUpdateContentMask();
 
@@ -62,8 +68,13 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     private long stunTermTime = 0;
     private long invincibleTermTime = 0;
 
-    private @Getter
-    @Setter Vector2 spawnPosition;
+    @Setter
+    private Vector2 spawnPosition;
+
+    @Setter
+    private IndexMap<TagInstance> tags;
+
+    private int tagInstanceModCount = 0;
 
     @Override
     protected boolean canForward() {
@@ -139,6 +150,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
     protected void fixedMovementEnded() {
     }
 
+    /**
+     * Called at entity creation or at reload.
+     */
     @Override
     public void initialize() {
         super.initialize();
@@ -152,12 +166,16 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         initializeAbilityData();
     }
 
+    /**
+     * Called at entity creation only.
+     */
     @Override
     public void initializeAtCreation() {
         addHealthAdapterListener();
         if (getWorld().isServer()) {
             spawnPosition = getPosition().copy();
         }
+        tags = getInitialTagMap();
     }
 
     protected void addHealthAdapterListener() {
@@ -311,6 +329,61 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         entry.setTermTimeMillis(entry.getAlteration().getDuration() + getWorld().getTime().getTimeMillis());
     }
 
+
+    public void applyTag(TagValue tagValue, long duration) {
+        Tag tag = tagValue.getTag();
+        int id = tag.getId();
+        TagInstance tagInstance = tags.get(id);
+        if (tagInstance == null) {
+            tagInstance = new TagInstance(tagValue);
+            tagInstance.setModCount(tagInstanceModCount++);
+            tags.put(id, tagInstance);
+            if (duration > 0) {
+                tagInstance.setExpirationTime(getWorld().getActionTimerManager().addActionTimer(
+                        new RemoveTagAction(getId(), id, tagInstanceModCount), duration));
+            }
+        } else {
+            switch (tag.getValueStackPolicy()) {
+                case ADD:
+                    if (tagValue.getValue() != 0) {
+                        tagInstance = tags.captureValueChange(tagInstance);
+                        tagInstance.setValue(tagInstance.getValue() + tagValue.getValue());
+                        tagInstance.setModCount(tagInstanceModCount++);
+                    }
+                    break;
+                case REPLACE:
+                    if (tagValue.getValue() != tagInstance.getValue()) {
+                        tagInstance = tags.captureValueChange(tagInstance);
+                        tagInstance.setValue(tagInstance.getValue() + tagValue.getValue());
+                        tagInstance.setModCount(tagInstanceModCount++);
+                    }
+                    break;
+            }
+            switch (tag.getDurationStackPolicy()) {
+                case ADD:
+                    if (duration != 0) {
+                        tagInstance = tags.captureValueChange(tagInstance);
+                        tagInstance.setModCount(tagInstanceModCount++);
+                        tagInstance.setExpirationTime(getWorld().getActionTimerManager().addActionTimer(
+                                new RemoveTagAction(getId(), id, tagInstance.getModCount()),
+                                tagInstance.getExpirationTime() - getWorld().getTime().getTimeMillis() + duration));
+                    }
+                    break;
+                case REPLACE:
+                    // Unchanged case not checked because it's highly improbable
+                    tagInstance = tags.captureValueChange(tagInstance);
+                    tagInstance.setModCount(tagInstanceModCount++);
+                    tagInstance.setExpirationTime(getWorld().getActionTimerManager().addActionTimer(
+                            new RemoveTagAction(getId(), id, tagInstance.getModCount()), duration));
+                    break;
+            }
+        }
+    }
+
+    public void removeTag(int tagId) {
+        // TODO update for removed values?
+    }
+
     @Override
     public void update() {
         long timeMillis = getWorld().getTime().getTimeMillis();
@@ -379,14 +452,12 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
     @Override
     public final void writeUpdate(ByteBuffer buffer, boolean full) {
-
         writeUpdate(buffer, full ? getFullUpdateContentMask() : updateContentFlags);
     }
 
     @Override
     public void applyUpdate(ByteBuffer buffer) {
         applyUpdate(buffer, buffer.get());
-
     }
 
     protected void writeUpdate(ByteBuffer buffer, byte updateFlagsToSend) {
@@ -394,10 +465,10 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         // set flag
 
         if (isForward()) {
-            updateFlagsToSend |= UPDATE_CONTENT_MASK_FORWARD;
+            updateFlagsToSend |= UPDATE_CONTENT_MASK_FORWARD_BOOL;
         }
         if (movementChangeEnabled) {
-            updateFlagsToSend |= UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED;
+            updateFlagsToSend |= UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED_BOOL;
         }
         buffer.put(updateFlagsToSend);
 
@@ -450,9 +521,9 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         // normal part
 
         getPosition().set(buffer.getFloat(), buffer.getFloat());
-        if ((updateContentFlag & UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED) != 0) {
+        if ((updateContentFlag & UPDATE_CONTENT_MASK_MOVEMENT_CHANGE_ENABLED_BOOL) != 0) {
             stopFixedMovement();
-            setForward((updateContentFlag & UPDATE_CONTENT_MASK_FORWARD) != 0);
+            setForward((updateContentFlag & UPDATE_CONTENT_MASK_FORWARD_BOOL) != 0);
             setMovingAngle(buffer.getFloat());
         } else {
             setFixedMovement(buffer.getFloat(), buffer.getFloat());
@@ -477,6 +548,10 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
             }
         }
 
+        // tag part
+
+        // TODO : remove old tags
+
         // others part
 
         if ((updateContentFlag & UPDATE_CONTENT_MASK_OTHERS) != 0) {
@@ -500,6 +575,14 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
         // For override
     }
 
+    protected boolean shouldWriteTagMapRepositoryUpdate(ByteBuffer buffer) {
+        return true;
+    }
+
+    protected boolean shouldReadTagMapRepositoryUpdate(ByteBuffer buffer) {
+        return true;
+    }
+
     @Override
     public void writeRepositoryUpdate(ByteBuffer buffer) {
         buffer.putFloat(getStats().get(StatType.STRENGTH).getBase());
@@ -515,6 +598,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
             ByteBufferUtils.writeFutureTime(buffer, getWorld(), entry.getTermTimeMillis());
             entry.getAlteration().writeData(buffer, this, entry.getData());
         }
+
     }
 
     @Override
@@ -538,6 +622,13 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
 
     public abstract AbilitySet getAbilitySet();
 
+    /**
+     * The subclasses are responsible for the tag map serialization
+     *
+     * @return
+     */
+    protected abstract IndexMap<TagInstance> getInitialTagMap();
+
     public void prepareTargetedAlteration() {
 
     }
@@ -548,7 +639,7 @@ public abstract class LivingEntity extends Entity implements Healable, TeamMembe
      * @return
      */
     public byte getFullUpdateContentMask() {
-        return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS;
+        return UPDATE_CONTENT_MASK_STATS | UPDATE_CONTENT_MASK_ABILITY | UPDATE_CONTENT_MASK_OTHERS | UPDATE_CONTENT_MASK_TAG;
     }
 
     @Override

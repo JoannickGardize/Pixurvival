@@ -18,8 +18,15 @@ public class ActionTimerManager {
     private @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE) Queue<ActionTimer> actionTimerQueue = new PriorityQueue<>();
 
-    public void addActionTimer(Action action, long delayMillis) {
-        actionTimerQueue.add(new ActionTimer(action, world.getTime().getTimeMillis() + delayMillis));
+    /**
+     * @param action
+     * @param delayMillis
+     * @return the computed time at which the action will be executed
+     */
+    public long addActionTimer(Action action, long delayMillis) {
+        long actionTime = world.getTime().getTimeMillis() + delayMillis;
+        actionTimerQueue.add(new ActionTimer(action, actionTime));
+        return actionTime;
     }
 
     public void addActionTimerAtWorldTime(Action action, long worldTimeMillis) {

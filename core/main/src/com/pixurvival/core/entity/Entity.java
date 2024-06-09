@@ -260,10 +260,10 @@ public abstract class Entity implements Body, CustomDataHolder {
     }
 
     /**
-     * Write data that prequisites a call to {@link this#initialize()}.
+     * Write data that requisites a call to {@link this#initialize()}.
      *
      * @param buffer
-     * @param full   true if all the data should be writen, for clients that discovers
+     * @param full   true if all the data should be written, for clients that discovers
      *               this entity.
      */
     public abstract void writeUpdate(ByteBuffer buffer, boolean full);

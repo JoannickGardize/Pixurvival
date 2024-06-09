@@ -1,7 +1,7 @@
 package com.pixurvival.core.contentPack.structure;
 
 import com.pixurvival.core.contentPack.Dimensions;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.item.Item;
 import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class Structure extends NamedIdentifiedElement implements Serializable {
+public class Structure extends TaggableElement implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

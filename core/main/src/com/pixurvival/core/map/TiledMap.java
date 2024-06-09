@@ -45,7 +45,7 @@ public class TiledMap {
     @Getter
     private TiledMapLimits limits = new TiledMapLimits();
 
-    private Map<ChunkPosition, Chunk> chunks = new HashMap<>();
+    private Map<ChunkPosition, Chunk> chunks = new HashMap<>(128);
 
     private Map<ChunkPosition, List<StructureUpdate>> waitingStructureUpdates = new HashMap<>();
 
@@ -451,7 +451,7 @@ public class TiledMap {
     }
 
     public StructureEntity findClosestStructure(Vector2 position, float searchRadius, ElementSet<Structure> structureSet) {
-        return findClosestStructure(position, searchRadius, structureSet::containsById, s -> true);
+        return findClosestStructure(position, searchRadius, structureSet::contains, s -> true);
     }
 
     public StructureEntity findClosestStructure(Vector2 position, float searchRadius, Collection<Integer> structureTypeIds, Predicate<StructureEntity> filter) {

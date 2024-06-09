@@ -1,7 +1,7 @@
 package com.pixurvival.core.contentPack.item;
 
 import com.pixurvival.core.contentPack.ImageReferenceHolder;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.validation.annotation.*;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class Item extends NamedIdentifiedElement implements Serializable, ImageReferenceHolder {
+public abstract class Item extends TaggableElement implements Serializable, ImageReferenceHolder {
 
     private static final long serialVersionUID = 1L;
 

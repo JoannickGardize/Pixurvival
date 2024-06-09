@@ -43,10 +43,6 @@ public class ChunkPosition {
                 && y >= MathUtils.floor((center.getY() - halfSquareLength) / GameConstants.CHUNK_SIZE) && y <= MathUtils.floor((center.getY() + halfSquareLength) / GameConstants.CHUNK_SIZE);
     }
 
-    public String fileName() {
-        return "c" + x + "_" + y;
-    }
-
     /**
      * Convert the world position into chunk coordinates. Return this instance if
      * this is the result of the conversion. The purpose of this method is for

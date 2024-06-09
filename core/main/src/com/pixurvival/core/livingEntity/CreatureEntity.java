@@ -17,13 +17,12 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.livingEntity.tag.CreatureDefaultTagMapProxy;
+import com.pixurvival.core.livingEntity.tag.TagInstance;
 import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
-import com.pixurvival.core.util.ByteBufferUtils;
-import com.pixurvival.core.util.PseudoAIUtils;
-import com.pixurvival.core.util.VarLenNumberIO;
-import com.pixurvival.core.util.Vector2;
+import com.pixurvival.core.util.*;
 import lombok.*;
 
 import java.nio.ByteBuffer;
@@ -195,6 +194,11 @@ public class CreatureEntity extends LivingEntity {
     @Override
     public AbilitySet getAbilitySet() {
         return definition.getEffectiveAbilitySet();
+    }
+
+    @Override
+    protected IndexMap<TagInstance> getInitialTagMap() {
+        return new CreatureDefaultTagMapProxy(this);
     }
 
     @Override

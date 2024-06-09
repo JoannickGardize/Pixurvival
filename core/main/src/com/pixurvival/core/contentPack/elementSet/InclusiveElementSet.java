@@ -7,12 +7,7 @@ public class InclusiveElementSet<T extends NamedIdentifiedElement> extends Colle
     private static final long serialVersionUID = 1L;
 
     @Override
-    public boolean contains(T element) {
-        return getElementSet().contains(element);
-    }
-
-    @Override
-    public boolean containsById(int id) {
-        return getIdSet().contains(id);
+    public boolean contains(int id) {
+        return collectionContains(id);
     }
 }

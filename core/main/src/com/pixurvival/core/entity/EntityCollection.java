@@ -56,8 +56,8 @@ public class EntityCollection {
         entities.forEach(action);
     }
 
-    public Entity get(EntityGroup group, long id) {
-        return getMap(group).get(id);
+    public <T extends Entity> T get(EntityGroup group, long id) {
+        return (T) getMap(group).get(id);
     }
 
     public void clear() {

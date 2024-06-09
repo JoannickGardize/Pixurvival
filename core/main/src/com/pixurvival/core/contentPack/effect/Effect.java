@@ -4,7 +4,7 @@ import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.alteration.InstantDamageAlteration;
 import com.pixurvival.core.alteration.InstantHealAlteration;
 import com.pixurvival.core.alteration.StatFormula;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.*;
 import com.pixurvival.core.entity.EffectEntity;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 @Getter
 @Setter
-public class Effect extends NamedIdentifiedElement {
+public class Effect extends TaggableElement {
 
     private static final long serialVersionUID = 1L;
 

@@ -24,6 +24,7 @@ allprojects {
         appName = "Pixurvival"
         gdxVersion = '1.12.1'
         lombokVersion = '1.18.16'
+        junitVersion = '5.10.2'
     }
 
     repositories {
@@ -48,8 +49,9 @@ project(":core") {
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
         compile "org.yaml:snakeyaml:1.24"
     }
 
@@ -87,8 +89,8 @@ project(":contentpack-editor") {
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     }
 
     test {
@@ -115,8 +117,8 @@ project(":server") {
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     }
 
     test {
@@ -194,8 +196,8 @@ project(":gdx-core") {
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
         testImplementation project(':core').sourceSets.test.output
     }
 
@@ -216,8 +218,8 @@ project(":discord-bot") {
         annotationProcessor "org.projectlombok:lombok:$lombokVersion"
         testCompileOnly "org.projectlombok:lombok:$lombokVersion"
         testAnnotationProcessor "org.projectlombok:lombok:$lombokVersion"
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
     }
 
     test {

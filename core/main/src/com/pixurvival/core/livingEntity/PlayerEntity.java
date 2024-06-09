@@ -14,6 +14,7 @@ import com.pixurvival.core.entity.EntityGroup;
 import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.core.livingEntity.ability.*;
 import com.pixurvival.core.livingEntity.stats.StatType;
+import com.pixurvival.core.livingEntity.tag.TagInstance;
 import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.map.chunk.Chunk;
@@ -23,10 +24,7 @@ import com.pixurvival.core.system.interest.EquipmentInterest;
 import com.pixurvival.core.system.interest.InterestSubscription;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
-import com.pixurvival.core.util.ByteBufferUtils;
-import com.pixurvival.core.util.MathUtils;
-import com.pixurvival.core.util.VarLenNumberIO;
-import com.pixurvival.core.util.Vector2;
+import com.pixurvival.core.util.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -125,6 +123,7 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
     @Override
     public void initialize() {
         super.initialize();
+
         if (getWorld().isServer()) {
             setInventory(new PlayerInventory(INVENTORY_SIZE));
             equipmentModCounts = new int[Equipment.EQUIPMENT_SIZE];
@@ -246,6 +245,11 @@ public class PlayerEntity extends LivingEntity implements EquipmentHolder, Comma
     @Override
     public AbilitySet getAbilitySet() {
         return PLAYER_ABILITY_SET;
+    }
+
+    @Override
+    protected IndexMap<TagInstance> getInitialTagMap() {
+        return IndexMap.create(getWorld().getContentPack().getTags().size() - 1);
     }
 
     public void foreachChunkInView(Consumer<Chunk> action) {

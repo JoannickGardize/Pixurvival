@@ -15,6 +15,7 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.tag.Tag;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.util.CaseUtils;
 import lombok.Getter;
@@ -40,7 +41,8 @@ public enum ElementType {
     STRUCTURE(Structure.class),
     MAP_PROVIDER(MapProvider.class),
     ECOSYSTEM(Ecosystem.class),
-    GAME_MODE(GameMode.class);
+    GAME_MODE(GameMode.class),
+    TAG(Tag.class);
 
     private static Map<Class<? extends NamedIdentifiedElement>, ElementType> classToType = new IdentityHashMap<>(15);
 

@@ -12,7 +12,7 @@ public class AllElementSet<T extends NamedIdentifiedElement> implements ElementS
     }
 
     @Override
-    public boolean containsById(int id) {
+    public boolean contains(int id) {
         return true;
     }
 

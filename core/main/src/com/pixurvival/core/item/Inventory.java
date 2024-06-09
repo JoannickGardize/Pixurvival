@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 // TODO abstract item collection
+// TODO optimize this class with the IdSet
 @EqualsAndHashCode(of = "slots")
 public class Inventory {
 
@@ -100,12 +101,12 @@ public class Inventory {
 
     /**
      * Try to take the given collection of item with the given quantity. If the
-     * quantity is not available nothing happen. The items are taken in priority
+     * quantity is not available, nothing happen. The items are taken in priority
      * from the end.
      *
      * @param itemStacks The collection of ItemStack to remove
      * @return True if the ItemStacks were available and has been removed, false
-     * overwise.
+     * otherwise.
      */
     public boolean remove(Collection<ItemStack> itemStacks) {
         if (!contains(itemStacks)) {

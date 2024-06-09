@@ -4,6 +4,7 @@ import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.creature.Behavior;
 import com.pixurvival.core.entity.Entity;
 import com.pixurvival.core.entity.EntityGroup;
+import com.pixurvival.core.entity.EntitySearchResult;
 import com.pixurvival.core.livingEntity.CreatureEntity;
 
 public class VanishBehavior extends Behavior {
@@ -20,7 +21,8 @@ public class VanishBehavior extends Behavior {
 
     @Override
     protected void step(CreatureEntity creature) {
-        Entity closestPlayer = creature.findClosest(EntityGroup.PLAYER);
+        EntitySearchResult result = creature.findClosest(EntityGroup.PLAYER, GameConstants.PLAYER_VIEW_DISTANCE);
+        Entity closestPlayer = result.getEntity();
         if (closestPlayer == null) {
             creature.setAlive(false);
             return;

@@ -8,10 +8,10 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ListEditor;
 import com.pixurvival.contentPackEditor.component.valueComponent.TimeInput;
 import com.pixurvival.contentPackEditor.component.valueComponent.VerticalListEditor;
 import com.pixurvival.core.alteration.Alteration;
-import com.pixurvival.core.contentPack.item.trigger.EquippedTrigger;
-import com.pixurvival.core.contentPack.item.trigger.TimerTrigger;
-import com.pixurvival.core.contentPack.item.trigger.Trigger;
-import com.pixurvival.core.contentPack.item.trigger.UnequippedTrigger;
+import com.pixurvival.core.contentPack.trigger.EquippedTrigger;
+import com.pixurvival.core.contentPack.trigger.TimerTrigger;
+import com.pixurvival.core.contentPack.trigger.Trigger;
+import com.pixurvival.core.contentPack.trigger.UnequippedTrigger;
 
 import javax.swing.*;
 import java.util.ArrayList;

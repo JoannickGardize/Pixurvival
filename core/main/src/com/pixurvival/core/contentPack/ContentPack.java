@@ -16,11 +16,15 @@ import com.pixurvival.core.contentPack.sprite.AnimationTemplate;
 import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.tag.Tag;
+import com.pixurvival.core.contentPack.tag.TagValue;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
+import com.pixurvival.core.livingEntity.tag.TagInstance;
+import com.pixurvival.core.util.IndexMap;
 import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.ReflectionUtils;
 import com.pixurvival.core.util.ReleaseVersion;
@@ -32,6 +36,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
 
+// TODO : extract computed elements for game run in another class, to make this class a pure data holder
 @Getter
 @Setter
 public class ContentPack implements Serializable {
@@ -52,6 +57,8 @@ public class ContentPack implements Serializable {
     private transient Map<Integer, Alteration> alterations = new HashMap<>();
 
     private transient Map<String, Integer> soundIdByName;
+
+    private transient List<IndexMap<TagInstance>> defaultCreatureTagMaps;
 
     @Valid
     private ContentPackIdentifier identifier;
@@ -122,6 +129,10 @@ public class ContentPack implements Serializable {
     private List<GameMode> gameModes = new ArrayList<>();
 
     @Valid
+    @ElementList(Tag.class)
+    private List<Tag> tags = new ArrayList<>();
+
+    @Valid
     private Constants constants = new Constants();
 
     /**
@@ -179,6 +190,7 @@ public class ContentPack implements Serializable {
         callElementsInitializeMethod();
         initializeStructures();
         computeMaxLivingEntityRadius();
+        initializeDefaultCreatureTagMaps();
     }
 
     public List<NamedIdentifiedElement> listOf(Class<? extends NamedIdentifiedElement> type) {
@@ -251,6 +263,39 @@ public class ContentPack implements Serializable {
                 playCustomSoundAlteration.setSoundId(soundId);
             }
         }
+    }
+
+    private static class ImmutableTagInstance extends TagInstance {
+
+
+        public ImmutableTagInstance(TagValue tagValue) {
+            super(tagValue);
+        }
+
+        @Override
+        public void setValue(float value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setModCount(int modCount) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void setExpirationTime(long expirationTime) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private void initializeDefaultCreatureTagMaps() {
+        defaultCreatureTagMaps = new ArrayList<>();
+        creatures.forEach(c -> {
+            IndexMap<TagInstance> map = IndexMap.create(c.getTags().stream()
+                    .mapToInt(tv -> tv.getTag().getId()).max().getAsInt());
+            c.getTags().forEach(tv -> map.put(tv.getTag().getId(), new ImmutableTagInstance(tv)));
+            defaultCreatureTagMaps.add(IndexMap.immutable(map));
+        });
     }
 
     public void forEachStatFormulas(Consumer<StatFormula> action) {

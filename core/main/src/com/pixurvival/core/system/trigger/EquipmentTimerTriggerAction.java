@@ -4,14 +4,17 @@ import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
 import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.contentPack.item.EquipableItem;
-import com.pixurvival.core.contentPack.item.trigger.TimerTrigger;
+import com.pixurvival.core.contentPack.trigger.TimerTrigger;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Should stay kryo serializable
+ */
 @Getter
 @Setter
-public class TimerTriggerAction implements Action {
+public class EquipmentTimerTriggerAction implements Action {
 
     private long playerId;
     private int equipmentSlot;

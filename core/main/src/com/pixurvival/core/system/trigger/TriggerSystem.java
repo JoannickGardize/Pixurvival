@@ -2,12 +2,14 @@ package com.pixurvival.core.system.trigger;
 
 import com.pixurvival.core.ActionTimerManager;
 import com.pixurvival.core.World;
+import com.pixurvival.core.contentPack.TriggerHolder;
 import com.pixurvival.core.contentPack.item.EquipableItem;
 import com.pixurvival.core.contentPack.item.Item;
-import com.pixurvival.core.contentPack.item.trigger.EquippedTrigger;
-import com.pixurvival.core.contentPack.item.trigger.TimerTrigger;
-import com.pixurvival.core.contentPack.item.trigger.Trigger;
-import com.pixurvival.core.contentPack.item.trigger.UnequippedTrigger;
+import com.pixurvival.core.contentPack.tag.Tag;
+import com.pixurvival.core.contentPack.trigger.EquippedTrigger;
+import com.pixurvival.core.contentPack.trigger.TimerTrigger;
+import com.pixurvival.core.contentPack.trigger.Trigger;
+import com.pixurvival.core.contentPack.trigger.UnequippedTrigger;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.system.GameSystem;
 import com.pixurvival.core.system.Inject;
@@ -30,24 +32,23 @@ public class TriggerSystem implements GameSystem, WorldUpdateInterest, Equipment
                 return true;
             }
         }
+        for (Tag tag : world.getContentPack().getTags()) {
+            if (!tag.getTriggers().isEmpty()) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public void initialize(World world) {
         world.getContentPack().getItems().forEach(item -> {
-            if (item instanceof EquipableItem) {
-                EquipableItem equipableItem = (EquipableItem) item;
-                Map<Class<? extends Trigger>, List<Trigger>> triggersByType = new IdentityHashMap<>();
-                for (int i = 0; i < equipableItem.getTriggers().size(); i++) {
-                    Trigger t = equipableItem.getTriggers().get(i);
-                    t.setIndex(i);
-                    List<Trigger> triggers = triggersByType.computeIfAbsent(t.getClass(), k -> new ArrayList<>());
-                    triggers.add(t);
-                }
-                equipableItem.setTriggersByType(triggersByType);
+            if (item instanceof TriggerHolder) {
+                TriggerHolder triggerHolder = (TriggerHolder) item;
+                initializeTriggerHolder(triggerHolder);
             }
         });
+        world.getContentPack().getTags().forEach(this::initializeTriggerHolder);
     }
 
     @Override
@@ -60,7 +61,7 @@ public class TriggerSystem implements GameSystem, WorldUpdateInterest, Equipment
         apply(player, item.getTriggersByType().get(EquippedTrigger.class));
         for (Trigger trigger : item.getTriggersByType().getOrDefault(TimerTrigger.class, Collections.emptyList())) {
             TimerTrigger timerTrigger = (TimerTrigger) trigger;
-            TimerTriggerAction timerTriggerAction = new TimerTriggerAction();
+            EquipmentTimerTriggerAction timerTriggerAction = new EquipmentTimerTriggerAction();
             timerTriggerAction.setPlayerId(player.getId());
             timerTriggerAction.setEquipmentSlot(equipmentIndex);
             timerTriggerAction.setModCount(player.getEquipmentModCounts()[equipmentIndex]);
@@ -82,5 +83,16 @@ public class TriggerSystem implements GameSystem, WorldUpdateInterest, Equipment
                 trigger.getAlterations().forEach(a -> a.apply(player, player));
             }
         }
+    }
+
+    private void initializeTriggerHolder(TriggerHolder triggerHolder) {
+        Map<Class<? extends Trigger>, List<Trigger>> triggersByType = new IdentityHashMap<>();
+        for (int i = 0; i < triggerHolder.getTriggers().size(); i++) {
+            Trigger t = triggerHolder.getTriggers().get(i);
+            t.setIndex(i);
+            List<Trigger> triggers = triggersByType.computeIfAbsent(t.getClass(), k -> new ArrayList<>());
+            triggers.add(t);
+        }
+        triggerHolder.setTriggersByType(triggersByType);
     }
 }

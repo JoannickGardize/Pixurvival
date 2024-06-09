@@ -1,4 +1,4 @@
-package com.pixurvival.core.contentPack.item.trigger;
+package com.pixurvival.core.contentPack.trigger;
 
 import com.pixurvival.core.contentPack.validation.annotation.Positive;
 import lombok.Getter;

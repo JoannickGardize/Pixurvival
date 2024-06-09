@@ -2,7 +2,7 @@ package com.pixurvival.core.contentPack.creature;
 
 import com.pixurvival.core.alteration.Alteration;
 import com.pixurvival.core.alteration.StatFormula;
-import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.item.ItemReward;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.*;
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 @Getter
 @Setter
-public class Creature extends NamedIdentifiedElement {
+public class Creature extends TaggableElement {
 
     private static final AbilitySet EMPTY_ABILITY_SET = new AbilitySet();
 

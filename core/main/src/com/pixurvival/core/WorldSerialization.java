@@ -28,7 +28,7 @@ import com.pixurvival.core.system.interest.PersistenceInterest;
 import com.pixurvival.core.system.mapLimits.MapLimitsAnchorRun;
 import com.pixurvival.core.system.mapLimits.MapLimitsSystemData;
 import com.pixurvival.core.system.mapLimits.NextMapLimitAnchorAction;
-import com.pixurvival.core.system.trigger.TimerTriggerAction;
+import com.pixurvival.core.system.trigger.EquipmentTimerTriggerAction;
 import com.pixurvival.core.util.*;
 import lombok.experimental.UtilityClass;
 
@@ -205,7 +205,7 @@ public class WorldSerialization {
         kryo.register(ActionTimer.class);
         kryo.register(PlayerRespawnAction.class);
         kryo.register(MapLimitsSystemData.class);
-        kryo.register(TimerTriggerAction.class);
+        kryo.register(EquipmentTimerTriggerAction.class);
         return kryo;
     }
 
