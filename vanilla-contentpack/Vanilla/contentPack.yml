@@ -7025,7 +7025,7 @@ items:
     avoidStuck: false
     autoDestroy: false
     dimensions: {width: 1, height: 1}
-    duration: 150000
+    duration: 600000
     bannedTiles:
     - &water
       id: 4
@@ -8119,7 +8119,7 @@ items:
   maxStackSize: 10
   frame: {x: 1, y: 8}
   image: images/items.png
-  duration: 5000000
+  duration: 2000
   alterations:
   - !!InstantHealAlteration
     targetType: TARGET

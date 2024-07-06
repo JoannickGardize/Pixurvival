@@ -2,8 +2,11 @@ package com.pixurvival.core.map;
 
 import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
+import com.pixurvival.core.map.chunk.update.RemoveStructureUpdate;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.util.Collections;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +25,8 @@ public class RemoveDurationStructureAction implements Action {
             if (mapStructure.getId() == id && duration > 0 && world.getTime().getTimeMillis() - mapStructure.getCreationTime() >= duration) {
                 mapStructure.getChunk().removeStructure(x, y);
             }
+        } else {
+            world.getMap().applyUpdate(Collections.singleton(new RemoveStructureUpdate(x, y, id)));
         }
     }
 

@@ -20,11 +20,6 @@ import java.nio.ByteBuffer;
 @Getter
 public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable, Healable {
 
-    @FunctionalInterface
-    private static interface StructureSupplier {
-        StructureEntity apply(Chunk chunk, Structure structure, int x, int y);
-    }
-
     private @Setter long id;
     private Chunk chunk;
     private Structure definition;
