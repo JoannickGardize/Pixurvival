@@ -17,7 +17,6 @@ import com.pixurvival.core.system.interest.StructureChangeInterest;
 import com.pixurvival.core.util.MathUtils;
 import com.pixurvival.core.util.Vector2;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,9 +52,6 @@ public class TiledMap {
 
     private @Getter ChunkRepository repository;
 
-    private @Getter
-    @Setter long nextStructureId = 1;
-
     private Light tmpResult;
 
     public TiledMap(World world) {
@@ -90,10 +86,6 @@ public class TiledMap {
         if (world.isServer()) {
             addListener(world.getChunkCreatureSpawnManager());
         }
-    }
-
-    public long nextStructureId() {
-        return nextStructureId++;
     }
 
     public void addListener(TiledMapListener listener) {

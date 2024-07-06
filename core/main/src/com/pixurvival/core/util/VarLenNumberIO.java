@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  * The number of bytes used vary between 1 byte in the best case and
  * {@code size of the primitive + 1} bytes in the worst case.
  * <p>
- * Every methods of this class has a "positive" version which is recommended for
+ * Every method of this class has a "positive" version which is recommended for
  * positive-only values (e.g. an array's length), they will require fewer bytes,
  * while negative values will always be in the worst case scenario.
  * Additionally, these positive versions run slightly faster.

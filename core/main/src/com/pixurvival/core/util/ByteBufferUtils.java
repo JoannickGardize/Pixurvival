@@ -127,6 +127,22 @@ public class ByteBufferUtils {
         return result;
     }
 
+    public static void putLongs(ByteBuffer buffer, long[] longs) {
+        VarLenNumberIO.writePositiveVarInt(buffer, longs.length);
+        for (long i : longs) {
+            VarLenNumberIO.writeVarLong(buffer, i);
+        }
+    }
+
+    public static long[] getLongs(ByteBuffer buffer) {
+        int length = VarLenNumberIO.readPositiveVarInt(buffer);
+        long[] result = new long[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = VarLenNumberIO.readVarLong(buffer);
+        }
+        return result;
+    }
+
     public static void writeFutureTime(ByteBuffer buffer, World world, long time) {
         VarLenNumberIO.writePositiveVarLong(buffer, time - world.getTime().getSerializationContextTime());
     }

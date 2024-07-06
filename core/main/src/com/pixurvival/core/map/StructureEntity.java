@@ -6,9 +6,12 @@ import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.livingEntity.stats.StatSet;
 import com.pixurvival.core.map.chunk.Chunk;
 import com.pixurvival.core.map.chunk.update.DamageableStructureUpdate;
+import com.pixurvival.core.tag.TagHolder;
+import com.pixurvival.core.tag.TagInstance;
 import com.pixurvival.core.team.Team;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamSet;
+import com.pixurvival.core.util.IndexMap;
 import com.pixurvival.core.util.LongSequenceIOHelper;
 import com.pixurvival.core.util.VarLenNumberIO;
 import com.pixurvival.core.util.Vector2;
@@ -18,12 +21,7 @@ import lombok.Setter;
 import java.nio.ByteBuffer;
 
 @Getter
-public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable, Healable {
-
-    @FunctionalInterface
-    private static interface StructureSupplier {
-        StructureEntity apply(Chunk chunk, Structure structure, int x, int y);
-    }
+public class StructureEntity implements Body, CustomDataHolder, TeamMember, Damageable, Healable, TagHolder {
 
     private @Setter long id;
     private Chunk chunk;
@@ -36,6 +34,7 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
     private @Getter
     @Setter float health;
     private boolean flip = false;
+    private IndexMap<TagInstance> tags;
 
     public StructureEntity(Chunk chunk, Structure definition, int x, int y) {
         this.chunk = chunk;
@@ -46,10 +45,10 @@ public class StructureEntity implements Body, CustomDataHolder, TeamMember, Dama
         health = definition.getMaxHealth();
     }
 
-    public void initiliazeNewlyCreated() {
+    public void initializeNewlyCreated() {
         World world = chunk.getMap().getWorld();
         if (world.isServer()) {
-            id = chunk.getMap().nextStructureId();
+            id = chunk.getMap().getWorld().nextId();
             if (definition.getDuration() > 0) {
                 creationTime = chunk.getMap().getWorld().getTime().getTimeMillis();
                 world.getActionTimerManager().addActionTimer(new RemoveDurationStructureAction(tileX, tileY, id), definition.getDuration());

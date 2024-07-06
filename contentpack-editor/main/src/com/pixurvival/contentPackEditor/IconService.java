@@ -4,6 +4,7 @@ import com.pixurvival.contentPackEditor.component.util.GraphicsUtils;
 import com.pixurvival.contentPackEditor.event.*;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.effect.Effect;
 import com.pixurvival.core.contentPack.item.Item;
@@ -11,6 +12,7 @@ import com.pixurvival.core.contentPack.map.Tile;
 import com.pixurvival.core.contentPack.sprite.Frame;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
+import com.pixurvival.core.contentPack.tag.Tag;
 import com.pixurvival.core.util.ReflectionUtils;
 import lombok.Getter;
 
@@ -39,6 +41,7 @@ public class IconService {
         iconSuppliers.put(Effect.class, this::effect);
         iconSuppliers.put(SpriteSheet.class, e -> this.get((SpriteSheet) e));
         iconSuppliers.put(ResourceEntry.class, e -> e instanceof ResourceEntry ? ((ResourceEntry) e).getIcon() : null);
+        iconSuppliers.put(Tag.class, this::tag);
         BufferedImage image = (BufferedImage) ImageService.getInstance().get("elements_icons");
         for (ElementType type : ElementType.values()) {
             typeIcons.put(type, get(image, new Frame(type.ordinal() % 5, type.ordinal() / 5), 16, 16));
@@ -54,7 +57,7 @@ public class IconService {
             return null;
         } else {
             return elementIcons.computeIfAbsent(element, e -> {
-                Function<NamedIdentifiedElement, Icon> iconSupplier = iconSuppliers.get(ReflectionUtils.getSuperClassUnder(e.getClass(), NamedIdentifiedElement.class));
+                Function<NamedIdentifiedElement, Icon> iconSupplier = iconSuppliers.get(ReflectionUtils.getSuperClassUnder(e.getClass(), NamedIdentifiedElement.class, TaggableElement.class));
                 if (iconSupplier == null) {
                     return null;
                 } else {
@@ -70,6 +73,15 @@ public class IconService {
             return null;
         } else {
             return get(item.getImage(), item.getFrame());
+        }
+    }
+
+    public Icon tag(NamedIdentifiedElement element) {
+        Tag tag = (Tag) element;
+        if (tag == null || tag.getImage() == null || tag.getDisplayIconFrame() == null) {
+            return null;
+        } else {
+            return get(tag.getImage(), tag.getDisplayIconFrame());
         }
     }
 

@@ -161,7 +161,7 @@ public class Chunk {
 
     public StructureEntity addNewStructure(Structure structure, int x, int y) {
         StructureEntity mapStructure = createStructure(structure, x, y);
-        mapStructure.initiliazeNewlyCreated();
+        mapStructure.initializeNewlyCreated();
         notifyStructureAdded(mapStructure);
         return mapStructure;
     }

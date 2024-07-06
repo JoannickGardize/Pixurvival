@@ -29,7 +29,6 @@ public class LayoutUtils {
     }
 
     public static JLabel addHorizontalLabelledItem(Container parent, String labelKey, boolean useTranslation, String toolTipKey, Component component, GridBagConstraints gbc) {
-        gbc.fill = GridBagConstraints.BOTH;
         gbc.insets.top = 2;
         gbc.insets.bottom = 1;
         int previousAnchor = gbc.anchor;

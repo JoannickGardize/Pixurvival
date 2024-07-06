@@ -76,6 +76,8 @@ public class BeanFactory {
         suppliers.put(Vector2.class, Vector2::new);
 
         suppliers.put(AlterationCondition.class, HealthAlterationCondition::new);
+
+        suppliers.put(Frame.class, Frame::new);
     }
 
     @SneakyThrows

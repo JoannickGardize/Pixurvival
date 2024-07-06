@@ -1,6 +1,7 @@
 package com.pixurvival.contentPackEditor;
 
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.creature.BehaviorSet;
 import com.pixurvival.core.contentPack.creature.Creature;
 import com.pixurvival.core.contentPack.ecosystem.Ecosystem;
@@ -69,7 +70,7 @@ public enum ElementType {
     public static ElementType of(Class<? extends NamedIdentifiedElement> type) {
         // Find the class under "IdentifiedElement", because of hierarchy under
         // item and structures
-        while (type.getSuperclass() != NamedIdentifiedElement.class) {
+        while (type.getSuperclass() != NamedIdentifiedElement.class && type.getSuperclass() != TaggableElement.class) {
             type = (Class<? extends NamedIdentifiedElement>) type.getSuperclass();
         }
         return classToType.get(type);

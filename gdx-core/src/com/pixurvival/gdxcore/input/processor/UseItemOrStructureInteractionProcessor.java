@@ -1,13 +1,13 @@
 package com.pixurvival.gdxcore.input.processor;
 
 import com.badlogic.gdx.math.Vector2;
-import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.GameConstants;
 import com.pixurvival.core.contentPack.item.EdibleItem;
 import com.pixurvival.core.contentPack.item.StructureItem;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.PlayerInventory;
+import com.pixurvival.core.logic.ActionPreconditions;
 import com.pixurvival.core.map.StructureEntity;
 import com.pixurvival.core.message.playerRequest.InteractStructureRequest;
 import com.pixurvival.core.message.playerRequest.PlaceStructureRequest;

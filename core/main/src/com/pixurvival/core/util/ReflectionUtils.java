@@ -101,12 +101,13 @@ public class ReflectionUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Class<? extends T> getSuperClassUnder(Class<? extends T> type, Class<T> under) {
-        Class<? extends T> tmp = type;
-        while (tmp.getSuperclass() != under) {
-            tmp = (Class<? extends T>) tmp.getSuperclass();
+    public static <T> Class<T> getSuperClassUnder(Class<?> type, Class<?>... under) {
+        Class<?> tmp = type;
+        Collection<Class<?>> underList = Arrays.asList(under);
+        while (!underList.contains(tmp.getSuperclass())) {
+            tmp = tmp.getSuperclass();
         }
-        return tmp;
+        return (Class<T>) tmp;
     }
 
     /**

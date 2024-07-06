@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.geom.NoninvertibleTransformException;
 
 public class RelativePopup extends JDialog {
 
@@ -37,11 +38,20 @@ public class RelativePopup extends JDialog {
         int y = p.y + relativeTo.getHeight();
         if (rootFrame.getGraphicsConfiguration() != null) {
             GraphicsDevice screen = rootFrame.getGraphicsConfiguration().getDevice();
-            if (x + getWidth() > screen.getDisplayMode().getWidth()) {
-                x = p.x + relativeTo.getWidth() - getWidth();
+            GraphicsConfiguration[] configs = screen.getConfigurations();
+            Point screenSize = new Point(screen.getDisplayMode().getWidth(), screen.getDisplayMode().getHeight());
+            if (configs.length > 0) {
+                try {
+                    configs[0].getDefaultTransform().inverseTransform(screenSize, screenSize);
+                } catch (NoninvertibleTransformException e) {
+                    e.printStackTrace();
+                }
             }
-            if (y + getHeight() > screen.getDisplayMode().getHeight()) {
-                y = p.y - getHeight();
+            if (x + getWidth() > screenSize.x) {
+                x = screenSize.x - getWidth();
+            }
+            if (y + getHeight() > screenSize.y) {
+                y = screenSize.y - getHeight();
             }
         }
         setLocation(x, y);

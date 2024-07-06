@@ -17,9 +17,8 @@ import com.pixurvival.core.livingEntity.ability.AbilitySet;
 import com.pixurvival.core.livingEntity.ability.CreatureAlterationAbility;
 import com.pixurvival.core.livingEntity.ability.HarvestAbilityData;
 import com.pixurvival.core.livingEntity.stats.StatType;
-import com.pixurvival.core.livingEntity.tag.CreatureDefaultTagMapProxy;
-import com.pixurvival.core.livingEntity.tag.TagInstance;
 import com.pixurvival.core.map.HarvestableStructureEntity;
+import com.pixurvival.core.tag.TagInstance;
 import com.pixurvival.core.team.TeamMember;
 import com.pixurvival.core.team.TeamMemberSerialization;
 import com.pixurvival.core.util.*;
@@ -241,6 +240,23 @@ public class CreatureEntity extends LivingEntity {
     @Override
     public TeamMember getOrigin() {
         return this;
+    }
+
+    @Override
+    protected boolean shouldWriteTagMapRepositoryUpdate(ByteBuffer buffer) {
+        boolean should = !(getTags() instanceof CreatureDefaultTagMapProxy);
+        buffer.put(should ? (byte) 1 : (byte) 0);
+        return should;
+    }
+
+    @Override
+    protected boolean shouldReadTagMapRepositoryUpdate(ByteBuffer buffer) {
+        if (buffer.get() == 1) {
+            setTags(getInitialTagMap());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

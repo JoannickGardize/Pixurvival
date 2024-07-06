@@ -2,8 +2,6 @@ package com.pixurvival.core.entity;
 
 import com.pixurvival.core.World;
 import com.pixurvival.core.livingEntity.PlayerEntity;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -17,10 +15,6 @@ import java.util.Map.Entry;
  */
 public class EntityPool extends EntityCollection {
     private World world;
-    // Starts to 1 because 0 is interpreted as the end of the list for
-    // serialization
-    private @Getter
-    @Setter long nextId = 1;
     private List<EntityPoolListener> listeners = new ArrayList<>();
     private List<Entity> newEntities = new ArrayList<>();
 
@@ -58,7 +52,7 @@ public class EntityPool extends EntityCollection {
      * @param e
      */
     public void addNew(Entity e) {
-        e.setId(nextId++);
+        e.setId(world.nextId());
         add(e);
         e.initializeAtCreation();
     }

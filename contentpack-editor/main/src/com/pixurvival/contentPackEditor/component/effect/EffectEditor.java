@@ -59,7 +59,7 @@ public class EffectEditor extends RootElementEditor<Effect> {
         JTabbedPane tabbedPane = new JTabbedPane();
         JPanel displayPanel = LayoutUtils.createVerticalLabelledBox("elementType.spriteSheet", spriteSheetChooser, "effectEditor.orientation", orientationTypeChooser, "effectEditor.drawDepth",
                 drawDepthChooser);
-        displayPanel.setBorder(LayoutUtils.createGroupBorder("effectEditor.display"));
+        displayPanel.setBorder(LayoutUtils.createGroupBorder("generic.display"));
         JPanel propertiesPanel = LayoutUtils.createVerticalLabelledBox("generic.solid", solidCheckbox, "generic.duration", durationInput, "effectEditor.entityCollisionRadius",
                 entityCollisionRadiusInput, "effectEditor.mapCollisionRadius", mapCollisionRadiusInput);
         propertiesPanel.setBorder(LayoutUtils.createGroupBorder("generic.properties"));

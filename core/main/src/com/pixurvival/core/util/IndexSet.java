@@ -1,7 +1,10 @@
 package com.pixurvival.core.util;
 
 import com.esotericsoftware.kryo.util.IntMap;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import java.nio.ByteBuffer;
 import java.util.function.IntConsumer;
 
 /**
@@ -33,6 +36,26 @@ public abstract class IndexSet {
     public abstract boolean contains(int value);
 
     public abstract void forEach(IntConsumer action);
+
+    public abstract void write(ByteBuffer buffer);
+
+    public static IndexSet read(ByteBuffer buffer) {
+        byte type = buffer.get();
+        switch (type) {
+            case EmptyIndexSet.SERIALIZATION_ID:
+                return EMPTY;
+            case RegularIndexSet.SERIALIZATION_ID:
+                return RegularIndexSet.read(buffer);
+            case ShiftedRegularIndexSet.SERIALIZATION_ID:
+                return ShiftedRegularIndexSet.read(buffer);
+            case JumboIndexSet.SERIALIZATION_ID:
+                return JumboIndexSet.read(buffer);
+            case HashIndexSet.SERIALIZATION_ID:
+                return HashIndexSet.read(buffer);
+            default:
+                throw new RuntimeException("Unknown IndexSet type: " + type);
+        }
+    }
 
     /**
      * Create an IdSet that is able to store values between 0 and maxValue (inclusive).
@@ -87,6 +110,8 @@ public abstract class IndexSet {
 
     static class EmptyIndexSet extends IndexSet {
 
+        static final byte SERIALIZATION_ID = 0;
+
         @Override
         public boolean add(int value) {
             throw new UnsupportedOperationException();
@@ -110,9 +135,18 @@ public abstract class IndexSet {
         @Override
         public void forEach(IntConsumer action) {
         }
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.put(SERIALIZATION_ID);
+        }
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class RegularIndexSet extends IndexSet {
+
+        static final byte SERIALIZATION_ID = 1;
 
         private long values = 0;
 
@@ -148,9 +182,22 @@ public abstract class IndexSet {
                 action.accept(Long.numberOfTrailingZeros(lastValue));
             }
         }
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.put(SERIALIZATION_ID);
+            VarLenNumberIO.writeVarLong(buffer, values);
+        }
+
+        public static IndexSet read(ByteBuffer buffer) {
+            return new RegularIndexSet(VarLenNumberIO.readVarLong(buffer));
+        }
     }
 
+    @AllArgsConstructor
     static class ShiftedRegularIndexSet extends IndexSet {
+
+        static final byte SERIALIZATION_ID = 2;
 
         private int shift;
         private long values = 0;
@@ -192,16 +239,28 @@ public abstract class IndexSet {
                 action.accept(Long.numberOfTrailingZeros(lastValue) + shift);
             }
         }
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.put(SERIALIZATION_ID);
+            VarLenNumberIO.writeVarInt(buffer, shift);
+            VarLenNumberIO.writeVarLong(buffer, values);
+        }
+
+        public static IndexSet read(ByteBuffer buffer) {
+            return new ShiftedRegularIndexSet(VarLenNumberIO.readVarInt(buffer), VarLenNumberIO.readVarLong(buffer));
+        }
     }
 
+    @AllArgsConstructor
     static class JumboIndexSet extends IndexSet {
 
+        static final byte SERIALIZATION_ID = 3;
+
         private long[] values;
-        private int maxValue;
 
         public JumboIndexSet(int maxValue) {
             values = new long[(maxValue + 64) >>> 6];
-            this.maxValue = maxValue;
         }
 
         @Override
@@ -224,7 +283,8 @@ public abstract class IndexSet {
 
         @Override
         public boolean contains(int value) {
-            return value <= maxValue && (values[value >>> 6] & (1L << value)) != 0;
+            int arrayIndex = value >>> 6;
+            return arrayIndex < values.length && (values[arrayIndex] & (1L << value)) != 0;
         }
 
         @Override
@@ -247,9 +307,21 @@ public abstract class IndexSet {
                         + Long.numberOfTrailingZeros(lastValue));
             }
         }
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.put(SERIALIZATION_ID);
+            ByteBufferUtils.putLongs(buffer, values);
+        }
+
+        public static IndexSet read(ByteBuffer buffer) {
+            return new JumboIndexSet(ByteBufferUtils.getLongs(buffer));
+        }
     }
 
     static class HashIndexSet extends IndexSet {
+
+        static final byte SERIALIZATION_ID = 4;
 
         private static Object valueMock = new Object();
 
@@ -281,6 +353,22 @@ public abstract class IndexSet {
             while (keys.hasNext) {
                 action.accept(keys.next());
             }
+        }
+
+        @Override
+        public void write(ByteBuffer buffer) {
+            buffer.put(SERIALIZATION_ID);
+            VarLenNumberIO.writePositiveVarInt(buffer, map.size);
+            forEach(key -> VarLenNumberIO.writePositiveVarInt(buffer, key));
+        }
+
+        public static IndexSet read(ByteBuffer buffer) {
+            HashIndexSet result = new HashIndexSet();
+            int size = VarLenNumberIO.readPositiveVarInt(buffer);
+            for (int i = 0; i < size; i++) {
+                result.insert(VarLenNumberIO.readPositiveVarInt(buffer));
+            }
+            return result;
         }
     }
 }

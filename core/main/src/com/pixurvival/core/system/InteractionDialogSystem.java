@@ -1,10 +1,10 @@
 package com.pixurvival.core.system;
 
-import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.World;
 import com.pixurvival.core.interactionDialog.InteractionDialog;
 import com.pixurvival.core.interactionDialog.InteractionDialogChangeListener;
 import com.pixurvival.core.livingEntity.PlayerEntity;
+import com.pixurvival.core.logic.ActionPreconditions;
 import com.pixurvival.core.system.interest.InteractionDialogInterest;
 import com.pixurvival.core.system.interest.InteractionDialogRequestInterest;
 import com.pixurvival.core.system.interest.InterestSubscription;

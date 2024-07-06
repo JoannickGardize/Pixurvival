@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,10 +61,7 @@ class IndexMapTest {
     @ParameterizedTest
     @MethodSource("putSource")
     void putAndGet(int maxValue, Node[] putNodes, int[] someMissingKeys) {
-        IndexMap<String> map = IndexMap.create(maxValue);
-        for (Node n : putNodes) {
-            map.put(n.key, n.value);
-        }
+        IndexMap<String> map = createIndexMap(maxValue, putNodes);
         for (Node n : putNodes) {
             Assertions.assertEquals(n.value, map.get(n.key));
         }
@@ -82,8 +80,7 @@ class IndexMapTest {
     @ParameterizedTest
     @MethodSource("basicIndexMapSource")
     void remove(int maxValue, Node[] nodes) {
-        IndexMap map = IndexMap.create(maxValue);
-        Arrays.stream(nodes).forEach(n -> map.put(n.key, n.value));
+        IndexMap<String> map = createIndexMap(maxValue, nodes);
         Arrays.stream(nodes).forEach(n -> map.remove(n.key));
         Arrays.stream(nodes).forEach(n -> Assertions.assertNull(map.get(n.key)));
     }
@@ -91,20 +88,52 @@ class IndexMapTest {
     @ParameterizedTest
     @MethodSource("basicIndexMapSource")
     void forEachValues(int maxValue, Node[] nodes) {
-        IndexMap<String> map = IndexMap.create(maxValue);
-        Arrays.stream(nodes).forEach(n -> map.put(n.key, n.value));
+        IndexMap<String> map = createIndexMap(maxValue, nodes);
         List<String> expectedValues = Arrays.stream(nodes).map(n -> n.value).collect(Collectors.toList());
         List<String> actualValues = new ArrayList<>();
         map.forEachValues(s -> actualValues.add(s));
         Assertions.assertEquals(expectedValues, actualValues);
     }
 
+    private static IndexMap<String> createIndexMap(int maxValue, Node[] nodes) {
+        IndexMap<String> map = IndexMap.create(maxValue);
+        Arrays.stream(nodes).forEach(n -> map.put(n.key, n.value));
+        return map;
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {IndexMap.CRUNCH_THRESHOLD - 1, IndexMap.CRUNCH_THRESHOLD})
     void merge(int maxValue) {
-
         IndexMap<String> map = IndexMap.create(maxValue);
         Assertions.assertEquals("a", map.merge(15, "a", String::concat));
         Assertions.assertEquals("ab", map.merge(15, "b", String::concat));
     }
+
+    @ParameterizedTest
+    @MethodSource("basicIndexMapSource")
+    void serializationText(int maxValue, Node[] nodes) {
+        IndexMap<String> map = createIndexMap(maxValue, nodes);
+        ByteBuffer buffer = ByteBuffer.allocate(2048);
+        map.write(buffer, stringSerializer);
+        buffer.flip();
+        IndexMap<String> result = IndexMap.read(buffer, stringSerializer);
+        Assertions.assertEquals(map.getClass(), result.getClass());
+        Arrays.stream(nodes).forEach(n -> Assertions.assertEquals(n.value, result.get(n.key)));
+        IntWrapper size = new IntWrapper(0);
+        result.forEachValues(s -> size.increment());
+        Assertions.assertEquals(nodes.length, size.getValue());
+    }
+
+    private static final Serializer<String> stringSerializer = new Serializer<String>() {
+
+        @Override
+        public void write(ByteBuffer buffer, String object) {
+            ByteBufferUtils.putString(buffer, object);
+        }
+
+        @Override
+        public String read(ByteBuffer buffer) {
+            return ByteBufferUtils.getString(buffer);
+        }
+    };
 }

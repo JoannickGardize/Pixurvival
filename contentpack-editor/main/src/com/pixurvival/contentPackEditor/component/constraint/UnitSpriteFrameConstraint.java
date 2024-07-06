@@ -16,6 +16,7 @@ public class UnitSpriteFrameConstraint implements Predicate<Frame> {
 
     @Override
     public boolean test(Frame t) {
+
         ResourceEntry entry = ResourcesService.getInstance().getResource(element.getImage());
         if (entry == null || !(entry.getPreview() instanceof BufferedImage)) {
             return true;

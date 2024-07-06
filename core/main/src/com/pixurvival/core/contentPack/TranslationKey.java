@@ -22,6 +22,6 @@ public enum TranslationKey {
     }
 
     private static String getElementTypeKeyPreffix(NamedIdentifiedElement element) {
-        return CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), NamedIdentifiedElement.class).getSimpleName()) + ".";
+        return CaseUtils.pascalToCamelCase(ReflectionUtils.getSuperClassUnder(element.getClass(), NamedIdentifiedElement.class, TaggableElement.class).getSimpleName()) + ".";
     }
 }

@@ -1,12 +1,12 @@
 package com.pixurvival.core.livingEntity.ability;
 
-import com.pixurvival.core.ActionPreconditions;
 import com.pixurvival.core.Direction;
 import com.pixurvival.core.World;
 import com.pixurvival.core.contentPack.sprite.ActionAnimation;
 import com.pixurvival.core.item.ItemStack;
 import com.pixurvival.core.item.ItemStackEntity;
 import com.pixurvival.core.livingEntity.LivingEntity;
+import com.pixurvival.core.logic.ActionPreconditions;
 import com.pixurvival.core.map.HarvestableStructureEntity;
 import com.pixurvival.core.map.StructureEntity;
 

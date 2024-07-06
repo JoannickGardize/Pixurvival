@@ -43,6 +43,9 @@ import lombok.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Main class of a game run, contains everything.
+ */
 @Getter
 @EqualsAndHashCode(of = "id", callSuper = false)
 public class World extends PluginHolder<World> implements ChatSender, CommandExecutor {
@@ -83,6 +86,9 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
     private @Setter String saveName;
     private long seed;
     private WorldKryo inventoryKryo;
+    private Serializers serializers = new Serializers(this);
+    @Setter
+    private long nextId = 0;
 
     private List<AdditionalAttribute> additionalAttributes = new ArrayList<>();
     private Map<Class<? extends GameSystem>, GameSystem> systems = new LinkedHashMap<>();
@@ -90,7 +96,7 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
     private InterestSubscription<InitializeNewServerWorldInterest> initializeNewServerWorldSubscription = interestSubscriptionSet.get(InitializeNewServerWorldInterest.class);
     private InterestSubscription<InitializeNewClientWorldInterest> initializeNewClientWorldSubscription = interestSubscriptionSet.get(InitializeNewClientWorldInterest.class);
     private InterestSubscription<WorldUpdateInterest> worldUpdateSubscription = interestSubscriptionSet.get(WorldUpdateInterest.class);
-    private InterestSubscription<PersistenceInterest> persitenceSubscription = interestSubscriptionSet.get(PersistenceInterest.class);
+    private InterestSubscription<PersistenceInterest> persistenceSubscription = interestSubscriptionSet.get(PersistenceInterest.class);
 
     private World(long id, Type type, ContentPack contentPack, int gameModeId) {
         this(id, type, contentPack, gameModeId, new Random().nextLong());
@@ -311,6 +317,10 @@ public class World extends PluginHolder<World> implements ChatSender, CommandExe
         if (roles != null) {
             roles.apply(this);
         }
+    }
+
+    public long nextId() {
+        return ++nextId;
     }
 
     @Override

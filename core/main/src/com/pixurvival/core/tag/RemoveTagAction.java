@@ -1,4 +1,4 @@
-package com.pixurvival.core.livingEntity.tag;
+package com.pixurvival.core.tag;
 
 import com.pixurvival.core.Action;
 import com.pixurvival.core.World;
@@ -17,8 +17,10 @@ public class RemoveTagAction implements Action {
     public void perform(World world) {
         LivingEntity entity = world.getEntityPool().get(EntityGroup.CREATURE, entityId);
         if (entity == null) {
-            // Maybe it's ad dead player
             entity = world.getPlayerEntities().get(entityId);
+        }
+        if(entity == null) {
+            en
         }
         if (entity == null) {
             // It's a dead creature,

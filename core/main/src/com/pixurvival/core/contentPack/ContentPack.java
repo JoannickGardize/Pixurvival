@@ -17,13 +17,12 @@ import com.pixurvival.core.contentPack.sprite.EquipmentOffset;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.structure.Structure;
 import com.pixurvival.core.contentPack.tag.Tag;
-import com.pixurvival.core.contentPack.tag.TagValue;
 import com.pixurvival.core.contentPack.validation.annotation.ElementList;
 import com.pixurvival.core.contentPack.validation.annotation.Length;
 import com.pixurvival.core.contentPack.validation.annotation.Valid;
 import com.pixurvival.core.livingEntity.PlayerEntity;
 import com.pixurvival.core.livingEntity.ability.AbilitySet;
-import com.pixurvival.core.livingEntity.tag.TagInstance;
+import com.pixurvival.core.tag.TagInstance;
 import com.pixurvival.core.util.IndexMap;
 import com.pixurvival.core.util.IntWrapper;
 import com.pixurvival.core.util.ReflectionUtils;
@@ -194,7 +193,7 @@ public class ContentPack implements Serializable {
     }
 
     public List<NamedIdentifiedElement> listOf(Class<? extends NamedIdentifiedElement> type) {
-        return elementsLists.get(ReflectionUtils.getSuperClassUnder(type, NamedIdentifiedElement.class));
+        return elementsLists.get(ReflectionUtils.getSuperClassUnder(type, NamedIdentifiedElement.class, TaggableElement.class));
     }
 
     private void computeMaxLivingEntityRadius() {
@@ -268,8 +267,8 @@ public class ContentPack implements Serializable {
     private static class ImmutableTagInstance extends TagInstance {
 
 
-        public ImmutableTagInstance(TagValue tagValue) {
-            super(tagValue);
+        public ImmutableTagInstance(float value) {
+            super(value);
         }
 
         @Override
@@ -290,10 +289,10 @@ public class ContentPack implements Serializable {
 
     private void initializeDefaultCreatureTagMaps() {
         defaultCreatureTagMaps = new ArrayList<>();
-        creatures.forEach(c -> {
+        creatures.stream().filter(c -> !c.getTags().isEmpty()).forEach(c -> {
             IndexMap<TagInstance> map = IndexMap.create(c.getTags().stream()
                     .mapToInt(tv -> tv.getTag().getId()).max().getAsInt());
-            c.getTags().forEach(tv -> map.put(tv.getTag().getId(), new ImmutableTagInstance(tv)));
+            c.getTags().forEach(tv -> map.put(tv.getTag().getId(), new ImmutableTagInstance(tv.getValue())));
             defaultCreatureTagMaps.add(IndexMap.immutable(map));
         });
     }

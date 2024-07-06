@@ -61,8 +61,7 @@ public class WorldSerialization {
             VarLenNumberIO.writePositiveVarInt(buffer, world.getGameMode().getId());
             buffer.putLong(world.getSeed());
             world.getTime().write(buffer);
-            VarLenNumberIO.writePositiveVarLong(buffer, world.getEntityPool().getNextId());
-            VarLenNumberIO.writePositiveVarLong(buffer, world.getMap().getNextStructureId());
+            VarLenNumberIO.writePositiveVarLong(buffer, world.getNextId());
             flush(buffer, output);
             // Teams
             world.getTeamSet().write(buffer);
@@ -122,8 +121,7 @@ public class WorldSerialization {
         World world = World.createExistingLocalWorld(contentPack, VarLenNumberIO.readPositiveVarInt(buffer), buffer.getLong(), chunkManagerPlugins);
         Kryo kryo = getKryo(world);
         world.getTime().apply(buffer);
-        world.getEntityPool().setNextId(VarLenNumberIO.readPositiveVarLong(buffer));
-        world.getMap().setNextStructureId(VarLenNumberIO.readPositiveVarLong(buffer));
+        world.setNextId(VarLenNumberIO.readPositiveVarLong(buffer));
         // Teams
         world.getTeamSet().apply(buffer);
         // Players data

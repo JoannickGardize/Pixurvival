@@ -5,6 +5,7 @@ import com.pixurvival.contentPackEditor.component.valueComponent.ValueChangeList
 import com.pixurvival.contentPackEditor.component.valueComponent.ValueComponent;
 import com.pixurvival.core.contentPack.ContentPack;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
+import com.pixurvival.core.contentPack.TaggableElement;
 import com.pixurvival.core.contentPack.sprite.SpriteSheet;
 import com.pixurvival.core.contentPack.validation.annotation.*;
 import com.pixurvival.core.contentPack.validation.handler.UnitSpriteSheetHandler;
@@ -51,10 +52,10 @@ public class ElementChooserButton<T extends NamedIdentifiedElement> extends JBut
         ContentPack pack = FileService.getInstance().getCurrentContentPack();
         if (pack == null) {
             return Collections.emptyList();
-        } else if (elementType.getSuperclass() == NamedIdentifiedElement.class) {
+        } else if (elementType.getSuperclass() == NamedIdentifiedElement.class || elementType.getSuperclass() == TaggableElement.class) {
             return (Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(elementType));
         } else {
-            Class<? extends NamedIdentifiedElement> superClass = ReflectionUtils.getSuperClassUnder(elementType, NamedIdentifiedElement.class);
+            Class<? extends NamedIdentifiedElement> superClass = ReflectionUtils.getSuperClassUnder(elementType, NamedIdentifiedElement.class, TaggableElement.class);
             return ((Collection<T>) ContentPackEditionService.getInstance().listOf(ElementType.of(superClass))).stream().filter(elementType::isInstance).collect(Collectors.toList());
         }
     }

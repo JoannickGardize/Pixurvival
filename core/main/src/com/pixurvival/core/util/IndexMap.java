@@ -1,5 +1,8 @@
 package com.pixurvival.core.util;
 
+import lombok.AllArgsConstructor;
+
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -23,10 +26,23 @@ public abstract class IndexMap<V> {
 
     public abstract V merge(int key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction);
 
+    // TODO test
+    public abstract void write(ByteBuffer buffer, Serializer<V> valueSerializer);
+
+    // TODO test
+    public static <V> IndexMap<V> read(ByteBuffer buffer, Serializer<V> valueSerializer) {
+        byte typeId = buffer.get();
+        if (typeId == ArrayIndexMap.SERIALIZATION_ID) {
+            return ArrayIndexMap.read(buffer, valueSerializer);
+        } else {
+            return CrushedArrayIndexMap.read(buffer, valueSerializer);
+        }
+    }
+
     /**
      * Used by pixurvival's subclasses to capture a value instance before its content will change.
      */
-    public V captureValueChange(V value) {
+    public V captureValueChange(int index, V value) {
         return value;
     }
 
@@ -66,10 +82,19 @@ public abstract class IndexMap<V> {
             public V merge(int key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public void write(ByteBuffer buffer, Serializer<V> valueSerializer) {
+                throw new UnsupportedOperationException();
+            }
         };
     }
 
+    @AllArgsConstructor
     static class ArrayIndexMap<V> extends IndexMap<V> {
+
+        static final byte SERIALIZATION_ID = 0;
+
         private IndexSet keys;
         private V[] values;
 
@@ -120,14 +145,36 @@ public abstract class IndexMap<V> {
                 return values[key] = newValue;
             }
         }
+
+        @Override
+        public void write(ByteBuffer buffer, Serializer<V> valueSerializer) {
+            buffer.put(SERIALIZATION_ID);
+            keys.write(buffer);
+            VarLenNumberIO.writePositiveVarInt(buffer, values.length);
+            forEachValues(v -> valueSerializer.write(buffer, v));
+        }
+
+        public static <V> ArrayIndexMap<V> read(ByteBuffer buffer, Serializer<V> valueSerializer) {
+            IndexSet keys = IndexSet.read(buffer);
+            V[] values = (V[]) new Object[VarLenNumberIO.readPositiveVarInt(buffer)];
+            keys.forEach(i -> values[i] = valueSerializer.read(buffer));
+            return new ArrayIndexMap<>(keys, values);
+        }
     }
 
     static class CrushedArrayIndexMap<V> extends IndexMap<V> {
+
+        static final byte SERIALIZATION_ID = 1;
 
         private static final int CRUSH_SIZE = 32;
 
         private IndexSet keys;
         private V[][] values;
+
+        public CrushedArrayIndexMap(IndexSet keys) {
+            this.keys = keys;
+            values = (V[][]) new Object[CRUSH_SIZE][];
+        }
 
         public CrushedArrayIndexMap(int maxValue) {
             keys = IndexSet.create(maxValue);
@@ -204,6 +251,20 @@ public abstract class IndexMap<V> {
                 V newValue = remappingFunction.apply(subArray[subArrayKey], value);
                 return subArray[subArrayKey] = newValue;
             }
+        }
+
+        @Override
+        public void write(ByteBuffer buffer, Serializer<V> valueSerializer) {
+            buffer.put(SERIALIZATION_ID);
+            keys.write(buffer);
+            forEachValues(v -> valueSerializer.write(buffer, v));
+        }
+
+        public static <V> CrushedArrayIndexMap<V> read(ByteBuffer buffer, Serializer<V> valueSerializer) {
+            IndexSet keys = IndexSet.read(buffer);
+            CrushedArrayIndexMap result = new CrushedArrayIndexMap(keys);
+            keys.forEach(index -> result.put(index, valueSerializer.read(buffer)));
+            return result;
         }
     }
 }

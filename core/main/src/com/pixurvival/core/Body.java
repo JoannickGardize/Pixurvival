@@ -1,22 +1,21 @@
 package com.pixurvival.core;
 
 /**
- * Interface qui représente un "corps physique" avec une position et une
- * bounding box. Cette interface a pour intérêt d'être une abstraction pour tout
- * objet devant interragir avec les autres en fonction de sa position, ou de sa
- * bounding box.
+ * An interface that represents a 'physical body' with a position and a bounding box.
+ * The purpose of this interface is to provide an abstraction for any object that needs to interact with others,
+ * based on its position and/or its bounding box.
  *
  * @author SharkHendrix
  */
 public interface Body extends Positionnable {
 
     /**
-     * @return Moitié de la largeur de la bounding box
+     * @return half of the bounding box width
      */
     float getHalfWidth();
 
     /**
-     * @return Moitié de la hauteur de la bounding box
+     * @return half of the bounding box height
      */
     float getHalfHeight();
 

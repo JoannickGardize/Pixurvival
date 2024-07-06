@@ -2,40 +2,72 @@ package com.pixurvival.core.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.nio.ByteBuffer;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class IndexSetTest {
 
     @Test
-    public void regularIdSetTest() {
+    void regularIdSetTest() {
         testIdSet(IndexSet.RegularIndexSet.class,
                 new int[]{2, 0, 4, 63},
                 new int[]{1, 50, 64, 1000});
     }
 
     @Test
-    public void shiftedRegularIdSetTest() {
+    void shiftedRegularIdSetTest() {
         testIdSet(IndexSet.ShiftedRegularIndexSet.class,
                 new int[]{1001, 1000, 1063},
                 new int[]{1, 999, 1056, 1064});
     }
 
     @Test
-    public void jumboIdSetTest() {
+    void jumboIdSetTest() {
         testIdSet(IndexSet.JumboIndexSet.class,
                 new int[]{3, 0, 5, 64},
                 new int[]{63, 94, 140, 10000});
     }
 
     @Test
-    public void hashIdSetTest() {
+    void hashIdSetTest() {
         testIdSet(IndexSet.HashIndexSet.class,
                 new int[]{1, 5000, 100000, 10000000},
                 new int[]{0, 100020});
+    }
+
+    @ParameterizedTest
+    @MethodSource("serializationSource")
+    void serializationTest(IndexSet set, Integer[] values) {
+        for (int value : values) {
+            set.insert(value);
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(2048);
+        set.write(buffer);
+        buffer.position(0);
+        IndexSet deserializedSet = IndexSet.read(buffer);
+        Assertions.assertEquals(set.getClass(), deserializedSet.getClass());
+        Set<Integer> expected = new HashSet(Arrays.asList(values));
+        Set<Integer> actual = new HashSet<>();
+        deserializedSet.forEach(actual::add);
+        Assertions.assertEquals(expected.size(), actual.size());
+        for (int i : expected) {
+            Assertions.assertTrue(actual.contains(i));
+        }
+    }
+
+    private static Stream<Arguments> serializationSource() {
+        return Stream.of(Arguments.of(new IndexSet.EmptyIndexSet(), new Integer[]{}),
+                Arguments.of(new IndexSet.RegularIndexSet(), new Integer[]{1, 5, 30, 54}),
+                Arguments.of(new IndexSet.ShiftedRegularIndexSet(1000), new Integer[]{1020, 1025, 1030}),
+                Arguments.of(new IndexSet.JumboIndexSet(1000), new Integer[]{0, 256, 548, 987}),
+                Arguments.of(new IndexSet.HashIndexSet(), new Integer[]{20, 1000, 10000, 10049})
+        );
     }
 
     private void testIdSet(Class<? extends IndexSet> expectedInstance,

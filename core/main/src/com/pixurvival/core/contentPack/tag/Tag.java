@@ -1,5 +1,6 @@
 package com.pixurvival.core.contentPack.tag;
 
+import com.pixurvival.core.contentPack.ImageReferenceHolder;
 import com.pixurvival.core.contentPack.NamedIdentifiedElement;
 import com.pixurvival.core.contentPack.TriggerHolder;
 import com.pixurvival.core.contentPack.sprite.Frame;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class Tag extends NamedIdentifiedElement implements TriggerHolder {
+public class Tag extends NamedIdentifiedElement implements TriggerHolder, ImageReferenceHolder {
 
     private String displayName = "";
     private int color = Color.WHITE.getRGB();
@@ -24,6 +25,7 @@ public class Tag extends NamedIdentifiedElement implements TriggerHolder {
     @UnitSpriteFrame
     @Valid
     private Frame displayIconFrame;
+
     @Nullable
     @UnitSpriteSheet
     @ResourceReference
@@ -39,4 +41,9 @@ public class Tag extends NamedIdentifiedElement implements TriggerHolder {
     private List<Trigger> triggers = new ArrayList<>();
 
     private transient Map<Class<? extends Trigger>, List<Trigger>> triggersByType;
+
+    @Override
+    public String getImage() {
+        return displayIconImage;
+    }
 }
