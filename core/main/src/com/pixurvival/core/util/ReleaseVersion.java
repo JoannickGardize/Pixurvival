@@ -33,7 +33,8 @@ public enum ReleaseVersion {
     ALPHA_12C(BackwardCompatibility.FULL),
     ALPHA_13(BackwardCompatibility.NONE),
     ALPHA_13B(BackwardCompatibility.FULL),
-    ALPHA_14(BackwardCompatibility.CONTENT_PACK_ONLY);
+    ALPHA_14(BackwardCompatibility.CONTENT_PACK_ONLY),
+    ALPHA_14B(BackwardCompatibility.CONTENT_PACK_ONLY);
 
     private BackwardCompatibility backwardCompatibility;
 
